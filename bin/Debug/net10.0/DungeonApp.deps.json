@@ -13,7 +13,8 @@
           "Avalonia.Fonts.Inter": "12.0.5",
           "Avalonia.Themes.Fluent": "12.0.5",
           "AvaloniaUI.DiagnosticsSupport": "2.2.3",
-          "CommunityToolkit.Mvvm": "8.4.1"
+          "CommunityToolkit.Mvvm": "8.4.1",
+          "Markdown.Avalonia": "11.0.3"
         },
         "runtime": {
           "DungeonApp.dll": {}
@@ -87,6 +88,17 @@
             "rid": "win-x86",
             "assetType": "native",
             "fileVersion": "2.1.1.0"
+          }
+        }
+      },
+      "Avalonia.AvaloniaEdit/11.0.0": {
+        "dependencies": {
+          "Avalonia": "12.0.5"
+        },
+        "runtime": {
+          "lib/netstandard2.0/AvaloniaEdit.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -194,6 +206,18 @@
           }
         }
       },
+      "Avalonia.Svg/11.0.0": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "Svg.Model": "1.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Avalonia.Svg.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.0.0"
+          }
+        }
+      },
       "Avalonia.Themes.Fluent/12.0.5": {
         "dependencies": {
           "Avalonia": "12.0.5"
@@ -247,11 +271,50 @@
           }
         }
       },
+      "ColorDocument.Avalonia/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "ColorTextBlock.Avalonia": "11.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/ColorDocument.Avalonia.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
+      "ColorTextBlock.Avalonia/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5"
+        },
+        "runtime": {
+          "lib/net6.0/ColorTextBlock.Avalonia.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
       "CommunityToolkit.Mvvm/8.4.1": {
         "runtime": {
           "lib/net8.0/CommunityToolkit.Mvvm.dll": {
             "assemblyVersion": "8.4.0.0",
             "fileVersion": "8.4.1.1"
+          }
+        }
+      },
+      "ExCSS/4.1.4": {
+        "runtime": {
+          "lib/net6.0/ExCSS.dll": {
+            "assemblyVersion": "4.1.4.0",
+            "fileVersion": "4.1.4.0"
+          }
+        }
+      },
+      "Fizzler/1.2.1": {
+        "runtime": {
+          "lib/netstandard2.0/Fizzler.dll": {
+            "assemblyVersion": "1.2.1.0",
+            "fileVersion": "1.2.1.0"
           }
         }
       },
@@ -369,6 +432,82 @@
           }
         }
       },
+      "HtmlAgilityPack/1.11.42": {
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.42.0",
+            "fileVersion": "1.11.42.0"
+          }
+        }
+      },
+      "Markdown.Avalonia/11.0.3": {
+        "dependencies": {
+          "Markdown.Avalonia.Html": "11.0.3",
+          "Markdown.Avalonia.Svg": "11.0.3",
+          "Markdown.Avalonia.SyntaxHigh": "11.0.3",
+          "Markdown.Avalonia.Tight": "11.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Markdown.Avalonia.Full.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
+      "Markdown.Avalonia.Html/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "ColorDocument.Avalonia": "11.0.3",
+          "ColorTextBlock.Avalonia": "11.0.3",
+          "HtmlAgilityPack": "1.11.42",
+          "Markdown.Avalonia.SyntaxHigh": "11.0.3",
+          "Markdown.Avalonia.Tight": "11.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Markdown.Avalonia.Html.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
+      "Markdown.Avalonia.Svg/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "Avalonia.Svg": "11.0.0",
+          "Markdown.Avalonia.Tight": "11.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Markdown.Avalonia.Svg.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
+      "Markdown.Avalonia.SyntaxHigh/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "Avalonia.AvaloniaEdit": "11.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Markdown.Avalonia.SyntaxHigh.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
+      "Markdown.Avalonia.Tight/11.0.3": {
+        "dependencies": {
+          "Avalonia": "12.0.5",
+          "ColorDocument.Avalonia": "11.0.3",
+          "ColorTextBlock.Avalonia": "11.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/Markdown.Avalonia.dll": {
+            "assemblyVersion": "11.0.3.0",
+            "fileVersion": "11.0.3.0"
+          }
+        }
+      },
       "MicroCom.Runtime/0.11.4": {
         "runtime": {
           "lib/net5.0/MicroCom.Runtime.dll": {
@@ -401,6 +540,14 @@
           "lib/net6.0/Microsoft.IO.RecyclableMemoryStream.dll": {
             "assemblyVersion": "3.0.1.0",
             "fileVersion": "3.0.1.0"
+          }
+        }
+      },
+      "ShimSkiaSharp/1.0.0": {
+        "runtime": {
+          "lib/net6.0/ShimSkiaSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -528,6 +675,30 @@
           }
         }
       },
+      "Svg.Custom/1.0.0": {
+        "dependencies": {
+          "ExCSS": "4.1.4",
+          "Fizzler": "1.2.1"
+        },
+        "runtime": {
+          "lib/net6.0/Svg.Custom.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Svg.Model/1.0.0": {
+        "dependencies": {
+          "ShimSkiaSharp": "1.0.0",
+          "Svg.Custom": "1.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/Svg.Model.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Tmds.DBus.Protocol/0.92.0": {
         "runtime": {
           "lib/net9.0/Tmds.DBus.Protocol.dll": {
@@ -557,6 +728,13 @@
       "sha512": "sha512-l17nI3XVDN3oMnpjf2pnmJg0YTwK4m6NLsn/itAjDMdObTFxN77D5F1M9sRMSfViSY3KKcse1ROczwgoWLJsnA==",
       "path": "avalonia.angle.windows.natives/2.1.27548.20260419",
       "hashPath": "avalonia.angle.windows.natives.2.1.27548.20260419.nupkg.sha512"
+    },
+    "Avalonia.AvaloniaEdit/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VhTgyJIHgy2R1fi+5+E2T4Mjd5qE2EzSYI6mQNfLh4rF4b7Ue7yn7eZKNx0dHeD+WuI32Uw/HEZuA7fxFvhgpQ==",
+      "path": "avalonia.avaloniaedit/11.0.0",
+      "hashPath": "avalonia.avaloniaedit.11.0.0.nupkg.sha512"
     },
     "Avalonia.Desktop/12.0.5": {
       "type": "package",
@@ -614,6 +792,13 @@
       "path": "avalonia.skia/12.0.5",
       "hashPath": "avalonia.skia.12.0.5.nupkg.sha512"
     },
+    "Avalonia.Svg/11.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XeU63iFDQA7C7y578qaULYlTJd4ksqhEwguCFuSF76cssDijgDjo4WYj2WyzU51n8LNIJ3CmijrPN81BHY4AkQ==",
+      "path": "avalonia.svg/11.0.0",
+      "hashPath": "avalonia.svg.11.0.0.nupkg.sha512"
+    },
     "Avalonia.Themes.Fluent/12.0.5": {
       "type": "package",
       "serviceable": true,
@@ -642,12 +827,40 @@
       "path": "avaloniaui.diagnosticssupport/2.2.3",
       "hashPath": "avaloniaui.diagnosticssupport.2.2.3.nupkg.sha512"
     },
+    "ColorDocument.Avalonia/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3lKt5G7v7nHMZOQ7fbLRb8DgpLw3lC7lELWEErPnFS1nblT4MbV9kzPZXQ7G4NcE8vpEjU01gw6dDfRIy65NBA==",
+      "path": "colordocument.avalonia/11.0.3",
+      "hashPath": "colordocument.avalonia.11.0.3.nupkg.sha512"
+    },
+    "ColorTextBlock.Avalonia/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oqj4yK4jD4XIvGJiTIh97+fVMVUHVWQZIdG+8PbENBkmLTg9TkZMga+hm8SOwB+W/r6m0coSmoH7NUMz2Wn6lg==",
+      "path": "colortextblock.avalonia/11.0.3",
+      "hashPath": "colortextblock.avalonia.11.0.3.nupkg.sha512"
+    },
     "CommunityToolkit.Mvvm/8.4.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-BTRteP8SvFyd/4KAreIFJBcxD2O9trLxLDD/p8YkSDDrfFOzy2U8cHyz6r+5Eh4kDhJdzAVglei6a+Bh4jCpUA==",
       "path": "communitytoolkit.mvvm/8.4.1",
       "hashPath": "communitytoolkit.mvvm.8.4.1.nupkg.sha512"
+    },
+    "ExCSS/4.1.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6eMFdIazPCVfr9Gios0nCUYq3/02SewnDGvS+aCi/RWaAtoETz2fNT+H//+k0vjoDJBHXkWdVG8EkxUydxtyxA==",
+      "path": "excss/4.1.4",
+      "hashPath": "excss.4.1.4.nupkg.sha512"
+    },
+    "Fizzler/1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nSudK8LeKSu7T/N/6NVZNjUniMYagfzVo8yT2XwZ9BOVbWYQH3EQ8oviuztJ7AfO8PlRDsYIWboZuzIg94hhzQ==",
+      "path": "fizzler/1.2.1",
+      "hashPath": "fizzler.1.2.1.nupkg.sha512"
     },
     "HarfBuzzSharp/8.3.1.3": {
       "type": "package",
@@ -677,6 +890,48 @@
       "path": "harfbuzzsharp.nativeassets.win32/8.3.1.3",
       "hashPath": "harfbuzzsharp.nativeassets.win32.8.3.1.3.nupkg.sha512"
     },
+    "HtmlAgilityPack/1.11.42": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LDc1bEfF14EY2DZzak4xvzWvbpNXK3vi1u0KQbBpLUN4+cx/VrvXhgCAMSJhSU5vz0oMfW9JZIR20vj/PkDHPA==",
+      "path": "htmlagilitypack/1.11.42",
+      "hashPath": "htmlagilitypack.1.11.42.nupkg.sha512"
+    },
+    "Markdown.Avalonia/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-z1eLnzv+FWquHaiFOGXd5+i8fa9sm4NbK+rr/6bTIk+HnXrt/asvgNfIrDVei2Bsy3f4Mjx7AyeiVnEdsxGKZw==",
+      "path": "markdown.avalonia/11.0.3",
+      "hashPath": "markdown.avalonia.11.0.3.nupkg.sha512"
+    },
+    "Markdown.Avalonia.Html/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/AGoL4soYQLVMzlnKYQmd4QWSAIYQVdp/6mnAdMPqnfrFSd8oXs0sHUvh1IRf+MwcPkrxunNrtDYmKu684y6ZA==",
+      "path": "markdown.avalonia.html/11.0.3",
+      "hashPath": "markdown.avalonia.html.11.0.3.nupkg.sha512"
+    },
+    "Markdown.Avalonia.Svg/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-R/043ura/6Q5QfmI2KsqkRIKDer6LlZKZ1shy9zZmWqFEPvRc6aeEl2f2VCgkB/TBZt5PhC6hGt7ljmyWHn/eQ==",
+      "path": "markdown.avalonia.svg/11.0.3",
+      "hashPath": "markdown.avalonia.svg.11.0.3.nupkg.sha512"
+    },
+    "Markdown.Avalonia.SyntaxHigh/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+DYkzuZwPrm6tJaVqXU5/ke7TKLj5RFzJV9mAQZdxWZTZxLrbEaSVLupjU9YFFwRUi2jdWCrH51OqM14mC3hww==",
+      "path": "markdown.avalonia.syntaxhigh/11.0.3",
+      "hashPath": "markdown.avalonia.syntaxhigh.11.0.3.nupkg.sha512"
+    },
+    "Markdown.Avalonia.Tight/11.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yV61pNsz8GfVzaNy2IM/K6eGEoL5J0uqPY3TCpWfVpwkH9gZEi48BIhoY3Lz/fmqbLR74aE2s1/N01z7jZQavQ==",
+      "path": "markdown.avalonia.tight/11.0.3",
+      "hashPath": "markdown.avalonia.tight.11.0.3.nupkg.sha512"
+    },
     "MicroCom.Runtime/0.11.4": {
       "type": "package",
       "serviceable": true,
@@ -705,6 +960,13 @@
       "path": "microsoft.io.recyclablememorystream/3.0.1",
       "hashPath": "microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512"
     },
+    "ShimSkiaSharp/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aO0ERDXKTcGGkxY3V+yp+gkx/dtlyMVS5jMe2S3ajvsSHvlB3IQJHSCvOjoYJRjnf9mMXTIUL5EDKM/yqZ2E3A==",
+      "path": "shimskiasharp/1.0.0",
+      "hashPath": "shimskiasharp.1.0.0.nupkg.sha512"
+    },
     "SkiaSharp/3.119.4": {
       "type": "package",
       "serviceable": true,
@@ -732,6 +994,20 @@
       "sha512": "sha512-XOpbx/4CReO2wYsq2s6rbvdauc6dntG4Zv499sHGTJ87bwZaFXszFkwql3+FIZMc8kUPeaj3Mx2ezIJmo8a1Kg==",
       "path": "skiasharp.nativeassets.win32/3.119.4",
       "hashPath": "skiasharp.nativeassets.win32.3.119.4.nupkg.sha512"
+    },
+    "Svg.Custom/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WN55shnYAO2idEBWh6yyER55F5ov1kaGxBqM2EI7fVoeJS8zyZvVadOoPz+PUu94QTIJ3dk5zFtEELSd7UeDcw==",
+      "path": "svg.custom/1.0.0",
+      "hashPath": "svg.custom.1.0.0.nupkg.sha512"
+    },
+    "Svg.Model/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XyGTU2W4GZQ8lIRI/UWI0QftNvsLjnfOA1YDhZd8CwHmLBbFqjliLajryArFy0ZetlyC13v5D/+ZoObR/NS3qA==",
+      "path": "svg.model/1.0.0",
+      "hashPath": "svg.model.1.0.0.nupkg.sha512"
     },
     "Tmds.DBus.Protocol/0.92.0": {
       "type": "package",

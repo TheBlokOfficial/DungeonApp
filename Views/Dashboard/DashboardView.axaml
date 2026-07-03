@@ -1,0 +1,183 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels"
+             x:Class="DungeonApp.Views.DashboardView"
+             x:DataType="vm:MainWindowViewModel"
+             x:Name="Root">
+
+    <Grid ColumnDefinitions="250,*">
+        <!-- LEWY PANEL: NAWIGACJA -->
+        <Border Grid.Column="0" Background="#1E1E1E" BorderBrush="#292929" BorderThickness="0,0,1,0">
+            <StackPanel Margin="20" Spacing="8">
+                <TextBlock Text="DUNGEON" FontSize="28" FontWeight="Bold" Foreground="#D4A017" />
+                <TextBlock Text="Session Manager" FontSize="16" Foreground="#FFFFFF" Margin="0,0,0,40" />
+
+                <TextBlock Text="GŁÓWNE MENU" FontSize="12" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,8"/>
+
+                <Button Command="{Binding ShowCampaignsCommand}" Background="Transparent" BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929" /></Style></Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="{Binding IsCampaignsVisible, Converter={x:Static StringConverters.IsNullOrEmpty}}" /> <!-- Prosty fix koloru dla zaznaczenia zrobimy ew. stylami -->
+                        <TextBlock Text="Kampanie RPG" VerticalAlignment="Center" Foreground="#EEEEEE"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Command="{Binding ShowCharactersCommand}" Background="Transparent" BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929" /></Style></Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="#D4A017" />
+                        <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="#EEEEEE"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- PRAWY PANEL: GŁÓWNA ZAWARTOŚĆ -->
+        <Border Grid.Column="1" Padding="40">
+            <Grid>
+                <!-- WIDOK: KAMPANIE -->
+                <StackPanel IsVisible="{Binding IsCampaignsVisible}">
+                    <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,30">
+                        <TextBlock Grid.Column="0" Text="Twoje Kampanie" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                            <Button Command="{Binding RefreshCampaignsCommand}" Background="Transparent" BorderThickness="0" Padding="10" ToolTip.Tip="Odśwież listę">
+                                <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929" /></Style></Button.Styles>
+                                <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" Foreground="#888888" />
+                            </Button>
+                            <Button Command="{Binding CreateNewCampaignCommand}" Background="#D4A017" Foreground="#171717" FontWeight="Bold" CornerRadius="6" Padding="20,12">
+                                <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#E5B027" /></Style></Button.Styles>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" Foreground="#171717" />
+                                    <TextBlock Text="Nowa Kampania" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    
+                    <Border BorderThickness="0,0,0,1" BorderBrush="#292929" Margin="0,0,0,25" />
+
+                    <ItemsControl ItemsSource="{Binding Campaigns}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Classes="campaignCard" Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCampaignCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Background="#1A1A1A" CornerRadius="8" Margin="0,0,0,12" Padding="20" BorderThickness="1" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                                    <Button.Styles>
+                                        <Style Selector="Button.campaignCard"><Setter Property="BorderBrush" Value="#292929" /></Style>
+                                        <Style Selector="Button.campaignCard:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="#1E1E1E" />
+                                            <Setter Property="BorderBrush" Value="#444444" />
+                                        </Style>
+                                    </Button.Styles>
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                        <Border Grid.Column="0" Background="#292929" CornerRadius="6" Padding="12" Margin="0,0,20,0">
+                                            <PathIcon Data="{StaticResource IconShield}" Width="24" Height="24" Foreground="#D4A017" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                            <TextBlock Text="{Binding System}" Foreground="#888888" FontSize="14" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,24,0">
+                                            <TextBlock Text="{Binding LastSession, StringFormat='Ostatnia sesja: {0:dd.MM.yyyy}'}" Foreground="#888888" FontSize="13" TextAlignment="Right" />
+                                            <TextBlock Text="{Binding SessionsCount, StringFormat='Rozegranych sesji: {0}'}" Foreground="#A3A3A3" FontSize="13" TextAlignment="Right" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                        <Button Grid.Column="3" Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" CornerRadius="6" Padding="12">
+                                            <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#5C1515" /></Style></Button.Styles>
+                                            <PathIcon Data="{StaticResource IconTrash}" Width="16" Height="16" Foreground="#FF4D4D" />
+                                        </Button>
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <!-- WIDOK: BOHATEROWIE (Master-Detail) -->
+                <Grid IsVisible="{Binding IsCharactersVisible}" ColumnDefinitions="350, *">
+                    <!-- LEWA: Lista postaci -->
+                    <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,30,0">
+                        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,24">
+                            <TextBlock Grid.Column="0" Text="Postacie" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                <Button Command="{Binding RefreshCharactersCommand}" Background="Transparent" Padding="8" CornerRadius="6">
+                                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929" /></Style></Button.Styles>
+                                    <PathIcon Data="{StaticResource IconReload}" Width="16" Height="16" Foreground="#888888" />
+                                </Button>
+                                <Button Command="{Binding CreateNewCharacterCommand}" Background="#D4A017" CornerRadius="6" Padding="8">
+                                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#E5B027" /></Style></Button.Styles>
+                                    <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" Foreground="#171717" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <ScrollViewer Grid.Row="1">
+                            <ItemsControl ItemsSource="{Binding Characters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding ((vm:MainWindowViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Background="#1A1A1A" CornerRadius="8" Margin="0,0,0,12" Padding="16" BorderThickness="1" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
+                                            <Button.Styles>
+                                                <Style Selector="Button"><Setter Property="BorderBrush" Value="#292929" /></Style>
+                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                    <Setter Property="Background" Value="#1E1E1E" />
+                                                    <Setter Property="BorderBrush" Value="#D4A017" />
+                                                </Style>
+                                            </Button.Styles>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding CharacterName}" FontSize="16" FontWeight="Bold" Foreground="#EEEEEE" />
+                                                <TextBlock Text="{Binding ClassAndLevel}" FontSize="12" Foreground="#888888" Margin="0,4,0,0"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- PRAWA: Szczegóły postaci (Widoczne tylko po wybraniu) -->
+                    <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNotNull}}" Background="#1A1A1A" CornerRadius="12" BorderBrush="#292929" BorderThickness="1" Padding="40" VerticalAlignment="Top">
+                        <StackPanel>
+                            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,24">
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding SelectedCharacter.CharacterName}" FontSize="32" FontWeight="Bold" Foreground="#D4A017" TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
+                                        <TextBlock Text="Gra:" FontSize="14" Foreground="#666666" />
+                                        <TextBlock Text="{Binding SelectedCharacter.PlayerName}" FontSize="14" Foreground="#EEEEEE" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button Grid.Column="1" Command="{Binding DeleteCharacterCommand}" CommandParameter="{Binding SelectedCharacter}" Background="Transparent" BorderThickness="1" BorderBrush="#5C1515" CornerRadius="6" Padding="12,8" VerticalAlignment="Top">
+                                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#5C1515" /></Style></Button.Styles>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="#FF4D4D"/>
+                                        <TextBlock Text="Usuń" Foreground="#FF4D4D" FontSize="13"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            
+                            <Border BorderThickness="0,0,0,1" BorderBrush="#292929" Margin="0,0,0,24" />
+
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="150, *">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Rasa" Foreground="#888888" FontSize="13" Margin="0,0,0,16"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCharacter.Race}" Foreground="#FFFFFF" FontSize="15" FontWeight="Medium" Margin="0,0,0,16"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Klasa i Poziom" Foreground="#888888" FontSize="13"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCharacter.ClassAndLevel}" Foreground="#FFFFFF" FontSize="15" FontWeight="Medium"/>
+                            </Grid>
+
+                            <Button Background="#292929" Foreground="#FFFFFF" CornerRadius="6" Padding="14,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,40,0,0">
+                                <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#333333" /></Style></Button.Styles>
+                                <TextBlock Text="Otwórz pełną Kartę Postaci (Wkrótce)" FontSize="13" FontWeight="SemiBold"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- PUSTY STAN (Gdy nic nie wybrano) -->
+                    <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNull}}" Background="#1A1A1A" CornerRadius="12" BorderBrush="#292929" BorderThickness="1" Padding="40" VerticalAlignment="Stretch">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+                            <PathIcon Data="{StaticResource IconSwords}" Width="48" Height="48" Foreground="#333333"/>
+                            <TextBlock Text="Wybierz bohatera z listy po lewej, aby zobaczyć szczegóły." Foreground="#666666" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

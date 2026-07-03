@@ -8,24 +8,42 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
+        <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.0.5"/>
-        <PackageReference Include="Avalonia.Desktop" Version="12.0.5"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.5"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.5"/>
+        <PackageReference Include="Avalonia" Version="12.0.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.0.5" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.5" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.5" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+        <PackageReference Include="Markdown.Avalonia" Version="11.0.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\. CampaignDetailView.axaml.cs">
+      <Compile Update="Views\Campaigns\. CampaignDetailView.axaml.cs">
         <DependentUpon>CampaignDetailView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Campaigns\CreateCampaignView.axaml.cs">
+        <DependentUpon>CreateCampaignView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Characters\CreateCharacterView.axaml.cs">
+        <DependentUpon>CreateCharacterView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Dashboard\DashboardView.axaml.cs">
+        <DependentUpon>DashboardView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\Sessions\SessionDetailView.axaml.cs">
+        <DependentUpon>SessionDetailView.axaml</DependentUpon>
+        <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
 </Project>

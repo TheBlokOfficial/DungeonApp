@@ -1,0 +1,128 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels"
+             x:Class="DungeonApp.Views.CampaignDetailView"
+             x:DataType="vm:CampaignDetailViewModel"
+             x:Name="Root"
+             Background="#171717">
+
+    <Grid RowDefinitions="Auto,*" Margin="30">
+
+        <!-- Górny pasek: powrót + nazwa kampanii -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="16" Margin="0,0,0,30">
+            <Button Command="{Binding BackCommand}"
+                    Background="Transparent" BorderThickness="0" CornerRadius="6" Padding="10,8">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#292929"/>
+                    </Style>
+                </Button.Styles>
+                <TextBlock Text="← Wróć" FontSize="14" Foreground="#A3A3A3"/>
+            </Button>
+
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="{Binding Campaign.Name}" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF"/>
+                <TextBlock Text="{Binding Campaign.System}" FontSize="14" Foreground="#888888"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Główna zawartość -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="24">
+                
+                <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
+                <Button Command="{Binding AddSessionCommand}"
+                        IsVisible="{Binding CanAddNewSession}"
+                        Background="#D4A017" Foreground="#171717" FontWeight="Bold"
+                        CornerRadius="6" Padding="16,12" HorizontalAlignment="Left">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#E5B027"/>
+                        </Style>
+                    </Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" Foreground="#171717"/>
+                        <TextBlock Text="Rozpocznij Nową Sesję" FontSize="14"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- SEKCJA 2: Aktywna Sesja (Widoczna gdy JEST aktywna) -->
+                <Border IsVisible="{Binding HasActiveSession}" 
+                        Background="#1A1A1A" CornerRadius="10" Padding="24" 
+                        BorderBrush="#D4A017" BorderThickness="1.5">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <TextBlock Text="OBECNA SESJA" FontSize="12" FontWeight="Bold" Foreground="#D4A017" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding ActiveSession.Title}" FontSize="22" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                            <TextBlock Text="{Binding ActiveSession.Date, StringFormat='{}Utworzono: {0:dd.MM.yyyy}'}" FontSize="13" Foreground="#888888" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <!-- Akcje Aktywnej Sesji -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                            
+                            <Button Command="{Binding DeleteActiveSessionCommand}"
+                                    Background="Transparent" BorderThickness="1" BorderBrush="#5C1515" 
+                                    CornerRadius="6" Padding="14,10">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#5C1515"/>
+                                    </Style>
+                                </Button.Styles>
+                                <TextBlock Text="Usuń" FontSize="13" Foreground="#FF4D4D"/>
+                            </Button>
+
+                            <!-- Zmiana nazwy na Zakończ Sesję -->
+                            <Button Command="{Binding ArchiveActiveSessionCommand}"
+                                    Background="#292929" Foreground="#FFFFFF" BorderThickness="0" 
+                                    CornerRadius="6" Padding="14,10">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#333333"/>
+                                    </Style>
+                                </Button.Styles>
+                                <TextBlock Text="Zakończ Sesję" FontSize="13"/>
+                            </Button>
+
+                            <Button Command="{Binding OpenActiveSessionCommand}"
+                                    Background="#D4A017" Foreground="#171717" FontWeight="Bold"
+                                    CornerRadius="6" Padding="20,10">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#E5B027"/>
+                                    </Style>
+                                </Button.Styles>
+                                <TextBlock Text="Prowadź Sesję →" FontSize="14"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- SEKCJA 3: Archiwum Sesji -->
+                <StackPanel IsVisible="{Binding ArchivedSessions.Count}">
+                    <TextBlock Text="Zarchiwizowane Sesje" FontSize="16" FontWeight="SemiBold" Foreground="#888888" Margin="0,16,0,16"/>
+                    
+                    <ItemsControl ItemsSource="{Binding ArchivedSessions}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" ItemWidth="280" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#1A1A1A" CornerRadius="10" Padding="20" Margin="0,0,16,16"
+                                        BorderThickness="1" BorderBrush="#292929">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Foreground="#EEEEEE"/>
+                                        <TextBlock Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" FontSize="13" Foreground="#555555" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

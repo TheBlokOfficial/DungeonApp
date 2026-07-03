@@ -35,16 +35,22 @@ build_property.EnableCodeStyleSeverity =
 [E:/Projects/DungeonApp/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/Projects/DungeonApp/Views/CampaignDetailView.axaml]
+[E:/Projects/DungeonApp/Views/Campaigns/CampaignDetailView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/Projects/DungeonApp/Views/CreateCampaignView.axaml]
+[E:/Projects/DungeonApp/Views/Campaigns/CreateCampaignView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/Projects/DungeonApp/Views/DashboardView.axaml]
+[E:/Projects/DungeonApp/Views/Characters/CreateCharacterView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[E:/Projects/DungeonApp/Views/Dashboard/DashboardView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [E:/Projects/DungeonApp/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[E:/Projects/DungeonApp/Views/Sessions/SessionDetailView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [E:/Projects/DungeonApp/Assets/avalonia-logo.ico]
