@@ -3,6 +3,7 @@
         xmlns:converters="using:Avalonia.Data.Converters"
         xmlns:vm="using:DungeonApp.ViewModels"
         xmlns:views="using:DungeonApp.Views"
+        xmlns:dashboard="clr-namespace:DungeonApp.Views.Dashboard"
         x:Class="DungeonApp.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Name="RootWindow"
