@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="using:Avalonia.Data.Converters"
+        xmlns:vm="using:DungeonApp.ViewModels"
+        xmlns:views="using:DungeonApp.Views"
+        x:Class="DungeonApp.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Name="RootWindow"
+        Title="Dungeon App"
+        Width="1100" Height="700" MinWidth="900" MinHeight="600"
+        Background="#171717"
+        Icon="/Assets/avalonia-logo.ico">
+
+    <Grid>
+        <views:DashboardView IsVisible="{Binding CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
+        <ContentControl Content="{Binding CurrentView}"/>
+    </Grid>
+</Window>
