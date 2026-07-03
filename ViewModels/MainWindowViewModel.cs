@@ -51,4 +51,10 @@ public partial class MainWindowViewModel : ViewModelBase
         _campaignService.DeleteCampaign(campaign.Id);
         Campaigns.Remove(campaign);
     }
+    
+    [RelayCommand]
+    private void OpenCampaign(Campaign campaign)
+    {
+        CurrentView = new CampaignDetailViewModel(campaign, this);
+    }
 }

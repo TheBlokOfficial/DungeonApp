@@ -26,7 +26,10 @@
             
             <StackPanel Spacing="24">
                 <!-- Tytuł Widoku -->
-                <TextBlock Text="⚔️ Stwórz Nową Kampanię" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="24" Height="24" Foreground="#D4A017"/>
+                    <TextBlock Text="Stwórz Nową Kampanię" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                </StackPanel>
 
                 <!-- Formularz -->
                 <StackPanel Spacing="8">

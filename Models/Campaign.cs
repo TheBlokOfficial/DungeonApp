@@ -1,15 +1,28 @@
 ﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Models;
 
-public class Campaign
+public partial class Campaign : ObservableObject
 {
-    public string Id { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string System { get; set; } = "D&D 5e";
-    public DateTime CreatedAt { get; set; }
-    public DateTime LastSession { get; set; }
-    public int SessionsCount { get; set; }
-    
-    public string Description { get; set; } = string.Empty;
+    [ObservableProperty]
+    private string _id = string.Empty;
+
+    [ObservableProperty]
+    private string _name = string.Empty;
+
+    [ObservableProperty]
+    private string _system = "D&D 5e";
+
+    [ObservableProperty]
+    private DateTime _createdAt;
+
+    [ObservableProperty]
+    private DateTime _lastSession;
+
+    [ObservableProperty]
+    private int _sessionsCount;
+
+    [ObservableProperty]
+    private string _description = string.Empty;
 }

@@ -35,6 +35,9 @@ build_property.EnableCodeStyleSeverity =
 [E:/Projects/DungeonApp/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[E:/Projects/DungeonApp/Views/CampaignDetailView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [E:/Projects/DungeonApp/Views/CreateCampaignView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 

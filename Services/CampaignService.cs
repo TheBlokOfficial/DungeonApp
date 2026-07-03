@@ -147,4 +147,58 @@ public class CampaignService
 
         return slug;
     }
+    
+    public List<Session> LoadSessions(string campaignId)
+    {
+        var sessions = new List<Session>();
+        string sessionsDir = Path.Combine(_baseDirectory, campaignId, "Sessions");
+
+        if (!Directory.Exists(sessionsDir))
+            return sessions;
+
+        foreach (var file in Directory.GetFiles(sessionsDir, "*.json"))
+        {
+            try
+            {
+                string json = File.ReadAllText(file);
+                var session = JsonSerializer.Deserialize<Session>(json);
+                if (session != null)
+                {
+                    session.Id = Path.GetFileNameWithoutExtension(file);
+                    sessions.Add(session);
+                }
+            }
+            catch { /* pomijamy uszkodzone sesje */ }
+        }
+
+        return sessions.OrderByDescending(s => s.Date).ToList();
+    }
+
+    public void SaveSession(string campaignId, Session session)
+    {
+        string sessionsDir = Path.Combine(_baseDirectory, campaignId, "Sessions");
+        Directory.CreateDirectory(sessionsDir);
+
+        if (string.IsNullOrEmpty(session.Id))
+            session.Id = Guid.NewGuid().ToString();
+
+        string filePath = Path.Combine(sessionsDir, $"{session.Id}.json");
+
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        string json = JsonSerializer.Serialize(session, options);
+        File.WriteAllText(filePath, json);
+    }
+
+    public void DeleteSession(string campaignId, string sessionId)
+    {
+        if (string.IsNullOrEmpty(sessionId)) return;
+
+        string filePath = Path.Combine(_baseDirectory, campaignId, "Sessions", $"{sessionId}.json");
+
+        if (File.Exists(filePath))
+        {
+            try { File.Delete(filePath); }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Błąd podczas usuwania sesji: {ex.Message}"); }
+        }
+    }
 }

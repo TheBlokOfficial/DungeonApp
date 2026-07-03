@@ -10,8 +10,8 @@
         <!-- Lewy panel - Menu -->
         <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Background="#1E1E1E">
             <StackPanel Margin="20" Spacing="15">
-                <TextBlock Text="DUNGEON" FontSize="28" FontWeight="Bold" Foreground="#D4A017"/>
-                <TextBlock Text="Session Manager" FontSize="18" Foreground="#FFFFFF" Margin="0,0,0,30"/>
+                <TextBlock Text="DUNGEON" FontSize="28" FontWeight="Bold" Foreground="#D4A017" />
+                <TextBlock Text="Session Manager" FontSize="18" Foreground="#FFFFFF" Margin="0,0,0,30" />
 
                 <!-- Przycisk: Nowa Kampania -->
                 <Button Command="{Binding CreateNewCampaignCommand}"
@@ -19,16 +19,16 @@
                         FontSize="16" Padding="15,12" HorizontalAlignment="Stretch">
                     <Button.Styles>
                         <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="#292929"/>
+                            <Setter Property="Background" Value="#292929" />
                         </Style>
                         <Style Selector="Button:pressed /template/ ContentPresenter">
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Background" Value="Transparent" />
                         </Style>
                     </Button.Styles>
-                    
+
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" Foreground="#D4A017"/>
-                        <TextBlock Text="Nowa Kampania" VerticalAlignment="Center"/>
+                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" Foreground="#D4A017" />
+                        <TextBlock Text="Nowa Kampania" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -38,72 +38,98 @@
         <Border Grid.Row="0" Grid.Column="1" Padding="30">
             <StackPanel>
                 <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,25">
-                    <TextBlock Grid.Column="1" Text="Twoje Kampanie" FontSize="26" FontWeight="SemiBold" Foreground="#EEEEEE" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="Twoje Kampanie" FontSize="26" FontWeight="SemiBold"
+                               Foreground="#EEEEEE" HorizontalAlignment="Center" />
 
-                    <Button Grid.Column="2" 
+                    <Button Grid.Column="2"
                             Command="{Binding RefreshCampaignsCommand}"
                             Background="Transparent" BorderThickness="0" CornerRadius="6" Padding="8"
                             HorizontalAlignment="Right" VerticalAlignment="Center"
                             ToolTip.Tip="Odśwież listę kampanii">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#292929"/>
+                                <Setter Property="Background" Value="#292929" />
                             </Style>
                         </Button.Styles>
-                        <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" Foreground="Gray"/>
+                        <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" Foreground="Gray" />
                     </Button>
                 </Grid>
-                <Border BorderThickness="0.5" Background="#292929" Margin="0,0,0,25"></Border>
+                <Border BorderThickness="0.5" Background="#292929" Margin="0,0,0,25" />
 
                 <!-- Lista kampanii -->
                 <ItemsControl ItemsSource="{Binding Campaigns}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#1A1A1A" CornerRadius="8" Margin="0,0,0,12" Padding="20" BorderBrush="#333333" BorderThickness="1">
+                            <Button Classes="campaignCard"
+                                    Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCampaignCommand, ElementName=Root, FallbackValue=null}"
+                                    CommandParameter="{Binding}"
+                                    Background="#1A1A1A" CornerRadius="8" Margin="0,0,0,12" Padding="20"
+                                    BorderThickness="1" HorizontalContentAlignment="Stretch"
+                                    HorizontalAlignment="Stretch">
+
+                                <Button.Styles>
+                                    <Style Selector="Button.campaignCard">
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Style>
+                                    <Style Selector="Button.campaignCard:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#1A1A1A" />
+                                        <Setter Property="BorderBrush" Value="#333333" />
+                                    </Style>
+                                </Button.Styles>
+
                                 <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                                    
+
                                     <!-- Kolumna 0: Wektorowa Ikona Tarczy zamiast miecza z emoji -->
-                                    <PathIcon Grid.Column="0" 
-                                              Data="{StaticResource IconShield}" 
-                                              Width="28" Height="28" 
-                                              Foreground="#D4A017" 
-                                              Margin="0,0,20,0" 
-                                              VerticalAlignment="Center"/>
-                                    
+                                    <PathIcon Grid.Column="0"
+                                              Data="{StaticResource IconShield}"
+                                              Width="28" Height="28"
+                                              Foreground="#D4A017"
+                                              Margin="0,0,20,0"
+                                              VerticalAlignment="Center" />
+
                                     <!-- Kolumna 1: Informacje -->
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold"/>
-                                        <TextBlock Text="{Binding System}" Foreground="#888888" FontSize="14"/>
+                                        <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding System}" Foreground="#888888" FontSize="14" />
                                     </StackPanel>
 
                                     <!-- Kolumna 2: Statystyki sesji -->
-                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0">
-                                        <TextBlock Text="{Binding LastSession, StringFormat='Ostatnia sesja: {0:dd.MM.yyyy}'}" Foreground="#666666" FontSize="13" TextAlignment="Right"/>
-                                        <TextBlock Text="{Binding SessionsCount, StringFormat='Sesji: {0}'}" Foreground="#888888" FontSize="13" TextAlignment="Right"/>
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                                Margin="0,0,20,0">
+                                        <TextBlock
+                                            Text="{Binding LastSession, StringFormat='Ostatnia sesja: {0:dd.MM.yyyy}'}"
+                                            Foreground="#666666" FontSize="13" TextAlignment="Right" />
+                                        <TextBlock Text="{Binding SessionsCount, StringFormat='Sesji: {0}'}"
+                                                   Foreground="#888888" FontSize="13" TextAlignment="Right" />
                                     </StackPanel>
 
                                     <!-- Kolumna 3: Przyciski akcji z ikonami SVG -->
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                        
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8"
+                                                VerticalAlignment="Center">
+
                                         <!-- Przycisk Usuń -->
-                                        <Button Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}" 
-                                                CommandParameter="{Binding}"
-                                                Background="Transparent" BorderThickness="0" CornerRadius="6" Padding="10,8">
+                                        <Button
+                                            Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent" BorderThickness="0" CornerRadius="6"
+                                            Padding="10,8">
                                             <Button.Styles>
                                                 <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                    <Setter Property="Background" Value="#5C1515"/>
-                                                    <Setter Property="Foreground" Value="#FF4D4D"/>
+                                                    <Setter Property="Background" Value="#5C1515" />
+                                                    <Setter Property="Foreground" Value="#FF4D4D" />
                                                 </Style>
                                             </Button.Styles>
                                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                                <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="#FF4D4D"/>
-                                                <TextBlock Text="Usuń" FontSize="13" VerticalAlignment="Center" Foreground="#FF4D4D"/>
+                                                <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14"
+                                                          Foreground="#FF4D4D" />
+                                                <TextBlock Text="Usuń" FontSize="13" VerticalAlignment="Center"
+                                                           Foreground="#FF4D4D" />
                                             </StackPanel>
                                         </Button>
-                                        
+
                                     </StackPanel>
                                 </Grid>
-                            </Border>
+                            </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

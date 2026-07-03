@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="App.axaml" value="DungeonApp.csproj" />
+        <entry key="Views/CampaignDetailView.axaml" value="DungeonApp.csproj" />
         <entry key="Views/CreateCampaignView.axaml" value="DungeonApp.csproj" />
         <entry key="Views/DashboardView.axaml" value="DungeonApp.csproj" />
         <entry key="Views/MainWindow.axaml" value="DungeonApp.csproj" />

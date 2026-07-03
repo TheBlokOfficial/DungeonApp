@@ -248,3 +248,4 @@ E:\Projects\DungeonApp\artifacts\verify-build\runtimes\win-x64\native\libSkiaSha
 E:\Projects\DungeonApp\artifacts\verify-build\runtimes\win-x64\native\libSkiaSharp.pdb
 E:\Projects\DungeonApp\artifacts\verify-build\runtimes\win-x86\native\libSkiaSharp.dll
 E:\Projects\DungeonApp\artifacts\verify-build\runtimes\win-x86\native\libSkiaSharp.pdb
+E:\Projects\DungeonApp\obj\Debug\net10.0\DungeonApp.sourcelink.json
