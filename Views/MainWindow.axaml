@@ -8,7 +8,7 @@
         x:DataType="vm:MainWindowViewModel"
         Name="RootWindow"
         Title="Dungeon App"
-        Width="1100" Height="700" MinWidth="900" MinHeight="600"
+        Width="1200" Height="800" MinWidth="900" MinHeight="600"
         Background="#171717"
         Icon="/Assets/avalonia-logo.ico">
 

@@ -47,7 +47,7 @@
         </Grid>
 
         <!-- PRAWA: Szczegóły postaci (Widoczne tylko po wybraniu) -->
-        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNotNull}}" Background="#1A1A1A" CornerRadius="12" BorderBrush="#292929" BorderThickness="1" Padding="40" VerticalAlignment="Top">
+        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNotNull}}" Background="#1A1A1A" CornerRadius="12" BorderBrush="#292929" BorderThickness="1" Padding="40" VerticalAlignment="Stretch">
             <StackPanel>
                 <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,24">
                     <StackPanel Grid.Column="0">
