@@ -28,7 +28,7 @@
                             <KeyBinding Gesture="Enter" Command="{Binding SaveCampaignNameCommand}"/>
                         </TextBox.KeyBindings>
                     </TextBox>
-                    <Button Classes="accent" Command="{Binding SaveCampaignNameCommand}" Padding="12,6" VerticalAlignment="Center">
+                    <Button Classes="primary" Command="{Binding SaveCampaignNameCommand}" Padding="12,6" VerticalAlignment="Center">
                         <TextBlock Text="Zapisz" FontSize="12"/>
                     </Button>
                 </StackPanel>
@@ -42,7 +42,7 @@
             <StackPanel Spacing="24" MaxWidth="1200" HorizontalAlignment="Stretch">
                 
                 <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
-                <Button Classes="accent" Command="{Binding AddSessionCommand}"
+                <Button Classes="primary" Command="{Binding AddSessionCommand}"
                         IsVisible="{Binding CanAddNewSession}" HorizontalAlignment="Left">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" />
@@ -73,7 +73,7 @@
                                 <TextBlock Text="Zakończ Sesję" FontSize="13"/>
                             </Button>
 
-                            <Button Classes="accent" Command="{Binding OpenActiveSessionCommand}">
+                            <Button Classes="primary" Command="{Binding OpenActiveSessionCommand}">
                                 <TextBlock Text="Prowadź Sesję →" FontSize="14"/>
                             </Button>
                         </StackPanel>

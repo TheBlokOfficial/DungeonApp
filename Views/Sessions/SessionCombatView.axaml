@@ -71,7 +71,7 @@
                         <CheckBox Grid.Column="3" IsChecked="{Binding NewCombatantIsEnemy}" 
                                   Content="Wróg" Foreground="{DynamicResource AccentDanger}" Margin="0,0,12,0" VerticalAlignment="Center"/>
                         
-                        <Button Grid.Column="4" Classes="accent" Command="{Binding AddCombatantCommand}" Padding="16,8">
+                        <Button Grid.Column="4" Classes="primary" Command="{Binding AddCombatantCommand}" Padding="16,8">
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <PathIcon Data="{StaticResource IconAdd}" Width="12" Height="12" />
                                 <TextBlock Text="Dodaj"/>
@@ -132,7 +132,7 @@
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="5" Classes="accent" Command="{Binding NextTurnCommand}" Padding="20,8" Margin="0,0,8,0">
+                <Button Grid.Column="5" Classes="primary" Command="{Binding NextTurnCommand}" Padding="20,8" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                         <TextBlock Text="Następna Tura" FontWeight="Bold"/>
                         <PathIcon Data="{StaticResource IconNext}" Width="16" Height="16" />

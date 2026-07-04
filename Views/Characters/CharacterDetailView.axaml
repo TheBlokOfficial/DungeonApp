@@ -38,7 +38,7 @@
             
             <TextBlock Grid.Column="1" Text="Karta Postaci" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
-            <Button Grid.Column="2" Classes="accent" Command="{Binding SaveCommand}">
+            <Button Grid.Column="2" Classes="primary" Command="{Binding SaveCommand}">
                 <TextBlock Text="Zapisz" />
             </Button>
         </Grid>

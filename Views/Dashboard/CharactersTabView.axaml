@@ -14,7 +14,7 @@
                     <Button Classes="icon" Command="{Binding RefreshCharactersCommand}">
                         <PathIcon Data="{StaticResource IconReload}" Width="16" Height="16" />
                     </Button>
-                    <Button Classes="accent" Command="{Binding CreateNewCharacterCommand}" Padding="8">
+                    <Button Classes="primary" Command="{Binding CreateNewCharacterCommand}" Padding="8">
                         <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" />
                     </Button>
                 </StackPanel>
@@ -66,7 +66,7 @@
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCharacter.ClassAndLevel}" Foreground="{DynamicResource TextPrimary}" FontSize="15" FontWeight="Medium"/>
                 </Grid>
 
-                <Button Classes="accent" Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" HorizontalAlignment="Stretch" Margin="0,40,0,0">
+                <Button Classes="primary" Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" HorizontalAlignment="Stretch" Margin="0,40,0,0">
                     <TextBlock Text="Otwórz pełną Kartę Postaci" FontSize="14" />
                 </Button>
             </StackPanel>

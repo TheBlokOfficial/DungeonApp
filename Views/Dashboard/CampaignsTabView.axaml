@@ -15,7 +15,7 @@
                     <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" />
                 </Button>
                 
-                <Button Classes="accent" Command="{Binding CreateNewCampaignCommand}">
+                <Button Classes="primary" Command="{Binding CreateNewCampaignCommand}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" />
                         <TextBlock Text="Nowa Kampania" />

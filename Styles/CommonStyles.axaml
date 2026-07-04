@@ -19,7 +19,7 @@
     </Style>
 
     <!-- 1. Accent Button (Złoty, Główna akcja) -->
-    <Style Selector="Button.accent">
+    <Style Selector="Button.primary">
         <Setter Property="Background" Value="{DynamicResource AccentGold}" />
         <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -27,7 +27,7 @@
         <Setter Property="Padding" Value="16,8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
-    <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource AccentGoldHover}" />
         <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
     </Style>

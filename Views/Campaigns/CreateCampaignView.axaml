@@ -49,7 +49,7 @@
                             BorderThickness="1" BorderBrush="{DynamicResource BorderSecondary}"
                             HorizontalAlignment="Stretch" Margin="0,0,6,0" />
 
-                    <Button Grid.Column="1" Content="Zapisz" Classes="accent"
+                    <Button Grid.Column="1" Content="Zapisz" Classes="primary"
                             Command="{Binding CreateCommand}"
                             HorizontalAlignment="Stretch" Margin="6,0,0,0" />
                 </Grid>
