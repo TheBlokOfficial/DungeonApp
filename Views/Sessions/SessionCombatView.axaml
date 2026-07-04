@@ -16,14 +16,8 @@
                         <TextBlock Text="DRUŻYNA KAMPANII" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1"/>
                         <TextBlock Text="Kliknij na postać, aby dodać ją do walki" FontSize="12" Foreground="{DynamicResource TextMuted}" Margin="0,2,0,0"/>
                     </StackPanel>
-                    <Button Grid.Column="1" Command="{Binding AddAllPartyToCombatCommand}" 
-                            Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderInput}" 
-                            CornerRadius="6" Padding="12,6">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="{DynamicResource BorderSecondary}"/>
-                            </Style>
-                        </Button.Styles>
+                    <Button Grid.Column="1" Classes="ghost" Command="{Binding AddAllPartyToCombatCommand}" 
+                            BorderThickness="1" BorderBrush="{DynamicResource BorderInput}" Padding="12,6">
                         <TextBlock Text="Dodaj wszystkich" FontSize="12" Foreground="{DynamicResource AccentPrimary}"/>
                     </Button>
                 </Grid>
@@ -37,16 +31,9 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding ((vm:SessionDetailViewModel)DataContext).AddPartyMemberToCombatCommand, ElementName=Root}"
+                            <Button Classes="card" Command="{Binding ((vm:SessionDetailViewModel)DataContext).AddPartyMemberToCombatCommand, ElementName=Root}"
                                     CommandParameter="{Binding}"
-                                    Background="{DynamicResource InputBackground}" CornerRadius="8" Padding="12,10" Margin="0,0,10,0"
-                                    BorderThickness="1" BorderBrush="{DynamicResource BorderInput}">
-                                <Button.Styles>
-                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                        <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
-                                    </Style>
-                                </Button.Styles>
+                                    Padding="12,10" Margin="0,0,10,0">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <Border Width="32" Height="32" CornerRadius="16" Background="{DynamicResource AccentPrimaryDark}">
                                         <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="{DynamicResource AccentPrimary}"/>
@@ -84,16 +71,9 @@
                         <CheckBox Grid.Column="3" IsChecked="{Binding NewCombatantIsEnemy}" 
                                   Content="Wróg" Foreground="{DynamicResource AccentDanger}" Margin="0,0,12,0" VerticalAlignment="Center"/>
                         
-                        <Button Grid.Column="4" Command="{Binding AddCombatantCommand}" 
-                                Background="{DynamicResource AccentGold}" Foreground="{DynamicResource AppBackground}" FontWeight="Bold" 
-                                CornerRadius="6" Padding="16,8">
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                    <Setter Property="Background" Value="{DynamicResource AccentGoldHover}"/>
-                                </Style>
-                            </Button.Styles>
+                        <Button Grid.Column="4" Classes="accent" Command="{Binding AddCombatantCommand}" Padding="16,8">
                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                <PathIcon Data="{StaticResource IconAdd}" Width="12" Height="12" Foreground="{DynamicResource AppBackground}"/>
+                                <PathIcon Data="{StaticResource IconAdd}" Width="12" Height="12" />
                                 <TextBlock Text="Dodaj"/>
                             </StackPanel>
                         </Button>
@@ -128,73 +108,39 @@
                 <Border Grid.Column="2"/>
                 
                 <!-- Przyciski akcji -->
-                <Button Grid.Column="3" Command="{Binding StartCombatCommand}" 
-                        IsVisible="{Binding !IsCombatActive}"
-                        Background="{DynamicResource SuccessBackground}" Foreground="{DynamicResource TextPrimary}" FontWeight="Bold"
-                        CornerRadius="6" Padding="16,8" Margin="0,0,8,0">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource SuccessHoverBackground}"/>
-                        </Style>
-                    </Button.Styles>
+                <Button Grid.Column="3" Classes="success" Command="{Binding StartCombatCommand}" 
+                        IsVisible="{Binding !IsCombatActive}" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconPlay}" Width="14" Height="14" Foreground="{DynamicResource TextPrimary}"/>
+                        <PathIcon Data="{StaticResource IconPlay}" Width="14" Height="14" />
                         <TextBlock Text="Rozpocznij Walkę"/>
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="3" Command="{Binding StopCombatCommand}" 
-                        IsVisible="{Binding IsCombatActive}"
-                        Background="{DynamicResource DangerHoverBackground}" Foreground="{DynamicResource TextPrimary}"
-                        CornerRadius="6" Padding="16,8" Margin="0,0,8,0">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource AccentDanger}"/>
-                        </Style>
-                    </Button.Styles>
+                <Button Grid.Column="3" Classes="danger" Command="{Binding StopCombatCommand}" 
+                        IsVisible="{Binding IsCombatActive}" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconStop}" Width="14" Height="14" Foreground="{DynamicResource TextPrimary}"/>
+                        <PathIcon Data="{StaticResource IconStop}" Width="14" Height="14" />
                         <TextBlock Text="Zakończ Walkę"/>
                     </StackPanel>
                 </Button>
                 
-                <Button Grid.Column="4" Command="{Binding SortInitiativeCommand}" 
-                        Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource BorderInput}" 
-                        Padding="12,8" CornerRadius="6" Margin="0,0,8,0">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource BorderSecondary}"/>
-                        </Style>
-                    </Button.Styles>
+                <Button Grid.Column="4" Classes="ghost" Command="{Binding SortInitiativeCommand}" 
+                        BorderThickness="1" BorderBrush="{DynamicResource BorderInput}" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
                         <PathIcon Data="{StaticResource IconSort}" Width="14" Height="14" Foreground="{DynamicResource TextMuted}"/>
                         <TextBlock Text="Sortuj" Foreground="{DynamicResource TextMuted}" FontSize="12"/>
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="5" Command="{Binding NextTurnCommand}" 
-                        Background="{DynamicResource AccentGold}" Foreground="{DynamicResource AppBackground}" FontWeight="Bold"
-                        CornerRadius="6" Padding="20,8" Margin="0,0,8,0">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource AccentGoldHover}"/>
-                        </Style>
-                    </Button.Styles>
+                <Button Grid.Column="5" Classes="accent" Command="{Binding NextTurnCommand}" Padding="20,8" Margin="0,0,8,0">
                     <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                         <TextBlock Text="Następna Tura" FontWeight="Bold"/>
-                        <PathIcon Data="{StaticResource IconNext}" Width="16" Height="16" Foreground="{DynamicResource AppBackground}"/>
+                        <PathIcon Data="{StaticResource IconNext}" Width="16" Height="16" />
                     </StackPanel>
                 </Button>
 
-                <Button Grid.Column="6" Command="{Binding ClearAllCombatantsCommand}" 
-                        Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource DangerHoverBackground}"
-                        CornerRadius="6" Padding="12,8">
-                    <Button.Styles>
-                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                            <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}"/>
-                        </Style>
-                    </Button.Styles>
-                    <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}"/>
+                <Button Grid.Column="6" Classes="dangerGhost" Command="{Binding ClearAllCombatantsCommand}" BorderThickness="1">
+                    <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" />
                 </Button>
             </Grid>
         </Border>
@@ -292,17 +238,11 @@
                                     </Border>
                                     
                                     <!-- Przycisk usunięcia -->
-                                    <Button Grid.Column="7" 
+                                    <Button Grid.Column="7" Classes="iconDanger"
                                             Command="{Binding ((vm:SessionDetailViewModel)DataContext).RemoveCombatantCommand, ElementName=Root}" 
                                             CommandParameter="{Binding}" 
-                                            Background="Transparent" Padding="8" VerticalAlignment="Center"
-                                            CornerRadius="6">
-                                        <Button.Styles>
-                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}"/>
-                                            </Style>
-                                        </Button.Styles>
-                                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}"/>
+                                            VerticalAlignment="Center">
+                                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" />
                                     </Button>
                                     
                                 </Grid>

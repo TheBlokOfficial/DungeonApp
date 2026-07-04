@@ -11,13 +11,11 @@
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,24">
                 <TextBlock Grid.Column="0" Text="Postacie" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-                    <Button Command="{Binding RefreshCharactersCommand}" Background="Transparent" Padding="8" CornerRadius="6">
-                        <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource BorderSecondary}" /></Style></Button.Styles>
-                        <PathIcon Data="{StaticResource IconReload}" Width="16" Height="16" Foreground="{DynamicResource TextMuted}" />
+                    <Button Classes="icon" Command="{Binding RefreshCharactersCommand}">
+                        <PathIcon Data="{StaticResource IconReload}" Width="16" Height="16" />
                     </Button>
-                    <Button Command="{Binding CreateNewCharacterCommand}" Background="{DynamicResource AccentGold}" CornerRadius="6" Padding="8">
-                        <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource AccentGoldHover}" /></Style></Button.Styles>
-                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" Foreground="{DynamicResource AppBackground}" />
+                    <Button Classes="accent" Command="{Binding CreateNewCharacterCommand}" Padding="8">
+                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" />
                     </Button>
                 </StackPanel>
             </Grid>
@@ -26,15 +24,8 @@
                 <ItemsControl ItemsSource="{Binding Characters}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding ((vm:MainWindowViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" 
-                                    CommandParameter="{Binding}" Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Margin="0,0,0,12" Padding="16" BorderThickness="1" HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <Button.Styles>
-                                    <Style Selector="Button"><Setter Property="BorderBrush" Value="{DynamicResource BorderSecondary}" /></Style>
-                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                        <Setter Property="Background" Value="{DynamicResource CardHoverBackground}" />
-                                        <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}" />
-                                    </Style>
-                                </Button.Styles>
+                            <Button Classes="card" Command="{Binding ((vm:MainWindowViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" 
+                                    CommandParameter="{Binding}" Margin="0,0,0,12">
                                 <StackPanel>
                                     <TextBlock Text="{Binding CharacterName}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
                                     <TextBlock Text="{Binding ClassAndLevel}" FontSize="12" Foreground="{DynamicResource TextMuted}" Margin="0,4,0,0"/>
@@ -57,11 +48,10 @@
                             <TextBlock Text="{Binding SelectedCharacter.PlayerName}" FontSize="14" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
                         </StackPanel>
                     </StackPanel>
-                    <Button Grid.Column="1" Command="{Binding DeleteCharacterCommand}" CommandParameter="{Binding SelectedCharacter}" Background="Transparent" BorderThickness="1" BorderBrush="{DynamicResource DangerHoverBackground}" CornerRadius="6" Padding="12,8" VerticalAlignment="Top">
-                        <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" /></Style></Button.Styles>
+                    <Button Grid.Column="1" Classes="dangerGhost" Command="{Binding DeleteCharacterCommand}" CommandParameter="{Binding SelectedCharacter}" VerticalAlignment="Top">
                         <StackPanel Orientation="Horizontal" Spacing="6">
-                            <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}"/>
-                            <TextBlock Text="Usuń" Foreground="{DynamicResource AccentDanger}" FontSize="13"/>
+                            <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" />
+                            <TextBlock Text="Usuń" FontSize="13"/>
                         </StackPanel>
                     </Button>
                 </Grid>
@@ -76,9 +66,8 @@
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCharacter.ClassAndLevel}" Foreground="{DynamicResource TextPrimary}" FontSize="15" FontWeight="Medium"/>
                 </Grid>
 
-                <Button Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" Background="{DynamicResource AccentGold}" Foreground="{DynamicResource AppBackground}" CornerRadius="6" Padding="14,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,40,0,0">
-                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource AccentGoldHover}" /></Style></Button.Styles>
-                    <TextBlock Text="Otwórz pełną Kartę Postaci" FontSize="14" FontWeight="Bold"/>
+                <Button Classes="accent" Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" HorizontalAlignment="Stretch" Margin="0,40,0,0">
+                    <TextBlock Text="Otwórz pełną Kartę Postaci" FontSize="14" />
                 </Button>
             </StackPanel>
         </Border>

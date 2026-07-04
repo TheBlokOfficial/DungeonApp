@@ -11,15 +11,13 @@
             <TextBlock Grid.Column="0" Text="Twoje Kampanie" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" />
             
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                <Button Command="{Binding RefreshCampaignsCommand}" Background="Transparent" BorderThickness="0" Padding="10" ToolTip.Tip="Odśwież listę">
-                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource BorderSecondary}" /></Style></Button.Styles>
-                    <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" Foreground="{DynamicResource TextMuted}" />
+                <Button Classes="icon" Command="{Binding RefreshCampaignsCommand}" ToolTip.Tip="Odśwież listę">
+                    <PathIcon Data="{StaticResource IconReload}" Width="18" Height="18" />
                 </Button>
                 
-                <Button Command="{Binding CreateNewCampaignCommand}" Background="{DynamicResource AccentGold}" Foreground="{DynamicResource AppBackground}" FontWeight="Bold" CornerRadius="6" Padding="20,12">
-                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource AccentGoldHover}" /></Style></Button.Styles>
+                <Button Classes="accent" Command="{Binding CreateNewCampaignCommand}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" Foreground="{DynamicResource AppBackground}" />
+                        <PathIcon Data="{StaticResource IconAdd}" Width="14" Height="14" />
                         <TextBlock Text="Nowa Kampania" />
                     </StackPanel>
                 </Button>
@@ -40,20 +38,11 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <!-- KROK 2: Nadanie kafelkowi stałych wymiarów i marginesu z prawej/dołu -->
-                    <Button Classes="campaignCard"
+                    <Button Classes="card"
                             Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCampaignCommand, ElementName=Root, FallbackValue=null}"
                             CommandParameter="{Binding}"
-                            Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" 
-                            Margin="0,0,16,16" Padding="16"
-                            Width="320" Height="145"
-                            BorderThickness="1">
-                        <Button.Styles>
-                            <Style Selector="Button.campaignCard"><Setter Property="BorderBrush" Value="{DynamicResource BorderSecondary}" /></Style>
-                            <Style Selector="Button.campaignCard:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="{DynamicResource CardHoverBackground}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource BorderHover}" />
-                            </Style>
-                        </Button.Styles>
+                            Margin="0,0,16,16"
+                            Width="320" Height="145">
                         
                         <!-- KROK 3: Nowy, kompaktowy układ wewnątrz kafelka -->
                         <Grid RowDefinitions="Auto, *, Auto">
@@ -72,10 +61,10 @@
                                 </StackPanel>
                                 
                                 <!-- Przycisk Usuń (w prawym górnym rogu kafelka) -->
-                                <Button Grid.Column="3" Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
-                                        CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" CornerRadius="6" Padding="8" VerticalAlignment="Top">
-                                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" /></Style></Button.Styles>
-                                    <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}" />
+                                <Button Grid.Column="3" Classes="iconDanger"
+                                        Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
+                                        CommandParameter="{Binding}" VerticalAlignment="Top">
+                                    <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" />
                                 </Button>
                             </Grid>
                             

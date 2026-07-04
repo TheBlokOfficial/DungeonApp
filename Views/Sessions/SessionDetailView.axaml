@@ -11,17 +11,10 @@
         <!-- NAGŁÓWEK WIDOKU SESJI -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,24">
             <!-- Przycisk powrotu -->
-            <Button Grid.Column="0" Command="{Binding BackCommand}" 
-                    Background="Transparent" BorderThickness="0" Padding="8,4" Margin="0,0,20,0"
-                    Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center">
-                <Button.Styles>
-                    <Style Selector="Button:pointerover /template/ ContentPresenter">
-                        <Setter Property="Background" Value="{DynamicResource BorderSecondary}"/>
-                    </Style>
-                </Button.Styles>
+            <Button Grid.Column="0" Classes="ghost" Command="{Binding BackCommand}" Margin="0,0,20,0" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="←" FontSize="16" />
-                    <TextBlock Text="Wróć do kampanii" VerticalAlignment="Center" />
+                    <TextBlock Text="←" FontSize="16" Foreground="{DynamicResource TextMuted}" />
+                    <TextBlock Text="Wróć do kampanii" VerticalAlignment="Center" Foreground="{DynamicResource TextMuted}" />
                 </StackPanel>
             </Button>
 

@@ -6,5 +6,145 @@
         <CornerRadius x:Key="InputBorderRadius">6</CornerRadius>
     </Styles.Resources>
 
-    <!-- Tutaj w przyszłości można dodać style komponentów, np. dla Button czy Border -->
+    <!-- ==================== BUTTON STYLES ==================== -->
+    
+    <!-- 0. Global Button Transitions (Płynne przejścia dla WSZYSTKICH przycisków) -->
+    <Style Selector="Button">
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- 1. Accent Button (Złoty, Główna akcja) -->
+    <Style Selector="Button.accent">
+        <Setter Property="Background" Value="{DynamicResource AccentGold}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.accent:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentGoldHover}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
+    </Style>
+
+    <!-- 2. Ghost Button (Poboczny, z subtelnym tłem na hover) -->
+    <Style Selector="Button.ghost">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
+    </Style>
+
+    <!-- 2.5 Secondary Button (Wypełniony szarym tłem) -->
+    <Style Selector="Button.secondary">
+        <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource HoverGrip}" />
+    </Style>
+
+    <!-- 3. Danger Ghost Button (Poboczny, niszczący) -->
+    <Style Selector="Button.dangerGhost">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentDanger}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.dangerGhost:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+    
+    <!-- Danger Solid Button -->
+    <Style Selector="Button.danger">
+        <Setter Property="Background" Value="{DynamicResource AccentDanger}" />
+        <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <!-- 4. Success Button -->
+    <Style Selector="Button.success">
+        <Setter Property="Background" Value="{DynamicResource SuccessBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.success:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SuccessHoverBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <!-- 5. Icon Button (Mały, przezroczysty, ikona w środku) -->
+    <Style Selector="Button.icon">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource HoverGrip}" />
+    </Style>
+    <Style Selector="Button.icon PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+    </Style>
+    <Style Selector="Button.icon:pointerover PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+    
+    <!-- 5.5 Icon Danger Button -->
+    <Style Selector="Button.iconDanger">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.iconDanger:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+    </Style>
+    <Style Selector="Button.iconDanger PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource AccentDanger}" />
+    </Style>
+    <Style Selector="Button.iconDanger:pointerover PathIcon">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <!-- 6. Card Button (Klikalna karta) -->
+    <Style Selector="Button.card">
+        <Setter Property="Background" Value="{DynamicResource CardBackground}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource CardCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource CardPadding}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderPrimary}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+    <Style Selector="Button.card:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource CardHoverBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}" />
+    </Style>
 </Styles>
