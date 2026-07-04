@@ -1,0 +1,36 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- TŁA (BACKGROUNDS) -->
+    <SolidColorBrush x:Key="AppBackground">#171717</SolidColorBrush>
+    <SolidColorBrush x:Key="SurfaceBackground">#111111</SolidColorBrush>
+    <SolidColorBrush x:Key="CardBackground">#1A1A1A</SolidColorBrush>
+    <SolidColorBrush x:Key="InputBackground">#232323</SolidColorBrush>
+    
+    <!-- OBRAMOWANIA (BORDERS) -->
+    <SolidColorBrush x:Key="BorderPrimary">#222222</SolidColorBrush>
+    <SolidColorBrush x:Key="BorderSecondary">#292929</SolidColorBrush>
+    <SolidColorBrush x:Key="BorderInput">#333333</SolidColorBrush>
+    
+    <!-- AKCENTY (ACCENTS) -->
+    <SolidColorBrush x:Key="AccentPrimary">#4DB8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentPrimaryDark">#1A2A3A</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentDanger">#FF4D4D</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentDangerDark">#3A1A1A</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentGold">#D4A017</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentGoldHover">#E5B027</SolidColorBrush>
+    <SolidColorBrush x:Key="SuccessBackground">#2D5A27</SolidColorBrush>
+    <SolidColorBrush x:Key="SuccessHoverBackground">#3A7A32</SolidColorBrush>
+    
+    <!-- STANY (STATES) -->
+    <SolidColorBrush x:Key="CardHoverBackground">#1E1E1E</SolidColorBrush>
+    <SolidColorBrush x:Key="DangerHoverBackground">#5C1515</SolidColorBrush>
+    <SolidColorBrush x:Key="BorderHover">#444444</SolidColorBrush>
+    
+    <!-- TEKSTY (TEXTS) -->
+    <SolidColorBrush x:Key="TextPrimary">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="TextSecondary">#EEEEEE</SolidColorBrush>
+    <SolidColorBrush x:Key="TextMuted">#888888</SolidColorBrush>
+    
+    <!-- INNE (MISC) -->
+    <SolidColorBrush x:Key="HoverGrip">#2A2A2A</SolidColorBrush>
+</ResourceDictionary>

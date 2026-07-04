@@ -13,10 +13,10 @@
             <!-- Przycisk powrotu -->
             <Button Grid.Column="0" Command="{Binding BackCommand}" 
                     Background="Transparent" BorderThickness="0" Padding="8,4" Margin="0,0,20,0"
-                    Foreground="#888888" VerticalAlignment="Center">
+                    Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center">
                 <Button.Styles>
                     <Style Selector="Button:pointerover /template/ ContentPresenter">
-                        <Setter Property="Background" Value="#292929"/>
+                        <Setter Property="Background" Value="{DynamicResource BorderSecondary}"/>
                     </Style>
                 </Button.Styles>
                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -27,9 +27,9 @@
 
             <!-- Tytuł sesji -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Text="{Binding Campaign.Name}" FontSize="26" FontWeight="Bold" Foreground="#888888" Margin="0,0,12,0"/>
-                <TextBlock Text="/" FontSize="26" Foreground="#555555" Margin="0,0,12,0"/>
-                <TextBlock Text="{Binding Session.Title}" FontSize="26" FontWeight="Bold" Foreground="#FFFFFF" />
+                <TextBlock Text="{Binding Campaign.Name}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="0,0,12,0"/>
+                <TextBlock Text="/" FontSize="26" Foreground="{DynamicResource BorderSecondary}" Margin="0,0,12,0"/>
+                <TextBlock Text="{Binding Session.Title}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
             </StackPanel>
         </Grid>
 
@@ -37,37 +37,37 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" Margin="0,0,0,24">
             <!-- Przełącznik do Notatek -->
             <ToggleButton x:Name="NavNotesToggle" Click="NavToggle_Click"
-                          Background="#232323" BorderBrush="#333333" BorderThickness="1" CornerRadius="8" Padding="16,8">
+                          Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderInput}" BorderThickness="1" CornerRadius="8" Padding="16,8">
                 <ToggleButton.Styles>
                     <Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
-                        <Setter Property="Background" Value="#2A2A2A"/>
+                        <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
                     </Style>
                     <Style Selector="ToggleButton:checked /template/ ContentPresenter">
-                        <Setter Property="Background" Value="#1A2A3A"/>
-                        <Setter Property="BorderBrush" Value="#4DB8FF"/>
+                        <Setter Property="Background" Value="{DynamicResource AccentPrimaryDark}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
                     </Style>
                 </ToggleButton.Styles>
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <PathIcon Data="{StaticResource IconEdit}" Width="14" Height="14" Foreground="#4DB8FF"/>
-                    <TextBlock Text="Notatki Sesji" FontSize="13" Foreground="#DDDDDD" FontWeight="SemiBold"/>
+                    <PathIcon Data="{StaticResource IconEdit}" Width="14" Height="14" Foreground="{DynamicResource AccentPrimary}"/>
+                    <TextBlock Text="Notatki Sesji" FontSize="13" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
                 </StackPanel>
             </ToggleButton>
 
             <!-- Przełącznik do Walki -->
             <ToggleButton x:Name="NavCombatToggle" Click="NavToggle_Click"
-                          Background="#232323" BorderBrush="#333333" BorderThickness="1" CornerRadius="8" Padding="16,8">
+                          Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderInput}" BorderThickness="1" CornerRadius="8" Padding="16,8">
                 <ToggleButton.Styles>
                     <Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
-                        <Setter Property="Background" Value="#2A2A2A"/>
+                        <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
                     </Style>
                     <Style Selector="ToggleButton:checked /template/ ContentPresenter">
-                        <Setter Property="Background" Value="#3A1A1A"/>
-                        <Setter Property="BorderBrush" Value="#FF4D4D"/>
+                        <Setter Property="Background" Value="{DynamicResource AccentDangerDark}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentDanger}"/>
                     </Style>
                 </ToggleButton.Styles>
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <PathIcon Data="{StaticResource IconSwords}" Width="14" Height="14" Foreground="#FF4D4D"/>
-                    <TextBlock Text="Tracker Walki" FontSize="13" Foreground="#DDDDDD" FontWeight="SemiBold"/>
+                    <PathIcon Data="{StaticResource IconSwords}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}"/>
+                    <TextBlock Text="Tracker Walki" FontSize="13" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
                 </StackPanel>
             </ToggleButton>
         </StackPanel>
@@ -76,11 +76,11 @@
         <Grid Grid.Row="2" x:Name="ContentGrid" ColumnDefinitions="*, 16, *">
             
             <!-- KOLUMNA NOTATEK -->
-            <Border x:Name="NotesPanel" Grid.Column="0" HorizontalAlignment="Left" Background="#111111" CornerRadius="12" Padding="20" BorderBrush="#222222" BorderThickness="1" MinWidth="600" MaxWidth="1200">
+            <Border x:Name="NotesPanel" Grid.Column="0" HorizontalAlignment="Stretch" Background="{DynamicResource SurfaceBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" BorderBrush="{DynamicResource BorderPrimary}" BorderThickness="1" MinWidth="600">
                 <Grid RowDefinitions="Auto, *">
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                        <PathIcon Data="{StaticResource IconEdit}" Width="16" Height="16" Foreground="#4DB8FF"/>
-                        <TextBlock Text="NOTATKI SESJI" FontSize="12" FontWeight="Bold" Foreground="#4DB8FF" LetterSpacing="1"/>
+                        <PathIcon Data="{StaticResource IconEdit}" Width="16" Height="16" Foreground="{DynamicResource AccentPrimary}"/>
+                        <TextBlock Text="NOTATKI SESJI" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1"/>
                     </StackPanel>
                     
                     <sessions:SessionNotesView Grid.Row="1" />
@@ -92,18 +92,18 @@
                 <GridSplitter.Template>
                     <ControlTemplate>
                         <Border Background="Transparent" Width="16">
-                            <Border Background="#2A2A2A" Width="4" Height="40" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Border Background="{DynamicResource HoverGrip}" Width="4" Height="40" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </GridSplitter.Template>
             </GridSplitter>
 
             <!-- KOLUMNA WALKI -->
-            <Border x:Name="CombatPanel" Grid.Column="2" HorizontalAlignment="Left" Background="#111111" CornerRadius="12" Padding="20" BorderBrush="#222222" BorderThickness="1" MinWidth="600" MaxWidth="1200">
+            <Border x:Name="CombatPanel" Grid.Column="2" HorizontalAlignment="Stretch" Background="{DynamicResource SurfaceBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" BorderBrush="{DynamicResource BorderPrimary}" BorderThickness="1" MinWidth="600">
                 <Grid RowDefinitions="Auto, *">
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="#FF4D4D"/>
-                        <TextBlock Text="TRACKER WALKI" FontSize="12" FontWeight="Bold" Foreground="#FF4D4D" LetterSpacing="1"/>
+                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="{DynamicResource AccentDanger}"/>
+                        <TextBlock Text="TRACKER WALKI" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" LetterSpacing="1"/>
                     </StackPanel>
 
                     <sessions:SessionCombatView Grid.Row="1" />

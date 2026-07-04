@@ -9,7 +9,7 @@
         Name="RootWindow"
         Title="Dungeon App"
         Width="1200" Height="800" MinWidth="900" MinHeight="600"
-        Background="#171717"
+        Background="{DynamicResource AppBackground}"
         Focusable="True"
         Icon="/Assets/avalonia-logo.ico">
 

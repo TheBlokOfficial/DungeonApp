@@ -55,7 +55,7 @@
 
         <!-- Główna zawartość -->
         <ScrollViewer Grid.Row="1">
-            <StackPanel Spacing="24">
+            <StackPanel Spacing="24" MaxWidth="1200" HorizontalAlignment="Stretch">
                 
                 <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
                 <Button Command="{Binding AddSessionCommand}"
