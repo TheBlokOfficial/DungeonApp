@@ -1,0 +1,317 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels"
+             x:Class="DungeonApp.Views.Sessions.SessionCombatView"
+             x:DataType="vm:SessionDetailViewModel"
+             x:Name="Root">
+
+    <Grid RowDefinitions="Auto, Auto, *" Margin="0,8,0,0">
+
+        <!-- ===== SEKCJA 1: SZYBKIE DODAWANIE DRUŻYNY ===== -->
+        <Border Grid.Row="0" IsVisible="{Binding IsEditable}" Background="#1A1A1A" CornerRadius="10" Padding="20" Margin="0,0,0,16" BorderBrush="#292929" BorderThickness="1">
+            <StackPanel Spacing="16">
+                <!-- Nagłówek sekcji drużyny -->
+                <Grid ColumnDefinitions="*, Auto">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="DRUŻYNA KAMPANII" FontSize="11" FontWeight="Bold" Foreground="#4DB8FF" LetterSpacing="1"/>
+                        <TextBlock Text="Kliknij na postać, aby dodać ją do walki" FontSize="12" Foreground="#555555" Margin="0,2,0,0"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Command="{Binding AddAllPartyToCombatCommand}" 
+                            Background="Transparent" BorderThickness="1" BorderBrush="#333333" 
+                            CornerRadius="6" Padding="12,6">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#292929"/>
+                            </Style>
+                        </Button.Styles>
+                        <TextBlock Text="Dodaj wszystkich" FontSize="12" Foreground="#4DB8FF"/>
+                    </Button>
+                </Grid>
+
+                <!-- Lista postaci z drużyny (karty klikalne) -->
+                <ItemsControl ItemsSource="{Binding PartyCharacters}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding ((vm:SessionDetailViewModel)DataContext).AddPartyMemberToCombatCommand, ElementName=Root}"
+                                    CommandParameter="{Binding}"
+                                    Background="#232323" CornerRadius="8" Padding="12,10" Margin="0,0,10,0"
+                                    BorderThickness="1" BorderBrush="#333333">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#2A2A2A"/>
+                                        <Setter Property="BorderBrush" Value="#4DB8FF"/>
+                                    </Style>
+                                </Button.Styles>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Border Width="32" Height="32" CornerRadius="16" Background="#1A3A5C">
+                                        <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="#4DB8FF"/>
+                                    </Border>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CharacterName}" FontSize="13" FontWeight="Bold" Foreground="#EEEEEE"/>
+                                        <TextBlock Text="{Binding ClassAndLevel}" FontSize="11" Foreground="#666666"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Separator -->
+                <Border Height="1" Background="#292929"/>
+
+                <!-- Formularz ręcznego dodawania (dla potworów/NPC) -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="DODAJ RĘCZNIE (POTWORY / NPC)" FontSize="11" FontWeight="Bold" Foreground="#FF6B6B" LetterSpacing="1"/>
+                    <Grid ColumnDefinitions="*, 100, 100, Auto, Auto">
+                        <TextBox Grid.Column="0" Text="{Binding NewCombatantName}" 
+                                 PlaceholderText="Nazwa potwora/NPC..." 
+                                 Margin="0,0,8,0"
+                                 Background="#171717" BorderBrush="#292929" CornerRadius="6" Padding="10,8"/>
+                        <TextBox Grid.Column="1" Text="{Binding NewCombatantInitiative}" 
+                                 PlaceholderText="Inicjatywa" 
+                                 Margin="0,0,8,0"
+                                 Background="#171717" BorderBrush="#292929" CornerRadius="6" Padding="10,8" TextAlignment="Center"/>
+                        <TextBox Grid.Column="2" Text="{Binding NewCombatantHp}" 
+                                 PlaceholderText="Max HP" 
+                                 Margin="0,0,8,0"
+                                 Background="#171717" BorderBrush="#292929" CornerRadius="6" Padding="10,8" TextAlignment="Center"/>
+                        
+                        <CheckBox Grid.Column="3" IsChecked="{Binding NewCombatantIsEnemy}" 
+                                  Content="Wróg" Foreground="#FF6B6B" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        
+                        <Button Grid.Column="4" Command="{Binding AddCombatantCommand}" 
+                                Background="#D4A017" Foreground="#171717" FontWeight="Bold" 
+                                CornerRadius="6" Padding="16,8">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#E5B027"/>
+                                </Style>
+                            </Button.Styles>
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Data="{StaticResource IconAdd}" Width="12" Height="12" Foreground="#171717"/>
+                                <TextBlock Text="Dodaj"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- ===== SEKCJA 2: PASEK KONTROLNY WALKI ===== -->
+        <Border Grid.Row="1" Background="#1E1E1E" CornerRadius="8" Padding="16,12" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto, Auto, Auto">
+                
+                <!-- Informacja o rundzie -->
+                <Border Grid.Column="0" Background="#292929" CornerRadius="6" Padding="14,8" Margin="0,0,16,0">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="RUNDA" FontSize="11" FontWeight="Bold" Foreground="#888888" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding CurrentRound}" FontSize="18" FontWeight="Bold" Foreground="#D4A017" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status walki -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="0,0,16,0" IsVisible="{Binding !IsCombatActive}">
+                    <PathIcon Data="{StaticResource IconPause}" Width="14" Height="14" Foreground="#666666"/>
+                    <TextBlock Text="WALKA NIEAKTYWNA" Foreground="#666666" FontSize="12" FontWeight="SemiBold"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="0,0,16,0" IsVisible="{Binding IsCombatActive}">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="14" Height="14" Foreground="#FF4D4D"/>
+                    <TextBlock Text="WALKA TRWA" Foreground="#FF4D4D" FontSize="12" FontWeight="Bold"/>
+                </StackPanel>
+
+                <!-- Spacer -->
+                <Border Grid.Column="2"/>
+                
+                <!-- Przyciski akcji -->
+                <Button Grid.Column="3" Command="{Binding StartCombatCommand}" 
+                        IsVisible="{Binding !IsCombatActive}"
+                        Background="#2D5A27" Foreground="#FFFFFF" FontWeight="Bold"
+                        CornerRadius="6" Padding="16,8" Margin="0,0,8,0">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#3A7A32"/>
+                        </Style>
+                    </Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconPlay}" Width="14" Height="14" Foreground="#FFFFFF"/>
+                        <TextBlock Text="Rozpocznij Walkę"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="3" Command="{Binding StopCombatCommand}" 
+                        IsVisible="{Binding IsCombatActive}"
+                        Background="#5C1515" Foreground="#FFFFFF"
+                        CornerRadius="6" Padding="16,8" Margin="0,0,8,0">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#7A2020"/>
+                        </Style>
+                    </Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconStop}" Width="14" Height="14" Foreground="#FFFFFF"/>
+                        <TextBlock Text="Zakończ Walkę"/>
+                    </StackPanel>
+                </Button>
+                
+                <Button Grid.Column="4" Command="{Binding SortInitiativeCommand}" 
+                        Background="Transparent" BorderThickness="1" BorderBrush="#333333" 
+                        Padding="12,8" CornerRadius="6" Margin="0,0,8,0">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#292929"/>
+                        </Style>
+                    </Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                        <PathIcon Data="{StaticResource IconSort}" Width="14" Height="14" Foreground="#A3A3A3"/>
+                        <TextBlock Text="Sortuj" Foreground="#A3A3A3" FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="5" Command="{Binding NextTurnCommand}" 
+                        Background="#D4A017" Foreground="#171717" FontWeight="Bold"
+                        CornerRadius="6" Padding="20,8" Margin="0,0,8,0">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#E5B027"/>
+                        </Style>
+                    </Button.Styles>
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <TextBlock Text="Następna Tura" FontWeight="Bold"/>
+                        <PathIcon Data="{StaticResource IconNext}" Width="16" Height="16" Foreground="#171717"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="6" Command="{Binding ClearAllCombatantsCommand}" 
+                        Background="Transparent" BorderThickness="1" BorderBrush="#5C1515"
+                        CornerRadius="6" Padding="12,8">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="#5C1515"/>
+                        </Style>
+                    </Button.Styles>
+                    <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="#FF4D4D"/>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <!-- ===== SEKCJA 3: LISTA UCZESTNIKÓW WALKI ===== -->
+        <ScrollViewer Grid.Row="2">
+            <StackPanel>
+                <!-- Pusty stan -->
+                <Border IsVisible="{Binding !CombatantsList.Count}" 
+                        Background="#1A1A1A" CornerRadius="12" Padding="40" 
+                        HorizontalAlignment="Stretch">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                        <PathIcon Data="{StaticResource IconSwords}" Width="48" Height="48" HorizontalAlignment="Center" Foreground="#333333"/>
+                        <TextBlock Text="Brak uczestników walki" FontSize="16" Foreground="#555555" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Dodaj postaci z drużyny lub ręcznie powyżej" FontSize="13" Foreground="#444444" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lista walczących -->
+                <ItemsControl ItemsSource="{Binding CombatantsList}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!-- Wiersz walczącego -->
+                            <Border CornerRadius="10" Padding="16,14" Margin="0,0,0,8" BorderThickness="2">
+                                <Border.Styles>
+                                    <!-- Domyślnie: ciemne tło -->
+                                    <Style Selector="Border">
+                                        <Setter Property="Background" Value="#1A1A1A"/>
+                                        <Setter Property="BorderBrush" Value="#292929"/>
+                                    </Style>
+                                </Border.Styles>
+                                
+                                <Grid ColumnDefinitions="44, 12, *, Auto, 16, Auto, 16, Auto">
+                                    
+                                    <!-- Numer tury / Ikona aktywnej tury -->
+                                    <Border Grid.Column="0" Width="40" Height="40" CornerRadius="20" 
+                                            VerticalAlignment="Center">
+                                        <Border.Styles>
+                                            <Style Selector="Border">
+                                                <Setter Property="Background" Value="#232323"/>
+                                            </Style>
+                                        </Border.Styles>
+                                        <!-- Ikona aktywnej tury -->
+                                        <Panel>
+                                            <PathIcon Data="{StaticResource IconChevronRight}" Width="18" Height="18" Foreground="#D4A017"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                      IsVisible="{Binding IsActiveTurn}"/>
+                                            <Panel IsVisible="{Binding !IsActiveTurn}">
+                                                <PathIcon Data="{StaticResource IconShield}" Width="18" Height="18" Foreground="#4DB8FF"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                          IsVisible="{Binding !IsEnemy}"/>
+                                                <PathIcon Data="{StaticResource IconSkull}" Width="18" Height="18" Foreground="#FF6B6B"
+                                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                          IsVisible="{Binding IsEnemy}"/>
+                                            </Panel>
+                                        </Panel>
+                                    </Border>
+                                    
+                                    <!-- Nazwa i typ -->
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="Bold" Foreground="#EEEEEE"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3,0,0">
+                                            <TextBlock Text="PRZECIWNIK" FontSize="10" Foreground="#FF6B6B" FontWeight="Bold" IsVisible="{Binding IsEnemy}"/>
+                                            <TextBlock Text="BOHATER" FontSize="10" Foreground="#4DB8FF" FontWeight="Bold" IsVisible="{Binding !IsEnemy}"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    
+                                    <!-- Inicjatywa -->
+                                    <Border Grid.Column="3" Background="#232323" CornerRadius="8" Padding="12,6" VerticalAlignment="Center" MinWidth="70">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="INIC." FontSize="9" Foreground="#666666" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBox Text="{Binding Initiative}" 
+                                                     FontSize="20" FontWeight="Bold" Foreground="#FFFFFF" 
+                                                     TextAlignment="Center" 
+                                                     Background="Transparent" BorderThickness="0" 
+                                                     Padding="0" MinWidth="40" HorizontalContentAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- HP -->
+                                    <Border Grid.Column="5" Background="#232323" CornerRadius="8" Padding="12,6" VerticalAlignment="Center" MinWidth="120">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="PUNKTY ŻYCIA" FontSize="9" Foreground="#666666" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                                <TextBox Text="{Binding CurrentHp}" 
+                                                         Width="50" TextAlignment="Center" 
+                                                         FontSize="18" FontWeight="Bold" 
+                                                         Padding="4,2" 
+                                                         Background="Transparent" BorderThickness="0" 
+                                                         Foreground="#FF6B6B"/>
+                                                <TextBlock Text="/" Foreground="#555555" VerticalAlignment="Center" FontSize="16"/>
+                                                <TextBlock Text="{Binding MaxHp}" Foreground="#888888" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <!-- Przycisk usunięcia -->
+                                    <Button Grid.Column="7" 
+                                            Command="{Binding ((vm:SessionDetailViewModel)DataContext).RemoveCombatantCommand, ElementName=Root}" 
+                                            CommandParameter="{Binding}" 
+                                            Background="Transparent" Padding="8" VerticalAlignment="Center"
+                                            CornerRadius="6">
+                                        <Button.Styles>
+                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="#5C1515"/>
+                                            </Style>
+                                        </Button.Styles>
+                                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" Foreground="#FF4D4D"/>
+                                    </Button>
+                                    
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

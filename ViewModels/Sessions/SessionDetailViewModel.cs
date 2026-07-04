@@ -11,7 +11,7 @@ namespace DungeonApp.ViewModels;
 
 public partial class SessionDetailViewModel : ViewModelBase
 {
-    private readonly Campaign _campaign;
+    public Campaign Campaign { get; }
     private readonly ICampaignService _campaignService;
     private readonly ICharacterService _characterService;
     private readonly INavigationService _navigationService;
@@ -61,7 +61,7 @@ public partial class SessionDetailViewModel : ViewModelBase
         INavigationService navigationService,
         IServiceProvider serviceProvider)
     {
-        _campaign = campaign;
+        Campaign = campaign;
         Session = session;
         _campaignService = campaignService;
         _characterService = characterService;
@@ -92,7 +92,7 @@ public partial class SessionDetailViewModel : ViewModelBase
     {
         PartyCharacters.Clear();
         var allCharacters = _characterService.LoadAllCharacters();
-        foreach (var id in _campaign.CharacterIds)
+        foreach (var id in Campaign.CharacterIds)
         {
             var character = allCharacters.FirstOrDefault(c => c.Id == id);
             if (character != null)
@@ -323,7 +323,7 @@ public partial class SessionDetailViewModel : ViewModelBase
         Save();
     }
 
-    private void Save() => _campaignService.SaveSession(_campaign.Id, Session);
+    private void Save() => _campaignService.SaveSession(Campaign.Id, Session);
 
     [RelayCommand]
     private void Back()

@@ -27,8 +27,23 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private double _uiScale = 1.0;
+    
+    [ObservableProperty]
+    private double _effectiveUiScale = 1.0;
 
-    public ObservableCollection<double> SettingsScaleOptions { get; } = new() { 0.75, 1.0, 1.25, 1.5 };
+    public record ScaleOption(string DisplayName, double Value);
+
+    public ObservableCollection<ScaleOption> SettingsScaleOptions { get; } = new()
+    {
+        new ScaleOption("Auto (Responsywnie)", 0.0),
+        new ScaleOption("Mały (75%)", 0.75),
+        new ScaleOption("Normalny (100%)", 1.0),
+        new ScaleOption("Duży (125%)", 1.25),
+        new ScaleOption("Bardzo Duży (150%)", 1.5)
+    };
+
+    [ObservableProperty]
+    private ScaleOption _selectedScaleOption;
 
     [ObservableProperty]
     private PlayerCharacter? _selectedCharacter;
@@ -42,8 +57,18 @@ public partial class MainWindowViewModel : ViewModelBase
         _characterService = characterService;
         NavigationService = navigationService;
 
+        SelectedScaleOption = SettingsScaleOptions[0]; // Auto domyślnie
+
         LoadCampaignsFromDisk();
         LoadCharactersFromDisk();
+    }
+
+    partial void OnSelectedScaleOptionChanged(ScaleOption value)
+    {
+        if (value != null)
+        {
+            UiScale = value.Value;
+        }
     }
 
     private void LoadCampaignsFromDisk()

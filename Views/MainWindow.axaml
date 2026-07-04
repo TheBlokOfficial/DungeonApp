@@ -15,7 +15,7 @@
 
     <LayoutTransformControl>
         <LayoutTransformControl.LayoutTransform>
-            <ScaleTransform ScaleX="{Binding UiScale}" ScaleY="{Binding UiScale}" />
+            <ScaleTransform ScaleX="{Binding EffectiveUiScale}" ScaleY="{Binding EffectiveUiScale}" />
         </LayoutTransformControl.LayoutTransform>
         <Grid>
             <views:DashboardView IsVisible="{Binding NavigationService.CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
