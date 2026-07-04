@@ -21,6 +21,9 @@ public partial class CampaignDetailViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(CanAddNewSession))]
     private Session? _activeSession;
 
+    [ObservableProperty]
+    private bool _isEditingName;
+
     public CampaignDetailViewModel(
         Campaign campaign,
         ICampaignService campaignService,
@@ -34,6 +37,12 @@ public partial class CampaignDetailViewModel : ViewModelBase
         _navigationService = navigationService;
         _serviceProvider = serviceProvider;
 
+        LoadSessions();
+        LoadCampaignCharacters();
+    }
+
+    public override void OnNavigatedTo()
+    {
         LoadSessions();
         LoadCampaignCharacters();
     }
@@ -70,6 +79,23 @@ public partial class CampaignDetailViewModel : ViewModelBase
     private void Back()
     {
         _navigationService.NavigateBack();
+    }
+
+    [RelayCommand]
+    private void StartEditingName()
+    {
+        IsEditingName = true;
+    }
+
+    [RelayCommand]
+    private void SaveCampaignName()
+    {
+        IsEditingName = false;
+        if (string.IsNullOrWhiteSpace(Campaign.Name))
+        {
+            Campaign.Name = "Nienazwana Kampania";
+        }
+        _campaignService.SaveCampaign(Campaign);
     }
 
     [RelayCommand]

@@ -69,8 +69,7 @@ public partial class CreateSessionViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        var vm = ActivatorUtilities.CreateInstance<CampaignDetailViewModel>(_serviceProvider, _campaign);
-        _navigationService.NavigateTo(vm);
+        _navigationService.NavigateBack();
     }
 
     [RelayCommand]
@@ -99,7 +98,6 @@ public partial class CreateSessionViewModel : ViewModelBase
         _campaign.LastSession = newSession.Date;
         _campaignService.SaveCampaign(_campaign);
 
-        var vm = ActivatorUtilities.CreateInstance<CampaignDetailViewModel>(_serviceProvider, _campaign);
-        _navigationService.NavigateTo(vm);
+        _navigationService.NavigateBack();
     }
 }

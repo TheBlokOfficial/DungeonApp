@@ -329,7 +329,6 @@ public partial class SessionDetailViewModel : ViewModelBase
     private void Back()
     {
         Save();
-        var vm = ActivatorUtilities.CreateInstance<CampaignDetailViewModel>(_serviceProvider, _campaign);
-        _navigationService.NavigateTo(vm);
+        _navigationService.NavigateBack();
     }
 }

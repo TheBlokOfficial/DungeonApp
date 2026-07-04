@@ -19,6 +19,7 @@ public partial class NavigationService : ObservableObject, INavigationService
             _history.Push(CurrentView);
         }
         CurrentView = viewModel;
+        CurrentView?.OnNavigatedTo();
     }
 
     public void NavigateBack()
@@ -31,5 +32,6 @@ public partial class NavigationService : ObservableObject, INavigationService
         {
             CurrentView = null;
         }
+        CurrentView?.OnNavigatedTo();
     }
 }

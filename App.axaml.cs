@@ -33,7 +33,7 @@ public partial class App : Application
         services.AddSingleton<INavigationService, NavigationService>();
 
         // ViewModels
-        services.AddTransient<MainWindowViewModel>();
+        services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<CreateCampaignViewModel>();
         services.AddTransient<CreateCharacterViewModel>();
 

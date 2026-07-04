@@ -21,7 +21,34 @@
             </Button>
 
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="{Binding Campaign.Name}" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF"/>
+                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding !IsEditingName}">
+                    <TextBlock Text="{Binding Campaign.Name}" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <Button Command="{Binding StartEditingNameCommand}" Background="Transparent" Padding="4" VerticalAlignment="Center" ToolTip.Tip="Edytuj nazwę">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#292929"/>
+                            </Style>
+                        </Button.Styles>
+                        <PathIcon Data="{StaticResource IconEdit}" Width="14" Height="14" Foreground="#888888"/>
+                    </Button>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsEditingName}">
+                    <TextBox Text="{Binding Campaign.Name}" FontSize="24" FontWeight="Bold" Background="#1A1A1A" Foreground="#FFFFFF" BorderBrush="#292929" Padding="4" VerticalAlignment="Center" MinWidth="200">
+                        <TextBox.KeyBindings>
+                            <KeyBinding Gesture="Enter" Command="{Binding SaveCampaignNameCommand}"/>
+                        </TextBox.KeyBindings>
+                    </TextBox>
+                    <Button Command="{Binding SaveCampaignNameCommand}" Background="#D4A017" Foreground="#171717" FontWeight="Bold" CornerRadius="4" Padding="12,6" VerticalAlignment="Center">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#E5B027"/>
+                            </Style>
+                        </Button.Styles>
+                        <TextBlock Text="Zapisz" FontSize="12"/>
+                    </Button>
+                </StackPanel>
+
                 <TextBlock Text="{Binding Campaign.System}" FontSize="14" Foreground="#888888"/>
             </StackPanel>
         </StackPanel>
