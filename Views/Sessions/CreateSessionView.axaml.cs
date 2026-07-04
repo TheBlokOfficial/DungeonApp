@@ -2,9 +2,9 @@
 
 namespace DungeonApp.Views;
 
-public partial class CampaignDetailView : UserControl
+public partial class CreateSessionView : UserControl
 {
-    public CampaignDetailView()
+    public CreateSessionView()
     {
         InitializeComponent();
     }

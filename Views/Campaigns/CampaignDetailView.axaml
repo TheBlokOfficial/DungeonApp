@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.CampaignDetailView"
@@ -96,6 +96,53 @@
                         </StackPanel>
                     </Grid>
                 </Border>
+                
+                <!-- SEKCJA DRUŻYNY -->
+<StackPanel>
+    <Grid ColumnDefinitions="*,Auto" Margin="0,16,0,16">
+        <TextBlock Grid.Column="0" Text="Drużyna" FontSize="16" FontWeight="SemiBold" Foreground="#888888" VerticalAlignment="Center"/>
+        <Button Grid.Column="1" Command="{Binding AddCharacterToCampaignCommand}" Background="#292929" Foreground="#FFFFFF" BorderThickness="0" CornerRadius="6" Padding="12,8">
+            <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#333333"/></Style></Button.Styles>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <PathIcon Data="{StaticResource IconAdd}" Width="12" Height="12" />
+                <TextBlock Text="Zrekrutuj" FontSize="12" FontWeight="Bold"/>
+            </StackPanel>
+        </Button>
+    </Grid>
+
+    <Grid>
+        <ItemsControl ItemsSource="{Binding CampaignCharacters}"
+                      IsVisible="{Binding CampaignCharacters.Count}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" ItemWidth="250" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="#1A1A1A" CornerRadius="8" Padding="16" Margin="0,0,12,12" BorderThickness="1" BorderBrush="#292929">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding CharacterName}" FontSize="16" FontWeight="Bold" Foreground="#EEEEEE"/>
+                                <TextBlock Text="{Binding ClassAndLevel}" FontSize="12" Foreground="#888888" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <!-- Przycisk usuwania (wypisania z kampanii) -->
+                            <Button Grid.Column="1" Command="{Binding ((vm:CampaignDetailViewModel)DataContext).RemoveCharacterFromCampaignCommand, ElementName=Root}" CommandParameter="{Binding}" Background="Transparent" Padding="8" VerticalAlignment="Top">
+                                <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#5C1515"/></Style></Button.Styles>
+                                <PathIcon Data="{StaticResource IconTrash}" Width="12" Height="12" Foreground="#FF4D4D"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="Brak postaci w drużynie."
+                   IsVisible="{Binding !CampaignCharacters.Count}"
+                   Foreground="#555555"
+                   FontStyle="Italic"/>
+    </Grid>
+</StackPanel>
 
                 <!-- SEKCJA 3: Archiwum Sesji -->
                 <StackPanel IsVisible="{Binding ArchivedSessions.Count}">
@@ -110,13 +157,22 @@
                         
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#1A1A1A" CornerRadius="10" Padding="20" Margin="0,0,16,16"
-                                        BorderThickness="1" BorderBrush="#292929">
+                                <Button Command="{Binding ((vm:CampaignDetailViewModel)DataContext).ReadArchivedSessionCommand, ElementName=Root}"
+                                        CommandParameter="{Binding}"
+                                        Background="#1A1A1A" CornerRadius="10" Padding="20" Margin="0,0,16,16"
+                                        BorderThickness="1" BorderBrush="#292929"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="#1E1E1E"/>
+                                            <Setter Property="BorderBrush" Value="#4DB8FF"/>
+                                        </Style>
+                                    </Button.Styles>
                                     <StackPanel>
                                         <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" Foreground="#EEEEEE"/>
                                         <TextBlock Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" FontSize="13" Foreground="#555555" Margin="0,6,0,0"/>
                                     </StackPanel>
-                                </Border>
+                                </Button>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
 using DungeonApp.Services;
@@ -7,8 +7,8 @@ namespace DungeonApp.ViewModels;
 
 public partial class CreateCharacterViewModel : ViewModelBase
 {
-    private readonly MainWindowViewModel _mainViewModel;
-    private readonly CharacterService _characterService = new();
+    private readonly INavigationService _navigationService;
+    private readonly ICharacterService _characterService;
 
     [ObservableProperty]
     private string _characterName = string.Empty;
@@ -22,15 +22,18 @@ public partial class CreateCharacterViewModel : ViewModelBase
     [ObservableProperty]
     private string _classAndLevel = string.Empty;
 
-    public CreateCharacterViewModel(MainWindowViewModel mainViewModel)
+    public CreateCharacterViewModel(
+        INavigationService navigationService,
+        ICharacterService characterService)
     {
-        _mainViewModel = mainViewModel;
+        _navigationService = navigationService;
+        _characterService = characterService;
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        _mainViewModel.CurrentView = null;
+        _navigationService.NavigateBack();
     }
 
     [RelayCommand]
@@ -48,8 +51,11 @@ public partial class CreateCharacterViewModel : ViewModelBase
 
         _characterService.SaveCharacter(newCharacter);
 
-        // Odświeżamy listę i zamykamy widok
-        _mainViewModel.LoadCharactersFromDisk();
-        _mainViewModel.CurrentView = null;
+        if (App.Current?.Services?.GetService(typeof(MainWindowViewModel)) is MainWindowViewModel mainVm)
+        {
+            mainVm.LoadCharactersFromDisk();
+        }
+
+        _navigationService.NavigateBack();
     }
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
@@ -22,10 +22,11 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
         <PackageReference Include="Markdown.Avalonia" Version="11.0.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\Campaigns\. CampaignDetailView.axaml.cs">
+      <Compile Update="Views\Campaigns\CampaignDetailView.axaml.cs">
         <DependentUpon>CampaignDetailView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>

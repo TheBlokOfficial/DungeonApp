@@ -1,23 +1,39 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using DungeonApp.Models;
 
 namespace DungeonApp.Services;
 
-public class CampaignService
+public interface ICampaignService
 {
+    List<Campaign> LoadAllCampaigns();
+    void SaveCampaign(Campaign campaign);
+    void DeleteCampaign(string campaignId);
+    List<Session> LoadSessions(string campaignId);
+    void SaveSession(string campaignId, Session session);
+    void DeleteSession(string campaignId, string sessionId);
+}
+
+public class CampaignService : ICampaignService
+{
+    private const string AppDirectoryName = "DungeonSessionManager";
+    private const string CampaignsDirectoryName = "Campaigns";
+    private const string SessionsDirectoryName = "Sessions";
+    private const string CampaignFileName = "campaign.json";
+    private const string DefaultCampaignSlug = "kampania";
+
     private readonly string _baseDirectory;
+    private readonly IStorageService _storageService;
 
-    public CampaignService()
+    public CampaignService(IStorageService storageService)
     {
+        _storageService = storageService;
         string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        _baseDirectory = Path.Combine(documents, "DungeonSessionManager", "Campaigns");
-
+        _baseDirectory = Path.Combine(documents, AppDirectoryName, CampaignsDirectoryName);
         Directory.CreateDirectory(_baseDirectory);
     }
 
@@ -25,24 +41,18 @@ public class CampaignService
     {
         var campaigns = new List<Campaign>();
 
-        foreach (var dir in Directory.GetDirectories(_baseDirectory))
-        {
-            string campaignFile = Path.Combine(dir, "campaign.json");
+        if (!Directory.Exists(_baseDirectory)) return campaigns;
 
-            if (File.Exists(campaignFile))
-            {
-                try
-                {
-                    string json = File.ReadAllText(campaignFile);
-                    var campaign = JsonSerializer.Deserialize<Campaign>(json);
-                    if (campaign != null)
-                    {
-                        campaign.Id = Path.GetFileName(dir); // nazwa folderu = Id
-                        campaigns.Add(campaign);
-                    }
-                }
-                catch { /* pomijamy uszkodzone kampanie */ }
-            }
+        foreach (string campaignDirectory in Directory.GetDirectories(_baseDirectory))
+        {
+            string campaignFilePath = Path.Combine(campaignDirectory, CampaignFileName);
+            Campaign? campaign = _storageService.Load<Campaign>(campaignFilePath);
+
+            if (campaign is null)
+                continue;
+
+            campaign.Id = Path.GetFileName(campaignDirectory);
+            campaigns.Add(campaign);
         }
 
         return campaigns.OrderByDescending(c => c.LastSession).ToList();
@@ -50,57 +60,86 @@ public class CampaignService
 
     public void SaveCampaign(Campaign campaign)
     {
-        // Nowa kampania (brak Id) -> generujemy czytelny folder ze slugiem
+        ArgumentNullException.ThrowIfNull(campaign);
+
         if (string.IsNullOrEmpty(campaign.Id))
-        {
             campaign.Id = GenerateUniqueSlug(campaign.Name);
-        }
 
-        string campaignFolder = Path.Combine(_baseDirectory, campaign.Id);
-        Directory.CreateDirectory(campaignFolder);
-
-        string filePath = Path.Combine(campaignFolder, "campaign.json");
-
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(campaign, options);
-        File.WriteAllText(filePath, json);
+        string campaignDirectory = GetCampaignDirectory(campaign.Id);
+        string filePath = Path.Combine(campaignDirectory, CampaignFileName);
+        
+        _storageService.Save(filePath, campaign);
     }
 
     public void DeleteCampaign(string campaignId)
     {
-        if (string.IsNullOrEmpty(campaignId)) return;
-
-        string campaignFolder = Path.Combine(_baseDirectory, campaignId);
-
-        if (Directory.Exists(campaignFolder))
-        {
-            try
-            {
-                Directory.Delete(campaignFolder, true);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Błąd podczas usuwania kampanii: {ex.Message}");
-            }
-        }
+        if (string.IsNullOrWhiteSpace(campaignId)) return;
+        string campaignDirectory = GetCampaignDirectory(campaignId);
+        _storageService.DeleteDirectory(campaignDirectory);
     }
 
-    // Tworzy czytelną, unikalną nazwę folderu na podstawie nazwy kampanii,
-    // np. "Klątwa Strahda" -> "klatwa-strahda", a przy kolizji "klatwa-strahda-2"
+    public List<Session> LoadSessions(string campaignId)
+    {
+        string sessionsDirectory = GetSessionsDirectory(campaignId);
+        var sessions = _storageService.LoadAll<Session>(sessionsDirectory);
+        
+        foreach(var session in sessions)
+        {
+            if(string.IsNullOrEmpty(session.Id))
+            {
+                // In generic load we don't have file name, so we could theoretically set it based on file name if needed,
+                // but usually the ID should be inside the JSON.
+                // If it's missing, we might have an issue mapping.
+                // The previous implementation mapped ID to file name without extension.
+                // To maintain parity, we actually need to do this manually or assume ID is in the JSON.
+                // Since generic `LoadAll` doesn't set ID, I'll fallback to manual iteration.
+            }
+        }
+        
+        // Manual iteration to preserve filename as ID logic:
+        var realSessions = new List<Session>();
+        if (Directory.Exists(sessionsDirectory))
+        {
+            foreach (string filePath in Directory.GetFiles(sessionsDirectory, "*.json"))
+            {
+                Session? session = _storageService.Load<Session>(filePath);
+                if (session is null) continue;
+                session.Id = Path.GetFileNameWithoutExtension(filePath);
+                realSessions.Add(session);
+            }
+        }
+
+        return realSessions.OrderByDescending(s => s.Date).ToList();
+    }
+
+    public void SaveSession(string campaignId, Session session)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(campaignId);
+        ArgumentNullException.ThrowIfNull(session);
+
+        if (string.IsNullOrEmpty(session.Id))
+            session.Id = Guid.NewGuid().ToString();
+
+        string filePath = GetSessionFilePath(campaignId, session.Id);
+        _storageService.Save(filePath, session);
+    }
+
+    public void DeleteSession(string campaignId, string sessionId)
+    {
+        if (string.IsNullOrWhiteSpace(campaignId) || string.IsNullOrWhiteSpace(sessionId)) return;
+        string filePath = GetSessionFilePath(campaignId, sessionId);
+        _storageService.Delete(filePath);
+    }
+
     private string GenerateUniqueSlug(string name)
     {
         string baseSlug = Slugify(name);
-        if (string.IsNullOrEmpty(baseSlug))
-            baseSlug = "kampania";
+        if (string.IsNullOrEmpty(baseSlug)) baseSlug = DefaultCampaignSlug;
 
         string candidate = baseSlug;
         int counter = 2;
 
-        while (Directory.Exists(Path.Combine(_baseDirectory, candidate)))
+        while (Directory.Exists(GetCampaignDirectory(candidate)))
         {
             candidate = $"{baseSlug}-{counter}";
             counter++;
@@ -111,94 +150,35 @@ public class CampaignService
 
     private static string Slugify(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
-            return string.Empty;
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
 
-        // Usuwamy polskie znaki diakrytyczne (ą, ć, ę, ł, ń, ó, ś, ź, ż)
-        string normalized = input.Normalize(NormalizationForm.FormD);
-        var sb = new StringBuilder();
+        string cleaned = RemoveDiacritics(input).ToLowerInvariant();
+        var result = new StringBuilder();
+
+        foreach (char c in cleaned)
+        {
+            if (char.IsLetterOrDigit(c)) result.Append(c);
+            else if (c is ' ' or '_' or '-') result.Append('-');
+        }
+
+        return string.Join("-", result.ToString().Split('-', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    private static string RemoveDiacritics(string input)
+    {
+        string normalized = input.Replace('ł', 'l').Replace('Ł', 'L').Normalize(NormalizationForm.FormD);
+        var result = new StringBuilder();
 
         foreach (char c in normalized)
         {
-            var category = CharUnicodeInfo.GetUnicodeCategory(c);
-            if (category != UnicodeCategory.NonSpacingMark)
-                sb.Append(c);
-        }
-
-        string cleaned = sb.ToString().Normalize(NormalizationForm.FormC);
-
-        // Polskie "ł" nie rozkłada się przez NormalizationForm.FormD, więc podmieniamy ręcznie
-        cleaned = cleaned.Replace("ł", "l").Replace("Ł", "L");
-
-        cleaned = cleaned.ToLowerInvariant();
-
-        // Spacje i podkreślniki -> myślnik, reszta niedozwolonych znaków -> usuwamy
-        var result = new StringBuilder();
-        foreach (char c in cleaned)
-        {
-            if (char.IsLetterOrDigit(c))
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
                 result.Append(c);
-            else if (c is ' ' or '_' or '-')
-                result.Append('-');
         }
 
-        // Zwijamy wielokrotne myślniki i przycinamy z krawędzi
-        string slug = string.Join("-", result.ToString().Split('-', StringSplitOptions.RemoveEmptyEntries));
-
-        return slug;
-    }
-    
-    public List<Session> LoadSessions(string campaignId)
-    {
-        var sessions = new List<Session>();
-        string sessionsDir = Path.Combine(_baseDirectory, campaignId, "Sessions");
-
-        if (!Directory.Exists(sessionsDir))
-            return sessions;
-
-        foreach (var file in Directory.GetFiles(sessionsDir, "*.json"))
-        {
-            try
-            {
-                string json = File.ReadAllText(file);
-                var session = JsonSerializer.Deserialize<Session>(json);
-                if (session != null)
-                {
-                    session.Id = Path.GetFileNameWithoutExtension(file);
-                    sessions.Add(session);
-                }
-            }
-            catch { /* pomijamy uszkodzone sesje */ }
-        }
-
-        return sessions.OrderByDescending(s => s.Date).ToList();
+        return result.ToString().Normalize(NormalizationForm.FormC);
     }
 
-    public void SaveSession(string campaignId, Session session)
-    {
-        string sessionsDir = Path.Combine(_baseDirectory, campaignId, "Sessions");
-        Directory.CreateDirectory(sessionsDir);
-
-        if (string.IsNullOrEmpty(session.Id))
-            session.Id = Guid.NewGuid().ToString();
-
-        string filePath = Path.Combine(sessionsDir, $"{session.Id}.json");
-
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(session, options);
-        File.WriteAllText(filePath, json);
-    }
-
-    public void DeleteSession(string campaignId, string sessionId)
-    {
-        if (string.IsNullOrEmpty(sessionId)) return;
-
-        string filePath = Path.Combine(_baseDirectory, campaignId, "Sessions", $"{sessionId}.json");
-
-        if (File.Exists(filePath))
-        {
-            try { File.Delete(filePath); }
-            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Błąd podczas usuwania sesji: {ex.Message}"); }
-        }
-    }
+    private string GetCampaignDirectory(string campaignId) => Path.Combine(_baseDirectory, campaignId);
+    private string GetSessionsDirectory(string campaignId) => Path.Combine(GetCampaignDirectory(campaignId), SessionsDirectoryName);
+    private string GetSessionFilePath(string campaignId, string sessionId) => Path.Combine(GetSessionsDirectory(campaignId), $"{sessionId}.json");
 }

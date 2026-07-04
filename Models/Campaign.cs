@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Models;
@@ -25,4 +26,7 @@ public partial class Campaign : ObservableObject
 
     [ObservableProperty]
     private string _description = string.Empty;
+    
+    [ObservableProperty]
+    private List<string> _characterIds = new(); // <- DODANE
 }

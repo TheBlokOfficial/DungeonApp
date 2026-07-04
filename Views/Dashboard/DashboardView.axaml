@@ -2,67 +2,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              xmlns:dashboard="clr-namespace:DungeonApp.Views.Dashboard"
+             xmlns:views="clr-namespace:DungeonApp.Views"
              x:Class="DungeonApp.Views.DashboardView"
              x:DataType="vm:MainWindowViewModel"
              x:Name="Root">
     
-    <UserControl.Styles>
-        <!-- Domyślny styl przycisków nawigacji -->
-        <Style Selector="Button.navButton">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-        <Style Selector="Button.navButton:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#292929" />
-        </Style>
-        
-        <!-- Styl włączony tylko dla AKTYWNEJ zakładki -->
-        <Style Selector="Button.navButton.active /template/ ContentPresenter">
-            <Setter Property="Background" Value="#292929" />
-        </Style>
-        <Style Selector="Button.navButton.active TextBlock">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="#FFFFFF" />
-        </Style>
-    </UserControl.Styles>
-    
     <Grid ColumnDefinitions="250,*">
 
-        <!-- LEWY PANEL: NAWIGACJA -->
-        <Border Grid.Column="0" Background="#1E1E1E" BorderBrush="#292929" BorderThickness="0,0,1,0">
-            <StackPanel Margin="20" Spacing="8">
-                <!-- Logo / Tytuł -->
-                <TextBlock Text="DUNGEON" FontSize="28" FontWeight="Bold" Foreground="#D4A017" />
-                <TextBlock Text="Session Manager" FontSize="16" Foreground="#FFFFFF" Margin="0,0,0,40" />
-
-                <TextBlock Text="GŁÓWNE MENU" FontSize="12" FontWeight="Bold" Foreground="#666666" Margin="0,0,0,8"/>
-
-                <!-- Przycisk: Kampanie -->
-                <Button Classes="navButton" Classes.active="{Binding IsCampaignsVisible}" 
-                        Command="{Binding ShowCampaignsCommand}"
-                        BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <!-- Ikona zawsze świeci na złoto -->
-                        <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="#D4A017" />
-                        <TextBlock Text="Kampanie RPG" VerticalAlignment="Center" Foreground="#EEEEEE"/>
-                    </StackPanel>
-                </Button>
-
-                <!-- Przycisk: Bohaterowie -->
-                <Button Classes="navButton" Classes.active="{Binding IsCharactersVisible}" 
-                        Command="{Binding ShowCharactersCommand}"
-                        BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <!-- Ikona zawsze świeci na złoto -->
-                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="#D4A017" />
-                        <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="#EEEEEE"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </Border>
-
+        <views:NavigationBarView />
+        
         <!-- PRAWY PANEL: GŁÓWNA ZAWARTOŚĆ -->
         <Border Grid.Column="1" Padding="40">
             <Grid>
+                
                 <!-- Zagnieżdżone, wyodrębnione widoki -->
                 <dashboard:CampaignsTabView IsVisible="{Binding IsCampaignsVisible}" />
                 <dashboard:CharactersTabView IsVisible="{Binding IsCharactersVisible}" />

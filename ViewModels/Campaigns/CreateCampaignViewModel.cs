@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
@@ -8,8 +8,8 @@ namespace DungeonApp.ViewModels;
 
 public partial class CreateCampaignViewModel : ViewModelBase
 {
-    private readonly MainWindowViewModel _mainViewModel;
-    private readonly CampaignService _campaignService = new();
+    private readonly INavigationService _navigationService;
+    private readonly ICampaignService _campaignService;
 
     [ObservableProperty]
     private string _name = string.Empty;
@@ -20,15 +20,18 @@ public partial class CreateCampaignViewModel : ViewModelBase
     [ObservableProperty]
     private string? _errorMessage;
 
-    public CreateCampaignViewModel(MainWindowViewModel mainViewModel)
+    public CreateCampaignViewModel(
+        INavigationService navigationService,
+        ICampaignService campaignService)
     {
-        _mainViewModel = mainViewModel;
+        _navigationService = navigationService;
+        _campaignService = campaignService;
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        _mainViewModel.CurrentView = null;
+        _navigationService.NavigateBack();
     }
 
     [RelayCommand]
@@ -51,7 +54,15 @@ public partial class CreateCampaignViewModel : ViewModelBase
 
         _campaignService.SaveCampaign(newCampaign);
 
-        _mainViewModel.Campaigns.Insert(0, newCampaign);
-        _mainViewModel.CurrentView = null;
+        // Odświeżenie w MainWindowViewModel zostanie zrobione po powrocie jeśli trzeba.
+        // Bądźmy prości: po powrocie można by wrzucić zdarzenie, ale by MainWindow miało nową kampanię,
+        // musielibyśmy zawiadomić MainWindow. For now, we will NavigateBack().
+        _navigationService.NavigateBack();
+        
+        // Zaktualizujmy MainWindow by wymusić odświeżenie:
+        if (App.Current?.Services?.GetService(typeof(MainWindowViewModel)) is MainWindowViewModel mainVm)
+        {
+            mainVm.Campaigns.Insert(0, newCampaign);
+        }
     }
 }

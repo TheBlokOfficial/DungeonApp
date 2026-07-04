@@ -1,22 +1,17 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
 using DungeonApp.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DungeonApp.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private ViewModelBase? _currentView;
-    public ViewModelBase? CurrentView
-    {
-        get => _currentView;
-        set => SetProperty(ref _currentView, value);
-    }
-    
-    private readonly CampaignService _campaignService = new();
-    private readonly CharacterService _characterService = new();
+    private readonly ICampaignService _campaignService;
+    private readonly ICharacterService _characterService;
+    public INavigationService NavigationService { get; }
 
     public ObservableCollection<Campaign> Campaigns { get; } = new();
     public ObservableCollection<PlayerCharacter> Characters { get; } = new();
@@ -27,12 +22,18 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isCharactersVisible = false;
 
-    // Aktualnie podglądana postać w prawym panelu
     [ObservableProperty]
     private PlayerCharacter? _selectedCharacter;
 
-    public MainWindowViewModel()
+    public MainWindowViewModel(
+        ICampaignService campaignService, 
+        ICharacterService characterService,
+        INavigationService navigationService)
     {
+        _campaignService = campaignService;
+        _characterService = characterService;
+        NavigationService = navigationService;
+
         LoadCampaignsFromDisk();
         LoadCharactersFromDisk();
     }
@@ -52,21 +53,21 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedCharacter = null;
     }
 
-    // --- NAWIGACJA MENU ---
-
     [RelayCommand]
     private void ShowCampaigns() { IsCampaignsVisible = true; IsCharactersVisible = false; }
 
     [RelayCommand]
     private void ShowCharacters() { IsCampaignsVisible = false; IsCharactersVisible = true; }
     
-    // --- KAMPANIE ---
-
     [RelayCommand]
     private void RefreshCampaigns() { Campaigns.Clear(); LoadCampaignsFromDisk(); }
     
     [RelayCommand]
-    private void CreateNewCampaign() => CurrentView = new CreateCampaignViewModel(this);
+    private void CreateNewCampaign()
+    {
+        var vm = App.Current!.Services!.GetRequiredService<CreateCampaignViewModel>();
+        NavigationService.NavigateTo(vm);
+    }
     
     [RelayCommand]
     private void DeleteCampaign(Campaign campaign)
@@ -76,18 +77,34 @@ public partial class MainWindowViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private void OpenCampaign(Campaign campaign) => CurrentView = new CampaignDetailViewModel(campaign, this);
-
-    // --- BOHATEROWIE ---
+    private void OpenCampaign(Campaign campaign)
+    {
+        // Factory pattern could be better, but for now we'll inject dependencies manually 
+        // or resolve from DI. Since it needs `Campaign`, we can use ActivatorUtilities
+        var vm = ActivatorUtilities.CreateInstance<CampaignDetailViewModel>(App.Current!.Services!, campaign);
+        NavigationService.NavigateTo(vm);
+    }
 
     [RelayCommand]
     private void RefreshCharacters() => LoadCharactersFromDisk();
 
     [RelayCommand]
-    private void CreateNewCharacter() => CurrentView = new CreateCharacterViewModel(this);
+    private void CreateNewCharacter()
+    {
+        var vm = App.Current!.Services!.GetRequiredService<CreateCharacterViewModel>();
+        NavigationService.NavigateTo(vm);
+    }
 
     [RelayCommand]
     private void SelectCharacter(PlayerCharacter character) => SelectedCharacter = character;
+
+    [RelayCommand]
+    private void OpenCharacterDetail(PlayerCharacter character)
+    {
+        if (character == null) return;
+        var vm = ActivatorUtilities.CreateInstance<CharacterDetailViewModel>(App.Current!.Services!, character);
+        NavigationService.NavigateTo(vm);
+    }
 
     [RelayCommand]
     private void DeleteCharacter(PlayerCharacter? character)

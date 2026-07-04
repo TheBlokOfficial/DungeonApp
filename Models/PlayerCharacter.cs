@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Models;
@@ -20,5 +20,39 @@ public partial class PlayerCharacter : ObservableObject
     [ObservableProperty]
     private string _classAndLevel = string.Empty;
 
-    // Miejsce na przyszłe statystyki (HP, AC, Szybkość, Ekwipunek)
+    [ObservableProperty]
+    private int _maxHp = 10;
+
+    [ObservableProperty]
+    private int _currentHp = 10;
+
+    [ObservableProperty]
+    private int _armorClass = 10;
+
+    [ObservableProperty]
+    private int _speed = 30;
+
+    [ObservableProperty]
+    private int _strength = 10;
+
+    [ObservableProperty]
+    private int _dexterity = 10;
+
+    [ObservableProperty]
+    private int _constitution = 10;
+
+    [ObservableProperty]
+    private int _intelligence = 10;
+
+    [ObservableProperty]
+    private int _wisdom = 10;
+
+    [ObservableProperty]
+    private int _charisma = 10;
+
+    [ObservableProperty]
+    private string _equipment = string.Empty;
+
+    [ObservableProperty]
+    private string _notes = string.Empty;
 }

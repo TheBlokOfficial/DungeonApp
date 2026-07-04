@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.Dashboard.CharactersTabView"
@@ -76,9 +76,9 @@
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCharacter.ClassAndLevel}" Foreground="#FFFFFF" FontSize="15" FontWeight="Medium"/>
                 </Grid>
 
-                <Button Background="#292929" Foreground="#FFFFFF" CornerRadius="6" Padding="14,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,40,0,0">
-                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#333333" /></Style></Button.Styles>
-                    <TextBlock Text="Otwórz pełną Kartę Postaci (Wkrótce)" FontSize="13" FontWeight="SemiBold"/>
+                <Button Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" Background="#D4A017" Foreground="#171717" CornerRadius="6" Padding="14,12" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,40,0,0">
+                    <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#E5B027" /></Style></Button.Styles>
+                    <TextBlock Text="Otwórz pełną Kartę Postaci" FontSize="14" FontWeight="Bold"/>
                 </Button>
             </StackPanel>
         </Border>

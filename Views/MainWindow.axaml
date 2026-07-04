@@ -13,7 +13,7 @@
         Icon="/Assets/avalonia-logo.ico">
 
     <Grid>
-        <views:DashboardView IsVisible="{Binding CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
-        <ContentControl Content="{Binding CurrentView}"/>
+        <views:DashboardView IsVisible="{Binding NavigationService.CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
+        <ContentControl Content="{Binding NavigationService.CurrentView}"/>
     </Grid>
 </Window>

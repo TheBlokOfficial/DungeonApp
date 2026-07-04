@@ -1,39 +1,49 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
 using DungeonApp.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DungeonApp.ViewModels;
 
 public partial class CampaignDetailViewModel : ViewModelBase
 {
-    private readonly MainWindowViewModel _mainViewModel;
-    private readonly CampaignService _campaignService = new();
+    private readonly ICampaignService _campaignService;
+    private readonly ICharacterService _characterService;
+    private readonly INavigationService _navigationService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public Campaign Campaign { get; }
-
-    // Właściwość trzymająca obecną, otwartą sesję
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasActiveSession))]
     [NotifyPropertyChangedFor(nameof(CanAddNewSession))]
     private Session? _activeSession;
 
-    // Lista sesji historycznych
-    public ObservableCollection<Session> ArchivedSessions { get; } = new();
-
-    // Pomocnicze flagi dla UI (ukrywanie/pokazywanie przycisków)
-    public bool HasActiveSession => ActiveSession != null;
-    public bool CanAddNewSession => ActiveSession == null;
-
-    public CampaignDetailViewModel(Campaign campaign, MainWindowViewModel mainViewModel)
+    public CampaignDetailViewModel(
+        Campaign campaign,
+        ICampaignService campaignService,
+        ICharacterService characterService,
+        INavigationService navigationService,
+        IServiceProvider serviceProvider)
     {
         Campaign = campaign;
-        _mainViewModel = mainViewModel;
+        _campaignService = campaignService;
+        _characterService = characterService;
+        _navigationService = navigationService;
+        _serviceProvider = serviceProvider;
+
         LoadSessions();
+        LoadCampaignCharacters();
     }
+
+    public Campaign Campaign { get; }
+    public ObservableCollection<Session> ArchivedSessions { get; } = new();
+
+    public bool HasActiveSession => ActiveSession != null;
+    public bool CanAddNewSession => ActiveSession == null;
+    public ObservableCollection<PlayerCharacter> CampaignCharacters { get; } = new();
 
     private void LoadSessions()
     {
@@ -41,18 +51,16 @@ public partial class CampaignDetailViewModel : ViewModelBase
         ActiveSession = null;
 
         var allSessions = _campaignService.LoadSessions(Campaign.Id).OrderByDescending(s => s.Date).ToList();
-        
+
         foreach (var session in allSessions)
         {
             if (!session.IsArchived && ActiveSession == null)
             {
-                // Łapiemy najnowszą niearchiwizowaną jako aktywną
                 ActiveSession = session;
             }
             else
             {
-                // Reszta (lub starsze, które przypadkiem nie mają flagi) ląduje w archiwum
-                session.IsArchived = true; 
+                session.IsArchived = true;
                 ArchivedSessions.Add(session);
             }
         }
@@ -61,27 +69,15 @@ public partial class CampaignDetailViewModel : ViewModelBase
     [RelayCommand]
     private void Back()
     {
-        _mainViewModel.CurrentView = null;
+        _navigationService.NavigateBack();
     }
 
     [RelayCommand]
     private void AddSession()
     {
-        if (ActiveSession != null) return; // Podwójne zabezpieczenie
-
-        var newSession = new Session
-        {
-            Id = Guid.NewGuid().ToString(),
-            Number = ArchivedSessions.Count + 1,
-            Title = $"Sesja {ArchivedSessions.Count + 1}",
-            Date = DateTime.Now,
-            IsArchived = false
-        };
-
-        _campaignService.SaveSession(Campaign.Id, newSession);
-        ActiveSession = newSession;
-        
-        SyncCampaignStats();
+        if (ActiveSession != null) return;
+        var vm = ActivatorUtilities.CreateInstance<CreateSessionViewModel>(_serviceProvider, Campaign);
+        _navigationService.NavigateTo(vm);
     }
 
     [RelayCommand]
@@ -91,7 +87,7 @@ public partial class CampaignDetailViewModel : ViewModelBase
 
         _campaignService.DeleteSession(Campaign.Id, ActiveSession.Id);
         ActiveSession = null;
-        
+
         SyncCampaignStats();
     }
 
@@ -100,14 +96,12 @@ public partial class CampaignDetailViewModel : ViewModelBase
     {
         if (ActiveSession == null) return;
 
-        // Zmieniamy flagę i zapisujemy
         ActiveSession.IsArchived = true;
         _campaignService.SaveSession(Campaign.Id, ActiveSession);
-        
-        // Przenosimy wizualnie do archiwum
+
         ArchivedSessions.Insert(0, ActiveSession);
         ActiveSession = null;
-        
+
         SyncCampaignStats();
     }
 
@@ -115,26 +109,54 @@ public partial class CampaignDetailViewModel : ViewModelBase
     private void OpenActiveSession()
     {
         if (ActiveSession == null) return;
-        _mainViewModel.CurrentView = new SessionDetailViewModel(Campaign, ActiveSession, _mainViewModel);
+        var vm = ActivatorUtilities.CreateInstance<SessionDetailViewModel>(_serviceProvider, Campaign, ActiveSession);
+        _navigationService.NavigateTo(vm);
     }
 
     [RelayCommand]
     private void ReadArchivedSession(Session? session)
     {
         if (session == null) return;
-        _mainViewModel.CurrentView = new SessionDetailViewModel(Campaign, session, _mainViewModel);
+        var vm = ActivatorUtilities.CreateInstance<SessionDetailViewModel>(_serviceProvider, Campaign, session);
+        _navigationService.NavigateTo(vm);
     }
 
     private void SyncCampaignStats()
     {
         Campaign.SessionsCount = ArchivedSessions.Count + (ActiveSession != null ? 1 : 0);
-        
-        // Aktualizujemy datę ostatniej sesji na potrzeby głównego menu
+
         var latestDate = Campaign.CreatedAt;
         if (ActiveSession != null) latestDate = ActiveSession.Date;
         else if (ArchivedSessions.Any()) latestDate = ArchivedSessions.First().Date;
-        
+
         Campaign.LastSession = latestDate;
         _campaignService.SaveCampaign(Campaign);
+    }
+
+    private void LoadCampaignCharacters()
+    {
+        CampaignCharacters.Clear();
+        var allCharacters = _characterService.LoadAllCharacters();
+
+        foreach (var id in Campaign.CharacterIds)
+        {
+            var character = allCharacters.FirstOrDefault(c => c.Id == id);
+            if (character != null) CampaignCharacters.Add(character);
+        }
+    }
+
+    [RelayCommand]
+    private void AddCharacterToCampaign()
+    {
+        var vm = ActivatorUtilities.CreateInstance<AddCharacterToCampaignViewModel>(_serviceProvider, Campaign);
+        _navigationService.NavigateTo(vm);
+    }
+
+    [RelayCommand]
+    private void RemoveCharacterFromCampaign(PlayerCharacter character)
+    {
+        Campaign.CharacterIds.Remove(character.Id);
+        _campaignService.SaveCampaign(Campaign);
+        CampaignCharacters.Remove(character);
     }
 }
