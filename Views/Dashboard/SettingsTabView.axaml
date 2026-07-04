@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels"
+             x:Class="DungeonApp.Views.Dashboard.SettingsTabView"
+             x:DataType="vm:MainWindowViewModel"
+             Margin="0,0,0,0">
+    
+    <Grid RowDefinitions="Auto, *" Margin="30">
+        
+        <StackPanel Grid.Row="0" Margin="0,0,0,30">
+            <TextBlock Text="Ustawienia Aplikacji" FontSize="28" FontWeight="Bold" Foreground="#FFFFFF" />
+            <TextBlock Text="Zarządzaj opcjami wyglądu i działania" FontSize="14" Foreground="#888888" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="24">
+                
+                <Border Background="#1A1A1A" CornerRadius="12" Padding="24" BorderBrush="#292929" BorderThickness="1">
+                    <StackPanel Spacing="16">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16" Foreground="#4DB8FF" />
+                            <TextBlock Text="WYGLĄD" FontSize="12" FontWeight="Bold" Foreground="#4DB8FF" LetterSpacing="1" />
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,8,0,0">
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Rozmiar Interfejsu (Zoom)" FontSize="16" FontWeight="Bold" Foreground="#EEEEEE" />
+                                <TextBlock Text="Powiększa lub pomniejsza wszystkie elementy UI. Idealne do monitorów 4K lub mniejszych ekranów." 
+                                           FontSize="13" Foreground="#888888" Margin="0,4,0,0" TextWrapping="Wrap" />
+                            </StackPanel>
+                            
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsScaleOptions}" SelectedItem="{Binding UiScale}" 
+                                      Width="120" Background="#232323" BorderBrush="#333333" Foreground="#FFFFFF" CornerRadius="6">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding StringFormat='{}{0:P0}'}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

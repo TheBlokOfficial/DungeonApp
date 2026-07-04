@@ -13,8 +13,13 @@
         Focusable="True"
         Icon="/Assets/avalonia-logo.ico">
 
-    <Grid>
-        <views:DashboardView IsVisible="{Binding NavigationService.CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
-        <ContentControl Content="{Binding NavigationService.CurrentView}"/>
-    </Grid>
+    <LayoutTransformControl>
+        <LayoutTransformControl.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding UiScale}" ScaleY="{Binding UiScale}" />
+        </LayoutTransformControl.LayoutTransform>
+        <Grid>
+            <views:DashboardView IsVisible="{Binding NavigationService.CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
+            <ContentControl Content="{Binding NavigationService.CurrentView}"/>
+        </Grid>
+    </LayoutTransformControl>
 </Window>

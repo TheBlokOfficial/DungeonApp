@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.NavigationBarView"
@@ -53,6 +53,17 @@
                     <!-- Ikona zawsze świeci na złoto -->
                     <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="#D4A017" />
                     <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="#EEEEEE" />
+                </StackPanel>
+            </Button>
+            <TextBlock Text="SYSTEM" FontSize="12" FontWeight="Bold" Foreground="#666666" Margin="0,16,0,8" />
+            <!-- Przycisk: Ustawienia -->
+            <Button Classes="navButton" Classes.active="{Binding IsSettingsVisible}"
+                    Command="{Binding ShowSettingsCommand}"
+                    BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16" Foreground="#D4A017" />
+                    <TextBlock Text="Ustawienia" VerticalAlignment="Center" Foreground="#EEEEEE" />
                 </StackPanel>
             </Button>
         </StackPanel>

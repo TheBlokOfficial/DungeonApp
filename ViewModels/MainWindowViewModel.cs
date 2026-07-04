@@ -23,6 +23,14 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _isCharactersVisible = false;
 
     [ObservableProperty]
+    private bool _isSettingsVisible = false;
+
+    [ObservableProperty]
+    private double _uiScale = 1.0;
+
+    public ObservableCollection<double> SettingsScaleOptions { get; } = new() { 0.75, 1.0, 1.25, 1.5 };
+
+    [ObservableProperty]
     private PlayerCharacter? _selectedCharacter;
 
     public MainWindowViewModel(
@@ -54,10 +62,13 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void ShowCampaigns() { IsCampaignsVisible = true; IsCharactersVisible = false; }
+    private void ShowCampaigns() { IsCampaignsVisible = true; IsCharactersVisible = false; IsSettingsVisible = false; }
 
     [RelayCommand]
-    private void ShowCharacters() { IsCampaignsVisible = false; IsCharactersVisible = true; }
+    private void ShowCharacters() { IsCampaignsVisible = false; IsCharactersVisible = true; IsSettingsVisible = false; }
+
+    [RelayCommand]
+    private void ShowSettings() { IsCampaignsVisible = false; IsCharactersVisible = false; IsSettingsVisible = true; }
     
     [RelayCommand]
     private void RefreshCampaigns() { Campaigns.Clear(); LoadCampaignsFromDisk(); }

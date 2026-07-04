@@ -29,11 +29,18 @@
             </StackPanel>
         </Grid>
 
-        <!-- Obszar Zakładek -->
-        <TabControl Grid.Row="1" Background="Transparent" Padding="0,20,0,0">
+        <!-- GŁÓWNY OBSZAR -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, 16, *" Margin="0,16,0,0">
             
-            <TabItem Header="NOTATKI">
-                <Grid RowDefinitions="Auto, Auto, *">
+            <!-- KOLUMNA 1: NOTATKI -->
+            <Border Grid.Column="0" Background="#111111" CornerRadius="12" Padding="20" BorderBrush="#222222" BorderThickness="1">
+                <Grid RowDefinitions="Auto, *">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
+                        <PathIcon Data="{StaticResource IconEdit}" Width="16" Height="16" Foreground="#4DB8FF"/>
+                        <TextBlock Text="NOTATKI SESJI" FontSize="12" FontWeight="Bold" Foreground="#4DB8FF" LetterSpacing="1"/>
+                    </StackPanel>
+                    
+                    <Grid Grid.Row="1" RowDefinitions="Auto, Auto, *">
                     <TextBox Grid.Row="0" Text="{Binding SearchQuery}" PlaceholderText="Wyszukaj..." 
                              Background="#1E1E1E" BorderThickness="1" Margin="0,0,0,16" Padding="12"/>
 
@@ -195,12 +202,30 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
+                    </Grid>
                 </Grid>
-            </TabItem>
+            </Border>
 
-            <!-- ========== ZAKŁADKA WALKI ========== -->
-            <TabItem Header="⚔ WALKA">
-                <Grid RowDefinitions="Auto, Auto, *" Margin="0,8,0,0">
+            <!-- SPLITTER PIONOWY -->
+            <GridSplitter Grid.Column="1" Background="Transparent" ResizeDirection="Columns" HorizontalAlignment="Stretch">
+                <GridSplitter.Template>
+                    <ControlTemplate>
+                        <Border Background="Transparent" Width="16">
+                            <Border Background="#2A2A2A" Width="4" Height="40" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </GridSplitter.Template>
+            </GridSplitter>
+
+            <!-- KOLUMNA 2: WALKA -->
+            <Border Grid.Column="2" Background="#111111" CornerRadius="12" Padding="20" BorderBrush="#222222" BorderThickness="1">
+                <Grid RowDefinitions="Auto, *">
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
+                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="#FF4D4D"/>
+                        <TextBlock Text="TRACKER WALKI" FontSize="12" FontWeight="Bold" Foreground="#FF4D4D" LetterSpacing="1"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" RowDefinitions="Auto, Auto, *" Margin="0,8,0,0">
 
                     <!-- ===== SEKCJA 1: SZYBKIE DODAWANIE DRUŻYNY ===== -->
                     <Border Grid.Row="0" IsVisible="{Binding IsEditable}" Background="#1A1A1A" CornerRadius="10" Padding="20" Margin="0,0,0,16" BorderBrush="#292929" BorderThickness="1">
@@ -508,8 +533,9 @@
                         </StackPanel>
                     </ScrollViewer>
 
+                    </Grid>
                 </Grid>
-            </TabItem>
-        </TabControl>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
