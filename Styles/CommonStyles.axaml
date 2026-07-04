@@ -29,7 +29,7 @@
     </Style>
     <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource AccentGoldHover}" />
-        <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
     </Style>
 
     <!-- 2. Ghost Button (Poboczny, z subtelnym tłem na hover) -->
@@ -65,21 +65,23 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
     <Style Selector="Button.dangerGhost:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+        <Setter Property="Background" Value="{DynamicResource AccentDanger}" />
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
     </Style>
     
     <!-- Danger Solid Button -->
     <Style Selector="Button.danger">
-        <Setter Property="Background" Value="{DynamicResource AccentDanger}" />
-        <Setter Property="Foreground" Value="{DynamicResource AppBackground}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentDanger}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentDanger}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}" />
         <Setter Property="Padding" Value="16,8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
     <Style Selector="Button.danger:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+        <Setter Property="Background" Value="{DynamicResource AccentDanger}" />
         <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
     </Style>
 
@@ -124,7 +126,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
     <Style Selector="Button.iconDanger:pointerover /template/ ContentPresenter">
-        <Setter Property="Background" Value="{DynamicResource DangerHoverBackground}" />
+        <Setter Property="Background" Value="{DynamicResource AccentDanger}" />
     </Style>
     <Style Selector="Button.iconDanger PathIcon">
         <Setter Property="Foreground" Value="{DynamicResource AccentDanger}" />
