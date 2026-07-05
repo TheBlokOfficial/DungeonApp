@@ -16,39 +16,39 @@
     </UserControl.Styles>
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <!-- Dodano sztywne Height="520" oraz ClipToBounds="True" -->
-        <Border Background="{DynamicResource CardBackground}" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1" CornerRadius="{DynamicResource CardCornerRadius}" Padding="{DynamicResource CardPadding}" Width="500" Height="520" ClipToBounds="True">
+        <!-- Dodano sztywne Height="650" oraz ClipToBounds="True" -->
+        <Border Classes="popModal" Background="{DynamicResource CardBackground}"  BorderThickness="0" CornerRadius="{DynamicResource CardCornerRadius}" Padding="{DynamicResource CardPadding}" Width="625" Height="650" ClipToBounds="True">
             
             <!-- Główny układ dzielący okno na 3 części: Nagłówek (Auto), Środek (*), Przyciski (Auto) -->
             <Grid RowDefinitions="Auto, *, Auto">
                 
                 <!-- NAGŁÓWEK -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,0,0,24">
-                    <PathIcon Data="{StaticResource IconSwords}" Width="24" Height="24" Foreground="{DynamicResource AccentGold}"/>
-                    <TextBlock Text="Zarejestruj Nową Postać" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,0,0,30">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="30" Height="30" Foreground="{DynamicResource AccentGold}"/>
+                    <TextBlock Text="Zarejestruj Nową Postać" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- FORMULARZ -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="24" VerticalAlignment="Top">
+                    <StackPanel Spacing="30" VerticalAlignment="Top">
                         
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Imię Postaci *" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Imię Postaci *" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                             <TextBox Text="{Binding CharacterName}" PlaceholderText="np. Geralt z Rivii..."/>
                         </StackPanel>
 
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Imię Gracza" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Imię Gracza" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                             <TextBox Text="{Binding PlayerName}" PlaceholderText="np. Tomek..."/>
                         </StackPanel>
 
                         <Grid ColumnDefinitions="*,16,*">
-                            <StackPanel Grid.Column="0" Spacing="8">
-                                <TextBlock Text="Rasa" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                            <StackPanel Grid.Column="0" Spacing="10">
+                                <TextBlock Text="Rasa" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                                 <TextBox Text="{Binding Race}" PlaceholderText="np. Człowiek..."/>
                             </StackPanel>
-                            <StackPanel Grid.Column="2" Spacing="8">
-                                <TextBlock Text="Klasa i Poziom" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                            <StackPanel Grid.Column="2" Spacing="10">
+                                <TextBlock Text="Klasa i Poziom" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                                 <TextBox Text="{Binding ClassAndLevel}" PlaceholderText="np. Wojownik 5..."/>
                             </StackPanel>
                         </Grid>
@@ -57,11 +57,11 @@
                 </ScrollViewer>
 
                 <!-- PRZYCISKI -->
-                <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,20,0,0">
+                <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,25,0,0">
                     <Button Grid.Column="0" Content="Anuluj" Command="{Binding CancelCommand}" Classes="ghost"
-                            BorderThickness="1" BorderBrush="{DynamicResource BorderSecondary}" HorizontalAlignment="Stretch" Margin="0,0,6,0" />
+                            BorderThickness="0"  HorizontalAlignment="Stretch" Margin="0,0,8,0" />
                     <Button Grid.Column="1" Content="Zapisz" Command="{Binding CreateCommand}" Classes="primary"
-                            HorizontalAlignment="Stretch" Margin="6,0,0,0" />
+                            HorizontalAlignment="Stretch" Margin="8,0,0,0" />
                 </Grid>
                 
             </Grid>

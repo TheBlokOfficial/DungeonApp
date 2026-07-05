@@ -25,4 +25,7 @@ public partial class Combatant : ObservableObject
 
     [ObservableProperty]
     private bool _isActiveTurn;
+
+    [ObservableProperty]
+    private bool _isDead;
 }

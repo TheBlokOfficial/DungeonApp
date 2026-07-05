@@ -5,17 +5,22 @@
              x:DataType="vm:MainWindowViewModel"
              x:Name="Root">
 
-    <Grid ColumnDefinitions="350, *">
-        <!-- LEWA: Lista postaci -->
-        <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,30,0">
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,24">
-                <TextBlock Grid.Column="0" Text="Postacie" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+    <Grid ColumnDefinitions="1*, 8*, 1*">
+        <Grid Grid.Column="1" Margin="0,0,0,25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ListPanelWidth}" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!-- LEWA: Lista postaci -->
+            <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,38,0">
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,30">
+                <TextBlock Grid.Column="0" Text="Postacie" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
                     <Button Classes="icon" Command="{Binding RefreshCharactersCommand}">
-                        <PathIcon Data="{StaticResource IconReload}" Width="16" Height="16" />
+                        <PathIcon Data="{StaticResource IconReload}" Width="20" Height="20" />
                     </Button>
-                    <Button Classes="primary" Command="{Binding CreateNewCharacterCommand}" Padding="8">
-                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16" />
+                    <Button Classes="primary" Command="{Binding CreateNewCharacterCommand}" Padding="10">
+                        <PathIcon Data="{StaticResource IconAdd}" Width="20" Height="20" />
                     </Button>
                 </StackPanel>
             </Grid>
@@ -25,10 +30,10 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Classes="card" Command="{Binding ((vm:MainWindowViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" 
-                                    CommandParameter="{Binding}" Margin="0,0,0,12">
+                                    CommandParameter="{Binding}" Margin="5,5,5,15">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding CharacterName}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
-                                    <TextBlock Text="{Binding ClassAndLevel}" FontSize="12" Foreground="{DynamicResource TextMuted}" Margin="0,4,0,0"/>
+                                    <TextBlock Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                    <TextBlock Text="{Binding ClassAndLevel}" FontSize="15" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
@@ -38,46 +43,17 @@
         </Grid>
 
         <!-- PRAWA: Szczegóły postaci (Widoczne tylko po wybraniu) -->
-        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNotNull}}" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1" Padding="40" VerticalAlignment="Stretch">
-            <StackPanel>
-                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,24">
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="{Binding SelectedCharacter.CharacterName}" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" TextWrapping="Wrap"/>
-                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,8,0,0">
-                            <TextBlock Text="Gra:" FontSize="14" Foreground="{DynamicResource TextMuted}" />
-                            <TextBlock Text="{Binding SelectedCharacter.PlayerName}" FontSize="14" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
-                        </StackPanel>
-                    </StackPanel>
-                    <Button Grid.Column="1" Classes="dangerGhost" Command="{Binding DeleteCharacterCommand}" CommandParameter="{Binding SelectedCharacter}" VerticalAlignment="Top">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14" />
-                            <TextBlock Text="Usuń" FontSize="13"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-                
-                <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource BorderSecondary}" Margin="0,0,0,24" />
-
-                <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="150, *">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Rasa" Foreground="{DynamicResource TextMuted}" FontSize="13" Margin="0,0,0,16"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedCharacter.Race}" Foreground="{DynamicResource TextPrimary}" FontSize="15" FontWeight="Medium" Margin="0,0,0,16"/>
-                    
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Klasa i Poziom" Foreground="{DynamicResource TextMuted}" FontSize="13"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedCharacter.ClassAndLevel}" Foreground="{DynamicResource TextPrimary}" FontSize="15" FontWeight="Medium"/>
-                </Grid>
-
-                <Button Classes="primary" Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCharacterDetailCommand, ElementName=Root}" CommandParameter="{Binding SelectedCharacter}" HorizontalAlignment="Stretch" Margin="0,40,0,0">
-                    <TextBlock Text="Otwórz pełną Kartę Postaci" FontSize="14" />
-                </Button>
-            </StackPanel>
+        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNotNull}}" Background="{DynamicResource CardBackground}" CornerRadius="15"  BorderThickness="0" VerticalAlignment="Stretch">
+            <ContentControl Content="{Binding SelectedCharacterDetail}" />
         </Border>
         
         <!-- PUSTY STAN (Gdy nic nie wybrano) -->
-        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacter, Converter={x:Static ObjectConverters.IsNull}}" Background="{DynamicResource CardBackground}" CornerRadius="12" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1" Padding="40" VerticalAlignment="Stretch">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
-                <PathIcon Data="{StaticResource IconSwords}" Width="48" Height="48" Foreground="{DynamicResource BorderInput}"/>
-                <TextBlock Text="Wybierz bohatera z listy po lewej, aby zobaczyć szczegóły." Foreground="{DynamicResource TextMuted}" FontSize="14"/>
+        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNull}}" Background="{DynamicResource CardBackground}" CornerRadius="15"  BorderThickness="0" Padding="50" VerticalAlignment="Stretch">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+                <PathIcon Data="{StaticResource IconSwords}" Width="60" Height="60" Foreground="{DynamicResource BorderInput}"/>
+                <TextBlock Text="Wybierz bohatera z listy po lewej, aby zobaczyć szczegóły." Foreground="{DynamicResource TextMuted}" FontSize="18"/>
             </StackPanel>
         </Border>
+    </Grid>
     </Grid>
 </UserControl>

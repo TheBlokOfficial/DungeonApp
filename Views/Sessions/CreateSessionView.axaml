@@ -13,48 +13,48 @@
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="Padding" Value="12,10"/>
         </Style>
-        <!-- Delikatny styl dla CheckBoxów -->
+        <!-- Delikatny styl dla CheckBox�w -->
         <Style Selector="CheckBox">
             <Setter Property="Foreground" Value="#EEEEEE"/>
         </Style>
     </UserControl.Styles>
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Border Background="#1A1A1A" 
-                BorderBrush="#292929" 
-                BorderThickness="1" 
-                CornerRadius="12" 
-                Padding="40" 
-                Width="500" 
-                MaxHeight="650">
+        <Border Classes="popModal" Background="#1A1A1A" 
+                 
+                BorderThickness="0" 
+                CornerRadius="15" 
+                Padding="50" 
+                Width="625" 
+                MaxHeight="812">
             
             <Grid RowDefinitions="Auto, *, Auto">
-                <!-- NAGŁÓWEK -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,0,0,24">
-                    <PathIcon Data="{StaticResource IconAdd}" Width="24" Height="24" Foreground="#D4A017"/>
-                    <TextBlock Text="Rozpocznij Nową Sesję" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                <!-- NAG��WEK -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,0,0,30">
+                    <PathIcon Data="{StaticResource IconAdd}" Width="30" Height="30" Foreground="#D4A017"/>
+                    <TextBlock Text="Rozpocznij Now� Sesj�" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- FORMULARZ Z SCROLLOWANIEM (przydatne przy dużej ilości postaci) -->
+                <!-- FORMULARZ Z SCROLLOWANIEM (przydatne przy du�ej ilo�ci postaci) -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="24">
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Tytuł Sesji *" Foreground="#888888" FontSize="13" FontWeight="Medium"/>
-                            <TextBox Text="{Binding Title}" PlaceholderText="np. Podróż do Neverwinter..."/>
+                    <StackPanel Spacing="30">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Tytu� Sesji *" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
+                            <TextBox Text="{Binding Title}" PlaceholderText="np. Podr� do Neverwinter..."/>
                         </StackPanel>
 
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="Obecni Bohaterowie" Foreground="#888888" FontSize="13" FontWeight="Medium"/>
-                            <!-- Pojemnik na listę CheckBoxów -->
-                            <Border Background="#171717" BorderBrush="#292929" BorderThickness="1" CornerRadius="6" Padding="16,12">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Obecni Bohaterowie" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
+                            <!-- Pojemnik na list� CheckBox�w -->
+                            <Border Background="#171717"  BorderThickness="0" CornerRadius="8" Padding="20,15">
                                 <Grid>
                                     <ItemsControl ItemsSource="{Binding AvailableCharacters}"
                                                   IsVisible="{Binding AvailableCharacters.Count}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <!-- CheckBox połączony z klasą CharacterSelectionItem -->
-                                                <CheckBox IsChecked="{Binding IsSelected}" Margin="0,6">
-                                                    <TextBlock Text="{Binding Character.CharacterName}" FontSize="15" FontWeight="Medium" />
+                                                <!-- CheckBox po��czony z klas� CharacterSelectionItem -->
+                                                <CheckBox IsChecked="{Binding IsSelected}" Margin="0,8">
+                                                    <TextBlock Text="{Binding Character.CharacterName}" FontSize="19" FontWeight="Medium" />
                                                 </CheckBox>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -65,7 +65,7 @@
                                                IsVisible="{Binding !AvailableCharacters.Count}"
                                                Foreground="#666666"
                                                FontStyle="Italic"
-                                               Margin="0,4"/>
+                                               Margin="0,5"/>
                                 </Grid>
                             </Border>
                         </StackPanel>
@@ -73,17 +73,17 @@
                 </ScrollViewer>
 
                 <!-- PRZYCISKI -->
-                <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,24,0,0">
+                <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,30,0,0">
                     <Button Grid.Column="0" Content="Anuluj" Command="{Binding CancelCommand}"
-                            Background="Transparent" BorderBrush="#333333" BorderThickness="1" 
-                            Foreground="#A3A3A3" Padding="15,12" CornerRadius="6" 
-                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,6,0">
+                            Background="Transparent"  BorderThickness="0" 
+                            Foreground="#A3A3A3" Padding="19,15" CornerRadius="8" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,8,0">
                         <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929"/><Setter Property="Foreground" Value="#FFFFFF"/></Style></Button.Styles>
                     </Button>
                     <Button Grid.Column="1" Content="Rozpocznij" Command="{Binding CreateCommand}"
                             Background="#D4A017" Foreground="#171717" FontWeight="Bold" 
-                            Padding="15,12" CornerRadius="6" 
-                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="6,0,0,0">
+                            Padding="19,15" CornerRadius="8" 
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="8,0,0,0">
                         <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#E5B027"/></Style></Button.Styles>
                     </Button>
                 </Grid>
@@ -91,3 +91,4 @@
         </Border>
     </Grid>
 </UserControl>
+

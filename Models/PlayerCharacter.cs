@@ -33,25 +33,7 @@ public partial class PlayerCharacter : ObservableObject
     private int _speed = 30;
 
     [ObservableProperty]
-    private int _strength = 10;
-
-    [ObservableProperty]
-    private int _dexterity = 10;
-
-    [ObservableProperty]
-    private int _constitution = 10;
-
-    [ObservableProperty]
-    private int _intelligence = 10;
-
-    [ObservableProperty]
-    private int _wisdom = 10;
-
-    [ObservableProperty]
-    private int _charisma = 10;
-
-    [ObservableProperty]
-    private string _equipment = string.Empty;
+    private System.Collections.ObjectModel.ObservableCollection<EquipmentItem> _equipmentItems = new();
 
     [ObservableProperty]
     private string _notes = string.Empty;

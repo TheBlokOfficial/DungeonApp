@@ -5,32 +5,32 @@
              x:DataType="vm:MainWindowViewModel"
              Margin="0,0,0,0">
     
-    <Grid RowDefinitions="Auto, *" Margin="30">
+    <Grid RowDefinitions="Auto, *" Margin="38" MaxWidth="1000" HorizontalAlignment="Center">
         
-        <StackPanel Grid.Row="0" Margin="0,0,0,30">
-            <TextBlock Text="Ustawienia Aplikacji" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
-            <TextBlock Text="Zarządzaj opcjami wyglądu i działania" FontSize="14" Foreground="{DynamicResource TextMuted}" Margin="0,4,0,0" />
+        <StackPanel Grid.Row="0" Margin="0,0,0,38">
+            <TextBlock Text="Ustawienia Aplikacji" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+            <TextBlock Text="Zarządzaj opcjami wyglądu i działania" FontSize="18" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
         </StackPanel>
 
         <ScrollViewer Grid.Row="1">
-            <StackPanel Spacing="24">
+            <StackPanel Spacing="30">
                 
-                <Border Background="{DynamicResource CardBackground}" CornerRadius="12" Padding="24" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1">
-                    <StackPanel Spacing="16">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16" Foreground="{DynamicResource AccentPrimary}" />
-                            <TextBlock Text="WYGLĄD" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1" />
+                <Border Background="{DynamicResource CardBackground}" CornerRadius="15" Padding="30"  BorderThickness="0">
+                    <StackPanel Spacing="20">
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <PathIcon Data="{StaticResource IconSettings}" Width="20" Height="20" Foreground="{DynamicResource AccentPrimary}" />
+                            <TextBlock Text="WYGLĄD" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1" />
                         </StackPanel>
 
-                        <Grid ColumnDefinitions="*, Auto" Margin="0,8,0,0">
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Rozmiar Interfejsu (Zoom)" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Text="Rozmiar Interfejsu (Zoom)" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
                                 <TextBlock Text="Powiększa lub pomniejsza wszystkie elementy UI. Idealne do monitorów 4K lub mniejszych ekranów." 
-                                           FontSize="13" Foreground="{DynamicResource TextMuted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                                           FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" TextWrapping="Wrap" />
                             </StackPanel>
                             
                             <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsScaleOptions}" SelectedItem="{Binding SelectedScaleOption}" 
-                                      Width="160" Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderInput}" Foreground="{DynamicResource TextPrimary}" CornerRadius="6">
+                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding DisplayName}" />
@@ -45,3 +45,4 @@
         </ScrollViewer>
     </Grid>
 </UserControl>
+

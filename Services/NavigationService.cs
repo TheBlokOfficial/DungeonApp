@@ -34,4 +34,10 @@ public partial class NavigationService : ObservableObject, INavigationService
         }
         CurrentView?.OnNavigatedTo();
     }
+
+    public void ClearNavigation()
+    {
+        _history.Clear();
+        CurrentView = null;
+    }
 }

@@ -8,66 +8,66 @@
 
     <Grid RowDefinitions="Auto, Auto, *">
         <TextBox Grid.Row="0" Text="{Binding SearchQuery}" PlaceholderText="Wyszukaj..." 
-                 Background="{DynamicResource AppBackground}" BorderThickness="1" Margin="0,0,0,16" Padding="12"/>
+                 Background="{DynamicResource AppBackground}" BorderThickness="0" Margin="0,0,0,20" Padding="15"/>
 
-        <Border Grid.Row="1" IsVisible="{Binding IsEditable}" Background="{DynamicResource CardBackground}" CornerRadius="8" Padding="0" Margin="0,0,0,24" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1">
+        <Border Grid.Row="1" IsVisible="{Binding IsEditable}" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="0" Margin="0,0,0,30" BorderThickness="0">
             <Grid RowDefinitions="Auto, *" >
                 <!-- Markdown Toolbar -->
-                <Border Grid.Row="0" Background="{DynamicResource InputBackground}" CornerRadius="8,8,0,0" Padding="6,4" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="0,0,0,1">
+                <Border Grid.Row="0" Background="Transparent" Padding="8,5" BorderThickness="0">
                     <StackPanel Orientation="Horizontal" Spacing="2">
                         <!-- Bold -->
-                        <Button Tag="Format:bold" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Pogrubienie (**tekst**)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconBold}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:bold" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Pogrubienie (**tekst**)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconBold}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                         <!-- Italic -->
-                        <Button Tag="Format:italic" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Kursywa (*tekst*)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconItalic}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:italic" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Kursywa (*tekst*)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconItalic}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                         <!-- Strikethrough -->
-                        <Button Tag="Format:strikethrough" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Przekreślenie (~~tekst~~)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconStrikethrough}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:strikethrough" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Przekreślenie (~~tekst~~)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconStrikethrough}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
 
                         <!-- Separator -->
-                        <Border Width="1" Background="{DynamicResource BorderInput}" Margin="4,4"/>
+                        <Border Width="1" Background="{DynamicResource BorderInput}" Margin="5,5"/>
                         
                         <!-- Heading -->
-                        <Button Tag="Format:heading" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Nagłówek (## tekst)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconHeading}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:heading" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Nagłówek (## tekst)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconHeading}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                         <!-- Bullet List -->
-                        <Button Tag="Format:bullet" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Lista punktowa (- element)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconBulletList}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:bullet" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Lista punktowa (- element)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconBulletList}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                         <!-- Numbered List -->
-                        <Button Tag="Format:numbered" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Lista numerowana (1. element)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconNumberedList}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:numbered" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Lista numerowana (1. element)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconNumberedList}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
 
                         <!-- Separator -->
-                        <Border Width="1" Background="{DynamicResource BorderInput}" Margin="4,4"/>
+                        <Border Width="1" Background="{DynamicResource BorderInput}" Margin="5,5"/>
 
                         <!-- Horizontal Rule -->
-                        <Button Tag="Format:hr" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Linia pozioma (---)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconHorizontalRule}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:hr" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Linia pozioma (---)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconHorizontalRule}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                         <!-- Code -->
-                        <Button Tag="Format:code" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Kod (`kod`)" Padding="8,6">
-                            <PathIcon Data="{StaticResource IconCode}" Width="16" Height="16" Foreground="{DynamicResource TextSecondary}"/>
+                        <Button Tag="Format:code" Classes="icon" Click="OnFormatButtonClick" Focusable="False" ToolTip.Tip="Kod (`kod`)" Padding="10,8">
+                            <PathIcon Data="{StaticResource IconCode}" Width="20" Height="20" Foreground="{DynamicResource TextSecondary}"/>
                         </Button>
                     </StackPanel>
                 </Border>
 
                 <!-- Editor area with TextBox and Add button -->
-                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="12">
+                <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Margin="15,0,15,15">
                     <TextBox x:Name="NewNoteEditor" Grid.Column="0" Text="{Binding NewNoteText}" 
                              PlaceholderText="Napisz notatkę w formacie Markdown..."
-                             AcceptsReturn="True" MaxHeight="160" MinHeight="80" TextWrapping="Wrap" 
-                             Background="{DynamicResource AppBackground}" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1" 
-                             CornerRadius="6" Padding="12" Margin="0,0,12,0"
-                             FontFamily="Consolas, 'Courier New', monospace" FontSize="13"/>
-                    <Button Grid.Column="1" Classes="primary" Command="{Binding AddNoteCommand}" VerticalAlignment="Bottom" Padding="20,12">
-                        <TextBlock Text="Dodaj" />
+                             AcceptsReturn="True" MaxHeight="200" MinHeight="100" TextWrapping="Wrap" 
+                             Background="{DynamicResource InputBackground}" BorderThickness="0" 
+                             CornerRadius="8" Padding="15" Margin="0,0,15,0"
+                             FontFamily="Consolas, 'Courier New', monospace" FontSize="16"/>
+                    <Button Grid.Column="1" Classes="ghost" BorderThickness="0"  Command="{Binding AddNoteCommand}" VerticalAlignment="Bottom" Padding="25,15">
+                        <TextBlock Text="Dodaj" Foreground="{DynamicResource TextSecondary}" />
                     </Button>
                 </Grid>
             </Grid>
@@ -77,33 +77,33 @@
             <ItemsControl ItemsSource="{Binding FilteredNotes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="{DynamicResource CardBackground}" CornerRadius="8" Padding="20" Margin="0,0,0,12" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="1">
+                        <Border Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="25" Margin="0,0,0,15" BorderThickness="0">
                             <Grid ColumnDefinitions="*, Auto">
                                 <!-- Display mode: render markdown -->
-                                <StackPanel Grid.Column="0" Margin="0,0,16,0" IsVisible="{Binding !IsEditing}">
-                                    <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:HH:mm}'}" FontSize="12" Foreground="{DynamicResource TextMuted}"/>
+                                <StackPanel Grid.Column="0" Margin="0,0,20,0" IsVisible="{Binding !IsEditing}">
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:HH:mm}'}" FontSize="15" Foreground="{DynamicResource TextMuted}"/>
                                     <controls:SimpleMarkdownViewer 
                                         Markdown="{Binding Text}" 
-                                        Margin="0,4,0,0"/>
+                                        Margin="0,5,0,0"/>
                                 </StackPanel>
                                 
                                 <!-- Edit mode -->
                                 <StackPanel Grid.Column="0" IsVisible="{Binding IsEditing}">
                                     <TextBox Text="{Binding DraftText}" AcceptsReturn="True" TextWrapping="Wrap" 
-                                             Background="{DynamicResource AppBackground}" FontFamily="Consolas, 'Courier New', monospace" FontSize="13"
-                                             CornerRadius="6" Padding="12" MinHeight="80"/>
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Spacing="8">
-                                        <Button Classes="ghost" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteCancelCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Anuluj" Padding="14,8"/>
-                                        <Button Classes="primary" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteSaveCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Zapisz" Padding="14,8"/>
+                                             Background="{DynamicResource AppBackground}" FontFamily="Consolas, 'Courier New', monospace" FontSize="16"
+                                             CornerRadius="8" Padding="15" MinHeight="100"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Spacing="10">
+                                        <Button Classes="ghost" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteCancelCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Anuluj" Padding="18,10"/>
+                                        <Button Classes="primary" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteSaveCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Zapisz" Padding="18,10"/>
                                     </StackPanel>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding !IsEditing}">
                                     <Button Classes="icon" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteStartCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionDetailViewModel)DataContext).IsEditable, ElementName=Root}">
-                                        <PathIcon Data="{StaticResource IconEdit}" Width="16" />
+                                        <PathIcon Data="{StaticResource IconEdit}" Width="20" />
                                     </Button>
                                     <Button Classes="iconDanger" Command="{Binding ((vm:SessionDetailViewModel)DataContext).DeleteNoteCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionDetailViewModel)DataContext).IsEditable, ElementName=Root}">
-                                        <PathIcon Data="{StaticResource IconTrash}" Width="16" />
+                                        <PathIcon Data="{StaticResource IconTrash}" Width="20" />
                                     </Button>
                                 </StackPanel>
                             </Grid>
@@ -115,3 +115,4 @@
     </Grid>
 
 </UserControl>
+

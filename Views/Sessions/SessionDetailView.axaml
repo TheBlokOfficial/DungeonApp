@@ -6,104 +6,93 @@
              x:DataType="vm:SessionDetailViewModel"
              x:Name="Root">
 
-    <Grid RowDefinitions="Auto, Auto, *" Margin="30">
+    <Grid HorizontalAlignment="Stretch">
+        <Grid RowDefinitions="Auto, Auto, *" Margin="38">
         
         <!-- NAGŁÓWEK WIDOKU SESJI -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,24">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,30">
             <!-- Przycisk powrotu -->
-            <Button Grid.Column="0" Classes="ghost" Command="{Binding BackCommand}" Margin="0,0,20,0" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <TextBlock Text="←" FontSize="16" Foreground="{DynamicResource TextMuted}" />
+            <Button Grid.Column="0" Classes="ghost" Command="{Binding BackCommand}" Margin="0,0,25,0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="←" FontSize="20" Foreground="{DynamicResource TextMuted}" />
                     <TextBlock Text="Wróć do kampanii" VerticalAlignment="Center" Foreground="{DynamicResource TextMuted}" />
                 </StackPanel>
             </Button>
 
             <!-- Tytuł sesji -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Text="{Binding Campaign.Name}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="0,0,12,0"/>
-                <TextBlock Text="/" FontSize="26" Foreground="{DynamicResource BorderSecondary}" Margin="0,0,12,0"/>
-                <TextBlock Text="{Binding Session.Title}" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
-            </StackPanel>
+            <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
+                <TextBlock Grid.Column="0" Text="{Binding Campaign.Name}" MaxWidth="312" TextTrimming="CharacterEllipsis" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="0,0,15,0"/>
+                <TextBlock Grid.Column="1" Text="/" FontSize="32" Foreground="{DynamicResource BorderSecondary}" Margin="0,0,15,0"/>
+                <TextBlock Grid.Column="2" Text="{Binding Session.Title}" MaxWidth="438" TextTrimming="CharacterEllipsis" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+            </Grid>
         </Grid>
 
-        <!-- NAVBAR DLA PRZEŁĄCZANYCH ZAKŁADEK -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" Margin="0,0,0,24">
-            <!-- Przełącznik do Notatek -->
-            <ToggleButton x:Name="NavNotesToggle" Click="NavToggle_Click"
-                          Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderInput}" BorderThickness="1" CornerRadius="8" Padding="16,8">
-                <ToggleButton.Styles>
-                    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
+        <!-- NAVBAR DLA ZAKŁADEK -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="15" Margin="0,0,0,30">
+            <!-- Zakładka Notatki -->
+            <RadioButton Theme="{StaticResource {x:Type ToggleButton}}" GroupName="SessionTabs" Command="{Binding SwitchTabCommand}" CommandParameter="Notes" IsChecked="{Binding IsNotesTabActive, Mode=OneWay}"
+                          Background="Transparent" BorderThickness="0" CornerRadius="10" Padding="20,10">
+                <RadioButton.Styles>
+                    <Style Selector="RadioButton:pointerover /template/ ContentPresenter">
                         <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
                     </Style>
-                    <Style Selector="ToggleButton:checked /template/ ContentPresenter">
-                        <Setter Property="Background" Value="{DynamicResource AccentPrimaryDark}"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimary}"/>
+                    <Style Selector="RadioButton:checked /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource CardHoverBackground}"/>
                     </Style>
-                </ToggleButton.Styles>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <PathIcon Data="{StaticResource IconEdit}" Width="14" Height="14" Foreground="{DynamicResource AccentPrimary}"/>
-                    <TextBlock Text="Notatki Sesji" FontSize="13" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
+                </RadioButton.Styles>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <PathIcon Data="{StaticResource IconEdit}" Width="18" Height="18" Foreground="{DynamicResource TextMuted}"/>
+                    <TextBlock Text="Notatki Sesji" FontSize="16" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
                 </StackPanel>
-            </ToggleButton>
+            </RadioButton>
 
-            <!-- Przełącznik do Walki -->
-            <ToggleButton x:Name="NavCombatToggle" Click="NavToggle_Click"
-                          Background="{DynamicResource InputBackground}" BorderBrush="{DynamicResource BorderInput}" BorderThickness="1" CornerRadius="8" Padding="16,8">
-                <ToggleButton.Styles>
-                    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
+            <!-- Zakładka Walka -->
+            <RadioButton Theme="{StaticResource {x:Type ToggleButton}}" GroupName="SessionTabs" Command="{Binding SwitchTabCommand}" CommandParameter="CombatTracker" IsChecked="{Binding IsCombatTabActive, Mode=OneWay}"
+                          Background="Transparent" BorderThickness="0" CornerRadius="10" Padding="20,10">
+                <RadioButton.Styles>
+                    <Style Selector="RadioButton:pointerover /template/ ContentPresenter">
                         <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
                     </Style>
-                    <Style Selector="ToggleButton:checked /template/ ContentPresenter">
-                        <Setter Property="Background" Value="{DynamicResource AccentDangerDark}"/>
-                        <Setter Property="BorderBrush" Value="{DynamicResource AccentDanger}"/>
+                    <Style Selector="RadioButton:checked /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource CardHoverBackground}"/>
                     </Style>
-                </ToggleButton.Styles>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <PathIcon Data="{StaticResource IconSwords}" Width="14" Height="14" Foreground="{DynamicResource AccentDanger}"/>
-                    <TextBlock Text="Tracker Walki" FontSize="13" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
+                </RadioButton.Styles>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="18" Height="18" Foreground="{DynamicResource TextMuted}"/>
+                    <TextBlock Text="Tracker Walki" FontSize="16" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold"/>
                 </StackPanel>
-            </ToggleButton>
+            </RadioButton>
         </StackPanel>
 
         <!-- OBSZAR PANELI -->
-        <Grid Grid.Row="2" x:Name="ContentGrid" ColumnDefinitions="*, 16, *">
-            
-            <!-- KOLUMNA NOTATEK -->
-            <Border x:Name="NotesPanel" Grid.Column="0" HorizontalAlignment="Stretch" Background="{DynamicResource SurfaceBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" BorderBrush="{DynamicResource BorderPrimary}" BorderThickness="1" MinWidth="600">
-                <Grid RowDefinitions="Auto, *">
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                        <PathIcon Data="{StaticResource IconEdit}" Width="16" Height="16" Foreground="{DynamicResource AccentPrimary}"/>
-                        <TextBlock Text="NOTATKI SESJI" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1"/>
-                    </StackPanel>
-                    
-                    <sessions:SessionNotesView Grid.Row="1" />
-                </Grid>
-            </Border>
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <Grid>
+                <!-- ZAKŁADKA NOTATEK -->
+                <Border Classes="fadeTab" Classes.active="{Binding IsNotesTabActive}" HorizontalAlignment="Stretch" BorderThickness="0">
+                    <Grid RowDefinitions="Auto, *">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+                            <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20" Foreground="{DynamicResource AccentPrimary}"/>
+                            <TextBlock Text="NOTATKI SESJI" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1"/>
+                        </StackPanel>
+                        
+                        <sessions:SessionNotesView Grid.Row="1" />
+                    </Grid>
+                </Border>
 
-            <!-- SPLITTER PIONOWY -->
-            <GridSplitter x:Name="PanelSplitter" Grid.Column="1" Background="Transparent" ResizeDirection="Columns" HorizontalAlignment="Stretch">
-                <GridSplitter.Template>
-                    <ControlTemplate>
-                        <Border Background="Transparent" Width="16">
-                            <Border Background="{DynamicResource HoverGrip}" Width="4" Height="40" CornerRadius="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </GridSplitter.Template>
-            </GridSplitter>
+                <!-- ZAKŁADKA WALKI -->
+                <Border Classes="fadeTab" Classes.active="{Binding IsCombatTabActive}" HorizontalAlignment="Stretch" BorderThickness="0">
+                    <Grid RowDefinitions="Auto, *">
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+                            <PathIcon Data="{StaticResource IconSwords}" Width="20" Height="20" Foreground="{DynamicResource AccentDanger}"/>
+                            <TextBlock Text="TRACKER WALKI" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" LetterSpacing="1"/>
+                        </StackPanel>
 
-            <!-- KOLUMNA WALKI -->
-            <Border x:Name="CombatPanel" Grid.Column="2" HorizontalAlignment="Stretch" Background="{DynamicResource SurfaceBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" BorderBrush="{DynamicResource BorderPrimary}" BorderThickness="1" MinWidth="600">
-                <Grid RowDefinitions="Auto, *">
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,16">
-                        <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="{DynamicResource AccentDanger}"/>
-                        <TextBlock Text="TRACKER WALKI" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" LetterSpacing="1"/>
-                    </StackPanel>
+                        <sessions:SessionCombatView Grid.Row="1" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
 
-                    <sessions:SessionCombatView Grid.Row="1" />
-                </Grid>
-            </Border>
-            
         </Grid>
-
     </Grid>
 </UserControl>

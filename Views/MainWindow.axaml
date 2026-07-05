@@ -8,7 +8,7 @@
         x:DataType="vm:MainWindowViewModel"
         Name="RootWindow"
         Title="Dungeon App"
-        Width="1200" Height="800" MinWidth="900" MinHeight="600"
+        Width="1500" Height="1000" MinWidth="{Binding ScaledMinWidth}" MinHeight="{Binding ScaledMinHeight}"
         Background="{DynamicResource AppBackground}"
         Focusable="True"
         Icon="/Assets/avalonia-logo.ico">
@@ -18,8 +18,7 @@
             <ScaleTransform ScaleX="{Binding EffectiveUiScale}" ScaleY="{Binding EffectiveUiScale}" />
         </LayoutTransformControl.LayoutTransform>
         <Grid>
-            <views:DashboardView IsVisible="{Binding NavigationService.CurrentView, Converter={x:Static converters:ObjectConverters.IsNull}}"/>
-            <ContentControl Content="{Binding NavigationService.CurrentView}"/>
+            <views:DashboardView />
         </Grid>
     </LayoutTransformControl>
 </Window>

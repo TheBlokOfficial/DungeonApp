@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -38,22 +39,55 @@ public partial class MainWindow : Window
         UpdateEffectiveScale();
     }
 
+    private const double ComfortZoneWidth = 1280;
+    private const double ComfortZoneHeight = 720;
+
+    /// <summary>
+    /// Główny silnik zarządzający skalowaniem całego interfejsu aplikacji ("Safe-Shrink").
+    /// Metoda ta wylicza finalny mnożnik rozmiaru dla ViewBoxa.
+    /// </summary>
+    /// <remarks>
+    /// **Dlaczego to robimy w ten sposób:**
+    /// 1. **DPI Compensation:** Avalonia domyślnie skaluje interfejs w oparciu o ustawienia wyświetlacza Windows (np. 150%). 
+    ///    Aby temu zapobiec i zachować absolutną kontrolę nad wyglądem UI (pixel-perfect na 1440p), dzielimy docelową 
+    ///    skalę przez <c>renderScaling</c> (DPI systemu). Skala ustawiana przez gracza jest fizycznym rozmiarem końcowym na ekranie.
+    /// 2. **Auto-Scaling (0.0):** Jeśli ustawiono Auto, aplikacja bazuje na fizycznych pikselach monitora (np. przy 1440p 
+    ///    zawsze dobierze skalę 1.0, niezależnie czy w Windowsie jest ustawione 100% czy 150%).
+    /// 3. **Safe-Shrink:** Obliczamy <c>availableScale</c> bazując na rozmiarach okna i <c>ComfortZone</c> (1280x720). 
+    ///    Jeśli użytkownik zmniejszy okno poniżej tego rozmiaru, aplikacja płynnie pomniejszy UI zapobiegając ucinaniu kontrolek,
+    ///    utrzymując układ 16:9 w strefie komfortu.
+    /// </remarks>
     private void UpdateEffectiveScale()
     {
         if (this.DataContext is ViewModels.MainWindowViewModel vm)
         {
-            if (vm.UiScale == 0.0) // Auto
+            var topLevel = TopLevel.GetTopLevel(this);
+            double renderScaling = topLevel?.RenderScaling ?? 1.0;
+            double physicalWidth = this.Bounds.Width * renderScaling;
+            
+            double maxScale;
+
+            if (vm.UiScale == 0.0) // Auto — determine MaxScale from monitor resolution
             {
-                double width = this.Bounds.Width;
-                if (width < 1200) vm.EffectiveUiScale = 0.75;
-                else if (width < 1600) vm.EffectiveUiScale = 1.0;
-                else if (width < 2400) vm.EffectiveUiScale = 1.25;
-                else vm.EffectiveUiScale = 1.5;
+                double desiredScale;
+                if (physicalWidth >= 3000) desiredScale = 1.5;        // 4K
+                else if (physicalWidth >= 2000) desiredScale = 1.0;   // 1440p (sweet spot)
+                else if (physicalWidth >= 1300) desiredScale = 0.75;  // 1080p
+                else desiredScale = 0.5;                              // 720p / small windows
+                
+                maxScale = desiredScale / renderScaling;
             }
             else
             {
-                vm.EffectiveUiScale = vm.UiScale;
+                maxScale = vm.UiScale / renderScaling; // User-chosen maximum physical scale
             }
+
+            // Safe-Shrink: clamp scale down if window is too small for the comfort zone
+            double availableScaleW = this.Bounds.Width / ComfortZoneWidth;
+            double availableScaleH = this.Bounds.Height / ComfortZoneHeight;
+            double availableScale = Math.Min(availableScaleW, availableScaleH);
+
+            vm.EffectiveUiScale = Math.Min(maxScale, availableScale);
         }
     }
 

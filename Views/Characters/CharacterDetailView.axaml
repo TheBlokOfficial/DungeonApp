@@ -3,13 +3,13 @@
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.CharacterDetailView"
              x:DataType="vm:CharacterDetailViewModel"
-             Background="{DynamicResource AppBackground}">
+             Background="Transparent">
     
     <UserControl.Styles>
         <Style Selector="TextBox">
             <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
             <Setter Property="Padding" Value="10,8"/>
         </Style>
@@ -21,42 +21,47 @@
         </Style>
         <Style Selector="Border.statBox">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondary}"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="{DynamicResource CardCornerRadius}"/>
-            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Padding" Value="24"/>
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto, *" Margin="30">
+    <Grid HorizontalAlignment="Stretch">
+        <Grid RowDefinitions="Auto, *" Margin="30">
         
         <!-- GÓRNY PASEK: PRZYCISKI -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,24">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,30">
             <Button Grid.Column="0" Classes="ghost" Command="{Binding CancelCommand}">
-                <TextBlock Text="← Wróć (Anuluj)" FontSize="14" Foreground="{DynamicResource TextMuted}"/>
+                <TextBlock Text="← Wróć (Anuluj)" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
             </Button>
             
-            <TextBlock Grid.Column="1" Text="Karta Postaci" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Text="Karta Postaci" FontSize="25" Margin="19, 0, 19, 0" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
-            <Button Grid.Column="2" Classes="primary" Command="{Binding SaveCommand}">
-                <TextBlock Text="Zapisz" />
-            </Button>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15">
+                <Button Classes="danger" Command="{Binding DeleteCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
+                        <TextBlock Text="Usuń" />
+                    </StackPanel>
+                </Button>
+                <Button Classes="primary" Command="{Binding SaveCommand}">
+                    <TextBlock Text="Zapisz" />
+                </Button>
+            </StackPanel>
         </Grid>
 
         <ScrollViewer Grid.Row="1">
-            <Grid ColumnDefinitions="*, 400" Margin="0,0,0,20">
-                
-                <!-- LEWA KOLUMNA: PODSTAWY, WALKA, ATRYBUTY -->
-                <StackPanel Grid.Column="0" Spacing="24" Margin="0,0,24,0">
+            <StackPanel Spacing="30" Margin="0,0,20,25">
                     
                     <!-- DANE BOHATERA -->
-                    <Border Classes="statBox" BorderBrush="{DynamicResource AccentGold}">
+                    <Border Classes="statBox">
                         <Grid ColumnDefinitions="*, *, *">
-                            <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
                                 <TextBlock Classes="label" Text="Imię Postaci"/>
-                                <TextBox Text="{Binding Character.CharacterName}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentGold}"/>
+                                <TextBox Text="{Binding Character.CharacterName}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AccentGold}"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                            <StackPanel Grid.Column="1" Margin="0,0,20,0">
                                 <TextBlock Classes="label" Text="Rasa"/>
                                 <TextBox Text="{Binding Character.Race}"/>
                             </StackPanel>
@@ -70,90 +75,67 @@
                     <!-- STATYSTYKI BOJOWE -->
                     <Border Classes="statBox">
                         <Grid ColumnDefinitions="*, *, *, *">
-                            <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
                                 <TextBlock Classes="label" Text="Aktualne HP"/>
-                                <TextBox Text="{Binding Character.CurrentHp}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" TextAlignment="Center"/>
+                                <TextBox Text="{Binding Character.CurrentHp}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" TextAlignment="Center"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="0,0,16,0">
+                            <StackPanel Grid.Column="1" Margin="0,0,20,0">
                                 <TextBlock Classes="label" Text="Max HP"/>
-                                <TextBox Text="{Binding Character.MaxHp}" FontSize="24" FontWeight="Bold" TextAlignment="Center"/>
+                                <TextBox Text="{Binding Character.MaxHp}" FontSize="30" FontWeight="Bold" TextAlignment="Center"/>
                             </StackPanel>
-                            <StackPanel Grid.Column="2" Margin="0,0,16,0">
+                            <StackPanel Grid.Column="2" Margin="0,0,20,0">
                                 <TextBlock Classes="label" Text="Klasa Pancerza (AC)"/>
-                                <TextBox Text="{Binding Character.ArmorClass}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" TextAlignment="Center"/>
+                                <TextBox Text="{Binding Character.ArmorClass}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" TextAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Grid.Column="3">
                                 <TextBlock Classes="label" Text="Szybkość"/>
-                                <TextBox Text="{Binding Character.Speed}" FontSize="24" FontWeight="Bold" TextAlignment="Center"/>
+                                <TextBox Text="{Binding Character.Speed}" FontSize="30" FontWeight="Bold" TextAlignment="Center"/>
                             </StackPanel>
                         </Grid>
                     </Border>
-                    
-                    <!-- ATRYBUTY -->
-                    <Border Classes="statBox">
-                        <StackPanel>
-                            <TextBlock Text="ATRYBUTY" Classes="label" Margin="0,0,0,12"/>
-                            <Grid ColumnDefinitions="*, *, *, *, *, *">
-                                <!-- SIŁA -->
-                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
-                                    <TextBlock Text="SIŁ" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Strength}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding StrMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                <!-- EKWIPUNEK (Lista interaktywna) -->
+                <Border Classes="statBox">
+                    <StackPanel Spacing="15">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Grid.Column="0" Classes="label" Text="EKWIPUNEK" VerticalAlignment="Center" Margin="0"/>
+                            <Button Grid.Column="1" Classes="primary" Command="{Binding AddEquipmentItemCommand}" Padding="10,5">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15" />
+                                    <TextBlock Text="Dodaj" FontSize="15"/>
                                 </StackPanel>
-                                <!-- ZRĘCZNOŚĆ -->
-                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                                    <TextBlock Text="ZRĘ" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Dexterity}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding DexMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <!-- KONDYCJA -->
-                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
-                                    <TextBlock Text="KON" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Constitution}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding ConMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <!-- INTELIGENCJA -->
-                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
-                                    <TextBlock Text="INT" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Intelligence}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding IntMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <!-- MĄDROŚĆ -->
-                                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
-                                    <TextBlock Text="MĄD" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Wisdom}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding WisMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                                <!-- CHARYZMA -->
-                                <StackPanel Grid.Column="5" HorizontalAlignment="Center">
-                                    <TextBlock Text="CHA" Classes="label" HorizontalAlignment="Center"/>
-                                    <TextBox Text="{Binding Character.Charisma}" Width="50" TextAlignment="Center" FontWeight="Bold" Margin="0,0,0,4"/>
-                                    <TextBlock Text="{Binding ChaMod}" Foreground="#A3A3A3" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </StackPanel>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                    
-                </StackPanel>
+                            </Button>
+                        </Grid>
+                        
+                        <Border BorderThickness="0"  />
+
+                        <ItemsControl ItemsSource="{Binding Character.EquipmentItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*, 80, Auto" Margin="0,0,0,10" VerticalAlignment="Center">
+                                        <TextBox Grid.Column="0" Text="{Binding Name}" PlaceholderText="Nazwa przedmiotu" Margin="0,0,10,0" Padding="10,8" VerticalAlignment="Center" />
+                                        <TextBox Grid.Column="1" Text="{Binding Quantity}" PlaceholderText="Ilość" TextAlignment="Center" Margin="0,0,10,0" Padding="10,8" VerticalAlignment="Center" />
+                                        <Button Grid.Column="2" Classes="iconDanger" 
+                                                Command="{Binding ((vm:CharacterDetailViewModel)DataContext).RemoveEquipmentItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                CommandParameter="{Binding}" VerticalAlignment="Center">
+                                            <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
                 
-                <!-- PRAWA KOLUMNA: EKWIPUNEK I NOTATKI -->
-                <StackPanel Grid.Column="1" Spacing="24">
-                    <Border Classes="statBox" Height="250">
-                        <StackPanel Height="230">
-                            <TextBlock Classes="label" Text="EKWIPUNEK"/>
-                            <TextBox Text="{Binding Character.Equipment}" AcceptsReturn="True" TextWrapping="Wrap" Height="190" VerticalContentAlignment="Top"/>
-                        </StackPanel>
-                    </Border>
-                    
-                    <Border Classes="statBox" Height="300">
-                        <StackPanel Height="280">
-                            <TextBlock Classes="label" Text="NOTATKI / HISTORIA"/>
-                            <TextBox Text="{Binding Character.Notes}" AcceptsReturn="True" TextWrapping="Wrap" Height="240" VerticalContentAlignment="Top"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-                
-            </Grid>
+                <!-- NOTATKI / HISTORIA -->
+                <Border Classes="statBox" Height="375">
+                    <StackPanel Height="350">
+                        <TextBlock Classes="label" Text="NOTATKI / HISTORIA"/>
+                        <TextBox Text="{Binding Character.Notes}" AcceptsReturn="True" TextWrapping="Wrap" Height="300" VerticalContentAlignment="Top"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </ScrollViewer>
     </Grid>
+    </Grid>
 </UserControl>
+

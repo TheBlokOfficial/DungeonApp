@@ -22,49 +22,83 @@
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
         </Style>
+        
+        <!-- Style do ukrywania bez usuwania z drzewa (zapobiega skakaniu) -->
+        <Style Selector="TextBlock.hidable, StackPanel.hidable">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="SineEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="TextBlock.hidable.expanded, StackPanel.hidable.expanded">
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="IsHitTestVisible" Value="True" />
+        </Style>
     </UserControl.Styles>
     
-    <Border Background="{DynamicResource CardBackground}">
-        <StackPanel Margin="20" Spacing="8">
-            <!-- Logo / Tytuł -->
-            <TextBlock Text="DUNGEON" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" />
-            <TextBlock Text="Session Manager" FontSize="16" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,40" />
+    <UserControl.Transitions>
+        <Transitions>
+            <DoubleTransition Property="Width" Duration="0:0:0.3" Easing="CubicEaseOut" />
+        </Transitions>
+    </UserControl.Transitions>
 
-            <TextBlock Text="GŁÓWNE MENU" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,8" />
+    <Border Background="{DynamicResource CardBackground}">
+        <!-- 
+            Szerokość całkowita złożonego paska to 74px (CurrentSidebarWidth).
+            Margines 12px z każdej strony zostawia 50px miejsca wewnątrz (74 - 24 = 50px).
+            Przyciski navButton mają Padding=15 i zawierają ikonę 20px, co daje równe 50px (15+20+15).
+            Dzięki temu przyciski idealnie się mieszczą i nie są obcinane (ucięte zaokrąglenia).
+            Aby zminimalizowane przyciski były idealnymi kwadratami (50x50), mają ustawione Height="50".
+        -->
+        <StackPanel Margin="12,25,12,25" Spacing="10">
+            <!-- Logo / Tytuł i Hamburger -->
+            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,50">
+                <StackPanel Grid.Column="0" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <TextBlock Text="DUNGEON" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Text="Session Manager" FontSize="18" Foreground="{DynamicResource TextPrimary}" />
+                </StackPanel>
+                <Button Grid.Column="1" Classes="icon" Command="{Binding ToggleSidebarCommand}" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="10">
+                    <PathIcon Data="{StaticResource IconMenu}" Width="25" Height="25" />
+                </Button>
+            </Grid>
+
+            <TextBlock Text="GŁÓWNE MENU" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,0,0,10" />
 
             <!-- Przycisk: Kampanie -->
             <Button Classes="navButton" Classes.active="{Binding IsCampaignsVisible}"
                     Command="{Binding ShowCampaignsCommand}"
-                    BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch"
+                    BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <!-- Ikona zawsze świeci na złoto -->
-                    <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Kampanie RPG" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" />
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconShield}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Text="Kampanie RPG" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
                 </StackPanel>
             </Button>
 
             <!-- Przycisk: Bohaterowie -->
             <Button Classes="navButton" Classes.active="{Binding IsCharactersVisible}"
                     Command="{Binding ShowCharactersCommand}"
-                    BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch"
+                    BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <!-- Ikona zawsze świeci na złoto -->
-                    <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" />
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
                 </StackPanel>
             </Button>
-            <TextBlock Text="SYSTEM" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="0,16,0,8" />
+            
+            <TextBlock Text="SYSTEM" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,20,0,10" />
+            
             <!-- Przycisk: Ustawienia -->
             <Button Classes="navButton" Classes.active="{Binding IsSettingsVisible}"
                     Command="{Binding ShowSettingsCommand}"
-                    BorderThickness="0" CornerRadius="6" FontSize="15" Padding="15,12" HorizontalAlignment="Stretch"
+                    BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
-                <StackPanel Orientation="Horizontal" Spacing="12">
-                    <!-- Ikona zawsze świeci na złoto -->
-                    <PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Ustawienia Opcji" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" />
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconSettings}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Text="Ustawienia Opcji" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
                 </StackPanel>
             </Button>
         </StackPanel>

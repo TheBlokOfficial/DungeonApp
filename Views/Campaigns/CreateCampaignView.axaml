@@ -17,41 +17,41 @@
 
     <!-- Centrujemy zawartość na środku ekranu -->
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-        <Border Background="{DynamicResource CardBackground}" 
-                BorderBrush="{DynamicResource BorderSecondary}" 
-                BorderThickness="1" 
+        <Border Classes="popModal" Background="{DynamicResource CardBackground}" 
+                 
+                BorderThickness="0" 
                 CornerRadius="{DynamicResource CardCornerRadius}" 
                 Padding="{DynamicResource CardPadding}" 
-                Width="500">
+                Width="625">
             
-            <StackPanel Spacing="24">
+            <StackPanel Spacing="30">
                 <!-- Tytuł Widoku -->
-                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                    <PathIcon Data="{StaticResource IconSwords}" Width="24" Height="24" Foreground="{DynamicResource AccentGold}"/>
-                    <TextBlock Text="Stwórz Nową Kampanię" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="30" Height="30" Foreground="{DynamicResource AccentGold}"/>
+                    <TextBlock Text="Stwórz Nową Kampanię" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Formularz -->
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Nazwa Kampanii" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Nazwa Kampanii" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                     <TextBox Text="{Binding Name}" PlaceholderText="np. Klątwa Strahda..."/>
                 </StackPanel>
 
-                <StackPanel Spacing="8">
-                    <TextBlock Text="System RPG" Foreground="{DynamicResource TextMuted}" FontSize="13" FontWeight="Medium"/>
+                <StackPanel Spacing="10">
+                    <TextBlock Text="System RPG" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
                     <TextBox Text="{Binding System}" PlaceholderText="np. D&amp;D 5e..."/>
                 </StackPanel>
 
                 <!-- Przyciski Akcji -->
-                <Grid ColumnDefinitions="*, *" Margin="0,10,0,0">
+                <Grid ColumnDefinitions="*, *" Margin="0,12,0,0">
                     <Button Grid.Column="0" Content="Anuluj" Classes="ghost"
                             Command="{Binding CancelCommand}"
-                            BorderThickness="1" BorderBrush="{DynamicResource BorderSecondary}"
-                            HorizontalAlignment="Stretch" Margin="0,0,6,0" />
+                            BorderThickness="0" 
+                            HorizontalAlignment="Stretch" Margin="0,0,8,0" />
 
                     <Button Grid.Column="1" Content="Zapisz" Classes="primary"
                             Command="{Binding CreateCommand}"
-                            HorizontalAlignment="Stretch" Margin="6,0,0,0" />
+                            HorizontalAlignment="Stretch" Margin="8,0,0,0" />
                 </Grid>
             </StackPanel>
         </Border>

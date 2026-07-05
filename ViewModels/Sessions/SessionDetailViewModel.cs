@@ -9,6 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DungeonApp.ViewModels;
 
+public enum SessionTab
+{
+    CombatTracker,
+    Notes
+}
+
 public partial class SessionDetailViewModel : ViewModelBase
 {
     public Campaign Campaign { get; }
@@ -19,6 +25,23 @@ public partial class SessionDetailViewModel : ViewModelBase
 
     [ObservableProperty]
     private Session _session;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotesTabActive))]
+    [NotifyPropertyChangedFor(nameof(IsCombatTabActive))]
+    private SessionTab _currentTab = SessionTab.Notes;
+
+    public bool IsNotesTabActive => CurrentTab == SessionTab.Notes;
+    public bool IsCombatTabActive => CurrentTab == SessionTab.CombatTracker;
+
+    [RelayCommand]
+    private void SwitchTab(string tabName)
+    {
+        if (Enum.TryParse<SessionTab>(tabName, out var tab))
+        {
+            CurrentTab = tab;
+        }
+    }
 
     [ObservableProperty]
     private string _newNoteText = string.Empty;
@@ -247,6 +270,14 @@ public partial class SessionDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ToggleCombatantDead(Combatant? c)
+    {
+        if (c == null) return;
+        c.IsDead = !c.IsDead;
+        Save();
+    }
+
+    [RelayCommand]
     private void ClearAllCombatants()
     {
         foreach (var c in CombatantsList)
@@ -285,10 +316,24 @@ public partial class SessionDetailViewModel : ViewModelBase
         if (currentActive != null)
         {
             int currentIndex = CombatantsList.IndexOf(currentActive);
-            nextIndex = (currentIndex + 1) % CombatantsList.Count;
+            nextIndex = currentIndex;
             
-            if (nextIndex == 0)
-                CurrentRound++;
+            // Szukaj następnego żywego
+            for (int i = 0; i < CombatantsList.Count; i++)
+            {
+                nextIndex = (nextIndex + 1) % CombatantsList.Count;
+                if (nextIndex == 0)
+                    CurrentRound++;
+                
+                if (!CombatantsList[nextIndex].IsDead)
+                    break;
+            }
+        }
+        else
+        {
+            var firstAlive = CombatantsList.FirstOrDefault(c => !c.IsDead);
+            if (firstAlive != null)
+                nextIndex = CombatantsList.IndexOf(firstAlive);
         }
 
         CombatantsList[nextIndex].IsActiveTurn = true;
