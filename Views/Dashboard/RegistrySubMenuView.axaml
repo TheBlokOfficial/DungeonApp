@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels"
+             x:Class="DungeonApp.Views.Dashboard.RegistrySubMenuView"
+             x:DataType="vm:MainWindowViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Button.subNavButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="20,12" />
+        </Style>
+        <Style Selector="Button.subNavButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        </Style>
+        <Style Selector="Button.subNavButton.active /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
+        </Style>
+        <Style Selector="Button.subNavButton.active TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentGold}" />
+        </Style>
+        
+        <Style Selector="Border.subSidebar">
+            <Setter Property="Width" Value="0" />
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Width" Duration="0:0:0.3" Easing="CubicEaseOut" />
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" Easing="SineEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.subSidebar.active">
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="IsHitTestVisible" Value="True" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Pasek ma statyczną szerokość i swoje tło, jest oddzielony Borderem od reszty -->
+    <Border Classes="subSidebar" Classes.active="{Binding IsRegistryVisible}" Background="{DynamicResource BackgroundElevated}" BorderBrush="{DynamicResource BorderSecondary}" BorderThickness="0,0,1,0">
+        <StackPanel Margin="15,40,15,20" Spacing="5">
+            <TextBlock Text="REJESTR" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="10,0,0,15" />
+            
+            <Button Classes="subNavButton" Classes.active="{Binding IsCharactersActive}" HorizontalAlignment="Stretch"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Characters}">
+                <TextBlock Text="Bohaterowie" />
+            </Button>
+            <Button Classes="subNavButton" Classes.active="{Binding IsItemsActive}" HorizontalAlignment="Stretch"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Items}">
+                <TextBlock Text="Przedmioty" />
+            </Button>
+            <Button Classes="subNavButton" Classes.active="{Binding IsMonstersActive}" HorizontalAlignment="Stretch"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Monsters}">
+                <TextBlock Text="Potwory" />
+            </Button>
+            <Button Classes="subNavButton" Classes.active="{Binding IsOthersActive}" HorizontalAlignment="Stretch"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Others}">
+                <TextBlock Text="Inne" />
+            </Button>
+        </StackPanel>
+    </Border>
+</UserControl>

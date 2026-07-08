@@ -59,10 +59,10 @@ public partial class CreateCampaignViewModel : ViewModelBase
         // musielibyśmy zawiadomić MainWindow. For now, we will NavigateBack().
         _navigationService.NavigateBack();
         
-        // Zaktualizujmy MainWindow by wymusić odświeżenie:
-        if (App.Current?.Services?.GetService(typeof(MainWindowViewModel)) is MainWindowViewModel mainVm)
+        // Zaktualizujmy by wymusić odświeżenie:
+        if (App.Current?.Services?.GetService(typeof(DungeonApp.ViewModels.Dashboard.CampaignsTabViewModel)) is DungeonApp.ViewModels.Dashboard.CampaignsTabViewModel campaignsVm)
         {
-            mainVm.Campaigns.Insert(0, newCampaign);
+            campaignsVm.Campaigns.Insert(0, newCampaign);
         }
     }
 }

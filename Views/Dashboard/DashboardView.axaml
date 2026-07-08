@@ -10,28 +10,25 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" /> <!-- Główny Sidebar -->
+            <ColumnDefinition Width="Auto" /> <!-- Podrzędny Sidebar (Rejestr) -->
+            <ColumnDefinition Width="*" />    <!-- Główna zawartość -->
         </Grid.ColumnDefinitions>
 
-        <views:NavigationBarView Width="{Binding CurrentSidebarWidth}" />
+        <!-- KOLUMNA 0: GŁÓWNY SIDEBAR -->
+        <views:NavigationBarView Grid.Column="0" Width="{Binding CurrentSidebarWidth}" />
         
-        <!-- PRAWY PANEL: GŁÓWNA ZAWARTOŚĆ -->
-        <Border Grid.Column="1" Padding="50">
-            <Grid>
-                <Grid>
-                    <dashboard:CampaignsTabView Classes="fadeTab" Classes.active="{Binding IsCampaignsListVisible}" />
-                    <dashboard:CharactersTabView Classes="fadeTab" Classes.active="{Binding IsCharactersListVisible}" />
-                    <dashboard:SettingsTabView Classes="fadeTab" Classes.active="{Binding IsSettingsVisible}" />
-                </Grid>
-                
-                <!-- Ekran Gry / Ekran Tworzenia Postaci (Zagnieżdżony nad poczekalniami) -->
-                <TransitioningContentControl Content="{Binding NavigationService.CurrentView}">
-                    <TransitioningContentControl.PageTransition>
-                        <CrossFade Duration="0:0:0.25" />
-                    </TransitioningContentControl.PageTransition>
-                </TransitioningContentControl>
-            </Grid>
+        <!-- KOLUMNA 1: PODRZĘDNY SIDEBAR (Tylko Rejestr) -->
+        <dashboard:RegistrySubMenuView Grid.Column="1" />
+        
+        <!-- KOLUMNA 2: GŁÓWNA ZAWARTOŚĆ -->
+        <Border Grid.Column="2" Padding="50">
+            <!-- Bezpieczny, pojedynczy system wymieniania ekranów (zarówno dashboard jak i ekrany kontekstowe gry) -->
+            <TransitioningContentControl Content="{Binding ActiveMainView}">
+                <TransitioningContentControl.PageTransition>
+                    <CrossFade Duration="0:0:0.25" />
+                </TransitioningContentControl.PageTransition>
+            </TransitioningContentControl>
         </Border>
     </Grid>
     

@@ -21,8 +21,7 @@ public class CharacterService : ICharacterService
     public CharacterService(IStorageService storageService)
     {
         _storageService = storageService;
-        string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        _baseDirectory = Path.Combine(documents, "DungeonSessionManager", "Characters");
+        _baseDirectory = Path.Combine(AppPaths.UserDataPath, "characters");
         Directory.CreateDirectory(_baseDirectory);
     }
 

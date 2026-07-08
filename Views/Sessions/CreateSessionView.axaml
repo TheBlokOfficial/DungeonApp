@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.CreateSessionView"
@@ -29,23 +29,23 @@
                 MaxHeight="812">
             
             <Grid RowDefinitions="Auto, *, Auto">
-                <!-- NAG��WEK -->
+                <!-- NAGŁÓWEK -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,0,0,30">
                     <PathIcon Data="{StaticResource IconAdd}" Width="30" Height="30" Foreground="#D4A017"/>
-                    <TextBlock Text="Rozpocznij Now� Sesj�" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Text="Rozpocznij Nową Sesję" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <!-- FORMULARZ Z SCROLLOWANIEM (przydatne przy du�ej ilo�ci postaci) -->
+                <!-- FORMULARZ ZE SCROLLOWANIEM (przydatne przy dużej ilości postaci) -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="30">
                         <StackPanel Spacing="10">
-                            <TextBlock Text="Tytu� Sesji *" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding Title}" PlaceholderText="np. Podr� do Neverwinter..."/>
+                            <TextBlock Text="Tytuł Sesji *" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
+                            <TextBox Text="{Binding Title}" PlaceholderText="np. Podróż do Neverwinter..."/>
                         </StackPanel>
 
                         <StackPanel Spacing="10">
                             <TextBlock Text="Obecni Bohaterowie" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
-                            <!-- Pojemnik na list� CheckBox�w -->
+                            <!-- Pojemnik na listę CheckBoxów -->
                             <Border Background="#171717"  BorderThickness="0" CornerRadius="8" Padding="20,15">
                                 <Grid>
                                     <ItemsControl ItemsSource="{Binding AvailableCharacters}"

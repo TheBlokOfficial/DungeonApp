@@ -66,31 +66,12 @@
 
         <!-- OBSZAR PANELI -->
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-            <Grid>
-                <!-- ZAKŁADKA NOTATEK -->
-                <Border Classes="fadeTab" Classes.active="{Binding IsNotesTabActive}" HorizontalAlignment="Stretch" BorderThickness="0">
-                    <Grid RowDefinitions="Auto, *">
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-                            <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20" Foreground="{DynamicResource AccentPrimary}"/>
-                            <TextBlock Text="NOTATKI SESJI" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1"/>
-                        </StackPanel>
-                        
-                        <sessions:SessionNotesView Grid.Row="1" />
-                    </Grid>
-                </Border>
-
-                <!-- ZAKŁADKA WALKI -->
-                <Border Classes="fadeTab" Classes.active="{Binding IsCombatTabActive}" HorizontalAlignment="Stretch" BorderThickness="0">
-                    <Grid RowDefinitions="Auto, *">
-                        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-                            <PathIcon Data="{StaticResource IconSwords}" Width="20" Height="20" Foreground="{DynamicResource AccentDanger}"/>
-                            <TextBlock Text="TRACKER WALKI" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" LetterSpacing="1"/>
-                        </StackPanel>
-
-                        <sessions:SessionCombatView Grid.Row="1" />
-                    </Grid>
-                </Border>
-            </Grid>
+            <!-- Bezpieczny, pojedynczy system wymieniania ekranów podrzędnych -->
+            <TransitioningContentControl Content="{Binding ActiveTabContent}" HorizontalAlignment="Stretch">
+                <TransitioningContentControl.PageTransition>
+                    <CrossFade Duration="0:0:0.25" />
+                </TransitioningContentControl.PageTransition>
+            </TransitioningContentControl>
         </ScrollViewer>
 
         </Grid>

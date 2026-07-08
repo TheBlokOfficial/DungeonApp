@@ -12,12 +12,14 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
             <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <Style Selector="TextBlock.label">
             <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
         <Style Selector="Border.statBox">
             <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
@@ -25,117 +27,202 @@
             <Setter Property="CornerRadius" Value="{DynamicResource CardCornerRadius}"/>
             <Setter Property="Padding" Value="24"/>
         </Style>
+        
+        <Style Selector="TextBox.ghostInput">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
+        <Style Selector="TextBox.ghostInput:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+        </Style>
+        <Style Selector="TextBox.ghostInput:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+        </Style>
     </UserControl.Styles>
 
-    <Grid HorizontalAlignment="Stretch">
-        <Grid RowDefinitions="Auto, *" Margin="30">
+    <Grid RowDefinitions="Auto, Auto, *" Margin="30,30,0,30">
         
         <!-- GÓRNY PASEK: PRZYCISKI -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,30">
-            <Button Grid.Column="0" Classes="ghost" Command="{Binding CancelCommand}">
-                <TextBlock Text="← Wróć (Anuluj)" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
-            </Button>
-            
-            <TextBlock Grid.Column="1" Text="Karta Postaci" FontSize="25" Margin="19, 0, 19, 0" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            
-            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15">
+        <DockPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="15" HorizontalAlignment="Right">
                 <Button Classes="danger" Command="{Binding DeleteCommand}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
-                        <TextBlock Text="Usuń" />
+                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14"/>
+                        <TextBlock Text="Usuń postać"/>
                     </StackPanel>
                 </Button>
                 <Button Classes="primary" Command="{Binding SaveCommand}">
-                    <TextBlock Text="Zapisz" />
+                    <TextBlock Text="Zapisz Zmiany" FontWeight="Bold"/>
                 </Button>
             </StackPanel>
-        </Grid>
+            <TextBlock Text=" " HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False"/>
+        </DockPanel>
 
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Spacing="30" Margin="0,0,20,25">
-                    
-                    <!-- DANE BOHATERA -->
-                    <Border Classes="statBox">
-                        <Grid ColumnDefinitions="*, *, *">
-                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                                <TextBlock Classes="label" Text="Imię Postaci"/>
-                                <TextBox Text="{Binding Character.CharacterName}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource AccentGold}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                                <TextBlock Classes="label" Text="Rasa"/>
-                                <TextBox Text="{Binding Character.Race}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Classes="label" Text="Klasa i Poziom"/>
-                                <TextBox Text="{Binding Character.ClassAndLevel}"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                    
-                    <!-- STATYSTYKI BOJOWE -->
-                    <Border Classes="statBox">
-                        <Grid ColumnDefinitions="*, *, *, *">
-                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
-                                <TextBlock Classes="label" Text="Aktualne HP"/>
-                                <TextBox Text="{Binding Character.CurrentHp}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" TextAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="0,0,20,0">
-                                <TextBlock Classes="label" Text="Max HP"/>
-                                <TextBox Text="{Binding Character.MaxHp}" FontSize="30" FontWeight="Bold" TextAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="2" Margin="0,0,20,0">
-                                <TextBlock Classes="label" Text="Klasa Pancerza (AC)"/>
-                                <TextBox Text="{Binding Character.ArmorClass}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" TextAlignment="Center"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="3">
-                                <TextBlock Classes="label" Text="Szybkość"/>
-                                <TextBox Text="{Binding Character.Speed}" FontSize="30" FontWeight="Bold" TextAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                <!-- EKWIPUNEK (Lista interaktywna) -->
-                <Border Classes="statBox">
-                    <StackPanel Spacing="15">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <TextBlock Grid.Column="0" Classes="label" Text="EKWIPUNEK" VerticalAlignment="Center" Margin="0"/>
-                            <Button Grid.Column="1" Classes="primary" Command="{Binding AddEquipmentItemCommand}" Padding="10,5">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15" />
-                                    <TextBlock Text="Dodaj" FontSize="15"/>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
-                        
-                        <Border BorderThickness="0"  />
-
-                        <ItemsControl ItemsSource="{Binding Character.EquipmentItems}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid ColumnDefinitions="*, 80, Auto" Margin="0,0,0,10" VerticalAlignment="Center">
-                                        <TextBox Grid.Column="0" Text="{Binding Name}" PlaceholderText="Nazwa przedmiotu" Margin="0,0,10,0" Padding="10,8" VerticalAlignment="Center" />
-                                        <TextBox Grid.Column="1" Text="{Binding Quantity}" PlaceholderText="Ilość" TextAlignment="Center" Margin="0,0,10,0" Padding="10,8" VerticalAlignment="Center" />
-                                        <Button Grid.Column="2" Classes="iconDanger" 
-                                                Command="{Binding ((vm:CharacterDetailViewModel)DataContext).RemoveEquipmentItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                CommandParameter="{Binding}" VerticalAlignment="Center">
-                                            <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
-                                        </Button>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
+        <!-- KAFELEK 1: NAGŁÓWEK TOŻSAMOŚCI (Wiersz 1) -->
+        <!-- Szerokość zablokowana na 855px (420+420+15), by idealnie pasowało do siatki Bento Box pod spodem -->
+        <Border Grid.Row="1" Classes="statBox" Margin="0,0,0,15" MinHeight="110" VerticalAlignment="Top" HorizontalAlignment="Left" Width="855">
+            <Grid ColumnDefinitions="*, 120" HorizontalAlignment="Stretch">
                 
-                <!-- NOTATKI / HISTORIA -->
-                <Border Classes="statBox" Height="375">
-                    <StackPanel Height="350">
-                        <TextBlock Classes="label" Text="NOTATKI / HISTORIA"/>
-                        <TextBox Text="{Binding Character.Notes}" AcceptsReturn="True" TextWrapping="Wrap" Height="300" VerticalContentAlignment="Top"/>
+                <!-- Zawartość Tożsamości (Ghost UI Anti-Jumping) -->
+                <Grid Grid.Column="0">
+                    <StackPanel Spacing="5" VerticalAlignment="Center">
+                        <TextBox Classes="ghostInput" Text="{Binding Character.CharacterName}" 
+                                 FontSize="36" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" 
+                                 Height="45"
+                                 IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
+                        <Grid ColumnDefinitions="*, *" Height="30">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" Margin="0,0,10,0">
+                                <TextBlock Text="Rasa:" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                                <TextBox Classes="ghostInput" Text="{Binding Character.Race}" FontSize="18" Foreground="{DynamicResource TextMuted}"
+                                         IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Klasa:" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                                <TextBox Classes="ghostInput" Text="{Binding Character.ClassAndLevel}" FontSize="18" Foreground="{DynamicResource TextMuted}"
+                                         IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+                </Grid>
+
+                <!-- Przyciski akcji (Sztywna kolumna z prawej, eliminuje skoki interfejsu na boki) -->
+                <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <Button Classes="icon" Command="{Binding ToggleEditIdentityCommand}" ToolTip.Tip="Edytuj tożsamość" 
+                            Opacity="{Binding !IsEditingIdentity}" IsHitTestVisible="{Binding !IsEditingIdentity}">
+                        <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20"/>
+                    </Button>
+                    <Button Classes="primary" Command="{Binding ToggleEditIdentityCommand}" Padding="15,8"
+                            Opacity="{Binding IsEditingIdentity}" IsHitTestVisible="{Binding IsEditingIdentity}">
+                        <TextBlock Text="Gotowe" FontWeight="Bold"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <!-- BENTO BOX GRID: Ekwipunek, Statystyki, Notatki (Wiersz 2) -->
+        <Grid Grid.Row="2" ColumnDefinitions="420, 420" RowDefinitions="Auto, *">
+            
+            <!-- KAFELEK 2: EKWIPUNEK (Lewa Kolumna, Wiersz 0 + 1) -->
+            <!-- Wysokość 530px by pomieścić aż 8 elementów! -->
+            <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Classes="statBox" Margin="0,0,15,0" Height="530" VerticalAlignment="Top">
+                <Grid RowDefinitions="Auto, *, Auto">
+                    <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,20">
+                        <TextBlock Grid.Column="0" Classes="label" Text="EKWIPUNEK" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="14"/>
+                        <Button Grid.Column="1" Classes="icon" Command="{Binding AddEquipmentItemCommand}" ToolTip.Tip="Dodaj przedmiot">
+                            <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15"/>
+                        </Button>
+                    </Grid>
+                    
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding PaginatedEquipment}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="10" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="*, 80, Auto">
+                                    <TextBox Grid.Column="0" Text="{Binding Name}" Margin="0,0,10,0" FontSize="12" Padding="10,6"/>
+                                    <TextBox Grid.Column="1" Text="{Binding Quantity}" TextAlignment="Center" Margin="0,0,10,0" FontSize="12" Padding="10,6"/>
+                                    <Button Grid.Column="2" Classes="iconDanger" Command="{Binding ((vm:CharacterDetailViewModel)DataContext).RemoveEquipmentItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                        <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14"/>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    
+                    <!-- Paginacja -->
+                    <Grid Grid.Row="2" ColumnDefinitions="Auto, *, Auto" Margin="0,15,0,0">
+                        <Button Grid.Column="0" Classes="ghost" Command="{Binding PreviousPageCommand}" Padding="8">
+                            <TextBlock Text="&lt;" FontWeight="Bold" FontSize="16"/>
+                        </Button>
+                        <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextMuted}" FontSize="14">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} / {1}">
+                                    <Binding Path="CurrentEquipmentPage"/>
+                                    <Binding Path="TotalEquipmentPages"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <Button Grid.Column="2" Classes="ghost" Command="{Binding NextPageCommand}" Padding="8">
+                            <TextBlock Text="&gt;" FontWeight="Bold" FontSize="16"/>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- KAFELEK 3: STATYSTYKI BOJOWE (Prawa Kolumna, Góra) -->
+            <Border Grid.Row="0" Grid.Column="1" Classes="statBox" Margin="0,0,0,15" Height="160" VerticalAlignment="Top">
+                <Grid ColumnDefinitions="*, 60" HorizontalAlignment="Stretch">
+                    
+                    <Grid Grid.Column="0" ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        
+                        <!-- Wiersz 0: HP -->
+                        <!-- Ustawiamy sztywne Height=45 dla komórek by zapobiec skakaniu w pionie -->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15" Height="45">
+                            <TextBlock Classes="label" Text="Aktualne HP"/>
+                            <Grid Height="35">
+                                <TextBox Text="{Binding Character.CurrentHp}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,15" Height="45">
+                            <TextBlock Classes="label" Text="Max HP"/>
+                            <Grid Height="35">
+                                <TextBox Text="{Binding Character.MaxHp}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <!-- Wiersz 1: AC i Szybkość -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" Height="45">
+                            <TextBlock Classes="label" Text="Klasa Pancerza"/>
+                            <Grid Height="35">
+                                <TextBox Text="{Binding Character.ArmorClass}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Height="45">
+                            <TextBlock Classes="label" Text="Szybkość"/>
+                            <Grid Height="35">
+                                <TextBox Text="{Binding Character.Speed}" FontSize="24" FontWeight="Bold" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
+                            </Grid>
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- Kłódka -->
+                    <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="Odblokuj edycję" 
+                                Opacity="{Binding !IsEditingCombat}" IsHitTestVisible="{Binding !IsEditingCombat}">
+                            <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20"/>
+                        </Button>
+                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="Zablokuj edycję" 
+                                Opacity="{Binding IsEditingCombat}" IsHitTestVisible="{Binding IsEditingCombat}">
+                            <PathIcon Data="{StaticResource IconLock}" Width="20" Height="20"/>
+                        </Button>
+                    </Grid>
+
+                </Grid>
+            </Border>
+
+            <!-- KAFELEK 4: NOTATKI (Prawa Kolumna, Dół) -->
+            <!-- 530 (Eq) - 160 (Staty) - 15 (Margin) = 355 px wysokości, gwarantuje absolutne zrównanie dołów kafelków! -->
+            <Border Grid.Row="1" Grid.Column="1" Classes="statBox" VerticalAlignment="Top" Height="355" Margin="0,0,0,0">
+                <Grid RowDefinitions="Auto, *">
+                    <TextBlock Grid.Row="0" Classes="label" Text="NOTATKI / HISTORIA" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="14"/>
+                    <TextBox Grid.Row="1" Text="{Binding Character.Notes}" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalAlignment="Stretch" Padding="15"/>
+                </Grid>
+            </Border>
+            
+        </Grid>
     </Grid>
 </UserControl>
-

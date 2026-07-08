@@ -1,0 +1,8 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels.Dashboard"
+             x:Class="DungeonApp.Views.Dashboard.OthersTabView"
+             x:DataType="vm:OthersTabViewModel">
+    
+    <TextBlock Text="Inne rejestry pojawią się tutaj wkrótce." FontSize="24" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+</UserControl>

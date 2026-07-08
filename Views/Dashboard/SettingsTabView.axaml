@@ -1,8 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:dashboardVM="using:DungeonApp.ViewModels.Dashboard"
              x:Class="DungeonApp.Views.Dashboard.SettingsTabView"
-             x:DataType="vm:MainWindowViewModel"
+             x:DataType="dashboardVM:SettingsTabViewModel"
              Margin="0,0,0,0">
     
     <Grid RowDefinitions="Auto, *" Margin="38" MaxWidth="1000" HorizontalAlignment="Center">

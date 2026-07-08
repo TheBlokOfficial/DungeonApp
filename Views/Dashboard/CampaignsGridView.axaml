@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels.Dashboard"
+             x:Class="DungeonApp.Views.Dashboard.CampaignsGridView"
+             x:DataType="vm:CampaignsGridViewModel"
+             x:Name="Root">
+    <ItemsControl ItemsSource="{Binding Parent.Campaigns}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Viewbox Stretch="Uniform" Margin="10">
+                    <Button Classes="card"
+                            Command="{Binding ((vm:CampaignsGridViewModel)DataContext).Parent.OpenCampaignCommand, ElementName=Root, FallbackValue=null}"
+                            CommandParameter="{Binding}"
+                            Width="525" Height="181">
+                        
+                        <Grid RowDefinitions="Auto, *, Auto">
+                            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto, Auto" Margin="10,5">
+                                <Border Grid.Column="0" Width="45" Height="45" CornerRadius="10" Background="{DynamicResource InputBackground}" Margin="0,0,20,0" VerticalAlignment="Top">
+                                    <PathIcon Data="{StaticResource IconShield}" Width="22" Height="22" Foreground="{DynamicResource AccentGold}" />
+                                </Border>
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,2,0,0">
+                                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding System}" Foreground="{DynamicResource TextMuted}" FontSize="16" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                
+                                <Button Grid.Column="3" Classes="iconDanger"
+                                        Command="{Binding ((vm:CampaignsGridViewModel)DataContext).Parent.DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
+                                        CommandParameter="{Binding}" VerticalAlignment="Top">
+                                    <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
+                                </Button>
+                            </Grid>
+                            
+                            <StackPanel Grid.Row="2" Spacing="2">
+                                <Border BorderThickness="0" Margin="0,0,0,10"/>
+                                <Grid ColumnDefinitions="*, *">
+                                    <TextBlock Grid.Column="0" Text="{Binding LastSession, StringFormat='Ostatnia: {0:dd.MM.yyyy}'}" Foreground="{DynamicResource TextMuted}" FontSize="15" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{Binding SessionsCount, StringFormat='Sesje: {0}'}" Foreground="{DynamicResource TextMuted}" FontSize="15" TextAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </Viewbox>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

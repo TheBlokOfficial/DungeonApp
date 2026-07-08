@@ -5,6 +5,7 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using DungeonApp.ViewModels;
+using DungeonApp.ViewModels.Dashboard;
 using DungeonApp.Views;
 using DungeonApp.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,10 +31,20 @@ public partial class App : Application
         services.AddSingleton<IStorageService, FileStorageService>();
         services.AddSingleton<ICampaignService, CampaignService>();
         services.AddSingleton<ICharacterService, CharacterService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();
+        
+        // Dashboard Tabs
+        services.AddSingleton<CampaignsTabViewModel>();
+        services.AddSingleton<CharactersTabViewModel>();
+        services.AddSingleton<ItemsTabViewModel>();
+        services.AddSingleton<MonstersTabViewModel>();
+        services.AddSingleton<OthersTabViewModel>();
+        services.AddSingleton<SettingsTabViewModel>();
+        
         services.AddTransient<CreateCampaignViewModel>();
         services.AddTransient<CreateCharacterViewModel>();
 

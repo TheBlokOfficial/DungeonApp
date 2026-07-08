@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DungeonApp.Models;
@@ -19,4 +19,4 @@ public class Session
     
     // Zapisywanie stanu potyczki / trackera inicjatywy
     public List<Combatant> Combatants { get; set; } = new();
-}
+}

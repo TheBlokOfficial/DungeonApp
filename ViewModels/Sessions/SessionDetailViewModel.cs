@@ -27,12 +27,17 @@ public partial class SessionDetailViewModel : ViewModelBase
     private Session _session;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ActiveTabContent))]
     [NotifyPropertyChangedFor(nameof(IsNotesTabActive))]
     [NotifyPropertyChangedFor(nameof(IsCombatTabActive))]
     private SessionTab _currentTab = SessionTab.Notes;
 
     public bool IsNotesTabActive => CurrentTab == SessionTab.Notes;
     public bool IsCombatTabActive => CurrentTab == SessionTab.CombatTracker;
+
+    public ViewModelBase ActiveTabContent => CurrentTab == SessionTab.Notes 
+        ? new SessionNotesViewModel(this) 
+        : new SessionCombatViewModel(this);
 
     [RelayCommand]
     private void SwitchTab(string tabName)
@@ -376,4 +381,16 @@ public partial class SessionDetailViewModel : ViewModelBase
         Save();
         _navigationService.NavigateBack();
     }
+}
+
+public class SessionNotesViewModel : ViewModelBase
+{
+    public SessionDetailViewModel Parent { get; }
+    public SessionNotesViewModel(SessionDetailViewModel parent) { Parent = parent; }
+}
+
+public class SessionCombatViewModel : ViewModelBase
+{
+    public SessionDetailViewModel Parent { get; }
+    public SessionCombatViewModel(SessionDetailViewModel parent) { Parent = parent; }
 }

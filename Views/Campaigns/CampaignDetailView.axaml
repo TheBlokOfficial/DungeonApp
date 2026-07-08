@@ -5,8 +5,54 @@
              x:DataType="vm:CampaignDetailViewModel"
              x:Name="Root">
 
-    <Grid HorizontalAlignment="Stretch">
-        <Grid RowDefinitions="Auto,*" Margin="38">
+    <UserControl.Styles>
+        <Style Selector=":is(Control).toggleState">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector=":is(Control).toggleState.active">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+
+        <!-- Ghost Input Style dla tytułu kampanii -->
+        <Style Selector="TextBox.ghostInput">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="IBeam"/>
+        </Style>
+        <Style Selector="TextBox.ghostInput:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+        </Style>
+        <Style Selector="TextBox.ghostInput:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+        </Style>
+        <Style Selector="TextBox.ghostInput.editing /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBackground}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="6*" MinWidth="720" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="0,38,0,0">
 
         <!-- Górny pasek: powrót + nazwa kampanii -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="20" Margin="0,0,0,38">
@@ -15,22 +61,31 @@
             </Button>
 
             <StackPanel VerticalAlignment="Center">
-                <Grid ColumnDefinitions="300, Auto" IsVisible="{Binding !IsEditingName}">
-                    <TextBlock Grid.Column="0" Text="{Binding Campaign.Name}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                    <Button Grid.Column="1" Classes="icon" Command="{Binding StartEditingNameCommand}" ToolTip.Tip="Edytuj nazwę" Margin="10,0,0,0">
-                        <PathIcon Data="{StaticResource IconEdit}" Width="18" Height="18"/>
-                    </Button>
-                </Grid>
-                
-                <Grid ColumnDefinitions="300, Auto" IsVisible="{Binding IsEditingName}">
-                    <TextBox Grid.Column="0" Text="{Binding Campaign.Name}" FontSize="30" FontWeight="Bold" Background="{DynamicResource SurfaceBackground}" Foreground="{DynamicResource TextPrimary}"  Padding="5" VerticalAlignment="Center">
+                <!-- Tytuł kampanii (Anti-Jumping Ghost UI) -->
+                <Grid ColumnDefinitions="300, Auto">
+                    <TextBox Grid.Column="0" Classes="ghostInput" Classes.editing="{Binding IsEditingName}" Margin="-15,0,0,0"
+                             Text="{Binding Campaign.Name}" FontSize="30" FontWeight="Bold" 
+                             VerticalAlignment="Center"
+                             IsHitTestVisible="{Binding IsEditingName}"
+                             Focusable="{Binding IsEditingName}">
                         <TextBox.KeyBindings>
                             <KeyBinding Gesture="Enter" Command="{Binding SaveCampaignNameCommand}"/>
                         </TextBox.KeyBindings>
                     </TextBox>
-                    <Button Grid.Column="1" Classes="primary" Command="{Binding SaveCampaignNameCommand}" Padding="15,8" VerticalAlignment="Center" Margin="10,0,0,0">
-                        <TextBlock Text="Zapisz" FontSize="15"/>
-                    </Button>
+                    
+                    <Grid Grid.Column="1" Margin="10,0,0,0">
+                        <Button Classes="icon toggleState" Classes.active="{Binding !IsEditingName}"
+                                Command="{Binding StartEditingNameCommand}" ToolTip.Tip="Edytuj nazwę"
+                                VerticalAlignment="Center">
+                            <PathIcon Data="{StaticResource IconEdit}" Width="18" Height="18"/>
+                        </Button>
+                        
+                        <Button Classes="primary toggleState" Classes.active="{Binding IsEditingName}"
+                                Command="{Binding SaveCampaignNameCommand}" Padding="15,8"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="Zapisz" FontSize="15"/>
+                        </Button>
+                    </Grid>
                 </Grid>
 
                 <TextBlock Text="{Binding Campaign.System}" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
@@ -39,46 +94,49 @@
 
         <!-- Główna zawartość -->
         <ScrollViewer Grid.Row="1">
-            <StackPanel Classes="pageContainer" Spacing="30">
+            <StackPanel Spacing="30">
                 
-                <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
-                <Button Classes="primary" Command="{Binding AddSessionCommand}"
-                        IsVisible="{Binding CanAddNewSession}" HorizontalAlignment="Left">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <PathIcon Data="{StaticResource IconAdd}" Width="18" Height="18" />
-                        <TextBlock Text="Rozpocznij Nową Sesję" FontSize="18"/>
-                    </StackPanel>
-                </Button>
-
-                <!-- SEKCJA 2: Aktywna Sesja (Widoczna gdy JEST aktywna) -->
-                <Border IsVisible="{Binding HasActiveSession}" 
-                        Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" 
-                        BorderThickness="0">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                            <TextBlock Text="OBECNA SESJA" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" Margin="0,0,0,5"/>
-                            <TextBlock Text="{Binding ActiveSession.Title}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
-                            <TextBlock Text="{Binding ActiveSession.Date, StringFormat='{}Utworzono: {0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
+                <!-- SEKCJA 1 i 2 (Nałożone na siebie w jednej siatce, by uniknąć skakania zawartości UI) -->
+                <Grid>
+                    <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
+                    <Button Classes="primary toggleState" Classes.active="{Binding CanAddNewSession}" Command="{Binding AddSessionCommand}"
+                            HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <PathIcon Data="{StaticResource IconAdd}" Width="18" Height="18" />
+                            <TextBlock Text="Rozpocznij Nową Sesję" FontSize="18"/>
                         </StackPanel>
+                    </Button>
 
-                        <!-- Akcje Aktywnej Sesji -->
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
-                            
-                            <Button Classes="dangerGhost" Command="{Binding DeleteActiveSessionCommand}">
-                                <TextBlock Text="Usuń" FontSize="16" />
-                            </Button>
+                    <!-- SEKCJA 2: Aktywna Sesja (Widoczna gdy JEST aktywna) -->
+                    <Border Classes="toggleState" Classes.active="{Binding HasActiveSession}"
+                            Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" 
+                            BorderThickness="0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="OBECNA SESJA" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding ActiveSession.Title}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="{Binding ActiveSession.Date, StringFormat='{}Utworzono: {0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
+                            </StackPanel>
 
-                            <!-- Zmiana nazwy na Zakończ Sesję -->
-                            <Button Classes="secondary" Command="{Binding ArchiveActiveSessionCommand}">
-                                <TextBlock Text="Zakończ Sesję" FontSize="16"/>
-                            </Button>
+                            <!-- Akcje Aktywnej Sesji -->
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                                
+                                <Button Classes="dangerGhost" Command="{Binding DeleteActiveSessionCommand}">
+                                    <TextBlock Text="Usuń" FontSize="16" />
+                                </Button>
 
-                            <Button Classes="primary" Command="{Binding OpenActiveSessionCommand}">
-                                <TextBlock Text="Prowadź Sesję →" FontSize="18"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                                <!-- Zmiana nazwy na Zakończ Sesję -->
+                                <Button Classes="secondary" Command="{Binding ArchiveActiveSessionCommand}">
+                                    <TextBlock Text="Zakończ Sesję" FontSize="16"/>
+                                </Button>
+
+                                <Button Classes="primary" Command="{Binding OpenActiveSessionCommand}">
+                                    <TextBlock Text="Prowadź Sesję →" FontSize="18"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
                 
                 <!-- SEKCJA DRUŻYNY -->
 <StackPanel>
@@ -97,12 +155,12 @@
                       IsVisible="{Binding CampaignCharacters.Count}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" ItemWidth="250" />
+                    <UniformGrid Columns="4" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="20" Margin="0,0,15,15" BorderThickness="0">
+                    <Border Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="20" Margin="10" BorderThickness="0">
                         <Grid ColumnDefinitions="*, Auto">
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}"/>
@@ -132,7 +190,7 @@
                     <ItemsControl ItemsSource="{Binding ArchivedSessions}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" ItemWidth="380" />
+                                <UniformGrid Columns="4" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         
@@ -140,7 +198,7 @@
                             <DataTemplate>
                                 <Button Classes="card" Command="{Binding ((vm:CampaignDetailViewModel)DataContext).ReadArchivedSessionCommand, ElementName=Root}"
                                         CommandParameter="{Binding}"
-                                        Margin="0,0,20,20"
+                                        Margin="10"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                                     <StackPanel>
                                         <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>

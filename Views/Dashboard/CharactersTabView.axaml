@@ -1,19 +1,44 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:dashboardVM="using:DungeonApp.ViewModels.Dashboard"
              x:Class="DungeonApp.Views.Dashboard.CharactersTabView"
-             x:DataType="vm:MainWindowViewModel"
+             x:DataType="dashboardVM:CharactersTabViewModel"
              x:Name="Root">
 
-    <Grid ColumnDefinitions="1*, 8*, 1*">
-        <Grid Grid.Column="1" Margin="0,0,0,25">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{StaticResource ListPanelWidth}" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <!-- LEWA: Lista postaci -->
-            <Grid Grid.Column="0" RowDefinitions="Auto, *" Margin="0,0,38,0">
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,30">
+    <UserControl.Styles>
+        <Style Selector=":is(Control).fadeState">
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector=":is(Control).fadeState.visible">
+            <Setter Property="Opacity" Value="1"/>
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="0,0,0,25">
+        <Grid.ColumnDefinitions>
+            <!-- Lewa lista: powiększona do 350px, by zmieścić nowy wewnętrzny margines (Padding) -->
+            <ColumnDefinition Width="350" />
+            
+            <!-- 
+                Prawa karta: rozciąga się na resztę dostępnego miejsca.
+                Tło karty wypełnia całą przestrzeń po prawej, likwidując "pustkę", 
+                ale wewnętrzna zawartość karty ma zablokowaną maksymalną szerokość 
+                aby tekst pozostawał czytelny (Master-Detail layout).
+            -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!-- LEWA: Lista postaci -->
+        <Border Grid.Column="0" Background="{DynamicResource CardBackground}" CornerRadius="15" Padding="25" VerticalAlignment="Stretch">
+            <Grid RowDefinitions="Auto, *">
+                <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,30">
                 <TextBlock Grid.Column="0" Text="Postacie" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
                     <Button Classes="icon" Command="{Binding RefreshCharactersCommand}">
@@ -27,10 +52,15 @@
 
             <ScrollViewer Grid.Row="1">
                 <ItemsControl ItemsSource="{Binding Characters}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="15" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Classes="card" Command="{Binding ((vm:MainWindowViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" 
-                                    CommandParameter="{Binding}" Margin="5,5,5,15">
+                            <Button Classes="card" Command="{Binding ((dashboardVM:CharactersTabViewModel)DataContext).SelectCharacterCommand, ElementName=Root, FallbackValue=null}" 
+                                    CommandParameter="{Binding}">
                                 <StackPanel>
                                     <TextBlock Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
                                     <TextBlock Text="{Binding ClassAndLevel}" FontSize="15" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
@@ -40,20 +70,20 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-        </Grid>
-
-        <!-- PRAWA: Szczegóły postaci (Widoczne tylko po wybraniu) -->
-        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNotNull}}" Background="{DynamicResource CardBackground}" CornerRadius="15"  BorderThickness="0" VerticalAlignment="Stretch">
-            <ContentControl Content="{Binding SelectedCharacterDetail}" />
+            </Grid>
         </Border>
-        
+
         <!-- PUSTY STAN (Gdy nic nie wybrano) -->
-        <Border Grid.Column="1" IsVisible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNull}}" Background="{DynamicResource CardBackground}" CornerRadius="15"  BorderThickness="0" Padding="50" VerticalAlignment="Stretch">
+        <Border Grid.Column="1" Margin="25,0,0,0" Classes="fadeState" Classes.visible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNull}}" Background="Transparent" BorderThickness="0" Padding="50" VerticalAlignment="Stretch">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
                 <PathIcon Data="{StaticResource IconSwords}" Width="60" Height="60" Foreground="{DynamicResource BorderInput}"/>
                 <TextBlock Text="Wybierz bohatera z listy po lewej, aby zobaczyć szczegóły." Foreground="{DynamicResource TextMuted}" FontSize="18"/>
             </StackPanel>
         </Border>
-    </Grid>
+
+        <!-- PRAWA: Szczegóły postaci (Widoczne tylko po wybraniu) -->
+        <Border Grid.Column="1" Margin="25,0,0,0" Classes="fadeState" Classes.visible="{Binding SelectedCharacterDetail, Converter={x:Static ObjectConverters.IsNotNull}}" Background="Transparent" BorderThickness="0" VerticalAlignment="Stretch" HorizontalAlignment="Left" MaxWidth="900">
+            <ContentControl Content="{Binding SelectedCharacterDetail}" />
+        </Border>
     </Grid>
 </UserControl>

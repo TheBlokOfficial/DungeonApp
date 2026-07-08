@@ -3,10 +3,10 @@
              xmlns:vm="using:DungeonApp.ViewModels"
              xmlns:controls="clr-namespace:DungeonApp.Controls"
              x:Class="DungeonApp.Views.Sessions.SessionNotesView"
-             x:DataType="vm:SessionDetailViewModel"
+             x:DataType="vm:SessionNotesViewModel"
              x:Name="Root">
 
-    <Grid RowDefinitions="Auto, Auto, *">
+    <Grid RowDefinitions="Auto, Auto, *" DataContext="{Binding Parent}" x:DataType="vm:SessionDetailViewModel">
         <TextBox Grid.Row="0" Text="{Binding SearchQuery}" PlaceholderText="Wyszukaj..." 
                  Background="{DynamicResource AppBackground}" BorderThickness="0" Margin="0,0,0,20" Padding="15"/>
 
@@ -79,33 +79,38 @@
                     <DataTemplate>
                         <Border Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="25" Margin="0,0,0,15" BorderThickness="0">
                             <Grid ColumnDefinitions="*, Auto">
-                                <!-- Display mode: render markdown -->
-                                <StackPanel Grid.Column="0" Margin="0,0,20,0" IsVisible="{Binding !IsEditing}">
-                                    <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:HH:mm}'}" FontSize="15" Foreground="{DynamicResource TextMuted}"/>
-                                    <controls:SimpleMarkdownViewer 
-                                        Markdown="{Binding Text}" 
-                                        Margin="0,5,0,0"/>
-                                </StackPanel>
-                                
-                                <!-- Edit mode -->
-                                <StackPanel Grid.Column="0" IsVisible="{Binding IsEditing}">
-                                    <TextBox Text="{Binding DraftText}" AcceptsReturn="True" TextWrapping="Wrap" 
-                                             Background="{DynamicResource AppBackground}" FontFamily="Consolas, 'Courier New', monospace" FontSize="16"
-                                             CornerRadius="8" Padding="15" MinHeight="100"/>
-                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Spacing="10">
-                                        <Button Classes="ghost" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteCancelCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Anuluj" Padding="18,10"/>
-                                        <Button Classes="primary" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteSaveCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Zapisz" Padding="18,10"/>
+                                <!-- Zawartość Notatki (Anti-Jumping: wspólny Grid) -->
+                                <Grid Grid.Column="0" Margin="0,0,20,0">
+                                    <!-- Display mode: render markdown -->
+                                    <StackPanel Opacity="{Binding !IsEditing}" IsHitTestVisible="{Binding !IsEditing}">
+                                        <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:HH:mm}'}" FontSize="15" Foreground="{DynamicResource TextMuted}"/>
+                                        <controls:SimpleMarkdownViewer 
+                                            Markdown="{Binding Text}" 
+                                            Margin="0,5,0,0"/>
                                     </StackPanel>
-                                </StackPanel>
+                                    
+                                    <!-- Edit mode -->
+                                    <StackPanel Opacity="{Binding IsEditing}" IsHitTestVisible="{Binding IsEditing}">
+                                        <TextBox Text="{Binding DraftText}" AcceptsReturn="True" TextWrapping="Wrap" 
+                                                 Background="{DynamicResource AppBackground}" FontFamily="Consolas, 'Courier New', monospace" FontSize="16"
+                                                 CornerRadius="8" Padding="15" MinHeight="100"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Spacing="10">
+                                            <Button Classes="ghost" Command="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.EditNoteCancelCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Anuluj" Padding="18,10"/>
+                                            <Button Classes="primary" Command="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.EditNoteSaveCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" Content="Zapisz" Padding="18,10"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Grid>
 
-                                <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding !IsEditing}">
-                                    <Button Classes="icon" Command="{Binding ((vm:SessionDetailViewModel)DataContext).EditNoteStartCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionDetailViewModel)DataContext).IsEditable, ElementName=Root}">
+                                <Grid Grid.Column="1" VerticalAlignment="Top" Opacity="{Binding !IsEditing}" IsHitTestVisible="{Binding !IsEditing}">
+                                    <StackPanel Orientation="Horizontal">
+                                    <Button Classes="icon" Command="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.EditNoteStartCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.IsEditable, ElementName=Root}">
                                         <PathIcon Data="{StaticResource IconEdit}" Width="20" />
                                     </Button>
-                                    <Button Classes="iconDanger" Command="{Binding ((vm:SessionDetailViewModel)DataContext).DeleteNoteCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionDetailViewModel)DataContext).IsEditable, ElementName=Root}">
+                                    <Button Classes="iconDanger" Command="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.DeleteNoteCommand, ElementName=Root, FallbackValue=null}" CommandParameter="{Binding}" IsVisible="{Binding ((vm:SessionNotesViewModel)DataContext).Parent.IsEditable, ElementName=Root}">
                                         <PathIcon Data="{StaticResource IconTrash}" Width="20" />
                                     </Button>
-                                </StackPanel>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
                         </Border>
                     </DataTemplate>

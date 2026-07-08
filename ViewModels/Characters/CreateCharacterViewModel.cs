@@ -51,9 +51,9 @@ public partial class CreateCharacterViewModel : ViewModelBase
 
         _characterService.SaveCharacter(newCharacter);
 
-        if (App.Current?.Services?.GetService(typeof(MainWindowViewModel)) is MainWindowViewModel mainVm)
+        if (App.Current?.Services?.GetService(typeof(DungeonApp.ViewModels.Dashboard.CharactersTabViewModel)) is DungeonApp.ViewModels.Dashboard.CharactersTabViewModel charsVm)
         {
-            mainVm.LoadCharactersFromDisk();
+            _ = charsVm.RefreshCharactersList(newCharacter.Id);
         }
 
         _navigationService.NavigateBack();

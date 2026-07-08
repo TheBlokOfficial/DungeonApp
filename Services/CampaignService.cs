@@ -21,8 +21,8 @@ public interface ICampaignService
 public class CampaignService : ICampaignService
 {
     private const string AppDirectoryName = "DungeonSessionManager";
-    private const string CampaignsDirectoryName = "Campaigns";
-    private const string SessionsDirectoryName = "Sessions";
+    private const string CampaignsDirectoryName = "campaigns";
+    private const string SessionsDirectoryName = "sessions";
     private const string CampaignFileName = "campaign.json";
     private const string DefaultCampaignSlug = "kampania";
 
@@ -32,8 +32,7 @@ public class CampaignService : ICampaignService
     public CampaignService(IStorageService storageService)
     {
         _storageService = storageService;
-        string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        _baseDirectory = Path.Combine(documents, AppDirectoryName, CampaignsDirectoryName);
+        _baseDirectory = Path.Combine(AppPaths.UserDataPath, CampaignsDirectoryName);
         Directory.CreateDirectory(_baseDirectory);
     }
 

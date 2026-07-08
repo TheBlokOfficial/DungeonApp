@@ -1,14 +1,21 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:dashboardVM="using:DungeonApp.ViewModels.Dashboard"
              x:Class="DungeonApp.Views.Dashboard.CampaignsTabView"
-             x:DataType="vm:MainWindowViewModel"
+             x:DataType="dashboardVM:CampaignsTabViewModel"
              x:Name="Root">
 
-    <Grid ColumnDefinitions="2*, 6*, 2*">
-        <StackPanel Grid.Column="1" Margin="0,0,0,25">
-        <!-- Nagłówek Kampanii -->
-        <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,38">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="6*" MinWidth="720" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" RowDefinitions="Auto, *" Margin="0,38,0,0">
+            <StackPanel Grid.Row="0">
+                <!-- Nagłówek Kampanii -->
+                <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,38">
             <TextBlock Grid.Column="0" Text="Twoje Kampanie" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" />
             
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
@@ -26,121 +33,30 @@
             </StackPanel>
         </Grid>
         
-        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,25">
-            <!-- Przełącznik Widoku -->
-            <Border Grid.Column="1" Background="{DynamicResource BorderSecondary}" CornerRadius="8" Padding="5">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <Button Classes="icon" Classes.active="{Binding IsCampaignsListView}" Command="{Binding SetCampaignsViewModeCommand}" CommandParameter="List" ToolTip.Tip="Widok Listy">
-                        <PathIcon Data="{StaticResource IconViewList}" Width="20" Height="20" />
-                    </Button>
-                    <Button Classes="icon" Classes.active="{Binding IsCampaignsGridView}" Command="{Binding SetCampaignsViewModeCommand}" CommandParameter="Grid" ToolTip.Tip="Widok Siatki">
-                        <PathIcon Data="{StaticResource IconViewGrid}" Width="20" Height="20" />
-                    </Button>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- WIDOK LISTY (Pionowy StackPanel) -->
-        <ItemsControl ItemsSource="{Binding Campaigns}" IsVisible="{Binding IsCampaignsListView}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Vertical" Spacing="20" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button Classes="card"
-                            Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCampaignCommand, ElementName=Root, FallbackValue=null}"
-                            CommandParameter="{Binding}"
-                            HorizontalAlignment="Stretch">
-                        
-                        <!-- NOWY UKŁAD LISTOWY: Wszystko w jednym poziomie -->
-                        <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto">
-                            
-                            <!-- 1. Ikona tarczy -->
-                            <Border Grid.Column="0" Background="{DynamicResource BorderSecondary}" CornerRadius="10" Padding="18" Margin="0,0,25,0" VerticalAlignment="Center">
-                                <PathIcon Data="{StaticResource IconShield}" Width="30" Height="30" Foreground="{DynamicResource AccentGold}" />
-                            </Border>
-                            
-                            <!-- 2. Tytuł i system -->
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,40,0">
-                                <TextBlock Text="{Binding Name}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="{Binding System}" Foreground="{DynamicResource TextMuted}" FontSize="18" Margin="0,8,0,0" TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
-                            
-                            <!-- 3. Statystyki: Ostatnia sesja -->
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,50,0" MinWidth="162">
-                                <TextBlock Text="OSTATNIA SESJA" Foreground="{DynamicResource TextMuted}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-                                <TextBlock Text="{Binding LastSession, StringFormat='{}{0:dd.MM.yyyy}'}" Foreground="{DynamicResource TextSecondary}" FontSize="18" FontWeight="SemiBold" />
-                            </StackPanel>
-                            
-                            <!-- 4. Statystyki: Liczba sesji -->
-                            <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,40,0" MinWidth="125">
-                                <TextBlock Text="ROZEGRANO" Foreground="{DynamicResource TextMuted}" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
-                                <TextBlock Text="{Binding SessionsCount, StringFormat='{}{0} sesji'}" Foreground="{DynamicResource TextSecondary}" FontSize="18" FontWeight="SemiBold" />
-                            </StackPanel>
-                            
-                            <!-- 5. Przycisk Usuń -->
-                            <Button Grid.Column="4" Classes="iconDanger"
-                                    Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
-                                    CommandParameter="{Binding}" VerticalAlignment="Center">
-                                <PathIcon Data="{StaticResource IconTrash}" Width="20" Height="20" />
+                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,25">
+                    <!-- Przełącznik Widoku -->
+                    <Border Grid.Column="1" Background="{DynamicResource BorderSecondary}" CornerRadius="8" Padding="5">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Button Classes="icon" Classes.active="{Binding IsCampaignsListView}" Command="{Binding SetCampaignsViewModeCommand}" CommandParameter="List" ToolTip.Tip="Widok Listy">
+                                <PathIcon Data="{StaticResource IconViewList}" Width="20" Height="20" />
                             </Button>
-                            
-                        </Grid>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                            <Button Classes="icon" Classes.active="{Binding IsCampaignsGridView}" Command="{Binding SetCampaignsViewModeCommand}" CommandParameter="Grid" ToolTip.Tip="Widok Siatki">
+                                <PathIcon Data="{StaticResource IconViewGrid}" Width="20" Height="20" />
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
 
-        <!-- WIDOK SIATKI (2 Kolumny) -->
-        <ItemsControl ItemsSource="{Binding Campaigns}" IsVisible="{Binding IsCampaignsGridView}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="2" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Viewbox Stretch="Uniform" Margin="10">
-                        <Button Classes="card"
-                                Command="{Binding ((vm:MainWindowViewModel)DataContext).OpenCampaignCommand, ElementName=Root, FallbackValue=null}"
-                                CommandParameter="{Binding}"
-                                Width="525" Height="181">
-                            
-                            <Grid RowDefinitions="Auto, *, Auto">
-                                <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
-                                    <Border Grid.Column="0" Background="{DynamicResource BorderSecondary}" CornerRadius="8" Padding="12" Margin="0,0,15,0" VerticalAlignment="Top">
-                                        <PathIcon Data="{StaticResource IconShield}" Width="25" Height="25" Foreground="{DynamicResource AccentGold}" />
-                                    </Border>
-                                    
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="0,2,0,0">
-                                        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding System}" Foreground="{DynamicResource TextMuted}" FontSize="16" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
-                                    </StackPanel>
-                                    
-                                    <Button Grid.Column="3" Classes="iconDanger"
-                                            Command="{Binding ((vm:MainWindowViewModel)DataContext).DeleteCampaignCommand, ElementName=Root, FallbackValue=null}"
-                                            CommandParameter="{Binding}" VerticalAlignment="Top">
-                                        <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
-                                    </Button>
-                                </Grid>
-                                
-                                <StackPanel Grid.Row="2" Spacing="2">
-                                    <Border BorderThickness="0"  Margin="0,0,0,10"/>
-                                    <Grid ColumnDefinitions="*, *">
-                                        <TextBlock Grid.Column="0" Text="{Binding LastSession, StringFormat='Ostatnia: {0:dd.MM.yyyy}'}" Foreground="{DynamicResource TextMuted}" FontSize="15" VerticalAlignment="Center" />
-                                        <TextBlock Grid.Column="1" Text="{Binding SessionsCount, StringFormat='Sesje: {0}'}" Foreground="{DynamicResource TextMuted}" FontSize="15" TextAlignment="Right" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </StackPanel>
-                            </Grid>
-                        </Button>
-                    </Viewbox>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        </StackPanel>
+            <!-- OBSZAR PRZEWIJANY: Listy Kampanii -->
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <!-- Bezpieczny system wymieniania widoków Listy/Siatki -->
+            <TransitioningContentControl Content="{Binding ActiveViewContent}" HorizontalAlignment="Stretch" Margin="0,0,0,25">
+                <TransitioningContentControl.PageTransition>
+                    <CrossFade Duration="0:0:0.25" />
+                </TransitioningContentControl.PageTransition>
+            </TransitioningContentControl>
+    </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

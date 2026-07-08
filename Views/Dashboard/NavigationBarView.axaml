@@ -37,6 +37,28 @@
             <Setter Property="Opacity" Value="1" />
             <Setter Property="IsHitTestVisible" Value="True" />
         </Style>
+
+        <!-- Sub-menu przyciski -->
+        <Style Selector="Button.subNavButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="15,10,15,10" />
+        </Style>
+        <Style Selector="Button.subNavButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        </Style>
+        <Style Selector="Button.subNavButton.active /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.subNavButton.active TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentGold}" />
+        </Style>
     </UserControl.Styles>
     
     <UserControl.Transitions>
@@ -67,32 +89,32 @@
 
             <TextBlock Text="GŁÓWNE MENU" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,0,0,10" />
 
-            <!-- Przycisk: Kampanie -->
-            <Button Classes="navButton" Classes.active="{Binding IsCampaignsVisible}"
+            <!-- Przycisk: Kampanie RPG -->
+            <Button Classes="navButton" Classes.active="{Binding IsCampaignsActive}"
                     Command="{Binding ShowCampaignsCommand}"
                     BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
                 <StackPanel Orientation="Horizontal" Spacing="15">
                     <PathIcon Data="{StaticResource IconShield}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Kampanie RPG" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
+                    <TextBlock Text="Rozgrywka" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
                 </StackPanel>
             </Button>
 
-            <!-- Przycisk: Bohaterowie -->
-            <Button Classes="navButton" Classes.active="{Binding IsCharactersVisible}"
-                    Command="{Binding ShowCharactersCommand}"
+            <!-- Przycisk: Rejestr -->
+            <Button Classes="navButton" Classes.active="{Binding IsRegistryVisible}"
+                    Command="{Binding ShowRegistryCommand}"
                     BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
                 <StackPanel Orientation="Horizontal" Spacing="15">
                     <PathIcon Data="{StaticResource IconSwords}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Rejestr Postaci" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
+                    <TextBlock Text="Rejestr" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
                 </StackPanel>
             </Button>
             
             <TextBlock Text="SYSTEM" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,20,0,10" />
             
             <!-- Przycisk: Ustawienia -->
-            <Button Classes="navButton" Classes.active="{Binding IsSettingsVisible}"
+            <Button Classes="navButton" Classes.active="{Binding IsSettingsActive}"
                     Command="{Binding ShowSettingsCommand}"
                     BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">

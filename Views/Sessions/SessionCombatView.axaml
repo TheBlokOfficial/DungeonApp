@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.Sessions.SessionCombatView"
-             x:DataType="vm:SessionDetailViewModel"
+             x:DataType="vm:SessionCombatViewModel"
              x:Name="Root">
 
-    <Grid ColumnDefinitions="6*, 4*" Margin="0,10,0,0">
+    <Grid ColumnDefinitions="6*, 4*" Margin="0,10,0,0" DataContext="{Binding Parent}" x:DataType="vm:SessionDetailViewModel">
 
         <!-- ========================================== -->
         <!-- LEWA STRONA: MASYWNY PANEL KONTROLNY       -->
@@ -108,11 +108,11 @@
                             <!-- Zastosowano staly wymiar kontenera dla uniknięcia skakania elementow -->
                             <Border Width="200">
                                 <Panel VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding !IsCombatActive}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10" Opacity="{Binding !IsCombatActive}">
                                         <PathIcon Data="{StaticResource IconPause}" Width="18" Height="18" Foreground="{DynamicResource TextMuted}"/>
                                         <TextBlock Text="WALKA NIEAKTYWNA" Foreground="{DynamicResource TextMuted}" FontSize="15" FontWeight="SemiBold"/>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsCombatActive}">
+                                    <StackPanel Orientation="Horizontal" Spacing="10" Opacity="{Binding IsCombatActive}">
                                         <PathIcon Data="{StaticResource IconSwords}" Width="18" Height="18" Foreground="{DynamicResource TextSecondary}"/>
                                         <TextBlock Text="WALKA TRWA" Foreground="{DynamicResource TextSecondary}" FontSize="15" FontWeight="Bold"/>
                                     </StackPanel>
@@ -122,21 +122,34 @@
 
                         <!-- Przyciski akcji (Do prawej) -->
                         <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="10">
-                            <Button Classes="ghost" BorderThickness="0"  Command="{Binding StartCombatCommand}" 
-                                    IsVisible="{Binding !IsCombatActive}">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <PathIcon Data="{StaticResource IconPlay}" Width="18" Height="18" Foreground="{DynamicResource TextSecondary}" />
-                                    <TextBlock Text="Rozpocznij" Foreground="{DynamicResource TextSecondary}" />
+                            <!-- PRZYCISKI START/STOP (Anti-Jumping) -->
+                            <Grid>
+                                <StackPanel Orientation="Horizontal" Spacing="10" 
+                                            Opacity="{Binding !IsCombatActive}" IsHitTestVisible="{Binding !IsCombatActive}">
+                                    <Button Classes="success" Command="{Binding StartCombatCommand}" Padding="15,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <PathIcon Data="{StaticResource IconPlay}" Width="16" Height="16" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="Rozpocznij Walkę" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
 
-                            <Button Classes="danger" Command="{Binding StopCombatCommand}" 
-                                    IsVisible="{Binding IsCombatActive}">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <PathIcon Data="{StaticResource IconStop}" Width="18" Height="18" />
-                                    <TextBlock Text="Zakończ"/>
+                                <StackPanel Orientation="Horizontal" Spacing="10" 
+                                            Opacity="{Binding IsCombatActive}" IsHitTestVisible="{Binding IsCombatActive}">
+                                    <Button Classes="danger" Command="{Binding StopCombatCommand}" Padding="15,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <PathIcon Data="{StaticResource IconStop}" Width="16" Height="16" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="Zakończ Walkę" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Classes="primary" Command="{Binding NextTurnCommand}" Padding="15,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="Następna Tura" FontWeight="Bold"/>
+                                            <PathIcon Data="{StaticResource IconForward}" Width="16" Height="16" Foreground="{DynamicResource AppBackground}"/>
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
+                            </Grid>
                         </StackPanel>
 
                         <Button Grid.Column="4" Classes="ghost" Command="{Binding SortInitiativeCommand}" 
@@ -148,12 +161,6 @@
                         </Button>
 
                         <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="10" Margin="10,0,0,0">
-                            <Button Classes="primary" Command="{Binding NextTurnCommand}" Padding="25,10">
-                                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                                    <TextBlock Text="Następna Tura" FontWeight="Bold"/>
-                                    <PathIcon Data="{StaticResource IconNext}" Width="20" Height="20" />
-                                </StackPanel>
-                            </Button>
                             <Button Classes="dangerGhost" Command="{Binding ClearAllCombatantsCommand}" BorderThickness="0" Padding="15,12" ToolTip.Tip="Wyczyść listę">
                                 <PathIcon Data="{StaticResource IconTrash}" Width="18" Height="18" />
                             </Button>
@@ -207,7 +214,7 @@
                                     </Style>
                                 </Border.Styles>
                                 
-                                <Grid ColumnDefinitions="Auto, *, Auto, Auto">
+                                <Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto">
                                     
                                     <!-- Ikona / Numer tury -->
                                     <Border Grid.Column="0" Width="45" Height="45" CornerRadius="22" 
@@ -216,14 +223,14 @@
                                         <Panel>
                                             <PathIcon Data="{StaticResource IconChevronRight}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}"
                                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                      IsVisible="{Binding IsActiveTurn}"/>
-                                            <Panel IsVisible="{Binding !IsActiveTurn}">
+                                                      Opacity="{Binding IsActiveTurn}" IsHitTestVisible="{Binding IsActiveTurn}"/>
+                                            <Panel Opacity="{Binding !IsActiveTurn}" IsHitTestVisible="{Binding !IsActiveTurn}">
                                                 <PathIcon Data="{StaticResource IconShield}" Width="20" Height="20" Foreground="{DynamicResource AccentPrimary}"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                          IsVisible="{Binding !IsEnemy}"/>
+                                                          Opacity="{Binding !IsEnemy}" IsHitTestVisible="{Binding !IsEnemy}"/>
                                                 <PathIcon Data="{StaticResource IconSkull}" Width="20" Height="20" Foreground="{DynamicResource AccentDanger}"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                          IsVisible="{Binding IsEnemy}"/>
+                                                          Opacity="{Binding IsEnemy}" IsHitTestVisible="{Binding IsEnemy}"/>
                                             </Panel>
                                         </Panel>
                                     </Border>
