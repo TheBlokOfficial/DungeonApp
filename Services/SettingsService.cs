@@ -10,6 +10,7 @@ public interface ISettingsService
 {
     AppSettings LoadSettings();
     void SaveSettings(AppSettings settings);
+    event Action? SettingsChanged;
 }
 
 public class SettingsService : ISettingsService
@@ -52,12 +53,15 @@ public class SettingsService : ISettingsService
         }
     }
 
+    public event Action? SettingsChanged;
+
     public void SaveSettings(AppSettings settings)
     {
         try
         {
             string yaml = _serializer.Serialize(settings);
             File.WriteAllText(_settingsFilePath, yaml);
+            SettingsChanged?.Invoke();
         }
         catch (Exception ex)
         {

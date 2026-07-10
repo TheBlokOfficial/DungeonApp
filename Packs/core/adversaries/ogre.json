@@ -1,0 +1,41 @@
+{
+  "Id": "ogre",
+  "BaseTemplate": null,
+  "Name": "core_monster_ogre_name",
+  "Description": "core_monster_ogre_desc",
+  "Type": "core_tag_giant",
+  "Size": "core_tag_large",
+  "Alignment": "Chaotic Evil",
+  "Faction": "core_faction_wild",
+  "ChallengeRating": "2",
+  "Tags": [],
+  "Combat": {
+    "ArmorClass": 11,
+    "ArmorType": "",
+    "MaxHp": 59,
+    "HitDice": "",
+    "InitiativeBonus": 0,
+    "Xp": 0
+  },
+  "Speeds": [
+    {
+      "Type": "Walk",
+      "Value": 40,
+      "Note": null
+    }
+  ],
+  "Abilities": {
+    "Strength": 19,
+    "Dexterity": 8,
+    "Constitution": 16,
+    "Intelligence": 5,
+    "Wisdom": 7,
+    "Charisma": 7
+  },
+  "Actions": [
+    {
+      "Name": "Greatclub",
+      "Description": "Melee Weapon Attack: \u002B6 to hit, reach 5 ft., one target. Hit: 13 (2d8 \u002B 4) bludgeoning damage."
+    }
+  ]
+}

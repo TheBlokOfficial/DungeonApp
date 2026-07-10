@@ -1,0 +1,25 @@
+{
+  "Id": "longsword",
+  "BaseTemplate": null,
+  "Name": "core_item_longsword_name",
+  "Description": "core_item_longsword_desc",
+  "Type": "core_type_weapon",
+  "Rarity": "core_rarity_common",
+  "Weight": 3,
+  "Tags": [
+    "core_tag_martial",
+    "core_tag_melee"
+  ],
+  "Components": {
+    "Weapon": {
+      "DamageRoll": "1d8",
+      "DamageType": "core_propval_slashing",
+      "Range": "",
+      "WeaponProperties": []
+    },
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

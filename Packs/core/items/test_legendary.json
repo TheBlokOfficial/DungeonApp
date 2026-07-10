@@ -1,0 +1,19 @@
+{
+  "Id": "test_legendary",
+  "BaseTemplate": null,
+  "Name": "test_item_legendary_name",
+  "Description": "test_item_legendary_desc",
+  "Type": "core_type_weapon",
+  "Rarity": "core_rarity_legendary",
+  "Weight": 5,
+  "Tags": [
+    "Test"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

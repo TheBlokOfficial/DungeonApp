@@ -1,0 +1,19 @@
+{
+  "Id": "test_rare",
+  "BaseTemplate": null,
+  "Name": "test_item_rare_name",
+  "Description": "test_item_rare_desc",
+  "Type": "core_type_consumable",
+  "Rarity": "core_rarity_rare",
+  "Weight": 0.1,
+  "Tags": [
+    "Test"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

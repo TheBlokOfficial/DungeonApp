@@ -1,0 +1,25 @@
+{
+  "Id": "armor_studded_leather",
+  "BaseTemplate": null,
+  "Name": "core_item_studdedleather_name",
+  "Description": "core_item_studdedleather_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 6,
+  "Tags": [
+    "core_tag_light_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 2,
+      "ArmorType": "core_tag_light_armor",
+      "StealthDisadvantage": false,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": null
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

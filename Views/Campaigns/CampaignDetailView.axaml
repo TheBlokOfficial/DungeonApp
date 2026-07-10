@@ -88,7 +88,7 @@
                     </Grid>
                 </Grid>
 
-                <TextBlock Text="{Binding Campaign.System}" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
+                <TextBlock Classes="dynamic" Text="{Binding Campaign.System}" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
             </StackPanel>
         </StackPanel>
 
@@ -114,7 +114,7 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                 <TextBlock Text="OBECNA SESJA" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" Margin="0,0,0,5"/>
-                                <TextBlock Text="{Binding ActiveSession.Title}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Classes="dynamic" Text="{Binding ActiveSession.Title}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
                                 <TextBlock Text="{Binding ActiveSession.Date, StringFormat='{}Utworzono: {0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
                             </StackPanel>
 
@@ -163,8 +163,8 @@
                     <Border Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="20" Margin="10" BorderThickness="0">
                         <Grid ColumnDefinitions="*, Auto">
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}"/>
-                                <TextBlock Text="{Binding ClassAndLevel}" FontSize="15" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
+                                <TextBlock Classes="dynamic" Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}"/>
+                                <TextBlock Classes="dynamic" Text="{Binding ClassAndLevel}" FontSize="15" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
                             </StackPanel>
                             <!-- Przycisk usuwania (wypisania z kampanii) -->
                             <Button Grid.Column="1" Classes="iconDanger" Command="{Binding ((vm:CampaignDetailViewModel)DataContext).RemoveCharacterFromCampaignCommand, ElementName=Root}" CommandParameter="{Binding}" VerticalAlignment="Top">
@@ -201,7 +201,7 @@
                                         Margin="10"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
                                     <StackPanel>
-                                        <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
+                                        <TextBlock Classes="dynamic" Text="{Binding Title}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
                                         <TextBlock Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,8,0,0"/>
                                     </StackPanel>
                                 </Button>

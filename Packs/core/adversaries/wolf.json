@@ -1,0 +1,41 @@
+{
+  "Id": "wolf",
+  "BaseTemplate": null,
+  "Name": "core_monster_wolf_name",
+  "Description": "core_monster_wolf_desc",
+  "Type": "core_tag_beast",
+  "Size": "core_tag_medium",
+  "Alignment": "Unaligned",
+  "Faction": "core_faction_wild",
+  "ChallengeRating": "1/4",
+  "Tags": [],
+  "Combat": {
+    "ArmorClass": 13,
+    "ArmorType": "",
+    "MaxHp": 11,
+    "HitDice": "",
+    "InitiativeBonus": 0,
+    "Xp": 0
+  },
+  "Speeds": [
+    {
+      "Type": "Walk",
+      "Value": 40,
+      "Note": null
+    }
+  ],
+  "Abilities": {
+    "Strength": 12,
+    "Dexterity": 15,
+    "Constitution": 12,
+    "Intelligence": 3,
+    "Wisdom": 12,
+    "Charisma": 6
+  },
+  "Actions": [
+    {
+      "Name": "Bite",
+      "Description": "Melee Weapon Attack: \u002B4 to hit, reach 5 ft., one target. Hit: 7 (2d4 \u002B 2) piercing damage."
+    }
+  ]
+}

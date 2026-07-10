@@ -1,0 +1,25 @@
+{
+  "Id": "armor_padded",
+  "BaseTemplate": null,
+  "Name": "core_item_padded_name",
+  "Description": "core_item_padded_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 4,
+  "Tags": [
+    "core_tag_light_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 1,
+      "ArmorType": "core_tag_light_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": null
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

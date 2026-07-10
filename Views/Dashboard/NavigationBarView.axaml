@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.NavigationBarView"
              x:DataType="vm:MainWindowViewModel"
              x:Name="Root">
@@ -77,17 +78,17 @@
         -->
         <StackPanel Margin="12,25,12,25" Spacing="10">
             <!-- Logo / Tytuł i Hamburger -->
-            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,50">
+            <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,50" Height="65">
                 <StackPanel Grid.Column="0" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" VerticalAlignment="Center" Margin="12,0,0,0">
-                    <TextBlock Text="DUNGEON" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Session Manager" FontSize="18" Foreground="{DynamicResource TextPrimary}" />
+                    <TextBlock Text="DUNGEON" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="dynamic" Text="App" FontSize="18" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis" />
                 </StackPanel>
                 <Button Grid.Column="1" Classes="icon" Command="{Binding ToggleSidebarCommand}" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="10">
                     <PathIcon Data="{StaticResource IconMenu}" Width="25" Height="25" />
                 </Button>
             </Grid>
 
-            <TextBlock Text="GŁÓWNE MENU" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,0,0,10" />
+            <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_main_menu}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,0,0,10" TextTrimming="CharacterEllipsis" />
 
             <!-- Przycisk: Kampanie RPG -->
             <Button Classes="navButton" Classes.active="{Binding IsCampaignsActive}"
@@ -96,22 +97,44 @@
                     HorizontalContentAlignment="Left">
                 <StackPanel Orientation="Horizontal" Spacing="15">
                     <PathIcon Data="{StaticResource IconShield}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Rozgrywka" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_dashboard}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
 
-            <!-- Przycisk: Rejestr -->
-            <Button Classes="navButton" Classes.active="{Binding IsRegistryVisible}"
-                    Command="{Binding ShowRegistryCommand}"
-                    BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
+            <!-- Nagłówek: Rejestr -->
+            <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_registry}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,20,0,10" TextTrimming="CharacterEllipsis" />
+            
+            <Button Classes="navButton" Classes.active="{Binding IsCharactersActive}"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Characters}"
+                    BorderThickness="0" CornerRadius="8" FontSize="16" Padding="15,10" Height="42" HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left">
                 <StackPanel Orientation="Horizontal" Spacing="15">
-                    <PathIcon Data="{StaticResource IconSwords}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Rejestr" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
+                    <PathIcon Data="{StaticResource IconShield}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_tab_characters}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
             
-            <TextBlock Text="SYSTEM" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,20,0,10" />
+            <Button Classes="navButton" Classes.active="{Binding IsItemsActive}"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Items}"
+                    BorderThickness="0" CornerRadius="8" FontSize="16" Padding="15,10" Height="42" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconSwords}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_tab_items}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Button>
+            
+            <Button Classes="navButton" Classes.active="{Binding IsAdversariesActive}"
+                    Command="{Binding SelectRegistryTabCommand}" CommandParameter="{x:Static vm:RegistryTab.Adversaries}"
+                    BorderThickness="0" CornerRadius="8" FontSize="16" Padding="15,10" Height="42" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconSkull}" Width="16" Height="16" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_tab_adversaries}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Button>
+            
+            <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="SYSTEM" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Margin="12,20,0,10" TextTrimming="CharacterEllipsis" />
             
             <!-- Przycisk: Ustawienia -->
             <Button Classes="navButton" Classes.active="{Binding IsSettingsActive}"
@@ -120,7 +143,7 @@
                     HorizontalContentAlignment="Left">
                 <StackPanel Orientation="Horizontal" Spacing="15">
                     <PathIcon Data="{StaticResource IconSettings}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
-                    <TextBlock Text="Ustawienia Opcji" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" Classes="hidable" Classes.expanded="{Binding IsSidebarExpanded}"/>
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_settings}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
         </StackPanel>

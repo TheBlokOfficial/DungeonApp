@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.CharacterDetailView"
              x:DataType="vm:CharacterDetailViewModel"
              Background="Transparent">
@@ -26,6 +27,14 @@
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="CornerRadius" Value="{DynamicResource CardCornerRadius}"/>
             <Setter Property="Padding" Value="24"/>
+        </Style>
+        
+        <Style Selector="FlyoutPresenter">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderSecondary}"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource CardCornerRadius}"/>
+            <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
         </Style>
         
         <Style Selector="TextBox.ghostInput">
@@ -58,11 +67,11 @@
                 <Button Classes="danger" Command="{Binding DeleteCommand}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14"/>
-                        <TextBlock Text="Usuń postać"/>
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_delete_character}"/>
                     </StackPanel>
                 </Button>
                 <Button Classes="primary" Command="{Binding SaveCommand}">
-                    <TextBlock Text="Zapisz Zmiany" FontWeight="Bold"/>
+                    <TextBlock Classes="dynamic" Text="{i18n:Translate ui_save_changes}" FontWeight="Bold"/>
                 </Button>
             </StackPanel>
             <TextBlock Text=" " HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="False"/>
@@ -71,42 +80,41 @@
         <!-- KAFELEK 1: NAGŁÓWEK TOŻSAMOŚCI (Wiersz 1) -->
         <!-- Szerokość zablokowana na 855px (420+420+15), by idealnie pasowało do siatki Bento Box pod spodem -->
         <Border Grid.Row="1" Classes="statBox" Margin="0,0,0,15" MinHeight="110" VerticalAlignment="Top" HorizontalAlignment="Left" Width="855">
-            <Grid ColumnDefinitions="*, 120" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="5" VerticalAlignment="Center">
                 
-                <!-- Zawartość Tożsamości (Ghost UI Anti-Jumping) -->
-                <Grid Grid.Column="0">
-                    <StackPanel Spacing="5" VerticalAlignment="Center">
-                        <TextBox Classes="ghostInput" Text="{Binding Character.CharacterName}" 
-                                 FontSize="36" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" 
-                                 Height="45"
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBox Classes="ghostInput" Text="{Binding Character.CharacterName}" 
+                             FontSize="36" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" 
+                             Height="45" Padding="0" MinWidth="10" HorizontalAlignment="Left" HorizontalContentAlignment="Left"
+                             IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
+                    
+                    <Panel VerticalAlignment="Center">
+                        <Button Classes="icon" Command="{Binding ToggleEditIdentityCommand}" ToolTip.Tip="{i18n:Translate ui_edit_identity}" 
+                                Opacity="{Binding !IsEditingIdentity}" IsHitTestVisible="{Binding !IsEditingIdentity}">
+                            <PathIcon Data="{StaticResource IconEdit}" Width="16" Height="16"/>
+                        </Button>
+                        <Button Classes="primary" Command="{Binding ToggleEditIdentityCommand}" Padding="15,8"
+                                Opacity="{Binding IsEditingIdentity}" IsHitTestVisible="{Binding IsEditingIdentity}">
+                            <TextBlock Classes="dynamic" Text="{i18n:Translate ui_confirm}" FontWeight="Bold"/>
+                        </Button>
+                    </Panel>
+                </StackPanel>
+                
+                <Grid ColumnDefinitions="*, *" Height="30">
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" Margin="0,0,10,0">
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_race}" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                        <TextBlock Text=":" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                        <TextBox Classes="ghostInput" Text="{Binding Character.Race}" FontSize="18" Foreground="{DynamicResource TextMuted}" Padding="0" MinWidth="10"
                                  IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
-                        <Grid ColumnDefinitions="*, *" Height="30">
-                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" Margin="0,0,10,0">
-                                <TextBlock Text="Rasa:" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
-                                <TextBox Classes="ghostInput" Text="{Binding Character.Race}" FontSize="18" Foreground="{DynamicResource TextMuted}"
-                                         IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
-                                <TextBlock Text="Klasa:" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
-                                <TextBox Classes="ghostInput" Text="{Binding Character.ClassAndLevel}" FontSize="18" Foreground="{DynamicResource TextMuted}"
-                                         IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
-                            </StackPanel>
-                        </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5">
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_class}" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                        <TextBlock Text=":" FontSize="18" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+                        <TextBox Classes="ghostInput" Text="{Binding Character.ClassAndLevel}" FontSize="18" Foreground="{DynamicResource TextMuted}" Padding="0" MinWidth="10"
+                                 IsHitTestVisible="{Binding IsEditingIdentity}" Focusable="{Binding IsEditingIdentity}"/>
                     </StackPanel>
                 </Grid>
-
-                <!-- Przyciski akcji (Sztywna kolumna z prawej, eliminuje skoki interfejsu na boki) -->
-                <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <Button Classes="icon" Command="{Binding ToggleEditIdentityCommand}" ToolTip.Tip="Edytuj tożsamość" 
-                            Opacity="{Binding !IsEditingIdentity}" IsHitTestVisible="{Binding !IsEditingIdentity}">
-                        <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20"/>
-                    </Button>
-                    <Button Classes="primary" Command="{Binding ToggleEditIdentityCommand}" Padding="15,8"
-                            Opacity="{Binding IsEditingIdentity}" IsHitTestVisible="{Binding IsEditingIdentity}">
-                        <TextBlock Text="Gotowe" FontWeight="Bold"/>
-                    </Button>
-                </Grid>
-            </Grid>
+            </StackPanel>
         </Border>
 
         <!-- BENTO BOX GRID: Ekwipunek, Statystyki, Notatki (Wiersz 2) -->
@@ -117,10 +125,40 @@
             <Border Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Classes="statBox" Margin="0,0,15,0" Height="530" VerticalAlignment="Top">
                 <Grid RowDefinitions="Auto, *, Auto">
                     <Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0,0,0,20">
-                        <TextBlock Grid.Column="0" Classes="label" Text="EKWIPUNEK" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="14"/>
-                        <Button Grid.Column="1" Classes="icon" Command="{Binding AddEquipmentItemCommand}" ToolTip.Tip="Dodaj przedmiot">
-                            <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15"/>
-                        </Button>
+                        <TextBlock Grid.Column="0" Classes="label dynamic" Text="{i18n:Translate ui_equipment}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="14"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                            <!-- Przycisk z Flyoutem do Rejestru -->
+                            <Button Classes="icon" ToolTip.Tip="{i18n:Translate ui_add_from_registry}">
+                                <PathIcon Data="{StaticResource IconShield}" Width="15" Height="15"/>
+                                <Button.Flyout>
+                                    <Flyout Placement="BottomEdgeAlignedRight" IsOpen="{Binding IsRegistryFlyoutOpen, Mode=TwoWay}">
+                                        <Grid RowDefinitions="Auto, Auto, *" Width="350" Height="400" Margin="5">
+                                            <TextBlock Grid.Row="0" Classes="dynamic" Text="{i18n:Translate ui_add_from_registry}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBox Grid.Row="1" Text="{Binding RegistrySearchQuery}" Watermark="{i18n:Translate ui_registry_search_placeholder}" Margin="0,0,0,15" CornerRadius="8"/>
+                                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl ItemsSource="{Binding FilteredRegistryItems}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Button Command="{ReflectionBinding $parent[ItemsControl].DataContext.AddRegistryItemCommand}" CommandParameter="{Binding FullId}" Background="Transparent" BorderThickness="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10" Margin="0,0,0,5" CornerRadius="8">
+                                                                <StackPanel>
+                                                                    <TextBlock Classes="dynamic" Text="{Binding Name}" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource TextPrimary}"/>
+                                                                    <TextBlock Classes="dynamic" Text="{Binding DisplayPath}" FontSize="11" Foreground="{DynamicResource TextMuted}"/>
+                                                                </StackPanel>
+                                                            </Button>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                            
+                            <!-- Przycisk dodania Customowego Przedmiotu -->
+                            <Button Classes="icon" Command="{Binding AddEquipmentItemCommand}" ToolTip.Tip="Dodaj własny (customowy)">
+                                <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15"/>
+                            </Button>
+                        </StackPanel>
                     </Grid>
                     
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding PaginatedEquipment}">
@@ -132,7 +170,17 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid ColumnDefinitions="*, 80, Auto">
-                                    <TextBox Grid.Column="0" Text="{Binding Name}" Margin="0,0,10,0" FontSize="12" Padding="10,6"/>
+                                    <!-- Nazwa przedmiotu: dla referencyjnych (z paczki) wyświetla DisplayName w trybie tylko-do-odczytu.
+                                         Dla customowych (bez TemplateId) pozwala na edycję CustomName. -->
+                                    <Panel Grid.Column="0" Margin="0,0,10,0">
+                                        <TextBox Text="{Binding CustomName}" FontSize="12" Padding="10,6" IsVisible="{Binding !IsFromPack}"/>
+                                        <Border Background="{DynamicResource BorderSecondary}" CornerRadius="6" IsVisible="{Binding IsFromPack}">
+                                            <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" Margin="10,6">
+                                                <TextBlock Classes="dynamic" Text="{Binding PackNameDisplay, Mode=OneWay}" FontSize="10" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center" Opacity="0.7"/>
+                                                <TextBlock Classes="dynamic" Text="{Binding DisplayName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Panel>
                                     <TextBox Grid.Column="1" Text="{Binding Quantity}" TextAlignment="Center" Margin="0,0,10,0" FontSize="12" Padding="10,6"/>
                                     <Button Grid.Column="2" Classes="iconDanger" Command="{Binding ((vm:CharacterDetailViewModel)DataContext).RemoveEquipmentItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
                                         <PathIcon Data="{StaticResource IconTrash}" Width="14" Height="14"/>
@@ -171,13 +219,13 @@
                         <!-- Wiersz 0: HP -->
                         <!-- Ustawiamy sztywne Height=45 dla komórek by zapobiec skakaniu w pionie -->
                         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,15" Height="45">
-                            <TextBlock Classes="label" Text="Aktualne HP"/>
+                            <TextBlock Classes="label dynamic" Text="{i18n:Translate ui_current_hp}"/>
                             <Grid Height="35">
                                 <TextBox Text="{Binding Character.CurrentHp}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentDanger}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
                             </Grid>
                         </StackPanel>
                         <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,15" Height="45">
-                            <TextBlock Classes="label" Text="Max HP"/>
+                            <TextBlock Classes="label dynamic" Text="{i18n:Translate ui_max_hp}"/>
                             <Grid Height="35">
                                 <TextBox Text="{Binding Character.MaxHp}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
                             </Grid>
@@ -185,13 +233,13 @@
                         
                         <!-- Wiersz 1: AC i Szybkość -->
                         <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0" Height="45">
-                            <TextBlock Classes="label" Text="Klasa Pancerza"/>
+                            <TextBlock Classes="label dynamic" Text="{i18n:Translate ui_armor_class}"/>
                             <Grid Height="35">
                                 <TextBox Text="{Binding Character.ArmorClass}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
                             </Grid>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Height="45">
-                            <TextBlock Classes="label" Text="Szybkość"/>
+                            <TextBlock Classes="label dynamic" Text="{i18n:Translate ui_speed}"/>
                             <Grid Height="35">
                                 <TextBox Text="{Binding Character.Speed}" FontSize="24" FontWeight="Bold" Classes="ghostInput" IsHitTestVisible="{Binding IsEditingCombat}" Focusable="{Binding IsEditingCombat}"/>
                             </Grid>
@@ -201,11 +249,11 @@
 
                     <!-- Kłódka -->
                     <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
-                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="Odblokuj edycję" 
+                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="{i18n:Translate ui_unlock_edit}" 
                                 Opacity="{Binding !IsEditingCombat}" IsHitTestVisible="{Binding !IsEditingCombat}">
                             <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20"/>
                         </Button>
-                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="Zablokuj edycję" 
+                        <Button Classes="icon" Command="{Binding ToggleEditCombatCommand}" ToolTip.Tip="{i18n:Translate ui_lock_edit}" 
                                 Opacity="{Binding IsEditingCombat}" IsHitTestVisible="{Binding IsEditingCombat}">
                             <PathIcon Data="{StaticResource IconLock}" Width="20" Height="20"/>
                         </Button>
@@ -218,7 +266,7 @@
             <!-- 530 (Eq) - 160 (Staty) - 15 (Margin) = 355 px wysokości, gwarantuje absolutne zrównanie dołów kafelków! -->
             <Border Grid.Row="1" Grid.Column="1" Classes="statBox" VerticalAlignment="Top" Height="355" Margin="0,0,0,0">
                 <Grid RowDefinitions="Auto, *">
-                    <TextBlock Grid.Row="0" Classes="label" Text="NOTATKI / HISTORIA" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="14"/>
+                    <TextBlock Grid.Row="0" Classes="label dynamic" Text="{i18n:Translate ui_notes}" Margin="0,0,0,20" HorizontalAlignment="Left" FontSize="14"/>
                     <TextBox Grid.Row="1" Text="{Binding Character.Notes}" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" VerticalAlignment="Stretch" Padding="15"/>
                 </Grid>
             </Border>

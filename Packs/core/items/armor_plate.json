@@ -1,0 +1,25 @@
+{
+  "Id": "armor_plate",
+  "BaseTemplate": null,
+  "Name": "core_item_plate_name",
+  "Description": "core_item_plate_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 32,
+  "Tags": [
+    "core_tag_heavy_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 8,
+      "ArmorType": "core_tag_heavy_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 15,
+      "MaxDexterityBonus": 0
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

@@ -33,6 +33,8 @@ public partial class App : Application
         services.AddSingleton<ICharacterService, CharacterService>();
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IContentRegistry, ContentRegistry>();
+        services.AddSingleton<ITranslationService, TranslationService>();
 
         // ViewModels
         services.AddSingleton<MainWindowViewModel>();
@@ -41,7 +43,7 @@ public partial class App : Application
         services.AddSingleton<CampaignsTabViewModel>();
         services.AddSingleton<CharactersTabViewModel>();
         services.AddSingleton<ItemsTabViewModel>();
-        services.AddSingleton<MonstersTabViewModel>();
+        services.AddSingleton<AdversariesTabViewModel>();
         services.AddSingleton<OthersTabViewModel>();
         services.AddSingleton<SettingsTabViewModel>();
         
@@ -49,6 +51,11 @@ public partial class App : Application
         services.AddTransient<CreateCharacterViewModel>();
 
         Services = services.BuildServiceProvider();
+
+        // Wymuszenie natychmiastowej inicjalizacji ContentRegistry przy starcie aplikacji.
+        // Bez tego Singleton jest "lazy" i nie wygeneruje domyślnej paczki na dysk,
+        // dopóki użytkownik nie wejdzie w zakładkę Rejestru.
+        Services.GetRequiredService<IContentRegistry>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

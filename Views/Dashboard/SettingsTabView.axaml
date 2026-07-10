@@ -2,36 +2,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              xmlns:dashboardVM="using:DungeonApp.ViewModels.Dashboard"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.Dashboard.SettingsTabView"
              x:DataType="dashboardVM:SettingsTabViewModel"
              Margin="0,0,0,0">
     
-    <Grid RowDefinitions="Auto, *" Margin="38" MaxWidth="1000" HorizontalAlignment="Center">
-        
-        <StackPanel Grid.Row="0" Margin="0,0,0,38">
-            <TextBlock Text="Ustawienia Aplikacji" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
-            <TextBlock Text="Zarządzaj opcjami wyglądu i działania" FontSize="18" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
-        </StackPanel>
+    <Grid MaxWidth="900" HorizontalAlignment="Stretch">
+        <Grid RowDefinitions="Auto, *" Margin="30,38">
+            
+            <StackPanel Grid.Row="0" Margin="0,0,0,38">
+                <TextBlock Text="{i18n:Translate ui_settings}" FontSize="35" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" />
+            </StackPanel>
 
         <ScrollViewer Grid.Row="1">
             <StackPanel Spacing="30">
                 
                 <Border Background="{DynamicResource CardBackground}" CornerRadius="15" Padding="30"  BorderThickness="0">
                     <StackPanel Spacing="20">
+                        
                         <StackPanel Orientation="Horizontal" Spacing="15">
                             <PathIcon Data="{StaticResource IconSettings}" Width="20" Height="20" Foreground="{DynamicResource AccentPrimary}" />
-                            <TextBlock Text="WYGLĄD" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1" />
+                            <TextBlock Text="{i18n:Translate ui_appearance}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentPrimary}" LetterSpacing="1" />
                         </StackPanel>
 
+                        <!-- Interfejs i Skala -->
                         <Grid ColumnDefinitions="*, Auto" Margin="0,10,0,0">
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Rozmiar Interfejsu (Zoom)" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
-                                <TextBlock Text="Powiększa lub pomniejsza wszystkie elementy UI. Idealne do monitorów 4K lub mniejszych ekranów." 
-                                           FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" TextWrapping="Wrap" />
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_scale}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_scale_desc}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
                             </StackPanel>
                             
                             <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsScaleOptions}" SelectedItem="{Binding SelectedScaleOption}" 
-                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8">
+                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8" VerticalAlignment="Center">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding DisplayName}" />
@@ -39,11 +41,60 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </Grid>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,15"/>
+
+                        <!-- Język -->
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,0">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_language}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_language_desc}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
+                            </StackPanel>
+                            
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsLanguageOptions}" SelectedItem="{Binding SelectedLanguageOption}" 
+                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8" VerticalAlignment="Center">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,15"/>
+
+                        <!-- Jednostka Wagi -->
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,0">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_weight}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_weight_desc}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
+                            </StackPanel>
+                            
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsWeightUnitOptions}" SelectedItem="{Binding SelectedWeightUnitOption}" 
+                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8" VerticalAlignment="Center">
+                            </ComboBox>
+                        </Grid>
+
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="0,15"/>
+
+                        <!-- Jednostka Dystansu -->
+                        <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,0">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_distance}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_settings_distance_desc}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0" />
+                            </StackPanel>
+                            
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding SettingsDistanceUnitOptions}" SelectedItem="{Binding SelectedDistanceUnitOption}" 
+                                      Width="200" Background="{DynamicResource InputBackground}"  Foreground="{DynamicResource TextPrimary}" CornerRadius="8" VerticalAlignment="Center">
+                            </ComboBox>
+                        </Grid>
+
                     </StackPanel>
                 </Border>
                 
             </StackPanel>
         </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>
 

@@ -11,18 +11,14 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" /> <!-- Główny Sidebar -->
-            <ColumnDefinition Width="Auto" /> <!-- Podrzędny Sidebar (Rejestr) -->
             <ColumnDefinition Width="*" />    <!-- Główna zawartość -->
         </Grid.ColumnDefinitions>
 
         <!-- KOLUMNA 0: GŁÓWNY SIDEBAR -->
         <views:NavigationBarView Grid.Column="0" Width="{Binding CurrentSidebarWidth}" />
         
-        <!-- KOLUMNA 1: PODRZĘDNY SIDEBAR (Tylko Rejestr) -->
-        <dashboard:RegistrySubMenuView Grid.Column="1" />
-        
-        <!-- KOLUMNA 2: GŁÓWNA ZAWARTOŚĆ -->
-        <Border Grid.Column="2" Padding="50">
+        <!-- KOLUMNA 1: GŁÓWNA ZAWARTOŚĆ -->
+        <Border Grid.Column="1" Padding="20">
             <!-- Bezpieczny, pojedynczy system wymieniania ekranów (zarówno dashboard jak i ekrany kontekstowe gry) -->
             <TransitioningContentControl Content="{Binding ActiveMainView}">
                 <TransitioningContentControl.PageTransition>

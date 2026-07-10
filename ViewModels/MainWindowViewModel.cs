@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DungeonApp.ViewModels;
 
-public enum RegistryTab { Characters, Items, Monsters, Others }
+public enum RegistryTab { Characters, Items, Adversaries }
 
 public partial class MainWindowViewModel : ViewModelBase
 {
@@ -20,8 +20,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public double CurrentSidebarWidth => IsSidebarExpanded ? 260 : 74;
 
-    [ObservableProperty]
-    private bool _isRegistryVisible = false;
 
     private ViewModelBase? _dashboardCurrentView;
     public ViewModelBase? DashboardCurrentView
@@ -36,8 +34,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsSettingsActive));
                 OnPropertyChanged(nameof(IsCharactersActive));
                 OnPropertyChanged(nameof(IsItemsActive));
-                OnPropertyChanged(nameof(IsMonstersActive));
-                OnPropertyChanged(nameof(IsOthersActive));
+                OnPropertyChanged(nameof(IsAdversariesActive));
             }
         }
     }
@@ -46,8 +43,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsSettingsActive => DashboardCurrentView is SettingsTabViewModel;
     public bool IsCharactersActive => DashboardCurrentView is CharactersTabViewModel;
     public bool IsItemsActive => DashboardCurrentView is ItemsTabViewModel;
-    public bool IsMonstersActive => DashboardCurrentView is MonstersTabViewModel;
-    public bool IsOthersActive => DashboardCurrentView is OthersTabViewModel;
+    public bool IsAdversariesActive => DashboardCurrentView is AdversariesTabViewModel;
 
     public ViewModelBase? ActiveMainView => NavigationService.CurrentView ?? DashboardCurrentView;
 
@@ -83,6 +79,12 @@ public partial class MainWindowViewModel : ViewModelBase
         var settings = _settingsService.LoadSettings();
         UiScale = settings.UiScale;
 
+        _settingsService.SettingsChanged += () =>
+        {
+            var newSettings = _settingsService.LoadSettings();
+            UiScale = newSettings.UiScale;
+        };
+
         // Start with Campaigns tab
         ShowCampaigns();
     }
@@ -94,30 +96,18 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowCampaigns() 
     { 
         NavigationService.ClearNavigation(); 
-        IsRegistryVisible = false; 
         DashboardCurrentView = App.Current!.Services!.GetRequiredService<CampaignsTabViewModel>(); 
-    }
-
-    [RelayCommand]
-    private void ShowRegistry() 
-    { 
-        NavigationService.ClearNavigation(); 
-        IsRegistryVisible = true; 
-        // Default registry tab
-        DashboardCurrentView = App.Current!.Services!.GetRequiredService<CharactersTabViewModel>(); 
     }
 
     [RelayCommand]
     private void SelectRegistryTab(RegistryTab tab) 
     { 
         NavigationService.ClearNavigation(); 
-        IsRegistryVisible = true;
         DashboardCurrentView = tab switch
         {
             RegistryTab.Characters => App.Current!.Services!.GetRequiredService<CharactersTabViewModel>(),
             RegistryTab.Items => App.Current!.Services!.GetRequiredService<ItemsTabViewModel>(),
-            RegistryTab.Monsters => App.Current!.Services!.GetRequiredService<MonstersTabViewModel>(),
-            RegistryTab.Others => App.Current!.Services!.GetRequiredService<OthersTabViewModel>(),
+            RegistryTab.Adversaries => App.Current!.Services!.GetRequiredService<AdversariesTabViewModel>(),
             _ => App.Current!.Services!.GetRequiredService<CharactersTabViewModel>()
         };
     }
@@ -126,7 +116,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ShowSettings() 
     { 
         NavigationService.ClearNavigation(); 
-        IsRegistryVisible = false; 
         DashboardCurrentView = App.Current!.Services!.GetRequiredService<SettingsTabViewModel>(); 
     }
 }

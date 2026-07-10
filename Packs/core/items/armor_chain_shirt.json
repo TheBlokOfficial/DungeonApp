@@ -1,0 +1,25 @@
+{
+  "Id": "armor_chain_shirt",
+  "BaseTemplate": null,
+  "Name": "core_item_chainshirt_name",
+  "Description": "core_item_chainshirt_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 10,
+  "Tags": [
+    "core_tag_medium_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 3,
+      "ArmorType": "core_tag_medium_armor",
+      "StealthDisadvantage": false,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": 2
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

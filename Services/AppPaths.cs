@@ -8,6 +8,25 @@ public static class AppPaths
     private const string AppDirectoryName = "DungeonApp";
 
     /// <summary>
+    /// Zwraca ścieżkę do folderu instalacyjnego aplikacji.
+    /// Zazwyczaj jest to AppDomain.CurrentDomain.BaseDirectory.
+    /// </summary>
+    public static string AppInstallationPath => AppDomain.CurrentDomain.BaseDirectory;
+
+    /// <summary>
+    /// Zwraca ścieżkę do folderu wbudowanych paczek aplikacji (np. Core).
+    /// </summary>
+    public static string BuiltInPacksPath
+    {
+        get
+        {
+            string path = Path.Combine(AppInstallationPath, "packs");
+            Directory.CreateDirectory(path);
+            return path;
+        }
+    }
+
+    /// <summary>
     /// Zwraca ścieżkę do folderu z danymi użytkownika (Kampanie, Postacie).
     /// Lokalizacja: C:\Users\[User]\Documents\DungeonApp\
     /// </summary>

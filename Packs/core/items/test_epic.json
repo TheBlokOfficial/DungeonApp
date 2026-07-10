@@ -1,0 +1,19 @@
+{
+  "Id": "test_epic",
+  "BaseTemplate": null,
+  "Name": "test_item_epic_name",
+  "Description": "test_item_epic_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_epic",
+  "Weight": 3,
+  "Tags": [
+    "Test"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

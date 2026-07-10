@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -39,7 +39,7 @@ public partial class MainWindow : Window
         UpdateEffectiveScale();
     }
 
-    private const double ComfortZoneWidth = 1280;
+    private const double ComfortZoneWidth = 1440;
     private const double ComfortZoneHeight = 720;
 
     /// <summary>
@@ -53,7 +53,7 @@ public partial class MainWindow : Window
     ///    skalę przez <c>renderScaling</c> (DPI systemu). Skala ustawiana przez gracza jest fizycznym rozmiarem końcowym na ekranie.
     /// 2. **Auto-Scaling (0.0):** Jeśli ustawiono Auto, aplikacja bazuje na fizycznych pikselach monitora (np. przy 1440p 
     ///    zawsze dobierze skalę 1.0, niezależnie czy w Windowsie jest ustawione 100% czy 150%).
-    /// 3. **Safe-Shrink:** Obliczamy <c>availableScale</c> bazując na rozmiarach okna i <c>ComfortZone</c> (1280x720). 
+    /// 3. **Safe-Shrink:** Obliczamy <c>availableScale</c> bazując na rozmiarach okna i <c>ComfortZone</c> (1440x720). 
     ///    Jeśli użytkownik zmniejszy okno poniżej tego rozmiaru, aplikacja płynnie pomniejszy UI zapobiegając ucinaniu kontrolek,
     ///    utrzymując układ 16:9 w strefie komfortu.
     /// </remarks>

@@ -1,0 +1,25 @@
+{
+  "Id": "armor_leather",
+  "BaseTemplate": null,
+  "Name": "core_item_leather_name",
+  "Description": "core_item_leather_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 5,
+  "Tags": [
+    "core_tag_light_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 1,
+      "ArmorType": "core_tag_light_armor",
+      "StealthDisadvantage": false,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": null
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

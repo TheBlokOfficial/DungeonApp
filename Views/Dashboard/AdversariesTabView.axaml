@@ -1,0 +1,137 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels.Dashboard"
+             xmlns:i18n="using:DungeonApp.Markup"
+             xmlns:components="using:DungeonApp.Views.Components"
+             xmlns:converters="using:DungeonApp.Converters"
+             x:Class="DungeonApp.Views.Dashboard.AdversariesTabView"
+             x:DataType="vm:AdversariesTabViewModel"
+             x:Name="Root">
+    
+    <UserControl.Resources>
+        <converters:SmartIconConverter x:Key="SmartIconConverter"/>
+        <converters:SmartBrushConverter x:Key="SmartBrushConverter"/>
+    </UserControl.Resources>
+
+    <components:RegistryLayoutControl Title="{i18n:Translate ui_adversaries}" TotalCountText="{Binding TotalAdversaryCount}" ItemsSource="{Binding FilteredAdversaries}">
+        <components:RegistryLayoutControl.ListHeader>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1.5*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="1*" MinWidth="100" />
+                    <ColumnDefinition Width="1*" MinWidth="100" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{i18n:Translate ui_col_name}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="0,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Text="{i18n:Translate ui_col_faction}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="2" Text="{i18n:Translate ui_col_type_size}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="3" Text="{i18n:Translate ui_col_tags}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="4" Text="{i18n:Translate ui_col_challenge}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="5" Text="{i18n:Translate ui_col_hp}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
+            </Grid>
+        </components:RegistryLayoutControl.ListHeader>
+
+        <components:RegistryLayoutControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:AdversaryEntry">
+                <Border Background="{DynamicResource InputBackground}" CornerRadius="8" Padding="16,10" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="1.5*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="1*" MinWidth="100" />
+                            <ColumnDefinition Width="1*" MinWidth="100" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Col 0: Name -->
+                        <Border Grid.Column="0" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="0,0,10,0">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Classes="dynamic" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding PackName}" Foreground="{DynamicResource TextMuted}" FontSize="13" />
+                                    <Run Text=" / " Foreground="{DynamicResource TextMuted}" FontSize="13" />
+                                    <Run Text="{Binding Name}" Foreground="{DynamicResource TextPrimary}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Col 1: Faction -->
+                        <Border Grid.Column="1" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0">
+                            <TextBlock Text="{Binding FactionName}" FontSize="13" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasFaction}" />
+                        </Border>
+                        
+                        <!-- Col 2: Identity (Size / Type) -->
+                        <Border Grid.Column="2" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Classes="dynamic" Text="{Binding IdentityDisplay}" FontSize="13" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Border>
+                        
+                        <!-- Col 3: Tags (Property Badges) -->
+                        <Border Grid.Column="3" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
+                            <ItemsControl ItemsSource="{Binding Tags}" VerticalAlignment="Center">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource BorderInput}" CornerRadius="4" Padding="6,2" Margin="0,0,4,0">
+                                            <TextBlock Text="{Binding}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                        
+                        <!-- Col 4: Challenge Rating -->
+                        <Border Grid.Column="4" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
+                            <Border Background="{DynamicResource AccentRed}" Opacity="0.85" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Classes="dynamic" Text="{Binding ChallengeRatingDisplay}" FontSize="11" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                            </Border>
+                        </Border>
+                        
+                        <!-- Col 5: Property Badges (HP, AC, Speed) -->
+                        <Border Grid.Column="5" Padding="10,0,10,0">
+                            <ItemsControl ItemsSource="{Binding PropertyBadges}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="*,*">
+                                            <PathIcon Grid.Column="0"
+                                                      Data="{Binding Icon, Converter={StaticResource SmartIconConverter}}" 
+                                                      Width="14" 
+                                                      HorizontalAlignment="Right"
+                                                      VerticalAlignment="Center"
+                                                      Margin="0,0,4,0"
+                                                      Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}"
+                                                      IsVisible="{Binding HasIcon}"/>
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Text}" 
+                                                       FontSize="13" 
+                                                       FontWeight="Bold" 
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,-2,0,0"
+                                                       Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}" 
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                        
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </components:RegistryLayoutControl.ItemTemplate>
+    </components:RegistryLayoutControl>
+
+</UserControl>

@@ -6,13 +6,8 @@
              x:DataType="dashboardVM:CampaignsTabViewModel"
              x:Name="Root">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="6*" MinWidth="720" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="1" RowDefinitions="Auto, *" Margin="0,38,0,0">
+    <Grid MaxWidth="1600" HorizontalAlignment="Stretch">
+        <Grid RowDefinitions="Auto, *" Margin="30">
             <StackPanel Grid.Row="0">
                 <!-- Nagłówek Kampanii -->
                 <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,38">

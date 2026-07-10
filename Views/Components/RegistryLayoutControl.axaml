@@ -1,0 +1,155 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels.Dashboard"
+             xmlns:i18n="using:DungeonApp.Markup"
+             xmlns:components="using:DungeonApp.Views.Components"
+             x:Class="DungeonApp.Views.Components.RegistryLayoutControl"
+             x:DataType="vm:RegistryTabViewModelBase"
+             x:Name="RootControl">
+
+    <Grid MaxWidth="1600" HorizontalAlignment="Stretch">
+        <Grid RowDefinitions="Auto, *" Margin="30">
+            
+            <!-- NAGŁÓWEK: Tytuł + Wyszukiwarka + Odśwież -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,25">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
+                    <TextBlock Classes="dynamic" Text="{Binding #RootControl.Title}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                    <Border Background="{DynamicResource InputBackground}" CornerRadius="12" Padding="12,4" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding #RootControl.TotalCountText}" FontSize="14" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+                
+                <TextBox Grid.Column="1" Text="{Binding SearchQuery}" PlaceholderText="{i18n:Translate ui_search_placeholder}"
+                         Margin="30,0" FontSize="14" Padding="12,10" CornerRadius="10"/>
+                
+                <Button Grid.Column="2" Classes="ghost" Command="{Binding RefreshCommand}" ToolTip.Tip="Odśwież listę" Padding="10">
+                    <PathIcon Data="{StaticResource IconReload}" Width="18"/>
+                </Button>
+            </Grid>
+            
+            <!-- GŁÓWNA ZAWARTOŚĆ: Sidebar + Lista -->
+            <Grid Grid.Row="1" ColumnDefinitions="2.2*, 7.8*">
+                
+                <!-- LEWA KOLUMNA: Sidebar z filtrami -->
+                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,30,0">
+                    <StackPanel Spacing="15">
+                        
+                        <!-- PACZKI -->
+                        <Expander Header="{i18n:Translate ui_filters_packs}" IsExpanded="True" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding PackFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+                        
+                        <!-- TYP -->
+                        <Expander Header="{i18n:Translate ui_filters_type}" IsExpanded="True" IsVisible="{Binding TypeFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding TypeFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <!-- ROZMIAR -->
+                        <Expander Header="{i18n:Translate ui_filters_size}" IsExpanded="True" IsVisible="{Binding SizeFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding SizeFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+                        
+                        <!-- RZADKOŚĆ -->
+                        <Expander Header="{i18n:Translate ui_filters_rarity}" IsExpanded="True" IsVisible="{Binding RarityFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding RarityFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <!-- CR -->
+                        <Expander Header="{i18n:Translate ui_filters_cr}" IsExpanded="True" IsVisible="{Binding ChallengeRatingFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding ChallengeRatingFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <!-- TAGI -->
+                        <Expander Header="{i18n:Translate ui_filters_tags}" IsExpanded="True" IsVisible="{Binding TagFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding TagFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <!-- FRAKCJA -->
+                        <Expander Header="Frakcja" IsExpanded="True" IsVisible="{Binding FactionFilters.Count}" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch">
+                            <ItemsControl ItemsSource="{Binding FactionFilters}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected}" Margin="0,4" Foreground="{DynamicResource TextPrimary}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Expander>
+
+                        <!-- NUMERYCZNE (np. Waga) -->
+                        <ItemsControl ItemsSource="{Binding NumericFilters}" IsVisible="{Binding NumericFilters.Count}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:NumericFilterViewModel">
+                                    <Expander Header="{Binding DisplayName}" IsExpanded="True" CornerRadius="12" Background="{DynamicResource CardBackground}" BorderThickness="0" HorizontalAlignment="Stretch" Margin="0,0,0,15">
+                                        <StackPanel Spacing="10" Margin="0,10,0,0">
+                                            <Grid ColumnDefinitions="*, 10, *">
+                                                <TextBox Grid.Column="0" Text="{Binding CurrentMin}" PlaceholderText="Min" FontSize="12" Padding="8,6"/>
+                                                <TextBox Grid.Column="2" Text="{Binding CurrentMax}" PlaceholderText="Max" FontSize="12" Padding="8,6"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                    </StackPanel>
+                </ScrollViewer>
+                
+                <!-- PRAWA KOLUMNA: LISTA (WSTRZYKNIĘTA) -->
+                <Grid Grid.Column="1" RowDefinitions="Auto, *">
+                    <!-- NAGŁÓWEK TABELI -->
+                    <Border Grid.Row="0" Margin="0,0,10,10" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,0,1" Padding="16,0,16,10">
+                        <ContentPresenter Content="{Binding #RootControl.ListHeader}" />
+                    </Border>
+                    
+                    <!-- ZAWARTOŚĆ TABELI -->
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding #RootControl.ItemsSource}" ItemTemplate="{Binding #RootControl.ItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+                
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

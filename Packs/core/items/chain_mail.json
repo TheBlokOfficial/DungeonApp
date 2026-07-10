@@ -1,0 +1,25 @@
+{
+  "Id": "chain_mail",
+  "BaseTemplate": null,
+  "Name": "core_item_chainmail_name",
+  "Description": "core_item_chainmail_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 27,
+  "Tags": [
+    "core_tag_heavy_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 6,
+      "ArmorType": "core_tag_heavy_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 13,
+      "MaxDexterityBonus": 0
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

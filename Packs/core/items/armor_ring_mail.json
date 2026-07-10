@@ -1,0 +1,25 @@
+{
+  "Id": "armor_ring_mail",
+  "BaseTemplate": null,
+  "Name": "core_item_ringmail_name",
+  "Description": "core_item_ringmail_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 20,
+  "Tags": [
+    "core_tag_heavy_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 4,
+      "ArmorType": "core_tag_heavy_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": 0
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

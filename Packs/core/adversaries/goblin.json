@@ -1,0 +1,43 @@
+{
+  "Id": "goblin",
+  "BaseTemplate": null,
+  "Name": "core_monster_goblin_name",
+  "Description": "core_monster_goblin_desc",
+  "Type": "core_tag_humanoid",
+  "Size": "core_tag_small",
+  "Alignment": "Neutral Evil",
+  "Faction": "core_faction_wild",
+  "ChallengeRating": "1/4",
+  "Tags": [
+    "Goblinoid"
+  ],
+  "Combat": {
+    "ArmorClass": 15,
+    "ArmorType": "",
+    "MaxHp": 7,
+    "HitDice": "",
+    "InitiativeBonus": 0,
+    "Xp": 0
+  },
+  "Speeds": [
+    {
+      "Type": "Walk",
+      "Value": 30,
+      "Note": null
+    }
+  ],
+  "Abilities": {
+    "Strength": 8,
+    "Dexterity": 14,
+    "Constitution": 10,
+    "Intelligence": 10,
+    "Wisdom": 8,
+    "Charisma": 8
+  },
+  "Actions": [
+    {
+      "Name": "Scimitar",
+      "Description": "Melee Weapon Attack: \u002B4 to hit, reach 5 ft., one target. Hit: 5 (1d6 \u002B 2) slashing damage."
+    }
+  ]
+}

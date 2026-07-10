@@ -1,0 +1,27 @@
+{
+  "Id": "healing_potion",
+  "BaseTemplate": null,
+  "Name": "core_item_healingpotion_name",
+  "Description": "core_item_healingpotion_desc",
+  "Type": "core_type_consumable",
+  "Rarity": "core_rarity_uncommon",
+  "Weight": 0.5,
+  "Tags": [
+    "core_tag_potion"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": {
+      "Uses": 1
+    },
+    "Modifiers": []
+  },
+  "RegistryFormat": [
+    {
+      "Icon": "custom_potion",
+      "Format": "Leczenie (Custom)",
+      "TextColor": "White"
+    }
+  ]
+}

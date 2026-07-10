@@ -1,6 +1,7 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.CreateCharacterView"
              x:DataType="vm:CreateCharacterViewModel"
              Background="{DynamicResource AppBackground}"> 
@@ -25,7 +26,7 @@
                 <!-- NAGŁÓWEK -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,0,0,30">
                     <PathIcon Data="{StaticResource IconSwords}" Width="30" Height="30" Foreground="{DynamicResource AccentGold}"/>
-                    <TextBlock Text="Zarejestruj Nową Postać" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
+                    <TextBlock Classes="dynamic" Text="{i18n:Translate ui_register_character}" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- FORMULARZ -->
@@ -33,23 +34,23 @@
                     <StackPanel Spacing="30" VerticalAlignment="Top">
                         
                         <StackPanel Spacing="10">
-                            <TextBlock Text="Imię Postaci *" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding CharacterName}" PlaceholderText="np. Geralt z Rivii..."/>
+                            <TextBlock Classes="dynamic" Text="{i18n:Translate ui_character_name}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
+                            <TextBox Text="{Binding CharacterName}" Watermark="{i18n:Translate ui_character_name_placeholder}"/>
                         </StackPanel>
 
                         <StackPanel Spacing="10">
-                            <TextBlock Text="Imię Gracza" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding PlayerName}" PlaceholderText="np. Tomek..."/>
+                            <TextBlock Classes="dynamic" Text="{i18n:Translate ui_player_name}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
+                            <TextBox Text="{Binding PlayerName}" Watermark="{i18n:Translate ui_player_name_placeholder}"/>
                         </StackPanel>
 
                         <Grid ColumnDefinitions="*,16,*">
                             <StackPanel Grid.Column="0" Spacing="10">
-                                <TextBlock Text="Rasa" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                                <TextBox Text="{Binding Race}" PlaceholderText="np. Człowiek..."/>
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_race}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
+                                <TextBox Text="{Binding Race}" Watermark="{i18n:Translate ui_race_placeholder}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2" Spacing="10">
-                                <TextBlock Text="Klasa i Poziom" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                                <TextBox Text="{Binding ClassAndLevel}" PlaceholderText="np. Wojownik 5..."/>
+                                <TextBlock Classes="dynamic" Text="{i18n:Translate ui_class_level}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
+                                <TextBox Text="{Binding ClassAndLevel}" Watermark="{i18n:Translate ui_class_level_placeholder}"/>
                             </StackPanel>
                         </Grid>
                         
@@ -58,10 +59,14 @@
 
                 <!-- PRZYCISKI -->
                 <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,25,0,0">
-                    <Button Grid.Column="0" Content="Anuluj" Command="{Binding CancelCommand}" Classes="ghost"
-                            BorderThickness="0"  HorizontalAlignment="Stretch" Margin="0,0,8,0" />
-                    <Button Grid.Column="1" Content="Zapisz" Command="{Binding CreateCommand}" Classes="primary"
-                            HorizontalAlignment="Stretch" Margin="8,0,0,0" />
+                    <Button Grid.Column="0" Command="{Binding CancelCommand}" Classes="ghost"
+                            BorderThickness="0"  HorizontalAlignment="Stretch" Margin="0,0,8,0" >
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_cancel}" HorizontalAlignment="Center"/>
+                    </Button>
+                    <Button Grid.Column="1" Command="{Binding CreateCommand}" Classes="primary"
+                            HorizontalAlignment="Stretch" Margin="8,0,0,0" >
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_save}" HorizontalAlignment="Center"/>
+                    </Button>
                 </Grid>
                 
             </Grid>

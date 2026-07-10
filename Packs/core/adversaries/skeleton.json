@@ -1,0 +1,41 @@
+{
+  "Id": "skeleton",
+  "BaseTemplate": null,
+  "Name": "core_monster_skeleton_name",
+  "Description": "core_monster_skeleton_desc",
+  "Type": "core_tag_undead",
+  "Size": "core_tag_medium",
+  "Alignment": "Lawful Evil",
+  "Faction": "core_faction_undead",
+  "ChallengeRating": "1/4",
+  "Tags": [],
+  "Combat": {
+    "ArmorClass": 13,
+    "ArmorType": "",
+    "MaxHp": 13,
+    "HitDice": "",
+    "InitiativeBonus": 0,
+    "Xp": 0
+  },
+  "Speeds": [
+    {
+      "Type": "Walk",
+      "Value": 30,
+      "Note": null
+    }
+  ],
+  "Abilities": {
+    "Strength": 10,
+    "Dexterity": 14,
+    "Constitution": 15,
+    "Intelligence": 6,
+    "Wisdom": 8,
+    "Charisma": 5
+  },
+  "Actions": [
+    {
+      "Name": "Shortsword",
+      "Description": "Melee Weapon Attack: \u002B4 to hit, reach 5 ft., one target. Hit: 5 (1d6 \u002B 2) piercing damage."
+    }
+  ]
+}

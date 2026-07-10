@@ -1,0 +1,25 @@
+{
+  "Id": "armor_splint",
+  "BaseTemplate": null,
+  "Name": "core_item_splint_name",
+  "Description": "core_item_splint_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 30,
+  "Tags": [
+    "core_tag_heavy_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 7,
+      "ArmorType": "core_tag_heavy_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 15,
+      "MaxDexterityBonus": 0
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

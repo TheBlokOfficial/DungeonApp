@@ -1,8 +1,96 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels.Dashboard"
+             xmlns:i18n="using:DungeonApp.Markup"
+             xmlns:components="using:DungeonApp.Views.Components"
+             xmlns:converters="using:DungeonApp.Converters"
              x:Class="DungeonApp.Views.Dashboard.ItemsTabView"
-             x:DataType="vm:ItemsTabViewModel">
+             x:DataType="vm:ItemsTabViewModel"
+             x:Name="Root">
+             
+    <UserControl.Resources>
+        <converters:SmartIconConverter x:Key="SmartIconConverter"/>
+        <converters:SmartBrushConverter x:Key="SmartBrushConverter"/>
+    </UserControl.Resources>
     
-    <TextBlock Text="Zarządzanie przedmiotami pojawi się tutaj wkrótce." FontSize="24" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    <components:RegistryLayoutControl Title="{i18n:Translate ui_items}" TotalCountText="{Binding TotalItemCount}" ItemsSource="{Binding FilteredItems}">
+        <components:RegistryLayoutControl.ListHeader>
+            <Grid ColumnDefinitions="3*, 1.5*, 2.5*, 2*, 1*">
+                <TextBlock Grid.Column="0" Text="NAZWA I POCHODZENIE" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="0,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Text="KATEGORIA" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="2" Text="RZADKOŚĆ I TAGI" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="3" Text="WŁAŚCIWOŚCI" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="4" Text="WAGA" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis" />
+            </Grid>
+        </components:RegistryLayoutControl.ListHeader>
+
+        <components:RegistryLayoutControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:ItemEntry">
+                <Border Background="{DynamicResource InputBackground}" CornerRadius="8" Padding="16,10" Margin="0,0,10,0">
+                    <Grid ColumnDefinitions="3*, 1.5*, 2.5*, 2*, 1*">
+                        
+                        <!-- Col 0: Name and Pack -->
+                        <Border Grid.Column="0" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="0,0,10,0">
+                            <TextBlock Classes="dynamic" VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding PackName}" Foreground="{DynamicResource TextMuted}" FontSize="13" />
+                                <Run Text=" / " Foreground="{DynamicResource TextMuted}" FontSize="13" />
+                                <Run Text="{Binding Name}" Foreground="{DynamicResource TextPrimary}" />
+                            </TextBlock>
+                        </Border>
+                        
+                        <!-- Col 1: Category -->
+                        <Border Grid.Column="1" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0">
+                            <TextBlock Classes="dynamic" Text="{Binding TypeDisplay}" FontSize="13" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        </Border>
+                        
+                        <!-- Col 2: Badges & Tags -->
+                        <Border Grid.Column="2" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
+                            <Grid ColumnDefinitions="Auto, *" VerticalAlignment="Center">
+                                <Border Grid.Column="0" Background="{Binding RarityColorHex}" Opacity="0.85" CornerRadius="4" Padding="6,2" Margin="0,0,6,0" IsVisible="{Binding RarityDisplay.Length}">
+                                    <Grid>
+                                        <TextBlock Classes="dynamic" Text="{Binding RarityDisplay}" FontSize="11" FontWeight="SemiBold" Foreground="White" Effect="{Binding RarityEffect}" />
+                                        <TextBlock Classes="dynamic" Text="{Binding RarityDisplay}" FontSize="11" FontWeight="SemiBold" Foreground="White" />
+                                    </Grid>
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="dynamic" Text="{Binding TagsDisplay}" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding TagsDisplay}" />
+                            </Grid>
+                        </Border>
+                        
+                        <!-- Col 3: Key Stats (Weapon / Armor) -->
+                        <Border Grid.Column="3" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
+                            <ItemsControl ItemsSource="{Binding PropertyBadges}" VerticalAlignment="Center">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="10" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                                            <PathIcon Data="{Binding Icon, Converter={StaticResource SmartIconConverter}}" 
+                                                      Width="14" 
+                                                      VerticalAlignment="Center"
+                                                      Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}"
+                                                      IsVisible="{Binding HasIcon}"/>
+                                            <TextBlock Text="{Binding Text}" 
+                                                       FontSize="13" 
+                                                       FontWeight="Bold" 
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}" 
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                        
+                        <!-- Col 4: Weight -->
+                        <TextBlock Grid.Column="4" Text="{Binding WeightDisplay}" FontSize="12" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center" HorizontalAlignment="Right" TextTrimming="CharacterEllipsis"/>
+                        
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </components:RegistryLayoutControl.ItemTemplate>
+    </components:RegistryLayoutControl>
+
 </UserControl>

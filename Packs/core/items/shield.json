@@ -1,0 +1,25 @@
+{
+  "Id": "shield",
+  "BaseTemplate": null,
+  "Name": "core_item_shield_name",
+  "Description": "core_item_shield_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 3,
+  "Tags": [
+    "core_tag_shield"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 2,
+      "ArmorType": "core_tag_shield",
+      "StealthDisadvantage": false,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": null
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

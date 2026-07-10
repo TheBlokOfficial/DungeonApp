@@ -1,0 +1,25 @@
+{
+  "Id": "armor_half_plate",
+  "BaseTemplate": null,
+  "Name": "core_item_halfplate_name",
+  "Description": "core_item_halfplate_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_common",
+  "Weight": 20,
+  "Tags": [
+    "core_tag_medium_armor"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": {
+      "ArmorBonus": 5,
+      "ArmorType": "core_tag_medium_armor",
+      "StealthDisadvantage": true,
+      "StrengthRequirement": 0,
+      "MaxDexterityBonus": 2
+    },
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

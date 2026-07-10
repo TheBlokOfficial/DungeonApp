@@ -1,0 +1,19 @@
+{
+  "Id": "test_common",
+  "BaseTemplate": null,
+  "Name": "test_item_common_name",
+  "Description": "test_item_common_desc",
+  "Type": "core_type_weapon",
+  "Rarity": "core_rarity_common",
+  "Weight": 1,
+  "Tags": [
+    "Test"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

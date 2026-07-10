@@ -1,0 +1,48 @@
+{
+  "Id": "young_dragon",
+  "BaseTemplate": null,
+  "Name": "core_monster_youngdragon_name",
+  "Description": "core_monster_youngdragon_desc",
+  "Type": "core_tag_dragon",
+  "Size": "core_tag_huge",
+  "Alignment": "Chaotic Evil",
+  "Faction": "core_faction_wild",
+  "ChallengeRating": "10",
+  "Tags": [
+    "core_tag_boss"
+  ],
+  "Combat": {
+    "ArmorClass": 18,
+    "ArmorType": "",
+    "MaxHp": 178,
+    "HitDice": "",
+    "InitiativeBonus": 0,
+    "Xp": 0
+  },
+  "Speeds": [
+    {
+      "Type": "Walk",
+      "Value": 40,
+      "Note": null
+    },
+    {
+      "Type": "Fly",
+      "Value": 80,
+      "Note": null
+    }
+  ],
+  "Abilities": {
+    "Strength": 23,
+    "Dexterity": 10,
+    "Constitution": 21,
+    "Intelligence": 14,
+    "Wisdom": 13,
+    "Charisma": 17
+  },
+  "Actions": [
+    {
+      "Name": "Fire Breath",
+      "Description": "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."
+    }
+  ]
+}

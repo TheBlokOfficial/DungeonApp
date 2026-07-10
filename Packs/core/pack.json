@@ -1,0 +1,94 @@
+{
+  "Id": "core",
+  "Name": "core_pack_name",
+  "Author": "DungeonApp Team",
+  "Version": "1.0.0",
+  "Description": "core_pack_desc",
+  "PropertyTemplates": {},
+  "Rarities": {
+    "core_rarity_common": {
+      "Id": "core_rarity_common",
+      "Name": "core_rarity_common",
+      "ColorHex": "#808080",
+      "HasGlowEffect": false
+    },
+    "core_rarity_uncommon": {
+      "Id": "core_rarity_uncommon",
+      "Name": "core_rarity_uncommon",
+      "ColorHex": "#2E8B57",
+      "HasGlowEffect": false
+    },
+    "core_rarity_rare": {
+      "Id": "core_rarity_rare",
+      "Name": "core_rarity_rare",
+      "ColorHex": "#4169E1",
+      "HasGlowEffect": false
+    },
+    "core_rarity_epic": {
+      "Id": "core_rarity_epic",
+      "Name": "core_rarity_epic",
+      "ColorHex": "#8A2BE2",
+      "HasGlowEffect": false
+    },
+    "core_rarity_legendary": {
+      "Id": "core_rarity_legendary",
+      "Name": "core_rarity_legendary",
+      "ColorHex": "#FF4500",
+      "HasGlowEffect": true
+    }
+  },
+  "Categories": {
+    "core_type_weapon": {
+      "Id": "core_type_weapon",
+      "Name": "core_type_weapon",
+      "RegistryFormat": [
+        {
+          "Icon": "sword",
+          "Format": "{Weapon.DamageRoll}",
+          "TextColor": "TextPrimary"
+        }
+      ]
+    },
+    "core_type_armor": {
+      "Id": "core_type_armor",
+      "Name": "core_type_armor",
+      "RegistryFormat": [
+        {
+          "Icon": "shield",
+          "Format": "\u002B{Armor.ArmorBonus} AC",
+          "TextColor": "TextPrimary"
+        }
+      ]
+    },
+    "core_type_consumable": {
+      "Id": "core_type_consumable",
+      "Name": "core_type_consumable",
+      "RegistryFormat": [
+        {
+          "Icon": "IconPotion",
+          "Format": "{Consumable.Uses} uses",
+          "TextColor": "TextPrimary"
+        }
+      ]
+    }
+  },
+  "Factions": {
+    "core_faction_undead": {
+      "Id": "core_faction_undead",
+      "Name": "core_faction_undead_name",
+      "Icon": "IconSkull",
+      "ColorHex": "#8A2BE2"
+    },
+    "core_faction_wild": {
+      "Id": "core_faction_wild",
+      "Name": "core_faction_wild_name",
+      "Icon": "IconSwords",
+      "ColorHex": "#2E8B57"
+    }
+  },
+  "Icons": {
+    "custom_potion": "M12,2 L22,12 L12,22 L2,12 Z",
+    "sword": "M6.92,5L5,6.92L10.66,12.58L11.24,13.16L9.24,15.16L7.83,13.75L6.41,15.16L9.24,18L11.24,16L12,16.76L12.76,16L14.76,18L17.59,15.16L16.17,13.75L14.76,15.16L12.76,13.16L13.34,12.58L19,6.92L17.08,5L12,10.08L6.92,5M17.08,17.84L15.16,19.76L17.08,21.68L19,19.76L17.08,17.84M6.92,17.84L5,19.76L6.92,21.68L8.84,19.76L6.92,17.84Z",
+    "shield": "M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1Z"
+  }
+}

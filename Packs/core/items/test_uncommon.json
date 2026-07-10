@@ -1,0 +1,19 @@
+{
+  "Id": "test_uncommon",
+  "BaseTemplate": null,
+  "Name": "test_item_uncommon_name",
+  "Description": "test_item_uncommon_desc",
+  "Type": "core_type_armor",
+  "Rarity": "core_rarity_uncommon",
+  "Weight": 2,
+  "Tags": [
+    "Test"
+  ],
+  "Components": {
+    "Weapon": null,
+    "Armor": null,
+    "Consumable": null,
+    "Modifiers": []
+  },
+  "RegistryFormat": null
+}

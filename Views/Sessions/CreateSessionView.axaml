@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.CreateSessionView"
              x:DataType="vm:CreateSessionViewModel"
              Background="#171717">
@@ -32,19 +33,19 @@
                 <!-- NAGŁÓWEK -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center" Margin="0,0,0,30">
                     <PathIcon Data="{StaticResource IconAdd}" Width="30" Height="30" Foreground="#D4A017"/>
-                    <TextBlock Text="Rozpocznij Nową Sesję" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                    <TextBlock Classes="dynamic" Text="{i18n:Translate ui_start_new_session}" FontSize="30" FontWeight="Bold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- FORMULARZ ZE SCROLLOWANIEM (przydatne przy dużej ilości postaci) -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="30">
                         <StackPanel Spacing="10">
-                            <TextBlock Text="Tytuł Sesji *" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding Title}" PlaceholderText="np. Podróż do Neverwinter..."/>
+                            <TextBlock Classes="dynamic" Text="{i18n:Translate ui_session_title}" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
+                            <TextBox Text="{Binding Title}" Watermark="{i18n:Translate ui_session_title_placeholder}"/>
                         </StackPanel>
 
                         <StackPanel Spacing="10">
-                            <TextBlock Text="Obecni Bohaterowie" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
+                            <TextBlock Classes="dynamic" Text="{i18n:Translate ui_present_characters}" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
                             <!-- Pojemnik na listę CheckBoxów -->
                             <Border Background="#171717"  BorderThickness="0" CornerRadius="8" Padding="20,15">
                                 <Grid>
@@ -61,7 +62,7 @@
                                     </ItemsControl>
 
                                     <!-- Stan pusty, gdy w kampanii nie ma jeszcze postaci -->
-                                    <TextBlock Text="Brak przypisanych postaci do kampanii."
+                                    <TextBlock Classes="dynamic" Text="{i18n:Translate ui_no_characters_in_campaign}"
                                                IsVisible="{Binding !AvailableCharacters.Count}"
                                                Foreground="#666666"
                                                FontStyle="Italic"
@@ -74,16 +75,18 @@
 
                 <!-- PRZYCISKI -->
                 <Grid Grid.Row="2" ColumnDefinitions="*, *" Margin="0,30,0,0">
-                    <Button Grid.Column="0" Content="Anuluj" Command="{Binding CancelCommand}"
+                    <Button Grid.Column="0" Command="{Binding CancelCommand}"
                             Background="Transparent"  BorderThickness="0" 
                             Foreground="#A3A3A3" Padding="19,15" CornerRadius="8" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,0,8,0">
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_cancel}"/>
                         <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#292929"/><Setter Property="Foreground" Value="#FFFFFF"/></Style></Button.Styles>
                     </Button>
-                    <Button Grid.Column="1" Content="Rozpocznij" Command="{Binding CreateCommand}"
+                    <Button Grid.Column="1" Command="{Binding CreateCommand}"
                             Background="#D4A017" Foreground="#171717" FontWeight="Bold" 
                             Padding="19,15" CornerRadius="8" 
                             HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="8,0,0,0">
+                        <TextBlock Classes="dynamic" Text="{i18n:Translate ui_start}"/>
                         <Button.Styles><Style Selector="Button:pointerover /template/ ContentPresenter"><Setter Property="Background" Value="#E5B027"/></Style></Button.Styles>
                     </Button>
                 </Grid>
