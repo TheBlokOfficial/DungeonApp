@@ -90,6 +90,9 @@
   "ui_col_tags": "TAGS",
   "ui_col_challenge": "CHALLENGE",
   "ui_col_hp": "HIT POINTS",
+  "ui_col_category": "CATEGORY",
+  "ui_col_stats": "STATS",
+  "ui_col_weight": "WEIGHT",
   
   "core_type_weapon": "Weapon",
   "core_type_armor": "Armor",
@@ -113,5 +116,56 @@
   "ui_stat_hp": "HP",
   "ui_stat_ac": "AC",
   "ui_settings_distance": "Distance Unit",
-  "ui_settings_distance_desc": "Changes the displayed distance and speed unit (e.g. from imperial feet to meters)."
+  "ui_settings_distance_desc": "Changes the displayed distance and speed unit (e.g. from imperial feet to meters).",
+  
+  "Tiny": "Tiny",
+  "Small": "Small",
+  "Medium": "Medium",
+  "Large": "Large",
+  "Huge": "Huge",
+  "Gargantuan": "Gargantuan",
+  
+  "Lawful Good": "Lawful Good",
+  "Neutral Good": "Neutral Good",
+  "Chaotic Good": "Chaotic Good",
+  "Lawful Neutral": "Lawful Neutral",
+  "True Neutral": "True Neutral",
+  "Chaotic Neutral": "Chaotic Neutral",
+  "Lawful Evil": "Lawful Evil",
+  "Neutral Evil": "Neutral Evil",
+  "Chaotic Evil": "Chaotic Evil",
+  "Unaligned": "Unaligned",
+  "Any Alignment": "Any Alignment",
+  
+  "walk": "walk",
+  "fly": "fly",
+  "swim": "swim",
+  "climb": "climb",
+  "burrow": "burrow",
+  "hover": "hover",
+  
+  "Walk": "walk",
+  "Fly": "fly",
+  "Swim": "swim",
+  "Climb": "climb",
+  "Burrow": "burrow",
+  "Hover": "hover",
+  
+  "Melee Weapon Attack:": "Melee Weapon Attack:",
+  "Ranged Weapon Attack:": "Ranged Weapon Attack:",
+  "to hit": "to hit",
+  
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.",
+  "The goblin can take the Disengage or Hide action as a bonus action on each of its turns.": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns.",
+  "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.": "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.",
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.",
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage.": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage.",
+  "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.": "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.",
+  
+  "Scimitar": "Scimitar",
+  "Nimble Escape": "Nimble Escape",
+  "Greatclub": "Greatclub",
+  "Shortsword": "Shortsword",
+  "Bite": "Bite",
+  "Fire Breath": "Fire Breath"
 }

@@ -67,5 +67,15 @@
   "core_rarity_legendary": "Mythic",
   "core_type_weapon": "Weapon",
   "core_type_armor": "Armor",
-  "core_type_consumable": "Consumable"
+  "core_type_consumable": "Consumable",
+  "ui_stat_armor_class": "Armor Class",
+  "ui_stat_hit_points": "Hit Points",
+  "ui_stat_speed": "Speed",
+  "ui_stat_str": "STR",
+  "ui_stat_dex": "DEX",
+  "ui_stat_con": "CON",
+  "ui_stat_int": "INT",
+  "ui_stat_wis": "WIS",
+  "ui_stat_cha": "CHA",
+  "ui_stat_actions": "Actions"
 }

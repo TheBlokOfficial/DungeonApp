@@ -1,0 +1,11 @@
+{
+  "Id": "core_type_weapon",
+  "Name": "core_type_weapon",
+  "RegistryFormat": [
+    {
+      "Icon": "sword",
+      "Format": "{Weapon.DamageRoll}",
+      "TextColor": "TextPrimary"
+    }
+  ]
+}

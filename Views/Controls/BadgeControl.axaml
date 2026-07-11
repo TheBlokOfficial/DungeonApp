@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Views.Controls.BadgeControl"
+             x:Name="RootBadge"
+             Foreground="{DynamicResource TextSecondary}">
+    
+    <Panel>
+        <!-- Default layer -->
+        <Border CornerRadius="{Binding BadgeCornerRadius, ElementName=RootBadge}" 
+                Background="{DynamicResource BadgeDefaultBackground}" 
+                BorderBrush="{DynamicResource BorderSecondary}"
+                BorderThickness="{Binding BadgeBorderThickness, ElementName=RootBadge}" />
+        
+        <!-- Custom override layer -->
+        <Border CornerRadius="{Binding BadgeCornerRadius, ElementName=RootBadge}" 
+                Padding="{Binding BadgePadding, ElementName=RootBadge}" 
+                BorderThickness="{Binding BadgeBorderThickness, ElementName=RootBadge}"
+                BorderBrush="{Binding BadgeBorderBrush, ElementName=RootBadge}"
+                Background="{Binding BadgeBackground, ElementName=RootBadge}">
+        <Grid>
+            <!-- Glow effect layer (only visible if GlowEffect is set) -->
+            <TextBlock Text="{Binding Text, ElementName=RootBadge}" 
+                       FontSize="{Binding BadgeFontSize, ElementName=RootBadge}" FontWeight="SemiBold" 
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Effect="{Binding GlowEffect, ElementName=RootBadge}" 
+                       IsVisible="{Binding GlowEffect, ElementName=RootBadge, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            
+            <!-- Standard text layer -->
+            <TextBlock Text="{Binding Text, ElementName=RootBadge}" 
+                       FontSize="{Binding BadgeFontSize, ElementName=RootBadge}" FontWeight="SemiBold" 
+                       Foreground="{Binding Foreground, ElementName=RootBadge}"
+                       VerticalAlignment="Center" />
+        </Grid>
+        </Border>
+    </Panel>
+</UserControl>

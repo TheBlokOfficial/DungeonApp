@@ -7,7 +7,7 @@
              x:DataType="vm:RegistryTabViewModelBase"
              x:Name="RootControl">
 
-    <Grid MaxWidth="1600" HorizontalAlignment="Stretch">
+    <Grid MaxWidth="2100" HorizontalAlignment="Stretch">
         <Grid RowDefinitions="Auto, *" Margin="30">
             
             <!-- NAGŁÓWEK: Tytuł + Wyszukiwarka + Odśwież -->
@@ -27,8 +27,13 @@
                 </Button>
             </Grid>
             
-            <!-- GŁÓWNA ZAWARTOŚĆ: Sidebar + Lista -->
-            <Grid Grid.Row="1" ColumnDefinitions="2.2*, 7.8*">
+            <!-- GŁÓWNA ZAWARTOŚĆ: Sidebar + Lista + Szczegóły -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="230" />
+                    <ColumnDefinition Width="2*" MinWidth="400" />
+                    <ColumnDefinition Width="1.5*" MinWidth="450" MaxWidth="650" />
+                </Grid.ColumnDefinitions>
                 
                 <!-- LEWA KOLUMNA: Sidebar z filtrami -->
                 <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,30,0">
@@ -130,23 +135,73 @@
                     </StackPanel>
                 </ScrollViewer>
                 
-                <!-- PRAWA KOLUMNA: LISTA (WSTRZYKNIĘTA) -->
-                <Grid Grid.Column="1" RowDefinitions="Auto, *">
+                <!-- ŚRODKOWA KOLUMNA: LISTA (WSTRZYKNIĘTA) -->
+                <Grid Grid.Column="1" RowDefinitions="Auto, *" Margin="0,0,30,0">
                     <!-- NAGŁÓWEK TABELI -->
-                    <Border Grid.Row="0" Margin="0,0,10,10" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,0,1" Padding="16,0,16,10">
+                    <Border Grid.Row="0" Margin="0,0,0,10" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,0,1" Padding="16,0,16,10">
                         <ContentPresenter Content="{Binding #RootControl.ListHeader}" />
                     </Border>
                     
                     <!-- ZAWARTOŚĆ TABELI -->
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding #RootControl.ItemsSource}" ItemTemplate="{Binding #RootControl.ItemTemplate}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Spacing="8" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+                        <ListBox ItemsSource="{Binding #RootControl.ItemsSource}" 
+                                 ItemTemplate="{Binding #RootControl.ItemTemplate}"
+                                 SelectedItem="{Binding #RootControl.SelectedItem, Mode=TwoWay}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="0"
+                                 Margin="0">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,0,0,8"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem Border.registryItemCard">
+                                    <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover Border.registryItemCard">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource BorderMuted}"/>
+                                    <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected Border.registryItemCard">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
+                                    <Setter Property="Background" Value="{DynamicResource BorderInput}"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected:pointerover Border.registryItemCard">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
+                                    <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
+                                </Style>
+                            </ListBox.Styles>
+                        </ListBox>
                     </ScrollViewer>
+                </Grid>
+
+                <!-- PRAWA KOLUMNA: SZCZEGÓŁY -->
+                <Grid Grid.Column="2" Background="Transparent">
+                    <!-- Placeholder, gdy nic nie jest wybrane -->
+                    <Border IsVisible="{Binding #RootControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}" 
+                            Background="{DynamicResource InputBackground}" CornerRadius="12" Opacity="0.5"
+                            BorderBrush="{DynamicResource BorderMuted}" BorderThickness="1">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15">
+                            <PathIcon Data="{StaticResource IconSearch}" Width="32" Height="32" Foreground="{DynamicResource TextMuted}"/>
+                            <TextBlock Text="Wybierz element z listy, aby zobaczyć szczegóły" 
+                                       Foreground="{DynamicResource TextMuted}" FontSize="14" FontWeight="SemiBold"
+                                       TextAlignment="Center" TextWrapping="Wrap" MaxWidth="200"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Karta szczegółów, gdy coś jest wybrane -->
+                    <TransitioningContentControl IsVisible="{Binding #RootControl.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                 Content="{Binding #RootControl.SelectedItem}"
+                                                 ContentTemplate="{Binding #RootControl.DetailTemplate}" />
                 </Grid>
                 
             </Grid>

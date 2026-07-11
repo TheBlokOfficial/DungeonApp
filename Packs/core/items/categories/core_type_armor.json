@@ -1,0 +1,11 @@
+{
+  "Id": "core_type_armor",
+  "Name": "core_type_armor",
+  "RegistryFormat": [
+    {
+      "Icon": "shield",
+      "Format": "\u002B{Armor.ArmorBonus} AC",
+      "TextColor": "TextPrimary"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- TŁA (BACKGROUNDS) -->
     <SolidColorBrush x:Key="AppBackground">#171717</SolidColorBrush>
@@ -10,6 +10,7 @@
     <SolidColorBrush x:Key="BorderPrimary">#222222</SolidColorBrush>
     <SolidColorBrush x:Key="BorderSecondary">#292929</SolidColorBrush>
     <SolidColorBrush x:Key="BorderInput">#333333</SolidColorBrush>
+    <SolidColorBrush x:Key="BadgeDefaultBackground">#1E293B</SolidColorBrush>
     
     <!-- AKCENTY (ACCENTS) -->
     <SolidColorBrush x:Key="AccentPrimary">#4DB8FF</SolidColorBrush>

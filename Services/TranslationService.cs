@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Avalonia.Platform;
@@ -74,6 +75,28 @@ public class TranslationService : ITranslationService
         catch (Exception ex)
         {
             Console.WriteLine($"[TranslationService] Błąd ładowania pliku języka wbudowanego {langCode}: {ex.Message}");
+        }
+
+        // 1.5 Wczytywanie z wbudowanych paczek (Embedded Resources)
+        try
+        {
+            var assembly = typeof(TranslationService).Assembly;
+            var resources = assembly.GetManifestResourceNames()
+                .Where(n => n.EndsWith($".lang.{langCode}.json", StringComparison.OrdinalIgnoreCase));
+                
+            foreach (var res in resources)
+            {
+                using var stream = assembly.GetManifestResourceStream(res);
+                if (stream != null)
+                {
+                    using var reader = new StreamReader(stream);
+                    MergeTranslations(reader.ReadToEnd());
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[TranslationService] Błąd wczytywania tłumaczeń z wbudowanych paczek: {ex.Message}");
         }
 
         // 2. Mergowanie tłumaczeń z zainstalowanych paczek (Pack-level I18n)

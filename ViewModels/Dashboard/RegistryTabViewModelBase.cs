@@ -23,6 +23,14 @@ public abstract partial class RegistryTabViewModelBase : ViewModelBase
     [ObservableProperty]
     private string _searchQuery = string.Empty;
 
+    partial void OnSearchQueryChanged(string value)
+    {
+        OnFiltersChanged();
+    }
+
+    [ObservableProperty]
+    private object? _selectedItem;
+
     protected RegistryTabViewModelBase(IContentRegistry contentRegistry, ITranslationService translationService)
     {
         _contentRegistry = contentRegistry;

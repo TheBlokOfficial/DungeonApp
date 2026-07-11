@@ -53,6 +53,24 @@ public partial class RegistryLayoutControl : UserControl
         set => SetValue(ListHeaderProperty, value);
     }
 
+    public static readonly StyledProperty<object?> SelectedItemProperty =
+        AvaloniaProperty.Register<RegistryLayoutControl, object?>(nameof(SelectedItem));
+
+    public object? SelectedItem
+    {
+        get => GetValue(SelectedItemProperty);
+        set => SetValue(SelectedItemProperty, value);
+    }
+
+    public static readonly StyledProperty<IDataTemplate?> DetailTemplateProperty =
+        AvaloniaProperty.Register<RegistryLayoutControl, IDataTemplate?>(nameof(DetailTemplate));
+
+    public IDataTemplate? DetailTemplate
+    {
+        get => GetValue(DetailTemplateProperty);
+        set => SetValue(DetailTemplateProperty, value);
+    }
+
     public RegistryLayoutControl()
     {
         InitializeComponent();

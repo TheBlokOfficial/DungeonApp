@@ -18,7 +18,25 @@
 ## Przepływ Pracy (Workflow)
 - **Asertywność i Ochrona Architektury (Strażnik Zasad)**: Masz obowiązek pełnić rolę strażnika poprawności architektonicznej i zasad UI/UX. Jeżeli prośba użytkownika koliduje z dobrymi praktykami, zasadami projektowania interfejsów desktopowych (np. łamie logikę layoutu) albo przeczy ustaleniom spisanym w tym dokumencie – **MASZ ZAKAZ ślepego wdrażania takich zmian**. W takiej sytuacji bezwzględnie przerwij pracę, poinformuj o wykrytym konflikcie, wyjaśnij, dlaczego pomysł jest technicznie lub projektowo wadliwy, i zaproponuj alternatywne rozwiązanie.
 - **Zatwierdzanie Planów**: Bezwzględnie zabrania się rozpoczynania jakichkolwiek prac programistycznych (modyfikacji kodu, tworzenia nowych plików funkcjonalnych) bez wcześniejszego, wyraźnego zatwierdzenia planu działania (Implementation Plan) przez użytkownika. Przygotowywanie planów, analizy oraz zbieranie informacji są dozwolone i zalecane przed uzyskaniem zgody.
-- **Skrupulatna Struktura Zadań (Meticulous Task List)**: Zawsze, gdy przystępujesz do fazy "Execute" i tworzysz plik `task.md` (niezależnie czy poproszono o to wprost), **MUSISZ** stosować wysoce uporządkowaną i hierarchiczną strukturę. Pracę należy bezwzględnie podzielić na logiczne **Etapy (Stages)** za pomocą nagłówków (np. `## Etap 1: Modele i Dane`). Wewnątrz etapów umieszczaj konkretne zadania, używając wcięć dla pod-zadań, jeśli są wymagane. Surowo zakazuje się generowania "płaskich", krótkich i chaotycznych list TODO. Skrupulatne planowanie na etapie pliku zadań drastycznie podnosi jakość i bezpieczeństwo kodu.
+- **Dwuetapowa Analiza (Architektura vs Egzekucja)**: Kiedy użytkownik da Ci "zielone światło" na realizację zatwierdzonego Planu Implementacji, **masz zakaz natychmiastowego modyfikowania kodu**. W pierwszej kolejności musisz przeprowadzić "analizę wykonawczą" (operacyjną) - sprawdzić dokładne pliki i ich nazwy, które ulegną zmianie. Następnie, na bazie tej świeżej analizy, masz obowiązek zbudować szczegółowy, wieloetapowy plik `task.md`. Dopiero mając wygenerowaną listę tasków, możesz rozpocząć prace programistyczne.
+- **Konceptualna Struktura Zadań (Conceptual & Meticulous Task List)**: Zawsze, gdy tworzysz plik `task.md`, **MUSISZ** stosować hierarchiczną strukturę (podział na logiczne **Etapy/Stages**). Najważniejsze zasady dla treści zadań:
+  1. **Koncepty, nie mikrozarządzanie**: Zadania (taski i sub-taski) muszą określać **cele operacyjne i koncepty** (np. "Wyizolować logikę atrybutów do nowego AbilityScoresViewModel"), a nie stanowić ślepych instrukcji linijka-po-linijce (np. "Usuń metodę GetModifierString z linii 258").
+  2. **Złoty środek precyzji**: Unikaj skrajnej ogólnikowości. Wspominaj w zadaniach o nazwach docelowych plików, interfejsów czy o kluczowych decyzjach projektowych (np. "dopasować marginesy i usunąć zaokrąglenia, aby uzyskać surowy styl tabeli"), ale zostawiaj sobie swobodę decyzyjną co do tego, jak to technicznie napiszesz w trakcie kodowania. Plik zadań to kompas z celami, a nie literalny pseudo-kod.
+
+## System Trybów Operacyjnych (Mode-Driven Workflow)
+Przed przystąpieniem do realizacji zadania (i przed edycją kodu), agent ma obowiązek sklasyfikować polecenie do jednego z trzech trybów (lub zastosować się do tagu narzuconego przez użytkownika, np. `[ARCH]`, `[POLISH]`, `[FAST]`). Poinformuj użytkownika o wybranym trybie, aby upewnić się, że obaj działacie na tych samych zasadach.
+
+1. **Tryb Architektoniczny (ARCH MODE)**
+   - **Zastosowanie:** Budowa nowych widoków, systemów, refaktoryzacja klas, wdrażanie nowych funkcjonalności bazowych.
+   - **Workflow:** Rygorystyczny i sterylny. Wymaga wygenerowania pliku `implementation_plan.md`, uzyskania akceptacji użytkownika, a następnie stworzenia wieloetapowego, konceptualnego `task.md`.
+
+2. **Tryb Szlifowania / Detektywistyczny (POLISH MODE)**
+   - **Zastosowanie:** Używany jako bezpośrednie następstwo Trybu Architektonicznego. Skupiony na szlifowaniu właśnie wdrożonego systemu, łataniu bugów integracyjnych, wyłapywaniu "edge-case'ów" i stabilizowaniu świeżego kodu. 
+   - **Workflow:** Płynniejszy i zorientowany na poprawki. Tworzony jest roboczy, elastyczny `task.md` z bieżącymi problemami do załatania, bez wymogu każdorazowego tworzenia potężnych planów implementacji i pytania o zgodę na załatanie wykrytego błędu.
+
+3. **Tryb Szybki (FAST MODE)**
+   - **Zastosowanie:** Operacje mniejsze, kosmetyczne i punktowe (np. zmiana rozmiarów, przebudowa pojedynczego elementu UI, dodanie brakującej właściwości). To nie jest tylko "zmiana literówki", ale każde zadanie na tyle hermetyczne, że nie narusza ogólnej architektury.
+   - **Workflow:** Bezpośredni. W tym trybie agent posiada pełną **dyspensę (zwolnienie)** z tworzenia plików `implementation_plan.md` i `task.md`. Przechodzi prosto do edycji kodu, zapisuje zmiany i raportuje wykonanie, maksymalizując dynamikę pracy.
 
 ## Dokumentacja Kodu (Doxygen / XML)
 - **Zasada Dokumentacji Architektonicznej (Why over How)**: Każda modyfikacja nieszablonowego układu XAML (np. obliczenia marginesów, padingu, ukrywanie elementów, szerokości paska), niestandardowej logiki (np. `Safe-Shrink`), oraz każda ważniejsza metoda/właściwość w ViewModelu MUSI być poprzedzona odpowiednim komentarzem (w języku polskim).

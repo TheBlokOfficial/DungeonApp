@@ -108,8 +108,22 @@ public partial class AdversariesTabViewModel : RegistryTabViewModelBase
                 ChallengeRating = adv.ChallengeRating,
                 Tags = adv.Tags.Select(t => _translationService.Translate(t)).ToList(),
                 Combat = adv.Combat,
-                Abilities = adv.Abilities,
-                Actions = adv.Actions,
+                Speeds = adv.Speeds,
+                AbilityScoresVM = new DungeonApp.ViewModels.Controls.AbilityScoresViewModel(adv.Abilities),
+                Actions = adv.Actions.Select(a => new ActionDefinition { 
+                    Name = _translationService.Translate(a.Name), 
+                    Description = _translationService.Translate(a.Description)
+                }).ToList(),
+
+                TagModels = adv.Tags.Select(t => 
+                {
+                    var template = _contentRegistry.ResolveTag(t);
+                    return new TagViewModel
+                    {
+                        Name = _translationService.Translate(t),
+                        ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
+                    };
+                }).ToList(),
                 TypeDisplay = string.IsNullOrEmpty(adv.Type) ? "" : _translationService.Translate(adv.Type),
                 SizeDisplay = string.IsNullOrEmpty(adv.Size) ? "" : _translationService.Translate(adv.Size),
                 AlignmentDisplay = string.IsNullOrEmpty(adv.Alignment) ? "" : _translationService.Translate(adv.Alignment),
@@ -135,7 +149,14 @@ public partial class AdversariesTabViewModel : RegistryTabViewModelBase
                 TextColor = "#FF4D4D" // AccentDanger
             });
 
-            
+            var speeds = adv.Speeds.Select(s => 
+            {
+                string formatted = FormatSpeed(s.Value, DistanceUnit);
+                string translatedType = _translationService.Translate(s.Type);
+                return s.Note != null ? $"{translatedType} {formatted} ({s.Note})" : $"{translatedType} {formatted}";
+            });
+            entry.SpeedDisplay = adv.Speeds.Count > 0 ? string.Join(", ", speeds) : "0 " + DistanceUnit;
+
             return entry;
         }).ToList();
 
@@ -234,11 +255,15 @@ public class AdversaryEntry
     public string ChallengeRating { get; set; } = string.Empty;
     
     public string TypeDisplay { get; set; } = string.Empty;
+
     public string SizeDisplay { get; set; } = string.Empty;
     public string AlignmentDisplay { get; set; } = string.Empty;
     public string ChallengeRatingDisplay { get; set; } = string.Empty;
 
+    public List<string> Traits { get; set; } = new();
+    
     public List<string> Tags { get; set; } = new();
+    public List<TagViewModel> TagModels { get; set; } = new();
     
     public string FactionName { get; set; } = string.Empty;
     public string FactionIcon { get; set; } = string.Empty;
@@ -246,8 +271,15 @@ public class AdversaryEntry
     public bool HasFaction => !string.IsNullOrEmpty(FactionName);
     
     public CombatStats Combat { get; set; } = new();
+    public List<SpeedComponent> Speeds { get; set; } = new();
     public AbilityScores Abilities { get; set; } = new();
     public List<ActionDefinition> Actions { get; set; } = new();
+    public bool HasActions => Actions != null && Actions.Count > 0;
+
+    public string HpDisplay => !string.IsNullOrEmpty(Combat.HitDice) ? $"{Combat.MaxHp} ({Combat.HitDice})" : Combat.MaxHp.ToString();
+    public string SpeedDisplay { get; set; } = string.Empty;
+
+    public DungeonApp.ViewModels.Controls.AbilityScoresViewModel AbilityScoresVM { get; set; } = null!;
 
     public string DisplayPath => $"{PackName} / {Name}";
     public string TagsDisplay => Tags.Count > 0 ? string.Join(" · ", Tags) : string.Empty;

@@ -1,0 +1,11 @@
+{
+  "Id": "core_type_consumable",
+  "Name": "core_type_consumable",
+  "RegistryFormat": [
+    {
+      "Icon": "IconPotion",
+      "Format": "{Consumable.Uses} uses",
+      "TextColor": "TextPrimary"
+    }
+  ]
+}

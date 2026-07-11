@@ -15,7 +15,7 @@
     "ArmorClass": 15,
     "ArmorType": "",
     "MaxHp": 7,
-    "HitDice": "",
+    "HitDice": "2d6",
     "InitiativeBonus": 0,
     "Xp": 0
   },
@@ -37,7 +37,11 @@
   "Actions": [
     {
       "Name": "Scimitar",
-      "Description": "Melee Weapon Attack: \u002B4 to hit, reach 5 ft., one target. Hit: 5 (1d6 \u002B 2) slashing damage."
+      "Description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
+    },
+    {
+      "Name": "Nimble Escape",
+      "Description": "The goblin can take the Disengage or Hide action as a bonus action on each of its turns."
     }
   ]
 }

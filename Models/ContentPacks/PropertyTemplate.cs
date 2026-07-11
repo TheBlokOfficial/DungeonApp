@@ -7,6 +7,11 @@ namespace DungeonApp.Models.ContentPacks;
 public class PropertyTemplate
 {
     /// <summary>
+    /// Unikalny identyfikator właściwości (np. "Weapon.DamageRoll").
+    /// </summary>
+    public string Id { get; set; } = string.Empty;
+
+    /// <summary>
     /// Pełna, czytelna dla człowieka nazwa właściwości (np. "Obrażenia", "Waga").
     /// Opcjonalna, domyślnie używany jest klucz ze słownika.
     /// </summary>

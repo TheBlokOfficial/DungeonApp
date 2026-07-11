@@ -111,6 +111,15 @@ public partial class ItemsTabViewModel : RegistryTabViewModelBase
                 RarityColorHex = rarityTemplate?.ColorHex ?? "#808080",
                 RarityHasGlow = rarityTemplate?.HasGlowEffect ?? false,
                 Tags = item.Tags.Select(t => _translationService.Translate(t)).ToList(),
+                TagModels = item.Tags.Select(t => 
+                {
+                    var template = _contentRegistry.ResolveTag(t);
+                    return new TagViewModel
+                    {
+                        Name = _translationService.Translate(t),
+                        ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
+                    };
+                }).ToList(),
                 Components = item.Components
             };
 
@@ -219,6 +228,7 @@ public class ItemEntry
     public string PackId { get; set; } = string.Empty;
     public string PackName { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
     public string FullDisplayName => $"{PackName} - {Name}";
     public string Description { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
@@ -234,6 +244,7 @@ public class ItemEntry
     public Avalonia.Media.IEffect? RarityEffect => RarityHasGlow ? new Avalonia.Media.BlurEffect { Radius = 4 } : null;
     
     public List<string> Tags { get; set; } = new();
+    public List<TagViewModel> TagModels { get; set; } = new();
     
     public string WeightDisplay => Weight > 0 ? $"{Weight} {WeightUnit}" : string.Empty;
 

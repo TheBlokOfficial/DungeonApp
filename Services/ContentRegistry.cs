@@ -20,6 +20,7 @@ public interface IContentRegistry
     RarityTemplate? ResolveRarity(string rarityId);
     CategoryTemplate? ResolveCategory(string categoryId);
     FactionTemplate? ResolveFaction(string fullFactionId);
+    TagTemplate? ResolveTag(string tagId);
     string? ResolveIconPath(string fullIconId);
 
     IReadOnlyList<(string FullId, string PackName, ItemTemplate Item)> GetItemsFromPacks(IEnumerable<string> packIds);
@@ -35,6 +36,7 @@ public class ContentRegistry : IContentRegistry
     private readonly Dictionary<string, ContentPack> _packs = new();
     private readonly Dictionary<string, string> _globalIcons = new();
     private readonly Dictionary<string, FactionTemplate> _globalFactions = new();
+    private readonly Dictionary<string, TagTemplate> _globalTags = new(StringComparer.OrdinalIgnoreCase);
     private readonly string _packsDirectory;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -61,6 +63,9 @@ public class ContentRegistry : IContentRegistry
         
     public FactionTemplate? ResolveFaction(string fullFactionId)
         => _globalFactions.GetValueOrDefault(fullFactionId);
+
+    public TagTemplate? ResolveTag(string tagId)
+        => _globalTags.GetValueOrDefault(tagId);
 
     public ItemTemplate? ResolveItem(string fullTemplateId)
     {
@@ -239,6 +244,14 @@ public class ContentRegistry : IContentRegistry
                     var pack = LoadPackFromDirectory(dir);
                     if (pack != null && !string.IsNullOrEmpty(pack.Id))
                     {
+                        // Zabezpieczenie przed starymi artefaktami kompilacji (ignorujemy paczkę 'core' w folderze aplikacji)
+                        // Tylko mody w katalogu użytkownika (AppData) mogą nadpisywać paczkę bazową 'core'
+                        if (pack.Id == "core" && dir.StartsWith(AppPaths.BuiltInPacksPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Debug.WriteLine($"[ContentRegistry] Ignorowanie paczki 'core' z folderu instalacyjnego. Używana będzie wersja Embedded.");
+                            continue;
+                        }
+
                         if (_packs.ContainsKey(pack.Id))
                             Debug.WriteLine($"[ContentRegistry] OSTRZEŻENIE: Nadpisywanie paczki '{pack.Id}' z folderu '{dir}'.");
                         _packs[pack.Id] = pack;
@@ -260,6 +273,12 @@ public class ContentRegistry : IContentRegistry
                     var pack = LoadPackFromZip(zip);
                     if (pack != null && !string.IsNullOrEmpty(pack.Id))
                     {
+                        if (pack.Id == "core" && zip.StartsWith(AppPaths.BuiltInPacksPath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Debug.WriteLine($"[ContentRegistry] Ignorowanie paczki 'core' z wbudowanego archiwum ZIP. Używana będzie wersja Embedded.");
+                            continue;
+                        }
+
                         if (_packs.ContainsKey(pack.Id))
                             Debug.WriteLine($"[ContentRegistry] OSTRZEŻENIE: Nadpisywanie paczki '{pack.Id}' z pliku '{zip}'.");
                         _packs[pack.Id] = pack;
@@ -275,9 +294,7 @@ public class ContentRegistry : IContentRegistry
 
         if (!_packs.ContainsKey("core"))
         {
-            RestoreCorePackFromEmbedded();
-            var coreDir = Path.Combine(AppPaths.BuiltInPacksPath, "core");
-            var pack = LoadPackFromDirectory(coreDir);
+            var pack = LoadPackFromEmbedded("core");
             if (pack != null) _packs[pack.Id] = pack;
         }
 
@@ -299,9 +316,46 @@ public class ContentRegistry : IContentRegistry
                     _globalFactions[$"{pack.Id}:{faction.Key}"] = faction.Value;
                 }
             }
+
+            /// <remarks>
+            /// Tagi (np. "boss", "goblinoid") rejestrowane są BEZ prefiksu paczki,
+            /// ponieważ tagi w plikach przeciwników (adversary.json) zapisane są jako
+            /// proste stringi (np. "Goblinoid"), a nie pełne identyfikatory (np. "core:goblinoid").
+            /// Słownik _globalTags używa OrdinalIgnoreCase, więc "Goblinoid" == "goblinoid".
+            /// </remarks>
+            if (pack.Tags != null)
+            {
+                foreach (var tag in pack.Tags)
+                {
+                    _globalTags[tag.Key] = tag.Value;
+                }
+            }
         }
 
         Debug.WriteLine($"[ContentRegistry] Załadowano łącznie {_packs.Count} paczek.");
+    }
+
+    private void LoadEntitiesFromDir<T>(string dirPath, Dictionary<string, T> dict, Func<T, string> idSelector) where T : class
+    {
+        if (!Directory.Exists(dirPath)) return;
+        foreach (var file in Directory.GetFiles(dirPath, "*.json"))
+        {
+            try
+            {
+                var json = File.ReadAllText(file);
+                var item = JsonSerializer.Deserialize<T>(json, JsonOptions);
+                if (item != null)
+                {
+                    string id = idSelector(item);
+                    if (string.IsNullOrEmpty(id)) id = Path.GetFileNameWithoutExtension(file);
+                    dict[id] = item;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContentRegistry] Błąd wczytywania {typeof(T).Name} z pliku '{file}': {ex.Message}");
+            }
+        }
     }
 
     private ContentPack? LoadPackFromDirectory(string directoryPath)
@@ -313,6 +367,33 @@ public class ContentRegistry : IContentRegistry
         var packJson = File.ReadAllText(packJsonPath);
         var pack = JsonSerializer.Deserialize<ContentPack>(packJson, JsonOptions);
         if (pack == null) return null;
+
+        // Inicjalizacja słowników (JsonIgnore)
+        pack.PropertyTemplates ??= new Dictionary<string, PropertyTemplate>();
+        pack.Rarities ??= new Dictionary<string, RarityTemplate>();
+        pack.Categories ??= new Dictionary<string, CategoryTemplate>();
+        pack.Tags ??= new Dictionary<string, TagTemplate>(StringComparer.OrdinalIgnoreCase);
+        pack.Factions ??= new Dictionary<string, FactionTemplate>();
+        pack.Icons ??= new Dictionary<string, string>();
+
+        // Load Dictionaries from new folders
+        LoadEntitiesFromDir(Path.Combine(directoryPath, "properties"), pack.PropertyTemplates, x => x.Id);
+        LoadEntitiesFromDir(Path.Combine(directoryPath, "items", "rarities"), pack.Rarities, x => x.Id);
+        LoadEntitiesFromDir(Path.Combine(directoryPath, "items", "categories"), pack.Categories, x => x.Id);
+        LoadEntitiesFromDir(Path.Combine(directoryPath, "adversaries", "factions"), pack.Factions, x => x.Id);
+        LoadEntitiesFromDir(Path.Combine(directoryPath, "tags"), pack.Tags, x => x.Id);
+
+        // Load Icons
+        var iconsPath = Path.Combine(directoryPath, "icons.json");
+        if (File.Exists(iconsPath))
+        {
+            try
+            {
+                var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(iconsPath), JsonOptions);
+                if (dict != null) pack.Icons = dict;
+            }
+            catch (Exception ex) { Debug.WriteLine($"[ContentRegistry] Błąd wczytywania icons.json: {ex.Message}"); }
+        }
 
         // Load Items
         var itemsDir = Path.Combine(directoryPath, "items");
@@ -361,6 +442,19 @@ public class ContentRegistry : IContentRegistry
         return pack;
     }
 
+    private void LoadEntryFromZip<T>(ZipArchiveEntry entry, Dictionary<string, T> dict, Func<T, string> idSelector) where T : class
+    {
+        using var s = entry.Open();
+        using var r = new StreamReader(s);
+        var item = JsonSerializer.Deserialize<T>(r.ReadToEnd(), JsonOptions);
+        if (item != null)
+        {
+            string id = idSelector(item);
+            if (string.IsNullOrEmpty(id)) id = Path.GetFileNameWithoutExtension(entry.Name);
+            dict[id] = item;
+        }
+    }
+
     private ContentPack? LoadPackFromZip(string zipFilePath)
     {
         using var archive = ZipFile.OpenRead(zipFilePath);
@@ -375,13 +469,36 @@ public class ContentRegistry : IContentRegistry
             var pack = JsonSerializer.Deserialize<ContentPack>(packJson, JsonOptions);
             if (pack == null) return null;
 
+            pack.PropertyTemplates ??= new Dictionary<string, PropertyTemplate>();
+            pack.Rarities ??= new Dictionary<string, RarityTemplate>();
+            pack.Categories ??= new Dictionary<string, CategoryTemplate>();
+            pack.Tags ??= new Dictionary<string, TagTemplate>(StringComparer.OrdinalIgnoreCase);
+            pack.Factions ??= new Dictionary<string, FactionTemplate>();
+            pack.Icons ??= new Dictionary<string, string>();
             pack.Items = new List<ItemTemplate>();
             pack.Adversaries = new List<AdversaryTemplate>();
             pack.Adventures = new List<AdventureTemplate>();
 
             foreach (var entry in archive.Entries)
             {
-                if (entry.FullName.StartsWith("items/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                if (entry.FullName.Equals("icons.json", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var s = entry.Open();
+                    using var r = new StreamReader(s);
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(r.ReadToEnd(), JsonOptions);
+                    if (dict != null) pack.Icons = dict;
+                }
+                else if (entry.FullName.StartsWith("properties/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    LoadEntryFromZip(entry, pack.PropertyTemplates, x => x.Id);
+                else if (entry.FullName.StartsWith("items/rarities/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    LoadEntryFromZip(entry, pack.Rarities, x => x.Id);
+                else if (entry.FullName.StartsWith("items/categories/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    LoadEntryFromZip(entry, pack.Categories, x => x.Id);
+                else if (entry.FullName.StartsWith("adversaries/factions/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    LoadEntryFromZip(entry, pack.Factions, x => x.Id);
+                else if (entry.FullName.StartsWith("tags/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                    LoadEntryFromZip(entry, pack.Tags, x => x.Id);
+                else if (entry.FullName.StartsWith("items/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
                     using var s = entry.Open();
                     using var r = new StreamReader(s);
@@ -417,35 +534,96 @@ public class ContentRegistry : IContentRegistry
         }
     }
 
-    private void RestoreCorePackFromEmbedded()
+    private void LoadEntryFromEmbedded<T>(Stream stream, string resourceName, Dictionary<string, T> dict, Func<T, string> idSelector) where T : class
+    {
+        using var r = new StreamReader(stream);
+        var item = JsonSerializer.Deserialize<T>(r.ReadToEnd(), JsonOptions);
+        if (item != null)
+        {
+            string id = idSelector(item);
+            if (string.IsNullOrEmpty(id)) 
+            {
+                var parts = resourceName.Split('.');
+                if (parts.Length >= 2)
+                    id = parts[^2];
+            }
+            dict[id] = item;
+        }
+    }
+
+    private ContentPack? LoadPackFromEmbedded(string packId)
     {
         var assembly = typeof(ContentRegistry).Assembly;
-        var targetDir = Path.Combine(AppPaths.BuiltInPacksPath, "core");
+        var resources = assembly.GetManifestResourceNames().Where(n => n.Contains($".Packs.{packId}.")).ToList();
         
-        Directory.CreateDirectory(targetDir);
+        var packJsonName = resources.FirstOrDefault(r => r.EndsWith("pack.json"));
+        if (packJsonName == null) return null;
 
-        var resources = assembly.GetManifestResourceNames().Where(n => n.Contains(".Packs.core.")).ToList();
-        
+        string packJson;
+        using (var stream = assembly.GetManifestResourceStream(packJsonName))
+        using (var reader = new StreamReader(stream!))
+        {
+            packJson = reader.ReadToEnd();
+        }
+
+        var pack = JsonSerializer.Deserialize<ContentPack>(packJson, JsonOptions);
+        if (pack == null) return null;
+
+        pack.PropertyTemplates ??= new Dictionary<string, PropertyTemplate>();
+        pack.Rarities ??= new Dictionary<string, RarityTemplate>();
+        pack.Categories ??= new Dictionary<string, CategoryTemplate>();
+        pack.Tags ??= new Dictionary<string, TagTemplate>(StringComparer.OrdinalIgnoreCase);
+        pack.Factions ??= new Dictionary<string, FactionTemplate>();
+        pack.Icons ??= new Dictionary<string, string>();
+        pack.Items = new List<ItemTemplate>();
+        pack.Adversaries = new List<AdversaryTemplate>();
+
         foreach (var resourceName in resources)
         {
-            string relative = resourceName.Substring(resourceName.IndexOf(".Packs.core.") + 12);
+            if (resourceName == packJsonName) continue;
             
-            string finalPath;
-            if (relative.StartsWith("items.")) finalPath = Path.Combine(targetDir, "items", relative.Substring(6));
-            else if (relative.StartsWith("adversaries.")) finalPath = Path.Combine(targetDir, "adversaries", relative.Substring(12));
-            else if (relative.StartsWith("lang.")) finalPath = Path.Combine(targetDir, "lang", relative.Substring(5));
-            else finalPath = Path.Combine(targetDir, relative);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(finalPath)!);
-
             using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream != null)
+            if (stream == null) continue;
+
+            try
             {
-                using var fileStream = File.Create(finalPath);
-                stream.CopyTo(fileStream);
+                if (resourceName.EndsWith(".icons.json"))
+                {
+                    using var r = new StreamReader(stream);
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(r.ReadToEnd(), JsonOptions);
+                    if (dict != null) pack.Icons = dict;
+                }
+                else if (resourceName.Contains(".properties.") && resourceName.EndsWith(".json"))
+                    LoadEntryFromEmbedded(stream, resourceName, pack.PropertyTemplates, x => x.Id);
+                else if (resourceName.Contains(".items.rarities.") && resourceName.EndsWith(".json"))
+                    LoadEntryFromEmbedded(stream, resourceName, pack.Rarities, x => x.Id);
+                else if (resourceName.Contains(".items.categories.") && resourceName.EndsWith(".json"))
+                    LoadEntryFromEmbedded(stream, resourceName, pack.Categories, x => x.Id);
+                else if (resourceName.Contains(".adversaries.factions.") && resourceName.EndsWith(".json"))
+                    LoadEntryFromEmbedded(stream, resourceName, pack.Factions, x => x.Id);
+                else if (resourceName.Contains(".tags.") && resourceName.EndsWith(".json"))
+                    LoadEntryFromEmbedded(stream, resourceName, pack.Tags, x => x.Id);
+                else if (resourceName.Contains(".items.") && resourceName.EndsWith(".json"))
+                {
+                    using var r = new StreamReader(stream);
+                    var item = JsonSerializer.Deserialize<ItemTemplate>(r.ReadToEnd(), JsonOptions);
+                    if (item != null) pack.Items.Add(item);
+                }
+                else if (resourceName.Contains(".adversaries.") && resourceName.EndsWith(".json"))
+                {
+                    using var r = new StreamReader(stream);
+                    var adv = JsonSerializer.Deserialize<AdversaryTemplate>(r.ReadToEnd(), JsonOptions);
+                    if (adv != null) pack.Adversaries.Add(adv);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ContentRegistry] Błąd wczytywania wbudowanego zasobu '{resourceName}': {ex.Message}");
             }
         }
-        Debug.WriteLine("[ContentRegistry] Odzyskano paczkę 'core' z wbudowanych zasobów.");
+
+        Debug.WriteLine($"[ContentRegistry] Załadowano wbudowaną paczkę '{packId}' ({pack.Items.Count} przedmiotów, {pack.Adversaries.Count} przeciwników).");
+        return pack;
     }
 
     private static (string? PackId, string? ItemId) SplitFullId(string fullId)

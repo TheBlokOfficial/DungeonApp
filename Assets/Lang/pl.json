@@ -89,6 +89,9 @@
   "ui_col_tags": "TAGI",
   "ui_col_challenge": "WYZWANIE",
   "ui_col_hp": "PUNKTY ŻYCIA",
+  "ui_col_category": "KATEGORIA",
+  "ui_col_stats": "STATYSTYKI",
+  "ui_col_weight": "WAGA",
   
   "core_type_weapon": "Broń",
   "core_type_armor": "Pancerz",
@@ -112,5 +115,56 @@
   "ui_stat_hp": "PŻ",
   "ui_stat_ac": "KP",
   "ui_settings_distance": "Jednostka dystansu",
-  "ui_settings_distance_desc": "Zmienia wyświetlananą jednostkę odległości i szybkości (np. ze stóp na metry)."
+  "ui_settings_distance_desc": "Zmienia wyświetlananą jednostkę odległości i szybkości (np. ze stóp na metry).",
+  
+  "Tiny": "Malutki",
+  "Small": "Mały",
+  "Medium": "Średni",
+  "Large": "Duży",
+  "Huge": "Ogromny",
+  "Gargantuan": "Gigantyczny",
+  
+  "Lawful Good": "Praworządny Dobry",
+  "Neutral Good": "Neutralny Dobry",
+  "Chaotic Good": "Chaotyczny Dobry",
+  "Lawful Neutral": "Praworządny Neutralny",
+  "True Neutral": "Prawdziwie Neutralny",
+  "Chaotic Neutral": "Chaotyczny Neutralny",
+  "Lawful Evil": "Praworządny Zły",
+  "Neutral Evil": "Neutralny Zły",
+  "Chaotic Evil": "Chaotyczny Zły",
+  "Unaligned": "Neutralny",
+  "Any Alignment": "Dowolny charakter",
+  
+  "walk": "marsz",
+  "fly": "lot",
+  "swim": "pływanie",
+  "climb": "wspinaczka",
+  "burrow": "kopanie",
+  "hover": "zawis",
+
+  "Walk": "Marsz",
+  "Fly": "Lot",
+  "Swim": "Pływanie",
+  "Climb": "Wspinaczka",
+  "Burrow": "Kopanie",
+  "Hover": "Zawis",
+  
+  "Melee Weapon Attack:": "Atak bronią wręcz:",
+  "Ranged Weapon Attack:": "Atak bronią dystansową:",
+  "to hit": "do trafienia",
+  
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage.": "Atak bronią wręcz: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 5 (1d6 + 2) obrażeń tnących.",
+  "The goblin can take the Disengage or Hide action as a bonus action on each of its turns.": "Goblin może podjąć akcję Odwrót lub Ukrycie jako akcję dodatkową w każdej ze swoich tur.",
+  "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage.": "Atak bronią wręcz: +6 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 13 (2d8 + 4) obrażeń obuchowych.",
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage.": "Atak bronią wręcz: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 5 (1d6 + 2) obrażeń kłutych.",
+  "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage.": "Atak bronią wręcz: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 7 (2d4 + 2) obrażeń kłutych.",
+  "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one.": "Smok zionie ogniem w 9-metrowym stożku. Każde stworzenie w tym obszarze musi wykonać rzut obronny na Zręczność o ST 17, otrzymując 56 (16d6) obrażeń od ognia przy nieudanym rzucie lub połowę przy udanym.",
+  
+  "Scimitar": "Sejmitar",
+  "Nimble Escape": "Zwinna ucieczka",
+  "Greatclub": "Wielka maczuga",
+  "Shortsword": "Krótki miecz",
+  "Bite": "Ugryzienie",
+  "Fire Breath": "Zionięcie ogniem"
 }

@@ -4,6 +4,7 @@
              xmlns:i18n="using:DungeonApp.Markup"
              xmlns:components="using:DungeonApp.Views.Components"
              xmlns:converters="using:DungeonApp.Converters"
+             xmlns:controls="using:DungeonApp.Views.Controls"
              x:Class="DungeonApp.Views.Dashboard.AdversariesTabView"
              x:DataType="vm:AdversariesTabViewModel"
              x:Name="Root">
@@ -13,37 +14,37 @@
         <converters:SmartBrushConverter x:Key="SmartBrushConverter"/>
     </UserControl.Resources>
 
-    <components:RegistryLayoutControl Title="{i18n:Translate ui_adversaries}" TotalCountText="{Binding TotalAdversaryCount}" ItemsSource="{Binding FilteredAdversaries}">
+    <components:RegistryLayoutControl Title="{i18n:Translate ui_adversaries}" 
+                                      TotalCountText="{Binding TotalAdversaryCount}" 
+                                      ItemsSource="{Binding FilteredAdversaries}"
+                                      SelectedItem="{Binding SelectedItem}">
         <components:RegistryLayoutControl.ListHeader>
-            <Grid>
+            <Grid Margin="0,0,18,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="1.5*" />
                     <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" MinWidth="100" />
-                    <ColumnDefinition Width="1*" MinWidth="100" />
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="1.5*" MinWidth="100" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="{i18n:Translate ui_col_name}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="0,0,10,0" TextTrimming="CharacterEllipsis" />
                 <TextBlock Grid.Column="1" Text="{i18n:Translate ui_col_faction}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="2" Text="{i18n:Translate ui_col_type_size}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="2" Text="{i18n:Translate ui_col_challenge}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" />
                 <TextBlock Grid.Column="3" Text="{i18n:Translate ui_col_tags}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="4" Text="{i18n:Translate ui_col_challenge}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,0" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="5" Text="{i18n:Translate ui_col_hp}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="4" Text="{i18n:Translate ui_col_hp}" FontSize="12" Foreground="{DynamicResource TextMuted}" FontWeight="SemiBold" HorizontalAlignment="Left" Margin="10,0,10,0" TextTrimming="CharacterEllipsis" />
             </Grid>
         </components:RegistryLayoutControl.ListHeader>
 
         <components:RegistryLayoutControl.ItemTemplate>
             <DataTemplate x:DataType="vm:AdversaryEntry">
-                <Border Background="{DynamicResource InputBackground}" CornerRadius="8" Padding="16,10" Margin="0,0,10,0">
+                <Border Classes="registryItemCard" CornerRadius="8" Padding="16,10" Margin="0,0,10,0" BorderThickness="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="1.5*" />
                             <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="1*" MinWidth="100" />
-                            <ColumnDefinition Width="1*" MinWidth="100" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="1.5*" MinWidth="100" />
                         </Grid.ColumnDefinitions>
                         
                         <!-- Col 0: Name -->
@@ -62,16 +63,16 @@
                             <TextBlock Text="{Binding FactionName}" FontSize="13" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasFaction}" />
                         </Border>
                         
-                        <!-- Col 2: Identity (Size / Type) -->
+                        <!-- Col 2: Challenge Rating -->
                         <Border Grid.Column="2" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Classes="dynamic" Text="{Binding IdentityDisplay}" FontSize="13" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
-                            </StackPanel>
+                            <Border Background="{DynamicResource AccentRed}" Opacity="0.85" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Classes="dynamic" Text="{Binding ChallengeRatingDisplay}" FontSize="11" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis"/>
+                            </Border>
                         </Border>
-                        
-                        <!-- Col 3: Tags (Property Badges) -->
+
+                        <!-- Col 3: Tags -->
                         <Border Grid.Column="3" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
-                            <ItemsControl ItemsSource="{Binding Tags}" VerticalAlignment="Center">
+                            <ItemsControl ItemsSource="{Binding TagModels}" VerticalAlignment="Center">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal" />
@@ -79,50 +80,36 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="{DynamicResource BorderInput}" CornerRadius="4" Padding="6,2" Margin="0,0,4,0">
-                                            <TextBlock Text="{Binding}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
-                                        </Border>
+                                        <controls:BadgeControl Text="{Binding Name}" BadgeBackground="{Binding ColorHex, Converter={StaticResource SmartBrushConverter}}" Margin="0,0,4,0" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Border>
                         
-                        <!-- Col 4: Challenge Rating -->
-                        <Border Grid.Column="4" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,1,0" Padding="10,0,10,0" ClipToBounds="True">
-                            <Border Background="{DynamicResource AccentRed}" Opacity="0.85" CornerRadius="4" Padding="6,2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Classes="dynamic" Text="{Binding ChallengeRatingDisplay}" FontSize="11" FontWeight="Bold" Foreground="White" TextTrimming="CharacterEllipsis"/>
-                            </Border>
-                        </Border>
-                        
-                        <!-- Col 5: Property Badges (HP, AC, Speed) -->
-                        <Border Grid.Column="5" Padding="10,0,10,0">
-                            <ItemsControl ItemsSource="{Binding PropertyBadges}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                        <!-- Col 4: HP Badge -->
+                        <Border Grid.Column="4" Padding="10,0,10,0">
+                            <ItemsControl ItemsSource="{Binding PropertyBadges}" VerticalAlignment="Center" HorizontalAlignment="Left">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Vertical" />
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid ColumnDefinitions="*,*">
-                                            <PathIcon Grid.Column="0"
-                                                      Data="{Binding Icon, Converter={StaticResource SmartIconConverter}}" 
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <PathIcon Data="{Binding Icon, Converter={StaticResource SmartIconConverter}}" 
                                                       Width="14" 
-                                                      HorizontalAlignment="Right"
                                                       VerticalAlignment="Center"
-                                                      Margin="0,0,4,0"
                                                       Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}"
                                                       IsVisible="{Binding HasIcon}"/>
-                                            <TextBlock Grid.Column="1"
-                                                       Text="{Binding Text}" 
+                                            <TextBlock Text="{Binding Text}" 
                                                        FontSize="13" 
                                                        FontWeight="Bold" 
-                                                       HorizontalAlignment="Left"
                                                        VerticalAlignment="Center"
                                                        Margin="0,-2,0,0"
                                                        Foreground="{Binding TextColor, Converter={StaticResource SmartBrushConverter}}" 
                                                        TextTrimming="CharacterEllipsis"/>
-                                        </Grid>
+                                        </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -132,6 +119,95 @@
                 </Border>
             </DataTemplate>
         </components:RegistryLayoutControl.ItemTemplate>
+
+        <components:RegistryLayoutControl.DetailTemplate>
+            <DataTemplate x:DataType="vm:AdversaryEntry">
+                <Border Background="{DynamicResource CardBackground}" CornerRadius="12" Padding="20" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="1">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="10">
+                            <!-- Header Grid -->
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto">
+                                <!-- Name -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                
+                                <!-- Identity & Tags -->
+                                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,4,0,0" MinHeight="24">
+                                    <TextBlock Text="{Binding IdentityDisplay}" FontSize="13" Foreground="{DynamicResource TextMuted}" FontStyle="Italic" Margin="0,0,14,0" VerticalAlignment="Center"/>
+                                    
+                                    <ItemsControl ItemsSource="{Binding TagModels}" IsVisible="{Binding HasTags}" VerticalAlignment="Center">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <controls:BadgeControl Text="{Binding Name}" BadgeBackground="{Binding ColorHex, Converter={StaticResource SmartBrushConverter}}" Margin="0,0,4,0" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <!-- Faction Badge -->
+                                <controls:BadgeControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" BadgeBackground="{DynamicResource InputBackground}" VerticalAlignment="Center" IsVisible="{Binding HasFaction}" Text="{Binding FactionName}" BadgeFontSize="13" BadgePadding="10,6" BadgeCornerRadius="8" />
+                            </Grid>
+                            
+                            <Separator Background="{DynamicResource AccentRed}" Height="2" Margin="0,5"/>
+
+                            <!-- Combat Stats (Data Points) -->
+                            <StackPanel Orientation="Horizontal" Margin="0,5">
+                                <!-- AC -->
+                                <StackPanel Margin="0,0,30,0">
+                                    <TextBlock Text="{i18n:Translate ui_stat_armor_class}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,2"/>
+                                    <TextBlock FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Height="30" VerticalAlignment="Center">
+                                        <Run Text="{Binding Combat.ArmorClass, Mode=OneWay}" />
+                                    </TextBlock>
+                                </StackPanel>
+                                
+                                <!-- HP -->
+                                <StackPanel Margin="0,0,30,0">
+                                    <TextBlock Text="{i18n:Translate ui_stat_hit_points}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,2"/>
+                                    <TextBlock FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Height="30" VerticalAlignment="Center">
+                                        <Run Text="{Binding Combat.MaxHp, Mode=OneWay}" />
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Speed -->
+                                <StackPanel Margin="0,0,30,0">
+                                    <TextBlock Text="{i18n:Translate ui_stat_speed}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" Margin="0,0,0,2"/>
+                                    <TextBlock Text="{Binding SpeedDisplay, Mode=OneWay}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Height="30" Margin="0,0,0,2"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource BorderSecondary}" Height="1" Margin="0,5"/>
+
+                            <!-- Ability Scores -->
+                            <controls:AbilityScoresTable DataContext="{Binding AbilityScoresVM}" />
+
+                            <Separator Background="{DynamicResource BorderSecondary}" Height="1" Margin="0,5"/>
+
+                            <!-- Actions Header -->
+                            <TextBlock Text="{i18n:Translate ui_stat_actions}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,10,0,5" IsVisible="{Binding HasActions}"/>
+                            <Separator Background="{DynamicResource BorderSecondary}" Height="1" Margin="0,0,0,10" IsVisible="{Binding HasActions}"/>
+
+                            <!-- Actions List -->
+                            <ItemsControl ItemsSource="{Binding Actions}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="Wrap" Margin="10,0,0,15">
+                                            <Run Text="{Binding Name, Mode=OneWay, StringFormat='{}{0}. '}" FontWeight="Bold" FontStyle="Italic" Foreground="{DynamicResource TextPrimary}"/>
+                                            <Run Text="{Binding Description, Mode=OneWay}" Foreground="{DynamicResource TextSecondary}"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </DataTemplate>
+        </components:RegistryLayoutControl.DetailTemplate>
+
     </components:RegistryLayoutControl>
 
 </UserControl>

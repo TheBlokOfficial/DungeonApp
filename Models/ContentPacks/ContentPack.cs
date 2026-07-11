@@ -52,28 +52,39 @@ public class ContentPack
     /// <summary>
     /// Globalny rejestr szablonów właściwości (np. jak formatować i nazywać "Damage").
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, PropertyTemplate> PropertyTemplates { get; set; } = new();
 
     /// <summary>
     /// Globalny rejestr rzadkości przedmiotów zdefiniowanych przez paczkę.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, RarityTemplate> Rarities { get; set; } = new();
 
     /// <summary>
     /// Słownik szablonów kategorii (np. core_type_weapon) zdefiniowanych w paczce.
     /// Definiuje m.in. jak właściwości tych przedmiotów mają być formatowane w UI.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, CategoryTemplate> Categories { get; set; } = new();
+
+    /// <summary>
+    /// Słownik definicji tagów (kolorów) zdefiniowanych w paczce.
+    /// </summary>
+    [JsonIgnore]
+    public Dictionary<string, TagTemplate> Tags { get; set; } = new();
 
     /// <summary>
     /// Słownik frakcji zdefiniowanych w paczce.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, FactionTemplate> Factions { get; set; } = new();
 
     /// <summary>
     /// Słownik ikon wektorowych (np. "sword" -> "M10,10 L20...").
     /// Pozwala modderom definiować i udostępniać własne ikony SVG w pliku pack.json.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, string> Icons { get; set; } = new();
 
     /// <summary>
