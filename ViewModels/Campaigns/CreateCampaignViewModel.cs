@@ -31,7 +31,7 @@ public partial class CreateCampaignViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 
     [RelayCommand]
@@ -54,10 +54,8 @@ public partial class CreateCampaignViewModel : ViewModelBase
 
         _campaignService.SaveCampaign(newCampaign);
 
-        // Odświeżenie w MainWindowViewModel zostanie zrobione po powrocie jeśli trzeba.
-        // Bądźmy prości: po powrocie można by wrzucić zdarzenie, ale by MainWindow miało nową kampanię,
-        // musielibyśmy zawiadomić MainWindow. For now, we will NavigateBack().
-        _navigationService.NavigateBack();
+        // Bądźmy prości: po powrocie zamykamy overlay.
+        _navigationService.CloseOverlay();
         
         // Zaktualizujmy by wymusić odświeżenie:
         if (App.Current?.Services?.GetService(typeof(DungeonApp.ViewModels.Dashboard.CampaignsTabViewModel)) is DungeonApp.ViewModels.Dashboard.CampaignsTabViewModel campaignsVm)

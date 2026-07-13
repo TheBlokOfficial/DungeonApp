@@ -19,20 +19,17 @@
         <Style Selector="Button.navButton.active /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />
         </Style>
-        <Style Selector="Button.navButton.active TextBlock">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Style Selector="RadioButton.navButton /template/ Border#Line">
+            <Setter Property="Background" Value="{DynamicResource AccentGold}"/>
+            <Setter Property="Opacity" Value="0"/>
+            <Setter Property="Height" Value="2"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Bottom"/>
+            <Setter Property="Margin" Value="15,0"/>
         </Style>
-        
-        <!-- Style do ukrywania bez usuwania z drzewa (zapobiega skakaniu) -->
         <Style Selector="TextBlock.hidable, StackPanel.hidable">
             <Setter Property="Opacity" Value="0" />
             <Setter Property="IsHitTestVisible" Value="False" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="SineEaseOut" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector="TextBlock.hidable.expanded, StackPanel.hidable.expanded">
             <Setter Property="Opacity" Value="1" />
@@ -40,14 +37,14 @@
         </Style>
 
         <!-- Sub-menu przyciski -->
-        <Style Selector="Button.subNavButton">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
-            <Setter Property="FontSize" Value="15" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="Padding" Value="15,10,15,10" />
+        <Style Selector="RadioButton.navButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextMuted}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource InputBorderRadius}"/>
+            <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.subNavButton:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource BorderSecondary}" />

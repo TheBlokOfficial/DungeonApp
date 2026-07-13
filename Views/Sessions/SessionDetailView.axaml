@@ -67,11 +67,7 @@
         <!-- OBSZAR PANELI -->
         <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
             <!-- Bezpieczny, pojedynczy system wymieniania ekranów podrzędnych -->
-            <TransitioningContentControl Content="{Binding ActiveTabContent}" HorizontalAlignment="Stretch">
-                <TransitioningContentControl.PageTransition>
-                    <CrossFade Duration="0:0:0.25" />
-                </TransitioningContentControl.PageTransition>
-            </TransitioningContentControl>
+            <TransitioningContentControl PageTransition="{x:Null}" Content="{Binding ActiveTabContent}" HorizontalAlignment="Stretch" />
         </ScrollViewer>
 
         </Grid>

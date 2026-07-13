@@ -34,9 +34,16 @@
                     <ColumnDefinition Width="2*" MinWidth="400" />
                     <ColumnDefinition Width="1.5*" MinWidth="450" MaxWidth="650" />
                 </Grid.ColumnDefinitions>
-                
+                <!-- WSKAŹNIK ŁADOWANIA -->
+                <Grid Grid.Column="0" Grid.ColumnSpan="3" IsVisible="{Binding IsLoading}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,100,0,0">
+                    <StackPanel Spacing="20">
+                        <ProgressBar IsIndeterminate="True" Width="200" Height="4" Foreground="{DynamicResource AccentGold}" Background="{DynamicResource BorderMuted}"/>
+                        <TextBlock Text="Wczytywanie danych rejestru..." Foreground="{DynamicResource TextMuted}" FontSize="16" FontStyle="Italic" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
                 <!-- LEWA KOLUMNA: Sidebar z filtrami -->
-                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,30,0">
+                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="0,0,30,0" IsVisible="{Binding !IsLoading}">
                     <StackPanel Spacing="15">
                         
                         <!-- PACZKI -->
@@ -136,56 +143,55 @@
                 </ScrollViewer>
                 
                 <!-- ŚRODKOWA KOLUMNA: LISTA (WSTRZYKNIĘTA) -->
-                <Grid Grid.Column="1" RowDefinitions="Auto, *" Margin="0,0,30,0">
+                <Grid Grid.Column="1" RowDefinitions="Auto, *" Margin="0,0,30,0" IsVisible="{Binding !IsLoading}">
                     <!-- NAGŁÓWEK TABELI -->
                     <Border Grid.Row="0" Margin="0,0,0,10" BorderBrush="{DynamicResource BorderMuted}" BorderThickness="0,0,0,1" Padding="16,0,16,10">
                         <ContentPresenter Content="{Binding #RootControl.ListHeader}" />
                     </Border>
                     
                     <!-- ZAWARTOŚĆ TABELI -->
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
-                        <ListBox ItemsSource="{Binding #RootControl.ItemsSource}" 
-                                 ItemTemplate="{Binding #RootControl.ItemTemplate}"
-                                 SelectedItem="{Binding #RootControl.SelectedItem, Mode=TwoWay}"
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 Padding="0"
-                                 Margin="0">
-                            <ListBox.Styles>
-                                <Style Selector="ListBoxItem">
-                                    <Setter Property="Padding" Value="0"/>
-                                    <Setter Property="Margin" Value="0,0,0,8"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Style>
-                                <Style Selector="ListBoxItem Border.registryItemCard">
-                                    <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:pointerover Border.registryItemCard">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource BorderMuted}"/>
-                                    <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:selected Border.registryItemCard">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
-                                    <Setter Property="Background" Value="{DynamicResource BorderInput}"/>
-                                </Style>
-                                <Style Selector="ListBoxItem:selected:pointerover Border.registryItemCard">
-                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
-                                    <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
-                                </Style>
-                            </ListBox.Styles>
-                        </ListBox>
-                    </ScrollViewer>
+                    <ListBox Grid.Row="1" 
+                             ItemsSource="{Binding #RootControl.ItemsSource}" 
+                             ItemTemplate="{Binding #RootControl.ItemTemplate}"
+                             SelectedItem="{Binding #RootControl.SelectedItem, Mode=TwoWay}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0"
+                             Margin="0">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,0,0,8"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                            <Style Selector="ListBoxItem Border.registryItemCard">
+                                <Setter Property="Background" Value="{DynamicResource InputBackground}"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:pointerover Border.registryItemCard">
+                                <Setter Property="BorderBrush" Value="{DynamicResource BorderMuted}"/>
+                                <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected Border.registryItemCard">
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
+                                <Setter Property="Background" Value="{DynamicResource BorderInput}"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected:pointerover Border.registryItemCard">
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentGold}"/>
+                                <Setter Property="Background" Value="{DynamicResource HoverGrip}"/>
+                            </Style>
+                        </ListBox.Styles>
+                    </ListBox>
                 </Grid>
 
                 <!-- PRAWA KOLUMNA: SZCZEGÓŁY -->
-                <Grid Grid.Column="2" Background="Transparent">
+                <Grid Grid.Column="2" Background="Transparent" IsVisible="{Binding !IsLoading}">
                     <!-- Placeholder, gdy nic nie jest wybrane -->
                     <Border IsVisible="{Binding #RootControl.SelectedItem, Converter={x:Static ObjectConverters.IsNull}}" 
                             Background="{DynamicResource InputBackground}" CornerRadius="12" Opacity="0.5"
@@ -199,7 +205,7 @@
                     </Border>
                     
                     <!-- Karta szczegółów, gdy coś jest wybrane -->
-                    <TransitioningContentControl IsVisible="{Binding #RootControl.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    <TransitioningContentControl PageTransition="{x:Null}" IsVisible="{Binding #RootControl.SelectedItem, Converter={x:Static ObjectConverters.IsNotNull}}"
                                                  Content="{Binding #RootControl.SelectedItem}"
                                                  ContentTemplate="{Binding #RootControl.DetailTemplate}" />
                 </Grid>

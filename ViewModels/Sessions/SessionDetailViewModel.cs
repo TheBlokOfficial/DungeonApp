@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -113,13 +114,14 @@ public partial class SessionDetailViewModel : ViewModelBase
         IsCombatActive = CombatantsList.Any(c => c.IsActiveTurn);
         CurrentRound = IsCombatActive ? Math.Max(1, session.Combatants.Count > 0 ? 1 : 0) : 1;
 
-        LoadPartyCharacters();
+        _ = LoadPartyCharactersAsync();
     }
 
-    private void LoadPartyCharacters()
+    private async Task LoadPartyCharactersAsync()
     {
+        var allCharacters = await Task.Run(() => _characterService.LoadAllCharacters());
+        
         PartyCharacters.Clear();
-        var allCharacters = _characterService.LoadAllCharacters();
         foreach (var id in Campaign.CharacterIds)
         {
             var character = allCharacters.FirstOrDefault(c => c.Id == id);

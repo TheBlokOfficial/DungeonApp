@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
@@ -32,14 +33,15 @@ public partial class AddCharacterToCampaignViewModel : ViewModelBase
         _characterService = characterService;
         _campaignService = campaignService;
         
-        LoadAvailableCharacters();
+        _ = LoadAvailableCharactersAsync();
     }
 
-    private void LoadAvailableCharacters()
+    private async Task LoadAvailableCharactersAsync()
     {
-        var allCharacters = _characterService.LoadAllCharacters();
+        var allCharacters = await Task.Run(() => _characterService.LoadAllCharacters());
         var charactersToAdd = allCharacters.Where(c => !_campaign.CharacterIds.Contains(c.Id));
 
+        AvailableCharacters.Clear();
         foreach (var character in charactersToAdd)
         {
             AvailableCharacters.Add(new CharacterSelectionItem(character) { IsSelected = false }); 
@@ -49,7 +51,7 @@ public partial class AddCharacterToCampaignViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 
     [RelayCommand]
@@ -66,6 +68,6 @@ public partial class AddCharacterToCampaignViewModel : ViewModelBase
             _campaignService.SaveCampaign(_campaign);
         }
 
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 }

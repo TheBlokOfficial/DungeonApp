@@ -1,9 +1,8 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.AddCharacterToCampaignView"
-             x:DataType="vm:AddCharacterToCampaignViewModel"
-             Background="{DynamicResource AppBackground}">
+             x:DataType="vm:AddCharacterToCampaignViewModel">
 
     <UserControl.Styles>
         <Style Selector="CheckBox">

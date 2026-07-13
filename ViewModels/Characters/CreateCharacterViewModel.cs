@@ -33,7 +33,7 @@ public partial class CreateCharacterViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 
     [RelayCommand]
@@ -56,6 +56,6 @@ public partial class CreateCharacterViewModel : ViewModelBase
             _ = charsVm.RefreshCharactersList(newCharacter.Id);
         }
 
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 }

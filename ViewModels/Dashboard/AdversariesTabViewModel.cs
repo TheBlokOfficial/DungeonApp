@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,10 +26,12 @@ public partial class AdversariesTabViewModel : RegistryTabViewModelBase
         
         _settingsService.SettingsChanged += () =>
         {
-            LoadData();
+            if (IsDataLoaded)
+                _ = ReloadAsync();
         };
 
-        LoadData();
+        // Singleton — ładujemy dane dokładnie raz, od razu w tle.
+        _ = ReloadAsync();
     }
 
     public string DistanceUnit => _settingsService.LoadSettings().DistanceUnit ?? "ft.";
@@ -84,81 +87,86 @@ public partial class AdversariesTabViewModel : RegistryTabViewModelBase
 
     public int TotalAdversaryCount => _allAdversaries.Count;
 
-    protected override void LoadData()
+    protected override async Task LoadDataAsync()
     {
         ClearFilterSubscriptions();
 
-        var rawAdversaries = _contentRegistry.GetAllAdversaries();
-        
-        _allAdversaries = rawAdversaries.Select(r =>
+        var mappedAdversaries = await Task.Run(() => 
         {
-            var packId = r.FullId.Split(':')[0];
-            var adv = r.Adversary;
-            
-            var entry = new AdversaryEntry
+            var raw = _contentRegistry.GetAllAdversaries();
+            return raw.Select(r =>
             {
-                FullId = r.FullId,
-                PackId = packId,
-                PackName = _translationService.Translate(r.PackName),
-                Name = _translationService.Translate(adv.Name),
-                Description = _translationService.Translate(adv.Description),
-                Type = adv.Type,
-                Size = adv.Size,
-                Alignment = adv.Alignment,
-                ChallengeRating = adv.ChallengeRating,
-                Tags = adv.Tags.Select(t => _translationService.Translate(t)).ToList(),
-                Combat = adv.Combat,
-                Speeds = adv.Speeds,
-                AbilityScoresVM = new DungeonApp.ViewModels.Controls.AbilityScoresViewModel(adv.Abilities),
-                Actions = adv.Actions.Select(a => new ActionDefinition { 
-                    Name = _translationService.Translate(a.Name), 
-                    Description = _translationService.Translate(a.Description)
-                }).ToList(),
-
-                TagModels = adv.Tags.Select(t => 
+                var packId = r.FullId.Split(':')[0];
+                var adv = r.Adversary;
+                
+                var entry = new AdversaryEntry
                 {
-                    var template = _contentRegistry.ResolveTag(t);
-                    return new TagViewModel
+                    FullId = r.FullId,
+                    PackId = packId,
+                    PackName = _translationService.Translate(r.PackName),
+                    Name = _translationService.Translate(adv.Name),
+                    Description = _translationService.Translate(adv.Description),
+                    Type = adv.Type,
+                    Size = adv.Size,
+                    Alignment = adv.Alignment,
+                    ChallengeRating = adv.ChallengeRating,
+                    Tags = adv.Tags.Select(t => _translationService.Translate(t)).ToList(),
+                    Combat = adv.Combat,
+                    Speeds = adv.Speeds,
+                    Abilities = adv.Abilities,
+                    AbilityScoresVM = new DungeonApp.ViewModels.Controls.AbilityScoresViewModel(adv.Abilities),
+                    Actions = adv.Actions.Select(a => new ActionDefinition { 
+                        Name = _translationService.Translate(a.Name), 
+                        Description = _translationService.Translate(a.Description)
+                    }).ToList(),
+
+                    TagModels = adv.Tags.Select(t => 
                     {
-                        Name = _translationService.Translate(t),
-                        ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
-                    };
-                }).ToList(),
-                TypeDisplay = string.IsNullOrEmpty(adv.Type) ? "" : _translationService.Translate(adv.Type),
-                SizeDisplay = string.IsNullOrEmpty(adv.Size) ? "" : _translationService.Translate(adv.Size),
-                AlignmentDisplay = string.IsNullOrEmpty(adv.Alignment) ? "" : _translationService.Translate(adv.Alignment),
-                ChallengeRatingDisplay = string.IsNullOrEmpty(adv.ChallengeRating) ? "" : _translationService.Translate(adv.ChallengeRating)
-            };
-            
-            if (!string.IsNullOrEmpty(adv.Faction))
-            {
-                var factionId = adv.Faction.Contains(':') ? adv.Faction : $"{packId}:{adv.Faction}";
-                var faction = _contentRegistry.ResolveFaction(factionId);
-                if (faction != null)
+                        var template = _contentRegistry.ResolveTag(t);
+                        return new TagViewModel
+                        {
+                            Name = _translationService.Translate(t),
+                            ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
+                        };
+                    }).ToList(),
+                    TypeDisplay = string.IsNullOrEmpty(adv.Type) ? "" : _translationService.Translate(adv.Type),
+                    SizeDisplay = string.IsNullOrEmpty(adv.Size) ? "" : _translationService.Translate(adv.Size),
+                    AlignmentDisplay = string.IsNullOrEmpty(adv.Alignment) ? "" : _translationService.Translate(adv.Alignment),
+                    ChallengeRatingDisplay = string.IsNullOrEmpty(adv.ChallengeRating) ? "" : _translationService.Translate(adv.ChallengeRating)
+                };
+                
+                if (!string.IsNullOrEmpty(adv.Faction))
                 {
-                    entry.FactionName = _translationService.Translate(faction.Name);
-                    entry.FactionIcon = faction.Icon;
-                    entry.FactionColorHex = faction.ColorHex;
+                    var factionId = adv.Faction.Contains(':') ? adv.Faction : $"{packId}:{adv.Faction}";
+                    var faction = _contentRegistry.ResolveFaction(factionId);
+                    if (faction != null)
+                    {
+                        entry.FactionName = _translationService.Translate(faction.Name);
+                        entry.FactionIcon = faction.Icon;
+                        entry.FactionColorHex = faction.ColorHex;
+                    }
                 }
-            }
-            
-            entry.PropertyBadges.Add(new PropertyBadgeViewModel
-            {
-                Icon = "IconHeart",
-                Text = $"{adv.Combat.MaxHp}",
-                TextColor = "#FF4D4D" // AccentDanger
-            });
+                
+                entry.PropertyBadges.Add(new PropertyBadgeViewModel
+                {
+                    Icon = "IconHeart",
+                    Text = $"{adv.Combat.MaxHp}",
+                    TextColor = "#FF4D4D" // AccentDanger
+                });
 
-            var speeds = adv.Speeds.Select(s => 
-            {
-                string formatted = FormatSpeed(s.Value, DistanceUnit);
-                string translatedType = _translationService.Translate(s.Type);
-                return s.Note != null ? $"{translatedType} {formatted} ({s.Note})" : $"{translatedType} {formatted}";
-            });
-            entry.SpeedDisplay = adv.Speeds.Count > 0 ? string.Join(", ", speeds) : "0 " + DistanceUnit;
+                var speeds = adv.Speeds.Select(s => 
+                {
+                    string formatted = FormatSpeed(s.Value, DistanceUnit);
+                    string translatedType = _translationService.Translate(s.Type);
+                    return s.Note != null ? $"{translatedType} {formatted} ({s.Note})" : $"{translatedType} {formatted}";
+                });
+                entry.SpeedDisplay = adv.Speeds.Count > 0 ? string.Join(", ", speeds) : "0 " + DistanceUnit;
 
-            return entry;
-        }).ToList();
+                return entry;
+            }).ToList();
+        });
+
+        _allAdversaries = mappedAdversaries;
 
         BuildFilters();
 

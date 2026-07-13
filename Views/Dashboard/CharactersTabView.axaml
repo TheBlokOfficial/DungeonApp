@@ -7,14 +7,9 @@
              x:Name="Root">
 
     <UserControl.Styles>
-        <Style Selector=":is(Control).fadeState">
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
-                </Transitions>
-            </Setter>
+        <Style Selector="Grid.overlayHover">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="Background" Value="#AA000000" />
         </Style>
         <Style Selector=":is(Control).fadeState.visible">
             <Setter Property="Opacity" Value="1"/>
@@ -22,7 +17,7 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid Margin="0,0,0,25">
+    <Grid MaxWidth="1600" HorizontalAlignment="Left" Margin="25">
         <Grid.ColumnDefinitions>
             <!-- Lewa lista: powiększona do 350px, by zmieścić nowy wewnętrzny margines (Padding) -->
             <ColumnDefinition Width="350" />

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -25,10 +26,13 @@ public partial class ItemsTabViewModel : RegistryTabViewModelBase
         
         _settingsService.SettingsChanged += () =>
         {
-            LoadData();
+            if (IsDataLoaded)
+                _ = ReloadAsync();
         };
 
-        LoadData();
+        // Singleton — ładujemy dane dokładnie raz, od razu w tle.
+        // ReloadAsync (z klasy bazowej) zarządza flagami IsLoading/IsDataLoaded i ma try/catch.
+        _ = ReloadAsync();
     }
 
     public string WeightUnit => _settingsService.LoadSettings().WeightUnit ?? "kg";
@@ -82,77 +86,82 @@ public partial class ItemsTabViewModel : RegistryTabViewModelBase
 
     public int TotalItemCount => _allItems.Count;
 
-    protected override void LoadData()
+    protected override async Task LoadDataAsync()
     {
         ClearFilterSubscriptions();
 
-        var rawItems = _contentRegistry.GetAllItems();
-        
-        _allItems = rawItems.Select(r =>
+        var (mappedItems, totalCount) = await Task.Run(() => 
         {
-            var packId = r.FullId.Split(':')[0];
-            var item = r.Item;
-            
-            var rarityTemplate = _contentRegistry.ResolveRarity(item.Rarity);
-            
-            var entry = new ItemEntry
+            var raw = _contentRegistry.GetAllItems();
+            var mapped = raw.Select(r =>
             {
-                FullId = r.FullId,
-                PackId = packId,
-                PackName = _translationService.Translate(r.PackName),
-                Name = _translationService.Translate(item.Name),
-                Description = _translationService.Translate(item.Description),
-                Type = item.Type,
-                Rarity = item.Rarity,
-                Weight = WeightUnit == "kg" ? item.Weight / 2.0 : item.Weight,
-                WeightUnit = WeightUnit,
-                TypeDisplay = string.IsNullOrEmpty(item.Type) ? "" : _translationService.Translate(item.Type),
-                RarityDisplay = string.IsNullOrEmpty(item.Rarity) ? "" : _translationService.Translate(item.Rarity),
-                RarityColorHex = rarityTemplate?.ColorHex ?? "#808080",
-                RarityHasGlow = rarityTemplate?.HasGlowEffect ?? false,
-                Tags = item.Tags.Select(t => _translationService.Translate(t)).ToList(),
-                TagModels = item.Tags.Select(t => 
+                var packId = r.FullId.Split(':')[0];
+                var item = r.Item;
+                
+                var rarityTemplate = _contentRegistry.ResolveRarity(item.Rarity);
+                
+                var entry = new ItemEntry
                 {
-                    var template = _contentRegistry.ResolveTag(t);
-                    return new TagViewModel
+                    FullId = r.FullId,
+                    PackId = packId,
+                    PackName = _translationService.Translate(r.PackName),
+                    Name = _translationService.Translate(item.Name),
+                    Description = _translationService.Translate(item.Description),
+                    Type = item.Type,
+                    Rarity = item.Rarity,
+                    Weight = WeightUnit == "kg" ? item.Weight / 2.0 : item.Weight,
+                    WeightUnit = WeightUnit,
+                    TypeDisplay = string.IsNullOrEmpty(item.Type) ? "" : _translationService.Translate(item.Type),
+                    RarityDisplay = string.IsNullOrEmpty(item.Rarity) ? "" : _translationService.Translate(item.Rarity),
+                    RarityColorHex = rarityTemplate?.ColorHex ?? "#808080",
+                    RarityHasGlow = rarityTemplate?.HasGlowEffect ?? false,
+                    Tags = item.Tags.Select(t => _translationService.Translate(t)).ToList(),
+                    TagModels = item.Tags.Select(t => 
                     {
-                        Name = _translationService.Translate(t),
-                        ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
-                    };
-                }).ToList(),
-                Components = item.Components
-            };
-
-            var category = _contentRegistry.ResolveCategory(item.Type);
-            var formatTemplates = item.RegistryFormat ?? category?.RegistryFormat;
-
-            if (formatTemplates != null)
-            {
-                foreach (var template in formatTemplates)
-                {
-                    var evaluatedText = TemplateEvaluator.Evaluate(template.Format, item.Components);
-                    if (!string.IsNullOrEmpty(evaluatedText))
-                    {
-                        var resolvedIcon = template.Icon;
-                        if (!string.IsNullOrEmpty(resolvedIcon) && !resolvedIcon.Contains(':'))
+                        var template = _contentRegistry.ResolveTag(t);
+                        return new TagViewModel
                         {
-                            resolvedIcon = $"{packId}:{resolvedIcon}";
+                            Name = _translationService.Translate(t),
+                            ColorHex = template?.ColorHex ?? "#1E293B" // fallback BadgeDefaultBackground
+                        };
+                    }).ToList(),
+                    Components = item.Components
+                };
+
+                var category = _contentRegistry.ResolveCategory(item.Type);
+                var formatTemplates = item.RegistryFormat ?? category?.RegistryFormat;
+
+                if (formatTemplates != null)
+                {
+                    foreach (var template in formatTemplates)
+                    {
+                        var evaluatedText = TemplateEvaluator.Evaluate(template.Format, item.Components);
+                        if (!string.IsNullOrEmpty(evaluatedText))
+                        {
+                            var resolvedIcon = template.Icon;
+                            if (!string.IsNullOrEmpty(resolvedIcon) && !resolvedIcon.Contains(':'))
+                            {
+                                resolvedIcon = $"{packId}:{resolvedIcon}";
+                            }
+
+                            entry.PropertyBadges.Add(new PropertyBadgeViewModel
+                            {
+                                Icon = resolvedIcon,
+                                Text = evaluatedText,
+                                TextColor = template.TextColor
+                            });
                         }
-
-                        entry.PropertyBadges.Add(new PropertyBadgeViewModel
-                        {
-                            Icon = resolvedIcon,
-                            Text = evaluatedText,
-                            TextColor = template.TextColor
-                        });
                     }
                 }
-            }
 
-            return entry;
-        }).ToList();
+                return entry;
+            }).ToList();
 
-        BuildFilters();
+            return (mapped, mapped.Count);
+        });
+
+        _allItems = mappedItems;
+        BuildFilters(); // Odtwarzamy subskrypcje na UI thread po przypisaniu kolekcji
 
         OnPropertyChanged(nameof(FilteredItems));
         OnPropertyChanged(nameof(TotalItemCount));

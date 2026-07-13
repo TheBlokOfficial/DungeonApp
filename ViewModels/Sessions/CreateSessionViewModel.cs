@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -52,14 +53,15 @@ public partial class CreateSessionViewModel : ViewModelBase
         var nextSessionNumber = campaign.SessionsCount + 1;
         Title = $"Sesja {nextSessionNumber}";
 
-        LoadCampaignCharacters();
+        _ = LoadCampaignCharactersAsync();
     }
 
-    private void LoadCampaignCharacters()
+    private async Task LoadCampaignCharactersAsync()
     {
-        var allCharacters = _characterService.LoadAllCharacters();
+        var allCharacters = await Task.Run(() => _characterService.LoadAllCharacters());
         var campaignCharacters = allCharacters.Where(c => _campaign.CharacterIds.Contains(c.Id));
 
+        AvailableCharacters.Clear();
         foreach (var character in campaignCharacters)
         {
             AvailableCharacters.Add(new CharacterSelectionItem(character));
@@ -69,7 +71,7 @@ public partial class CreateSessionViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel()
     {
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 
     [RelayCommand]
@@ -98,6 +100,6 @@ public partial class CreateSessionViewModel : ViewModelBase
         _campaign.LastSession = newSession.Date;
         _campaignService.SaveCampaign(_campaign);
 
-        _navigationService.NavigateBack();
+        _navigationService.CloseOverlay();
     }
 }

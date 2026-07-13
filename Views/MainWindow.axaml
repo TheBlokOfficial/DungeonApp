@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="using:Avalonia.Data.Converters"
         xmlns:vm="using:DungeonApp.ViewModels"
@@ -13,12 +13,68 @@
         Focusable="True"
         Icon="/Assets/avalonia-logo.ico">
 
+    <Window.Styles>
+        <Style Selector="views|DashboardView.blurred">
+            <Setter Property="Effect">
+                <BlurEffect Radius="15" />
+            </Setter>
+        </Style>
+    </Window.Styles>
+
     <LayoutTransformControl>
         <LayoutTransformControl.LayoutTransform>
             <ScaleTransform ScaleX="{Binding EffectiveUiScale}" ScaleY="{Binding EffectiveUiScale}" />
         </LayoutTransformControl.LayoutTransform>
         <Grid>
-            <views:DashboardView />
+
+            <!-- ═══ GŁÓWNY INTERFEJS (ZAWSZE w drzewie wizualnym) ═══ -->
+            <!-- DLACZEGO: Nie używamy IsVisible do ukrywania głównego interfejsu, bo to wyklucza go
+                 z visual tree. Musi być ZAWSZE podłączony, by TransitioningContentControl
+                 mógł faktycznie podłączyć widoki do drzewa i wymusić pełną inicjalizację
+                 szablonów/stylów. Splash overlay zasłania ten interfejs wizualnie. -->
+            <Grid>
+                <views:DashboardView Classes.blurred="{Binding IsOverlayVisible}" />
+                
+                <Border Background="#80000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="1000">
+                    <TransitioningContentControl Content="{Binding OverlayContent}" 
+                                                 PageTransition="{x:Null}"
+                                                 HorizontalAlignment="Center" 
+                                                 VerticalAlignment="Center" />
+                </Border>
+            </Grid>
+
+            <!-- ═══ SPLASH SCREEN (overlay na wierzchu, ZIndex > wszystko) ═══ -->
+            <!-- Nakłada się NA główny interfejs, zasłaniając go kompletnie.
+                 Pod spodem TransitioningContentControl faktycznie inicjalizuje widoki. -->
+            <Border IsVisible="{Binding !IsAppReady}" 
+                    Background="{DynamicResource AppBackground}" 
+                    ZIndex="9999"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20" Width="340">
+                    
+                    <!-- Tytuł aplikacji -->
+                    <TextBlock Text="Dungeon App" 
+                               FontSize="36" FontWeight="Bold" 
+                               Foreground="{DynamicResource TextPrimary}"
+                               HorizontalAlignment="Center"
+                               LetterSpacing="2"/>
+
+                    <!-- Pasek postępu (deterministyczny 0–100%) -->
+                    <ProgressBar Value="{Binding LoadingProgress}" 
+                                 Maximum="100" 
+                                 Height="4" 
+                                 Foreground="{DynamicResource AccentGold}" 
+                                 Background="{DynamicResource BorderMuted}"/>
+                    
+                    <!-- Status ładowania -->
+                    <TextBlock Text="{Binding LoadingStatus}" 
+                               FontSize="14" 
+                               Foreground="{DynamicResource TextMuted}" 
+                               HorizontalAlignment="Center"
+                               FontStyle="Italic"/>
+                </StackPanel>
+            </Border>
+
         </Grid>
     </LayoutTransformControl>
 </Window>

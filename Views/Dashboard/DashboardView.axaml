@@ -18,13 +18,9 @@
         <views:NavigationBarView Grid.Column="0" Width="{Binding CurrentSidebarWidth}" />
         
         <!-- KOLUMNA 1: GŁÓWNA ZAWARTOŚĆ -->
-        <Border Grid.Column="1" Padding="20">
+        <Border Grid.Column="1">
             <!-- Bezpieczny, pojedynczy system wymieniania ekranów (zarówno dashboard jak i ekrany kontekstowe gry) -->
-            <TransitioningContentControl Content="{Binding ActiveMainView}">
-                <TransitioningContentControl.PageTransition>
-                    <CrossFade Duration="0:0:0.25" />
-                </TransitioningContentControl.PageTransition>
-            </TransitioningContentControl>
+            <TransitioningContentControl PageTransition="{Binding CurrentPageTransition}" Content="{Binding ActiveMainView}" />
         </Border>
     </Grid>
     

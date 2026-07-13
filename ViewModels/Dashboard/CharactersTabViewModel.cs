@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -22,17 +23,48 @@ public partial class CharactersTabViewModel : ViewModelBase
         set => SetProperty(ref _selectedCharacterDetail, value);
     }
 
+    [ObservableProperty]
+    private bool _isLoading = true;
+
+    [ObservableProperty]
+    private bool _isDataLoaded;
+
     public CharactersTabViewModel(ICharacterService characterService, INavigationService navigationService)
     {
         _characterService = characterService;
         NavigationService = navigationService;
-        _ = RefreshCharactersList();
+
+        // Singleton — ładujemy dane dokładnie raz, od razu w tle.
+        _ = InitialLoadAsync();
+    }
+
+    /// <summary>
+    /// Jednorazowe ładowanie danych przy starcie Singletona z pełną obsługą błędów.
+    /// </summary>
+    private async Task InitialLoadAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            await RefreshCharactersList();
+            IsDataLoaded = true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[CharactersTab] Błąd ładowania postaci: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     public async Task RefreshCharactersList(string? keepSelectedId = null)
     {
+        var characters = await Task.Run(() => _characterService.LoadAllCharacters());
+        
         Characters.Clear();
-        foreach (var character in _characterService.LoadAllCharacters())
+        foreach (var character in characters)
         {
             Characters.Add(character);
         }
@@ -58,7 +90,7 @@ public partial class CharactersTabViewModel : ViewModelBase
     private void CreateNewCharacter()
     {
         var vm = App.Current!.Services!.GetRequiredService<CreateCharacterViewModel>();
-        NavigationService.NavigateTo(vm);
+        NavigationService.ShowOverlay(vm);
     }
 
     [RelayCommand]

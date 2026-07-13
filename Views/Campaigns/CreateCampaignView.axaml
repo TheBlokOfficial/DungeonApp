@@ -1,9 +1,8 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:DungeonApp.ViewModels"
              x:Class="DungeonApp.Views.CreateCampaignView"
-             x:DataType="vm:CreateCampaignViewModel"
-             Background="{DynamicResource AppBackground}"> <!-- Dajemy ciemne tło na cały ekran -->
+             x:DataType="vm:CreateCampaignViewModel"> 
     
     <UserControl.Styles>
         <Style Selector="TextBox">

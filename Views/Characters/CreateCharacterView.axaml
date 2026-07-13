@@ -3,8 +3,7 @@
              xmlns:vm="using:DungeonApp.ViewModels"
              xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.CreateCharacterView"
-             x:DataType="vm:CreateCharacterViewModel"
-             Background="{DynamicResource AppBackground}"> 
+             x:DataType="vm:CreateCharacterViewModel">
     
     <UserControl.Styles>
         <Style Selector="TextBox">

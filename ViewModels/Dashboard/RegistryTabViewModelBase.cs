@@ -1,5 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Services;
@@ -21,6 +23,12 @@ public abstract partial class RegistryTabViewModelBase : ViewModelBase
     public ObservableCollection<NumericFilterViewModel> NumericFilters { get; } = new();
 
     [ObservableProperty]
+    private bool _isLoading = true;
+
+    [ObservableProperty]
+    private bool _isDataLoaded = false;
+
+    [ObservableProperty]
     private string _searchQuery = string.Empty;
 
     partial void OnSearchQueryChanged(string value)
@@ -40,12 +48,12 @@ public abstract partial class RegistryTabViewModelBase : ViewModelBase
         {
             if (e.PropertyName == nameof(ITranslationService.CurrentLanguage))
             {
-                LoadData();
+                _ = ReloadAsync();
             }
         };
     }
 
-    protected abstract void LoadData();
+    protected abstract Task LoadDataAsync();
 
     protected void OnFilterChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -55,7 +63,33 @@ public abstract partial class RegistryTabViewModelBase : ViewModelBase
     protected abstract void OnFiltersChanged();
 
     [RelayCommand]
-    private void Refresh() => LoadData();
+    private void Refresh() => _ = ReloadAsync();
+
+    /// <summary>
+    /// Pełny cykl przeładowania danych z obsługą flag IsLoading i try/catch.
+    /// </summary>
+    /// <remarks>
+    /// DLACZEGO metoda jest w klasie bazowej: każda zakładka rejestru (Items, Adversaries)
+    /// ma identyczny wzorzec ładowania. Wyciągnięcie tego tutaj eliminuje duplikację
+    /// i gwarantuje spójne zachowanie spinnera/flagi we wszystkich rejestrach.
+    /// </remarks>
+    protected async Task ReloadAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            await LoadDataAsync();
+            IsDataLoaded = true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Registry] Błąd ładowania danych: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     protected void ClearFilterSubscriptions()
     {

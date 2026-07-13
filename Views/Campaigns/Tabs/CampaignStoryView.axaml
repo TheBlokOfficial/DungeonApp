@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:DungeonApp.ViewModels.Campaigns.Tabs"
+             x:Class="DungeonApp.Views.Campaigns.Tabs.CampaignStoryView"
+             x:DataType="vm:CampaignStoryViewModel">
+
+    <Border Background="{DynamicResource CardBackground}" CornerRadius="4" Padding="30" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+            <PathIcon Data="{StaticResource IconFolder}" Width="80" Height="80" Foreground="{DynamicResource TextMuted}" Opacity="0.1"/>
+            <TextBlock Text="FABUŁA" FontSize="36" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center"/>
+            <TextBlock Text="Moduł zarządzania fabułą i questami zostanie zaimplementowany wkrótce." FontSize="18" Foreground="{DynamicResource TextMuted}" HorizontalAlignment="Center" TextAlignment="Center"/>
+        </StackPanel>
+    </Border>
+
+</UserControl>

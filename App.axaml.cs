@@ -50,6 +50,9 @@ public partial class App : Application
         services.AddTransient<CreateCampaignViewModel>();
         services.AddTransient<CreateCharacterViewModel>();
 
+        // Campaign Sub-Tabs — tworzone dynamicznie przez ActivatorUtilities.CreateInstance
+        // w CampaignDetailViewModel, nie przez kontener DI (rejestracja celowo pominięta).
+
         Services = services.BuildServiceProvider();
 
         // Wymuszenie natychmiastowej inicjalizacji ContentRegistry przy starcie aplikacji.

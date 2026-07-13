@@ -9,18 +9,12 @@
         <Style Selector=":is(Control).toggleState">
             <Setter Property="Opacity" Value="0"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.15" />
-                </Transitions>
-            </Setter>
         </Style>
         <Style Selector=":is(Control).toggleState.active">
             <Setter Property="Opacity" Value="1"/>
             <Setter Property="IsHitTestVisible" Value="True"/>
         </Style>
 
-        <!-- Ghost Input Style dla tytułu kampanii -->
         <Style Selector="TextBox.ghostInput">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -46,172 +40,135 @@
         </Style>
     </UserControl.Styles>
 
+    <!-- Główny kontener bez twardych wierszy (Warstwy Z-Index) -->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="6*" MinWidth="720" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="0,38,0,0">
 
-        <!-- Górny pasek: powrót + nazwa kampanii -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="20" Margin="0,0,0,38">
-            <Button Classes="ghost" Command="{Binding BackCommand}">
-                <TextBlock Text="← Wróć" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
-            </Button>
+        <!-- WARSTWA 1: STREFA ROBOCZA (Rozciągnięta aż do dolnego marginesu, wchodzi w tło portretów) -->
+        <!-- Dolny margines 110px sprawia, że zawartość kończy się w połowie wysokości portretów (220px / 2) -->
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="50,40,50,110" RowDefinitions="Auto, Auto, *">
+            
+            <!-- GÓRNY PASEK: Powrót + Tytuł -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="20" Margin="0,0,0,40">
+                <Button Classes="ghost" Command="{Binding BackCommand}">
+                    <TextBlock Text="← Wróć" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
+                </Button>
 
-            <StackPanel VerticalAlignment="Center">
-                <!-- Tytuł kampanii (Anti-Jumping Ghost UI) -->
-                <Grid ColumnDefinitions="300, Auto">
-                    <TextBox Grid.Column="0" Classes="ghostInput" Classes.editing="{Binding IsEditingName}" Margin="-15,0,0,0"
-                             Text="{Binding Campaign.Name}" FontSize="30" FontWeight="Bold" 
-                             VerticalAlignment="Center"
-                             IsHitTestVisible="{Binding IsEditingName}"
-                             Focusable="{Binding IsEditingName}">
-                        <TextBox.KeyBindings>
-                            <KeyBinding Gesture="Enter" Command="{Binding SaveCampaignNameCommand}"/>
-                        </TextBox.KeyBindings>
-                    </TextBox>
-                    
-                    <Grid Grid.Column="1" Margin="10,0,0,0">
-                        <Button Classes="icon toggleState" Classes.active="{Binding !IsEditingName}"
-                                Command="{Binding StartEditingNameCommand}" ToolTip.Tip="Edytuj nazwę"
-                                VerticalAlignment="Center">
-                            <PathIcon Data="{StaticResource IconEdit}" Width="18" Height="18"/>
-                        </Button>
+                <StackPanel VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="300, Auto">
+                        <TextBox Grid.Column="0" Classes="ghostInput" Classes.editing="{Binding IsEditingName}" Margin="-15,0,0,0"
+                                 Text="{Binding Campaign.Name}" FontSize="30" FontWeight="Bold" 
+                                 VerticalAlignment="Center"
+                                 IsHitTestVisible="{Binding IsEditingName}"
+                                 Focusable="{Binding IsEditingName}">
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding SaveCampaignNameCommand}"/>
+                            </TextBox.KeyBindings>
+                        </TextBox>
                         
-                        <Button Classes="primary toggleState" Classes.active="{Binding IsEditingName}"
-                                Command="{Binding SaveCampaignNameCommand}" Padding="15,8"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="Zapisz" FontSize="15"/>
-                        </Button>
-                    </Grid>
-                </Grid>
-
-                <TextBlock Classes="dynamic" Text="{Binding Campaign.System}" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
-            </StackPanel>
-        </StackPanel>
-
-        <!-- Główna zawartość -->
-        <ScrollViewer Grid.Row="1">
-            <StackPanel Spacing="30">
-                
-                <!-- SEKCJA 1 i 2 (Nałożone na siebie w jednej siatce, by uniknąć skakania zawartości UI) -->
-                <Grid>
-                    <!-- SEKCJA 1: Przycisk dodawania nowej sesji (Widoczny gdy NIE MA aktywnej) -->
-                    <Button Classes="primary toggleState" Classes.active="{Binding CanAddNewSession}" Command="{Binding AddSessionCommand}"
-                            HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <PathIcon Data="{StaticResource IconAdd}" Width="18" Height="18" />
-                            <TextBlock Text="Rozpocznij Nową Sesję" FontSize="18"/>
-                        </StackPanel>
-                    </Button>
-
-                    <!-- SEKCJA 2: Aktywna Sesja (Widoczna gdy JEST aktywna) -->
-                    <Border Classes="toggleState" Classes.active="{Binding HasActiveSession}"
-                            Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="{StaticResource CardPadding}" 
-                            BorderThickness="0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                <TextBlock Text="OBECNA SESJA" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource AccentGold}" Margin="0,0,0,5"/>
-                                <TextBlock Classes="dynamic" Text="{Binding ActiveSession.Title}" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
-                                <TextBlock Text="{Binding ActiveSession.Date, StringFormat='{}Utworzono: {0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
-                            </StackPanel>
-
-                            <!-- Akcje Aktywnej Sesji -->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="15" VerticalAlignment="Center">
-                                
-                                <Button Classes="dangerGhost" Command="{Binding DeleteActiveSessionCommand}">
-                                    <TextBlock Text="Usuń" FontSize="16" />
-                                </Button>
-
-                                <!-- Zmiana nazwy na Zakończ Sesję -->
-                                <Button Classes="secondary" Command="{Binding ArchiveActiveSessionCommand}">
-                                    <TextBlock Text="Zakończ Sesję" FontSize="16"/>
-                                </Button>
-
-                                <Button Classes="primary" Command="{Binding OpenActiveSessionCommand}">
-                                    <TextBlock Text="Prowadź Sesję →" FontSize="18"/>
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
-                
-                <!-- SEKCJA DRUŻYNY -->
-<StackPanel>
-    <Grid ColumnDefinitions="*,Auto" Margin="0,20,0,20">
-        <TextBlock Grid.Column="0" Text="Drużyna" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
-        <Button Grid.Column="1" Classes="secondary" Command="{Binding AddCharacterToCampaignCommand}" Padding="15,10">
-            <StackPanel Orientation="Horizontal" Spacing="8">
-                <PathIcon Data="{StaticResource IconAdd}" Width="15" Height="15" />
-                <TextBlock Text="Zrekrutuj" FontSize="15" FontWeight="Bold"/>
-            </StackPanel>
-        </Button>
-    </Grid>
-
-    <Grid>
-        <ItemsControl ItemsSource="{Binding CampaignCharacters}"
-                      IsVisible="{Binding CampaignCharacters.Count}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="4" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Background="{DynamicResource CardBackground}" CornerRadius="{StaticResource CardCornerRadius}" Padding="20" Margin="10" BorderThickness="0">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Classes="dynamic" Text="{Binding CharacterName}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}"/>
-                                <TextBlock Classes="dynamic" Text="{Binding ClassAndLevel}" FontSize="15" Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"/>
-                            </StackPanel>
-                            <!-- Przycisk usuwania (wypisania z kampanii) -->
-                            <Button Grid.Column="1" Classes="iconDanger" Command="{Binding ((vm:CampaignDetailViewModel)DataContext).RemoveCharacterFromCampaignCommand, ElementName=Root}" CommandParameter="{Binding}" VerticalAlignment="Top">
-                                <PathIcon Data="{StaticResource IconTrash}" Width="15" Height="15" />
+                        <Grid Grid.Column="1" Margin="10,0,0,0">
+                            <Button Classes="icon toggleState" Classes.active="{Binding !IsEditingName}"
+                                    Command="{Binding StartEditingNameCommand}" ToolTip.Tip="Edytuj nazwę"
+                                    VerticalAlignment="Center">
+                                <PathIcon Data="{StaticResource IconEdit}" Width="18" Height="18"/>
+                            </Button>
+                            
+                            <Button Classes="primary toggleState" Classes.active="{Binding IsEditingName}"
+                                    Command="{Binding SaveCampaignNameCommand}" Padding="15,8"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="Zapisz" FontSize="15"/>
                             </Button>
                         </Grid>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <TextBlock Text="Brak postaci w drużynie."
-                   IsVisible="{Binding !CampaignCharacters.Count}"
-                   Foreground="{DynamicResource TextMuted}"
-                   FontStyle="Italic"/>
-    </Grid>
-</StackPanel>
-
-                <!-- SEKCJA 3: Archiwum Sesji -->
-                <StackPanel IsVisible="{Binding ArchivedSessions.Count}">
-                    <TextBlock Text="Zarchiwizowane Sesje" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" Margin="0,20,0,20"/>
-                    
-                    <ItemsControl ItemsSource="{Binding ArchivedSessions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="4" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Classes="card" Command="{Binding ((vm:CampaignDetailViewModel)DataContext).ReadArchivedSessionCommand, ElementName=Root}"
-                                        CommandParameter="{Binding}"
-                                        Margin="10"
-                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Left">
-                                    <StackPanel>
-                                        <TextBlock Classes="dynamic" Text="{Binding Title}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}"/>
-                                        <TextBlock Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}" FontSize="16" Foreground="{DynamicResource TextMuted}" Margin="0,8,0,0"/>
-                                    </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    </Grid>
+                    <TextBlock Classes="dynamic" Text="{Binding Campaign.System}" FontSize="18" Foreground="{DynamicResource TextMuted}"/>
                 </StackPanel>
-
             </StackPanel>
-        </ScrollViewer>
+
+            <!-- ZAKŁADKI NAWIGACYJNE (Tab Strip) -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="20" Margin="0,0,0,20">
+                <RadioButton Content="Panel Główny" Theme="{StaticResource {x:Type ToggleButton}}" 
+                             Command="{Binding NavigateToDashboardCommand}" 
+                             IsChecked="True" GroupName="CampaignTabs"
+                             FontSize="16" FontWeight="SemiBold" Padding="15,8" CornerRadius="4" />
+                
+                <RadioButton Content="Combat Tracker" Theme="{StaticResource {x:Type ToggleButton}}" 
+                             Command="{Binding NavigateToTrackerCommand}" 
+                             GroupName="CampaignTabs"
+                             FontSize="16" FontWeight="SemiBold" Padding="15,8" CornerRadius="4" />
+                
+                <RadioButton Content="Notatki" Theme="{StaticResource {x:Type ToggleButton}}" 
+                             Command="{Binding NavigateToNotesCommand}" 
+                             GroupName="CampaignTabs"
+                             FontSize="16" FontWeight="SemiBold" Padding="15,8" CornerRadius="4" />
+                
+                <RadioButton Content="Fabuła" Theme="{StaticResource {x:Type ToggleButton}}" 
+                             Command="{Binding NavigateToStoryCommand}" 
+                             GroupName="CampaignTabs"
+                             FontSize="16" FontWeight="SemiBold" Padding="15,8" CornerRadius="4" />
+            </StackPanel>
+
+            <!-- STREFA ROBOCZA (Zawartość Aktywnej Zakładki) -->
+            <TransitioningContentControl Grid.Row="2" Content="{Binding ActiveTabContent}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
         </Grid>
+
+        <!-- WARSTWA 2: STREFA HUD (Pływający Pasek cRPG z przyciskiem oka) -->
+        <!-- Pozycjonowanie absolutnie na dole, przysłania dolną krawędź strefy roboczej -->
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="50,0,50,0">
+            <StackPanel HorizontalAlignment="Center" Spacing="0">
+                
+                <!-- Nagłówek i przyciski sterujące HUD -->
+                <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,5">
+                    <TextBlock Grid.Column="0" Text="DRUŻYNA" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextMuted}" LetterSpacing="2" VerticalAlignment="Center"/>
+                    
+                    <Button Grid.Column="1" Classes="ghost" Command="{Binding AddCharacterToCampaignCommand}" Padding="5" Margin="0,0,10,0" ToolTip.Tip="Dodaj postać do drużyny">
+                        <PathIcon Data="{StaticResource IconAdd}" Width="16" Height="16"/>
+                    </Button>
+
+                    <Button Grid.Column="2" Classes="ghost" Command="{Binding ToggleHudCommand}" Padding="5" ToolTip.Tip="Przełącz widoczność portretów">
+                        <Grid>
+                            <!-- XAML Anti-Jumping dla ikony -->
+                            <PathIcon Data="{StaticResource IconEye}" Width="16" Height="16" IsVisible="{Binding !IsHudVisible}"/>
+                            <PathIcon Data="{StaticResource IconEyeOff}" Width="16" Height="16" IsVisible="{Binding IsHudVisible}"/>
+                        </Grid>
+                    </Button>
+                </Grid>
+
+                <!-- Pojemnik na portrety chowany i pokazywany -->
+                <ItemsControl ItemsSource="{Binding CampaignCharacters}" IsVisible="{Binding IsHudVisible}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!-- MASYWNA KARTA PORTRETOWA cRPG BEZ ZAOKRĄGLEŃ -->
+                            <!-- Tło z pełnym kryciem, by zasłaniać to, co za nim -->
+                            <Border Width="160" Height="220" Background="{DynamicResource SurfaceBackground}" CornerRadius="0" BorderThickness="1,1,1,0" BorderBrush="{DynamicResource BorderMuted}" ClipToBounds="True">
+                                <Grid RowDefinitions="*, Auto">
+                                    
+                                    <!-- Miejsce na Awatar -->
+                                    <Border Grid.Row="0" Background="{DynamicResource InputBackground}">
+                                        <Grid>
+                                            <PathIcon Data="{StaticResource IconUser}" Width="60" Height="60" Foreground="{DynamicResource TextMuted}" Opacity="0.1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    
+                                    <!-- Panel z Imionami -->
+                                    <Border Grid.Row="1" Background="{DynamicResource SurfaceBackground}" Padding="10" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource BorderMuted}">
+                                        <StackPanel>
+                                            <TextBlock Classes="dynamic" Text="{Binding CharacterName}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis" TextAlignment="Center"/>
+                                            <TextBlock Classes="dynamic" Text="{Binding PlayerName}" FontSize="14" Foreground="{DynamicResource TextMuted}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" TextAlignment="Center" FontStyle="Italic"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
     </Grid>
 </UserControl>

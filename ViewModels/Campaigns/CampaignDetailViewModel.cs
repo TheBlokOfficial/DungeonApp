@@ -1,11 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
 using DungeonApp.Services;
-using Microsoft.Extensions.DependencyInjection;
+using DungeonApp.ViewModels.Campaigns.Tabs;
 
 namespace DungeonApp.ViewModels;
 
@@ -17,12 +18,19 @@ public partial class CampaignDetailViewModel : ViewModelBase
     private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasActiveSession))]
-    [NotifyPropertyChangedFor(nameof(CanAddNewSession))]
-    private Session? _activeSession;
+    private bool _isEditingName;
 
     [ObservableProperty]
-    private bool _isEditingName;
+    private ViewModelBase? _activeTabContent;
+
+    [ObservableProperty]
+    private string _activeTabName = "Dashboard";
+
+    [ObservableProperty]
+    private bool _isHudVisible = true;
+
+    public Campaign Campaign { get; }
+    public ObservableCollection<PlayerCharacter> CampaignCharacters { get; } = new();
 
     public CampaignDetailViewModel(
         Campaign campaign,
@@ -37,41 +45,18 @@ public partial class CampaignDetailViewModel : ViewModelBase
         _navigationService = navigationService;
         _serviceProvider = serviceProvider;
 
-        LoadSessions();
-        LoadCampaignCharacters();
+        NavigateToDashboard();
     }
 
-    public override void OnNavigatedTo()
+    public override async void OnNavigatedTo()
     {
-        LoadSessions();
-        LoadCampaignCharacters();
-    }
-
-    public Campaign Campaign { get; }
-    public ObservableCollection<Session> ArchivedSessions { get; } = new();
-
-    public bool HasActiveSession => ActiveSession != null;
-    public bool CanAddNewSession => ActiveSession == null;
-    public ObservableCollection<PlayerCharacter> CampaignCharacters { get; } = new();
-
-    private void LoadSessions()
-    {
-        ArchivedSessions.Clear();
-        ActiveSession = null;
-
-        var allSessions = _campaignService.LoadSessions(Campaign.Id).OrderByDescending(s => s.Date).ToList();
-
-        foreach (var session in allSessions)
+        try
         {
-            if (!session.IsArchived && ActiveSession == null)
-            {
-                ActiveSession = session;
-            }
-            else
-            {
-                session.IsArchived = true;
-                ArchivedSessions.Add(session);
-            }
+            await LoadCampaignCharactersAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[CampaignDetail] Błąd ładowania postaci kampanii: {ex.Message}");
         }
     }
 
@@ -79,6 +64,40 @@ public partial class CampaignDetailViewModel : ViewModelBase
     private void Back()
     {
         _navigationService.NavigateBack();
+    }
+
+    [RelayCommand]
+    private void ToggleHud()
+    {
+        IsHudVisible = !IsHudVisible;
+    }
+
+    [RelayCommand]
+    private void NavigateToDashboard()
+    {
+        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignDashboardViewModel>(_serviceProvider, Campaign);
+        ActiveTabName = "Dashboard";
+    }
+
+    [RelayCommand]
+    private void NavigateToTracker()
+    {
+        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignTrackerViewModel>(_serviceProvider, Campaign);
+        ActiveTabName = "Tracker";
+    }
+
+    [RelayCommand]
+    private void NavigateToNotes()
+    {
+        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignNotesViewModel>(_serviceProvider, Campaign);
+        ActiveTabName = "Notes";
+    }
+
+    [RelayCommand]
+    private void NavigateToStory()
+    {
+        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignStoryViewModel>(_serviceProvider, Campaign);
+        ActiveTabName = "Story";
     }
 
     [RelayCommand]
@@ -98,72 +117,11 @@ public partial class CampaignDetailViewModel : ViewModelBase
         _campaignService.SaveCampaign(Campaign);
     }
 
-    [RelayCommand]
-    private void AddSession()
+    public async Task LoadCampaignCharactersAsync()
     {
-        if (ActiveSession != null) return;
-        var vm = ActivatorUtilities.CreateInstance<CreateSessionViewModel>(_serviceProvider, Campaign);
-        _navigationService.NavigateTo(vm);
-    }
-
-    [RelayCommand]
-    private void DeleteActiveSession()
-    {
-        if (ActiveSession == null) return;
-
-        _campaignService.DeleteSession(Campaign.Id, ActiveSession.Id);
-        ActiveSession = null;
-
-        SyncCampaignStats();
-    }
-
-    [RelayCommand]
-    private void ArchiveActiveSession()
-    {
-        if (ActiveSession == null) return;
-
-        ActiveSession.IsArchived = true;
-        _campaignService.SaveSession(Campaign.Id, ActiveSession);
-
-        ArchivedSessions.Insert(0, ActiveSession);
-        ActiveSession = null;
-
-        SyncCampaignStats();
-    }
-
-    [RelayCommand]
-    private void OpenActiveSession()
-    {
-        if (ActiveSession == null) return;
-        var vm = ActivatorUtilities.CreateInstance<SessionDetailViewModel>(_serviceProvider, Campaign, ActiveSession);
-        _navigationService.NavigateTo(vm);
-    }
-
-    [RelayCommand]
-    private void ReadArchivedSession(Session? session)
-    {
-        if (session == null) return;
-        var vm = ActivatorUtilities.CreateInstance<SessionDetailViewModel>(_serviceProvider, Campaign, session);
-        _navigationService.NavigateTo(vm);
-    }
-
-    private void SyncCampaignStats()
-    {
-        Campaign.SessionsCount = ArchivedSessions.Count + (ActiveSession != null ? 1 : 0);
-
-        var latestDate = Campaign.CreatedAt;
-        if (ActiveSession != null) latestDate = ActiveSession.Date;
-        else if (ArchivedSessions.Any()) latestDate = ArchivedSessions.First().Date;
-
-        Campaign.LastSession = latestDate;
-        _campaignService.SaveCampaign(Campaign);
-    }
-
-    private void LoadCampaignCharacters()
-    {
+        var allCharacters = await Task.Run(() => _characterService.LoadAllCharacters());
+        
         CampaignCharacters.Clear();
-        var allCharacters = _characterService.LoadAllCharacters();
-
         foreach (var id in Campaign.CharacterIds)
         {
             var character = allCharacters.FirstOrDefault(c => c.Id == id);
@@ -172,10 +130,17 @@ public partial class CampaignDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void OpenCreateSession()
+    {
+        var vm = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CreateSessionViewModel>(App.Current!.Services!, Campaign);
+        _navigationService.ShowOverlay(vm);
+    }
+
+    [RelayCommand]
     private void AddCharacterToCampaign()
     {
-        var vm = ActivatorUtilities.CreateInstance<AddCharacterToCampaignViewModel>(_serviceProvider, Campaign);
-        _navigationService.NavigateTo(vm);
+        var vm = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<AddCharacterToCampaignViewModel>(_serviceProvider, Campaign);
+        _navigationService.ShowOverlay(vm);
     }
 
     [RelayCommand]
