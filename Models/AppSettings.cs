@@ -21,4 +21,10 @@ public class AppSettings
     /// Jednostka odległości (np. "ft.", "m.").
     /// </summary>
     public string DistanceUnit { get; set; } = "ft.";
+
+    /// <summary>
+    /// Tryb Deweloperski — wyświetla dodatkowe narzędzia (Workbench/Sandbox)
+    /// przeznaczone do testowania i implementowania hermetycznych modułów UI.
+    /// </summary>
+    public bool IsDeveloperModeEnabled { get; set; } = false;
 }

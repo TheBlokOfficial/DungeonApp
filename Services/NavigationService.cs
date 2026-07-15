@@ -33,6 +33,7 @@ public partial class NavigationService : ObservableObject, INavigationService
         // pominięta przy pierwszym wczytaniu, co powoduje zacinanie/przeskok.
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
+            CurrentView?.OnNavigatedFrom();
             CurrentView = viewModel;
             CurrentView?.OnNavigatedTo();
         });
@@ -45,6 +46,7 @@ public partial class NavigationService : ObservableObject, INavigationService
 
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
+            CurrentView?.OnNavigatedFrom();
             CurrentView = nextView;
             CurrentView?.OnNavigatedTo();
         });

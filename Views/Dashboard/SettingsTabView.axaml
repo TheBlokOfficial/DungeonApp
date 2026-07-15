@@ -91,6 +91,31 @@
 
                     </StackPanel>
                 </Border>
+
+                <!-- SEKCJA: Tryb Deweloperski -->
+                <Border Background="{DynamicResource CardBackground}" CornerRadius="15" Padding="30" BorderThickness="0">
+                    <StackPanel Spacing="20">
+
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <PathIcon Data="{StaticResource IconSettings}" Width="20" Height="20" Foreground="{DynamicResource TextMuted}" />
+                            <TextBlock Text="TRYB DEWELOPERSKI" FontSize="15" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextMuted}" LetterSpacing="1" />
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock Text="Włącz Workbench" FontSize="18" FontWeight="Bold"
+                                           Foreground="{DynamicResource TextSecondary}" />
+                                <TextBlock Text="Odsłania zakładkę Workbench w bocznym menu — hermetyczne środowisko do testowania modułów UI z GridSplitterem i konsolą." FontSize="14"
+                                           Foreground="{DynamicResource TextMuted}" Margin="0,5,0,0"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsDeveloperModeEnabled}"
+                                          VerticalAlignment="Center"/>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
                 
             </StackPanel>
         </ScrollViewer>

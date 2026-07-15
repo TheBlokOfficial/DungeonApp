@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:events="using:DungeonApp.Models.Campaigns.Engine.Events"
+             xmlns:module="using:DungeonApp.Models.Campaigns.Engine.Modules.Core"
+             x:Class="DungeonApp.Views.Campaigns.Modules.ConsoleView"
+             x:DataType="module:ConsoleModule"
+             x:CompileBindings="False">
+
+    <!--
+        CONSOLE VIEW — Hermetyczny widok modułu konsoli.
+        Posiada logikę scrolla w code-behind i własne DataTemplates dla eventów.
+        Używa DataContext ConsoleModule bezpośrednio, więc komendy wewnątrz
+        propozycji odwołują się do poleceń modułu.
+    -->
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Nagłówek -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="0,0,0,10">
+            <Ellipse Width="7" Height="7" Fill="LimeGreen" VerticalAlignment="Center"/>
+            <TextBlock Text="KONSOLA" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Lista Zdarzeń (Feed) -->
+        <ScrollViewer x:Name="ConsoleScroll" Grid.Row="1" Margin="0,0,0,15" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Feed}" VerticalAlignment="Bottom">
+                <ItemsControl.DataTemplates>
+                    
+                    <!-- Szablon dla Propozycji (Inline Plain Text z hover actions) -->
+                    <DataTemplate DataType="{x:Type events:ProposalEvent}">
+                        <WrapPanel Margin="0,5">
+                            <TextBlock Text="[PROPOSAL] " Foreground="{DynamicResource AccentGold}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding SenderModuleId, StringFormat='{}[{0}] '}" Foreground="{DynamicResource TextMuted}"/>
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,0,5,0" />
+                            
+                            <!-- Bindowanie do komend w ConsoleModule.
+                                 $parent[UserControl] = ConsoleView, jego DataContext to ConsoleModule -->
+                            <Button Content="[accept]" Background="Transparent" Foreground="LimeGreen" Padding="0" Margin="0,0,5,0" Cursor="Hand" BorderThickness="0"
+                                    Command="{Binding $parent[UserControl].((module:ConsoleModule)DataContext).AcceptProposalCommand}" CommandParameter="{Binding}" />
+                            <Button Content="[reject]" Background="Transparent" Foreground="IndianRed" Padding="0" Cursor="Hand" BorderThickness="0"
+                                    Command="{Binding $parent[UserControl].((module:ConsoleModule)DataContext).RejectProposalCommand}" CommandParameter="{Binding}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                    
+                    <!-- Szablon dla Zwykłych Notyfikacji -->
+                    <DataTemplate DataType="{x:Type events:NotificationEvent}">
+                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,5">
+                            <TextBlock Text="[INFO]" Foreground="{DynamicResource TextMuted}" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding SenderModuleId, StringFormat='{}[{0}]'}" Foreground="{DynamicResource TextMuted}"/>
+                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </DataTemplate>
+                    
+                </ItemsControl.DataTemplates>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Pole Tekstowe Konsoli -->
+        <TextBox Grid.Row="2" 
+                 Text="{Binding ConsoleInputText}"
+                 PlaceholderText="Wpisz komendę (np. /time +8h)..." 
+                 CornerRadius="4"
+                 Padding="10,8">
+            <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding ExecuteConsoleCommandCommand}" />
+            </TextBox.KeyBindings>
+        </TextBox>
+    </Grid>
+</UserControl>

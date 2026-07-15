@@ -49,6 +49,21 @@ public partial class SettingsTabViewModel : ViewModelBase
     [ObservableProperty]
     private string _distanceUnit = "ft.";
 
+    private bool _isDeveloperModeEnabled;
+    public bool IsDeveloperModeEnabled
+    {
+        get => _isDeveloperModeEnabled;
+        set
+        {
+            if (SetProperty(ref _isDeveloperModeEnabled, value))
+            {
+                var currentSettings = _settingsService.LoadSettings();
+                currentSettings.IsDeveloperModeEnabled = value;
+                _settingsService.SaveSettings(currentSettings);
+            }
+        }
+    }
+
     private ScaleOption? _selectedScaleOption;
     public ScaleOption? SelectedScaleOption
     {
@@ -148,6 +163,8 @@ public partial class SettingsTabViewModel : ViewModelBase
 
         DistanceUnit = settings.DistanceUnit ?? "ft.";
         _selectedDistanceUnitOption = SettingsDistanceUnitOptions.FirstOrDefault(x => x == DistanceUnit) ?? SettingsDistanceUnitOptions[0];
+
+        _isDeveloperModeEnabled = settings.IsDeveloperModeEnabled;
     }
 
     private void UpdateOptions()

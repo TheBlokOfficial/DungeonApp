@@ -5,8 +5,13 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Models;
+using DungeonApp.Models.Campaigns.Engine;
+using DungeonApp.Models.Campaigns.Engine.Modules;
+using DungeonApp.Models.Campaigns.Engine.Modules.Core;
+using DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper;
 using DungeonApp.Services;
 using DungeonApp.ViewModels.Campaigns.Tabs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DungeonApp.ViewModels;
 
@@ -32,6 +37,8 @@ public partial class CampaignDetailViewModel : ViewModelBase
     public Campaign Campaign { get; }
     public ObservableCollection<PlayerCharacter> CampaignCharacters { get; } = new();
 
+    public ICampaignEngine Engine { get; }
+
     public CampaignDetailViewModel(
         Campaign campaign,
         ICampaignService campaignService,
@@ -45,6 +52,16 @@ public partial class CampaignDetailViewModel : ViewModelBase
         _navigationService = navigationService;
         _serviceProvider = serviceProvider;
 
+        // Inicjalizacja silnika (scoping na poziomie kampanii).
+        // IStorageService jest przekazywany, aby moduły mogły trwale zapisywać
+        // swoje stany w podfolderze modules/ folderu kampanii — bez dotykania campaign.json.
+        var storageService = serviceProvider.GetRequiredService<IStorageService>();
+        Engine = new CampaignEngine(new ICampaignModule[] 
+        { 
+            new ConsoleModule(), 
+            new TimekeeperModule() 
+        }, storageService);
+
         NavigateToDashboard();
     }
 
@@ -52,6 +69,7 @@ public partial class CampaignDetailViewModel : ViewModelBase
     {
         try
         {
+            Engine.StartEngine(Campaign);
             await LoadCampaignCharactersAsync();
         }
         catch (Exception ex)
@@ -63,6 +81,7 @@ public partial class CampaignDetailViewModel : ViewModelBase
     [RelayCommand]
     private void Back()
     {
+        Engine.StopEngine();
         _navigationService.NavigateBack();
     }
 
@@ -75,28 +94,28 @@ public partial class CampaignDetailViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateToDashboard()
     {
-        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignDashboardViewModel>(_serviceProvider, Campaign);
+        ActiveTabContent = ActivatorUtilities.CreateInstance<CampaignDashboardViewModel>(_serviceProvider, Campaign, Engine);
         ActiveTabName = "Dashboard";
     }
 
     [RelayCommand]
     private void NavigateToTracker()
     {
-        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignTrackerViewModel>(_serviceProvider, Campaign);
+        ActiveTabContent = ActivatorUtilities.CreateInstance<CampaignTrackerViewModel>(_serviceProvider, Campaign);
         ActiveTabName = "Tracker";
     }
 
     [RelayCommand]
     private void NavigateToNotes()
     {
-        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignNotesViewModel>(_serviceProvider, Campaign);
+        ActiveTabContent = ActivatorUtilities.CreateInstance<CampaignNotesViewModel>(_serviceProvider, Campaign);
         ActiveTabName = "Notes";
     }
 
     [RelayCommand]
     private void NavigateToStory()
     {
-        ActiveTabContent = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CampaignStoryViewModel>(_serviceProvider, Campaign);
+        ActiveTabContent = ActivatorUtilities.CreateInstance<CampaignStoryViewModel>(_serviceProvider, Campaign);
         ActiveTabName = "Story";
     }
 
@@ -132,14 +151,14 @@ public partial class CampaignDetailViewModel : ViewModelBase
     [RelayCommand]
     private void OpenCreateSession()
     {
-        var vm = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<CreateSessionViewModel>(App.Current!.Services!, Campaign);
+        var vm = ActivatorUtilities.CreateInstance<CreateSessionViewModel>(App.Current!.Services!, Campaign);
         _navigationService.ShowOverlay(vm);
     }
 
     [RelayCommand]
     private void AddCharacterToCampaign()
     {
-        var vm = Microsoft.Extensions.DependencyInjection.ActivatorUtilities.CreateInstance<AddCharacterToCampaignViewModel>(_serviceProvider, Campaign);
+        var vm = ActivatorUtilities.CreateInstance<AddCharacterToCampaignViewModel>(_serviceProvider, Campaign);
         _navigationService.ShowOverlay(vm);
     }
 

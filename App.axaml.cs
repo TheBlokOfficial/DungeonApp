@@ -46,6 +46,7 @@ public partial class App : Application
         services.AddSingleton<AdversariesTabViewModel>();
         services.AddSingleton<OthersTabViewModel>();
         services.AddSingleton<SettingsTabViewModel>();
+        services.AddSingleton<SandboxTabViewModel>();
         
         services.AddTransient<CreateCampaignViewModel>();
         services.AddTransient<CreateCharacterViewModel>();

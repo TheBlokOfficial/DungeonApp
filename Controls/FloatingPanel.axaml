@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Controls"
+             x:Class="DungeonApp.Controls.FloatingPanel"
+             x:CompileBindings="False">
+
+    <Border x:Name="PanelBorder"
+            Background="{DynamicResource CardBackground}"
+            BorderBrush="{DynamicResource BorderSecondary}"
+            BorderThickness="1"
+            CornerRadius="6"
+            BoxShadow="0 8 40 0 #CC000000, 0 2 8 0 #66000000"
+            ClipToBounds="True">
+
+        <Grid RowDefinitions="Auto, *">
+
+            <!-- ═══════════════════════════════════════════════════════
+                 INFO BAR — Pasek tytułu modułu + etykieta wymiarów.
+                 Ciemniejszy od CardBackground (#111111) jako subtelny
+                 separator wizualny między nagłówkiem a treścią modułu.
+                 Drag został usunięty — panel jest centrowany przez layout.
+                 ═══════════════════════════════════════════════════════ -->
+            <Border x:Name="TitleBar"
+                    Grid.Row="0"
+                    Background="#111111"
+                    Padding="12,8">
+                <Grid ColumnDefinitions="Auto, *, Auto">
+
+                    <!-- Bullet + tytuł modułu -->
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center">
+                        <!-- Złoty bullet — marker wizualny drag baru -->
+                        <Ellipse Width="7" Height="7"
+                                 Fill="{DynamicResource AccentGold}"
+                                 VerticalAlignment="Center"/>
+                        <Ellipse Width="7" Height="7"
+                                 Fill="{DynamicResource BorderSecondary}"
+                                 VerticalAlignment="Center"/>
+                        <Ellipse Width="7" Height="7"
+                                 Fill="{DynamicResource BorderSecondary}"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Tytuł modułu wyśrodkowany -->
+                    <TextBlock Grid.Column="1"
+                               x:Name="TitleText"
+                               Text="Moduł"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               LetterSpacing="1.5"
+                               Foreground="{DynamicResource TextMuted}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
+
+                    <!-- Wymiary panelu — podgląd na żywo (przydatny przy teście responsywności) -->
+                    <TextBlock Grid.Column="2"
+                               x:Name="SizeLabel"
+                               FontSize="10"
+                               FontFamily="Consolas, monospace"
+                               Foreground="{DynamicResource TextMuted}"
+                               VerticalAlignment="Center"
+                               Opacity="0.5"/>
+                </Grid>
+            </Border>
+
+            <!-- ═══════════════════════════════════════════════════════
+                 CONTENT AREA — Treść modułu
+                 Panel wymaga względnego layoutu wewnątrz (Grid, aby
+                 nakładka resize grip mogła siedzieć w prawym-dolnym rogu).
+                 ═══════════════════════════════════════════════════════ -->
+            <Grid Grid.Row="1">
+
+                <!-- Właściwa treść panelu wstrzykiwana programatycznie z code-behind
+                     (FloatingPanel.axaml.cs → UpdateContent()) przez zmianę właściwości PanelContent.
+                     DLACZEGO brak bindowania: RelativeSource AncestorType to składnia WPF,
+                     która w Avalonia 12 może rzucić wyjątek podczas parsowania XAML,
+                     psując inicjalizację całego widoku-rodzica (SandboxTabView). -->
+                <ContentPresenter x:Name="ContentArea"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"/>
+
+                <!-- ═══════════════════════════════════════════════════
+                     RESIZE GRIP ◢ — Uchwyt zmiany rozmiaru
+                     Małe pole 20×20px w prawym-dolnym rogu nakładane
+                     na ContentArea przez Grid (ta sama komórka = z-order).
+                     Cursor zmienia się na SizeNorthWestSouthEast.
+                     ═══════════════════════════════════════════════════ -->
+                <Border x:Name="ResizeGrip"
+                        Width="20" Height="20"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Background="Transparent"
+                        Cursor="BottomRightCorner"
+                        Margin="0,0,2,2">
+                    <TextBlock Text="◢"
+                               FontSize="12"
+                               Foreground="{DynamicResource BorderHover}"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Bottom"/>
+                </Border>
+
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

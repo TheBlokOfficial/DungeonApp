@@ -167,5 +167,8 @@
   "Greatclub": "Greatclub",
   "Shortsword": "Shortsword",
   "Bite": "Bite",
-  "Fire Breath": "Fire Breath"
+  "Fire Breath": "Fire Breath",
+  "module_testtime_proposal": "The party has finished a short rest. Add 1 hour to campaign time?",
+  "module_testtime_accept": "1 hour has passed.",
+  "module_testtime_reject": "Time change rejected."
 }

@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:module="using:DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper"
+             x:Class="DungeonApp.Views.Campaigns.Modules.TimekeeperView"
+             x:DataType="module:TimekeeperModule">
+
+    <!--
+        TIMEKEEPER VIEW — Hermetyczny widok modułu czasu.
+        Ten UserControl nie wie nic o Dashboardzie ani Sandboxie.
+        Jedyne bindowania to propertiesy TimekeeperModule.
+        Rozmiar: adaptuje się do kontenera (HorizontalAlignment="Stretch").
+    -->
+    <Grid RowDefinitions="Auto, *, Auto" Margin="0">
+
+        <!-- ROW 0: Nagłówek -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
+            <!-- Ikona pory dnia — klucz dynamicznie zmienia się między IconSun/IconMoon -->
+            <PathIcon Data="{DynamicResource IconSun}"
+                      x:Name="DayPhaseIcon"
+                      Width="20" Height="20"
+                      Foreground="{DynamicResource AccentGold}" />
+            <TextBlock Text="CZAS &amp; KALENDARZ"
+                       FontSize="12" FontWeight="Bold" LetterSpacing="2"
+                       Foreground="{DynamicResource TextMuted}"
+                       VerticalAlignment="Center"
+                       TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+
+        <!-- ROW 1: Główny Wyświetlacz -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6">
+
+            <!-- Godzina — duży, dominujący napis -->
+            <TextBlock Text="{Binding FormattedTime}"
+                       FontSize="56" FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimary}"
+                       HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis" />
+
+            <!-- Data — mniejszy, subtelny napis pod godziną -->
+            <TextBlock Text="{Binding FormattedDate}"
+                       FontSize="14"
+                       Foreground="{DynamicResource TextMuted}"
+                       HorizontalAlignment="Center"
+                       TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+
+        <!-- ROW 2: Przyciski Szybkiego Skrótu -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *, *" Margin="0,16,0,0">
+
+            <!-- +1 Godzina -->
+            <Button Grid.Column="0"
+                    Content="+1h"
+                    Command="{Binding AdvanceOneHourCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Margin="0,0,4,0"
+                    ToolTip.Tip="Przesuń czas o 1 godzinę" />
+
+            <!-- +8 Godzin (Długi Odpoczynek) -->
+            <Button Grid.Column="1"
+                    Content="+8h"
+                    Command="{Binding AdvanceLongRestCommand}"
+                    Classes="primary"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Margin="2,0"
+                    ToolTip.Tip="Długi odpoczynek (+8 godzin)" />
+
+            <!-- +1 Dzień -->
+            <Button Grid.Column="2"
+                    Content="+1d"
+                    Command="{Binding AdvanceOneDayCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Margin="4,0,0,0"
+                    ToolTip.Tip="Przesuń czas o 1 dzień" />
+        </Grid>
+    </Grid>
+</UserControl>

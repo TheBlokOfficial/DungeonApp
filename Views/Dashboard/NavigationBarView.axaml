@@ -143,6 +143,18 @@
                     <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="{i18n:Translate ui_settings}" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
+
+            <!-- Przycisk: Workbench (Tylko Deweloper) -->
+            <Button Classes="navButton" Classes.active="{Binding IsSandboxActive}"
+                    IsVisible="{Binding IsSandboxVisible}"
+                    Command="{Binding ShowSandboxCommand}"
+                    BorderThickness="0" CornerRadius="8" FontSize="19" Padding="15" Height="50" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left">
+                <StackPanel Orientation="Horizontal" Spacing="15">
+                    <PathIcon Data="{StaticResource IconEdit}" Width="20" Height="20" Foreground="{DynamicResource AccentGold}" />
+                    <TextBlock Classes="dynamic hidable" Classes.expanded="{Binding IsSidebarExpanded}" Text="Workbench" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondary}" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
     </Border>
 </UserControl>

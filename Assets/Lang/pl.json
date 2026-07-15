@@ -166,5 +166,8 @@
   "Greatclub": "Wielka maczuga",
   "Shortsword": "Krótki miecz",
   "Bite": "Ugryzienie",
-  "Fire Breath": "Zionięcie ogniem"
+  "Fire Breath": "Zionięcie ogniem",
+  "module_testtime_proposal": "Drużyna zakończyła krótki odpoczynek. Doliczyć 1 godzinę do czasu kampanii?",
+  "module_testtime_accept": "Upłynęła 1 godzina.",
+  "module_testtime_reject": "Odrzucono zmianę czasu."
 }

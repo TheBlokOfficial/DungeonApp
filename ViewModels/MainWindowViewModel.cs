@@ -32,14 +32,18 @@ public partial class MainWindowViewModel : ViewModelBase
         get => _dashboardCurrentView;
         set
         {
-            if (SetProperty(ref _dashboardCurrentView, value))
+            if (_dashboardCurrentView != value)
             {
+                _dashboardCurrentView?.OnNavigatedFrom();
+                SetProperty(ref _dashboardCurrentView, value);
+                
                 OnPropertyChanged(nameof(ActiveMainView));
                 OnPropertyChanged(nameof(IsCampaignsActive));
                 OnPropertyChanged(nameof(IsSettingsActive));
                 OnPropertyChanged(nameof(IsCharactersActive));
                 OnPropertyChanged(nameof(IsItemsActive));
                 OnPropertyChanged(nameof(IsAdversariesActive));
+                OnPropertyChanged(nameof(IsSandboxActive));
                 
                 _dashboardCurrentView?.OnNavigatedTo();
             }
@@ -51,6 +55,12 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsCharactersActive => DashboardCurrentView is CharactersTabViewModel;
     public bool IsItemsActive => DashboardCurrentView is ItemsTabViewModel;
     public bool IsAdversariesActive => DashboardCurrentView is AdversariesTabViewModel;
+    public bool IsSandboxActive => DashboardCurrentView is SandboxTabViewModel;
+
+    /// <summary>
+    /// Widoczność przycisku Workbench w pasku bocznym — tylko gdy Tryb Deweloperski jest aktywny.
+    /// </summary>
+    public bool IsSandboxVisible => _settingsService.LoadSettings().IsDeveloperModeEnabled;
 
     public ViewModelBase? ActiveMainView => NavigationService.CurrentView ?? DashboardCurrentView;
 
@@ -128,6 +138,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             var newSettings = _settingsService.LoadSettings();
             UiScale = newSettings.UiScale;
+            OnPropertyChanged(nameof(IsSandboxVisible));
         };
 
         // Ekran ładowania — rozgrzewamy wszystkie widoki ZANIM użytkownik zobaczy interfejs.
@@ -258,5 +269,13 @@ public partial class MainWindowViewModel : ViewModelBase
         UpdateTransition(NavigationIntent.Parallel);
         NavigationService.ClearNavigation(); 
         DashboardCurrentView = App.Current!.Services!.GetRequiredService<SettingsTabViewModel>(); 
+    }
+
+    [RelayCommand]
+    private void ShowSandbox() 
+    { 
+        UpdateTransition(NavigationIntent.Parallel);
+        NavigationService.ClearNavigation(); 
+        DashboardCurrentView = App.Current!.Services!.GetRequiredService<SandboxTabViewModel>(); 
     }
 }
