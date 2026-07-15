@@ -2,50 +2,51 @@
 
 Ten dokument zawiera podsumowanie aktualnego stanu prac, najważniejszych decyzji architektonicznych oraz pomysłów na przyszłość. Służy jako "punkt startowy" dla nowych konwersacji z agentem.
 
-## 1. Ostatnio zaimplementowane funkcje
+## 1. Ostatnia Sesja (Najświeższe Zmiany)
 
-- **Architektura Modułów i Zapisywanie (Persistence)**: 
-  - `ICampaignModule.Initialize` przyjmuje teraz `IStorageService` oraz `CampaignDataPath`.
-  - Moduły same dbają o swój zapis stanu (np. w folderze `modules/Core.Timekeeper.json`). Plik `campaign.json` jest "lekki" i trzyma tylko podstawowe metadane kampanii.
-- **Console Event Bus i Hermetyzacja Konsoli**: 
-  - `ConsoleModule` został zrefaktoryzowany. Posiada teraz własny stan wejścia (`ConsoleInputText`) oraz logikę komend (`ExecuteConsoleCommand`, `AcceptProposal`, `RejectProposal`).
-  - Zamiast ręcznie parsować komendy, emituje zdarzenie `ConsoleCommandEvent` przez wbudowany `IMessenger`. Każdy moduł nasłuchuje szyny.
-  - Interfejs konsoli został wyekstrahowany do w pełni hermetycznego pliku `ConsoleView.axaml` (ze zintegrowanym systemem auto-scroll). Ten sam widok jest renderowany dynamicznie przez `DataTemplate` zarówno w głównej kampanii, jak i w Sandboxie, eliminując całkowicie duplikację kodu UI i logiki.
-- **Timekeeper Module (Czas i Kalendarz)**:
-  - Zbudowany hermetyczny moduł oparty o stały kalendarz fantasy: 12 miesięcy, 30 dni w miesiącu (360 dni w roku).
-  - Posiada obsługę komend: `/time +Xh`, `/time +Xd`, `/time +Xm` itp.
-  - Zbudowano widok `TimekeeperView.axaml` ze wskaźnikami, dynamicznym słońcem/księżycem i przyciskami szybkiego przewijania.
-- **Tryb Deweloperski i Środowisko Sandbox (Workbench)**:
-  - Sandbox korzysta teraz z `Canvas` do bezdrganiowego (anti-jitter) renderowania prototypowanego modułu przy swobodnym resizowaniu panelu przez użytkownika.
-  - Środowisko posiada zakotwiczoną na dole konsolę, która teraz wykorzystuje hermetyczny `ConsoleView` (działa tam m.in. auto-scroll, historia zdarzeń oraz zatwierdzanie akcji z `ProposalEvent`).
-- **Nawigacja i Cykl Życia**:
-  - Implementacja `OnNavigatedTo()` oraz `OnNavigatedFrom()` w `ViewModelBase`. W przypadku `SandboxTabViewModel` usunięto automatyczne zatrzymywanie silnika, dzięki czemu środowisko jest od razu rozgrzane przy przełączeniu zakładki.
+W trakcie ostatniej konwersacji skupiliśmy się na stabilizacji środowiska testowego (Workbench / Sandbox) oraz na ostatecznej hermetyzacji modułu Konsoli:
 
-## 2. Innowacje w Interfejsie Użytkownika
+- **Naprawa wyświetlania Workbenchu (Black Screen i Drżenie)**:
+  - Usunięto błędy parsera Avalonia (WPF-owe nazwy kursorów i wadliwe `RelativeSource`), które powodowały crashe w `FloatingPanel` i renderowanie czarnego ekranu.
+  - Opracowano idealny mechanizm pozycjonowania modułów w Workbenchu przy użyciu `Canvas`. Zamiast używać `HorizontalAlignment="Center"` (co powodowało drżenie UI podczas resize), panel centrowany jest jednorazowo w code-behind (`CenterPanel()`), po czym manipulowana jest tylko jego szerokość/wysokość.
+- **Naprawa cyklu życia silnika w Sandboxie**:
+  - `SandboxTabViewModel` był niszczony (`_engine.StopEngine()`) w trakcie sekwencji rozgrzewkowej (warmup) przy starcie aplikacji. Usunięto Sandbox z sekwencji warmup i zlikwidowano `StopEngine` przy nawigacji, dzięki czemu środowisko w tle żyje cały czas, póki użytkownik korzysta z Workbenchu.
+- **Hermetyzacja ConsoleModule (Wzorzec Architektoniczny)**:
+  - Zidentyfikowano problem duplikacji kodu UI konsoli w kampanii i w workbenchu.
+  - Wyekstrahowano widok z logiką przewijania (auto-scroll) do osobnego pliku `ConsoleView.axaml`.
+  - Logika obsługi komend (`ExecuteConsoleCommand`) oraz zarządzania systemem Propozycji (`AcceptProposal`, `RejectProposal`) została usunięta z ViewModeli (`CampaignDashboardViewModel` i `SandboxTabViewModel`) i w całości zamknięta wewnątrz klasy bazowej modułu `ConsoleModule.cs`.
+  - Obie konsole są teraz wywoływane w sposób czysty przez system `DataTemplate` za pomocą zwykłego `<ContentControl>`.
+
+## 2. Architektura Modułów i Event Bus
+
+- **Całkowita Niezależność (Event Bus)**: Moduły (np. `ConsoleModule`, `TimekeeperModule`) nie wiedzą o swoim istnieniu. Komunikacja odbywa się przez globalną szynę wiadomości (magistralę `CampaignEngine.Messenger`).
+- **Komendy Systemowe**: Konsola nie parsuje komend. Wypluwa na szynę `ConsoleCommandEvent` zawierający surowy tekst (np. `/time +8h`). Odpowiednie moduły nasłuchują na te eventy i decydują o ich odrzuceniu lub wykonaniu akcji.
+- **Zapis Stanu (Persistence)**: Każdy moduł sam implementuje zapis i odczyt z dysku przez `IStorageService`. Główny plik `campaign.json` jest lekki i zawiera tylko metadane.
+
+## 3. Innowacje w Interfejsie Użytkownika
 
 - **Zdarzenia Propozycji (Hover Actions)**: 
-  - Wdrożono koncepcję znaną z Minecrafta (Tellraw / Hover action).
-  - Konsola może renderować `ProposalEvent`, gdzie pojawia się zwykły tekst z ukrytymi/dodanymi przyciskami `[accept]` oraz `[reject]`. Dzięki temu Mistrz Gry nie musi wpisywać `/accept` z palca — wystarczy jedno kliknięcie na log w konsoli.
-- **Safe-Shrink i Wyrównania**: 
-  - Wszystkie widoki stosują blokadę przed "pixel jumpingiem". Zamiast podmieniać XAML, używa się przezroczystości `Opacity="0"` i blokady kliknięć `IsHitTestVisible="False"`.
-  - Stosujemy `TextTrimming="CharacterEllipsis"` w tabelach i `VerticalContentAlignment="Center"` w stylach globalnych kontrolki tekstowej.
+  - Wdrożono koncepcję znaną z Minecrafta (Tellraw / Hover action). Moduł może wyemitować `ProposalEvent`, co sprawia, że w konsoli wyświetlają się przyciski `[accept]` oraz `[reject]`. Kliknięcie na interfejsie automatycznie wykonuje przekazaną przez moduł lambdę (`AcceptAction`), co zwalnia DM'a z konieczności wpisywania np. `/accept` z klawiatury.
+- **Anti Pixel-Jumping**: 
+  - Zamiast podmieniać XAML lub ukrywać widoczność kontrolek, zmieniamy ich `Opacity="0"` oraz `IsHitTestVisible="False"`. Tło i wymiary zostają na swoim miejscu, zachowując żelazną strukturę layoutu.
+  - Stosujemy `TextTrimming="CharacterEllipsis"` w tabelach i `VerticalContentAlignment="Center"` w stylach globalnych.
 
-## 3. Planowane Zadania i Kolejne Kroki (Roadmap)
+## 4. Planowane Zadania i Kolejne Kroki (Roadmap)
 
-1. **Testowanie Systemu Komend w Sandboxie**: 
-   - Moduł konsoli zyskał w Workbenchu pełną funkcjonalność. Można teraz bez problemu testować zaawansowane komendy (jak `/time +8h`) i ich skutki (Pojawienie się propozycji akceptacji) w czasie rzeczywistym na panelu Timekeepera obok.
+1. **Testowanie Timekeepera w Sandboxie**: 
+   - Konieczne jest przetestowanie połączonej integracji `TimekeeperModule` (czasu) wraz z `ConsoleModule` (konsolą) po ostatnich refaktoryzacjach, by upewnić się, że przepływ zdarzeń i komend w sterylnym Sandboxie funkcjonuje w 100% z zamierzeniami projektowymi.
 2. **Kolejne Moduły Kampanii**:
-   - Skoro fundament silnika jest gotowy (zdarzeniowa konsola, niezależny zapis, hermetyczne widoki `XxxView.axaml` wpinane przez DataTemplate i stabilne Sandbox UI), można przejść do wdrażania kolejnych, bardziej złożonych modułów: np. moduł pogody, notatek awaryjnych, czy podwalin pod **Combat Tracker**.
+   - Silnik kampanii jest hermetyczny i w pełni gotowy na przyjmowanie nowych systemów. Najbliższe plany to moduł pogody, system awaryjnych notatek przypinanych, oraz podwaliny pod długo wyczekiwany **Combat Tracker**.
 3. **Pełnoprawny Dashboard**:
-   - `CampaignDashboardView` używa obecnie prostej nakładki kafelkowej (bento-box). Docelowo będzie musiał składać się z w pełni konfigurowalnych kafelków modułów bazujących na `ContentControl` ułatwiającym zarządzanie pozycją danego widoku.
+   - `CampaignDashboardView` używa prostego bento-boxa z testowymi wizytówkami. Trzeba przemyśleć i zaprojektować elastyczny system dynamicznego ładownia kafelków poszczególnych modułów.
 
-## 4. Zasady AI (Przypomnienie reguł `.agents/AGENTS.md`)
+## 5. Zasady AI (Zgodnie z `.agents/AGENTS.md`)
 
-- **Brak Pixel Jumpingu**: Zakaz zamykania i otwierania nowych kontrolek wpływających na rozmiar siatki (np. ukrywanie TextBlock, by pokazać TextBox).
-- **Hermetyczność**: Każdy moduł UI musi być niezależny i możliwy do przetestowania w oknie Workbench bez ładowania całego systemu.
-- **Pancerne Siatki**: Zamiast elastycznych marginów stosować MaxWidth i centralne ułożenie zapobiegające rozciąganiu na monitorach ultrawide. Zakaz używania spacji "Wrap" dla statycznych tekstów (używamy Ellipsis).
+- **Asertywność i Ochrona Architektury**: AI ma nakaz wstrzymywania i sprzeciwiania się poleceniom naruszającym integralność architektoniczną lub stabilność siatki układu (layoutu).
+- **Tryb Operacyjny (Mode-Driven)**: AI musi klasyfikować swoje działania na Tryb Architektoniczny (ARCH), Tryb Szlifowania (POLISH) lub Tryb Szybki (FAST) i zgodnie z nimi generować odpowiednie Plany Implementacji i pliki Task.md.
+- **Dokumentacja Kodu (Why over How)**: Komentarze w XAML i C# mają odpowiadać na pytanie "dlaczego" tak to zbudowano, aby zapobiec modyfikacjom "psującym" np. dedykowaną logikę pozycjonowania (Canvas).
 
 ---
 
 > **Instrukcja dla Agenta startującego z tym plikiem:** 
-> Przeanalizuj powyższy stan. Następnie zapytaj użytkownika, czym chcemy się zająć w tej sesji (np. nowe moduły, dalszy szlif UI, debugowanie).
+> Przeanalizuj powyższy stan z naciskiem na Sekcję 1 (Ostatnia Sesja). Zapytaj użytkownika, czym chce się teraz zająć – prawdopodobnie testowaniem Sandboxa, nowymi modułami lub pracą nad głównym Dashboardem kampanii.
