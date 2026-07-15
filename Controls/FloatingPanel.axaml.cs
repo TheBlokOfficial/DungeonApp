@@ -138,11 +138,14 @@ public partial class FloatingPanel : UserControl
         e.Handled = true;
     }
 
+    public event EventHandler? ResizeCompleted;
+
     private void ResizeGrip_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         _isResizing = false;
         e.Pointer.Capture(null);
         e.Handled = true;
+        ResizeCompleted?.Invoke(this, EventArgs.Empty);
     }
 
     // ─── Pomocniki UI ─────────────────────────────────────────────────────────

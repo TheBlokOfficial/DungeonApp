@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Controls.AnimatedFeedList">
+
+    <!--
+        DLACZEGO sam Canvas bez żadnych dzieci w XAML:
+        Elementy listy są tworzone i pozycjonowane programatycznie w code-behind
+        (AddItem). Tylko tak możemy animować Canvas.Top każdego elementu
+        indywidualnie przy dodaniu nowego wpisu (push-up + slide-in).
+        Deklaratywny XAML nie pozwala na dynamiczne wartości offsetu animacji
+        zależne od zmierzonej wysokości nowego elementu (DesiredSize).
+    -->
+    <Canvas x:Name="FeedCanvas" ClipToBounds="True" />
+
+</UserControl>

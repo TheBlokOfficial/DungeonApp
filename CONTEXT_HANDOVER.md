@@ -4,18 +4,25 @@ Ten dokument zawiera podsumowanie aktualnego stanu prac, najważniejszych decyzj
 
 ## 1. Ostatnia Sesja (Najświeższe Zmiany)
 
-W trakcie ostatniej konwersacji skupiliśmy się na stabilizacji środowiska testowego (Workbench / Sandbox) oraz na ostatecznej hermetyzacji modułu Konsoli:
+W trakcie tej sesji skupiliśmy się na szlifowaniu Workbenchu i wdrożeniu animowanej konsoli (POLISH MODE + ARCH MODE):
 
-- **Naprawa wyświetlania Workbenchu (Black Screen i Drżenie)**:
-  - Usunięto błędy parsera Avalonia (WPF-owe nazwy kursorów i wadliwe `RelativeSource`), które powodowały crashe w `FloatingPanel` i renderowanie czarnego ekranu.
-  - Opracowano idealny mechanizm pozycjonowania modułów w Workbenchu przy użyciu `Canvas`. Zamiast używać `HorizontalAlignment="Center"` (co powodowało drżenie UI podczas resize), panel centrowany jest jednorazowo w code-behind (`CenterPanel()`), po czym manipulowana jest tylko jego szerokość/wysokość.
-- **Naprawa cyklu życia silnika w Sandboxie**:
-  - `SandboxTabViewModel` był niszczony (`_engine.StopEngine()`) w trakcie sekwencji rozgrzewkowej (warmup) przy starcie aplikacji. Usunięto Sandbox z sekwencji warmup i zlikwidowano `StopEngine` przy nawigacji, dzięki czemu środowisko w tle żyje cały czas, póki użytkownik korzysta z Workbenchu.
-- **Hermetyzacja ConsoleModule (Wzorzec Architektoniczny)**:
-  - Zidentyfikowano problem duplikacji kodu UI konsoli w kampanii i w workbenchu.
-  - Wyekstrahowano widok z logiką przewijania (auto-scroll) do osobnego pliku `ConsoleView.axaml`.
-  - Logika obsługi komend (`ExecuteConsoleCommand`) oraz zarządzania systemem Propozycji (`AcceptProposal`, `RejectProposal`) została usunięta z ViewModeli (`CampaignDashboardViewModel` i `SandboxTabViewModel`) i w całości zamknięta wewnątrz klasy bazowej modułu `ConsoleModule.cs`.
-  - Obie konsole są teraz wywoływane w sposób czysty przez system `DataTemplate` za pomocą zwykłego `<ContentControl>`.
+- **Workbench – usunięcie czarnego tła**:
+  - Usunięto `Border` z tłem `#0A0A0A` otaczający Canvas w `SandboxTabView.axaml`.
+  - `FloatingPanel` (moduł) wisi teraz bezpośrednio na szarym tle aplikacji bez dodatkowego "pudełka".
+
+- **Workbench – centrowanie po resize modułu**:
+  - `FloatingPanel` nie centrował się po przeciągnięciu uchwytu resize (trójkąt ◢).
+  - Dodano zdarzenie `ResizeCompleted` w `FloatingPanel.axaml.cs`, emitowane po `PointerReleased`.
+  - `SandboxTabView.axaml.cs` subskrybuje `ResizeCompleted` i wywołuje `CenterPanel()` — moduł centruje się po każdym resize.
+
+- **Animowana konsola (`AnimatedFeedList`) — efekt ChatAnimation**:
+  - Stworzono nową kontrolkę `Controls/AnimatedFeedList.axaml` + `.axaml.cs`.
+  - Nowy log "wjeżdża" z dołu (slide-in + fade-in), a istniejące logi płynnie przesuwają się ku górze (push-up) — wzorowane na mod Minecraft Ezzenix/ChatAnimation.
+  - **Architektura**: Canvas z ręcznym zarządzaniem pozycjami przez code-behind. `Canvas.Top` ustawiany raz na finalną wartość; animacje wyłącznie na `TranslateTransform.Y` + `Opacity` przez system `Transitions` (nie `Animation.RunAsync`, który crashuje na nie-Visual).
+  - **Kluczowa naprawa ghostingu**: Guard `_subscribedCollection` + `UnsubscribeFromCurrent()` eliminuje podwójną subskrypcję `CollectionChanged` (która wcześniej powodowała, że `AddItem` wywoływano dwa razy per log).
+  - **Dwuetapowy dispatch**: Element dodawany niewidocznie (`Opacity=0`, `Top=-9999`) → Canvas mierzy go w tle → `DispatcherPriority.Background` odczytuje `DesiredSize` i startuje animacje. Unika ręcznego `Arrange()`, który powodował ghosting.
+  - Stworzono `Views/Campaigns/Modules/Templates/ConsoleTemplateFactory.cs` — fabryka C# budująca widoki dla `NotificationEvent` i `ProposalEvent` (wymagana przez `FuncDataTemplate` w `AnimatedFeedList`).
+  - `ConsoleView.axaml` i `.axaml.cs` zaktualizowane: `ScrollViewer+ItemsControl` zastąpiony przez `<controls:AnimatedFeedList>`, stary auto-scroll usunięty.
 
 ## 2. Architektura Modułów i Event Bus
 
@@ -25,28 +32,47 @@ W trakcie ostatniej konwersacji skupiliśmy się na stabilizacji środowiska tes
 
 ## 3. Innowacje w Interfejsie Użytkownika
 
-- **Zdarzenia Propozycji (Hover Actions)**: 
-  - Wdrożono koncepcję znaną z Minecrafta (Tellraw / Hover action). Moduł może wyemitować `ProposalEvent`, co sprawia, że w konsoli wyświetlają się przyciski `[accept]` oraz `[reject]`. Kliknięcie na interfejsie automatycznie wykonuje przekazaną przez moduł lambdę (`AcceptAction`), co zwalnia DM'a z konieczności wpisywania np. `/accept` z klawiatury.
-- **Anti Pixel-Jumping**: 
-  - Zamiast podmieniać XAML lub ukrywać widoczność kontrolek, zmieniamy ich `Opacity="0"` oraz `IsHitTestVisible="False"`. Tło i wymiary zostają na swoim miejscu, zachowując żelazną strukturę layoutu.
-  - Stosujemy `TextTrimming="CharacterEllipsis"` w tabelach i `VerticalContentAlignment="Center"` w stylach globalnych.
+- **Animowane Logi Konsoli (ChatAnimation)**:
+  - Każdy nowy log wjeżdża z dołu ze slide-in + fade-in, a stare logi płynnie przesuwają się ku górze.
+  - Czysto wizualne animacje (RenderTransform) — brak wpływu na layout.
+  - Logi **nie** blaknią — świadoma decyzja: konsola jest aktywnym narzędziem DM-a, nie pływającym chatem.
+
+- **Zdarzenia Propozycji (Hover Actions)**:
+  - Wdrożono koncepcję Tellraw / Hover action. Moduł może wyemitować `ProposalEvent`, co sprawia, że w konsoli wyświetlają się przyciski `[accept]` oraz `[reject]`.
+  - Kliknięcie automatycznie wykonuje przekazaną lambdę (`AcceptAction`), zwalniając DM-a z wpisywania komend.
+
+- **Anti Pixel-Jumping**:
+  - `Opacity=0` + `IsHitTestVisible=False` zamiast `IsVisible=False` dla zachowania wymiarów layoutu.
+  - `TextTrimming="CharacterEllipsis"` w tabelach.
+  - `VerticalContentAlignment="Center"` w globalnych stylach.
+
+- **Workbench / FloatingPanel**:
+  - Moduł pozycjonowany przez `Canvas.SetLeft/Top` (jednorazowo w `CenterPanel()`), nie przez `HorizontalAlignment="Center"` — zapobiega drżeniu podczas resize.
+  - Po każdym resize modułu (zdarzenie `ResizeCompleted`) panel re-centruje się automatycznie.
 
 ## 4. Planowane Zadania i Kolejne Kroki (Roadmap)
 
-1. **Testowanie Timekeepera w Sandboxie**: 
-   - Konieczne jest przetestowanie połączonej integracji `TimekeeperModule` (czasu) wraz z `ConsoleModule` (konsolą) po ostatnich refaktoryzacjach, by upewnić się, że przepływ zdarzeń i komend w sterylnym Sandboxie funkcjonuje w 100% z zamierzeniami projektowymi.
+1. **Testowanie Timekeepera w Sandboxie**:
+   - Przetestowanie połączonej integracji `TimekeeperModule` (czasu) z nową animowaną `ConsoleModule` (konsolą) po wszystkich refaktoryzacjach.
+
 2. **Kolejne Moduły Kampanii**:
-   - Silnik kampanii jest hermetyczny i w pełni gotowy na przyjmowanie nowych systemów. Najbliższe plany to moduł pogody, system awaryjnych notatek przypinanych, oraz podwaliny pod długo wyczekiwany **Combat Tracker**.
+   - Silnik kampanii jest hermetyczny i w pełni gotowy na nowe systemy.
+   - Kolejne w kolejce: moduł pogody, system awaryjnych notatek przypinanych, **Combat Tracker** (długo wyczekiwany).
+
 3. **Pełnoprawny Dashboard**:
-   - `CampaignDashboardView` używa prostego bento-boxa z testowymi wizytówkami. Trzeba przemyśleć i zaprojektować elastyczny system dynamicznego ładownia kafelków poszczególnych modułów.
+   - `CampaignDashboardView` używa prostego bento-boxa z testowymi wizytówkami.
+   - Do przemyślenia: elastyczny system dynamicznego ładowania kafelków poszczególnych modułów.
+
+4. **Drobne sprzątanie ostrzeżeń**:
+   - 6 ostrzeżeń `AVLN5001` w `CharacterDetailView`, `CreateCharacterView`, `CreateSessionView` — `Watermark` → `PlaceholderText` (drobne, FAST MODE).
 
 ## 5. Zasady AI (Zgodnie z `.agents/AGENTS.md`)
 
-- **Asertywność i Ochrona Architektury**: AI ma nakaz wstrzymywania i sprzeciwiania się poleceniom naruszającym integralność architektoniczną lub stabilność siatki układu (layoutu).
-- **Tryb Operacyjny (Mode-Driven)**: AI musi klasyfikować swoje działania na Tryb Architektoniczny (ARCH), Tryb Szlifowania (POLISH) lub Tryb Szybki (FAST) i zgodnie z nimi generować odpowiednie Plany Implementacji i pliki Task.md.
-- **Dokumentacja Kodu (Why over How)**: Komentarze w XAML i C# mają odpowiadać na pytanie "dlaczego" tak to zbudowano, aby zapobiec modyfikacjom "psującym" np. dedykowaną logikę pozycjonowania (Canvas).
+- **Asertywność i Ochrona Architektury**: AI ma nakaz wstrzymywania i sprzeciwiania się poleceniom naruszającym integralność architektoniczną lub stabilność siatki layoutu.
+- **Tryb Operacyjny (Mode-Driven)**: AI musi klasyfikować działania na ARCH / POLISH / FAST i odpowiednio generować Plany Implementacji i pliki Task.md.
+- **Dokumentacja Kodu (Why over How)**: Komentarze w XAML i C# odpowiadają na "dlaczego" tak to zbudowano.
 
 ---
 
-> **Instrukcja dla Agenta startującego z tym plikiem:** 
-> Przeanalizuj powyższy stan z naciskiem na Sekcję 1 (Ostatnia Sesja). Zapytaj użytkownika, czym chce się teraz zająć – prawdopodobnie testowaniem Sandboxa, nowymi modułami lub pracą nad głównym Dashboardem kampanii.
+> **Instrukcja dla Agenta startującego z tym plikiem:**
+> Przeanalizuj powyższy stan z naciskiem na Sekcję 1 (Ostatnia Sesja). Zapytaj użytkownika, czym chce się teraz zająć — prawdopodobnie testowaniem Sandboxa z nową animowaną konsolą, nowymi modułami (Combat Tracker?) lub sprzątaniem ostrzeżeń Watermark.

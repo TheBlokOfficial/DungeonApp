@@ -25,6 +25,10 @@ public partial class SandboxTabView : UserControl
         var canvas = this.FindControl<Canvas>("WorkCanvas");
         if (canvas is not null)
             canvas.SizeChanged += WorkCanvas_SizeChanged;
+
+        var panel = this.FindControl<FloatingPanel>("ModulePanel");
+        if (panel is not null)
+            panel.ResizeCompleted += (s, e) => CenterPanel();
     }
 
     private void WorkCanvas_SizeChanged(object? sender, SizeChangedEventArgs e)
