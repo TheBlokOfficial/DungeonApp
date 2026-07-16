@@ -79,5 +79,6 @@
   "ui_stat_int": "INT",
   "ui_stat_wis": "MĄD",
   "ui_stat_cha": "CHA",
-  "ui_stat_actions": "Akcje"
+  "ui_stat_actions": "Akcje",
+  "console_placeholder": "Wpisz komend\u0119 (np. /time +8h)..."
 }

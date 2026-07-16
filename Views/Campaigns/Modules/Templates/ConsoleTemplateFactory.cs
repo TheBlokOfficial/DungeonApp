@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Controls.Documents;
 using DungeonApp.Models.Campaigns.Engine.Events;
 using DungeonApp.Models.Campaigns.Engine.Modules.Core;
 
@@ -30,40 +31,33 @@ public static class ConsoleTemplateFactory
     /// </summary>
     public static Control BuildNotificationView(NotificationEvent notification)
     {
-        var panel = new StackPanel
-        {
-            Orientation = Orientation.Horizontal,
-            Spacing = 10,
-            Margin = new Avalonia.Thickness(0, 3)
-        };
-
         if (notification.SenderModuleId == "DM")
         {
-            // Notatka od Mistrza Gry — czysta, bez tagów systemowych
-            panel.Children.Add(new TextBlock
-            {
-                Text = ">",
-                Foreground = Brushes.DimGray,
-                FontWeight = FontWeight.Bold,
-                VerticalAlignment = VerticalAlignment.Center
-            });
+            var textBlock = new SelectableTextBlock 
+            { 
+                TextWrapping = TextWrapping.Wrap, 
+                Margin = new Avalonia.Thickness(0, 3) 
+            };
 
-            panel.Children.Add(new TextBlock
-            {
-                Text = notification.Message,
-                TextWrapping = TextWrapping.Wrap,
-                Foreground = Brushes.LightGray,
-                VerticalAlignment = VerticalAlignment.Center
-            });
+            textBlock.Inlines?.Add(new Run { Text = "> ", Foreground = Brushes.DimGray, FontWeight = FontWeight.Bold });
+            textBlock.Inlines?.Add(new Run { Text = notification.Message, Foreground = Brushes.LightGray });
+
+            return textBlock;
         }
         else
         {
+            var textBlock = new SelectableTextBlock 
+            { 
+                TextWrapping = TextWrapping.Wrap, 
+                Margin = new Avalonia.Thickness(0, 3) 
+            };
+
             // Komunikat Systemowy / Z modułu
             string levelText = notification.Level switch
             {
-                "Warning" => "[WARN]",
-                "Error" => "[ERROR]",
-                _ => "[INFO]"
+                "Warning" => "[WARN] ",
+                "Error" => "[ERROR] ",
+                _ => "[INFO] "
             };
 
             IBrush levelBrush = notification.Level switch
@@ -73,30 +67,12 @@ public static class ConsoleTemplateFactory
                 _ => Brushes.DimGray
             };
 
-            panel.Children.Add(new TextBlock
-            {
-                Text = levelText,
-                Foreground = levelBrush,
-                FontWeight = FontWeight.Bold,
-                VerticalAlignment = VerticalAlignment.Center
-            });
+            textBlock.Inlines?.Add(new Run { Text = levelText, Foreground = levelBrush, FontWeight = FontWeight.Bold });
+            textBlock.Inlines?.Add(new Run { Text = $"[{TranslateModuleName(notification.SenderModuleId)}] ", Foreground = Brushes.DimGray });
+            textBlock.Inlines?.Add(new Run { Text = notification.Message });
 
-            panel.Children.Add(new TextBlock
-            {
-                Text = $"[{TranslateModuleName(notification.SenderModuleId)}]",
-                Foreground = Brushes.DimGray,
-                VerticalAlignment = VerticalAlignment.Center
-            });
-
-            panel.Children.Add(new TextBlock
-            {
-                Text = notification.Message,
-                TextWrapping = TextWrapping.Wrap,
-                VerticalAlignment = VerticalAlignment.Center
-            });
+            return textBlock;
         }
-
-        return panel;
     }
 
     /// <summary>
@@ -111,20 +87,20 @@ public static class ConsoleTemplateFactory
     {
         var panel = new WrapPanel { Margin = new Avalonia.Thickness(0, 5) };
 
-        panel.Children.Add(new TextBlock
+        panel.Children.Add(new SelectableTextBlock
         {
             Text = "[PROPOSAL] ",
             Foreground = new SolidColorBrush(Color.Parse("#C9A84C")), // AccentGold
             FontWeight = FontWeight.Bold
         });
 
-        panel.Children.Add(new TextBlock
+        panel.Children.Add(new SelectableTextBlock
         {
             Text = $"[{TranslateModuleName(proposal.SenderModuleId)}] ",
             Foreground = Brushes.DimGray
         });
 
-        panel.Children.Add(new TextBlock
+        panel.Children.Add(new SelectableTextBlock
         {
             Text = proposal.Description + " ",
             TextWrapping = TextWrapping.Wrap

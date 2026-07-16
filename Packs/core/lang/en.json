@@ -77,5 +77,6 @@
   "ui_stat_int": "INT",
   "ui_stat_wis": "WIS",
   "ui_stat_cha": "CHA",
-  "ui_stat_actions": "Actions"
+  "ui_stat_actions": "Actions",
+  "console_placeholder": "Enter command (e.g., /time +8h)..."
 }

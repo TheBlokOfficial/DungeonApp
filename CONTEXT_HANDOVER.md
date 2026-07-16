@@ -1,77 +1,70 @@
-# Kontekst Projektu: DungeonApp (Handover)
+# CONTEXT HANDOVER: System Konsoli, Komend i Animowanego Feedu
+**Data utworzenia raportu:** Bieżąca sesja implementacyjna
 
-Ten dokument zawiera podsumowanie aktualnego stanu prac, najważniejszych decyzji architektonicznych oraz pomysłów na przyszłość. Służy jako "punkt startowy" dla nowych konwersacji z agentem.
+## 1. Wstęp i Główne Założenia
+Wdrożony system Konsoli stanowi teraz jedną z najbardziej zaawansowanych i dopracowanych osi komunikacyjnych w aplikacji *DungeonApp*. Naszym celem było stworzenie rozwiązania przypominającego nowoczesne systemy z silników gier (np. Unreal Engine) czy profesjonalnych VTT, które oferuje m.in. płynne animacje, inteligentne autouzupełnianie w stylu Minecrafta (Brigadier), pełną modularność oraz elegancki UX pozbawiony typowych wad interfejsów desktopowych.
 
-## 1. Ostatnia Sesja (Najświeższe Zmiany)
-
-W trakcie tej sesji skupiliśmy się na szlifowaniu interfejsu i umiędzynarodowieniu (i18n) istniejących modułów (tryb POLISH/FAST MODE):
-
-- **Tłumaczenie (i18n) dla Console i Timekeeper**:
-  - `TimekeeperModule`: Zastąpiono "hardkodowane" polskie komunikaty w kodzie C# użyciem metody `Translate()`. Data, czas i błędy są formowane dynamicznie przez `string.Format`. Dodano odpowiednie klucze do plików `pl.json` i `en.json`.
-  - `ConsoleTemplateFactory`: Wdrożono dynamiczne tłumaczenie identyfikatorów modułów (`SenderModuleId`). Kodowe nazwy jak `Core.Timekeeper` są teraz przechwytywane i tłumaczone na czytelne nazwy (np. `[CZAS & KALENDARZ]`).
-
-- **Unifikacja nagłówków paneli modułów**:
-  - Utworzono uniwersalne style XAML w `CommonStyles.axaml`: klasa `StackPanel.moduleHeader` dla układu oraz `TextBlock.moduleHeaderLabel` dla typografii (FontSize 12, Bold, LetterSpacing 2).
-  - Wyczyszczono XAML w `TimekeeperView` oraz `ConsoleView` z inline-atrybutów, przypinając je do scentralizowanych klas. Zapewni to 100% spójności dla wszystkich nowych modułów (np. Combat Trackera).
-  - Teksty w nagłówkach również przeszły pod kontrolę `i18n:Translate`.
-
-- **Logika powiadomień w Konsoli**:
-  - Usunięto błąd, w którym każdy komunikat był poprzedzony sztywnym przedrostkiem `[INFO]`. 
-  - Wdrożono wizualną separację poziomów logowania (`Level` z `NotificationEvent`):
-    - `Warning` -> `[WARN]` (żółty)
-    - `Error` -> `[ERROR]` (czerwony)
-    - Puste (lub `Info`) -> `[INFO]` (szary)
-  - Notatki wpisywane ręcznie przez Mistrza Gry (DM) nie posiadają już tagów systemowych. Otrzymały formę "lini czasu" ze znacznikiem `>` i wyróżniającym się jasnoszarym kolorem tekstu.
-
-- **Drobne porządki kompilatora**:
-  - Poprawiono 6 ostrzeżeń `AVLN5001` we wszystkich widokach (`CharacterDetailView`, `CreateCharacterView`, `CreateSessionView`) zamieniając przestarzały atrybut `TextBox.Watermark` na `PlaceholderText`.
-
-## 2. Architektura Modułów i Event Bus
-
-- **Całkowita Niezależność (Event Bus)**: Moduły (np. `ConsoleModule`, `TimekeeperModule`) nie wiedzą o swoim istnieniu. Komunikacja odbywa się przez globalną szynę wiadomości (magistralę `CampaignEngine.Messenger`).
-- **Komendy Systemowe**: Konsola nie parsuje komend. Wypluwa na szynę `ConsoleCommandEvent` zawierający surowy tekst (np. `/time +8h`). Odpowiednie moduły nasłuchują na te eventy i decydują o ich odrzuceniu lub wykonaniu akcji.
-- **Zapis Stanu (Persistence)**: Każdy moduł sam implementuje zapis i odczyt z dysku przez `IStorageService`. Główny plik `campaign.json` jest lekki i zawiera tylko metadane.
-
-## 3. Innowacje w Interfejsie Użytkownika
-
-- **Animowane Logi Konsoli (ChatAnimation)**:
-  - Każdy nowy log wjeżdża z dołu ze slide-in + fade-in, a stare logi płynnie przesuwają się ku górze.
-  - Czysto wizualne animacje (RenderTransform) — brak wpływu na layout.
-  - Logi **nie** blaknią — świadoma decyzja: konsola jest aktywnym narzędziem DM-a, nie pływającym chatem.
-
-- **Zdarzenia Propozycji (Hover Actions)**:
-  - Wdrożono koncepcję Tellraw / Hover action. Moduł może wyemitować `ProposalEvent`, co sprawia, że w konsoli wyświetlają się przyciski `[accept]` oraz `[reject]`.
-  - Kliknięcie automatycznie wykonuje przekazaną lambdę (`AcceptAction`), zwalniając DM-a z wpisywania komend.
-
-- **Anti Pixel-Jumping**:
-  - `Opacity=0` + `IsHitTestVisible=False` zamiast `IsVisible=False` dla zachowania wymiarów layoutu.
-  - `TextTrimming="CharacterEllipsis"` w tabelach.
-  - `VerticalContentAlignment="Center"` w globalnych stylach.
-
-- **Workbench / FloatingPanel**:
-  - Moduł pozycjonowany przez `Canvas.SetLeft/Top` (jednorazowo w `CenterPanel()`), nie przez `HorizontalAlignment="Center"` — zapobiega drżeniu podczas resize.
-  - Po każdym resize modułu (zdarzenie `ResizeCompleted`) panel re-centruje się automatycznie.
-
-## 4. Planowane Zadania i Kolejne Kroki (Roadmap)
-
-1. **Testowanie Timekeepera w Sandboxie**:
-   - Przetestowanie połączonej integracji `TimekeeperModule` (czasu) z nową animowaną `ConsoleModule` (konsolą) po wszystkich refaktoryzacjach.
-
-2. **Kolejne Moduły Kampanii**:
-   - Silnik kampanii jest hermetyczny i w pełni gotowy na nowe systemy.
-   - Kolejne w kolejce: moduł pogody, system awaryjnych notatek przypinanych, **Combat Tracker** (długo wyczekiwany).
-
-3. **Pełnoprawny Dashboard**:
-   - `CampaignDashboardView` używa prostego bento-boxa z testowymi wizytówkami.
-   - Do przemyślenia: elastyczny system dynamicznego ładowania kafelków poszczególnych modułów.
-
-## 5. Zasady AI (Zgodnie z `.agents/AGENTS.md`)
-
-- **Asertywność i Ochrona Architektury**: AI ma nakaz wstrzymywania i sprzeciwiania się poleceniom naruszającym integralność architektoniczną lub stabilność siatki layoutu.
-- **Tryb Operacyjny (Mode-Driven)**: AI musi klasyfikować działania na ARCH / POLISH / FAST i odpowiednio generować Plany Implementacji i pliki Task.md.
-- **Dokumentacja Kodu (Why over How)**: Komentarze w XAML i C# odpowiadają na "dlaczego" tak to zbudowano.
+Poniższy raport to tytaniczne podsumowanie wszystkich decyzji architektonicznych, naprawionych problemów oraz detali technicznych.
 
 ---
 
-> **Instrukcja dla Agenta startującego z tym plikiem:**
-> Przeanalizuj powyższy stan z naciskiem na Sekcję 1 (Ostatnia Sesja). Zapytaj użytkownika, czym chce się teraz zająć — prawdopodobnie testowaniem Sandboxa z nową animowaną konsolą, nowymi modułami (Combat Tracker?) lub sprzątaniem ostrzeżeń Watermark.
+## 2. Architektura Silnika Komend (Autocomplete Engine)
+
+### 2.1 Wzorzec Drzewa (CommandTree) i Walidacja (Brigadier)
+Silnik został oparty na strukturze drzewiastej, gdzie każdy węzeł (`CommandNode`) definiuje poprawność danego argumentu.
+- **Typy argumentów:** Zaimplementowano specjalistyczne parsery: `Literal` (stałe słowa), `String` (ciągi znaków), `Number`, `Enum` (wybór ze zdefiniowanej listy) oraz wybitnie elastyczny `TimeArgumentType` (obsługujący zapisy w stylu `10s`, `5m`, `2h`, `1d` z przeliczaniem na sekundy).
+- **Zasada działania:** Podczas wpisywania każdego znaku, silnik iteruje po drzewie komend, walidując poszczególne fragmenty tekstu (tzw. "tokeny").
+- **Ghost Text:** W locie podpowiada szary tekst (pierwszą pasującą komendę/argument), dając użytkownikowi wizualny znak, jakiej składni system się aktualnie spodziewa. Autouzupełnianie zatwierdzane jest klawiszem `Tab`.
+- **Syntax Highlighting:** Wyodrębniono osobną klasę wspomagającą, która dynamicznie nadaje kolory (czerwony na błędy, zielony dla liczb, niebieski/żółty na literały) poszczególnym słowom wpisywanym w pole poleceń.
+
+### 2.2 Automatyzacja Nadawców (OwnerModuleId)
+Aby całkowicie odciążyć twórców nowych modułów od pamiętania o przedrostkach, zbudowano inteligentny system śledzenia własności komend:
+1. Podczas inicjalizacji, np. `TimekeeperModule` (o ModuleId: `"Core.Timekeeper"`) wysyła `RegisterCommandEvent`.
+2. Odbierając to, system na stałe nakleja na główny węzeł drzewa komendy "pieczątkę" właściciela (`OwnerModuleId`).
+3. Gdy komenda zostaje wykonana poprawnie, system łapie wygenerowany przez nią rezultat, automatycznie wstrzykuje do niego ten zapamiętany identyfikator i przesyła dalej na magistralę.
+
+### 2.3 Wymuszenie Informacji Zwrotnej (CommandResult)
+- Wdrożono *Compiler-Driven Design*. Zamiast polegać na pustej akcji, interfejs komendy `.Executes(Func<CommandContext, CommandResult>)` wymusza na programiście zwrócenie konkretnego obiektu wyniku (Sukces, Błąd, Info, lub zadeklarowany Silent). Zapobiega to usterce zwanej "cichym wykonaniem", gdzie użytkownik po wpisaniu komendy nie otrzymywał żadnego wizualnego potwierdzenia.
+
+---
+
+## 3. Renderowanie UI: Fabryka i Inlines
+
+### 3.1 Fabryka Widoków (ConsoleTemplateFactory)
+Zamiast tradycyjnych (i często ograniczonych) szablonów `DataTemplate` w XAML, logi konsoli budowane są całkowicie programatycznie w klasie pomocniczej z użyciem C#. 
+Daje to gigantyczną przewagę przy dynamicznej kreacji rzadkich elementów (takich jak `ProposalEvent` zawierający klikalne przyciski `[accept]` / `[reject]`, które bindują się wprost pod komendy w `ConsoleModule`).
+
+### 3.2 Zaznaczalność i Inlines
+Początkowo prefixy i właściwe komunikaty były umieszczane w oddzielnych kolumnach systemowego `Grid`. Generowało to "efekt blokowy" i uniemożliwiało płynne kopiowanie tekstu myszką.
+- **Rozwiązanie:** Zastąpiono `Grid` pojedynczą kontrolką `SelectableTextBlock` należącą do Avalonii (wsparcie dla tekstu zaznaczalnego). Poszczególne kolorowe tagi (np. `[INFO]`, `[Timekeeper]`) są wpychane do kontrolki jako wstawki typu `Run`. Efekt to wizualnie trójkolorowy log, który można skopiować jednym prostym przeciągnięciem kursora!
+
+---
+
+## 4. Animacje i "Pancerny" Layout (AnimatedFeedList)
+
+### 4.1 Efekt Wypychania (Minecraft Chat-Style)
+Konsola nie jest nudną listą dodającą itemy na końcu kontrolki `ListBox`. To dedykowana kontrolka oparta o obszar `Canvas`.
+- Każdy dodawany log renderowany jest najpierw poza ekranem dla pobrania jego wymiarów (DesiredSize).
+- Następnie, za sprawą dedykowanych tranzycji (`DoubleTransition` z krzywą `CubicEaseOut`), wszystkie obecne w konsoli logi są płynnie przesuwane do góry dokładnie o wymiar nowego wpisu, podczas gdy on sam "wyjeżdża" od dołu, przechodząc z `Opacity 0` do `Opacity 1`.
+
+### 4.2 Złoty Kompromis (Brak Multi-log Select)
+Ze względu na architekturę fizycznie odseparowanych elementów na obszarze Canvas, niemożliwe jest natywne przeciągnięcie zaznaczenia myszką z jednego logu do drugiego. 
+- Po konsultacji podjęliśmy świadomą decyzję (Opcja A), stawiając rewelacyjne UX animacji ponad możliwość kopiowania wielu logów naraz, co jest nieznacznym "podatkiem" za innowacyjność tego interfejsu.
+
+### 4.3 Pływający pasek wpisywania i TextWrapping
+W ramach szlifowania UI, rozwiązano problem nieestetycznego chowania się tekstu poza krawędzie:
+1. Trójwarstwowa struktura wprowadzania tekstu (Ghost, Składnia, Rzeczywisty kursor) została opakowana wspólnym wertykalnym kontenerem `ScrollViewer` z parametrem `MaxHeight="120"`.
+2. Zastosowano `TextWrapping="Wrap"` i wertykalne równanie do góry. Skutkuje to tym, że przy bardzo długich komendach pole delikatnie zwiększa swoją wysokość o kolejne linijki (niczym w najlepszych komunikatorach biznesowych).
+3. **Genialna synergia DeltaY:** Na obiekcie `AnimatedFeedList` podpięto nasłuchiwanie na `BoundsProperty`. Gdy wpisujesz nową linię tekstu i pasek konsoli puchnie w górę (zmniejszając wysokość przydzieloną na Canvas), silnik natychmiast kalkuluje ubytki przestrzeni (`deltaY`) i błyskawicznie przesuwa wygenerowane wcześniej animowane logi do góry, zapobiegając ich przysłanianiu przez podnoszący się pasek wpisywania.
+
+---
+
+## 5. Implementacja Modułu Czasu (TimekeeperModule)
+Kompletne przepisanie interakcji czasowych z pominięciem starych mechanizmów:
+- Usunięto niepożądaną komendę `set` chroniąc strukturę chronologiczną kampanii.
+- Utworzono intuicyjne polecenie `/time add <wartość_czasowa>` (np. `/time add 4d`), które perfekcyjnie mapuje się z `TimeArgumentType` zamieniając wejście na bezwzględne sekundy, a następnie odpalając silnikową metodę `AdvanceTime(minutes)`.
+- Metoda `AdvanceTime` w ułamku sekundy kaskadowo przelicza minuty, godziny i dni według autorskiego kalendarza Fantasy, zapisuje je trwale na dysku i wymusza odświeżenie UI zegarka widocznego w pasku bocznym gry.
+- Dodano `/time query` — bezinwazyjną komendę diagnostyczną dla MG.
+
+## Podsumowanie i Wizja
+Mechanizm Konsoli stanowi od teraz kompletny, "strzeloodporny" fundament. Użytkownicy otrzymują wbudowany system edukacji w czasie rzeczywistym (Ghost Text), błyskawiczną interakcję oraz satysfakcjonujący feedback wizualny, podczas gdy przyszli twórcy modułów zostali wyzwoleni od konieczności obsługi złożonego boilerplate'u i walidacji tekstu – wszystkim tym zajmuje się Magistrala!

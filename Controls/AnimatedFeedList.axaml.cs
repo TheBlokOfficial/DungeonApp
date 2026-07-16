@@ -118,6 +118,21 @@ public partial class AnimatedFeedList : UserControl
             UnsubscribeFromCurrent();
             SubscribeToCollection(change.NewValue as IList);
         }
+        else if (change.Property == BoundsProperty)
+        {
+            var oldBounds = change.GetOldValue<Rect>();
+            var newBounds = change.GetNewValue<Rect>();
+            
+            double deltaY = oldBounds.Height - newBounds.Height;
+            if (deltaY != 0 && _canvas != null)
+            {
+                foreach (var p in _presenters)
+                {
+                    double currentTop = Canvas.GetTop(p);
+                    Canvas.SetTop(p, currentTop - deltaY);
+                }
+            }
+        }
     }
 
     private void SubscribeToCollection(IList? collection)

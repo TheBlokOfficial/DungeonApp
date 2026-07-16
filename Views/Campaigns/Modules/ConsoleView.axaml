@@ -4,6 +4,7 @@
              xmlns:module="using:DungeonApp.Models.Campaigns.Engine.Modules.Core"
              xmlns:controls="using:DungeonApp.Controls"
              xmlns:i18n="using:DungeonApp.Markup"
+             xmlns:converters="using:DungeonApp.Converters"
              x:Class="DungeonApp.Views.Campaigns.Modules.ConsoleView"
              x:DataType="module:ConsoleModule"
              x:CompileBindings="False">
@@ -35,15 +36,136 @@
                                    Margin="0,0,0,15"
                                    ItemsSource="{Binding Feed}" />
 
+        <!-- AUTOCOMPLETE OVERLAY (Zastępuje natywny Popup) -->
+        <!-- Rozwiązuje problem flickeringu (skakania w górę) oraz znikania przy alt-tab. -->
+        <Grid Grid.Row="1"
+              VerticalAlignment="Bottom"
+              Margin="0,0,0,5"
+              Classes="autocompleteOverlay"
+              Classes.isOpen="{Binding IsAutocompleteOpen}">
+            <Grid.Styles>
+                <Style Selector="Grid.autocompleteOverlay">
+                    <Setter Property="Opacity" Value="0"/>
+                    <Setter Property="IsHitTestVisible" Value="False"/>
+                </Style>
+                <Style Selector="Grid.autocompleteOverlay.isOpen">
+                    <Setter Property="Opacity" Value="1"/>
+                    <Setter Property="IsHitTestVisible" Value="True"/>
+                </Style>
+            </Grid.Styles>
+            <Grid Width="{Binding Bounds.Width, ElementName=ConsoleInputBox}">
+                <ListBox ItemsSource="{Binding FilteredCommands}"
+                         SelectedItem="{Binding SelectedCommand, Mode=TwoWay}"
+                         x:Name="AutocompleteListBox"
+                         PointerPressed="AutocompleteListBox_PointerPressed"
+                         PointerMoved="AutocompleteListBox_PointerMoved"
+                         Focusable="False"
+                         HorizontalAlignment="Left"
+                         Background="#E6000000"
+                         Foreground="LightGray"
+                         CornerRadius="0"
+                         Padding="4"
+                         MaxHeight="150"
+                         BorderThickness="0">
+                    <ListBox.Styles>
+                        <!-- Styl domyślny dla wszystkich opcji (niezaznaczonych i hintów) -->
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="4,2"/>
+                            <Setter Property="Foreground" Value="LightGray"/>
+                            <Setter Property="Focusable" Value="False"/>
+                        </Style>
+
+                        <!-- Zablokuj selekcję dla hintów (<<arg>>) — są informacyjne, nie klikalne -->
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="IsHitTestVisible" Value="{Binding Converter={x:Static converters:HintConverters.HintIsInteractable}}"/>
+                        </Style>
+
+                        <!-- Wyłączenie tła dla hover i selected oraz wymuszenie żółtego tekstu (obejście domyślnych kolorów Avalonia Fluent) -->
+                        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="Yellow" />
+                        </Style>
+                        <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="Yellow" />
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <TextBlock Text="{Binding}"
+                                       FontFamily="Consolas, Courier New, monospace"
+                                       FontSize="13"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Grid>
+
         <!-- Pole Tekstowe Konsoli -->
-        <TextBox Grid.Row="2"
-                 Text="{Binding ConsoleInputText}"
-                 PlaceholderText="Wpisz komendę (np. /time +8h)..."
-                 CornerRadius="4"
-                 Padding="10,8">
-            <TextBox.KeyBindings>
-                <KeyBinding Gesture="Enter" Command="{Binding ExecuteConsoleCommandCommand}" />
-            </TextBox.KeyBindings>
-        </TextBox>
+        <Panel Grid.Row="2">
+
+            <Border Background="{DynamicResource InputBackground}"
+                    BorderBrush="{DynamicResource BorderMuted}"
+                    BorderThickness="1"
+                    CornerRadius="0">
+                <ScrollViewer MaxHeight="120" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <!-- GHOST TEXT: Najbardziej z tyłu, szary (ukazuje tylko brakujący fragment podpowiedzi) -->
+                        <TextBox Text="{Binding GhostText}"
+                                 TextWrapping="Wrap"
+                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                 IsHitTestVisible="False"
+                                 Focusable="False"
+                                 Foreground="#66FFFFFF"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="10,8"
+                                 VerticalContentAlignment="Top"
+                                 FontFamily="Consolas, Courier New, monospace"
+                                 FontSize="14" />
+
+                        <!-- SYNTAX OVERLAY: Kolorowe słowa z AutocompleteEngine (pomiędzy Ghost a Real) -->
+                        <TextBlock controls:SyntaxHighlightingHelper.ParsedTokens="{Binding ParsedTokens}"
+                                   TextWrapping="Wrap"
+                                   IsHitTestVisible="False"
+                                   Focusable="False"
+                                   Padding="10,8"
+                                   VerticalAlignment="Top"
+                                   FontFamily="Consolas, Courier New, monospace"
+                                   FontSize="14" />
+
+                        <!-- REAL INPUT: Całkowicie przezroczysty na wierzchu, widać tylko kursor (Caret) -->
+                        <TextBox x:Name="ConsoleInputBox"
+                                 LostFocus="ConsoleInputBox_LostFocus"
+                                 Text="{Binding ConsoleInputText}"
+                                 TextWrapping="Wrap"
+                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                 PlaceholderText="{i18n:Translate console_placeholder}"
+                                 Background="Transparent"
+                                 Foreground="Transparent"
+                                 CaretBrush="White"
+                                 SelectionBrush="#55FFFFFF"
+                                 BorderThickness="0"
+                                 Padding="10,8"
+                                 VerticalContentAlignment="Top"
+                                 FontFamily="Consolas, Courier New, monospace"
+                                 FontSize="14">
+                            <TextBox.KeyBindings>
+                                <KeyBinding Gesture="Enter" Command="{Binding ExecuteConsoleCommandCommand}" />
+                            </TextBox.KeyBindings>
+                        </TextBox>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+        </Panel>
     </Grid>
 </UserControl>

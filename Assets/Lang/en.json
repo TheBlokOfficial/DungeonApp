@@ -176,7 +176,7 @@
   "module_timekeeper_error_format": "Invalid format. Example: /time +2h",
   "module_timekeeper_error_value": "Invalid value: '{0}'. Must be an integer > 0.",
   "module_timekeeper_error_unit": "Unknown unit '{0}'. Use: m (minutes), h (hours), d (days).",
-  "module_timekeeper_advanced": "{0} passed. Now: {1}, {2}.",
+  "module_timekeeper_advanced": "{0} passed.",
   "module_timekeeper_unit_min": "{0} min",
   "module_timekeeper_unit_h": "{0} h",
   "module_timekeeper_unit_d": "{0} d",

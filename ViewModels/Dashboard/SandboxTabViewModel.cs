@@ -6,6 +6,7 @@ using DungeonApp.Models.Campaigns.Engine;
 using DungeonApp.Models.Campaigns.Engine.Events;
 using DungeonApp.Models.Campaigns.Engine.Modules;
 using DungeonApp.Models.Campaigns.Engine.Modules.Core;
+using DungeonApp.Models.Campaigns.Engine.Modules.Test;
 using DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper;
 using DungeonApp.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,7 @@ public partial class SandboxTabViewModel : ViewModelBase
         TimekeeperModule = new TimekeeperModule();
 
         _engine = new CampaignEngine(
-            new ICampaignModule[] { consoleModule, TimekeeperModule },
+            new ICampaignModule[] { consoleModule, TimekeeperModule, new TestCommandsModule() },
             storageService
         );
 

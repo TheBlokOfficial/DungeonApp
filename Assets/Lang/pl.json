@@ -175,7 +175,7 @@
   "module_timekeeper_error_format": "Nieprawidłowy format. Przykład: /time +2h",
   "module_timekeeper_error_value": "Nieprawidłowa wartość: '{0}'. Musi być liczbą całkowitą > 0.",
   "module_timekeeper_error_unit": "Nieznana jednostka '{0}'. Użyj: m (minuty), h (godziny), d (dni).",
-  "module_timekeeper_advanced": "Upłynęło {0}. Teraz: {1}, {2}.",
+  "module_timekeeper_advanced": "Upłynęło: {0}.",
   "module_timekeeper_unit_min": "{0} min",
   "module_timekeeper_unit_h": "{0} h",
   "module_timekeeper_unit_d": "{0} d",

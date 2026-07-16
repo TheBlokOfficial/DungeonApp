@@ -59,7 +59,8 @@ public partial class CampaignDetailViewModel : ViewModelBase
         Engine = new CampaignEngine(new ICampaignModule[] 
         { 
             new ConsoleModule(), 
-            new TimekeeperModule() 
+            new TimekeeperModule(),
+            new DungeonApp.Models.Campaigns.Engine.Modules.Test.TestCommandsModule()
         }, storageService);
 
         NavigateToDashboard();

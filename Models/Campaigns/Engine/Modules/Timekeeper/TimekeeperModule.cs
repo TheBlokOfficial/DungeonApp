@@ -2,6 +2,7 @@ using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using DungeonApp.Models.Campaigns.Engine.Commands;
 using DungeonApp.Models.Campaigns.Engine.Events;
 
 namespace DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper;
@@ -16,7 +17,7 @@ namespace DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper;
 /// Zapis stanu odbywa się przez odziedziczony Storage i GetModuleStatePath() z CampaignModuleBase
 /// — do pliku modules/Core.Timekeeper.json w folderze kampanii, bez dotykania campaign.json.
 /// </remarks>
-public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCommandEvent>
+public partial class TimekeeperModule : CampaignModuleBase
 {
     // Stałe kalendarza Fantasy
     private const int MinutesPerHour = 60;
@@ -59,7 +60,31 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
 
         RefreshDisplayProperties();
 
-        Messenger?.Register<ConsoleCommandEvent>(this);
+
+
+        /*
+         * Rejestracja komendy /time w systemie autouzupełniania (Brigadier-style).
+         * Drzewo:
+         *   /time
+         *     └─ set
+         *         └─ <pora_dnia: morning|noon|evening|midnight>
+         *     └─ add
+         *         └─ <<czas>> (NumberArgument)
+         */
+        var timeTree = CommandTree.Literal("/time")
+            .Then(CommandTree.Literal("add")
+                .Then(CommandTree.Time("czas").Executes(ctx => {
+                    int seconds = ctx.GetArgument<int>("czas");
+                    int minutes = seconds / 60;
+                    if (minutes <= 0) minutes = 1; // Minimum 1 minuta
+                    AdvanceTime(minutes);
+                    return CommandResult.Silent(); // AdvanceTime publikuje log we własnym zakresie
+                })))
+            .Then(CommandTree.Literal("query").Executes(ctx => {
+                return CommandResult.Info($"Aktualny czas: {FormattedTime}, Data: {FormattedDate}");
+            }));
+
+        Publish(new RegisterCommandEvent(timeTree.Root, ModuleId));
 
         System.Diagnostics.Debug.WriteLine($"[TimekeeperModule] Zainicjalizowano. Data: {FormattedDate}, Czas: {FormattedTime}");
     }
@@ -123,56 +148,6 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
     [RelayCommand]
     private void AdvanceOneDay() => AdvanceTime(60 * 24);
 
-    // ─── ConsoleCommand Handler ──────────────────────────────────────────────
-
-    /// <summary>
-    /// Nasłuchuje komend z konsoli zaczynających się od "/time".
-    /// Obsługiwane formaty: /time +Xm, /time +Xh, /time +Xd
-    /// </summary>
-    public void Receive(ConsoleCommandEvent message)
-    {
-        var input = message.RawInput.Trim();
-        if (!input.StartsWith("/time", StringComparison.OrdinalIgnoreCase)) return;
-
-        var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (parts.Length < 2)
-        {
-            PublishError(Translate("module_timekeeper_error_usage"));
-            return;
-        }
-
-        var arg = parts[1].Trim().ToLowerInvariant();
-        if (arg.Length < 2 || !arg.StartsWith("+"))
-        {
-            PublishError(Translate("module_timekeeper_error_format"));
-            return;
-        }
-
-        char unit   = arg[^1];
-        string numStr = arg[1..^1];
-
-        if (!int.TryParse(numStr, out int value) || value <= 0)
-        {
-            PublishError(string.Format(Translate("module_timekeeper_error_value"), numStr));
-            return;
-        }
-
-        int minutesToAdd = unit switch
-        {
-            'm' => value,
-            'h' => value * MinutesPerHour,
-            'd' => value * MinutesPerHour * HoursPerDay,
-            _   => -1
-        };
-
-        if (minutesToAdd < 0)
-        {
-            PublishError(string.Format(Translate("module_timekeeper_error_unit"), unit));
-            return;
-        }
-
-        AdvanceTime(minutesToAdd);
-    }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 
@@ -194,13 +169,13 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
     private void PublishTimeAdvancedLog(int minutes)
     {
         string humanized = HumanizeMinutes(minutes);
-        string msg = string.Format(Translate("module_timekeeper_advanced"), humanized, FormattedDate, FormattedTime);
+        string msg = string.Format(Translate("module_timekeeper_advanced"), humanized);
         Publish(new NotificationEvent(msg, "Info") { SenderModuleId = ModuleId });
     }
 
     private void PublishError(string msg)
     {
-        Publish(new NotificationEvent($"[Timekeeper] {msg}", "Warning") { SenderModuleId = ModuleId });
+        Publish(new NotificationEvent(msg, "Warning") { SenderModuleId = ModuleId });
     }
 
     private string HumanizeMinutes(int minutes)
