@@ -34,22 +34,22 @@
                         
                         <StackPanel Spacing="10">
                             <TextBlock Classes="dynamic" Text="{i18n:Translate ui_character_name}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding CharacterName}" Watermark="{i18n:Translate ui_character_name_placeholder}"/>
+                            <TextBox Text="{Binding CharacterName}" PlaceholderText="{i18n:Translate ui_character_name_placeholder}"/>
                         </StackPanel>
 
                         <StackPanel Spacing="10">
                             <TextBlock Classes="dynamic" Text="{i18n:Translate ui_player_name}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding PlayerName}" Watermark="{i18n:Translate ui_player_name_placeholder}"/>
+                            <TextBox Text="{Binding PlayerName}" PlaceholderText="{i18n:Translate ui_player_name_placeholder}"/>
                         </StackPanel>
 
                         <Grid ColumnDefinitions="*,16,*">
                             <StackPanel Grid.Column="0" Spacing="10">
                                 <TextBlock Classes="dynamic" Text="{i18n:Translate ui_race}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                                <TextBox Text="{Binding Race}" Watermark="{i18n:Translate ui_race_placeholder}"/>
+                                <TextBox Text="{Binding Race}" PlaceholderText="{i18n:Translate ui_race_placeholder}"/>
                             </StackPanel>
                             <StackPanel Grid.Column="2" Spacing="10">
                                 <TextBlock Classes="dynamic" Text="{i18n:Translate ui_class_level}" Foreground="{DynamicResource TextMuted}" FontSize="16" FontWeight="Medium"/>
-                                <TextBox Text="{Binding ClassAndLevel}" Watermark="{i18n:Translate ui_class_level_placeholder}"/>
+                                <TextBox Text="{Binding ClassAndLevel}" PlaceholderText="{i18n:Translate ui_class_level_placeholder}"/>
                             </StackPanel>
                         </Grid>
                         

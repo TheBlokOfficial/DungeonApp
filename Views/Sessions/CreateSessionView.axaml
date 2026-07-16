@@ -40,7 +40,7 @@
                     <StackPanel Spacing="30">
                         <StackPanel Spacing="10">
                             <TextBlock Classes="dynamic" Text="{i18n:Translate ui_session_title}" Foreground="#888888" FontSize="16" FontWeight="Medium"/>
-                            <TextBox Text="{Binding Title}" Watermark="{i18n:Translate ui_session_title_placeholder}"/>
+                            <TextBox Text="{Binding Title}" PlaceholderText="{i18n:Translate ui_session_title_placeholder}"/>
                         </StackPanel>
 
                         <StackPanel Spacing="10">

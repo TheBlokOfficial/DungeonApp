@@ -137,14 +137,14 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
         var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length < 2)
         {
-            PublishError("Użycie: /time +Xm | /time +Xh | /time +Xd");
+            PublishError(Translate("module_timekeeper_error_usage"));
             return;
         }
 
         var arg = parts[1].Trim().ToLowerInvariant();
         if (arg.Length < 2 || !arg.StartsWith("+"))
         {
-            PublishError("Nieprawidłowy format. Przykład: /time +2h");
+            PublishError(Translate("module_timekeeper_error_format"));
             return;
         }
 
@@ -153,7 +153,7 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
 
         if (!int.TryParse(numStr, out int value) || value <= 0)
         {
-            PublishError($"Nieprawidłowa wartość: '{numStr}'. Musi być liczbą całkowitą > 0.");
+            PublishError(string.Format(Translate("module_timekeeper_error_value"), numStr));
             return;
         }
 
@@ -167,7 +167,7 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
 
         if (minutesToAdd < 0)
         {
-            PublishError($"Nieznana jednostka '{unit}'. Użyj: m (minuty), h (godziny), d (dni).");
+            PublishError(string.Format(Translate("module_timekeeper_error_unit"), unit));
             return;
         }
 
@@ -178,7 +178,7 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
 
     private void RefreshDisplayProperties()
     {
-        FormattedDate = $"Rok {_state.Year}, Miesiąc {_state.Month}, Dzień {_state.Day}";
+        FormattedDate = string.Format(Translate("module_timekeeper_date_format"), _state.Year, _state.Month, _state.Day);
         FormattedTime = $"{_state.Hour:D2}:{_state.Minute:D2}";
         DayPhaseIconKey = (_state.Hour >= SunriseHour && _state.Hour < SunsetHour)
             ? "IconSun"
@@ -194,7 +194,7 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
     private void PublishTimeAdvancedLog(int minutes)
     {
         string humanized = HumanizeMinutes(minutes);
-        string msg = $"Upłynęło {humanized}. Teraz: {FormattedDate}, {FormattedTime}.";
+        string msg = string.Format(Translate("module_timekeeper_advanced"), humanized, FormattedDate, FormattedTime);
         Publish(new NotificationEvent(msg, "Info") { SenderModuleId = ModuleId });
     }
 
@@ -203,10 +203,10 @@ public partial class TimekeeperModule : CampaignModuleBase, IRecipient<ConsoleCo
         Publish(new NotificationEvent($"[Timekeeper] {msg}", "Warning") { SenderModuleId = ModuleId });
     }
 
-    private static string HumanizeMinutes(int minutes)
+    private string HumanizeMinutes(int minutes)
     {
-        if (minutes < 60)    return $"{minutes} min";
-        if (minutes < 60*24) return $"{minutes / 60} h";
-        return $"{minutes / (60*24)} d";
+        if (minutes < 60)    return string.Format(Translate("module_timekeeper_unit_min"), minutes);
+        if (minutes < 60*24) return string.Format(Translate("module_timekeeper_unit_h"), minutes / 60);
+        return string.Format(Translate("module_timekeeper_unit_d"), minutes / (60*24));
     }
 }

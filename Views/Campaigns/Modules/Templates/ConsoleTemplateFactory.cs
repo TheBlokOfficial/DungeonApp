@@ -37,27 +37,64 @@ public static class ConsoleTemplateFactory
             Margin = new Avalonia.Thickness(0, 3)
         };
 
-        panel.Children.Add(new TextBlock
+        if (notification.SenderModuleId == "DM")
         {
-            Text = "[INFO]",
-            Foreground = Brushes.DimGray,
-            FontWeight = FontWeight.Bold,
-            VerticalAlignment = VerticalAlignment.Center
-        });
+            // Notatka od Mistrza Gry — czysta, bez tagów systemowych
+            panel.Children.Add(new TextBlock
+            {
+                Text = ">",
+                Foreground = Brushes.DimGray,
+                FontWeight = FontWeight.Bold,
+                VerticalAlignment = VerticalAlignment.Center
+            });
 
-        panel.Children.Add(new TextBlock
+            panel.Children.Add(new TextBlock
+            {
+                Text = notification.Message,
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = Brushes.LightGray,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+        }
+        else
         {
-            Text = $"[{notification.SenderModuleId}]",
-            Foreground = Brushes.DimGray,
-            VerticalAlignment = VerticalAlignment.Center
-        });
+            // Komunikat Systemowy / Z modułu
+            string levelText = notification.Level switch
+            {
+                "Warning" => "[WARN]",
+                "Error" => "[ERROR]",
+                _ => "[INFO]"
+            };
 
-        panel.Children.Add(new TextBlock
-        {
-            Text = notification.Message,
-            TextWrapping = TextWrapping.Wrap,
-            VerticalAlignment = VerticalAlignment.Center
-        });
+            IBrush levelBrush = notification.Level switch
+            {
+                "Warning" => Brushes.Goldenrod,
+                "Error" => Brushes.IndianRed,
+                _ => Brushes.DimGray
+            };
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = levelText,
+                Foreground = levelBrush,
+                FontWeight = FontWeight.Bold,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = $"[{TranslateModuleName(notification.SenderModuleId)}]",
+                Foreground = Brushes.DimGray,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = notification.Message,
+                TextWrapping = TextWrapping.Wrap,
+                VerticalAlignment = VerticalAlignment.Center
+            });
+        }
 
         return panel;
     }
@@ -83,7 +120,7 @@ public static class ConsoleTemplateFactory
 
         panel.Children.Add(new TextBlock
         {
-            Text = $"[{proposal.SenderModuleId}] ",
+            Text = $"[{TranslateModuleName(proposal.SenderModuleId)}] ",
             Foreground = Brushes.DimGray
         });
 
@@ -131,5 +168,20 @@ public static class ConsoleTemplateFactory
         panel.Children.Add(rejectBtn);
 
         return panel;
+    }
+
+    private static string TranslateModuleName(string moduleId)
+    {
+        if (moduleId == "DM") return "DM";
+        
+        string key = moduleId switch
+        {
+            "Core.Timekeeper" => "module_name_timekeeper",
+            "Core.Console" => "module_name_console",
+            _ => moduleId
+        };
+        
+        var ts = App.Current?.Services?.GetService(typeof(DungeonApp.Services.ITranslationService)) as DungeonApp.Services.ITranslationService;
+        return ts?.Translate(key) ?? key;
     }
 }

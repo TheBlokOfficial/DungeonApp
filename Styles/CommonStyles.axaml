@@ -267,4 +267,30 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+    <!-- ==================== MODULE HEADER STYLES ==================== -->
+    <!--
+        Zunifikowany nagłówek panelu modułu (np. TimekeeperView, ConsoleView).
+        Zasada: jedno źródło prawdy dla typografii i layoutu nagłówka.
+        Wszelkie zmiany rozmiaru, wagi czy odstępów wprowadzamy WYŁĄCZNIE tutaj.
+        Użycie: StackPanel.moduleHeader > PathIcon + TextBlock.moduleHeaderLabel
+    -->
+    <Style Selector="StackPanel.moduleHeader">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+    <Style Selector="StackPanel.moduleHeader > PathIcon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentGold}" />
+    </Style>
+    <Style Selector="StackPanel.moduleHeader > TextBlock.moduleHeaderLabel">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="LetterSpacing" Value="2" />
+        <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
 </Styles>

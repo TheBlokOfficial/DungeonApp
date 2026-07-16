@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:module="using:DungeonApp.Models.Campaigns.Engine.Modules.Timekeeper"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.Campaigns.Modules.TimekeeperView"
              x:DataType="module:TimekeeperModule">
 
@@ -12,18 +13,14 @@
     -->
     <Grid RowDefinitions="Auto, *, Auto" Margin="0">
 
-        <!-- ROW 0: Nagłówek -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
+        <!-- ROW 0: Nagłówek — styl pochodzi z CommonStyles.axaml (StackPanel.moduleHeader + TextBlock.moduleHeaderLabel).
+             Tekst z systemu i18n — reaguje na zmianę języka w Ustawieniach. -->
+        <StackPanel Grid.Row="0" Classes="moduleHeader">
             <!-- Ikona pory dnia — klucz dynamicznie zmienia się między IconSun/IconMoon -->
             <PathIcon Data="{DynamicResource IconSun}"
-                      x:Name="DayPhaseIcon"
-                      Width="20" Height="20"
-                      Foreground="{DynamicResource AccentGold}" />
-            <TextBlock Text="CZAS &amp; KALENDARZ"
-                       FontSize="12" FontWeight="Bold" LetterSpacing="2"
-                       Foreground="{DynamicResource TextMuted}"
-                       VerticalAlignment="Center"
-                       TextTrimming="CharacterEllipsis" />
+                      x:Name="DayPhaseIcon" />
+            <TextBlock Text="{i18n:Translate module_name_timekeeper}"
+                       Classes="moduleHeaderLabel" />
         </StackPanel>
 
         <!-- ROW 1: Główny Wyświetlacz -->

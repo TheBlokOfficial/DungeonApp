@@ -169,5 +169,16 @@
   "Fire Breath": "Zionięcie ogniem",
   "module_testtime_proposal": "Drużyna zakończyła krótki odpoczynek. Doliczyć 1 godzinę do czasu kampanii?",
   "module_testtime_accept": "Upłynęła 1 godzina.",
-  "module_testtime_reject": "Odrzucono zmianę czasu."
+  "module_testtime_reject": "Odrzucono zmianę czasu.",
+  "module_timekeeper_date_format": "Rok {0}, Miesiąc {1}, Dzień {2}",
+  "module_timekeeper_error_usage": "Użycie: /time +Xm | /time +Xh | /time +Xd",
+  "module_timekeeper_error_format": "Nieprawidłowy format. Przykład: /time +2h",
+  "module_timekeeper_error_value": "Nieprawidłowa wartość: '{0}'. Musi być liczbą całkowitą > 0.",
+  "module_timekeeper_error_unit": "Nieznana jednostka '{0}'. Użyj: m (minuty), h (godziny), d (dni).",
+  "module_timekeeper_advanced": "Upłynęło {0}. Teraz: {1}, {2}.",
+  "module_timekeeper_unit_min": "{0} min",
+  "module_timekeeper_unit_h": "{0} h",
+  "module_timekeeper_unit_d": "{0} d",
+  "module_name_timekeeper": "CZAS & KALENDARZ",
+  "module_name_console": "KONSOLA"
 }

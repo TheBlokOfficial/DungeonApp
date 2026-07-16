@@ -4,25 +4,27 @@ Ten dokument zawiera podsumowanie aktualnego stanu prac, najważniejszych decyzj
 
 ## 1. Ostatnia Sesja (Najświeższe Zmiany)
 
-W trakcie tej sesji skupiliśmy się na szlifowaniu Workbenchu i wdrożeniu animowanej konsoli (POLISH MODE + ARCH MODE):
+W trakcie tej sesji skupiliśmy się na szlifowaniu interfejsu i umiędzynarodowieniu (i18n) istniejących modułów (tryb POLISH/FAST MODE):
 
-- **Workbench – usunięcie czarnego tła**:
-  - Usunięto `Border` z tłem `#0A0A0A` otaczający Canvas w `SandboxTabView.axaml`.
-  - `FloatingPanel` (moduł) wisi teraz bezpośrednio na szarym tle aplikacji bez dodatkowego "pudełka".
+- **Tłumaczenie (i18n) dla Console i Timekeeper**:
+  - `TimekeeperModule`: Zastąpiono "hardkodowane" polskie komunikaty w kodzie C# użyciem metody `Translate()`. Data, czas i błędy są formowane dynamicznie przez `string.Format`. Dodano odpowiednie klucze do plików `pl.json` i `en.json`.
+  - `ConsoleTemplateFactory`: Wdrożono dynamiczne tłumaczenie identyfikatorów modułów (`SenderModuleId`). Kodowe nazwy jak `Core.Timekeeper` są teraz przechwytywane i tłumaczone na czytelne nazwy (np. `[CZAS & KALENDARZ]`).
 
-- **Workbench – centrowanie po resize modułu**:
-  - `FloatingPanel` nie centrował się po przeciągnięciu uchwytu resize (trójkąt ◢).
-  - Dodano zdarzenie `ResizeCompleted` w `FloatingPanel.axaml.cs`, emitowane po `PointerReleased`.
-  - `SandboxTabView.axaml.cs` subskrybuje `ResizeCompleted` i wywołuje `CenterPanel()` — moduł centruje się po każdym resize.
+- **Unifikacja nagłówków paneli modułów**:
+  - Utworzono uniwersalne style XAML w `CommonStyles.axaml`: klasa `StackPanel.moduleHeader` dla układu oraz `TextBlock.moduleHeaderLabel` dla typografii (FontSize 12, Bold, LetterSpacing 2).
+  - Wyczyszczono XAML w `TimekeeperView` oraz `ConsoleView` z inline-atrybutów, przypinając je do scentralizowanych klas. Zapewni to 100% spójności dla wszystkich nowych modułów (np. Combat Trackera).
+  - Teksty w nagłówkach również przeszły pod kontrolę `i18n:Translate`.
 
-- **Animowana konsola (`AnimatedFeedList`) — efekt ChatAnimation**:
-  - Stworzono nową kontrolkę `Controls/AnimatedFeedList.axaml` + `.axaml.cs`.
-  - Nowy log "wjeżdża" z dołu (slide-in + fade-in), a istniejące logi płynnie przesuwają się ku górze (push-up) — wzorowane na mod Minecraft Ezzenix/ChatAnimation.
-  - **Architektura**: Canvas z ręcznym zarządzaniem pozycjami przez code-behind. `Canvas.Top` ustawiany raz na finalną wartość; animacje wyłącznie na `TranslateTransform.Y` + `Opacity` przez system `Transitions` (nie `Animation.RunAsync`, który crashuje na nie-Visual).
-  - **Kluczowa naprawa ghostingu**: Guard `_subscribedCollection` + `UnsubscribeFromCurrent()` eliminuje podwójną subskrypcję `CollectionChanged` (która wcześniej powodowała, że `AddItem` wywoływano dwa razy per log).
-  - **Dwuetapowy dispatch**: Element dodawany niewidocznie (`Opacity=0`, `Top=-9999`) → Canvas mierzy go w tle → `DispatcherPriority.Background` odczytuje `DesiredSize` i startuje animacje. Unika ręcznego `Arrange()`, który powodował ghosting.
-  - Stworzono `Views/Campaigns/Modules/Templates/ConsoleTemplateFactory.cs` — fabryka C# budująca widoki dla `NotificationEvent` i `ProposalEvent` (wymagana przez `FuncDataTemplate` w `AnimatedFeedList`).
-  - `ConsoleView.axaml` i `.axaml.cs` zaktualizowane: `ScrollViewer+ItemsControl` zastąpiony przez `<controls:AnimatedFeedList>`, stary auto-scroll usunięty.
+- **Logika powiadomień w Konsoli**:
+  - Usunięto błąd, w którym każdy komunikat był poprzedzony sztywnym przedrostkiem `[INFO]`. 
+  - Wdrożono wizualną separację poziomów logowania (`Level` z `NotificationEvent`):
+    - `Warning` -> `[WARN]` (żółty)
+    - `Error` -> `[ERROR]` (czerwony)
+    - Puste (lub `Info`) -> `[INFO]` (szary)
+  - Notatki wpisywane ręcznie przez Mistrza Gry (DM) nie posiadają już tagów systemowych. Otrzymały formę "lini czasu" ze znacznikiem `>` i wyróżniającym się jasnoszarym kolorem tekstu.
+
+- **Drobne porządki kompilatora**:
+  - Poprawiono 6 ostrzeżeń `AVLN5001` we wszystkich widokach (`CharacterDetailView`, `CreateCharacterView`, `CreateSessionView`) zamieniając przestarzały atrybut `TextBox.Watermark` na `PlaceholderText`.
 
 ## 2. Architektura Modułów i Event Bus
 
@@ -62,9 +64,6 @@ W trakcie tej sesji skupiliśmy się na szlifowaniu Workbenchu i wdrożeniu anim
 3. **Pełnoprawny Dashboard**:
    - `CampaignDashboardView` używa prostego bento-boxa z testowymi wizytówkami.
    - Do przemyślenia: elastyczny system dynamicznego ładowania kafelków poszczególnych modułów.
-
-4. **Drobne sprzątanie ostrzeżeń**:
-   - 6 ostrzeżeń `AVLN5001` w `CharacterDetailView`, `CreateCharacterView`, `CreateSessionView` — `Watermark` → `PlaceholderText` (drobne, FAST MODE).
 
 ## 5. Zasady AI (Zgodnie z `.agents/AGENTS.md`)
 

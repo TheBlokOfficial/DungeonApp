@@ -3,6 +3,7 @@
              xmlns:events="using:DungeonApp.Models.Campaigns.Engine.Events"
              xmlns:module="using:DungeonApp.Models.Campaigns.Engine.Modules.Core"
              xmlns:controls="using:DungeonApp.Controls"
+             xmlns:i18n="using:DungeonApp.Markup"
              x:Class="DungeonApp.Views.Campaigns.Modules.ConsoleView"
              x:DataType="module:ConsoleModule"
              x:CompileBindings="False">
@@ -14,10 +15,12 @@
         się ku górze (wzorowane na Minecraft ChatAnimation mod).
     -->
     <Grid RowDefinitions="Auto, *, Auto">
-        <!-- Nagłówek -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="0,0,0,10">
-            <Ellipse Width="7" Height="7" Fill="LimeGreen" VerticalAlignment="Center"/>
-            <TextBlock Text="KONSOLA" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextMuted}" VerticalAlignment="Center"/>
+        <!-- ROW 0: Nagłówek — styl pochodzi z CommonStyles.axaml (StackPanel.moduleHeader + TextBlock.moduleHeaderLabel).
+             Tekst z systemu i18n — reaguje na zmianę języka w Ustawieniach. -->
+        <StackPanel Grid.Row="0" Classes="moduleHeader">
+            <PathIcon Data="{DynamicResource IconCode}" />
+            <TextBlock Text="{i18n:Translate module_name_console}"
+                       Classes="moduleHeaderLabel" />
         </StackPanel>
 
         <!-- ───────────────────────────────────────────────────────────────────

@@ -134,7 +134,7 @@
                                     <Flyout Placement="BottomEdgeAlignedRight" IsOpen="{Binding IsRegistryFlyoutOpen, Mode=TwoWay}">
                                         <Grid RowDefinitions="Auto, Auto, *" Width="350" Height="400" Margin="5">
                                             <TextBlock Grid.Row="0" Classes="dynamic" Text="{i18n:Translate ui_add_from_registry}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource TextPrimary}"/>
-                                            <TextBox Grid.Row="1" Text="{Binding RegistrySearchQuery}" Watermark="{i18n:Translate ui_registry_search_placeholder}" Margin="0,0,0,15" CornerRadius="8"/>
+                                            <TextBox Grid.Row="1" Text="{Binding RegistrySearchQuery}" PlaceholderText="{i18n:Translate ui_registry_search_placeholder}" Margin="0,0,0,15" CornerRadius="8"/>
                                             <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                                 <ItemsControl ItemsSource="{Binding FilteredRegistryItems}">
                                                     <ItemsControl.ItemTemplate>

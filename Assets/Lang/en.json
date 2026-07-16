@@ -170,5 +170,16 @@
   "Fire Breath": "Fire Breath",
   "module_testtime_proposal": "The party has finished a short rest. Add 1 hour to campaign time?",
   "module_testtime_accept": "1 hour has passed.",
-  "module_testtime_reject": "Time change rejected."
+  "module_testtime_reject": "Time change rejected.",
+  "module_timekeeper_date_format": "Year {0}, Month {1}, Day {2}",
+  "module_timekeeper_error_usage": "Usage: /time +Xm | /time +Xh | /time +Xd",
+  "module_timekeeper_error_format": "Invalid format. Example: /time +2h",
+  "module_timekeeper_error_value": "Invalid value: '{0}'. Must be an integer > 0.",
+  "module_timekeeper_error_unit": "Unknown unit '{0}'. Use: m (minutes), h (hours), d (days).",
+  "module_timekeeper_advanced": "{0} passed. Now: {1}, {2}.",
+  "module_timekeeper_unit_min": "{0} min",
+  "module_timekeeper_unit_h": "{0} h",
+  "module_timekeeper_unit_d": "{0} d",
+  "module_name_timekeeper": "TIME & CALENDAR",
+  "module_name_console": "CONSOLE"
 }
