@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DungeonApp.Desktop.Shell.Sidebars"
+             xmlns:navigation="using:DungeonApp.Desktop.Shell.Navigation"
+             mc:Ignorable="d"
+             d:DesignWidth="216"
+             d:DesignHeight="728"
+             x:Class="DungeonApp.Desktop.Shell.Sidebars.GlobalSidebarView"
+             x:DataType="vm:GlobalSidebarViewModel">
+    <UserControl.Resources>
+        <navigation:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
+        <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
+            <Grid Height="{DynamicResource DungeonNavigationRowHeight}" ColumnDefinitions="24,*" ColumnSpacing="8">
+                <Image Width="{DynamicResource DungeonActionIconSize}"
+                       Height="{DynamicResource DungeonActionIconSize}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
+                <TextBlock Grid.Column="1"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip.Tip="{Binding Label}"
+                           Text="{Binding Label}" />
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource DungeonSurfaceBrush}"
+            BorderBrush="{DynamicResource DungeonBorderBrush}"
+            BorderThickness="0,0,1,0">
+        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*,40">
+            <TextBlock Margin="8,0"
+                       Classes="eyebrow"
+                       VerticalAlignment="Center"
+                       Text="BIBLIOTEKA" />
+
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding LibraryItems}"
+                     SelectedIndex="0"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ItemTemplate="{StaticResource NavigationItemTemplate}">
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem">
+                        <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
+                        <Setter Property="Padding" Value="8,0" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="CornerRadius" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="FontSize" Value="{DynamicResource DungeonNavigationFontSize}" />
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      HorizontalContentAlignment="Stretch"
+                                                      VerticalContentAlignment="Center" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter>
+                    </Style>
+                    <Style Selector="ListBoxItem:pointerover">
+                        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+                    </Style>
+                    <Style Selector="ListBoxItem:selected">
+                        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+                    </Style>
+                    <Style Selector="ListBoxItem:selected:pointerover">
+                        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+                    </Style>
+                </ListBox.Styles>
+            </ListBox>
+
+            <ContentControl Grid.Row="3" Content="{Binding SettingsItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" Margin="8,0" />
+        </Grid>
+    </Border>
+</UserControl>

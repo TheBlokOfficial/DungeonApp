@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:shell="using:DungeonApp.Desktop.Shell"
+             xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
+             xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
+             xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
+             xmlns:library="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             mc:Ignorable="d"
+             d:DesignWidth="1280"
+             d:DesignHeight="800"
+             x:Class="DungeonApp.Desktop.Shell.AppShellView"
+             x:DataType="shell:AppShellViewModel">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{DynamicResource DungeonTopBarHeight}" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="{DynamicResource DungeonStatusBarHeight}" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <topBar:TopBarView Grid.ColumnSpan="2" DataContext="{Binding TopBar}" />
+        <sidebars:GlobalSidebarView Grid.Row="1" DataContext="{Binding Sidebar}" />
+        <library:CampaignLibraryView Grid.Row="1" Grid.Column="1" DataContext="{Binding CampaignLibrary}" />
+        <statusBar:StatusBarView Grid.Row="2" Grid.ColumnSpan="2" DataContext="{Binding StatusBar}" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,66 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="DungeonBackgroundColor">#121313</Color>
+    <Color x:Key="DungeonSurfaceColor">#181918</Color>
+    <Color x:Key="DungeonSurfaceHeaderColor">#1E1E1C</Color>
+    <Color x:Key="DungeonSurfaceActiveColor">#2B251D</Color>
+    <Color x:Key="DungeonSurfaceHoverColor">#201F1C</Color>
+    <Color x:Key="DungeonBorderColor">#4A443C</Color>
+    <Color x:Key="DungeonBorderStrongColor">#5A5146</Color>
+    <Color x:Key="DungeonTextPrimaryColor">#F1E7D7</Color>
+    <Color x:Key="DungeonTextRegularColor">#BBB4AA</Color>
+    <Color x:Key="DungeonTextMutedColor">#8E877E</Color>
+    <Color x:Key="DungeonAccentColor">#B47C36</Color>
+    <Color x:Key="DungeonAccentBrightColor">#D19A52</Color>
+    <Color x:Key="DungeonAccentActionColor">#8B5727</Color>
+    <Color x:Key="DungeonSuccessColor">#84A98B</Color>
+    <Color x:Key="DungeonWarningColor">#CF9B55</Color>
+    <Color x:Key="DungeonDangerColor">#C76767</Color>
+
+    <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
+    <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
+    <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+    <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
+    <SolidColorBrush x:Key="DungeonSurfaceHoverBrush" Color="{DynamicResource DungeonSurfaceHoverColor}" />
+    <SolidColorBrush x:Key="DungeonBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+    <SolidColorBrush x:Key="DungeonBorderStrongBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+    <SolidColorBrush x:Key="DungeonTextPrimaryBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
+    <SolidColorBrush x:Key="DungeonTextRegularBrush" Color="{DynamicResource DungeonTextRegularColor}" />
+    <SolidColorBrush x:Key="DungeonTextMutedBrush" Color="{DynamicResource DungeonTextMutedColor}" />
+    <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
+    <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
+    <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+    <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
+    <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
+    <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
+
+    <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
+    <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
+
+    <x:Double x:Key="DungeonBaseFontSize">15</x:Double>
+    <x:Double x:Key="DungeonNavigationFontSize">15</x:Double>
+    <x:Double x:Key="DungeonHelperFontSize">13</x:Double>
+    <x:Double x:Key="DungeonEyebrowFontSize">11</x:Double>
+    <x:Double x:Key="DungeonStatusFontSize">11</x:Double>
+    <x:Double x:Key="DungeonWorkspaceTitleFontSize">26</x:Double>
+    <x:Double x:Key="DungeonBrandMarkFontSize">18</x:Double>
+    <x:Double x:Key="DungeonCampaignInitialFontSize">17</x:Double>
+    <x:Double x:Key="DungeonEmptyMarkFontSize">24</x:Double>
+    <x:Double x:Key="DungeonDetailInitialFontSize">20</x:Double>
+    <x:Double x:Key="DungeonDetailTitleFontSize">22</x:Double>
+
+    <GridLength x:Key="DungeonTopBarHeight">52</GridLength>
+    <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
+    <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
+    <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
+    <x:Double x:Key="DungeonControlHeight">38</x:Double>
+    <x:Double x:Key="DungeonNavigationRowHeight">42</x:Double>
+    <x:Double x:Key="DungeonCampaignRowHeight">76</x:Double>
+    <x:Double x:Key="DungeonActionIconSize">16</x:Double>
+    <x:Double x:Key="DungeonTopBarActionSize">52</x:Double>
+    <x:Double x:Key="DungeonCampaignListMaxHeight">608</x:Double>
+    <GridLength x:Key="DungeonCampaignMasterWidth">760</GridLength>
+    <x:Double x:Key="DungeonMinimumWindowWidth">1024</x:Double>
+    <x:Double x:Key="DungeonMinimumWindowHeight">680</x:Double>
+    <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
+</ResourceDictionary>

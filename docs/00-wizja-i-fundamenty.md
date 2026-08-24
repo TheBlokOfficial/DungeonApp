@@ -110,6 +110,8 @@ Warstwy `Application` i `Domain` nie zależą od Avalonia. Interfejs użytkownik
 
 MVVM jest techniką organizacji wyłącznie w warstwie Avalonia. ViewModele nie są miejscem dla reguł kampanii ani mechaniki świata.
 
+Uzasadnienie utrzymania czterech projektów zapisuje [ADR-0001](adr/0001-cztery-projekty-warstwowe.md). Szczegółowe reguły budowania widoków zawiera dokument [Architektura komponentów UI](04-architektura-komponentow-ui.md).
+
 ## 8. Konsekwencje dla doświadczenia przy stole
 
 Priorytetami interfejsu podczas sesji są:
@@ -122,6 +124,8 @@ Priorytetami interfejsu podczas sesji są:
 - brak presji, aby gracze korzystali z aplikacji.
 
 Pierwszy pionowy wycinek powinien sprawdzić ekran aktywnej sesji oraz przepływ: zmiana czasu, wykonanie działania, zastosowanie konsekwencji i zapisanie wyjaśnialnej historii.
+
+Szczegółowe zasady języka wizualnego, geometrii paneli i odporności interfejsu na zmiany zawartości opisuje dokument [Kierunek wizualny i stabilność UI](02-kierunek-wizualny-i-stabilnosc-ui.md).
 
 ## 9. Decyzje podjęte obecnie
 

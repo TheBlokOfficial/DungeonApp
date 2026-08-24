@@ -1,0 +1,72 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Pen x:Key="DungeonIconPen" Brush="{DynamicResource DungeonTextMutedBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
+    <Pen x:Key="DungeonIconPrimaryPen" Brush="{DynamicResource DungeonTextPrimaryBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
+
+    <DrawingImage x:Key="DungeonIconSearch" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M21,21 L16.66,16.66" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M19,11 A8,8 0 1 1 3,11 A8,8 0 1 1 19,11" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconCommand" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M15,6 L15,18 A3,3 0 1 0 18,15 L6,15 A3,3 0 1 0 9,18 L9,6 A3,3 0 1 0 6,9 L18,9 A3,3 0 1 0 15,6" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconRefresh" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M3,12 A9,9 0 0 1 12,3 A9.75,9.75 0 0 1 18.74,5.74 L21,8" Pen="{StaticResource DungeonIconPrimaryPen}" />
+            <GeometryDrawing Geometry="M21,3 L21,8 L16,8" Pen="{StaticResource DungeonIconPrimaryPen}" />
+            <GeometryDrawing Geometry="M21,12 A9,9 0 0 1 12,21 A9.75,9.75 0 0 1 5.26,18.26 L3,16" Pen="{StaticResource DungeonIconPrimaryPen}" />
+            <GeometryDrawing Geometry="M8,16 L3,16 L3,21" Pen="{StaticResource DungeonIconPrimaryPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconPlus" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M5,12 L19,12" Pen="{StaticResource DungeonIconPrimaryPen}" />
+            <GeometryDrawing Geometry="M12,5 L12,19" Pen="{StaticResource DungeonIconPrimaryPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconBookOpen" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,5 L12,21" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M20.001,19 A2,2 0 0 0 22,17 L22,5 A2,2 0 0 0 20.001,3 L16,3.002 A5,5 0 0 0 12,5 A5,5 0 0 0 8,3 L4,3 A2,2 0 0 0 2,5 L2,17 A2,2 0 0 0 3.999,19 L8,19 A5,5 0 0 1 12,21 A5,5 0 0 1 16,19 Z" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconUsers" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M16,21 L16,19 A4,4 0 0 0 12,15 L6,15 A4,4 0 0 0 2,19 L2,21" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M16,3.128 A4,4 0 0 1 16,10.872" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M22,21 L22,19 A4,4 0 0 0 19,15.13" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M13,7 A4,4 0 1 1 5,7 A4,4 0 1 1 13,7" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconBoxes" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M2.97,12.92 A2,2 0 0 0 2,14.63 L2,17.87 A2,2 0 0 0 2.97,19.58 L5.97,21.38 A2,2 0 0 0 8.03,21.38 L12,19 L12,13.5 L7,10.5 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M7,16.5 L2.26,13.65 M7,16.5 L12,13.5 M7,16.5 L7,21.67" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,13.5 L12,19 L15.97,21.38 A2,2 0 0 0 18.03,21.38 L21.03,19.58 A2,2 0 0 0 22,17.87 L22,14.63 A2,2 0 0 0 21.03,12.92 L17,10.5 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M17,16.5 L12,13.5 M17,16.5 L21.74,13.65 M17,16.5 L17,21.67" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M7.97,4.42 A2,2 0 0 0 7,6.13 L7,10.5 L12,13.5 L17,10.5 L17,6.13 A2,2 0 0 0 16.03,4.42 L13.03,2.62 A2,2 0 0 0 10.97,2.62 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,8 L7.26,5.15 M12,8 L16.74,5.15 M12,13.5 L12,8" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconSettings" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M9.671,4.136 A2.34,2.34 0 0 1 14.33,4.136 A2.34,2.34 0 0 0 17.649,6.051 A2.34,2.34 0 0 1 19.979,10.084 A2.34,2.34 0 0 0 19.979,13.915 A2.34,2.34 0 0 1 17.649,17.948 A2.34,2.34 0 0 0 14.33,19.863 A2.34,2.34 0 0 1 9.671,19.863 A2.34,2.34 0 0 0 6.351,17.948 A2.34,2.34 0 0 1 4.021,13.915 A2.34,2.34 0 0 0 4.021,10.084 A2.34,2.34 0 0 1 6.35,6.051 A2.34,2.34 0 0 0 9.671,4.136" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M15,12 A3,3 0 1 1 9,12 A3,3 0 1 1 15,12" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconDatabase" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M21,5 A9,3 0 1 1 3,5 A9,3 0 1 1 21,5" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M3,5 L3,19 A9,3 0 0 0 21,19 L21,5" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M3,12 A9,3 0 0 0 21,12" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconFolderOpen" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M6,14 L7.5,11.1 A2,2 0 0 1 9.24,10 L20,10 A2,2 0 0 1 21.94,12.5 L20.4,18.5 A2,2 0 0 1 18.45,20 L4,20 A2,2 0 0 1 2,18 L2,5 A2,2 0 0 1 4,3 L7.9,3 A2,2 0 0 1 9.59,3.9 L10.4,5.1 A2,2 0 0 0 12.07,6 L18,6 A2,2 0 0 1 20,8 L20,10" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconChevronRight" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M9,18 L15,12 L9,6" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
+</ResourceDictionary>

@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DungeonApp.Desktop.Shell.TopBar"
+             mc:Ignorable="d"
+             d:DesignWidth="1280"
+             d:DesignHeight="48"
+             x:Class="DungeonApp.Desktop.Shell.TopBar.TopBarView"
+             x:DataType="vm:TopBarViewModel">
+    <Border Background="{DynamicResource DungeonSurfaceBrush}"
+            BorderBrush="{DynamicResource DungeonBorderBrush}"
+            BorderThickness="0,0,0,1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
+                <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,1,0">
+                <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="8">
+                    <Border Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource DungeonAccentBrush}"
+                            BorderThickness="1">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{DynamicResource DungeonDisplayFont}"
+                                   FontSize="{DynamicResource DungeonBrandMarkFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource DungeonAccentBrightBrush}"
+                                   Text="D" />
+                    </Border>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                               Text="DungeonApp" />
+                </Grid>
+            </Border>
+
+            <TextBlock Grid.Column="1"
+                       Margin="16,0"
+                       VerticalAlignment="Center"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                       Text="{Binding ContextTitle}" />
+
+            <Button Grid.Column="2" Classes="icon" Width="{DynamicResource DungeonTopBarActionSize}" Height="{DynamicResource DungeonTopBarActionSize}" Background="Transparent" BorderThickness="1,0,0,0" ToolTip.Tip="Szukaj">
+                <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconSearch}" />
+            </Button>
+            <Button Grid.Column="3" Classes="icon" Width="{DynamicResource DungeonTopBarActionSize}" Height="{DynamicResource DungeonTopBarActionSize}" Background="Transparent" BorderThickness="1,0,0,0" ToolTip.Tip="Paleta poleceń">
+                <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconCommand}" />
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

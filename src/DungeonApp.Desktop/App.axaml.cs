@@ -4,7 +4,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Application.Campaigns;
-using DungeonApp.Desktop.ViewModels;
+using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Themes;
 using DungeonApp.Infrastructure.Campaigns.Persistence;
 
 namespace DungeonApp.Desktop;
@@ -14,6 +16,7 @@ public partial class App : Avalonia.Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        UiScaleProfiles.Apply(this, Program.RequestedUiScaleProfile);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -26,19 +29,17 @@ public partial class App : Avalonia.Application
                 "campaigns");
             var moduleCatalog = CampaignModuleCatalogFactory.CreateDefault();
             var repository = new JsonCampaignRepository(campaignDirectory, moduleFactories: moduleCatalog.Factories);
-            var viewModel = new MainWindowViewModel(
+            var campaignLibrary = new CampaignLibraryViewModel(
                 new CreateCampaignUseCase(repository, moduleCatalog),
-                new AdvanceCampaignTimeUseCase(repository),
                 new GetCampaignSessionUseCase(repository),
-                new ListCampaignsUseCase(repository),
-                new EnableCampaignModuleUseCase(repository),
-                new ScheduleWorldEventUseCase(repository));
+                new ListCampaignsUseCase(repository));
+            var viewModel = new AppShellViewModel(campaignLibrary);
 
             desktop.MainWindow = new MainWindow
             {
                 DataContext = viewModel
             };
-            viewModel.LoadCampaignsCommand.Execute(null);
+            campaignLibrary.LoadCampaignsCommand.Execute(null);
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -2,100 +2,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:DungeonApp.Desktop.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="640"
+        xmlns:shell="using:DungeonApp.Desktop.Shell"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="800"
         x:Class="DungeonApp.Desktop.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Width="960"
-        Height="640"
-        MinWidth="720"
-        MinHeight="500"
+        x:DataType="shell:AppShellViewModel"
+        Width="1280"
+        Height="800"
+        MinWidth="{DynamicResource DungeonMinimumWindowWidth}"
+        MinHeight="{DynamicResource DungeonMinimumWindowHeight}"
+        Background="{DynamicResource DungeonBackgroundBrush}"
+        UseLayoutRounding="True"
         Title="DungeonApp">
-    <Grid Margin="28" RowDefinitions="Auto,*,Auto" RowSpacing="20">
-        <StackPanel Spacing="4">
-            <TextBlock Classes="h1" Text="DungeonApp" />
-            <TextBlock Opacity="0.7" Text="Wiarygodny stan kampanii i wyjaśnialna historia zmian." />
-        </StackPanel>
-
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="24">
-            <Border Padding="20" CornerRadius="8" Background="{DynamicResource ThemeControlLowBrush}">
-                <StackPanel Spacing="12">
-                    <TextBlock Classes="h2" Text="Zapisane kampanie" />
-                    <Button HorizontalAlignment="Left" Command="{Binding LoadCampaignsCommand}" Content="Odśwież listę" />
-                    <ListBox Height="180" ItemsSource="{Binding Campaigns}" SelectedItem="{Binding SelectedCampaign}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="vm:CampaignListItemViewModel">
-                                <StackPanel Margin="4" Spacing="2">
-                                    <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
-                                    <TextBlock Opacity="0.65" Text="{Binding ModuleSummary}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <Button HorizontalAlignment="Left" Command="{Binding OpenCampaignCommand}" Content="Otwórz wybraną kampanię" />
-                    <Separator />
-                    <StackPanel Spacing="12" IsVisible="{Binding ShowCreateCampaign}">
-                        <TextBlock Classes="h2" Text="Utwórz kampanię" />
-                        <TextBlock Text="Nazwa" />
-                        <TextBox Text="{Binding NewCampaignName}" PlaceholderText="Nazwa kampanii" />
-                        <CheckBox IsChecked="{Binding IsClockEnabled}" Content="Włącz moduł zegara świata" />
-                        <Button HorizontalAlignment="Left" Command="{Binding CreateCampaignCommand}" Content="Utwórz i zapisz kampanię" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Column="1" Padding="20" CornerRadius="8" Background="{DynamicResource ThemeControlLowBrush}">
-                <StackPanel Spacing="12">
-                    <TextBlock Classes="h2" Text="{Binding CampaignName}" />
-                    <TextBlock IsVisible="{Binding HasActiveCampaign}" Opacity="0.7" Text="Aktualny czas świata" />
-                    <TextBlock Classes="h1" IsVisible="{Binding HasActiveCampaign}" Text="{Binding CurrentTime}" />
-                    <Button HorizontalAlignment="Left" IsVisible="{Binding CanEnableClock}" Command="{Binding EnableClockCommand}" Content="Włącz moduł zegara" />
-                    <Button HorizontalAlignment="Left" IsVisible="{Binding CanEnableScheduler}" Command="{Binding EnableSchedulerCommand}" Content="Włącz harmonogram zdarzeń" />
-                    <StackPanel Spacing="8" IsVisible="{Binding CanAdvanceTime}">
-                        <TextBlock Text="Przesuń czas" />
-                        <TextBox Text="{Binding AdvanceMinutes}" PlaceholderText="Minuty" />
-                        <TextBox Text="{Binding AdvanceReason}" PlaceholderText="Powód, np. podróż do strażnicy" />
-                        <Button HorizontalAlignment="Left" Command="{Binding AdvanceTimeCommand}" Content="Przesuń i zapisz" />
-                    </StackPanel>
-                    <StackPanel Spacing="8" IsVisible="{Binding CanScheduleWorldEvent}">
-                        <Separator />
-                        <TextBlock Text="Zaplanuj zdarzenie świata" />
-                        <TextBox Text="{Binding ScheduledEventDelayMinutes}" PlaceholderText="Za ile minut" />
-                        <TextBox Text="{Binding ScheduledEventTitle}" PlaceholderText="Nazwa zdarzenia" />
-                        <TextBox Text="{Binding ScheduledEventReason}" PlaceholderText="Powód lub opis" />
-                        <Button HorizontalAlignment="Left" Command="{Binding ScheduleWorldEventCommand}" Content="Zaplanuj" />
-                        <ItemsControl ItemsSource="{Binding ScheduledWorldEvents}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:ScheduledWorldEventItemViewModel">
-                                    <StackPanel Margin="0,4" Spacing="1">
-                                        <TextBlock FontWeight="SemiBold" Text="{Binding Title}" />
-                                        <TextBlock Opacity="0.7" Text="{Binding DueAt}" />
-                                        <TextBlock Opacity="0.7" Text="{Binding Reason}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <Grid Grid.Row="2" RowDefinitions="Auto,*" RowSpacing="8">
-            <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" />
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding History}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:HistoryItemViewModel">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Margin="0,4">
-                            <TextBlock Opacity="0.65" Text="{Binding Sequence}" />
-                            <StackPanel Grid.Column="1" Spacing="1">
-                                <TextBlock FontWeight="SemiBold" Text="{Binding Title}" />
-                                <TextBlock Opacity="0.7" Text="{Binding Description}" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <TextBlock Grid.Column="2" Opacity="0.65" Text="{Binding OccurredAt}" />
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
-    </Grid>
+    <shell:AppShellView />
 </Window>
