@@ -8,6 +8,25 @@
              d:DesignHeight="728"
              x:Class="DungeonApp.Desktop.Features.CampaignLibrary.CampaignLibraryView"
              x:DataType="vm:CampaignLibraryViewModel">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="DungeonWorkspaceGridLineBrush"
+                         Color="{DynamicResource DungeonBorderColor}"
+                         Opacity="0.12" />
+        <Pen x:Key="DungeonWorkspaceGridPen"
+             Brush="{StaticResource DungeonWorkspaceGridLineBrush}"
+             Thickness="1" />
+        <StreamGeometry x:Key="DungeonWorkspaceGridGeometry">M 0,0 L 32,0 M 0,0 L 0,32</StreamGeometry>
+        <DrawingBrush x:Key="DungeonWorkspaceGridPatternBrush"
+                      TileMode="Tile"
+                      SourceRect="0,0,32,32"
+                      DestinationRect="0,0,32,32">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing Geometry="{StaticResource DungeonWorkspaceGridGeometry}"
+                                 Pen="{StaticResource DungeonWorkspaceGridPen}" />
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
+
     <UserControl.Styles>
         <Style Selector="Grid.content-rail">
             <Setter Property="MaxWidth" Value="960" />
@@ -31,7 +50,10 @@
           RowDefinitions="Auto,*"
           Container.Name="CampaignLibrary"
           Container.Sizing="Width">
-        <Border Background="{DynamicResource DungeonSurfaceBrush}"
+        <Border Grid.RowSpan="2"
+                Background="{StaticResource DungeonWorkspaceGridPatternBrush}"
+                IsHitTestVisible="False" />
+        <Border Background="Transparent"
                 BorderBrush="{DynamicResource DungeonBorderBrush}"
                 BorderThickness="0,0,0,1"
                 Height="{DynamicResource DungeonWorkspaceHeaderHeight}">
@@ -42,10 +64,14 @@
                 </StackPanel>
 
                 <Button Grid.Column="1"
+                        MinWidth="200"
+                        VerticalAlignment="Center"
                         Command="{Binding OpenCampaignCommand}"
-                        Content="Otwórz wybraną" />
+                        Content="Otwórz wybraną kampanię" />
 
-                <Button Grid.Column="2" Classes="primary">
+                <Button Grid.Column="2"
+                        Classes="primary"
+                        VerticalAlignment="Center">
                     <Button.Flyout>
                         <Flyout Placement="BottomEdgeAlignedRight">
                             <Border Width="320"
@@ -88,6 +114,7 @@
                                Text="Lokalna biblioteka światów i przygód" />
                     <Button Grid.Column="1"
                             Classes="icon"
+                            VerticalAlignment="Center"
                             Command="{Binding LoadCampaignsCommand}"
                             ToolTip.Tip="Odśwież bibliotekę">
                         <Image Width="{DynamicResource DungeonActionIconSize}"
@@ -113,6 +140,7 @@
                                Text="Lokalna biblioteka światów i przygód" />
                     <Button Grid.Column="1"
                             Classes="icon"
+                            VerticalAlignment="Center"
                             Command="{Binding LoadCampaignsCommand}"
                             ToolTip.Tip="Odśwież bibliotekę">
                         <Image Width="{DynamicResource DungeonActionIconSize}"

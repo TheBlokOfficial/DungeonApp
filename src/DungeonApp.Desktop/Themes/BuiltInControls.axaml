@@ -35,15 +35,23 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
-    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="Button:pointerover">
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
     </Style>
     <Style Selector="Button.primary">
         <Setter Property="Background" Value="{DynamicResource DungeonAccentActionBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
     </Style>
-    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="Button.primary:pointerover">
         <Setter Property="Background" Value="{DynamicResource DungeonAccentColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrightBrush}" />
+    </Style>
+    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrightBrush}" />
     </Style>
     <Style Selector="Button.icon">
         <Setter Property="Width" Value="36" />

@@ -8,6 +8,22 @@
              d:DesignHeight="48"
              x:Class="DungeonApp.Desktop.Shell.TopBar.TopBarView"
              x:DataType="vm:TopBarViewModel">
+    <UserControl.Styles>
+        <Style Selector="Border.header-action-cell">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1,0,0,0" />
+            <Setter Property="Padding" Value="0,1,1,1" />
+            <Setter Property="ClipToBounds" Value="True" />
+        </Style>
+        <Style Selector="Button.header-action">
+            <Setter Property="Width" Value="{DynamicResource DungeonTopBarActionSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonTopBarActionSize}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+    </UserControl.Styles>
+
     <Border Background="{DynamicResource DungeonSurfaceBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,0,1">
@@ -49,12 +65,18 @@
                        Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                        Text="{Binding ContextTitle}" />
 
-            <Button Grid.Column="2" Classes="icon" Width="{DynamicResource DungeonTopBarActionSize}" Height="{DynamicResource DungeonTopBarActionSize}" Background="Transparent" BorderThickness="1,0,0,0" ToolTip.Tip="Szukaj">
-                <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconSearch}" />
-            </Button>
-            <Button Grid.Column="3" Classes="icon" Width="{DynamicResource DungeonTopBarActionSize}" Height="{DynamicResource DungeonTopBarActionSize}" Background="Transparent" BorderThickness="1,0,0,0" ToolTip.Tip="Paleta poleceń">
-                <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconCommand}" />
-            </Button>
+            <Border Grid.Column="2" Classes="header-action-cell">
+                <Button Classes="icon header-action"
+                        ToolTip.Tip="Szukaj">
+                    <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconSearch}" />
+                </Button>
+            </Border>
+            <Border Grid.Column="3" Classes="header-action-cell">
+                <Button Classes="icon header-action"
+                        ToolTip.Tip="Paleta poleceń">
+                    <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconCommand}" />
+                </Button>
+            </Border>
         </Grid>
     </Border>
 </UserControl>
