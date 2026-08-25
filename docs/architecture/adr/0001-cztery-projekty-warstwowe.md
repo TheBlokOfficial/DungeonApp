@@ -5,9 +5,7 @@
 
 ## Kontekst
 
-Solucja zawiera projekty `DungeonApp.Domain`, `DungeonApp.Application`, `DungeonApp.Infrastructure` i `DungeonApp.Desktop`. Należało rozstrzygnąć, czy w obecnej skali jest to użyteczna granica, czy zbędny narzut architektoniczny.
-
-Aplikacja posiada już nietrywialną domenę kampanii, port repozytorium, lokalną trwałość JSON i frontend Avalonia. Każdy z tych obszarów ma inne powody do zmiany i inne wymagania testowe.
+Należało rozstrzygnąć, czy podział na `DungeonApp.Domain`, `DungeonApp.Application`, `DungeonApp.Infrastructure` i `DungeonApp.Desktop` jest w obecnej skali użyteczną granicą, czy zbędnym narzutem. Domena kampanii, port repozytorium, lokalna trwałość JSON i frontend Avalonia mają różne powody do zmiany i różne wymagania testowe.
 
 ## Decyzja
 

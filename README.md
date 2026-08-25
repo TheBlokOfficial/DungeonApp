@@ -25,12 +25,11 @@ Tests -> Domain
 
 ## Dokumentacja projektowa
 
-- [Wizja i fundamenty](docs/00-wizja-i-fundamenty.md)
-- [Modułowy rdzeń kampanii](docs/01-modularny-rdzen-kampanii.md)
-- [Kierunek wizualny i stabilność UI](docs/02-kierunek-wizualny-i-stabilnosc-ui.md)
-- [Architektura informacji i layout aplikacji](docs/03-architektura-informacji-i-layout.md)
-- [Architektura komponentów UI](docs/04-architektura-komponentow-ui.md)
-- [Kontrakt UI v1](docs/05-kontrakt-ui-v1.md)
-- [Plan implementacji UI](docs/06-plan-implementacji-ui.md)
-- [ADR-0001: Cztery projekty warstwowe](docs/adr/0001-cztery-projekty-warstwowe.md)
-- [ADR-0002: Lokalny zapis kampanii v1](docs/adr/0002-lokalny-zapis-kampanii-v1.md)
+Zobacz [docs/README.md](docs/README.md) po pełny indeks. Struktura:
+
+```text
+docs/
+  product/        # wizja i fundamenty produktu
+  architecture/    # rdzeń domeny kampanii + ADR-y
+  ui/              # kierunek wizualny, IA, architektura komponentów, kontrakt, plan implementacji
+```
