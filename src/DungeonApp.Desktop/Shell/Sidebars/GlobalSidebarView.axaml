@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:navigation="using:DungeonApp.Desktop.Shell.Navigation"
+             xmlns:settings="using:DungeonApp.Desktop.Settings"
              mc:Ignorable="d"
              d:DesignWidth="216"
              d:DesignHeight="728"
@@ -19,6 +20,7 @@
                        VerticalAlignment="Center"
                        Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
                 <TextBlock Grid.Column="1"
+                           Classes="nav-label"
                            VerticalAlignment="Center"
                            TextTrimming="CharacterEllipsis"
                            ToolTip.Tip="{Binding Label}"
@@ -27,12 +29,32 @@
         </DataTemplate>
     </UserControl.Resources>
 
+    <UserControl.Styles>
+        <!-- In the compact variant only icons + tooltips remain; see docs/ui/information-architecture.md -->
+        <Style Selector="Border.compact TextBlock.nav-label">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="Button.nav-button">
+            <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.nav-button:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+        </Style>
+    </UserControl.Styles>
+
     <Border Background="{DynamicResource DungeonSurfaceBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
-            BorderThickness="0,0,1,0">
-        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*,40">
+            BorderThickness="0,0,1,0"
+            Classes.compact="{Binding IsCompact}">
+        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*,40,40">
             <TextBlock Margin="8,0"
-                       Classes="eyebrow"
+                       Classes="eyebrow nav-label"
                        Foreground="{DynamicResource DungeonTextMutedBrush}"
                        LetterSpacing="1"
                        VerticalAlignment="Center"
@@ -82,7 +104,51 @@
                 </ListBox.Styles>
             </ListBox>
 
-            <ContentControl Grid.Row="3" Content="{Binding SettingsItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" Margin="8,0" />
+            <Button Grid.Row="3"
+                    Classes="nav-button"
+                    Content="{Binding SettingsItem}"
+                    ContentTemplate="{StaticResource NavigationItemTemplate}">
+                <Button.Flyout>
+                    <Flyout Placement="RightEdgeAlignedTop">
+                        <StackPanel DataContext="{Binding QuickSettings}"
+                                    x:DataType="settings:QuickSettingsViewModel"
+                                    Width="200"
+                                    Spacing="8">
+                            <TextBlock Classes="eyebrow" Text="WIELKOŚĆ INTERFEJSU" />
+                            <Button Classes.primary="{Binding IsSmallSelected}"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding SelectSmallCommand}"
+                                    Content="Mały" />
+                            <Button Classes.primary="{Binding IsMediumSelected}"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding SelectMediumCommand}"
+                                    Content="Średni" />
+                            <Button Classes.primary="{Binding IsLargeSelected}"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding SelectLargeCommand}"
+                                    Content="Duży" />
+                        </StackPanel>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+
+            <Button Grid.Row="4"
+                    Classes="nav-button"
+                    Command="{Binding ToggleSidebarVariantCommand}"
+                    ToolTip.Tip="{Binding ToggleActionLabel}">
+                <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
+                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                           Height="{DynamicResource DungeonActionIconSize}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Source="{StaticResource DungeonIconChevronRight}" />
+                    <TextBlock Grid.Column="1"
+                               Classes="nav-label"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Text="{Binding ToggleActionLabel}" />
+                </Grid>
+            </Button>
         </Grid>
     </Border>
 </UserControl>

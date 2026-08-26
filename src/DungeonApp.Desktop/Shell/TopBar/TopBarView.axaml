@@ -28,6 +28,9 @@
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,0,1">
         <Grid>
+            <!-- Column 0 must stay bound to DungeonSidebarWidth (same resource AppShellView's
+                 sidebar column and StatusBarView use) so the brand slot lines up with the
+                 sidebar below, including when its variant (full/compact) changes. -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
                 <ColumnDefinition Width="*" />

@@ -31,6 +31,9 @@
         <Style Selector="Grid.content-rail">
             <Setter Property="MaxWidth" Value="960" />
         </Style>
+        <!-- Query values are literals parsed by the XAML compiler and can't reference a
+             resource. Keep in sync with DungeonApp.Desktop.Themes.WorkspaceBreakpoints
+             (StandardMinWidth / WideMinWidth), which mirrors docs/ui/contract.md. -->
         <ContainerQuery Name="CampaignLibrary" Query="min-width:960">
             <Style Selector="Grid.content-rail">
                 <Setter Property="HorizontalAlignment" Value="Left" />

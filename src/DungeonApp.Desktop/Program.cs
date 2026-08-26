@@ -6,7 +6,8 @@ namespace DungeonApp.Desktop;
 
 class Program
 {
-    public static UiScaleProfile RequestedUiScaleProfile { get; private set; } = UiScaleProfile.Medium;
+    /// <summary>One-run override from <c>--ui-scale=</c>; null means "use the persisted setting".</summary>
+    public static UiScaleProfile? UiScaleProfileOverride { get; private set; }
 
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
@@ -14,7 +15,7 @@ class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        RequestedUiScaleProfile = UiScaleProfiles.Parse(args);
+        UiScaleProfileOverride = UiScaleProfiles.Parse(args);
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

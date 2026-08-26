@@ -2,12 +2,21 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using DungeonApp.Desktop.Shell.Sidebars;
 
 namespace DungeonApp.Desktop.Themes;
 
 public static class UiScaleProfiles
 {
-    public static UiScaleProfile Parse(IEnumerable<string> arguments)
+    /// <summary>Sidebar width in its compact variant, independent of the active scale profile.</summary>
+    private const double CompactSidebarWidth = 56;
+
+    /// <summary>
+    /// Parses a one-run <c>--ui-scale=</c> override from the command line. Returns null when no
+    /// override was given, so the caller falls back to the persisted
+    /// <see cref="DungeonApp.Desktop.Settings.AppSettings"/> profile instead of a hardcoded default.
+    /// </summary>
+    public static UiScaleProfile? Parse(IEnumerable<string> arguments)
     {
         foreach (var argument in arguments)
         {
@@ -19,13 +28,13 @@ public static class UiScaleProfiles
 
             return Enum.TryParse<UiScaleProfile>(argument[prefix.Length..], true, out var profile)
                 ? profile
-                : UiScaleProfile.Medium;
+                : null;
         }
 
-        return UiScaleProfile.Medium;
+        return null;
     }
 
-    public static void Apply(Avalonia.Application application, UiScaleProfile profile)
+    public static void Apply(Avalonia.Application application, UiScaleProfile profile, SidebarVariant sidebarVariant)
     {
         var metrics = profile switch
         {
@@ -87,8 +96,10 @@ public static class UiScaleProfiles
         Set(application, "DungeonEmptyMarkFontSize", metrics.BaseFont + 9);
         Set(application, "DungeonDetailInitialFontSize", metrics.BaseFont + 5);
         Set(application, "DungeonDetailTitleFontSize", metrics.BaseFont + 7);
+
+        var sidebarWidth = sidebarVariant == SidebarVariant.Compact ? CompactSidebarWidth : metrics.SidebarWidth;
         Set(application, "DungeonTopBarHeight", new GridLength(metrics.TopBarHeight));
-        Set(application, "DungeonSidebarWidth", new GridLength(metrics.SidebarWidth));
+        Set(application, "DungeonSidebarWidth", new GridLength(sidebarWidth));
         Set(application, "DungeonStatusBarHeight", new GridLength(metrics.StatusBarHeight));
         Set(application, "DungeonWorkspaceHeaderHeight", metrics.WorkspaceHeaderHeight);
         Set(application, "DungeonControlHeight", metrics.ControlHeight);

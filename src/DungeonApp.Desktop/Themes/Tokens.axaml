@@ -37,30 +37,15 @@
     <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
 
-    <x:Double x:Key="DungeonBaseFontSize">15</x:Double>
-    <x:Double x:Key="DungeonNavigationFontSize">15</x:Double>
-    <x:Double x:Key="DungeonHelperFontSize">13</x:Double>
-    <x:Double x:Key="DungeonEyebrowFontSize">11</x:Double>
-    <x:Double x:Key="DungeonStatusFontSize">11</x:Double>
-    <x:Double x:Key="DungeonWorkspaceTitleFontSize">26</x:Double>
-    <x:Double x:Key="DungeonBrandMarkFontSize">18</x:Double>
-    <x:Double x:Key="DungeonCampaignInitialFontSize">17</x:Double>
-    <x:Double x:Key="DungeonEmptyMarkFontSize">24</x:Double>
-    <x:Double x:Key="DungeonDetailInitialFontSize">20</x:Double>
-    <x:Double x:Key="DungeonDetailTitleFontSize">22</x:Double>
-
-    <GridLength x:Key="DungeonTopBarHeight">52</GridLength>
-    <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
-    <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
-    <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
-    <x:Double x:Key="DungeonControlHeight">38</x:Double>
-    <x:Double x:Key="DungeonNavigationRowHeight">42</x:Double>
-    <x:Double x:Key="DungeonCampaignRowHeight">76</x:Double>
-    <x:Double x:Key="DungeonActionIconSize">16</x:Double>
-    <x:Double x:Key="DungeonTopBarActionSize">52</x:Double>
     <x:Double x:Key="DungeonCampaignListMaxHeight">608</x:Double>
-    <GridLength x:Key="DungeonCampaignMasterWidth">760</GridLength>
-    <x:Double x:Key="DungeonMinimumWindowWidth">1024</x:Double>
-    <x:Double x:Key="DungeonMinimumWindowHeight">680</x:Double>
     <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
+
+    <!--
+        Profile-dependent tokens (font sizes, control/row heights, shell dimensions,
+        DungeonSidebarWidth, DungeonCampaignMasterWidth, DungeonMinimumWindowWidth/Height)
+        are NOT declared here. They are the sole responsibility of
+        Themes/UiScaleProfiles.cs, which sets them on Application.Resources before any
+        window is created (see App.axaml.cs Initialize()). Keeping one writer avoids the
+        two sets of numbers drifting apart. See docs/ui/contract.md for the source values.
+    -->
 </ResourceDictionary>

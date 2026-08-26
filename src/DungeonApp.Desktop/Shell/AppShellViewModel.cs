@@ -1,5 +1,7 @@
+using System;
 using System.ComponentModel;
 using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.TopBar;
@@ -8,11 +10,11 @@ namespace DungeonApp.Desktop.Shell;
 
 public sealed class AppShellViewModel
 {
-    public AppShellViewModel(CampaignLibraryViewModel campaignLibrary)
+    public AppShellViewModel(CampaignLibraryViewModel campaignLibrary, AppSettings settings, Action<AppSettings> applyAndPersistSettings)
     {
         CampaignLibrary = campaignLibrary;
         TopBar = new TopBarViewModel("Biblioteka Mistrza Gry");
-        Sidebar = GlobalSidebarViewModel.CreateDefault();
+        Sidebar = new GlobalSidebarViewModel(settings, applyAndPersistSettings);
         StatusBar = new StatusBarViewModel(campaignLibrary.StatusMessage);
 
         CampaignLibrary.PropertyChanged += OnCampaignLibraryPropertyChanged;
