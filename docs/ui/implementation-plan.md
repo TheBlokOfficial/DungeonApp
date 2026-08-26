@@ -9,7 +9,7 @@ Interfejs powstaje pionowymi, działającymi przyrostami: kompozycja widoków, s
 
 ## Faza 1 — shell i biblioteka kampanii
 
-**Status: zaimplementowana.**
+**Status: wycofana.** Ekran biblioteki kampanii oraz logika domenowa, na której się opierał, zostały usunięte jako prototyp (2026-08-26) — zostaną zaprojektowane od nowa, gdy przyjdzie na to czas. Poniższy opis jest zachowany jako punkt odniesienia, nie jako aktualny stan.
 
 - wspólne tokeny kolorów, typografii i bazowych wymiarów;
 - `MainWindow` ograniczony do osadzenia `AppShellView`;

@@ -37,12 +37,11 @@
     <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
 
-    <x:Double x:Key="DungeonCampaignListMaxHeight">608</x:Double>
     <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
 
     <!--
         Profile-dependent tokens (font sizes, control/row heights, shell dimensions,
-        DungeonSidebarWidth, DungeonCampaignMasterWidth, DungeonMinimumWindowWidth/Height)
+        DungeonSidebarWidth, DungeonMinimumWindowWidth/Height)
         are NOT declared here. They are the sole responsibility of
         Themes/UiScaleProfiles.cs, which sets them on Application.Resources before any
         window is created (see App.axaml.cs Initialize()). Keeping one writer avoids the

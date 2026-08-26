@@ -51,7 +51,6 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 64,
                 ControlHeight: 36,
                 NavigationRowHeight: 40,
-                CampaignRowHeight: 72,
                 ActionIconSize: 16),
             UiScaleProfile.Large => new UiMetrics(
                 BaseFont: 17,
@@ -66,7 +65,6 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 76,
                 ControlHeight: 42,
                 NavigationRowHeight: 46,
-                CampaignRowHeight: 84,
                 ActionIconSize: 18),
             _ => new UiMetrics(
                 BaseFont: 15,
@@ -81,7 +79,6 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 68,
                 ControlHeight: 38,
                 NavigationRowHeight: 42,
-                CampaignRowHeight: 76,
                 ActionIconSize: 16)
         };
 
@@ -92,10 +89,6 @@ public static class UiScaleProfiles
         Set(application, "DungeonStatusFontSize", metrics.StatusFont);
         Set(application, "DungeonWorkspaceTitleFontSize", metrics.WorkspaceTitleFont);
         Set(application, "DungeonBrandMarkFontSize", metrics.BaseFont + 3);
-        Set(application, "DungeonCampaignInitialFontSize", metrics.BaseFont + 2);
-        Set(application, "DungeonEmptyMarkFontSize", metrics.BaseFont + 9);
-        Set(application, "DungeonDetailInitialFontSize", metrics.BaseFont + 5);
-        Set(application, "DungeonDetailTitleFontSize", metrics.BaseFont + 7);
 
         var sidebarWidth = sidebarVariant == SidebarVariant.Compact ? CompactSidebarWidth : metrics.SidebarWidth;
         Set(application, "DungeonTopBarHeight", new GridLength(metrics.TopBarHeight));
@@ -104,15 +97,8 @@ public static class UiScaleProfiles
         Set(application, "DungeonWorkspaceHeaderHeight", metrics.WorkspaceHeaderHeight);
         Set(application, "DungeonControlHeight", metrics.ControlHeight);
         Set(application, "DungeonNavigationRowHeight", metrics.NavigationRowHeight);
-        Set(application, "DungeonCampaignRowHeight", metrics.CampaignRowHeight);
         Set(application, "DungeonActionIconSize", metrics.ActionIconSize);
         Set(application, "DungeonTopBarActionSize", metrics.TopBarHeight);
-        Set(application, "DungeonCampaignMasterWidth", new GridLength(profile switch
-        {
-            UiScaleProfile.Small => 720,
-            UiScaleProfile.Large => 840,
-            _ => 760
-        }));
         Set(application, "DungeonMinimumWindowWidth", profile == UiScaleProfile.Large ? 1180d : 1024d);
         Set(application, "DungeonMinimumWindowHeight", profile == UiScaleProfile.Large ? 760d : 680d);
     }
@@ -133,6 +119,5 @@ public static class UiScaleProfiles
         double WorkspaceHeaderHeight,
         double ControlHeight,
         double NavigationRowHeight,
-        double CampaignRowHeight,
         double ActionIconSize);
 }

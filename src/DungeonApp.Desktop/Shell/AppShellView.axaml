@@ -4,7 +4,6 @@
              xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
              xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
-             xmlns:library="using:DungeonApp.Desktop.Features.CampaignLibrary"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
              x:DataType="shell:AppShellViewModel">
 
@@ -27,9 +26,15 @@
                                     Grid.Column="0"
                                     DataContext="{Binding Sidebar}" />
 
-        <library:CampaignLibraryView Grid.Row="1"
-                                     Grid.Column="1"
-                                     DataContext="{Binding CampaignLibrary}" />
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Background="{DynamicResource DungeonBackgroundBrush}">
+            <TextBlock Text="Obszar roboczy"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="{DynamicResource DungeonWorkspaceTitleFontSize}"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
+        </Border>
 
         <statusBar:StatusBarView Grid.Row="2"
                                  Grid.Column="0"

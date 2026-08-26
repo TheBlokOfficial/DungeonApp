@@ -7,9 +7,8 @@ using DungeonApp.Desktop.Themes;
 namespace DungeonApp.Desktop.Settings;
 
 /// <summary>
-/// Reads and writes <see cref="AppSettings"/> as a single JSON file, mirroring the directory
-/// convention and safe-write (temp file + atomic move) pattern used by
-/// DungeonApp.Infrastructure.Campaigns.Persistence.JsonCampaignRepository for campaign data.
+/// Reads and writes <see cref="AppSettings"/> as a single JSON file, using a safe-write
+/// (temp file + atomic move) pattern.
 /// </summary>
 public sealed class AppSettingsStore(string directoryPath)
 {
@@ -20,9 +19,8 @@ public sealed class AppSettingsStore(string directoryPath)
     };
 
     /// <summary>
-    /// Loads persisted settings. A missing or corrupt file is not an error: this is a user
-    /// preference, not campaign data, so it falls back to <see cref="AppSettings.Default"/>
-    /// rather than blocking startup.
+    /// Loads persisted settings. A missing or corrupt file is not an error: it falls back to
+    /// <see cref="AppSettings.Default"/> rather than blocking startup.
     /// </summary>
     public AppSettings Load()
     {
