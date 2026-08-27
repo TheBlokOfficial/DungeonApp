@@ -1,13 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
+using DungeonApp.Core.Modules.Clock;
 using DungeonApp.Desktop.Controls.Workspace;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo;
+using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
 /// <summary>
-/// The only place panel identifiers are spelled out. A static list of stand-ins for now: this
-/// increment builds the window mechanics, not the campaign.
+/// The only place panel identifiers are spelled out, built for one open campaign.
+/// <para>
+/// Per campaign rather than static, because what the desk can offer follows what the campaign has
+/// switched on: a campaign without the clock module has no clock panel to open, and a saved layout
+/// naming one is skipped the same way a layout naming a removed panel is.
+/// </para>
 /// <para>
 /// The default placements tile the desk exactly as it measures in the reference 1280x800 window:
 /// 1032 x 724 DIP at the Medium profile, once the sidebar, top bar and status bar are subtracted.
@@ -16,39 +23,47 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 /// itself is not a whole snap interval.
 /// </para>
 /// </summary>
-public static class PanelCatalog
+public sealed class PanelCatalog
 {
     public const string ClockId = "session.clock";
     public const string PartyId = "session.party";
     public const string HistoryId = "session.history";
 
-    public static IReadOnlyList<WorkspacePanelDescriptor> All { get; } =
-    [
-        new WorkspacePanelDescriptor(
-            PartyId,
-            "Drużyna",
-            "DungeonIconUsers",
-            WorkspacePanelGroup.Session,
-            new PanelPlacement(0, 0, 664, 320),
-            // FluidData: takes whatever space it is given.
-            new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
-            () => new DemoPanelViewModel(
+    private PanelCatalog(IReadOnlyList<WorkspacePanelDescriptor> all) => All = all;
+
+    public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
+
+    public static PanelCatalog For(CampaignSession session)
+    {
+        var descriptors = new List<WorkspacePanelDescriptor>
+        {
+            new(
+                PartyId,
                 "Drużyna",
-                "Atrapa panelu. Prawdziwa lista postaci pojawi się razem z domeną kampanii.")),
+                "DungeonIconUsers",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(0, 0, 664, 320),
+                // FluidData: takes whatever space it is given.
+                new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
+                () => new DemoPanelViewModel(
+                    "Drużyna",
+                    "Atrapa panelu. Prawdziwa lista postaci pojawi się razem z modułem uczestników."))
+        };
 
-        new WorkspacePanelDescriptor(
-            ClockId,
-            "Czas świata",
-            "DungeonIconClock",
-            WorkspacePanelGroup.Session,
-            new PanelPlacement(672, 0, 360, 320),
-            // Bounded 240-360, straight out of the UI contract's panel growth strategies.
-            new PanelConstraints(240, 152, 360, double.PositiveInfinity),
-            () => new DemoPanelViewModel(
+        if (session.Campaign.Modules.TryGet<ClockModule>(out var clock))
+        {
+            descriptors.Add(new WorkspacePanelDescriptor(
+                ClockId,
                 "Czas świata",
-                "Atrapa panelu. Zegar świata wróci razem z modułem czasu.")),
+                "DungeonIconClock",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(672, 0, 360, 320),
+                // Bounded 240-360, straight out of the UI contract's panel growth strategies.
+                new PanelConstraints(240, 200, 360, double.PositiveInfinity),
+                () => new ClockPanelViewModel(session, clock)));
+        }
 
-        new WorkspacePanelDescriptor(
+        descriptors.Add(new WorkspacePanelDescriptor(
             HistoryId,
             "Historia zmian",
             "DungeonIconHistory",
@@ -57,13 +72,16 @@ public static class PanelCatalog
             new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
             () => new DemoPanelViewModel(
                 "Historia zmian",
-                "Atrapa panelu. Wyjaśnialna historia zdarzeń to zadanie warstwy domenowej."))
-    ];
+                "Atrapa panelu. Kronika jest już zapisywana; ten panel jeszcze jej nie czyta.")));
+
+        return new PanelCatalog(descriptors);
+    }
 
     /// <summary>
-    /// Returns null for an identifier the build no longer knows. Callers must treat that as
-    /// "skip this entry", never as an error: a saved layout naming a removed panel has to load.
+    /// Returns null for an identifier this campaign does not offer. Callers must treat that as
+    /// "skip this entry", never as an error: a saved layout naming a panel the campaign no longer
+    /// has - because its module was switched off - still has to load.
     /// </summary>
-    public static WorkspacePanelDescriptor? Find(string id) =>
+    public WorkspacePanelDescriptor? Find(string id) =>
         All.FirstOrDefault(descriptor => descriptor.Id == id);
 }

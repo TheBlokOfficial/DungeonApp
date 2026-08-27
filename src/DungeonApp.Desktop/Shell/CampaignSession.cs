@@ -1,0 +1,58 @@
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using DungeonApp.Core;
+using DungeonApp.Core.Campaigns;
+
+namespace DungeonApp.Desktop.Shell;
+
+/// <summary>
+/// The campaign the GM currently has open, and the one way anything changes it.
+/// <para>
+/// The Core deliberately has no notion of a current campaign, so this is where that lives. Every
+/// module panel runs its operations through <see cref="ExecuteAsync"/> rather than reaching for the
+/// repository, which keeps the three steps that must always happen together in one place: run the
+/// operation, keep the refusal readable, write the result down.
+/// </para>
+/// </summary>
+public sealed class CampaignSession(Campaign campaign, ICampaignRepository repository)
+{
+    public Campaign Campaign { get; } = campaign;
+
+    /// <summary>
+    /// Runs one operation and saves what it changed. Returns null when it went through, or the
+    /// sentence to show the GM when it did not.
+    /// <para>
+    /// Saving after every operation rather than on a timer: the campaign is a local single-user
+    /// document, a save costs milliseconds, and an unsaved table is the one failure the GM cannot
+    /// recover from. A refused operation changed nothing, so it is not written at all.
+    /// </para>
+    /// </summary>
+    public async Task<string?> ExecuteAsync(Action operation)
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        try
+        {
+            operation();
+        }
+        catch (CampaignRuleException refusal)
+        {
+            // The rules said no. Nothing changed, and the module already phrased why.
+            return refusal.Message;
+        }
+
+        try
+        {
+            await repository.SaveAsync(Campaign);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // The change stands in memory and the next successful save will carry it, so this is a
+            // warning rather than a rollback - but the GM has to know the table is not on disk.
+            return "Zmiana nie została zapisana na dysku. Sprawdź dostęp do katalogu kampanii.";
+        }
+
+        return null;
+    }
+}

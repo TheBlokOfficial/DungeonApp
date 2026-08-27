@@ -7,6 +7,7 @@ using System.Windows.Input;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
+using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -21,12 +22,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 /// </summary>
 public sealed class CampaignWorkspaceViewModel : ObservableObject
 {
-    /// <summary>
-    /// A constant while campaigns do not exist yet. It becomes the campaign identifier later, which
-    /// is why the layout file is already keyed by it rather than being a single global file.
-    /// </summary>
-    private const string WorkspaceId = "default";
-
+    private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
 
     private WorkspaceMetrics _metrics = WorkspaceMetrics.Fallback;
@@ -35,9 +31,13 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
     private bool _hasSurface;
     private bool _isFitting;
 
-    public CampaignWorkspaceViewModel(WorkspaceLayoutStore store)
+    public CampaignWorkspaceViewModel(WorkspaceLayoutStore store, CampaignSession campaign)
     {
-        _session = new WorkspaceLayoutSession(store, WorkspaceId, CreateSnapshot);
+        _catalog = PanelCatalog.For(campaign);
+
+        // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
+        // one campaign has no business following them into another.
+        _session = new WorkspaceLayoutSession(store, campaign.Campaign.Id.ToString(), CreateSnapshot);
 
         ResetLayoutCommand = new AsyncCommand(() =>
         {
@@ -148,7 +148,7 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
         if (layout.IsEmpty)
         {
-            foreach (var descriptor in PanelCatalog.All)
+            foreach (var descriptor in _catalog.All)
             {
                 Panels.Add(new WorkspacePanelViewModel(this, descriptor, descriptor.Id, descriptor.DefaultPlacement));
             }
@@ -160,7 +160,7 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
             foreach (var entry in layout.Panels.OrderBy(entry => entry.ZOrder))
             {
                 // A layout naming a panel this build no longer has is skipped, never an error.
-                if (PanelCatalog.Find(entry.DescriptorId) is not { } descriptor)
+                if (_catalog.Find(entry.DescriptorId) is not { } descriptor)
                 {
                     continue;
                 }
@@ -193,7 +193,7 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
             // A module introduced after the layout was saved must not suddenly cover the user's
             // arrangement. Add it to the taskbar in its default geometry instead.
-            foreach (var descriptor in PanelCatalog.All.Where(
+            foreach (var descriptor in _catalog.All.Where(
                          descriptor => Panels.All(panel => panel.Descriptor.Id != descriptor.Id)))
             {
                 var panel = new WorkspacePanelViewModel(this, descriptor, descriptor.Id, descriptor.DefaultPlacement)

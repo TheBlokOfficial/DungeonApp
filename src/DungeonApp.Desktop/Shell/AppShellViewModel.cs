@@ -20,24 +20,32 @@ public sealed class AppShellViewModel : ObservableObject
     private const string CampaignsSectionId = "campaigns";
     private const string CampaignsSectionLabel = "Kampanie";
 
-    private readonly CampaignWorkspaceViewModel _campaignWorkspace;
+    private readonly WorkspaceLayoutStore _layoutStore;
+    private readonly ICampaignRepository _campaigns;
     private readonly CampaignLibraryViewModel _campaignLibrary;
 
     private object _currentWorkspaceContent;
-    private Campaign? _openCampaign;
+
+    /// <summary>
+    /// Both null while no campaign is open, and both replaced on every open: a desk belongs to one
+    /// campaign, so carrying one instance across campaigns would carry the wrong arrangement and the
+    /// wrong panels with it.
+    /// </summary>
+    private CampaignSession? _openCampaign;
+    private CampaignWorkspaceViewModel? _campaignWorkspace;
 
     public AppShellViewModel(
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
         CreateCampaign createCampaign)
     {
+        _layoutStore = layoutStore;
+        _campaigns = campaigns;
+
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected);
         StatusBar = new StatusBarViewModel("Gotowe");
 
-        // Built once and reused, not recreated per navigation: it owns the open panels and the desk
-        // arrangement, so rebuilding it on every visit would silently discard the user's layout.
-        _campaignWorkspace = new CampaignWorkspaceViewModel(layoutStore);
         _campaignLibrary = new CampaignLibraryViewModel(campaigns, createCampaign, OpenCampaignAsync);
 
         // Backstage first. The desk is uncovered by opening a campaign, never before.
@@ -60,11 +68,12 @@ public sealed class AppShellViewModel : ObservableObject
     public Task InitializeAsync() => _campaignLibrary.LoadAsync();
 
     /// <summary>Writes anything the shell has pending. Called from the application's shutdown hooks.</summary>
-    public void FlushPendingState() => _campaignWorkspace.FlushLayout();
+    public void FlushPendingState() => _campaignWorkspace?.FlushLayout();
 
     private Task OpenCampaignAsync(Campaign campaign)
     {
-        _openCampaign = campaign;
+        _openCampaign = new CampaignSession(campaign, _campaigns);
+        _campaignWorkspace = new CampaignWorkspaceViewModel(_layoutStore, _openCampaign);
 
         TopBar.ContextTitle = campaign.Name.Value;
         TopBar.IsCampaignOpen = true;
@@ -77,9 +86,10 @@ public sealed class AppShellViewModel : ObservableObject
     private async Task CloseCampaignAsync()
     {
         // The desk arrangement is written on the way out, the same as on shutdown.
-        _campaignWorkspace.FlushLayout();
+        _campaignWorkspace?.FlushLayout();
 
         _openCampaign = null;
+        _campaignWorkspace = null;
 
         TopBar.ContextTitle = CampaignsSectionLabel;
         TopBar.IsCampaignOpen = false;
@@ -101,7 +111,9 @@ public sealed class AppShellViewModel : ObservableObject
             return;
         }
 
-        TopBar.ContextTitle = _openCampaign?.Name.Value ?? CampaignsSectionLabel;
-        CurrentWorkspaceContent = _openCampaign is null ? _campaignLibrary : _campaignWorkspace;
+        TopBar.ContextTitle = _openCampaign?.Campaign.Name.Value ?? CampaignsSectionLabel;
+        CurrentWorkspaceContent = _campaignWorkspace is null
+            ? _campaignLibrary
+            : _campaignWorkspace;
     }
 }
