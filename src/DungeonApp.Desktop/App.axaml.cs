@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
+using DungeonApp.Core.Modules.Clock;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Settings;
@@ -40,9 +41,10 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // The one place the built-in modules are named. Empty until the first one exists; a campaign
-        // whose save mentions a module missing from here is refused rather than opened incomplete.
-        _modules = new ModuleCatalog();
+        // The one place the built-in modules are named. A campaign whose save mentions a module
+        // missing from here is refused rather than opened incomplete.
+        _modules = new ModuleCatalog()
+            .Register(ClockModule.Id, () => new ClockModule());
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.

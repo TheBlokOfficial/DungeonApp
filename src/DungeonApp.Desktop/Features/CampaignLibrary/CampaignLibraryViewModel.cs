@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Modules.Clock;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.ViewModels;
 
@@ -139,7 +140,9 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            var campaign = await _createCampaign.ExecuteAsync(NewCampaignName);
+            // A fixed set until the campaign creator exists and the GM can choose. Every campaign
+            // wants a clock, so it is the sane temporary default rather than an empty world.
+            var campaign = await _createCampaign.ExecuteAsync(NewCampaignName, [ClockModule.Id]);
 
             NewCampaignName = string.Empty;
             Status = $"Utworzono kampanię „{campaign.Name.Value}”.";
