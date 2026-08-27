@@ -10,6 +10,7 @@ src/
   DungeonApp.Desktop/   # Aplikacja Avalonia — shell, sidebar, ustawienia, motyw
 tests/
   DungeonApp.Core.Tests/
+  DungeonApp.Desktop.Tests/
 docs/                   # Ustalenia projektowe
 ```
 
@@ -18,7 +19,8 @@ testowalna bez okna. Granicy pilnuje test architektoniczny, który odrzuca każd
 referencję do Avalonia w `Core`.
 
 Poprzednia warstwa domenowa była prototypem i została usunięta. `Core` powstaje od nowa,
-przyrostami — patrz [wizja i fundamenty](docs/product/vision.md).
+przyrostami — patrz [wizja i fundamenty](docs/product/vision.md). Aktualny stan prac i to,
+co jest następne, opisuje [Co dalej](docs/product/roadmap.md).
 
 ## Dokumentacja projektowa
 
@@ -26,6 +28,6 @@ Zobacz [docs/README.md](docs/README.md) po pełny indeks. Struktura:
 
 ```text
 docs/
-  product/  # wizja i fundamenty produktu
+  product/  # wizja i fundamenty produktu, stan prac
   ui/       # kierunek wizualny, IA, architektura komponentów, kontrakt, plan implementacji
 ```

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-DungeonApp is a desktop application (C# + Avalonia, .NET 10) for a tabletop RPG Game Master. It will keep a consistent campaign state and automate rule bookkeeping, while leaving the actual session traditional (conversation, paper character sheets, physical dice). Project docs (in Polish) live under `docs/` — see [docs/README.md](docs/README.md) for the index. Start with `docs/product/vision.md` for product vision.
+DungeonApp is a desktop application (C# + Avalonia, .NET 10) for a tabletop RPG Game Master. It will keep a consistent campaign state and automate rule bookkeeping, while leaving the actual session traditional (conversation, paper character sheets, physical dice). Project docs (in Polish) live under `docs/` — see [docs/README.md](docs/README.md) for the index. Start with `docs/product/vision.md` for product vision and `docs/product/roadmap.md` for the current state, what is next and why.
 
 **Current state:** the original domain/application/infrastructure prototype was deliberately removed. `DungeonApp.Core` is being rebuilt from scratch in small increments and now holds campaign identity, the campaign itself with its modules, journal and event bus, four built-in modules (`core.clock`, `core.scheduler`, `core.party`, `core.dice`), and the JSON store under `Core/Persistence`. Do not resurrect the old design from git history without checking with the user first.
 

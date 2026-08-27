@@ -60,6 +60,8 @@ Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i
 
 ## Faza 3 — kreator kampanii
 
+**Status: częściowo, poza kreatorem (2026-08-27).** Wybór modułów działa, ale mieszka w karcie „Nowa kampania” na zapleczu, nie w wieloetapowym kreatorze: `CampaignLibraryViewModel` buduje listę z `ModuleCatalog.Manifests`, a moduł wciągnięty przez zależność jest pokazany jako zaznaczony i zablokowany, z podpowiedzią nazywającą, co go trzyma. Zamiana na pełny kreator ma sens dopiero razem z paczkami zawartości i rulesetem — patrz [Co dalej](../product/roadmap.md).
+
 - stabilny układ kroków: podstawy, ruleset i zawartość, moduły, podsumowanie;
 - zapis szkicu od pierwszego kroku;
 - stała strefa akcji `Wstecz`/`Dalej`;
@@ -67,6 +69,8 @@ Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i
 - filtrowanie kompatybilnych paczek i modułów przez `Application`.
 
 ## Faza 4 — workspace kampanii i dashboard sesji
+
+**Status: pulpit działa na realnych modułach (2026-08-27).** Biurko składa się z paneli budowanych per kampania (`PanelCatalog.For`): drużyna, czas świata, kości, harmonogram i kronika. Panel jest oferowany tylko wtedy, gdy kampania ma odpowiedni moduł, a zapisany układ nazywający panel nieistniejący jest pomijany, nie traktowany jako błąd. Żaden panel nie zna reguł — prosi moduł i pokazuje jego odpowiedź, łącznie z treścią odmowy. Zostają warianty dashboardu i notatki.
 
 - przełączenie topbara i sidebara na kontekst otwartej kampanii;
 - dashboard w wariantach `Compact`/`Standard`/`Wide`;
@@ -94,4 +98,6 @@ Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i
 
 ## Najbliższy krok
 
-Faza 2 przed pełnym kreatorem. Router kontekstów i trwały stan okna są potrzebne zarówno kreatorowi, jak i workspace'owi kampanii — pominięcie tej granicy ponownie skupiłoby odpowiedzialności w jednym ViewModelu.
+Konsola sesji — jedyne ogniwo przepływu z wizji, którego brakuje: MG nie ma jak zapisać faktu własnymi słowami, choć kronika już rozróżnia wpis modułu od wpisu MG-a.
+
+Router kontekstów i trwały stan okna z fazy 2 pozostają do zrobienia i są warunkiem pełnego kreatora — pominięcie tej granicy ponownie skupiłoby odpowiedzialności w jednym ViewModelu. Pełny obraz pozostałych prac wraz z kontekstem decyzji: [Co dalej](../product/roadmap.md).
