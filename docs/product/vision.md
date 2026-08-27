@@ -92,6 +92,7 @@ Pierwszy pionowy wycinek: ekran aktywnej sesji i przepływ zmiana czasu → dzia
 - Komunikacja modułów: bezpośrednie, typowane wywołania dla zapytań i poleceń; zdarzenia wyłącznie do ogłaszania faktów dokonanych.
 - Silnik liczy, MG zatwierdza, aplikacja nigdy nie blokuje. Blokada zarezerwowana dla operacji nieodwracalnych, nie dla reguł gry.
 - Przedmiot w kampanii to referencja do definicji z paczki plus zamknięty zbiór nadpisań instancji. Warianty są definicjami, nie nadpisaniami.
+- Rzut kością jest modułem bez stanu: wynik to fakt trafiający do kroniki, nie stan kampanii. Zapis rzutu (`k20`, `2k6+3`) zna kości i jeden płaski modyfikator — znaczenie modyfikatora należy do rulesetu i świadomie nie mieszka w module.
 - Ruleset: słownik statystyk, schemat zawartości, tabele i prezentacja jako dane; procedury rozstrzygania jako kod. Pierwszy ruleset w całości w kodzie, obliczenia adresowane po nazwie — to zostawia drogę do przeniesienia ich do danych bez zmiany dla konsumentów.
 
 ## Decyzje otwarte

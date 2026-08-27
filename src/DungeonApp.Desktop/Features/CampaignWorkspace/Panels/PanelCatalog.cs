@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using DungeonApp.Core.Modules.Clock;
+using DungeonApp.Core.Modules.Dice;
 using DungeonApp.Core.Modules.Party;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler;
@@ -26,11 +28,18 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 /// outer margin. A trailing panel reaches the real surface edge even when the runtime surface extent
 /// itself is not a whole snap interval.
 /// </para>
+/// <para>
+/// The tiling assumes the full set: party and chronicle on the left, the clock, the dice and the
+/// schedule stacked on the right. A campaign missing a module leaves that panel's space empty
+/// rather than reflowing the rest - the desk is arranged by hand from the first gesture onwards,
+/// and a layout that rearranged itself behind the GM would be worse than a gap.
+/// </para>
 /// </summary>
 public sealed class PanelCatalog
 {
     public const string ClockId = "session.clock";
     public const string SchedulerId = "session.scheduler";
+    public const string DiceId = "session.dice";
     public const string PartyId = "session.party";
     public const string HistoryId = "session.history";
 
@@ -64,7 +73,7 @@ public sealed class PanelCatalog
                 "Czas świata",
                 "DungeonIconClock",
                 WorkspacePanelGroup.Session,
-                new PanelPlacement(672, 0, 360, 320),
+                new PanelPlacement(672, 0, 360, 200),
                 // Bounded 240-360, straight out of the UI contract's panel growth strategies.
                 new PanelConstraints(240, 200, 360, double.PositiveInfinity),
                 () => new ClockPanelViewModel(session, clock)));
@@ -78,10 +87,22 @@ public sealed class PanelCatalog
                     "Harmonogram",
                     "DungeonIconHistory",
                     WorkspacePanelGroup.World,
-                    new PanelPlacement(672, 328, 360, 396),
+                    new PanelPlacement(672, 456, 360, 268),
                     new PanelConstraints(280, 240, double.PositiveInfinity, double.PositiveInfinity),
                     () => new SchedulerPanelViewModel(session, scheduler, clock)));
             }
+        }
+
+        if (session.Campaign.Modules.TryGet<DiceModule>(out var dice))
+        {
+            descriptors.Add(new WorkspacePanelDescriptor(
+                DiceId,
+                "Kości",
+                "DungeonIconBoxes",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(672, 208, 360, 240),
+                new PanelConstraints(280, 200, 480, double.PositiveInfinity),
+                () => new DicePanelViewModel(session, dice)));
         }
 
         // Always offered. The chronicle belongs to the campaign itself, not to any module, so

@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dice="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice"
+             xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
+             x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice.DicePanelView"
+             x:DataType="dice:DicePanelViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16" Spacing="10">
+            <TextBlock Classes="eyebrow" Text="OSTATNI RZUT" />
+
+            <!-- The result alone, big; the arithmetic sits under it. Tabular figures, because the
+                 reading changes with every roll and must not shuffle sideways. -->
+            <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}"
+                       FontSize="28"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                       Text="{Binding Total}" />
+
+            <!-- Shown, not hidden behind a hover: a result the GM cannot take apart is one they
+                 have to trust rather than read. -->
+            <TextBlock MinHeight="16"
+                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                       IsVisible="{Binding HasRoll}"
+                       Text="{Binding Breakdown}"
+                       TextWrapping="Wrap" />
+
+            <TextBox PlaceholderText="O co rzucasz"
+                     Text="{Binding Reason, Mode=TwoWay}"
+                     Height="{DynamicResource DungeonControlHeight}"
+                     VerticalContentAlignment="Center" />
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                <TextBox PlaceholderText="k20, 2k6+3…"
+                         Text="{Binding Notation, Mode=TwoWay}"
+                         Height="{DynamicResource DungeonControlHeight}"
+                         VerticalContentAlignment="Center">
+                    <TextBox.KeyBindings>
+                        <!-- Enter rolls, the way it would in a dialog. -->
+                        <KeyBinding Gesture="Enter" Command="{Binding RollCommand}" />
+                    </TextBox.KeyBindings>
+                </TextBox>
+                <Button Grid.Column="1"
+                        Padding="14,0"
+                        Height="{DynamicResource DungeonControlHeight}"
+                        Content="Rzuć"
+                        Command="{Binding RollCommand}" />
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding Common}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="panels:PanelActionViewModel">
+                        <Button Margin="0,0,6,6"
+                                Padding="14,0"
+                                Height="{DynamicResource DungeonControlHeight}"
+                                Content="{Binding Label}"
+                                Command="{Binding Command}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Reserved slot: a refusal appears and clears without moving the buttons above it. -->
+            <TextBlock MinHeight="16"
+                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                       Foreground="{DynamicResource DungeonWarningBrush}"
+                       TextWrapping="Wrap"
+                       Text="{Binding Message}" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

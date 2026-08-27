@@ -5,6 +5,7 @@
              xmlns:shellWorkspace="using:DungeonApp.Desktop.Shell.Workspace"
              xmlns:party="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party"
              xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
+             xmlns:dice="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice"
              xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
              xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.WorkspaceWarmupView"
@@ -32,6 +33,9 @@
             </surface:PanelWindow>
             <surface:PanelWindow Canvas.Left="488" Canvas.Top="268" Width="360" Height="320">
                 <scheduler:SchedulerPanelView />
+            </surface:PanelWindow>
+            <surface:PanelWindow Canvas.Top="596" Width="480" Height="128">
+                <dice:DicePanelView />
             </surface:PanelWindow>
         </Canvas>
     </Grid>
