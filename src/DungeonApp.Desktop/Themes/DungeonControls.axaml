@@ -63,52 +63,19 @@
             <ControlTemplate>
                 <!-- No padding or border: the presenter, rendered grid and gesture Canvas share
                      one coordinate space, including the zero-position surface edge. -->
-                <Grid>
-                    <Border Background="{TemplateBinding Background}" />
-                    <workspace:WorkspaceGridBackground
-                        GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
-                        IsHitTestVisible="False" />
-                    <!-- Recessed-desk depth. Kept below ItemsPresenter so panels remain crisp even
-                         when they touch an edge; only the grid surface receives the shading. -->
-                    <Grid IsHitTestVisible="False">
-                        <Border Height="16" VerticalAlignment="Top">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthStrongColor}" />
-                                    <GradientStop Offset="1" Color="Transparent" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <Border Width="16" HorizontalAlignment="Left">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthStrongColor}" />
-                                    <GradientStop Offset="1" Color="Transparent" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <Border Height="12" VerticalAlignment="Bottom">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0%,100%" EndPoint="0%,0%">
-                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthSoftColor}" />
-                                    <GradientStop Offset="1" Color="Transparent" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <Border Width="12" HorizontalAlignment="Right">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="100%,0%" EndPoint="0%,0%">
-                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthSoftColor}" />
-                                    <GradientStop Offset="1" Color="Transparent" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <Border BorderBrush="{DynamicResource DungeonWorkspaceInsetBorderBrush}"
-                                BorderThickness="1" />
+                <!-- One native inset shadow produces a continuous rectangular falloff, including
+                     corners. Border draws it above its background and below child content, so the
+                     grid stays legible and panels touching an edge are never dimmed. -->
+                <Border Background="{TemplateBinding Background}"
+                        BoxShadow="inset 0 0 18 0 #20000000">
+                    <Grid>
+                        <workspace:WorkspaceGridBackground
+                            GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
+                            IsHitTestVisible="False" />
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </Grid>
-                    <ItemsPresenter Name="PART_ItemsPresenter"
-                                    ItemsPanel="{TemplateBinding ItemsPanel}" />
-                </Grid>
+                </Border>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

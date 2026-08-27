@@ -52,14 +52,6 @@
          It must stay Transparent rather than null, because null is not hit-testable. -->
     <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
-    <!-- Workspace depth is deliberately neutral and low-contrast. It separates the recessed desk
-         from the shell without tinting panels or competing with the grid. -->
-    <Color x:Key="DungeonWorkspaceDepthStrongColor">#2E000000</Color>
-    <Color x:Key="DungeonWorkspaceDepthSoftColor">#18000000</Color>
-    <SolidColorBrush x:Key="DungeonWorkspaceInsetBorderBrush"
-                     Color="{DynamicResource DungeonBorderStrongColor}"
-                     Opacity="0.34" />
-
     <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
 
