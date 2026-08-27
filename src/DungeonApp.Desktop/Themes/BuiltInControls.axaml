@@ -34,6 +34,9 @@
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <!-- Button feedback is intentionally immediate throughout the application. Motion belongs
+             to content and panel transitions, not pointer-over or pressed chrome. -->
+        <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <Style Selector="Button:pointerover">
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />

@@ -16,7 +16,8 @@
                     Classes.active="{Binding IsActive}"
                     Command="{Binding SelectCommand}"
                     IsHitTestVisible="{Binding !IsActive}"
-                    RenderTransform="{x:Null}">
+                    RenderTransform="{x:Null}"
+                    Transitions="{x:Null}">
                 <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
@@ -34,27 +35,20 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- Fully custom template: the FluentTheme default Button template reacts to :pointerover
-             and :pressed in ways we don't fully control from the outside (a hover border tint, a
-             press-darken effect) even when its own property values are overridden. Owning the
-             whole visual here means only the states below can ever affect its look. -->
+        <!-- Fully custom and transition-free: navigation feedback changes immediately. Explicit
+             transparent black also prevents a future brush transition from interpolating through
+             Avalonia's named Transparent color, whose RGB channels are white. -->
         <Style Selector="Button.nav-button">
             <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
             <Setter Property="Padding" Value="12,0" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="CornerRadius" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="#00000000" />
             <Setter Property="BorderThickness" Value="4,1,1,1" />
-            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#00000000" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="FontSize" Value="{DynamicResource DungeonNavigationFontSize}" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.10" />
-                    <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
-                </Transitions>
-            </Setter>
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="{TemplateBinding Background}"
