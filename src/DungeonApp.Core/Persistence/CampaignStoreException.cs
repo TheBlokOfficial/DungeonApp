@@ -12,7 +12,19 @@ public enum CampaignStoreFailure
     UnsupportedFormatVersion,
 
     /// <summary>Readable JSON that does not describe a campaign - a missing name, an empty id.</summary>
-    Invalid
+    Invalid,
+
+    /// <summary>
+    /// The manifest and the module state files disagree: a save was interrupted between them. Better
+    /// reported and recovered from a backup than half loaded in silence.
+    /// </summary>
+    TornSave,
+
+    /// <summary>
+    /// The campaign has a module switched on that this build cannot make. Its state is left
+    /// untouched on disk, so an older build refusing to open it costs nothing.
+    /// </summary>
+    UnknownModule
 }
 
 /// <summary>

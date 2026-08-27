@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Modules;
 
 namespace DungeonApp.Core.Persistence;
 
@@ -15,22 +16,23 @@ namespace DungeonApp.Core.Persistence;
 /// smaller files owned by whoever the state belongs to.
 /// <para>
 /// The split follows consistency boundaries rather than subject matter. The manifest and the module
-/// states commit together and share a generation counter; the journal and the desk layout have
-/// their own lifecycles and their own criticality, so they live apart and cannot take the campaign
-/// down with them.
+/// states commit together and share a generation counter, so a save interrupted between them is
+/// detectable instead of silently half loaded. The journal and the desk layout have their own
+/// lifecycles and their own criticality, so they live apart and cannot take the campaign down.
 /// </para>
 /// <para>
-/// A campaign is meant to be a visible, portable document, so the layout is
-/// <c>library/campaign-id/campaign.json</c> with room beside it for modules, backups and, later,
-/// assets. The directory is keyed by id and never by name, so that a rename stays a rename.
+/// State belonging to a module that is switched off, or that this build has never heard of, is
+/// carried through untouched. Disabling a module and enabling it again must not cost the GM its
+/// contents.
 /// </para>
 /// </summary>
-public sealed class JsonCampaignRepository(string libraryPath) : ICampaignRepository
+public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog catalog) : ICampaignRepository
 {
-    /// <summary>Independent of the application version: it only ever tracks the shape of this file.</summary>
+    /// <summary>Independent of the application version: it only ever tracks the shape of these files.</summary>
     public const int CurrentFormatVersion = 1;
 
     private const string DocumentFileName = "campaign.json";
+    private const string ModuleDirectoryName = "modules";
     private const string BackupDirectoryName = "backups";
     private const string BackupGenerationPrefix = "gen-";
     private const int MaxBackups = 5;
@@ -48,45 +50,74 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         var directory = GetCampaignDirectory(campaign.Id);
         Directory.CreateDirectory(directory);
 
-        var destinationPath = Path.Combine(directory, DocumentFileName);
+        var manifestPath = Path.Combine(directory, DocumentFileName);
 
         // Read before write: the counter belongs to the store, not to the campaign, so a storage
         // concept never leaks into the domain model.
-        var previousGeneration = await ReadGenerationAsync(destinationPath, cancellationToken);
+        var previous = await TryReadManifestAsync(manifestPath, cancellationToken);
+        var generation = (previous?.Generation ?? 0) + 1;
 
-        var temporaryPath = $"{destinationPath}.{Guid.NewGuid():N}.tmp";
+        // The whole previous generation is preserved before any of it is overwritten. Restoring
+        // half of one would be worse than restoring nothing.
+        BackUpExisting(directory, previous?.Generation ?? 0);
 
-        var manifest = new CampaignManifest(
-            CurrentFormatVersion,
-            campaign.Id.Value,
-            campaign.Name.Value,
-            campaign.CreatedAt,
-            // Reserved now so the first ruleset and content pack do not force a format migration.
-            Ruleset: null,
-            ContentPacks: [],
-            Generation: previousGeneration + 1,
-            // Empty until modules exist. The shape is fixed here so that adding the first one is an
-            // entry in this list, not a reshaping of the manifest.
-            Modules: []);
+        var entries = new List<ModuleEntry>();
+        var temporaryPaths = new List<string>();
+        string? temporaryManifestPath = null;
 
         try
         {
-            await using (var stream = File.Create(temporaryPath))
+            foreach (var module in campaign.Modules.Active)
             {
-                await JsonSerializer.SerializeAsync(stream, manifest, _serializerOptions, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var manifest = module.Manifest;
+                var state = new ModuleStateDocument(
+                    manifest.Id.Value,
+                    manifest.StateVersion,
+                    generation,
+                    JsonSerializer.SerializeToElement(module.CaptureState(), module.StateType, _serializerOptions));
+
+                temporaryPaths.Add(await WriteModuleStateAsync(directory, manifest.Id, state, cancellationToken));
+                entries.Add(new ModuleEntry(manifest.Id.Value, manifest.StateVersion, generation));
             }
 
-            // Only once the new document exists and serialized cleanly is the old one touched. A
-            // failure above must never cost the GM the last good version.
-            BackUpExisting(destinationPath, previousGeneration);
+            // Everything the campaign is not currently running keeps its recorded entry and its file
+            // exactly as they were, at the generation they were last written at.
+            entries.AddRange(RetainedEntries(previous, campaign.Modules));
 
-            // Written last on purpose: once modules have their own files, the manifest landing is
-            // what marks the whole generation as committed.
-            File.Move(temporaryPath, destinationPath, overwrite: true);
+            var document = new CampaignManifest(
+                CurrentFormatVersion,
+                campaign.Id.Value,
+                campaign.Name.Value,
+                campaign.CreatedAt,
+                // Reserved so the first ruleset and content pack do not force a format migration.
+                Ruleset: null,
+                ContentPacks: [],
+                Generation: generation,
+                ActiveModules: [.. campaign.Modules.Active.Select(module => module.Manifest.Id.Value)],
+                Modules: entries);
+
+            temporaryManifestPath = await WriteTemporaryAsync(manifestPath, document, cancellationToken);
+
+            foreach (var temporaryPath in temporaryPaths)
+            {
+                File.Move(temporaryPath, StripTemporarySuffix(temporaryPath), overwrite: true);
+            }
+
+            // The manifest lands last. Its arrival is what marks the whole generation as committed,
+            // and what a torn save is measured against.
+            File.Move(temporaryManifestPath, manifestPath, overwrite: true);
         }
         finally
         {
-            if (File.Exists(temporaryPath))
+            // The manifest's own temporary belongs here too: a move that fails partway through the
+            // module files would otherwise leave it behind for the next save to trip over.
+            IEnumerable<string> leftovers = temporaryManifestPath is null
+                ? temporaryPaths
+                : [.. temporaryPaths, temporaryManifestPath];
+
+            foreach (var temporaryPath in leftovers.Where(File.Exists))
             {
                 File.Delete(temporaryPath);
             }
@@ -95,11 +126,25 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
 
     public async Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default)
     {
-        var path = Path.Combine(GetCampaignDirectory(id), DocumentFileName);
+        var directory = GetCampaignDirectory(id);
+        var manifestPath = Path.Combine(directory, DocumentFileName);
 
-        return File.Exists(path) ? await ReadAsync(path, cancellationToken) : null;
+        if (!File.Exists(manifestPath))
+        {
+            return null;
+        }
+
+        var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
+        var name = ValidateManifest(manifest, manifestPath);
+        var modules = await RestoreModulesAsync(directory, manifest, manifestPath, cancellationToken);
+
+        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, modules);
     }
 
+    /// <summary>
+    /// Reads manifests only. Drawing the shelf must not cost the state of every module in every
+    /// campaign, and a campaign whose module state is torn still deserves to be listed.
+    /// </summary>
     public async Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
     {
         if (!Directory.Exists(libraryPath))
@@ -113,17 +158,19 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var path = Path.Combine(directory, DocumentFileName);
+            var manifestPath = Path.Combine(directory, DocumentFileName);
 
-            if (!File.Exists(path))
+            if (!File.Exists(manifestPath))
             {
                 continue;
             }
 
             try
             {
-                var campaign = await ReadAsync(path, cancellationToken);
-                summaries.Add(new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt));
+                var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
+                var name = ValidateManifest(manifest, manifestPath);
+
+                summaries.Add(new CampaignSummary(new CampaignId(manifest.Id), name, manifest.CreatedAt));
             }
             catch (CampaignStoreException)
             {
@@ -138,12 +185,8 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
             .ToArray();
     }
 
-    private async Task<Campaign> ReadAsync(string path, CancellationToken cancellationToken)
+    private CampaignName ValidateManifest(CampaignManifest manifest, string path)
     {
-        var manifest = await ReadManifestAsync(path, cancellationToken)
-            ?? throw new CampaignStoreException(
-                CampaignStoreFailure.Unreadable, $"The campaign document at {path} is empty.");
-
         // A newer format is refused whole. Guessing at fields a future build added is exactly how a
         // partial read silently drops half a campaign.
         if (manifest.FormatVersion > CurrentFormatVersion)
@@ -166,16 +209,187 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
                 CampaignStoreFailure.Invalid, $"The campaign document at {path} has no usable name.");
         }
 
-        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt);
+        return name;
     }
 
-    private async Task<CampaignManifest?> ReadManifestAsync(string path, CancellationToken cancellationToken)
+    private async Task<CampaignModules> RestoreModulesAsync(
+        string directory,
+        CampaignManifest manifest,
+        string manifestPath,
+        CancellationToken cancellationToken)
+    {
+        var active = new List<ICampaignModule>();
+
+        foreach (var rawId in manifest.ActiveModules ?? [])
+        {
+            if (!ModuleId.TryCreate(rawId, out var id))
+            {
+                throw new CampaignStoreException(
+                    CampaignStoreFailure.Invalid, $"The campaign at {manifestPath} names an unusable module '{rawId}'.");
+            }
+
+            // Refused rather than skipped: opening a campaign without a module it is supposed to be
+            // running would quietly show the GM an incomplete world. The state file is untouched,
+            // so a build that has the module can still open it.
+            if (!catalog.Knows(id))
+            {
+                throw new CampaignStoreException(
+                    CampaignStoreFailure.UnknownModule,
+                    $"The campaign at {manifestPath} needs module '{id}', which is not part of this build.");
+            }
+
+            active.Add(catalog.Create(id));
+        }
+
+        // Wired up first, filled second: a module's activation may reach for a dependency, but must
+        // never depend on its own stored state having arrived yet.
+        var modules = CampaignModules.Activate(active);
+
+        foreach (var module in modules.Active)
+        {
+            await RestoreModuleStateAsync(directory, module, manifest, manifestPath, cancellationToken);
+        }
+
+        return modules;
+    }
+
+    private async Task RestoreModuleStateAsync(
+        string directory,
+        ICampaignModule module,
+        CampaignManifest manifest,
+        string manifestPath,
+        CancellationToken cancellationToken)
+    {
+        var id = module.Manifest.Id;
+
+        var entry = (manifest.Modules ?? []).FirstOrDefault(candidate => candidate.Id == id.Value)
+            ?? throw new CampaignStoreException(
+                CampaignStoreFailure.TornSave,
+                $"The campaign at {manifestPath} runs module '{id}' but records no state for it.");
+
+        var statePath = GetModuleStatePath(directory, id);
+
+        if (!File.Exists(statePath))
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.TornSave, $"The state file for module '{id}' is missing.");
+        }
+
+        ModuleStateDocument? document;
+
+        try
+        {
+            await using var stream = File.OpenRead(statePath);
+            document = await JsonSerializer.DeserializeAsync<ModuleStateDocument>(
+                stream, _serializerOptions, cancellationToken);
+        }
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.Unreadable, $"Could not read the state of module '{id}'.", ex);
+        }
+
+        if (document is null)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.Unreadable, $"The state file for module '{id}' is empty.");
+        }
+
+        // The whole point of the counter: a file left behind by an interrupted save disagrees with
+        // the manifest, and says so instead of loading as if it were current.
+        if (document.Generation != entry.Generation)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.TornSave,
+                $"Module '{id}' is stored at generation {document.Generation} but the manifest "
+                + $"expects {entry.Generation}. The save was interrupted.");
+        }
+
+        object? state;
+
+        try
+        {
+            state = document.State.Deserialize(module.StateType, _serializerOptions);
+        }
+        catch (JsonException ex)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.Invalid, $"The stored state of module '{id}' does not fit its type.", ex);
+        }
+
+        if (state is null)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.Invalid, $"The stored state of module '{id}' is null.");
+        }
+
+        // The recorded version, not the current one: migrating an older shape is the module's job.
+        module.RestoreState(state, document.StateVersion);
+    }
+
+    private static IEnumerable<ModuleEntry> RetainedEntries(CampaignManifest? previous, CampaignModules active) =>
+        (previous?.Modules ?? [])
+            .Where(entry => !ModuleId.TryCreate(entry.Id, out var id) || !active.Contains(id));
+
+    private async Task<string> WriteModuleStateAsync(
+        string directory,
+        ModuleId id,
+        ModuleStateDocument state,
+        CancellationToken cancellationToken)
+    {
+        Directory.CreateDirectory(Path.Combine(directory, ModuleDirectoryName));
+
+        return await WriteTemporaryAsync(GetModuleStatePath(directory, id), state, cancellationToken);
+    }
+
+    /// <summary>
+    /// Serializes beside the destination and returns the temporary path. Nothing is replaced until
+    /// every file in the generation has serialized cleanly.
+    /// </summary>
+    private async Task<string> WriteTemporaryAsync<TDocument>(
+        string destinationPath,
+        TDocument document,
+        CancellationToken cancellationToken)
+    {
+        var temporaryPath = destinationPath + TemporarySuffix;
+
+        await using var stream = File.Create(temporaryPath);
+        await JsonSerializer.SerializeAsync(stream, document, _serializerOptions, cancellationToken);
+
+        return temporaryPath;
+    }
+
+    private async Task<CampaignManifest?> TryReadManifestAsync(string path, CancellationToken cancellationToken)
+    {
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        try
+        {
+            return await ReadManifestAsync(path, cancellationToken);
+        }
+        catch (CampaignStoreException)
+        {
+            // An unreadable manifest is about to be replaced and has already been backed up. It
+            // cannot be trusted to say which generation the module files are at, so the counter
+            // restarts and every active module is rewritten at the new one; anything retained keeps
+            // whatever the unreadable manifest would have said, which is nothing.
+            return null;
+        }
+    }
+
+    private async Task<CampaignManifest> ReadManifestAsync(string path, CancellationToken cancellationToken)
     {
         try
         {
             await using var stream = File.OpenRead(path);
-            return await JsonSerializer.DeserializeAsync<CampaignManifest>(
+            var manifest = await JsonSerializer.DeserializeAsync<CampaignManifest>(
                 stream, _serializerOptions, cancellationToken);
+
+            return manifest ?? throw new CampaignStoreException(
+                CampaignStoreFailure.Unreadable, $"The campaign document at {path} is empty.");
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
         {
@@ -185,45 +399,18 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
     }
 
     /// <summary>
-    /// The generation the stored campaign is currently at, or zero when there is nothing readable
-    /// there yet.
-    /// <para>
-    /// Treating an unreadable manifest as generation zero is safe only while modules have no state
-    /// files of their own. Once they do, a manifest that cannot be read must not be allowed to
-    /// restart the counter underneath them.
-    /// </para>
+    /// Copies the manifest and every module state file into one generation directory, so a backup
+    /// can be restored as the consistent set it was.
     /// </summary>
-    private async Task<long> ReadGenerationAsync(string path, CancellationToken cancellationToken)
+    private static void BackUpExisting(string campaignDirectory, long generation)
     {
-        if (!File.Exists(path))
-        {
-            return 0;
-        }
+        var manifestPath = Path.Combine(campaignDirectory, DocumentFileName);
 
-        try
-        {
-            var manifest = await ReadManifestAsync(path, cancellationToken);
-            return manifest?.Generation ?? 0;
-        }
-        catch (CampaignStoreException)
-        {
-            return 0;
-        }
-    }
-
-    /// <summary>
-    /// Preserves the generation about to be replaced, as a set rather than as loose files: once
-    /// modules have their own state files, restoring half a generation would be worse than not
-    /// restoring at all.
-    /// </summary>
-    private static void BackUpExisting(string destinationPath, long generation)
-    {
-        if (!File.Exists(destinationPath))
+        if (!File.Exists(manifestPath))
         {
             return;
         }
 
-        var campaignDirectory = Path.GetDirectoryName(destinationPath)!;
         var backupRoot = Path.Combine(campaignDirectory, BackupDirectoryName);
 
         // Zero padded so the plain name sort is also the generation order.
@@ -234,7 +421,20 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         try
         {
             Directory.CreateDirectory(backupDirectory);
-            File.Copy(destinationPath, Path.Combine(backupDirectory, DocumentFileName), overwrite: true);
+            File.Copy(manifestPath, Path.Combine(backupDirectory, DocumentFileName), overwrite: true);
+
+            var moduleDirectory = Path.Combine(campaignDirectory, ModuleDirectoryName);
+
+            if (Directory.Exists(moduleDirectory))
+            {
+                var backupModules = Path.Combine(backupDirectory, ModuleDirectoryName);
+                Directory.CreateDirectory(backupModules);
+
+                foreach (var file in Directory.EnumerateFiles(moduleDirectory, "*.json"))
+                {
+                    File.Copy(file, Path.Combine(backupModules, Path.GetFileName(file)), overwrite: true);
+                }
+            }
 
             var stale = Directory
                 .EnumerateDirectories(backupRoot, BackupGenerationPrefix + "*")
@@ -252,7 +452,15 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         }
     }
 
+    private const string TemporarySuffix = ".writing.tmp";
+
+    private static string StripTemporarySuffix(string temporaryPath) =>
+        temporaryPath[..^TemporarySuffix.Length];
+
     private string GetCampaignDirectory(CampaignId id) => Path.Combine(libraryPath, id.Value.ToString("D"));
+
+    private static string GetModuleStatePath(string campaignDirectory, ModuleId id) =>
+        Path.Combine(campaignDirectory, ModuleDirectoryName, $"{id.Value}.json");
 
     private sealed record CampaignManifest(
         int FormatVersion,
@@ -262,12 +470,22 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         string? Ruleset,
         IReadOnlyList<string>? ContentPacks,
         long Generation,
+        IReadOnlyList<string>? ActiveModules,
         IReadOnlyList<ModuleEntry>? Modules);
 
     /// <summary>
-    /// What the manifest remembers about one module's state file: which build's shape it is in, and
-    /// which generation it was last written at. The second half is what makes a torn save
-    /// detectable instead of silent.
+    /// What the manifest remembers about one module's state file: which shape it is in, and which
+    /// generation it was last written at. The second half is what makes a torn save detectable.
     /// </summary>
     private sealed record ModuleEntry(string Id, int StateVersion, long Generation);
+
+    /// <summary>
+    /// The envelope around a module's own state. The state itself stays an opaque element until the
+    /// module's declared type is known, so the store never needs to understand what it holds.
+    /// </summary>
+    private sealed record ModuleStateDocument(
+        string ModuleId,
+        int StateVersion,
+        long Generation,
+        JsonElement State);
 }

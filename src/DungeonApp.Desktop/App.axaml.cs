@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Settings;
@@ -15,6 +16,7 @@ namespace DungeonApp.Desktop;
 public partial class App : Avalonia.Application
 {
     private WorkspaceLayoutStore? _layoutStore;
+    private ModuleCatalog? _modules;
     private JsonCampaignRepository? _campaigns;
     private AppShellViewModel? _shell;
 
@@ -37,12 +39,18 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
+        // The one place the built-in modules are named. Empty until the first one exists; a campaign
+        // whose save mentions a module missing from here is refused rather than opened incomplete.
+        _modules = new ModuleCatalog();
+
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
-        _campaigns = new JsonCampaignRepository(Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "DungeonApp",
-            "Campaigns"));
+        _campaigns = new JsonCampaignRepository(
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                "DungeonApp",
+                "Campaigns"),
+            _modules);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -52,7 +60,7 @@ public partial class App : Avalonia.Application
             _shell = new AppShellViewModel(
                 _layoutStore!,
                 _campaigns!,
-                new CreateCampaign(_campaigns!, TimeProvider.System));
+                new CreateCampaign(_campaigns!, _modules!, TimeProvider.System));
 
             desktop.MainWindow = new MainWindow
             {
