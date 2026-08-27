@@ -40,11 +40,13 @@ Zakres symulacji poza aktywną sesją jest kontrolowany przez kampanię i rulese
 
 | Poziom | Odpowiedzialność | Przykłady |
 | --- | --- | --- |
-| **Core aplikacji** | mechanizmy niezależne od mechaniki | kampania, czas, tożsamość encji, historia zdarzeń, zapisy, assety, ładowanie modułów |
+| **Core aplikacji** | mechanizmy niezależne od mechaniki | kampania, moduły i ich aktywacja, kronika, zapisy, kanał ogłoszeń, assety |
 | **Ruleset** | znaczenie statystyk i reguły świata | walka, odporności, magia, progresja, obliczanie obrażeń |
 | **Paczka zawartości** | dane konkretnej kampanii/przygody | bestie, przedmioty, zaklęcia, NPC-e, kupcy, łupy, lokacje |
 
-Core może wprowadzać pojęcia typu `Entity` (trwała tożsamość obiektu w świecie) jako koncept architektoniczny, nie przesądzoną klasę bazową. Core nie zna, czym jest miecz, jego obrażenia ani zasady rzadkości — to należy do rulesetu/paczki.
+Tożsamość rzeczy w świecie **nie należy do core'u** — należy do modułu, który daną rzecz modeluje. Moduł drużyny nadaje i pilnuje tożsamości uczestnika, harmonogram — tożsamości zaplanowanego zdarzenia. Core zna wyłącznie tożsamość kampanii i modułu, bo te dwie są mu potrzebne do złożenia i zapisania kampanii. Wspólna klasa bazowa `Entity` pojawi się dopiero wtedy, gdy dwa moduły będą realnie potrzebowały tego samego, a nie z góry.
+
+Core nie zna, czym jest miecz, jego obrażenia ani zasady rzadkości — to należy do rulesetu/paczki.
 
 Pierwszy ruleset jest świadomie ograniczony i służy weryfikacji core'u zamiast projektowania uniwersalnej abstrakcji z góry.
 

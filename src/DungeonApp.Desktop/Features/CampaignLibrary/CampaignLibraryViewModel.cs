@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Modules.Clock;
+using DungeonApp.Core.Modules.Party;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -157,7 +158,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             // A fixed set until the campaign creator exists and the GM can choose. Every campaign
             // wants a clock, and the scheduler is what makes time worth advancing.
             var campaign = await _createCampaign.ExecuteAsync(
-                NewCampaignName, [ClockModule.Id, SchedulerModule.Id]);
+                NewCampaignName, [ClockModule.Id, SchedulerModule.Id, PartyModule.Id]);
 
             NewCampaignName = string.Empty;
             Status = $"Utworzono kampanię „{campaign.Name.Value}”.";

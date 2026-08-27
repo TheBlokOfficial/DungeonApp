@@ -1,8 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
-             xmlns:demo="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo"
              xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
+             xmlns:party="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party"
              xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
              xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
              xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
@@ -11,8 +11,8 @@
              x:DataType="workspace:CampaignWorkspaceViewModel">
 
     <UserControl.DataTemplates>
-        <DataTemplate DataType="demo:DemoPanelViewModel">
-            <demo:DemoPanelView />
+        <DataTemplate DataType="party:PartyPanelViewModel">
+            <party:PartyPanelView />
         </DataTemplate>
         <DataTemplate DataType="clock:ClockPanelViewModel">
             <clock:ClockPanelView />

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using DungeonApp.Core.Modules.Clock;
+using DungeonApp.Core.Modules.Party;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler;
 using DungeonApp.Desktop.Shell;
 
@@ -41,9 +42,11 @@ public sealed class PanelCatalog
         CampaignSession session,
         IReadOnlyList<ChronicleEntryViewModel> initialChronicle)
     {
-        var descriptors = new List<WorkspacePanelDescriptor>
+        var descriptors = new List<WorkspacePanelDescriptor>();
+
+        if (session.Campaign.Modules.TryGet<PartyModule>(out var party))
         {
-            new(
+            descriptors.Add(new WorkspacePanelDescriptor(
                 PartyId,
                 "Drużyna",
                 "DungeonIconUsers",
@@ -51,10 +54,8 @@ public sealed class PanelCatalog
                 new PanelPlacement(0, 0, 664, 320),
                 // FluidData: takes whatever space it is given.
                 new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
-                () => new DemoPanelViewModel(
-                    "Drużyna",
-                    "Atrapa panelu. Prawdziwa lista postaci pojawi się razem z modułem uczestników."))
-        };
+                () => new PartyPanelViewModel(session, party)));
+        }
 
         if (session.Campaign.Modules.TryGet<ClockModule>(out var clock))
         {

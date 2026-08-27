@@ -3,7 +3,7 @@
              xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
              xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              xmlns:shellWorkspace="using:DungeonApp.Desktop.Shell.Workspace"
-             xmlns:demo="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo"
+             xmlns:party="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party"
              xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
              xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
              xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
@@ -22,7 +22,7 @@
 
         <Canvas Width="1032" Height="724">
             <surface:PanelWindow Width="480" Height="260">
-                <demo:DemoPanelView />
+                <party:PartyPanelView />
             </surface:PanelWindow>
             <surface:PanelWindow Canvas.Left="488" Width="360" Height="260">
                 <clock:ClockPanelView />

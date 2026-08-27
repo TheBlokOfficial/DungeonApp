@@ -7,6 +7,7 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Modules.Clock;
+using DungeonApp.Core.Modules.Party;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -47,7 +48,8 @@ public partial class App : Avalonia.Application
         // missing from here is refused rather than opened incomplete.
         _modules = new ModuleCatalog()
             .Register(ClockModule.Id, () => new ClockModule())
-            .Register(SchedulerModule.Id, () => new SchedulerModule());
+            .Register(SchedulerModule.Id, () => new SchedulerModule())
+            .Register(PartyModule.Id, () => new PartyModule());
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
