@@ -68,6 +68,44 @@
                     <workspace:WorkspaceGridBackground
                         GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
                         IsHitTestVisible="False" />
+                    <!-- Recessed-desk depth. Kept below ItemsPresenter so panels remain crisp even
+                         when they touch an edge; only the grid surface receives the shading. -->
+                    <Grid IsHitTestVisible="False">
+                        <Border Height="16" VerticalAlignment="Top">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthStrongColor}" />
+                                    <GradientStop Offset="1" Color="Transparent" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border Width="16" HorizontalAlignment="Left">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthStrongColor}" />
+                                    <GradientStop Offset="1" Color="Transparent" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border Height="12" VerticalAlignment="Bottom">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,100%" EndPoint="0%,0%">
+                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthSoftColor}" />
+                                    <GradientStop Offset="1" Color="Transparent" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border Width="12" HorizontalAlignment="Right">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="100%,0%" EndPoint="0%,0%">
+                                    <GradientStop Offset="0" Color="{DynamicResource DungeonWorkspaceDepthSoftColor}" />
+                                    <GradientStop Offset="1" Color="Transparent" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border BorderBrush="{DynamicResource DungeonWorkspaceInsetBorderBrush}"
+                                BorderThickness="1" />
+                    </Grid>
                     <ItemsPresenter Name="PART_ItemsPresenter"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
                 </Grid>
