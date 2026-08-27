@@ -21,4 +21,8 @@
     <ItemGroup>
       <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
+    </ItemGroup>
 </Project>
