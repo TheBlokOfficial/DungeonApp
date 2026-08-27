@@ -57,12 +57,6 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
             return Task.CompletedTask;
         });
 
-        CloseCommand = new AsyncCommand(() =>
-        {
-            _host.Close(this);
-            return Task.CompletedTask;
-        });
-
         MinimizeCommand = new AsyncCommand(() =>
         {
             _host.Minimize(this);
@@ -140,8 +134,6 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
     }
 
     public ICommand ActivateCommand { get; }
-
-    public ICommand CloseCommand { get; }
 
     public ICommand MinimizeCommand { get; }
 

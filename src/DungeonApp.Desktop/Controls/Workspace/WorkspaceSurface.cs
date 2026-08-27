@@ -65,7 +65,6 @@ public class WorkspaceSurface : ItemsControl
             panel.Bind(PanelWindow.PanelStateProperty, OneWay(nameof(IWorkspacePanel.State), viewModel)),
 
             panel.Bind(PanelWindow.ActivateCommandProperty, OneWay(nameof(IWorkspacePanel.ActivateCommand), viewModel)),
-            panel.Bind(PanelWindow.CloseCommandProperty, OneWay(nameof(IWorkspacePanel.CloseCommand), viewModel)),
             panel.Bind(PanelWindow.MinimizeCommandProperty, OneWay(nameof(IWorkspacePanel.MinimizeCommand), viewModel)),
             panel.Bind(PanelWindow.ToggleMaximizeCommandProperty, OneWay(nameof(IWorkspacePanel.ToggleMaximizeCommand), viewModel))
         ];

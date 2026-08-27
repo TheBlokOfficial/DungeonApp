@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace DungeonApp.Desktop.Controls.Workspace;
@@ -20,8 +22,10 @@ namespace DungeonApp.Desktop.Controls.Workspace;
 /// introducing parallel ones, so there is exactly one source of truth per value.
 /// </para>
 /// </summary>
-[PseudoClasses(":active", ":minimized", ":maximized", ":dragging", ":resizing")]
+[PseudoClasses(":active", ":minimized", ":maximized", ":dragging", ":resizing", ":snapping")]
 [TemplatePart("PART_TitleBar", typeof(Control))]
+[TemplatePart("PART_MinimizeButton", typeof(Button))]
+[TemplatePart("PART_MaximizeButton", typeof(Button))]
 [TemplatePart("PART_ResizeW", typeof(Control))]
 [TemplatePart("PART_ResizeE", typeof(Control))]
 [TemplatePart("PART_ResizeN", typeof(Control))]
@@ -55,17 +59,11 @@ public class PanelWindow : ContentControl
     public static readonly StyledProperty<bool> CanResizeProperty =
         AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanResize), defaultValue: true);
 
-    public static readonly StyledProperty<bool> CanCloseProperty =
-        AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanClose), defaultValue: true);
-
     public static readonly StyledProperty<bool> CanMinimizeProperty =
         AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanMinimize), defaultValue: true);
 
     public static readonly StyledProperty<ICommand?> ActivateCommandProperty =
         AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(ActivateCommand));
-
-    public static readonly StyledProperty<ICommand?> CloseCommandProperty =
-        AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(CloseCommand));
 
     public static readonly StyledProperty<ICommand?> MinimizeCommandProperty =
         AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(MinimizeCommand));
@@ -87,13 +85,19 @@ public class PanelWindow : ContentControl
         };
 
     private readonly List<Control> _gestureParts = [];
+    private readonly Stopwatch _snapAnimationClock = new();
 
     private Canvas? _canvas;
+    private DispatcherTimer? _snapAnimationTimer;
+    private PanelPlacement _snapAnimationFrom;
+    private PanelPlacement _snapAnimationTarget;
     private Point _grabOrigin;
     private PanelPlacement _pressPlacement;
     private PanelEdge _edge;
     private WorkspaceMetrics _metrics = WorkspaceMetrics.Fallback;
+    private Cursor? _cursorBeforeGesture;
     private bool _gestureActive;
+    private bool _gestureOverridesCursor;
 
     public PanelWindow()
     {
@@ -139,12 +143,6 @@ public class PanelWindow : ContentControl
         set => SetValue(CanResizeProperty, value);
     }
 
-    public bool CanClose
-    {
-        get => GetValue(CanCloseProperty);
-        set => SetValue(CanCloseProperty, value);
-    }
-
     public bool CanMinimize
     {
         get => GetValue(CanMinimizeProperty);
@@ -155,12 +153,6 @@ public class PanelWindow : ContentControl
     {
         get => GetValue(ActivateCommandProperty);
         set => SetValue(ActivateCommandProperty, value);
-    }
-
-    public ICommand? CloseCommand
-    {
-        get => GetValue(CloseCommandProperty);
-        set => SetValue(CloseCommandProperty, value);
     }
 
     public ICommand? MinimizeCommand
@@ -201,6 +193,7 @@ public class PanelWindow : ContentControl
         }
         else if (change.Property == PanelStateProperty)
         {
+            CompleteSnapAnimation();
             PseudoClasses.Set(":minimized", PanelState == PanelDisplayState.Minimized);
             PseudoClasses.Set(":maximized", PanelState == PanelDisplayState.Maximized);
         }
@@ -218,17 +211,15 @@ public class PanelWindow : ContentControl
         // Sampled against the Canvas, which does not move. Sampling against `this` would be a
         // positive feedback loop, because `this` is exactly what the gesture is moving.
         // Always press-rect + total delta, never current-rect + per-frame delta: the latter folds
-        // each frame's snap correction back into the accumulator and the panel drifts.
+        // each frame's clamp correction back into the accumulator and the panel drifts.
         var position = e.GetPosition(_canvas);
         var deltaX = position.X - _grabOrigin.X;
         var deltaY = position.Y - _grabOrigin.Y;
 
         var surfaceWidth = _canvas.Bounds.Width;
         var surfaceHeight = _canvas.Bounds.Height;
-        var peers = CollectPeers();
-
         var placement = _edge == PanelEdge.None
-            ? PanelGeometry.SnapMove(
+            ? PanelGeometry.ClampMove(
                 new PanelPlacement(
                     _pressPlacement.X + deltaX,
                     _pressPlacement.Y + deltaY,
@@ -236,14 +227,12 @@ public class PanelWindow : ContentControl
                     _pressPlacement.Height),
                 surfaceWidth,
                 surfaceHeight,
-                peers,
                 _metrics)
-            : PanelGeometry.SnapResize(
+            : PanelGeometry.ConstrainResize(
                 PanelGeometry.ResizeRaw(_pressPlacement, _edge, deltaX, deltaY),
                 _edge,
                 surfaceWidth,
                 surfaceHeight,
-                peers,
                 CurrentConstraints(),
                 _metrics);
 
@@ -270,6 +259,14 @@ public class PanelWindow : ContentControl
     {
         if (e.GetCurrentPoint(this).Properties.PointerUpdateKind is not
             (PointerUpdateKind.LeftButtonPressed or PointerUpdateKind.RightButtonPressed))
+        {
+            return;
+        }
+
+        // Minimizing removes the panel immediately, so bringing it to the front on pointer-down
+        // only produces a one-frame active-border flash before the Button executes its command.
+        // Do not mark the event handled: the press still has to reach the Button itself.
+        if (IsWithinTemplatePart(e.Source as Visual, "PART_MinimizeButton"))
         {
             return;
         }
@@ -312,8 +309,7 @@ public class PanelWindow : ContentControl
 
         if (isTitleBar && ContainsButtonBetween(e.Source as Visual, part))
         {
-            // The minimize/close buttons live inside the title bar; pressing one must not also
-            // start a drag.
+            // Header buttons must not also start a drag.
             return;
         }
 
@@ -339,6 +335,10 @@ public class PanelWindow : ContentControl
             return;
         }
 
+        // A second gesture during the short settle animation starts exactly where the panel is
+        // currently painted. The interrupted position is committed before the new gesture owns it.
+        CancelSnapAnimation(commitCurrent: true);
+
         _canvas = this.FindAncestorOfType<Canvas>();
         if (_canvas is null)
         {
@@ -350,6 +350,13 @@ public class PanelWindow : ContentControl
         _grabOrigin = e.GetPosition(_canvas);
         _pressPlacement = CurrentPlacement();
         _gestureActive = true;
+
+        if (_edge != PanelEdge.None)
+        {
+            _cursorBeforeGesture = Cursor;
+            _gestureOverridesCursor = true;
+            Cursor = part.Cursor;
+        }
 
         // Captured on the panel itself, so every subsequent pointer event routes straight here and
         // no per-part subscription bookkeeping is needed for the rest of the gesture.
@@ -367,13 +374,143 @@ public class PanelWindow : ContentControl
         }
 
         _gestureActive = false;
-        _canvas = null;
         pointer?.Capture(null);
+        RestoreGestureCursor();
         PseudoClasses.Set(":dragging", false);
         PseudoClasses.Set(":resizing", false);
 
-        RaiseEvent(new RoutedEventArgs(GestureCompletedEvent, this));
+        if (_canvas is { } canvas && _edge == PanelEdge.None)
+        {
+            var target = PanelGeometry.SnapMove(
+                CurrentPlacement(),
+                canvas.Bounds.Width,
+                canvas.Bounds.Height,
+                CollectPeers(),
+                _metrics);
+
+            _canvas = null;
+            StartSnapAnimation(CurrentPlacement(), target);
+            return;
+        }
+
+        if (_canvas is { } resizeCanvas && _edge != PanelEdge.None)
+        {
+            var target = PanelGeometry.SnapResize(
+                CurrentPlacement(),
+                _edge,
+                resizeCanvas.Bounds.Width,
+                resizeCanvas.Bounds.Height,
+                CollectPeers(),
+                CurrentConstraints(),
+                _metrics);
+
+            _canvas = null;
+            StartSnapAnimation(CurrentPlacement(), target);
+            return;
+        }
+
+        _canvas = null;
+        RaiseGestureCompleted();
     }
+
+    private void StartSnapAnimation(PanelPlacement from, PanelPlacement target)
+    {
+        if (from == target || WorkspaceGridSettings.SnapAnimationDurationMilliseconds <= 0)
+        {
+            Apply(target);
+            RaiseGestureCompleted();
+            return;
+        }
+
+        _snapAnimationFrom = from;
+        _snapAnimationTarget = target;
+        _snapAnimationClock.Restart();
+        PseudoClasses.Set(":snapping", true);
+
+        _snapAnimationTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(1000d / 60d)
+        };
+        _snapAnimationTimer.Tick += OnSnapAnimationTick;
+        _snapAnimationTimer.Start();
+    }
+
+    private void OnSnapAnimationTick(object? sender, EventArgs e)
+    {
+        var progress = Math.Min(
+            1,
+            _snapAnimationClock.Elapsed.TotalMilliseconds /
+            WorkspaceGridSettings.SnapAnimationDurationMilliseconds);
+        var eased = 1 - Math.Pow(1 - progress, 3);
+
+        Apply(new PanelPlacement(
+            Lerp(_snapAnimationFrom.X, _snapAnimationTarget.X, eased),
+            Lerp(_snapAnimationFrom.Y, _snapAnimationTarget.Y, eased),
+            Lerp(_snapAnimationFrom.Width, _snapAnimationTarget.Width, eased),
+            Lerp(_snapAnimationFrom.Height, _snapAnimationTarget.Height, eased)));
+
+        if (progress >= 1)
+        {
+            CompleteSnapAnimation();
+        }
+    }
+
+    private void CompleteSnapAnimation()
+    {
+        if (_snapAnimationTimer is null)
+        {
+            return;
+        }
+
+        StopSnapAnimationTimer();
+        Apply(_snapAnimationTarget);
+        RaiseGestureCompleted();
+    }
+
+    private void CancelSnapAnimation(bool commitCurrent)
+    {
+        if (_snapAnimationTimer is null)
+        {
+            return;
+        }
+
+        StopSnapAnimationTimer();
+        if (commitCurrent)
+        {
+            RaiseGestureCompleted();
+        }
+    }
+
+    private void StopSnapAnimationTimer()
+    {
+        _snapAnimationTimer?.Stop();
+        if (_snapAnimationTimer is not null)
+        {
+            _snapAnimationTimer.Tick -= OnSnapAnimationTick;
+        }
+
+        _snapAnimationTimer = null;
+        _snapAnimationClock.Reset();
+        PseudoClasses.Set(":snapping", false);
+    }
+
+    private void RaiseGestureCompleted() =>
+        RaiseEvent(new RoutedEventArgs(GestureCompletedEvent, this));
+
+    private void RestoreGestureCursor()
+    {
+        if (!_gestureOverridesCursor)
+        {
+            return;
+        }
+
+        Cursor = _cursorBeforeGesture;
+        _cursorBeforeGesture = null;
+        _gestureOverridesCursor = false;
+    }
+
+    private static double Lerp(double start, double end, double amount) =>
+        start + ((end - start) * amount);
 
     private PanelPlacement CurrentPlacement() =>
         new(Canvas.GetLeft(this), Canvas.GetTop(this), Bounds.Width, Bounds.Height);
@@ -427,6 +564,24 @@ public class PanelWindow : ContentControl
             if (current is Button)
             {
                 return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsWithinTemplatePart(Visual? source, string partName)
+    {
+        for (var current = source; current is not null; current = current.GetVisualParent())
+        {
+            if (current is Control { Name: var name } && name == partName)
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(current, this))
+            {
+                break;
             }
         }
 

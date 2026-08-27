@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
-             xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
              xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
              xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Deck.PanelDeckView"
@@ -12,11 +11,7 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!--
-            Owning the whole template, for the same reason GlobalSidebarView does: the FluentTheme
-            Button template applies hover and press effects that cannot be fully overridden from the
-            outside.
-        -->
+        <!-- Own the template so Fluent does not add transforms or a second pressed treatment. -->
         <Style Selector="Button.deck-card">
             <Setter Property="Width" Value="{DynamicResource DungeonDeckCardSize}" />
             <Setter Property="Height" Value="{DynamicResource DungeonDeckCardSize}" />
@@ -47,115 +42,34 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
         </Style>
-
-        <!-- The two cards peeking out from behind the front one. Decoration only. -->
-        <Style Selector="Border.deck-ghost">
-            <Setter Property="Width" Value="{DynamicResource DungeonDeckCardSize}" />
-            <Setter Property="Height" Value="{DynamicResource DungeonDeckCardSize}" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="VerticalAlignment" Value="Bottom" />
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
-            <Setter Property="IsHitTestVisible" Value="False" />
-        </Style>
-
-        <Style Selector="TextBlock.launcher-group">
-            <Setter Property="Margin" Value="12,12,12,4" />
-            <Setter Property="FontSize" Value="{DynamicResource DungeonEyebrowFontSize}" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        <Style Selector="Button.deck-card:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
         </Style>
     </UserControl.Styles>
 
-    <!--
-        No background and no frame on the container: these are loose cards lying on the desk, not a
-        toolbar. Bottom-left corner, one workspace padding in from both edges.
-    -->
-    <StackPanel Orientation="Horizontal"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Margin="{DynamicResource DungeonWorkspacePaddingThickness}">
-
-        <!-- The deck itself: draw a tool from it. -->
-        <Grid Margin="0,0,16,0">
-            <Border Classes="deck-ghost" Margin="6,0,0,6" />
-            <Border Classes="deck-ghost" Margin="3,0,0,3" />
-            <Button Classes="deck-card" ToolTip.Tip="Narzędzia kampanii">
-                <Image Width="{DynamicResource DungeonActionIconSize}"
-                       Height="{DynamicResource DungeonActionIconSize}"
-                       Source="{StaticResource DungeonIconPlus}" />
-                <Button.Flyout>
-                    <Flyout Placement="TopEdgeAlignedLeft">
-                        <ItemsControl ItemsSource="{Binding LauncherGroups}" MinWidth="220">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="deck:PanelLauncherGroupViewModel">
-                                    <StackPanel>
-                                        <TextBlock Classes="launcher-group" Text="{Binding Label}" />
-                                        <ItemsControl ItemsSource="{Binding Items}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="deck:PanelLauncherItemViewModel">
-                                                    <Button Command="{Binding OpenCommand}"
-                                                            HorizontalAlignment="Stretch"
-                                                            HorizontalContentAlignment="Stretch"
-                                                            Background="Transparent"
-                                                            BorderThickness="0"
-                                                            CornerRadius="0"
-                                                            Padding="12,0"
-                                                            Height="{DynamicResource DungeonNavigationRowHeight}">
-                                                        <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="8">
-                                                            <Image Width="{DynamicResource DungeonActionIconSize}"
-                                                                   Height="{DynamicResource DungeonActionIconSize}"
-                                                                   HorizontalAlignment="Center"
-                                                                   VerticalAlignment="Center"
-                                                                   Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
-                                                            <TextBlock Grid.Column="1"
-                                                                       VerticalAlignment="Center"
-                                                                       TextTrimming="CharacterEllipsis"
-                                                                       Text="{Binding Title}" />
-                                                            <!-- Already on the desk. The entry still works: it brings the panel forward. -->
-                                                            <TextBlock Grid.Column="2"
-                                                                       VerticalAlignment="Center"
-                                                                       Classes="muted"
-                                                                       IsVisible="{Binding IsOpen}"
-                                                                       Text="otwarty" />
-                                                        </Grid>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Flyout>
-                </Button.Flyout>
-            </Button>
-        </Grid>
-
-        <!--
-            Minimized panels. Spacing lives on the item root rather than on the StackPanel: a
-            StackPanel's Spacing is laid out around collapsed children too and leaves phantom gaps.
-        -->
-        <ItemsControl ItemsSource="{Binding MinimizedPanels}" VerticalAlignment="Bottom">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="panels:WorkspacePanelViewModel">
-                    <Button Classes="deck-card"
-                            Margin="0,0,8,0"
-                            Command="{Binding ActivateCommand}"
-                            ToolTip.Tip="{Binding Title}">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
-                               Height="{DynamicResource DungeonActionIconSize}"
-                               Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>
+    <!-- Minimized modules only. The taskbar has its own visual inset; panel geometry remains free
+         to use the complete workspace right up to coordinate zero. -->
+    <ItemsControl ItemsSource="{Binding MinimizedPanels}"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Bottom"
+                  Margin="{DynamicResource DungeonDeckEdgeInsetThickness}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="panels:WorkspacePanelViewModel">
+                <Button Classes="deck-card"
+                        Margin="0,0,8,0"
+                        Command="{Binding ActivateCommand}"
+                        ToolTip.Tip="{Binding Title}">
+                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                           Height="{DynamicResource DungeonActionIconSize}"
+                           Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
+                </Button>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </UserControl>

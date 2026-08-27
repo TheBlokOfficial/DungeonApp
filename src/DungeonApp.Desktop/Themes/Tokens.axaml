@@ -43,11 +43,11 @@
     <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
     <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
     <!--
-        The active panel changes only this brush. Changing BorderThickness instead would resize the
-        panel every time focus moved - see docs/ui/visual-direction.md, "mocniejsza rama = inny
-        token koloru, nie wieksza grubosc".
+        The active panel changes only this brush. A stronger neutral border keeps focus legible
+        without making ordinary window selection look like a warning or validation state. Changing
+        BorderThickness instead would resize the panel every time focus moved.
     -->
-    <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonAccentColor}" />
+    <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
     <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
          It must stay Transparent rather than null, because null is not hit-testable. -->
     <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />

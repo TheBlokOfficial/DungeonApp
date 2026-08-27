@@ -1,5 +1,7 @@
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
@@ -23,9 +25,32 @@ public partial class CampaignWorkspaceView : UserControl
         InitializeComponent();
 
         Surface.SizeChanged += OnSurfaceSizeChanged;
+        Surface.AddHandler(InputElement.PointerPressedEvent, OnSurfacePointerPressed, RoutingStrategies.Tunnel);
 
         // Bubbles up from the panel that was dragged or resized.
         AddHandler(PanelWindow.GestureCompletedEvent, OnGestureCompleted);
+    }
+
+    private void OnSurfacePointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(Surface).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        // The surface sees tunneled presses before a child can mark them handled. Only the actual
+        // desk clears selection; presses anywhere inside panel chrome or content leave activation to
+        // PanelWindow, and the taskbar is a sibling outside this event route.
+        if (e.Source is Avalonia.Visual source &&
+            (source is PanelWindow || source.FindAncestorOfType<PanelWindow>() is not null))
+        {
+            return;
+        }
+
+        if (DataContext is CampaignWorkspaceViewModel viewModel)
+        {
+            viewModel.ClearActivePanel();
+        }
     }
 
     private void OnSurfaceSizeChanged(object? sender, SizeChangedEventArgs e)

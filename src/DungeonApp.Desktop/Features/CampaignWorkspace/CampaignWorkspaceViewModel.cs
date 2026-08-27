@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Desktop.Controls.Workspace;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Deck;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 using DungeonApp.Desktop.ViewModels;
@@ -13,7 +12,7 @@ using DungeonApp.Desktop.ViewModels;
 namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 
 /// <summary>
-/// The campaign desk: which panels are open, how they are stacked, and where they sit.
+/// The campaign desk: which panels are visible, how they are stacked, and where they sit.
 /// <para>
 /// Owns the desired-versus-effective placement split. Gestures write the desired placement (through
 /// <see cref="CommitGesture"/>); every surface resize recomputes the effective one from it. Nothing
@@ -30,9 +29,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
     private readonly WorkspaceLayoutSession _session;
 
-    /// <summary>Placements of panels that are closed, so reopening one puts it back where it was.</summary>
-    private readonly Dictionary<string, WorkspacePanelLayout> _remembered = new(StringComparer.Ordinal);
-
     private WorkspaceMetrics _metrics = WorkspaceMetrics.Fallback;
     private double _surfaceWidth;
     private double _surfaceHeight;
@@ -42,8 +38,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
     public CampaignWorkspaceViewModel(WorkspaceLayoutStore store)
     {
         _session = new WorkspaceLayoutSession(store, WorkspaceId, CreateSnapshot);
-
-        LauncherGroups = BuildLauncherGroups();
 
         ResetLayoutCommand = new AsyncCommand(() =>
         {
@@ -59,8 +53,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
     /// <summary>Maintained explicitly rather than derived, so no collection-filtering plumbing is needed.</summary>
     public ObservableCollection<WorkspacePanelViewModel> MinimizedPanels { get; } = [];
-
-    public IReadOnlyList<PanelLauncherGroupViewModel> LauncherGroups { get; }
 
     public ICommand ResetLayoutCommand { get; }
 
@@ -82,33 +74,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
         FitPanels();
     }
 
-    public void OpenPanel(WorkspacePanelDescriptor descriptor)
-    {
-        if (!descriptor.AllowsMultipleInstances &&
-            Panels.FirstOrDefault(panel => panel.Descriptor.Id == descriptor.Id) is { } existing)
-        {
-            Activate(existing);
-            return;
-        }
-
-        var instanceKey = descriptor.AllowsMultipleInstances
-            ? $"{descriptor.Id}#{Panels.Count(panel => panel.Descriptor.Id == descriptor.Id) + 1}"
-            : descriptor.Id;
-
-        var desired = _remembered.TryGetValue(instanceKey, out var remembered)
-            ? new PanelPlacement(remembered.X, remembered.Y, remembered.Width, remembered.Height)
-            : descriptor.DefaultPlacement;
-
-        _remembered.Remove(instanceKey);
-
-        var panel = new WorkspacePanelViewModel(this, descriptor, instanceKey, desired);
-        Panels.Add(panel);
-        Fit(panel);
-        Activate(panel);
-        RefreshLauncherState();
-        _session.MarkDirty();
-    }
-
     /// <summary>
     /// Brings a panel to the front. A minimized panel is restored first, which is what makes a click
     /// on its deck card do the obvious thing without needing a separate command.
@@ -123,22 +88,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
         }
 
         BringToFront(panel);
-        _session.MarkDirty();
-    }
-
-    public void Close(WorkspacePanelViewModel panel)
-    {
-        Remember(panel, isOpen: false);
-
-        Panels.Remove(panel);
-        MinimizedPanels.Remove(panel);
-
-        if (panel.IsActive)
-        {
-            ActivateTopmost();
-        }
-
-        RefreshLauncherState();
         _session.MarkDirty();
     }
 
@@ -173,6 +122,15 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
         Activate(panel);
     }
 
+    /// <summary>Clears the transient selection without changing stacking or persisted layout.</summary>
+    public void ClearActivePanel()
+    {
+        foreach (var panel in Panels)
+        {
+            panel.IsActive = false;
+        }
+    }
+
     /// <summary>Called once when a drag or resize finishes; promotes the on-screen geometry to desired.</summary>
     public void CommitGesture(WorkspacePanelViewModel panel)
     {
@@ -187,7 +145,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
     {
         Panels.Clear();
         MinimizedPanels.Clear();
-        _remembered.Clear();
 
         if (layout.IsEmpty)
         {
@@ -198,6 +155,8 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
         }
         else
         {
+            var restoredSingletons = new HashSet<string>(StringComparer.Ordinal);
+
             foreach (var entry in layout.Panels.OrderBy(entry => entry.ZOrder))
             {
                 // A layout naming a panel this build no longer has is skipped, never an error.
@@ -206,9 +165,8 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
                     continue;
                 }
 
-                if (!entry.IsOpen)
+                if (!descriptor.AllowsMultipleInstances && !restoredSingletons.Add(descriptor.Id))
                 {
-                    _remembered[entry.InstanceKey] = entry;
                     continue;
                 }
 
@@ -218,7 +176,9 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
                     entry.InstanceKey,
                     new PanelPlacement(entry.X, entry.Y, entry.Width, entry.Height))
                 {
-                    State = entry.State == PanelDisplayState.Minimized
+                    // Migration from the old close/open model: a closed module becomes minimized,
+                    // because every known module now remains part of the workspace for its lifetime.
+                    State = !entry.IsOpen || entry.State == PanelDisplayState.Minimized
                         ? PanelDisplayState.Minimized
                         : entry.State
                 };
@@ -230,11 +190,24 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
                     MinimizedPanels.Add(panel);
                 }
             }
+
+            // A module introduced after the layout was saved must not suddenly cover the user's
+            // arrangement. Add it to the taskbar in its default geometry instead.
+            foreach (var descriptor in PanelCatalog.All.Where(
+                         descriptor => Panels.All(panel => panel.Descriptor.Id != descriptor.Id)))
+            {
+                var panel = new WorkspacePanelViewModel(this, descriptor, descriptor.Id, descriptor.DefaultPlacement)
+                {
+                    State = PanelDisplayState.Minimized
+                };
+
+                Panels.Add(panel);
+                MinimizedPanels.Add(panel);
+            }
         }
 
         Normalize();
         ActivateTopmost();
-        RefreshLauncherState();
         FitPanels();
     }
 
@@ -315,64 +288,25 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
         }
     }
 
-    private void Remember(WorkspacePanelViewModel panel, bool isOpen) =>
-        _remembered[panel.InstanceKey] = ToLayout(panel, isOpen);
-
     private WorkspaceLayout CreateSnapshot()
     {
-        var entries = new List<WorkspacePanelLayout>(Panels.Count + _remembered.Count);
-        entries.AddRange(Panels.Select(panel => ToLayout(panel, isOpen: true)));
-
-        // Only remember closed panels the build still knows about, so the file cannot accumulate
-        // entries for descriptors that no longer exist.
-        entries.AddRange(_remembered.Values.Where(entry => PanelCatalog.Find(entry.DescriptorId) is not null));
-
         return new WorkspaceLayout(
             WorkspaceLayout.CurrentVersion,
             _surfaceWidth,
             _surfaceHeight,
-            entries);
+            [.. Panels.Select(ToLayout)]);
     }
 
-    private static WorkspacePanelLayout ToLayout(WorkspacePanelViewModel panel, bool isOpen) =>
+    private static WorkspacePanelLayout ToLayout(WorkspacePanelViewModel panel) =>
         new(
             panel.Descriptor.Id,
             panel.InstanceKey,
-            isOpen,
+            // Retained in schema v1 for backward compatibility. New layouts never close modules.
+            true,
             panel.State,
             panel.ZOrder,
             panel.Desired.X,
             panel.Desired.Y,
             panel.Desired.Width,
             panel.Desired.Height);
-
-    private IReadOnlyList<PanelLauncherGroupViewModel> BuildLauncherGroups() =>
-        [.. PanelCatalog.All
-            .GroupBy(descriptor => descriptor.Group)
-            .OrderBy(group => group.Key)
-            .Select(group => new PanelLauncherGroupViewModel(
-                GroupLabel(group.Key),
-                [.. group.Select(descriptor => new PanelLauncherItemViewModel(
-                    descriptor,
-                    new AsyncCommand(() =>
-                    {
-                        OpenPanel(descriptor);
-                        return Task.CompletedTask;
-                    })))]))];
-
-    private void RefreshLauncherState()
-    {
-        foreach (var item in LauncherGroups.SelectMany(group => group.Items))
-        {
-            item.IsOpen = Panels.Any(panel => panel.Descriptor.Id == item.Descriptor.Id);
-        }
-    }
-
-    private static string GroupLabel(WorkspacePanelGroup group) => group switch
-    {
-        WorkspacePanelGroup.Session => "SESJA",
-        WorkspacePanelGroup.World => "ŚWIAT",
-        WorkspacePanelGroup.Knowledge => "WIEDZA",
-        _ => "KAMPANIA"
-    };
 }

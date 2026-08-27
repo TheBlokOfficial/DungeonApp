@@ -20,3 +20,8 @@ Zasoby są przechowywane lokalnie i aplikacja nie pobiera ich podczas działania
 - Kopia licencji: `Licenses/Lucide-ISC.txt`
 
 Źródłowe SVG są zachowane jako punkt audytu. Produkcyjny interfejs Avalonia używa odpowiadających im wektorowych `DrawingImage`, ponieważ podstawowy loader Avalonia nie interpretuje SVG bez dodatkowej biblioteki runtime.
+
+`Icons/panel-dock-bottom.svg`, `Icons/window-maximize.svg` i `Icons/window-restore.svg` są
+ikonami własnymi projektu, narysowanymi w konwencji wizualnej Lucide. Pierwsza łączy dolny
+pasek i skierowany w dół chevron, aby opisać lokalną akcję minimalizacji modułu. Pozostałe
+dwie przedstawiają standardowe stany maksymalizacji i przywracania pływającego panelu.

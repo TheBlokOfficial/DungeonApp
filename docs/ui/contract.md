@@ -243,16 +243,22 @@ Pulpit kampanii to blat: panele mają pozycję i rozmiar wybrane przez użytkown
 
 | Element | Wartość |
 | --- | ---: |
-| Padding blatu | `16` |
+| Margines krawędzi blatu | `0` — panel może dotknąć brzegu, ale nie wyjść poza blat |
 | Przerwa między panelami | `8` |
-| Krok snappingu | `4` |
+| Okres tekstury siatki tła | `32` |
+| Podział snapowania | `1/4` kratki (`4` przedziały) |
+| Krok snappingu | `8` (`32 / 4`) |
 | Promień przyciągania do krawędzi | `8` |
+| Animacja domknięcia snapu | `120 ms`, `CubicOut`, po puszczeniu panelu |
 | Belka tytułu panelu | `36` (`34` / `36` / `40` wg profilu) |
 | Cel trafienia uchwytu krawędzi | `6` (`6` / `6` / `8`) |
 | Cel trafienia uchwytu narożnego | `12` (`12` / `12` / `14`) |
 | Minimalny panel | `240 × 152` (`240×144` / `240×152` / `260×168`) |
 | Karta talii | `44` (`40` / `44` / `48`) |
-| Okres tekstury siatki tła | `32` |
+
+Rozmiar widocznej kratki i podział snapowania mają jedno źródło konfiguracji. Dopuszczalne ustawienia implementacyjne to pełna kratka, `1/2` albo `1/4`; zmiana rozmiaru kratki automatycznie zmienia krok zgodnie z wybranym podziałem. Krawędź blatu jest prawidłowym celem snapowania o współrzędnej `0`.
+
+Podczas przeciągania panel śledzi kursor bez kwantowania pozycji. Docelowa kratka, krawędź albo sąsiedni panel są wybierane po puszczeniu przycisku i panel dojeżdża do celu krótką animacją. Resize pozostaje bez animacji, aby zawartość panelu nie pływała pod uchwytem.
 
 Minimum panelu to **większa** z dwóch wartości: minimum profilu i minimum zadeklarowane przez deskryptor panelu.
 
@@ -268,9 +274,11 @@ Minimum panelu to **większa** z dwóch wartości: minimum profilu i minimum zad
 
 **Klamrowanie** utrzymuje cały panel wewnątrz blatu — nie tylko jego belkę tytułu.
 
-**Zamknięty panel zachowuje ostatnie położenie.** Ponowne otwarcie z talii wraca w to samo miejsce.
+**Panelu nie można zamknąć.** Każdy moduł katalogu przez cały czas istnieje jako panel normalny, zmaksymalizowany albo zminimalizowany. Minimalizacja zachowuje pożądaną geometrię, a przywrócenie z dolnego paska wraca w to samo miejsce. Stary zapis z `IsOpen=false` jest migrowany do stanu zminimalizowanego.
 
-**Talia** leży w lewym dolnym rogu blatu: wolnostojące kwadratowe karty bez tła i ramy wspólnego kontenera. Skrajnie z lewej stos kart otwierający listę narzędzi, dalej karty paneli zminimalizowanych. Talia nie jest paskiem narzędzi i nie rezerwuje pasa blatu.
+**Dolny pasek modułów** leży w lewym dolnym rogu blatu i pokazuje wyłącznie wolnostojące karty paneli zminimalizowanych, bez wspólnego tła i ramy. Nie ma osobnego launchera ani akcji trwałego zamknięcia. Pasek ma własny wizualny inset `8`, niezależny od zerowego marginesu geometrii paneli, i nie rezerwuje pasa blatu.
+
+**Aktywność panelu** jest stanem chwilowym, nie częścią zapisanego layoutu. Kliknięcie panelu przenosi aktywną ramkę i panel na wierzch; kliknięcie pustego blatu usuwa ramkę bez zmiany kolejności `ZOrder`.
 
 **Trwałość układu.** Jeden zapisany układ na kampanię, w logicznych jednostkach DIP, zapisywany po zakończonym geście z debounce'em. Uszkodzony, niekompletny lub pochodzący z nieznanej wersji plik nigdy nie blokuje startu — aplikacja wraca wtedy do układu domyślnego. Panel o nieznanym identyfikatorze jest pomijany, reszta układu wczytuje się normalnie.
 

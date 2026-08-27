@@ -20,8 +20,8 @@ public sealed record WorkspacePanelLayout(
     double Height);
 
 /// <summary>
-/// A whole desk arrangement. Closed panels stay in the list so reopening one from the deck puts it
-/// back where it last was.
+/// A whole desk arrangement. <see cref="WorkspacePanelLayout.IsOpen"/> remains in schema v1 only to
+/// migrate older closed modules to the minimized state.
 /// </summary>
 public sealed record WorkspaceLayout(
     int Version,

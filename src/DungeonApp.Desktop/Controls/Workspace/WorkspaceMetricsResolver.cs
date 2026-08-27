@@ -22,7 +22,7 @@ internal static class WorkspaceMetricsResolver
         }
 
         return new WorkspaceMetrics(
-            Padding: Read(application, "DungeonWorkspacePadding", WorkspaceMetrics.Fallback.Padding),
+            EdgeMargin: Read(application, "DungeonWorkspaceEdgeMargin", WorkspaceMetrics.Fallback.EdgeMargin),
             Gap: Read(application, "DungeonPanelGap", WorkspaceMetrics.Fallback.Gap),
             MinPanelWidth: Read(application, "DungeonPanelMinWidth", WorkspaceMetrics.Fallback.MinPanelWidth),
             MinPanelHeight: Read(application, "DungeonPanelMinHeight", WorkspaceMetrics.Fallback.MinPanelHeight));

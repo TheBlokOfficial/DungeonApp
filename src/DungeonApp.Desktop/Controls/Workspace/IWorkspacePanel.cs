@@ -47,8 +47,6 @@ public interface IWorkspacePanel : INotifyPropertyChanged
 
     ICommand ActivateCommand { get; }
 
-    ICommand CloseCommand { get; }
-
     ICommand MinimizeCommand { get; }
 
     ICommand ToggleMaximizeCommand { get; }

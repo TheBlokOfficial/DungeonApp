@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
+using DungeonApp.Desktop.Controls.Workspace;
 
 namespace DungeonApp.Desktop.Themes;
 
@@ -114,11 +115,12 @@ public static class UiScaleProfiles
         Set(application, "DungeonControlHeight", metrics.ControlHeight);
         Set(application, "DungeonNavigationRowHeight", metrics.NavigationRowHeight);
         Set(application, "DungeonActionIconSize", metrics.ActionIconSize);
-        Set(application, "DungeonTopBarActionSize", metrics.TopBarHeight);
+        Set(application, "DungeonTopBarActionSize", metrics.TopBarHeight - 2);
         Set(application, "DungeonMinimumWindowWidth", profile == UiScaleProfile.Large ? 1180d : 1024d);
         Set(application, "DungeonMinimumWindowHeight", profile == UiScaleProfile.Large ? 760d : 680d);
 
         Set(application, "DungeonPanelHeaderHeight", metrics.PanelHeaderHeight);
+        // Window actions are square title-bar cells, matching familiar desktop window chrome.
         Set(application, "DungeonPanelHeaderActionSize", metrics.PanelHeaderHeight);
         Set(application, "DungeonPanelTitleFontSize", metrics.PanelTitleFont);
         Set(application, "DungeonPanelResizeBorderThickness", metrics.PanelResizeBorderThickness);
@@ -134,12 +136,12 @@ public static class UiScaleProfiles
 
         // Profile-independent, but sizes all the same, so they stay with the single size writer
         // rather than drifting into Tokens.axaml. Values from docs/ui/contract.md.
-        Set(application, "DungeonWorkspacePadding", 16d);
-        // Thickness twin of the value above, for views that need it as a Margin. Kept next to its
-        // source so the two can never disagree.
-        Set(application, "DungeonWorkspacePaddingThickness", new Avalonia.Thickness(16));
-        Set(application, "DungeonPanelGap", 8d);
-        Set(application, "DungeonDeckCardSpacing", 8d);
+        Set(application, "DungeonWorkspaceEdgeMargin", WorkspaceGridSettings.EdgeMargin);
+        Set(application, "DungeonPanelGap", WorkspaceGridSettings.PanelGap);
+        Set(application, "DungeonDeckCardSpacing", WorkspaceGridSettings.PanelGap);
+        // The taskbar needs visual breathing room, independently of the panel clamp. Panels can
+        // still touch coordinate zero while minimized cards sit one snap interval inside it.
+        Set(application, "DungeonDeckEdgeInsetThickness", new Avalonia.Thickness(WorkspaceGridSettings.SnapStep));
     }
 
     private static void Set(Avalonia.Application application, string key, object value) =>

@@ -11,8 +11,9 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 /// <para>
 /// The default placements tile the desk exactly as it measures in the reference 1280x800 window:
 /// 1032 x 724 DIP at the Medium profile, once the sidebar, top bar and status bar are subtracted.
-/// The numbers are 16 padding, 8 gaps, and the remainder - authoring them against the nominal window
-/// size instead leaves the layout a few DIP too wide, and the clamp silently eats the gaps.
+/// Starting edges and gaps follow the configured quarter-cell (8 DIP) snap step, with no artificial
+/// outer margin. A trailing panel reaches the real surface edge even when the runtime surface extent
+/// itself is not a whole snap interval.
 /// </para>
 /// </summary>
 public static class PanelCatalog
@@ -28,7 +29,7 @@ public static class PanelCatalog
             "Drużyna",
             "DungeonIconUsers",
             WorkspacePanelGroup.Session,
-            new PanelPlacement(16, 16, 648, 320),
+            new PanelPlacement(0, 0, 664, 320),
             // FluidData: takes whatever space it is given.
             new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
             () => new DemoPanelViewModel(
@@ -40,7 +41,7 @@ public static class PanelCatalog
             "Czas świata",
             "DungeonIconClock",
             WorkspacePanelGroup.Session,
-            new PanelPlacement(672, 16, 344, 320),
+            new PanelPlacement(672, 0, 360, 320),
             // Bounded 240-360, straight out of the UI contract's panel growth strategies.
             new PanelConstraints(240, 152, 360, double.PositiveInfinity),
             () => new DemoPanelViewModel(
@@ -52,7 +53,7 @@ public static class PanelCatalog
             "Historia zmian",
             "DungeonIconHistory",
             WorkspacePanelGroup.Session,
-            new PanelPlacement(16, 344, 1000, 356),
+            new PanelPlacement(0, 328, 1032, 396),
             new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
             () => new DemoPanelViewModel(
                 "Historia zmian",

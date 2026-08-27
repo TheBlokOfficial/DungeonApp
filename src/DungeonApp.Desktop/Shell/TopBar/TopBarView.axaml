@@ -18,9 +18,40 @@
         <Style Selector="Button.header-action">
             <Setter Property="Width" Value="{DynamicResource DungeonTopBarActionSize}" />
             <Setter Property="Height" Value="{DynamicResource DungeonTopBarActionSize}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="RenderTransform" Value="{x:Null}" />
+            <Setter Property="Transitions" Value="{x:Null}" />
+            <!-- Own the template: Fluent's internal pressed transform and overlay are otherwise
+                 still active even when the outer Background is overridden. -->
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.header-action:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <!-- Pressing preserves the hover palette: no darkening, displacement, scaling or flash. -->
+        <Style Selector="Button.header-action:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.header-action:focus-visible">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
     </UserControl.Styles>
 

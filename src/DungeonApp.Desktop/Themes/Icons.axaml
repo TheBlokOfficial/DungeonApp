@@ -49,19 +49,19 @@
             <GeometryDrawing Geometry="M3,12 A9,3 0 0 0 21,12" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <DrawingImage x:Key="DungeonIconX" Viewbox="0,0,24,24">
+    <DrawingImage x:Key="DungeonIconDockBottom" Viewbox="0,0,24,24">
         <DrawingGroup>
-            <GeometryDrawing Geometry="M18,6 L6,18" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M6,6 L18,18" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M8,9 L12,13 L16,9" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M7,17 L17,17" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <DrawingImage x:Key="DungeonIconMinus" Viewbox="0,0,24,24">
-        <GeometryDrawing Geometry="M5,12 L19,12" Pen="{StaticResource DungeonIconPen}" />
+    <DrawingImage x:Key="DungeonIconWindowMaximize" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M5,5 L19,5 L19,19 L5,19 Z" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
-    <DrawingImage x:Key="DungeonIconPlus" Viewbox="0,0,24,24">
+    <DrawingImage x:Key="DungeonIconWindowRestore" Viewbox="0,0,24,24">
         <DrawingGroup>
-            <GeometryDrawing Geometry="M5,12 L19,12" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M12,5 L12,19" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M9,5 L19,5 L19,15" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M5,9 L15,9 L15,19 L5,19 Z" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
     <DrawingImage x:Key="DungeonIconClock" Viewbox="0,0,24,24">

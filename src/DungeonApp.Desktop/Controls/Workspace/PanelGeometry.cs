@@ -15,17 +15,36 @@ namespace DungeonApp.Desktop.Controls.Workspace;
 /// </summary>
 public static class PanelGeometry
 {
-    /// <summary>The UI contract's base grid unit. Also device-pixel safe at 100/125/150/200% scaling.</summary>
-    public const double Grid = 4;
+    public static double SnapToGrid(double value) =>
+        Math.Round(value / WorkspaceGridSettings.SnapStep) * WorkspaceGridSettings.SnapStep;
 
-    /// <summary>How close an edge must come to a snap candidate before it is captured.</summary>
-    public const double SnapRadius = 8;
+    /// <summary>
+    /// Keeps a freely dragged panel inside the desk without quantizing its motion. The snap target
+    /// is deliberately calculated only when the gesture ends, so the panel never jumps under the
+    /// pointer while it is being moved.
+    /// </summary>
+    public static PanelPlacement ClampMove(
+        PanelPlacement raw,
+        double surfaceWidth,
+        double surfaceHeight,
+        WorkspaceMetrics metrics)
+    {
+        var x = Math.Clamp(
+            raw.X,
+            metrics.EdgeMargin,
+            Math.Max(metrics.EdgeMargin, surfaceWidth - metrics.EdgeMargin - raw.Width));
+        var y = Math.Clamp(
+            raw.Y,
+            metrics.EdgeMargin,
+            Math.Max(metrics.EdgeMargin, surfaceHeight - metrics.EdgeMargin - raw.Height));
 
-    public static double SnapToGrid(double value) => Math.Round(value / Grid) * Grid;
+        return new PanelPlacement(x, y, raw.Width, raw.Height);
+    }
 
     /// <summary>
     /// Moves a panel. Snapping is per axis and independent: a candidate within
-    /// <see cref="SnapRadius"/> beats the grid, otherwise the value falls back to the grid.
+    /// <see cref="WorkspaceGridSettings.SnapRadius"/> beats the grid, otherwise the value falls
+    /// back to the configured grid subdivision.
     /// </summary>
     public static PanelPlacement SnapMove(
         PanelPlacement raw,
@@ -37,12 +56,11 @@ public static class PanelGeometry
         var x = SnapMoveAxis(raw.X, raw.Width, surfaceWidth, peers, metrics, horizontal: true);
         var y = SnapMoveAxis(raw.Y, raw.Height, surfaceHeight, peers, metrics, horizontal: false);
 
-        // Math.Max guards the inversion that happens when the panel is larger than the surface:
-        // without it the clamp range is reversed and Math.Clamp throws.
-        x = Math.Clamp(x, metrics.Padding, Math.Max(metrics.Padding, surfaceWidth - metrics.Padding - raw.Width));
-        y = Math.Clamp(y, metrics.Padding, Math.Max(metrics.Padding, surfaceHeight - metrics.Padding - raw.Height));
-
-        return new PanelPlacement(x, y, raw.Width, raw.Height);
+        return ClampMove(
+            new PanelPlacement(x, y, raw.Width, raw.Height),
+            surfaceWidth,
+            surfaceHeight,
+            metrics);
     }
 
     /// <summary>
@@ -105,6 +123,34 @@ public static class PanelGeometry
             bottom = SnapResizeAxis(bottom, surfaceHeight, peers, metrics, horizontal: false, leading: false);
         }
 
+        return ConstrainResize(
+            PanelPlacement.FromEdges(left, top, right, bottom),
+            edge,
+            surfaceWidth,
+            surfaceHeight,
+            constraints,
+            metrics);
+    }
+
+    /// <summary>
+    /// Constrains a freely resized panel without quantizing the dragged edges. This is used while
+    /// the pointer is down; <see cref="SnapResize"/> supplies the settle target after release.
+    /// </summary>
+    public static PanelPlacement ConstrainResize(
+        PanelPlacement raw,
+        PanelEdge edge,
+        double surfaceWidth,
+        double surfaceHeight,
+        PanelConstraints constraints,
+        WorkspaceMetrics metrics)
+    {
+        double left = raw.Left, top = raw.Top, right = raw.Right, bottom = raw.Bottom;
+
+        var draggingWest = edge.HasFlag(PanelEdge.West);
+        var draggingEast = edge.HasFlag(PanelEdge.East);
+        var draggingNorth = edge.HasFlag(PanelEdge.North);
+        var draggingSouth = edge.HasFlag(PanelEdge.South);
+
         var width = Math.Clamp(right - left, constraints.MinWidth, constraints.EffectiveMaxWidth);
         if (draggingWest)
         {
@@ -127,22 +173,22 @@ public static class PanelGeometry
 
         if (draggingWest)
         {
-            left = Math.Max(left, metrics.Padding);
+            left = Math.Max(left, metrics.EdgeMargin);
         }
 
         if (draggingEast)
         {
-            right = Math.Min(right, surfaceWidth - metrics.Padding);
+            right = Math.Min(right, surfaceWidth - metrics.EdgeMargin);
         }
 
         if (draggingNorth)
         {
-            top = Math.Max(top, metrics.Padding);
+            top = Math.Max(top, metrics.EdgeMargin);
         }
 
         if (draggingSouth)
         {
-            bottom = Math.Min(bottom, surfaceHeight - metrics.Padding);
+            bottom = Math.Min(bottom, surfaceHeight - metrics.EdgeMargin);
         }
 
         // The surface clamp can violate the minimum when the surface is smaller than the panel's
@@ -191,14 +237,14 @@ public static class PanelGeometry
         PanelConstraints constraints,
         WorkspaceMetrics metrics)
     {
-        var availableWidth = Math.Max(constraints.MinWidth, surfaceWidth - (2 * metrics.Padding));
-        var availableHeight = Math.Max(constraints.MinHeight, surfaceHeight - (2 * metrics.Padding));
+        var availableWidth = Math.Max(constraints.MinWidth, surfaceWidth - (2 * metrics.EdgeMargin));
+        var availableHeight = Math.Max(constraints.MinHeight, surfaceHeight - (2 * metrics.EdgeMargin));
 
         var width = Math.Max(constraints.MinWidth, Math.Min(desired.Width, availableWidth));
         var height = Math.Max(constraints.MinHeight, Math.Min(desired.Height, availableHeight));
 
-        var x = Math.Clamp(desired.X, metrics.Padding, Math.Max(metrics.Padding, surfaceWidth - metrics.Padding - width));
-        var y = Math.Clamp(desired.Y, metrics.Padding, Math.Max(metrics.Padding, surfaceHeight - metrics.Padding - height));
+        var x = Math.Clamp(desired.X, metrics.EdgeMargin, Math.Max(metrics.EdgeMargin, surfaceWidth - metrics.EdgeMargin - width));
+        var y = Math.Clamp(desired.Y, metrics.EdgeMargin, Math.Max(metrics.EdgeMargin, surfaceHeight - metrics.EdgeMargin - height));
 
         return new PanelPlacement(x, y, width, height);
     }
@@ -209,10 +255,10 @@ public static class PanelGeometry
     /// </summary>
     public static PanelPlacement Maximize(double surfaceWidth, double surfaceHeight, WorkspaceMetrics metrics) =>
         new(
-            metrics.Padding,
-            metrics.Padding,
-            Math.Max(metrics.MinPanelWidth, surfaceWidth - (2 * metrics.Padding)),
-            Math.Max(metrics.MinPanelHeight, surfaceHeight - (2 * metrics.Padding)));
+            metrics.EdgeMargin,
+            metrics.EdgeMargin,
+            Math.Max(metrics.MinPanelWidth, surfaceWidth - (2 * metrics.EdgeMargin)),
+            Math.Max(metrics.MinPanelHeight, surfaceHeight - (2 * metrics.EdgeMargin)));
 
     private static double SnapMoveAxis(
         double value,
@@ -225,8 +271,8 @@ public static class PanelGeometry
         var best = double.MaxValue;
         var winner = value;
 
-        Consider(metrics.Padding, value, ref best, ref winner);
-        Consider(surfaceExtent - metrics.Padding - extent, value, ref best, ref winner);
+        Consider(metrics.EdgeMargin, value, ref best, ref winner);
+        Consider(surfaceExtent - metrics.EdgeMargin - extent, value, ref best, ref winner);
 
         foreach (var peer in peers)
         {
@@ -253,7 +299,7 @@ public static class PanelGeometry
         var best = double.MaxValue;
         var winner = value;
 
-        Consider(leading ? metrics.Padding : surfaceExtent - metrics.Padding, value, ref best, ref winner);
+        Consider(leading ? metrics.EdgeMargin : surfaceExtent - metrics.EdgeMargin, value, ref best, ref winner);
 
         foreach (var peer in peers)
         {
@@ -278,7 +324,7 @@ public static class PanelGeometry
     private static void Consider(double candidate, double value, ref double best, ref double winner)
     {
         var distance = Math.Abs(candidate - value);
-        if (distance <= SnapRadius && distance < best)
+        if (distance <= WorkspaceGridSettings.SnapRadius && distance < best)
         {
             best = distance;
             winner = candidate;

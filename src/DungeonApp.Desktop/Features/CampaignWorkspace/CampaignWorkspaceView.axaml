@@ -18,6 +18,7 @@
 
         <!-- After the surface in document order, so the cards lie on top of the desk. A panel can
              never be lost under them: the clamp keeps every panel fully inside the surface. -->
-        <deck:PanelDeckView />
+        <deck:PanelDeckView HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom" />
     </Grid>
 </UserControl>
