@@ -75,6 +75,27 @@ Podstawowy zestaw: **Lucide** (licencja ISC) — kuratorowany, lokalny podzbiór
 
 Domyślnie płaskie, precyzyjnie dobrane powierzchnie — bez ciężkich rastrowych teł. Subtelna faktura dopuszczalna tylko jeśli: nie obniża kontrastu, nie konkuruje z liniami siatki, nie utrudnia kompresji/skalowania, nie tworzy widocznych powtórzeń, nie wpływa na geometrię/czas ładowania, jej brak nie zmienia czytelności. Ilustracje i portrety należą do danych kampanii/paczek zawartości, nie do chrome aplikacji.
 
+## Zaplecze i stół
+
+Aplikacja ma dwa rodzaje powierzchni i użytkownik ma je rozpoznawać peryferyjnie, zanim cokolwiek przeczyta.
+
+| | **Stół** (żywa sesja) | **Zaplecze** (wszystko pozostałe) |
+| --- | --- | --- |
+| Powierzchnia | wgłębiona, z siatką i cieniem `inset` | płaska, w jednej płaszczyźnie z ramą aplikacji |
+| Kolor | `Background #121313` | `Surface #181918` — ton sidebara, topbara i stopki |
+| Zawartość | pływające, przestawialne panele | stabilne formularze, listy i karty |
+
+Nośnikiem sygnału jest **obecność albo brak wgłębienia i siatki**, nie sam kolor: sześć jednostek między `#121313` a `#181918` samodzielnie tej roli nie uniesie.
+
+Granica przebiega po **trybie pracy, nie po kontekście kampanii**. Ciemny pulpit należy wyłącznie do żywej sesji. Rejestry, kreatory, ustawienia i ekrany przeglądowe są jasne — także wtedy, gdy dotyczą otwartej kampanii. Dzięki temu ten sam byt może mieć dwie powierzchnie zgodnie ze swoim celem: panel drużyny na biurku sesji jest ciemny, rejestr postaci do przeglądania i edycji jest jasny.
+
+Konsekwencje:
+
+- Przed otwarciem kampanii cały obszar roboczy jest jasny; tworzenie i wybór kampanii to zwykłe, statyczne formularze, nie pływające okna.
+- Otwarcie kampanii odsłania pulpit. Ten moment jest jedynym potrzebnym sygnałem przejścia — nie wymaga tłumaczenia ani dodatkowej reguły interakcji.
+- Przejście korzysta z istniejącego `CrossFade` na zawartości workspace'u. Bez osobnej animacji.
+- Panele przejściowe (rozstrzygnięcie akcji, formularz zadaniowy) są mechanizmem **stołu**, nie zaplecza. Powstaną, gdy pojawi się pierwszy realny przypadek w sesji.
+
 ## Jasne karty w ciemnym pulpicie
 
 Shell jest ciemny i ciepły. Powierzchnie redakcyjne mogą docelowo mieć wariant ciemny (dopasowany do pulpitu) lub jasny/kremowy (charakter fizycznej karty) — decyzja otwarta, wymaga porównania na tej samej treści.
@@ -116,6 +137,7 @@ Każdy zasób: ma jawne źródło i licencję pozwalającą na dystrybucję; prz
 - Widok Entity jako czytelna karta/statblock — edycja nie dominuje nad odczytem.
 - Znak aplikacji: szeryfowa litera `D` w cienkiej kwadratowej ramie (ikona pliku wykonywalnego wymaga osobnego opracowania).
 - Ramki, sidebar, topbar, statusbar tworzą jedną zwartą konstrukcję, nie zestaw unoszących się kart.
+- Wgłębiony pulpit z siatką należy wyłącznie do żywej sesji; zaplecze operuje na płaskiej powierzchni ramy aplikacji.
 
 ## Decyzje otwarte
 

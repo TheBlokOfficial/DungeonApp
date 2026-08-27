@@ -6,13 +6,19 @@ Desktopowa aplikacja dla Mistrza Gry, która utrzymuje spójny stan kampanii i a
 
 ```text
 src/
+  DungeonApp.Core/      # Logika gry — kampanie, reguły, moduły. Bez Avalonia.
   DungeonApp.Desktop/   # Aplikacja Avalonia — shell, sidebar, ustawienia, motyw
-docs/                    # Ustalenia projektowe
+tests/
+  DungeonApp.Core.Tests/
+docs/                   # Ustalenia projektowe
 ```
 
-Logika domenowa (kampanie, moduły, zegar, harmonogram, trwałość) została świadomie
-usunięta na tym etapie jako prototyp — zostanie napisana od nowa, gdy przyjdzie na to
-czas.
+Podział na dwa projekty produkcyjne jest zabiegiem higienicznym: logika gry ma być
+testowalna bez okna. Granicy pilnuje test architektoniczny, który odrzuca każdą
+referencję do Avalonia w `Core`.
+
+Poprzednia warstwa domenowa była prototypem i została usunięta. `Core` powstaje od nowa,
+przyrostami — patrz [wizja i fundamenty](docs/product/vision.md).
 
 ## Dokumentacja projektowa
 

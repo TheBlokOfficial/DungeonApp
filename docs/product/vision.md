@@ -51,13 +51,19 @@ Pierwszy ruleset jest świadomie ograniczony i służy weryfikacji core'u zamias
 ## Model odpowiedzialności technicznych
 
 ```text
-Frontend (Avalonia) -> Application -> Domain
-Infrastructure -> implementuje porty wymagane przez Application/Domain
+DungeonApp.Desktop     -> DungeonApp.Core
+DungeonApp.Core.Tests  -> DungeonApp.Core
 ```
 
-`Application` i `Domain` nie zależą od Avalonia. UI wywołuje scenariusze użycia, nie wykonuje decyzji domenowych. MVVM jest techniką organizacji wyłącznie warstwy Avalonia — ViewModele nie zawierają reguł kampanii.
+`Core` zawiera model świata, reguły, scenariusze użycia, porty i ich lokalne adaptery. Nie zależy od Avalonia — pilnuje tego test architektoniczny, nie dobra wola. `Desktop` zawiera Avalonia, MVVM, nawigację, composition root i zasoby wizualne.
 
-Zobacz [ADR-0001](../architecture/adr/0001-cztery-projekty-warstwowe.md) i [architekturę komponentów UI](../ui/component-architecture.md).
+Rozdzielenie jest zabiegiem higienicznym: chodzi o czystą strukturę zależności i testowalność bez okna, nie o hipotetyczną wymienność frontendu. Dlatego nie tworzymy abstrakcji, których jedynym uzasadnieniem byłaby wymienialność.
+
+Osobny projekt `Infrastructure` wydzielimy dopiero pod konkretny wyzwalacz: druga implementacja portu, zależność NuGet, której domena nie powinna widzieć, albo persystencja z własnym cyklem życia (migracje, indeks w tle). Do tego czasu adaptery mieszkają w `Core/Persistence`, `System.IO` nie wychodzi poza ten katalog, a model domenowy nigdy nie jest modelem zapisu.
+
+MVVM jest techniką organizacji wyłącznie warstwy Avalonia — ViewModele nie zawierają reguł kampanii. `Core` nie zna pojęcia „aktualnie otwarta kampania”; to stan shellu.
+
+Zobacz [architekturę komponentów UI](../ui/component-architecture.md).
 
 ## Priorytety UX przy stole
 
@@ -76,14 +82,22 @@ Pierwszy pionowy wycinek: ekran aktywnej sesji i przepływ zmiana czasu → dzia
 - Stack: C# + Avalonia.
 - Logika świata oddzielona od frontendu, testowalna bez Avalonia.
 - Core nie zawiera na stałe konkretnych przedmiotów, stworzeń ani mechanik jednego systemu.
+- Dwa projekty produkcyjne (`Core`, `Desktop`) plus projekt testowy; `Infrastructure` dopiero pod wyzwalacz.
+- Stan kampanii zapisywany jako modularny snapshot w duchu save'a gry, nie event sourcing. Dziennik jest kroniką dla MG-a, nigdy źródłem prawdy do odtworzenia stanu.
+- Moduły są wbudowane w aplikację i włączane per kampania. Bez zewnętrznych, dynamicznie ładowanych pluginów.
+- Moduł jest właścicielem swojego stanu; stan nieznanego modułu jest zachowywany nietknięty, nie kasowany.
+- Kampania zapisana jako katalog w duchu save'a gry: manifest, pliki stanu modułów, dziennik i układ biurka rozdzielone wg granic spójności, nie wg tematyki. Manifest i stany modułów commitują się razem i dzielą licznik generacji, który czyni rozerwany zapis wykrywalnym zamiast cichego. Backup to komplet jednej generacji.
+- Komunikacja modułów: bezpośrednie, typowane wywołania dla zapytań i poleceń; zdarzenia wyłącznie do ogłaszania faktów dokonanych.
+- Silnik liczy, MG zatwierdza, aplikacja nigdy nie blokuje. Blokada zarezerwowana dla operacji nieodwracalnych, nie dla reguł gry.
+- Przedmiot w kampanii to referencja do definicji z paczki plus zamknięty zbiór nadpisań instancji. Warianty są definicjami, nie nadpisaniami.
+- Ruleset: słownik statystyk, schemat zawartości, tabele i prezentacja jako dane; procedury rozstrzygania jako kod. Pierwszy ruleset w całości w kodzie, obliczenia adresowane po nazwie — to zostawia drogę do przeniesienia ich do danych bez zmiany dla konsumentów.
 
 ## Decyzje otwarte
 
 - Pierwszy ruleset: prototypowy czy zalążek autorskiego systemu?
 - Zasięg symulacji czasu i zdarzeń poza aktywną sesją.
 - Minimalny użyteczny pionowy wycinek aktywnej sesji.
-- Format save'ów, paczek zawartości i wersjonowania danych.
-- Które elementy rulesetu są danymi, a które rozszerzeniami w kodzie?
+- Szczegóły formatu paczek zawartości i ich wersjonowania.
 - Eksport/podgląd/synchronizacja danych dla graczy — czy i kiedy?
 
 ## Kryterium oceny nowych funkcji

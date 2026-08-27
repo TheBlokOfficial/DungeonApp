@@ -9,17 +9,17 @@ Interfejs powstaje pionowymi, działającymi przyrostami: kompozycja widoków, s
 
 ## Faza 1 — shell i biblioteka kampanii
 
-**Status: wycofana.** Ekran biblioteki kampanii oraz logika domenowa, na której się opierał, zostały usunięte jako prototyp (2026-08-26) — zostaną zaprojektowane od nowa, gdy przyjdzie na to czas. Poniższy opis jest zachowany jako punkt odniesienia, nie jako aktualny stan.
+**Status: odbudowana na nowym rdzeniu (2026-08-27).** Pierwotny ekran biblioteki został usunięty razem z prototypem domeny (2026-08-26). Wrócił oparty na `DungeonApp.Core`: `CampaignLibraryViewModel` czyta listę przez `ICampaignRepository.ListAsync`, tworzy przez `CreateCampaign`, a otwarcie kampanii przełącza zawartość workspace'u na pulpit. Tworzenie jest statycznym formularzem na powierzchni zaplecza, nie nakładką — patrz [kierunek wizualny](visual-direction.md), „Zaplecze i stół”.
 
 - wspólne tokeny kolorów, typografii i bazowych wymiarów;
 - `MainWindow` ograniczony do osadzenia `AppShellView`;
 - hermetyczne komponenty topbara, globalnego sidebara, paska statusu;
 - ekran biblioteki z listą o stałej wysokości wiersza;
-- tworzenie kampanii w nakładce, bez zmiany geometrii workspace'u;
-- odczyt/utworzenie/otwarcie kampanii podłączone do istniejących use case'ów;
+- tworzenie kampanii jako stały formularz zaplecza, z zarezerwowanym slotem walidacji;
+- odczyt/utworzenie/otwarcie kampanii podłączone do use case'ów `Core`;
 - stabilny empty state i lokalny viewport listy.
 
-Otwarcie kampanii nie przełącza jeszcze kontekstu shellu — potwierdza poprawność odczytu i przygotowuje granicę dla fazy 2.
+Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i akcję „Zamknij kampanię”, obszar roboczy odsłania pulpit. Zamknięcie zapisuje układ biurka i wraca do biblioteki.
 
 ## Faza 1.1 — stabilizacja wizualna
 
