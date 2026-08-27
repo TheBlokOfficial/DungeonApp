@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Modules.Clock;
-using DungeonApp.Core.Modules.Party;
-using DungeonApp.Core.Modules.Scheduler;
+using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.ViewModels;
@@ -25,6 +24,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 {
     private readonly ICampaignRepository _campaigns;
     private readonly CreateCampaign _createCampaign;
+    private readonly ModuleCatalog _modules;
     private readonly Func<CampaignId, Task> _openCampaign;
 
     private string _newCampaignName = string.Empty;
@@ -33,19 +33,36 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     private bool _isBusy;
     private bool _isLoaded;
 
+    /// <summary>Guards the pass that resolves dependencies, which ticks boxes of its own.</summary>
+    private bool _isResolving;
+
     public CampaignLibraryViewModel(
         ICampaignRepository campaigns,
         CreateCampaign createCampaign,
+        ModuleCatalog modules,
         Func<CampaignId, Task> openCampaign)
     {
         _campaigns = campaigns;
         _createCampaign = createCampaign;
+        _modules = modules;
         _openCampaign = openCampaign;
+
+        // Everything this build offers, all switched on. A campaign is cheap to start and awkward
+        // to extend later, so the default is the full desk rather than a bare one.
+        foreach (var manifest in modules.Manifests)
+        {
+            ModuleChoices.Add(new ModuleChoiceViewModel(manifest, isChosen: true, ResolveModuleChoices));
+        }
+
+        ResolveModuleChoices();
 
         CreateCommand = new AsyncCommand(CreateAsync, () => CanCreate);
     }
 
     public ObservableCollection<CampaignRowViewModel> Campaigns { get; } = [];
+
+    /// <summary>What the new campaign will be able to do. Fixed once it is created.</summary>
+    public ObservableCollection<ModuleChoiceViewModel> ModuleChoices { get; } = [];
 
     public AsyncCommand CreateCommand { get; }
 
@@ -155,10 +172,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            // A fixed set until the campaign creator exists and the GM can choose. Every campaign
-            // wants a clock, and the scheduler is what makes time worth advancing.
-            var campaign = await _createCampaign.ExecuteAsync(
-                NewCampaignName, [ClockModule.Id, SchedulerModule.Id, PartyModule.Id]);
+            var campaign = await _createCampaign.ExecuteAsync(NewCampaignName, ChosenModules());
 
             NewCampaignName = string.Empty;
             Status = $"Utworzono kampanię „{campaign.Name.Value}”.";
@@ -173,6 +187,55 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         }
 
         await LoadAsync();
+    }
+
+    private IReadOnlyList<ModuleId> ChosenModules() =>
+        [.. ModuleChoices.Where(choice => choice.IsChosen).Select(choice => choice.Id)];
+
+    /// <summary>
+    /// Ticks and locks whatever the current choice needs. The Core owns what "needs" means; this
+    /// only has to say which module is holding which, so a locked box is explained.
+    /// </summary>
+    private void ResolveModuleChoices()
+    {
+        if (_isResolving)
+        {
+            return;
+        }
+
+        _isResolving = true;
+
+        try
+        {
+            // The closure rather than the ticks, so a module needed by something needed by a
+            // ticked module is held too, however deep the chain runs.
+            var included = _modules.WithRequirements(ChosenModules());
+            var holders = new Dictionary<ModuleId, List<string>>();
+
+            foreach (var choice in ModuleChoices.Where(choice => included.Contains(choice.Id)))
+            {
+                foreach (var required in _modules.Describe(choice.Id).Requires)
+                {
+                    if (!holders.TryGetValue(required, out var names))
+                    {
+                        holders[required] = names = [];
+                    }
+
+                    names.Add(choice.DisplayName);
+                }
+            }
+
+            foreach (var choice in ModuleChoices)
+            {
+                choice.Hold(holders.TryGetValue(choice.Id, out var names)
+                    ? string.Join(", ", names)
+                    : null);
+            }
+        }
+        finally
+        {
+            _isResolving = false;
+        }
     }
 
     private async Task OpenAsync(CampaignRowViewModel row)

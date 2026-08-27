@@ -12,9 +12,16 @@ public sealed class AsyncCommand(Func<Task> execute, Func<bool>? canExecute = nu
 
     public bool CanExecute(object? parameter) => !_isExecuting && (canExecute?.Invoke() ?? true);
 
-    public async void Execute(object? parameter)
+    public async void Execute(object? parameter) => await ExecuteAsync();
+
+    /// <summary>
+    /// The same run, awaitable. <see cref="Execute"/> cannot be awaited because the command
+    /// interface returns void; anything that needs to know when the work finished - a test, or one
+    /// command driving another - goes through here.
+    /// </summary>
+    public async Task ExecuteAsync()
     {
-        if (!CanExecute(parameter))
+        if (!CanExecute(null))
         {
             return;
         }

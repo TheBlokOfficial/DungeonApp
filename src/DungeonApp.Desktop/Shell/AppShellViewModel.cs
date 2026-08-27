@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Journal;
+using DungeonApp.Core.Modules;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -44,7 +45,8 @@ public sealed class AppShellViewModel : ObservableObject
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
         ICampaignJournalStore journal,
-        CreateCampaign createCampaign)
+        CreateCampaign createCampaign,
+        ModuleCatalog modules)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
@@ -55,7 +57,7 @@ public sealed class AppShellViewModel : ObservableObject
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected);
         StatusBar = new StatusBarViewModel("Gotowe");
 
-        _campaignLibrary = new CampaignLibraryViewModel(campaigns, createCampaign, OpenCampaignAsync);
+        _campaignLibrary = new CampaignLibraryViewModel(campaigns, createCampaign, modules, OpenCampaignAsync);
 
         // Backstage first. The desk is uncovered by opening a campaign, never before.
         _currentWorkspaceContent = _campaignLibrary;

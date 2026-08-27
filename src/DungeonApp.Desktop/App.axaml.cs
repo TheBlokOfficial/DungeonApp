@@ -73,7 +73,8 @@ public partial class App : Avalonia.Application
                 _layoutStore!,
                 _campaigns!,
                 _journal!,
-                new CreateCampaign(_campaigns!, _modules!, TimeProvider.System));
+                new CreateCampaign(_campaigns!, _modules!, TimeProvider.System),
+                _modules!);
 
             desktop.MainWindow = new MainWindow
             {
