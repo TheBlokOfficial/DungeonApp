@@ -67,7 +67,7 @@
                      corners. Border draws it above its background and below child content, so the
                      grid stays legible and panels touching an edge are never dimmed. -->
                 <Border Background="{TemplateBinding Background}"
-                        BoxShadow="inset 0 0 18 0 #20000000">
+                        BoxShadow="inset 0 0 22 0 #50000000">
                     <Grid>
                         <workspace:WorkspaceGridBackground
                             GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
