@@ -243,7 +243,7 @@ public class PanelWindow : ContentControl
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        EndGesture(e.Pointer);
+        EndGesture(e.Pointer, e.KeyModifiers.HasFlag(KeyModifiers.Control));
     }
 
     protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
@@ -252,7 +252,7 @@ public class PanelWindow : ContentControl
 
         // Mandatory. Alt-Tab, a modal dialog or a cancelled touch silently drop the capture; without
         // this the panel stays stuck in :dragging and the next click resumes the abandoned gesture.
-        EndGesture(null);
+        EndGesture(null, usePreciseSnap: false);
     }
 
     private void OnPreviewPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -366,7 +366,7 @@ public class PanelWindow : ContentControl
         e.Handled = true;
     }
 
-    private void EndGesture(IPointer? pointer)
+    private void EndGesture(IPointer? pointer, bool usePreciseSnap)
     {
         if (!_gestureActive)
         {
@@ -381,12 +381,16 @@ public class PanelWindow : ContentControl
 
         if (_canvas is { } canvas && _edge == PanelEdge.None)
         {
+            var snapStep = usePreciseSnap
+                ? WorkspaceGridSettings.PreciseSnapStep
+                : WorkspaceGridSettings.DefaultSnapStep;
             var target = PanelGeometry.SnapMove(
                 CurrentPlacement(),
                 canvas.Bounds.Width,
                 canvas.Bounds.Height,
                 CollectPeers(),
-                _metrics);
+                _metrics,
+                snapStep);
 
             _canvas = null;
             StartSnapAnimation(CurrentPlacement(), target);
@@ -395,6 +399,9 @@ public class PanelWindow : ContentControl
 
         if (_canvas is { } resizeCanvas && _edge != PanelEdge.None)
         {
+            var snapStep = usePreciseSnap
+                ? WorkspaceGridSettings.PreciseSnapStep
+                : WorkspaceGridSettings.DefaultSnapStep;
             var target = PanelGeometry.SnapResize(
                 CurrentPlacement(),
                 _edge,
@@ -402,7 +409,8 @@ public class PanelWindow : ContentControl
                 resizeCanvas.Bounds.Height,
                 CollectPeers(),
                 CurrentConstraints(),
-                _metrics);
+                _metrics,
+                snapStep);
 
             _canvas = null;
             StartSnapAnimation(CurrentPlacement(), target);

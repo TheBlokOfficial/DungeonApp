@@ -141,7 +141,7 @@ public static class UiScaleProfiles
         Set(application, "DungeonDeckCardSpacing", WorkspaceGridSettings.PanelGap);
         // The taskbar needs visual breathing room, independently of the panel clamp. Panels can
         // still touch coordinate zero while minimized cards sit one snap interval inside it.
-        Set(application, "DungeonDeckEdgeInsetThickness", new Avalonia.Thickness(WorkspaceGridSettings.SnapStep));
+        Set(application, "DungeonDeckEdgeInsetThickness", new Avalonia.Thickness(WorkspaceGridSettings.PanelGap));
     }
 
     private static void Set(Avalonia.Application application, string key, object value) =>

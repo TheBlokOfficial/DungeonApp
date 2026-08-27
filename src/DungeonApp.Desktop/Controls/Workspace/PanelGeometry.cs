@@ -15,8 +15,8 @@ namespace DungeonApp.Desktop.Controls.Workspace;
 /// </summary>
 public static class PanelGeometry
 {
-    public static double SnapToGrid(double value) =>
-        Math.Round(value / WorkspaceGridSettings.SnapStep) * WorkspaceGridSettings.SnapStep;
+    public static double SnapToGrid(double value, double snapStep) =>
+        Math.Round(value / snapStep) * snapStep;
 
     /// <summary>
     /// Keeps a freely dragged panel inside the desk without quantizing its motion. The snap target
@@ -51,10 +51,11 @@ public static class PanelGeometry
         double surfaceWidth,
         double surfaceHeight,
         IReadOnlyList<PanelPlacement> peers,
-        WorkspaceMetrics metrics)
+        WorkspaceMetrics metrics,
+        double snapStep)
     {
-        var x = SnapMoveAxis(raw.X, raw.Width, surfaceWidth, peers, metrics, horizontal: true);
-        var y = SnapMoveAxis(raw.Y, raw.Height, surfaceHeight, peers, metrics, horizontal: false);
+        var x = SnapMoveAxis(raw.X, raw.Width, surfaceWidth, peers, metrics, snapStep, horizontal: true);
+        var y = SnapMoveAxis(raw.Y, raw.Height, surfaceHeight, peers, metrics, snapStep, horizontal: false);
 
         return ClampMove(
             new PanelPlacement(x, y, raw.Width, raw.Height),
@@ -94,7 +95,8 @@ public static class PanelGeometry
         double surfaceHeight,
         IReadOnlyList<PanelPlacement> peers,
         PanelConstraints constraints,
-        WorkspaceMetrics metrics)
+        WorkspaceMetrics metrics,
+        double snapStep)
     {
         double left = raw.Left, top = raw.Top, right = raw.Left + raw.Width, bottom = raw.Top + raw.Height;
 
@@ -105,22 +107,22 @@ public static class PanelGeometry
 
         if (draggingWest)
         {
-            left = SnapResizeAxis(left, surfaceWidth, peers, metrics, horizontal: true, leading: true);
+            left = SnapResizeAxis(left, surfaceWidth, peers, metrics, snapStep, horizontal: true, leading: true);
         }
 
         if (draggingEast)
         {
-            right = SnapResizeAxis(right, surfaceWidth, peers, metrics, horizontal: true, leading: false);
+            right = SnapResizeAxis(right, surfaceWidth, peers, metrics, snapStep, horizontal: true, leading: false);
         }
 
         if (draggingNorth)
         {
-            top = SnapResizeAxis(top, surfaceHeight, peers, metrics, horizontal: false, leading: true);
+            top = SnapResizeAxis(top, surfaceHeight, peers, metrics, snapStep, horizontal: false, leading: true);
         }
 
         if (draggingSouth)
         {
-            bottom = SnapResizeAxis(bottom, surfaceHeight, peers, metrics, horizontal: false, leading: false);
+            bottom = SnapResizeAxis(bottom, surfaceHeight, peers, metrics, snapStep, horizontal: false, leading: false);
         }
 
         return ConstrainResize(
@@ -266,6 +268,7 @@ public static class PanelGeometry
         double surfaceExtent,
         IReadOnlyList<PanelPlacement> peers,
         WorkspaceMetrics metrics,
+        double snapStep,
         bool horizontal)
     {
         var best = double.MaxValue;
@@ -285,7 +288,7 @@ public static class PanelGeometry
             Consider(near - extent - metrics.Gap, value, ref best, ref winner); // sit before the peer
         }
 
-        return best is double.MaxValue ? SnapToGrid(value) : winner;
+        return best is double.MaxValue ? SnapToGrid(value, snapStep) : winner;
     }
 
     private static double SnapResizeAxis(
@@ -293,6 +296,7 @@ public static class PanelGeometry
         double surfaceExtent,
         IReadOnlyList<PanelPlacement> peers,
         WorkspaceMetrics metrics,
+        double snapStep,
         bool horizontal,
         bool leading)
     {
@@ -318,7 +322,7 @@ public static class PanelGeometry
             }
         }
 
-        return best is double.MaxValue ? SnapToGrid(value) : winner;
+        return best is double.MaxValue ? SnapToGrid(value, snapStep) : winner;
     }
 
     private static void Consider(double candidate, double value, ref double best, ref double winner)
