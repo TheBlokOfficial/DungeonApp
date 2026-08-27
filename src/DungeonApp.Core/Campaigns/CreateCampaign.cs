@@ -28,8 +28,8 @@ public sealed class CreateCampaign(
         CancellationToken cancellationToken = default)
     {
         var campaignName = CampaignName.Create(name);
-        var active = CampaignModules.Activate((modules ?? []).Select(catalog.Create));
-        var campaign = Campaign.Create(campaignName, active, timeProvider);
+        var campaign = Campaign.Create(
+            campaignName, (modules ?? []).Select(catalog.Create).ToArray(), timeProvider);
 
         await repository.SaveAsync(campaign, cancellationToken);
 

@@ -34,6 +34,13 @@ internal sealed class StubModule(string id, params string[] requires) : ICampaig
         ActivatedAt = ++_activations;
     }
 
+    /// <summary>Changes state the way a real module would: alter, then say so.</summary>
+    public void Set(int value, string reason)
+    {
+        State = new StubState(value);
+        Context!.Journal.Record($"Wartość ustawiona na {value}", reason);
+    }
+
     public object CaptureState() => State;
 
     public void RestoreState(object state, int version) => State = (StubState)state;

@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 
 namespace DungeonApp.Core.Persistence;
@@ -26,7 +27,11 @@ namespace DungeonApp.Core.Persistence;
 /// contents.
 /// </para>
 /// </summary>
-public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog catalog) : ICampaignRepository
+public sealed class JsonCampaignRepository(
+    string libraryPath,
+    ModuleCatalog catalog,
+    ICampaignJournalStore journalStore,
+    TimeProvider timeProvider) : ICampaignRepository
 {
     /// <summary>Independent of the application version: it only ever tracks the shape of these files.</summary>
     public const int CurrentFormatVersion = 1;
@@ -108,6 +113,11 @@ public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog cat
             // The manifest lands last. Its arrival is what marks the whole generation as committed,
             // and what a torn save is measured against.
             File.Move(temporaryManifestPath, manifestPath, overwrite: true);
+
+            // Only after the campaign is safely committed. The chronicle explains a saved world, so
+            // it must never be the reason one fails to save.
+            await journalStore.AppendAsync(campaign.Id, campaign.Journal.Pending, cancellationToken);
+            campaign.Journal.MarkWritten();
         }
         finally
         {
@@ -136,9 +146,22 @@ public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog cat
 
         var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
         var name = ValidateManifest(manifest, manifestPath);
-        var modules = await RestoreModulesAsync(directory, manifest, manifestPath, cancellationToken);
 
-        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, modules);
+        // Built, then wired by Campaign.Restore, then filled. Activation happens exactly once, and
+        // inside the campaign, because the campaign owns the journal the contexts are built around.
+        var campaign = Campaign.Restore(
+            new CampaignId(manifest.Id),
+            name,
+            manifest.CreatedAt,
+            CreateModules(manifest, manifestPath),
+            timeProvider);
+
+        foreach (var module in campaign.Modules.Active)
+        {
+            await RestoreModuleStateAsync(directory, module, manifest, manifestPath, cancellationToken);
+        }
+
+        return campaign;
     }
 
     /// <summary>
@@ -212,11 +235,11 @@ public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog cat
         return name;
     }
 
-    private async Task<CampaignModules> RestoreModulesAsync(
-        string directory,
-        CampaignManifest manifest,
-        string manifestPath,
-        CancellationToken cancellationToken)
+    /// <summary>
+    /// Turns the manifest's list of switched-on modules into instances, or refuses. No activation
+    /// and no state here - only the question of whether this build can make what the save names.
+    /// </summary>
+    private IReadOnlyList<ICampaignModule> CreateModules(CampaignManifest manifest, string manifestPath)
     {
         var active = new List<ICampaignModule>();
 
@@ -241,16 +264,7 @@ public sealed class JsonCampaignRepository(string libraryPath, ModuleCatalog cat
             active.Add(catalog.Create(id));
         }
 
-        // Wired up first, filled second: a module's activation may reach for a dependency, but must
-        // never depend on its own stored state having arrived yet.
-        var modules = CampaignModules.Activate(active);
-
-        foreach (var module in modules.Active)
-        {
-            await RestoreModuleStateAsync(directory, module, manifest, manifestPath, cancellationToken);
-        }
-
-        return modules;
+        return active;
     }
 
     private async Task RestoreModuleStateAsync(

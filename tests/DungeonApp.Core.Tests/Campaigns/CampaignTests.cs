@@ -19,8 +19,8 @@ public sealed class CampaignTests
         var clock = new FixedTimeProvider(Moment);
         var name = CampaignName.Create("Kroniki Doliny");
 
-        var first = Campaign.Create(name, CampaignModules.Activate([]), clock);
-        var second = Campaign.Create(name, CampaignModules.Activate([]), clock);
+        var first = Campaign.Create(name, [], clock);
+        var second = Campaign.Create(name, [], clock);
 
         Assert.NotEqual(first.Id, second.Id);
         Assert.NotEqual(default, first.Id);
@@ -29,8 +29,7 @@ public sealed class CampaignTests
     [Fact]
     public void Records_the_moment_from_the_injected_clock()
     {
-        var campaign = Campaign.Create(
-            CampaignName.Create("Kroniki Doliny"), CampaignModules.Activate([]), new FixedTimeProvider(Moment));
+        var campaign = Campaign.Create(CampaignName.Create("Kroniki Doliny"), [], new FixedTimeProvider(Moment));
 
         Assert.Equal(Moment, campaign.CreatedAt);
     }

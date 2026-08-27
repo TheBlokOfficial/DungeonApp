@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Tests.Fakes;
 
@@ -6,11 +9,15 @@ namespace DungeonApp.Core.Tests.Modules;
 
 public sealed class CampaignModulesTests
 {
+    /// <summary>The journal and clock are incidental here; these tests are about the set itself.</summary>
+    private static CampaignModules Activate(IEnumerable<ICampaignModule> modules)
+        => CampaignModules.Activate(modules, new CampaignJournal(), TimeProvider.System);
+
     [Fact]
     public void Refuses_the_same_module_twice()
     {
         var exception = Assert.Throws<ModuleActivationException>(
-            () => CampaignModules.Activate([new StubModule("core.clock"), new StubModule("core.clock")]));
+            () => Activate([new StubModule("core.clock"), new StubModule("core.clock")]));
 
         Assert.Equal(ModuleActivationFailure.DuplicateModule, exception.Failure);
     }
@@ -23,7 +30,7 @@ public sealed class CampaignModulesTests
     public void Refuses_a_module_whose_dependency_is_switched_off()
     {
         var exception = Assert.Throws<ModuleActivationException>(
-            () => CampaignModules.Activate([new StubModule("core.scheduler", "core.clock")]));
+            () => Activate([new StubModule("core.scheduler", "core.clock")]));
 
         Assert.Equal(ModuleActivationFailure.MissingDependency, exception.Failure);
     }
@@ -31,8 +38,7 @@ public sealed class CampaignModulesTests
     [Fact]
     public void Refuses_a_dependency_loop_instead_of_overflowing()
     {
-        var exception = Assert.Throws<ModuleActivationException>(() => CampaignModules.Activate(
-        [
+        var exception = Assert.Throws<ModuleActivationException>(() => Activate([
             new StubModule("a", "b"),
             new StubModule("b", "a")
         ]));
@@ -50,7 +56,7 @@ public sealed class CampaignModulesTests
         var clock = new StubModule("core.clock");
         var scheduler = new StubModule("core.scheduler", "core.clock");
 
-        var modules = CampaignModules.Activate([scheduler, clock]);
+        var modules = Activate([scheduler, clock]);
 
         Assert.Equal(
             ["core.clock", "core.scheduler"],
@@ -63,7 +69,7 @@ public sealed class CampaignModulesTests
     {
         var clock = new StubModule("core.clock");
 
-        CampaignModules.Activate([clock, new StubModule("core.scheduler", "core.clock")]);
+        Activate([clock, new StubModule("core.scheduler", "core.clock")]);
 
         Assert.NotNull(clock.ActivatedAt);
         Assert.NotNull(clock.Context);
@@ -79,7 +85,7 @@ public sealed class CampaignModulesTests
         var clock = new StubModule("core.clock");
         var dependent = new DependentModule("core.scheduler", "core.clock");
 
-        CampaignModules.Activate([dependent, clock]);
+        Activate([dependent, clock]);
 
         Assert.Same(clock, dependent.Resolved);
     }
@@ -88,7 +94,7 @@ public sealed class CampaignModulesTests
     public void Finds_a_switched_on_module_by_id()
     {
         var clock = new StubModule("core.clock");
-        var modules = CampaignModules.Activate([clock]);
+        var modules = Activate([clock]);
 
         Assert.Same(clock, modules.Find(ModuleId.Create("core.clock")));
         Assert.True(modules.Contains(ModuleId.Create("core.clock")));
@@ -97,7 +103,7 @@ public sealed class CampaignModulesTests
     [Fact]
     public void Reports_a_module_that_is_not_switched_on_rather_than_inventing_one()
     {
-        var modules = CampaignModules.Activate([]);
+        var modules = Activate([]);
 
         Assert.Null(modules.Find(ModuleId.Create("core.clock")));
         Assert.False(modules.TryGet<StubModule>(out _));

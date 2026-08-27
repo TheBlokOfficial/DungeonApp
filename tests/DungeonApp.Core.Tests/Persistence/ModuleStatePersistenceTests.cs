@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
@@ -22,13 +23,11 @@ public sealed class ModuleStatePersistenceTests : IDisposable
 
     public void Dispose() => _library.Dispose();
 
-    private JsonCampaignRepository Repository() => new(_library.Path, _catalog);
+    private JsonCampaignRepository Repository() =>
+        new(_library.Path, _catalog, new JsonCampaignJournalStore(_library.Path), new FixedTimeProvider(Moment));
 
     private static Campaign NewCampaign(params ICampaignModule[] modules)
-        => Campaign.Create(
-            CampaignName.Create("Kroniki Doliny"),
-            CampaignModules.Activate(modules),
-            new FixedTimeProvider(Moment));
+        => Campaign.Create(CampaignName.Create("Kroniki Doliny"), modules, new FixedTimeProvider(Moment));
 
     private string ModuleStatePath(Campaign campaign, string moduleId)
         => Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "modules", $"{moduleId}.json");
@@ -108,7 +107,8 @@ public sealed class ModuleStatePersistenceTests : IDisposable
         var campaign = NewCampaign(new StubModule("core.clock"));
         await Repository().SaveAsync(campaign);
 
-        var withoutTheModule = new JsonCampaignRepository(_library.Path, new ModuleCatalog());
+        var withoutTheModule = new JsonCampaignRepository(
+            _library.Path, new ModuleCatalog(), new JsonCampaignJournalStore(_library.Path), new FixedTimeProvider(Moment));
 
         var exception = await Assert.ThrowsAsync<CampaignStoreException>(
             () => withoutTheModule.GetAsync(campaign.Id));
@@ -135,7 +135,7 @@ public sealed class ModuleStatePersistenceTests : IDisposable
 
         // The same campaign, saved again with the module switched off.
         var withoutModule = Campaign.Restore(
-            withModule.Id, withModule.Name, withModule.CreatedAt, CampaignModules.Activate([]));
+            withModule.Id, withModule.Name, withModule.CreatedAt, [], new FixedTimeProvider(Moment));
         await Repository().SaveAsync(withoutModule);
 
         Assert.Equal(beforeDisabling, File.ReadAllText(statePath));

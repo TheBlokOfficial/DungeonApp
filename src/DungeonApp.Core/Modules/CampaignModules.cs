@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DungeonApp.Core.Journal;
 
 namespace DungeonApp.Core.Modules;
 
@@ -30,9 +31,14 @@ public sealed class CampaignModules
     /// Builds the set and refuses an impossible one. Every module is registered before any is
     /// activated, so a module may reach for another from <see cref="ICampaignModule.OnActivated"/>.
     /// </summary>
-    public static CampaignModules Activate(IEnumerable<ICampaignModule> modules)
+    public static CampaignModules Activate(
+        IEnumerable<ICampaignModule> modules,
+        CampaignJournal journal,
+        TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(modules);
+        ArgumentNullException.ThrowIfNull(journal);
+        ArgumentNullException.ThrowIfNull(timeProvider);
 
         var requested = modules.ToArray();
 
@@ -62,11 +68,14 @@ public sealed class CampaignModules
         }
 
         var campaignModules = new CampaignModules(SortByDependency(requested, byId));
-        var context = new ModuleContext(campaignModules);
 
         foreach (var module in campaignModules.Active)
         {
-            module.OnActivated(context);
+            // A context each, not one shared: the journal it carries is stamped with the module's
+            // own identity, so a chronicle line always knows who wrote it.
+            module.OnActivated(new ModuleContext(
+                campaignModules,
+                new ModuleJournal(journal, module.Manifest.Id, timeProvider)));
         }
 
         return campaignModules;

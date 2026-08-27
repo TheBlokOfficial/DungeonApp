@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -45,12 +46,16 @@ public partial class App : Avalonia.Application
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
-        _campaigns = new JsonCampaignRepository(
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "DungeonApp",
-                "Campaigns"),
-            _modules);
+        var libraryPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "DungeonApp",
+            "Campaigns");
+
+        // A separate store from the campaign's own: the chronicle is append-only, grows without
+        // limit, and losing it must never cost the campaign.
+        ICampaignJournalStore journal = new JsonCampaignJournalStore(libraryPath);
+
+        _campaigns = new JsonCampaignRepository(libraryPath, _modules, journal, TimeProvider.System);
     }
 
     public override void OnFrameworkInitializationCompleted()
