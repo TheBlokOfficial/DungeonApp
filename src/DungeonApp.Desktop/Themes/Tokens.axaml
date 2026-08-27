@@ -3,6 +3,18 @@
     <Color x:Key="DungeonBackgroundColor">#121313</Color>
     <Color x:Key="DungeonSurfaceColor">#181918</Color>
     <Color x:Key="DungeonSurfaceHeaderColor">#1E1E1C</Color>
+    <!--
+        Application depth hierarchy. These semantic roles intentionally remain separate from the
+        generic surface tokens even where their current color values match. The outer frame,
+        backstage workspace and live campaign desk may evolve independently without making a
+        header or panel change color as a side effect.
+    -->
+    <Color x:Key="DungeonFrameColor">#1E1E1C</Color>
+    <Color x:Key="DungeonFrameHoverColor">#2A2925</Color>
+    <Color x:Key="DungeonBackstageColor">#181918</Color>
+    <Color x:Key="DungeonBackstageCardColor">#1E1E1C</Color>
+    <Color x:Key="DungeonBackstageRowHoverColor">#2A2925</Color>
+    <Color x:Key="DungeonDeskColor">#121313</Color>
     <Color x:Key="DungeonSurfaceActiveColor">#2B251D</Color>
     <Color x:Key="DungeonSurfaceHoverColor">#201F1C</Color>
     <Color x:Key="DungeonBorderColor">#4A443C</Color>
@@ -13,6 +25,7 @@
     <Color x:Key="DungeonAccentColor">#B47C36</Color>
     <Color x:Key="DungeonAccentBrightColor">#D19A52</Color>
     <Color x:Key="DungeonAccentActionColor">#8B5727</Color>
+    <Color x:Key="DungeonPrimaryDisabledColor">#4A3520</Color>
     <Color x:Key="DungeonSuccessColor">#84A98B</Color>
     <Color x:Key="DungeonWarningColor">#CF9B55</Color>
     <Color x:Key="DungeonDangerColor">#C76767</Color>
@@ -20,6 +33,12 @@
     <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
     <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
     <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+    <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
+    <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
+    <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
+    <SolidColorBrush x:Key="DungeonBackstageCardBrush" Color="{DynamicResource DungeonBackstageCardColor}" />
+    <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
+    <SolidColorBrush x:Key="DungeonDeskBrush" Color="{DynamicResource DungeonDeskColor}" />
     <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
     <SolidColorBrush x:Key="DungeonSurfaceHoverBrush" Color="{DynamicResource DungeonSurfaceHoverColor}" />
     <SolidColorBrush x:Key="DungeonBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
@@ -30,9 +49,17 @@
     <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
     <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
     <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+    <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
     <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
     <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
     <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
+
+    <!-- Form chrome. Inputs are shallow backstage insets, never pieces of the darker live desk. -->
+    <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
+    <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+    <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+    <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+    <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
 
     <!--
         Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a

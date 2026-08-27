@@ -49,6 +49,8 @@ ViewModel odpowiada za stan prezentacyjny i orkiestrację use case'ów danego ek
 
 Dozwolony dla zachowań należących wyłącznie do widoku: zarządzanie fokusem, interakcje wskaźnika/przeciąganie, reakcja na wariant rozmiaru, integracja z mechanizmami okna, animacje. Nie wywołuje use case'ów, nie interpretuje reguł kampanii, nie staje się drugim ViewModelem.
 
+Wyjątkiem należącym nadal do widoku jest koordynacja pierwszej klatki i rozgrzewania drzewa wizualnego. `AppShellView` może zgłosić ViewModelowi moment `Loaded`, osadzić techniczny warmup host i zakończyć bramkę gotowości po layout/renderze; odczyt repozytoriów oraz przygotowanie danych pozostają w ViewModelu/usłudze przygotowującej.
+
 ## Bindingi i `DataContext`
 
 Compiled bindings włączone globalnie — każdy `Window`/`UserControl`/`DataTemplate` deklaruje `x:DataType`. Komponent generyczny nie ustawia `DataContext = this` w konstruktorze (przerywa dziedziczenie kontekstu od rodzica). W `TemplatedControl` właściwości własne przez `TemplateBinding`; w aplikacyjnym `UserControl` bindingi odnoszą się do zadeklarowanego ViewModelu.

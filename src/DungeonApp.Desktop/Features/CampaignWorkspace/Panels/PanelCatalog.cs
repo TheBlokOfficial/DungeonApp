@@ -37,7 +37,9 @@ public sealed class PanelCatalog
 
     public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
 
-    public static PanelCatalog For(CampaignSession session)
+    public static PanelCatalog For(
+        CampaignSession session,
+        IReadOnlyList<ChronicleEntryViewModel> initialChronicle)
     {
         var descriptors = new List<WorkspacePanelDescriptor>
         {
@@ -90,7 +92,7 @@ public sealed class PanelCatalog
             WorkspacePanelGroup.Campaign,
             new PanelPlacement(0, 328, 664, 396),
             new PanelConstraints(320, 200, double.PositiveInfinity, double.PositiveInfinity),
-            () => new HistoryPanelViewModel(session)));
+            () => new HistoryPanelViewModel(session, initialChronicle)));
 
         return new PanelCatalog(descriptors);
     }

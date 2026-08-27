@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -6,6 +7,7 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Modules.Clock;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
@@ -22,7 +24,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 {
     private readonly ICampaignRepository _campaigns;
     private readonly CreateCampaign _createCampaign;
-    private readonly Func<Campaign, Task> _openCampaign;
+    private readonly Func<CampaignId, Task> _openCampaign;
 
     private string _newCampaignName = string.Empty;
     private string? _nameError;
@@ -33,7 +35,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public CampaignLibraryViewModel(
         ICampaignRepository campaigns,
         CreateCampaign createCampaign,
-        Func<Campaign, Task> openCampaign)
+        Func<CampaignId, Task> openCampaign)
     {
         _campaigns = campaigns;
         _createCampaign = createCampaign;
@@ -78,8 +80,16 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public string? Status
     {
         get => _status;
-        private set => SetField(ref _status, value);
+        private set
+        {
+            if (SetField(ref _status, value))
+            {
+                RaisePropertyChanged(nameof(HasStatus));
+            }
+        }
     }
+
+    public bool HasStatus => !string.IsNullOrWhiteSpace(Status);
 
     public bool IsBusy
     {
@@ -104,13 +114,14 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
     public bool HasCampaigns => Campaigns.Count > 0;
 
-    public async Task LoadAsync()
+    public async Task<IReadOnlyList<CampaignSummary>> LoadAsync()
     {
         IsBusy = true;
+        IReadOnlyList<CampaignSummary> summaries = [];
 
         try
         {
-            var summaries = await _campaigns.ListAsync();
+            summaries = await _campaigns.ListAsync();
 
             Campaigns.Clear();
 
@@ -123,8 +134,8 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             RaisePropertyChanged(nameof(IsEmpty));
             RaisePropertyChanged(nameof(HasCampaigns));
         }
-        // Widened deliberately: this runs fire-and-forget from the composition root, so an
-        // escaping exception would be unobserved rather than shown to anyone.
+        // The shelf is also part of startup preparation. A storage failure is presentation state,
+        // not a reason to abort the readiness pipeline and leave the shell permanently gated.
         catch (Exception ex) when (ex is CampaignStoreException or System.IO.IOException or UnauthorizedAccessException)
         {
             Status = "Nie udało się odczytać biblioteki kampanii.";
@@ -133,6 +144,8 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         {
             IsBusy = false;
         }
+
+        return summaries;
     }
 
     private async Task CreateAsync()
@@ -167,17 +180,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            var campaign = await _campaigns.GetAsync(row.Id);
-
-            if (campaign is null)
-            {
-                // The shelf was read a moment ago; something removed the campaign since.
-                Status = $"Kampania „{row.Name}” już nie istnieje.";
-                await LoadAsync();
-                return;
-            }
-
-            await _openCampaign(campaign);
+            await _openCampaign(row.Id);
         }
         catch (CampaignStoreException ex)
         {
@@ -186,6 +189,11 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         catch (System.IO.IOException)
         {
             Status = $"Nie udało się odczytać kampanii „{row.Name}”.";
+        }
+        catch (CampaignUnavailableException)
+        {
+            Status = $"Kampania „{row.Name}” już nie istnieje.";
+            await LoadAsync();
         }
         finally
         {

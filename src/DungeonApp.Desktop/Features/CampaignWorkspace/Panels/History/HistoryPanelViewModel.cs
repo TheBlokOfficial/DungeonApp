@@ -1,5 +1,5 @@
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using DungeonApp.Core.Journal;
@@ -44,15 +44,28 @@ public sealed class HistoryPanelViewModel : ObservableObject, IDisposable
 
     private bool _isLoading;
 
-    public HistoryPanelViewModel(CampaignSession session)
+    private IReadOnlyList<ChronicleEntryViewModel> _entries;
+
+    public HistoryPanelViewModel(
+        CampaignSession session,
+        IReadOnlyList<ChronicleEntryViewModel> initialEntries)
     {
         _session = session;
+        _entries = initialEntries;
         _session.Committed += Reload;
-
-        Reload();
     }
 
-    public ObservableCollection<ChronicleEntryViewModel> Entries { get; } = [];
+    public IReadOnlyList<ChronicleEntryViewModel> Entries
+    {
+        get => _entries;
+        private set
+        {
+            if (SetField(ref _entries, value))
+            {
+                RaisePropertyChanged(nameof(IsEmpty));
+            }
+        }
+    }
 
     public bool IsEmpty => !_isLoading && Entries.Count == 0;
 
@@ -68,32 +81,46 @@ public sealed class HistoryPanelViewModel : ObservableObject, IDisposable
 
         var entries = await _session.ReadChronicleAsync(Limit);
 
-        Entries.Clear();
-
-        foreach (var entry in entries)
-        {
-            Entries.Add(new ChronicleEntryViewModel(
-                entry.RecordedAt.ToLocalTime().ToString("d MMM, HH:mm", CultureInfo.CurrentCulture),
-                DescribeSource(entry),
-                entry.Summary,
-                entry.Reason));
-        }
-
+        Entries = ChroniclePresentation.Describe(_session.Campaign, entries);
         _isLoading = false;
         RaisePropertyChanged(nameof(IsEmpty));
+    }
+}
+
+internal static class ChroniclePresentation
+{
+    public static IReadOnlyList<ChronicleEntryViewModel> Describe(
+        DungeonApp.Core.Campaigns.Campaign campaign,
+        IReadOnlyList<JournalEntry> entries)
+    {
+        var result = new ChronicleEntryViewModel[entries.Count];
+
+        for (var index = 0; index < entries.Count; index++)
+        {
+            var entry = entries[index];
+            result[index] = new ChronicleEntryViewModel(
+                entry.RecordedAt.ToLocalTime().ToString("d MMM, HH:mm", CultureInfo.CurrentCulture),
+                DescribeSource(campaign, entry),
+                entry.Summary,
+                entry.Reason);
+        }
+
+        return result;
     }
 
     /// <summary>
     /// Falls back to the raw identifier for a module the campaign no longer runs: its entries stay
-    /// in the chronicle, and an old line is still worth reading without the module that wrote it.
+    /// readable even when the module that wrote them is no longer active.
     /// </summary>
-    private string DescribeSource(JournalEntry entry)
+    private static string DescribeSource(
+        DungeonApp.Core.Campaigns.Campaign campaign,
+        JournalEntry entry)
     {
         if (entry.Module is not { } module)
         {
             return "MG";
         }
 
-        return _session.Campaign.Modules.Find(module)?.Manifest.DisplayName ?? module.Value;
+        return campaign.Modules.Find(module)?.Manifest.DisplayName ?? module.Value;
     }
 }

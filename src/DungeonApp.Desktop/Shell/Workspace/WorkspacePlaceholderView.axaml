@@ -4,12 +4,9 @@
              x:Class="DungeonApp.Desktop.Shell.Workspace.WorkspacePlaceholderView"
              x:DataType="workspace:WorkspacePlaceholderViewModel">
 
-    <!--
-        Backstage: a flat surface in the tone of the application frame. Both the recess and the grid
-        belong to a live session alone, so a static configuration screen shows neither - see
-        docs/ui/visual-direction.md, "Zaplecze i stol".
-    -->
-    <Grid Background="{DynamicResource DungeonSurfaceBrush}">
+    <!-- The shell owns the persistent backstage surface. Keeping this root transparent means a
+         page transition fades only the changing content and never exposes the window underneath. -->
+    <Grid>
         <TextBlock Text="{Binding Title}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"

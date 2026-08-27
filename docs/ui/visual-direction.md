@@ -1,6 +1,6 @@
 # Kierunek wizualny i stabilność UI
 
-> **Status:** zatwierdzony kierunek wizualny; szczegółowe tokeny komponentów pozostają do dopracowania — wersja 0.2
+> **Status:** zatwierdzony kierunek wizualny; szczegółowe tokeny komponentów pozostają do dopracowania — wersja 0.5
 
 Normatywne wymiary i progi adaptacyjne: [Kontrakt UI](contract.md).
 
@@ -55,6 +55,14 @@ Zmiana HP, komunikat, ikona, dłuższa nazwa Entity, nowy wpis historii — nic 
 
 **Zabezpieczenia przed przesunięciami:** zarezerwowany slot ikony niezależnie od stanu ładowania; loading/empty/error/ready = ta sama geometria kontenera; statusy i walidacja nie wypychają formularza; wiersze danych mają stałą/ograniczoną wysokość; wartości mechaniczne używają cyfr tablicowych i przewidzianej szerokości; długie etykiety mają politykę skracania/zawijania/przewijania; miejsce na scrollbar jest uwzględnione w geometrii; placeholdery odpowiadają docelowemu slotowi; animacje nie zmieniają rozmiaru głównych obszarów.
 
+## Informacja zwrotna kontrolek
+
+Jedyną chwilową odpowiedzią przycisku na wskaźnik jest wyraźny, natychmiastowy `hover`. `Pressed` pozostaje stanem technicznym obsługującym aktywację, ale nie ma osobnego koloru, przesunięcia, skali ani animacji. Wciśnięcie przycisku pod kursorem zachowuje wygląd `hover`.
+
+Brak wizualnego `pressed` nie usuwa stanów niosących odrębne znaczenie: `focus-visible` dla klawiatury, `disabled` dla niedostępności oraz `checked`/`selected` dla trwałego wyboru. Żaden z nich nie zmienia zewnętrznej geometrii kontrolki.
+
+Pola tekstowe mają spokojną, niezmienną powierzchnię. Hover komunikuje się neutralną ramką, focus cienką ramką akcentową o umiarkowanym kontraście; tło, grubość obrysu i geometria pozostają stałe. CTA niedostępne z powodu niekompletnego formularza używa dedykowanych, przygaszonych kolorów tła, obrysu i tekstu — nie zbiorczej przezroczystości kontrolki.
+
 ## Typografia
 
 Dwa głosy: bezszeryfowy dla kontrolek/nawigacji/tabel/liczb, spokojny szeryfowy dla nazw Entity, nagłówków kart i rozdziałów (ma przywoływać podręcznik RPG, pozostając czytelny — nie pseudośredniowieczny).
@@ -75,17 +83,19 @@ Podstawowy zestaw: **Lucide** (licencja ISC) — kuratorowany, lokalny podzbiór
 
 Domyślnie płaskie, precyzyjnie dobrane powierzchnie — bez ciężkich rastrowych teł. Subtelna faktura dopuszczalna tylko jeśli: nie obniża kontrastu, nie konkuruje z liniami siatki, nie utrudnia kompresji/skalowania, nie tworzy widocznych powtórzeń, nie wpływa na geometrię/czas ładowania, jej brak nie zmienia czytelności. Ilustracje i portrety należą do danych kampanii/paczek zawartości, nie do chrome aplikacji.
 
-## Zaplecze i stół
+## Rama, zaplecze i stół
 
-Aplikacja ma dwa rodzaje powierzchni i użytkownik ma je rozpoznawać peryferyjnie, zanim cokolwiek przeczyta.
+Aplikacja ma dwa tryby powierzchni roboczej osadzone w jaśniejszej ramie. Użytkownik ma je rozpoznawać peryferyjnie, zanim cokolwiek przeczyta.
 
-| | **Stół** (żywa sesja) | **Zaplecze** (wszystko pozostałe) |
-| --- | --- | --- |
-| Powierzchnia | wgłębiona, z siatką i cieniem `inset` | płaska, w jednej płaszczyźnie z ramą aplikacji |
-| Kolor | `Background #121313` | `Surface #181918` — ton sidebara, topbara i stopki |
-| Zawartość | pływające, przestawialne panele | stabilne formularze, listy i karty |
+| | **Rama zewnętrzna** | **Zaplecze** | **Stół** (żywa sesja) |
+| --- | --- | --- | --- |
+| Powierzchnia | najwyższa, zwarta konstrukcja | lekko wpuszczona, jednolita | wyraźnie wgłębiona, z siatką i cieniem `inset` |
+| Kolor | `Frame #1E1E1C` | `Backstage #181918` | `Desk #121313` |
+| Zawartość | topbar, sidebar, statusbar | stabilne formularze, listy i karty | pływające, przestawialne panele |
 
-Nośnikiem sygnału jest **obecność albo brak wgłębienia i siatki**, nie sam kolor: sześć jednostek między `#121313` a `#181918` samodzielnie tej roli nie uniesie.
+Nośnikiem sygnału jest połączenie tonu i konstrukcji: zaplecze ma płytką wewnętrzną krawędź bez siatki, a stół mocniejsze wgłębienie i siatkę. Sam kolor nie wystarcza do rozróżnienia trybu pracy.
+
+Zaplecze może używać kart dla jednej spójnej czynności lub zbioru ściśle związanych danych. Domyślnym językiem jest precyzyjna, pojedyncza rama zgodna z konstrukcją shellu, nie miękki cień kojarzący się z modalem aplikacji webowej. Sekcje rozdziela przede wszystkim rytm i typografia; dopuszczalny jest jeden separator, gdy wyznacza realny podział funkcjonalny. Karta nie imituje okna stołu, nie ma belki tytułu ani swobodnej geometrii. Formularz szybkiego utworzenia i lista kampanii tworzą jedną taką kartę.
 
 Granica przebiega po **trybie pracy, nie po kontekście kampanii**. Ciemny pulpit należy wyłącznie do żywej sesji. Rejestry, kreatory, ustawienia i ekrany przeglądowe są jasne — także wtedy, gdy dotyczą otwartej kampanii. Dzięki temu ten sam byt może mieć dwie powierzchnie zgodnie ze swoim celem: panel drużyny na biurku sesji jest ciemny, rejestr postaci do przeglądania i edycji jest jasny.
 
@@ -93,7 +103,9 @@ Konsekwencje:
 
 - Przed otwarciem kampanii cały obszar roboczy jest jasny; tworzenie i wybór kampanii to zwykłe, statyczne formularze, nie pływające okna.
 - Otwarcie kampanii odsłania pulpit. Ten moment jest jedynym potrzebnym sygnałem przejścia — nie wymaga tłumaczenia ani dodatkowej reguły interakcji.
-- Przejście korzysta z istniejącego `CrossFade` na zawartości workspace'u. Bez osobnej animacji.
+- Powierzchnia zaplecza należy do trwałego hosta workspace'u, nie do wymienianych ekranów. Przejście między statycznymi ekranami może wygaszać ich treść, ale nigdy jednolite tło pod spodem.
+- Przejście zaplecze–stół korzysta z `CrossFade` na zawartości workspace'u. Zmiana powierzchni jest wtedy znacząca i nie wymaga osobnej animacji.
+- Po uruchomieniu rama pojawia się przed cięższym przygotowaniem. Stabilna karta „Przygotowywanie aplikacji” zajmuje workspace do chwili gotowości; nie pulsuje geometrią i nie udaje docelowego ekranu. Po jej zniknięciu krytyczne widoki są już rozgrzane.
 - Panele przejściowe (rozstrzygnięcie akcji, formularz zadaniowy) są mechanizmem **stołu**, nie zaplecza. Powstaną, gdy pojawi się pierwszy realny przypadek w sesji.
 
 ## Jasne karty w ciemnym pulpicie
@@ -120,6 +132,12 @@ Warning             #CF9B55
 Danger              #C76767
 ```
 
+Semantyczne role głębokości używają obecnie tych samych wartości jako osobnych tokenów: `Frame #1E1E1C`, `Backstage #181918`, `Desk #121313`. Nie należy zastępować ich tokenami nagłówka/panelu tylko dlatego, że aktualne wartości są równe — role muszą móc ewoluować niezależnie.
+
+Kontrolki osadzone bezpośrednio na ramie używają osobnego `Frame hover #2A2925`. Ogólny `Surface hover #201F1C` pozostaje przeznaczony dla elementów na ciemniejszych powierzchniach; nie zapewnia wystarczającego rozróżnienia na jaśniejszym `Frame`.
+
+Wiersze biblioteki kampanii osadzone na karcie zaplecza również używają mocniejszego, powierzchniowo dobranego hoveru (`Backstage row hover #2A2925`). Wspólna wartość z hoverem ramy jest świadoma, lecz role pozostają osobnymi tokenami, aby mogły być później strojone niezależnie.
+
 Niewielkie korekty kontrastu są dopuszczalne (dostępność); temperatura i charakter palety — nie. Nie: czysta czerń, jaskrawy neon, chłodny fiolet, duże powierzchnie nasyconego koloru.
 
 ## Zasady pozyskiwania zasobów
@@ -128,7 +146,7 @@ Każdy zasób: ma jawne źródło i licencję pozwalającą na dystrybucję; prz
 
 ## Decyzje obowiązujące
 
-- Stabilny, gridowy pulpit; zawartość nie zmienia geometrii głównych kontenerów samodzielnie.
+- Pulpit z pływającymi panelami na jawnej siatce; dane nie zmieniają geometrii paneli samodzielnie.
 - Styl konstrukcyjny: powierzchnie, ramy, linie, odstępy, typografia.
 - Oldschoolowy charakter jako oprawa nowoczesnego narzędzia, nie dosłowna dekoracja fantasy.
 - Shell ciemny, ciepły, zwarty, wyraziste obramowania.
@@ -137,7 +155,7 @@ Każdy zasób: ma jawne źródło i licencję pozwalającą na dystrybucję; prz
 - Widok Entity jako czytelna karta/statblock — edycja nie dominuje nad odczytem.
 - Znak aplikacji: szeryfowa litera `D` w cienkiej kwadratowej ramie (ikona pliku wykonywalnego wymaga osobnego opracowania).
 - Ramki, sidebar, topbar, statusbar tworzą jedną zwartą konstrukcję, nie zestaw unoszących się kart.
-- Wgłębiony pulpit z siatką należy wyłącznie do żywej sesji; zaplecze operuje na płaskiej powierzchni ramy aplikacji.
+- Trzy poziomy głębokości: jaśniejsza rama, lekko wpuszczone zaplecze i najciemniejszy stół. Siatka należy wyłącznie do żywej sesji.
 
 ## Decyzje otwarte
 

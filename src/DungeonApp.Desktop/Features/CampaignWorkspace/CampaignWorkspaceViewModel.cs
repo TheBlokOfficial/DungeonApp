@@ -20,7 +20,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 /// here knows about pixels, pointers or <c>Canvas</c> - it works in logical workspace coordinates.
 /// </para>
 /// </summary>
-public sealed class CampaignWorkspaceViewModel : ObservableObject
+public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
 {
     private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
@@ -30,10 +30,14 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
     private double _surfaceHeight;
     private bool _hasSurface;
     private bool _isFitting;
+    private bool _isDisposed;
 
-    public CampaignWorkspaceViewModel(WorkspaceLayoutStore store, CampaignSession campaign)
+    public CampaignWorkspaceViewModel(
+        WorkspaceLayoutStore store,
+        CampaignSession campaign,
+        CampaignWorkspacePreparation preparation)
     {
-        _catalog = PanelCatalog.For(campaign);
+        _catalog = PanelCatalog.For(campaign, preparation.Chronicle);
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
         // one campaign has no business following them into another.
@@ -46,7 +50,9 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
             return Task.CompletedTask;
         });
 
-        Restore(_session.Load());
+        // Storage was read by the startup/open preparation pipeline. Construction is now a pure,
+        // bounded UI-model operation, so mounting this view cannot consume its own transition.
+        Restore(preparation.Layout);
     }
 
     public ObservableCollection<WorkspacePanelViewModel> Panels { get; } = [];
@@ -140,6 +146,25 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
     /// <summary>Writes any pending arrangement immediately. Called on shutdown.</summary>
     public void FlushLayout() => _session.Flush();
+
+    public void Dispose()
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        _isDisposed = true;
+        _session.Dispose();
+
+        foreach (var panel in Panels)
+        {
+            if (panel.Body is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+    }
 
     private void Restore(WorkspaceLayout layout)
     {

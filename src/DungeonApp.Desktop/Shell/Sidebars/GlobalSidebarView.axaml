@@ -65,7 +65,7 @@
             </Setter>
         </Style>
         <Style Selector="Button.nav-button:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
         </Style>
         <!-- .active is hit-test-disabled (see the Button in NavigationItemTemplate), so it never
              receives pointer events and needs no :pointerover/:pressed override of its own. -->
@@ -75,7 +75,7 @@
         </Style>
     </UserControl.Styles>
 
-    <Border Background="{DynamicResource DungeonSurfaceBrush}"
+    <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,1,0">
         <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*,24,Auto">

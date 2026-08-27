@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using DungeonApp.Desktop.Controls.Workspace;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -69,6 +71,45 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
         }
     }
 
+    /// <summary>
+    /// Reads a layout without occupying the UI thread. Startup preparation uses this path so the
+    /// first campaign view never pays for file access or JSON metadata generation while it is being
+    /// mounted and animated.
+    /// </summary>
+    public async Task<WorkspaceLayout> LoadAsync(
+        string workspaceId,
+        CancellationToken cancellationToken = default)
+    {
+        var path = GetPath(workspaceId);
+
+        if (!File.Exists(path))
+        {
+            return WorkspaceLayout.Empty;
+        }
+
+        try
+        {
+            await using var stream = new FileStream(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 4096,
+                useAsync: true);
+            var document = await JsonSerializer.DeserializeAsync<LayoutDocument>(
+                    stream,
+                    _serializerOptions,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            return ToLayout(document);
+        }
+        catch (Exception ex) when (ex is JsonException or IOException)
+        {
+            return WorkspaceLayout.Empty;
+        }
+    }
+
     public void Save(string workspaceId, WorkspaceLayout layout)
     {
         ArgumentNullException.ThrowIfNull(layout);
@@ -115,6 +156,31 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
 
     private string GetPath(string workspaceId) =>
         Path.Combine(directoryPath, "layouts", $"{Sanitize(workspaceId)}.json");
+
+    private static WorkspaceLayout ToLayout(LayoutDocument? document)
+    {
+        if (document is null || document.Version != WorkspaceLayout.CurrentVersion)
+        {
+            return WorkspaceLayout.Empty;
+        }
+
+        var panels = (document.Panels ?? [])
+            .Where(panel => !string.IsNullOrWhiteSpace(panel.DescriptorId))
+            .Take(WorkspaceLayout.MaxPanels)
+            .Select(panel => new WorkspacePanelLayout(
+                panel.DescriptorId,
+                string.IsNullOrWhiteSpace(panel.InstanceKey) ? panel.DescriptorId : panel.InstanceKey,
+                panel.IsOpen,
+                Enum.IsDefined(panel.State) ? panel.State : PanelDisplayState.Normal,
+                panel.ZOrder,
+                panel.X,
+                panel.Y,
+                panel.Width,
+                panel.Height))
+            .ToList();
+
+        return new WorkspaceLayout(document.Version, document.SurfaceWidth, document.SurfaceHeight, panels);
+    }
 
     /// <summary>
     /// A workspace identifier becomes a file name. Today it is a constant, but it becomes a campaign

@@ -34,9 +34,6 @@
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <!-- Button feedback is intentionally immediate throughout the application. Motion belongs
-             to content and panel transitions, not pointer-over or pressed chrome. -->
-        <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <Style Selector="Button:pointerover">
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
@@ -50,11 +47,21 @@
         <Setter Property="Background" Value="{DynamicResource DungeonAccentColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrightBrush}" />
     </Style>
-    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+    <Style Selector="Button.primary:disabled">
+        <!-- Dedicated colors keep the CTA identity without fading its label and antialiasing. -->
+        <Setter Property="Opacity" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonPrimaryDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
     </Style>
-    <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrightBrush}" />
+    <Style Selector="Button.primary:disabled:pointerover">
+        <Setter Property="Opacity" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonPrimaryDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+    </Style>
+    <Style Selector="Button:focus-visible">
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
     </Style>
     <Style Selector="Button.icon">
         <Setter Property="Width" Value="36" />
@@ -64,9 +71,45 @@
     <Style Selector="TextBox">
         <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
-        <Setter Property="Background" Value="{DynamicResource DungeonBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+    </Style>
+    <!-- Fluent paints input states on its inner template border. Override that exact contract so
+         hover/focus never replace the calm background or thicken the frame. -->
+    <Style Selector="TextBox /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:focus:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputFocusBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:disabled /template/ Border#PART_BorderElement">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+    </Style>
+    <Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark">
+        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
     </Style>
 
     <Style Selector="ToolTip">

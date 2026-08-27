@@ -14,6 +14,38 @@
     <controls:ResourceKeyToImageConverter x:Key="DungeonIconResourceConverter" />
 
     <!--
+        DungeonApp owns the base button chrome instead of inheriting Fluent's pressed transform and
+        pressed presenter palette. A button still has its behavioural :pressed pseudo-class, but it
+        has no visual treatment: immediate :pointerover is the sole transient pointer feedback.
+        Persistent states such as disabled, focus-visible, checked or selected remain separate
+        semantic concerns.
+    -->
+    <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  RecognizesAccessKey="True" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.48" />
+        </Style>
+    </ControlTheme>
+
+    <!--
         Desk texture. The grid line means something now: it marks a surface things float on, so it
         belongs to the campaign desk and nowhere else. Static screens keep a flat background.
         WorkspaceGridBackground and the snap calculations both read WorkspaceGridSettings, so the
@@ -50,7 +82,7 @@
     </ControlTheme>
 
     <ControlTheme x:Key="{x:Type workspace:WorkspaceSurface}" TargetType="workspace:WorkspaceSurface">
-        <Setter Property="Background" Value="{DynamicResource DungeonBackgroundBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonDeskBrush}" />
         <!-- Canvas does not clip its children; without this a dragged panel paints over the
              sidebar and the status bar. -->
         <Setter Property="ClipToBounds" Value="True" />

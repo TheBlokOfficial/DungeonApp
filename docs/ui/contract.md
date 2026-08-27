@@ -1,8 +1,8 @@
 # Kontrakt UI v1
 
-> **Status:** zaakceptowany kontrakt implementacyjny — wersja 1.2 — 2026-08-27
+> **Status:** zaakceptowany kontrakt implementacyjny — wersja 1.7 — 2026-08-27
 >
-> **Zmiana 1.2:** pulpit kampanii przestaje być sztywnym gridem i staje się powierzchnią z pływającymi panelami. Zakaz swobodnego przemieszczania paneli zawężony do ekranów innych niż pulpit; grid dashboardu przekwalifikowany na układ domyślny; dołożona sekcja „Powierzchnia pulpitu kampanii”.
+> **Zmiana 1.7:** biblioteka kampanii wraca do konstrukcyjnego języka aplikacji: górne zakotwiczenie, jedna rama i jeden podział funkcjonalny zamiast modalnej karty z cieniem.
 
 Normatywne wartości geometrii, responsywności i zachowania shellu Desktop przed pierwszą fazą implementacji Avalonia. Jeżeli makieta, PoC albo lokalny styl XAML są sprzeczne z tym dokumentem, pierwszeństwo ma kontrakt. Nie zamraża zawartości przyszłych modułów — określa wspólny układ współrzędnych, w którym moduły muszą działać.
 
@@ -63,6 +63,18 @@ Mocniejsza rama = inny token koloru, nie większa grubość. Brak ujemnych margi
 
 Sekcja marki w topbarze odpowiada szerokości bieżącego wariantu sidebara — pionowa linia konstrukcji przechodzi przez całe okno. Topbar, sidebar, statusbar nie rosną po maksymalizacji; dodatkową przestrzeń przejmuje workspace.
 
+### Gotowość po uruchomieniu
+
+Shell ma jawny cykl `Starting → Ready`. Lekka rama otrzymuje pierwszą klatkę przed rozpoczęciem przygotowania. W `Starting` workspace pokazuje stabilny komunikat postępu, a nawigacja nie przyjmuje inputu. Przed `Ready` aplikacja:
+
+- czyta bibliotekę oraz przygotowuje kampanie, layouty i początkową kronikę poza dispatcherem UI;
+- ogranicza równoległość odczytów, aby duża biblioteka nie zamieniła startu w lawinę operacji dyskowych;
+- montuje pełny `CampaignWorkspaceView` z przygotowanym modelem realnej kampanii w technicznym hoście rozgrzewającym, materializując `WorkspaceSurface`, kontenery paneli, bindingi i szablony ich treści; następnie czeka na `Loaded` oraz kolejną porcję pracy dispatchera;
+- publikuje gotowe dane zbiorczo, bez serii zmian kolekcji podczas pierwszego layoutu;
+- przechodzi do `Ready` również po niekrytycznym błędzie rozgrzewania, zgłaszając degradację w pasku statusu zamiast blokować aplikację.
+
+Zmiana `CurrentWorkspaceContent` następuje dopiero po przygotowaniu wybranej kampanii. Animacja nie służy do ukrywania I/O, deserializacji, pierwszego JIT ani budowy danych paneli. Produkcyjny publish Desktop używa ReadyToRun; Native AOT pozostaje osobną decyzją wdrożeniową.
+
 ## Sidebar
 
 | Element | Wymiar |
@@ -120,7 +132,9 @@ Pierwsza implementacja: parametr `--ui-scale=small|medium|large`. Wybór w ustaw
 | Nagłówek panelu | `36` wysokości |
 | Stopka panelu z akcjami | `40` wysokości |
 
-Stany normal/hover/focus/pressed/disabled/loading nie zmieniają zewnętrznego wymiaru. Spinner zastępuje zawartość albo zajmuje zarezerwowany slot.
+Stany normal/hover/focus/disabled/loading nie zmieniają zewnętrznego wymiaru. `Pressed` nie ma osobnej reprezentacji wizualnej: bez koloru, transformacji i animacji, pod wskaźnikiem zachowuje `hover`. Spinner zastępuje zawartość albo zajmuje zarezerwowany slot.
+
+Pole tekstowe zachowuje jedno tło w stanach normal, hover i focus. Hover wzmacnia wyłącznie neutralną ramkę, a focus zastępuje ją cienką linią w stonowanym kolorze akcentu; bez białej obwódki, glow i zmiany grubości. Nieaktywny przycisk główny zachowuje swoją semantyczną barwę w przygaszonym wariancie, ale nie używa przezroczystości całej kontrolki i nie reaguje na hover.
 
 ## Zasada maksymalizacji
 
@@ -196,7 +210,9 @@ Nie rozciągamy równomiernie wszystkich paneli na wysokich monitorach. Panele o
 
 ## Strategie poszczególnych ekranów
 
-**Biblioteka kampanii:** `Compact` — lista wg makiety. `Standard` — lista wykorzystuje szerokość do `960`, potem wyrównana do lewej. `Wide` — master–detail: master `760` w profilu `Medium`, szczegóły przejmują resztę. Viewport listy do ośmiu wierszy `Medium`; mała liczba rekordów nie tworzy ramy wokół pustej wysokości ani nie rozciąga sztucznie wierszy.
+**Biblioteka kampanii:** szybkie tworzenie, lista, empty state i status tworzą jedną kartę zaplecza. Ma pojedynczy obrys i najwyżej jeden separator pomiędzy formularzem a listą; nie używa cienia sugerującego modal lub unoszącą się warstwę. `Compact` — karta z listą wg makiety. `Standard` — kompozycja jest wyśrodkowana poziomo, zakotwiczona `56` od góry i ma szerokość `784`. `Wide` — docelowy master–detail: karta master pozostaje zwarta, szczegóły przejmują resztę. Viewport listy mieści do sześciu wierszy; mała liczba rekordów nie tworzy ramy wokół pustej wysokości ani nie rozciąga sztucznie wierszy. Nazwę bieżącej trasy prowadzi topbar; workspace nie powtarza jej dużym nagłówkiem.
+
+Wiersz kampanii ma zwartą wysokość `46 / 52 / 58` dla profili `Small / Medium / Large`, tekst wyrównany z sekcjami karty i własny token hover dobrany do powierzchni zaplecza. Wiersze nie używają linii podziału: ich granice wyznacza rytm pionowy, a w interakcji pełna powierzchnia hoveru. Ogólny hover ciemnych powierzchni nie może być tu używany, jeśli zlewa się z kartą.
 
 **Rejestry i tabele:** wypełniają workspace; większa szerokość ujawnia kolumny wg progów; wartości kluczowe nie znikają w żadnym wariancie.
 

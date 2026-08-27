@@ -48,6 +48,7 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 64,
                 ControlHeight: 36,
                 NavigationRowHeight: 40,
+                CampaignRowHeight: 46,
                 ActionIconSize: 16,
                 PanelHeaderHeight: 34,
                 PanelTitleFont: 12,
@@ -69,6 +70,7 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 76,
                 ControlHeight: 42,
                 NavigationRowHeight: 46,
+                CampaignRowHeight: 58,
                 ActionIconSize: 18,
                 PanelHeaderHeight: 40,
                 PanelTitleFont: 15,
@@ -90,6 +92,7 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 68,
                 ControlHeight: 38,
                 NavigationRowHeight: 42,
+                CampaignRowHeight: 52,
                 ActionIconSize: 16,
                 PanelHeaderHeight: 36,
                 PanelTitleFont: 13,
@@ -114,6 +117,10 @@ public static class UiScaleProfiles
         Set(application, "DungeonWorkspaceHeaderHeight", metrics.WorkspaceHeaderHeight);
         Set(application, "DungeonControlHeight", metrics.ControlHeight);
         Set(application, "DungeonNavigationRowHeight", metrics.NavigationRowHeight);
+        Set(application, "DungeonCampaignRowHeight", metrics.CampaignRowHeight);
+        // Keep the centred composition compact. Additional campaigns scroll inside a six-row
+        // viewport instead of making the whole card drift toward the window edges.
+        Set(application, "DungeonCampaignListMaxHeight", (metrics.CampaignRowHeight + 4) * 6);
         Set(application, "DungeonActionIconSize", metrics.ActionIconSize);
         Set(application, "DungeonTopBarActionSize", metrics.TopBarHeight - 2);
         Set(application, "DungeonMinimumWindowWidth", profile == UiScaleProfile.Large ? 1180d : 1024d);
@@ -160,6 +167,7 @@ public static class UiScaleProfiles
         double WorkspaceHeaderHeight,
         double ControlHeight,
         double NavigationRowHeight,
+        double CampaignRowHeight,
         double ActionIconSize,
         double PanelHeaderHeight,
         double PanelTitleFont,

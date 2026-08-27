@@ -14,7 +14,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 /// snapshotting view model state under a lock, which is far more machinery than a millisecond of IO.
 /// </para>
 /// </summary>
-public sealed class WorkspaceLayoutSession
+public sealed class WorkspaceLayoutSession : IDisposable
 {
     private static readonly TimeSpan DebounceInterval = TimeSpan.FromMilliseconds(750);
 
@@ -34,8 +34,6 @@ public sealed class WorkspaceLayoutSession
         // On the UI thread deliberately, so the snapshot can read view model state directly.
         _timer = new DispatcherTimer(DebounceInterval, DispatcherPriority.Background, (_, _) => Flush());
     }
-
-    public WorkspaceLayout Load() => _store.Load(_workspaceId);
 
     public void MarkDirty()
     {
@@ -71,4 +69,6 @@ public sealed class WorkspaceLayoutSession
         {
         }
     }
+
+    public void Dispose() => _timer.Stop();
 }

@@ -83,9 +83,8 @@ public partial class App : Avalonia.Application
             desktop.ShutdownRequested += (_, _) => _shell?.FlushPendingState();
             desktop.MainWindow.Closing += (_, _) => _shell?.FlushPendingState();
 
-            // Reading the shelf must not hold up the first frame; the library shows its own
-            // loading and empty states while this runs.
-            _ = _shell.InitializeAsync();
+            // AppShellView starts preparation from its Loaded event. That ordering guarantees a
+            // lightweight first frame before data preloading and visual warmup begin.
         }
 
         base.OnFrameworkInitializationCompleted();

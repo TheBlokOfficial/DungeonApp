@@ -42,10 +42,6 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
         </Style>
-        <Style Selector="Button.deck-card:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
-        </Style>
     </UserControl.Styles>
 
     <!-- Minimized modules only. The taskbar has its own visual inset; panel geometry remains free

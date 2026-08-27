@@ -6,7 +6,7 @@
         Height="800"
         MinWidth="{DynamicResource DungeonMinimumWindowWidth}"
         MinHeight="{DynamicResource DungeonMinimumWindowHeight}"
-        Background="{DynamicResource DungeonBackgroundBrush}"
+        Background="{DynamicResource DungeonFrameBrush}"
         UseLayoutRounding="True"
         Title="DungeonApp">
 

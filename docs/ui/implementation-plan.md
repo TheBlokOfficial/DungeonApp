@@ -15,11 +15,25 @@ Interfejs powstaje pionowymi, działającymi przyrostami: kompozycja widoków, s
 - `MainWindow` ograniczony do osadzenia `AppShellView`;
 - hermetyczne komponenty topbara, globalnego sidebara, paska statusu;
 - ekran biblioteki z listą o stałej wysokości wiersza;
-- tworzenie kampanii jako stały formularz zaplecza, z zarezerwowanym slotem walidacji;
+- tworzenie kampanii, lista, empty state i status scalone w jedną podniesioną kartę zaplecza, z zarezerwowanym slotem walidacji;
 - odczyt/utworzenie/otwarcie kampanii podłączone do use case'ów `Core`;
 - stabilny empty state i lokalny viewport listy.
 
 Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i akcję „Zamknij kampanię”, obszar roboczy odsłania pulpit. Zamknięcie zapisuje układ biurka i wraca do biblioteki.
+
+## Faza 1.2 — gotowość i cold path
+
+**Status: zaimplementowana (2026-08-27).**
+
+- shell renderuje lekką pierwszą klatkę, potem przechodzi przez jawną bramkę `Starting → Ready`;
+- `CampaignWorkspacePreparationCache` przygotowuje wszystkie kampanie z biblioteki z maksymalnie dwoma równoległymi odczytami i współdzieli zadanie z kliknięciem, jeśli operacje się spotkają;
+- kampania, layout i pierwsze 100 wpisów kroniki są gotowe przed utworzeniem `CampaignWorkspaceViewModel`;
+- `WorkspaceLayoutStore.LoadAsync` usuwa synchroniczne I/O z konstruktora workspace'u;
+- początkowa kronika jest mapowana poza UI thread i publikowana jako gotowa lista, nie przez serię zmian `ObservableCollection`;
+- przygotowana kampania jest niekonsumująco pożyczana z cache'u, a pełny `CampaignWorkspaceView` z realnym `CampaignWorkspaceViewModel` przechodzi jeden layout/render przed odblokowaniem nawigacji; syntetyczny `WorkspaceWarmupView` pozostaje fallbackiem dla pustej biblioteki;
+- nieudane przygotowanie pojedynczej kampanii nie blokuje startu; jej otwarcie ponawia odczyt i korzysta z istniejącej obsługi błędów;
+- Desktop jest publikowany z ReadyToRun;
+- testy Desktop obejmują wykorzystanie rozgrzanego cache'u, brak blokady przez usuniętą kampanię i asynchroniczne przywracanie layoutu.
 
 ## Faza 1.1 — stabilizacja wizualna
 
@@ -31,7 +45,7 @@ Otwarcie kampanii przełącza kontekst shellu: topbar pokazuje nazwę kampanii i
 - wektorowe ikony w stałych, wycentrowanych slotach;
 - rozłączne stany hover/active sidebara, bez domyślnych powierzchni Fluent;
 - uproszczone ramy topbara, sidebara, statusbara;
-- biblioteka bez ramy obejmującej pusty viewport;
+- biblioteka jako jedna karta o wysokości wynikającej z treści, bez ramy obejmującej pusty viewport;
 - wariant Wide master–detail zamiast rozciągania metadanych na całą szerokość.
 
 ## Faza 2 — nawigacja i trwały stan okna
