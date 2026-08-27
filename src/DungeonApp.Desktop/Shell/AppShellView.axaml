@@ -6,6 +6,7 @@
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
              xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
              xmlns:campaignWorkspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
+             xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
              x:DataType="shell:AppShellViewModel">
 
@@ -15,6 +16,9 @@
         </DataTemplate>
         <DataTemplate DataType="campaignWorkspace:CampaignWorkspaceViewModel">
             <campaignWorkspace:CampaignWorkspaceView />
+        </DataTemplate>
+        <DataTemplate DataType="campaignLibrary:CampaignLibraryViewModel">
+            <campaignLibrary:CampaignLibraryView />
         </DataTemplate>
     </UserControl.DataTemplates>
 

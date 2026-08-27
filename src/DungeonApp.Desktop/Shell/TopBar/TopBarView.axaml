@@ -65,6 +65,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
                 <ColumnDefinition Width="*" />
+                <!-- Auto: collapses to nothing while no campaign is open, so the two icon cells
+                     keep their position and the strip does not shift on open/close. -->
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
                 <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
             </Grid.ColumnDefinitions>
@@ -99,13 +102,27 @@
                        Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                        Text="{Binding ContextTitle}" />
 
-            <Border Grid.Column="2" Classes="header-action-cell">
+            <Border Grid.Column="2"
+                    Classes="header-action-cell"
+                    IsVisible="{Binding IsCampaignOpen}">
+                <!-- A word rather than a glyph: leaving a campaign is rare, deliberate and worth
+                     spelling out, and it needs no addition to the curated icon subset. -->
+                <Button VerticalAlignment="Stretch"
+                        Padding="14,0"
+                        CornerRadius="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Content="Zamknij kampanię"
+                        Command="{Binding CloseCampaignCommand}" />
+            </Border>
+
+            <Border Grid.Column="3" Classes="header-action-cell">
                 <Button Classes="icon header-action"
                         ToolTip.Tip="Szukaj">
                     <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconSearch}" />
                 </Button>
             </Border>
-            <Border Grid.Column="3" Classes="header-action-cell">
+            <Border Grid.Column="4" Classes="header-action-cell">
                 <Button Classes="icon header-action"
                         ToolTip.Tip="Paleta poleceń">
                     <Image Width="{DynamicResource DungeonActionIconSize}" Height="{DynamicResource DungeonActionIconSize}" Source="{StaticResource DungeonIconCommand}" />

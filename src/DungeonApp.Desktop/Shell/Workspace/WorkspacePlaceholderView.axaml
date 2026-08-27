@@ -5,11 +5,11 @@
              x:DataType="workspace:WorkspacePlaceholderViewModel">
 
     <!--
-        Flat background on purpose. The grid texture now means "things float here" and belongs to
-        the campaign desk alone (see Themes/DungeonControls.axaml); a static screen that showed it
-        would promise a freedom it does not offer.
+        Backstage: a flat surface in the tone of the application frame. Both the recess and the grid
+        belong to a live session alone, so a static configuration screen shows neither - see
+        docs/ui/visual-direction.md, "Zaplecze i stol".
     -->
-    <Grid Background="{DynamicResource DungeonBackgroundBrush}">
+    <Grid Background="{DynamicResource DungeonSurfaceBrush}">
         <TextBlock Text="{Binding Title}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"

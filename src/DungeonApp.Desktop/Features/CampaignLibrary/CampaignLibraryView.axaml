@@ -1,0 +1,123 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:library="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             x:Class="DungeonApp.Desktop.Features.CampaignLibrary.CampaignLibraryView"
+             x:DataType="library:CampaignLibraryViewModel">
+
+    <UserControl.Styles>
+        <!-- A shelf row. Fixed height on purpose: the list must stay scannable and must not
+             re-flow because one campaign has a longer name than the rest. -->
+        <Style Selector="Button.campaign-row">
+            <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="12,0" />
+        </Style>
+        <Style Selector="Button.campaign-row:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+        </Style>
+        <Style Selector="Button.campaign-row:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <!--
+        Backstage, not the desk: a flat surface in the same tone as the sidebar, top bar and status
+        bar. The recessed grid belongs to a live session alone, so that uncovering it means
+        something. See docs/ui/visual-direction.md, "Zaplecze i stół".
+    -->
+    <Border Background="{DynamicResource DungeonSurfaceBrush}">
+        <Grid MaxWidth="760"
+              Margin="32,28"
+              HorizontalAlignment="Stretch"
+              RowDefinitions="Auto,Auto,*,Auto"
+              RowSpacing="16">
+
+            <StackPanel Spacing="2">
+                <TextBlock Classes="eyebrow" Text="BIBLIOTEKA" />
+                <TextBlock Classes="workspace-title" Text="Kampanie" />
+            </StackPanel>
+
+            <Border Grid.Row="1"
+                    Padding="16"
+                    Background="{DynamicResource DungeonSurfaceHeaderBrush}"
+                    BorderBrush="{DynamicResource DungeonBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource DungeonCornerRadius}">
+                <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox PlaceholderText="Nazwa nowej kampanii"
+                                 Text="{Binding NewCampaignName, Mode=TwoWay}"
+                                 Height="{DynamicResource DungeonControlHeight}"
+                                 VerticalContentAlignment="Center">
+                            <TextBox.KeyBindings>
+                                <!-- Enter commits, the way it would in a dialog. -->
+                                <KeyBinding Gesture="Enter" Command="{Binding CreateCommand}" />
+                            </TextBox.KeyBindings>
+                        </TextBox>
+                        <Button Grid.Column="1"
+                                Classes="primary"
+                                Content="Utwórz"
+                                Command="{Binding CreateCommand}"
+                                Height="{DynamicResource DungeonControlHeight}"
+                                Padding="20,0" />
+                    </Grid>
+
+                    <!-- Reserved slot: validation appears and disappears without moving the form. -->
+                    <TextBlock MinHeight="16"
+                               FontSize="{DynamicResource DungeonHelperFontSize}"
+                               Foreground="{DynamicResource DungeonDangerBrush}"
+                               Text="{Binding NameError}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2"
+                    BorderBrush="{DynamicResource DungeonBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource DungeonCornerRadius}">
+                <Panel>
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  IsVisible="{Binding HasCampaigns}">
+                        <ItemsControl ItemsSource="{Binding Campaigns}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="library:CampaignRowViewModel">
+                                    <Button Classes="campaign-row" Command="{Binding OpenCommand}">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                            <TextBlock VerticalAlignment="Center"
+                                                       FontFamily="{DynamicResource DungeonDisplayFont}"
+                                                       FontSize="{DynamicResource DungeonBaseFontSize}"
+                                                       Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                                       Text="{Binding Name}"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Column="1"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                                                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                       Text="{Binding CreatedAt}" />
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Same cell, same geometry: the empty state cannot resize the frame. -->
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               IsVisible="{Binding IsEmpty}"
+                               Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej." />
+                </Panel>
+            </Border>
+
+            <TextBlock Grid.Row="3"
+                       MinHeight="18"
+                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                       Text="{Binding Status}" />
+        </Grid>
+    </Border>
+</UserControl>
