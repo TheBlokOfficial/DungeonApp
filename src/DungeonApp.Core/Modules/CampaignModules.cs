@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DungeonApp.Core.Events;
 using DungeonApp.Core.Journal;
 
 namespace DungeonApp.Core.Modules;
@@ -34,10 +35,12 @@ public sealed class CampaignModules
     public static CampaignModules Activate(
         IEnumerable<ICampaignModule> modules,
         CampaignJournal journal,
+        CampaignEvents events,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(modules);
         ArgumentNullException.ThrowIfNull(journal);
+        ArgumentNullException.ThrowIfNull(events);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         var requested = modules.ToArray();
@@ -73,9 +76,12 @@ public sealed class CampaignModules
         {
             // A context each, not one shared: the journal it carries is stamped with the module's
             // own identity, so a chronicle line always knows who wrote it.
+            // Subscriptions are taken here, in activation order, which is what makes the order
+            // handlers run in a settled property of the campaign rather than an accident.
             module.OnActivated(new ModuleContext(
                 campaignModules,
-                new ModuleJournal(journal, module.Manifest.Id, timeProvider)));
+                new ModuleJournal(journal, module.Manifest.Id, timeProvider),
+                events));
         }
 
         return campaignModules;

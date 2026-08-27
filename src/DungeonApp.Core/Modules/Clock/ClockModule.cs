@@ -1,4 +1,5 @@
 using System;
+using DungeonApp.Core.Events;
 
 namespace DungeonApp.Core.Modules.Clock;
 
@@ -59,6 +60,10 @@ public sealed class ClockModule : ICampaignModule
         _context.Journal.Record(
             $"Czas świata: +{CampaignTime.Describe(amount)} (łącznie {CampaignTime.Describe(_now.Elapsed)})",
             reason.Trim());
+
+        // Announced last, once the move is done and written down. The clock has no idea who listens
+        // and never needs one: whether anything reacts is none of its business.
+        _context.Events.Publish(new WorldTimeAdvanced(_now, amount));
     }
 
     public Type StateType => typeof(ClockState);
@@ -68,6 +73,12 @@ public sealed class ClockModule : ICampaignModule
     public void RestoreState(object state, int version) =>
         _now = CampaignTime.FromSeconds(((ClockState)state).ElapsedSeconds);
 }
+
+/// <summary>
+/// World time moved forward. Carries where it landed as well as by how much, so a listener does not
+/// have to ask the clock again to know what it now is.
+/// </summary>
+public sealed record WorldTimeAdvanced(CampaignTime Now, TimeSpan Amount) : ICampaignEvent;
 
 /// <summary>
 /// What the clock keeps between sessions. Seconds as a plain number rather than a duration string,

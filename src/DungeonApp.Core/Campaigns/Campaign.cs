@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DungeonApp.Core.Events;
 using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 
@@ -22,13 +23,15 @@ public sealed class Campaign
         CampaignName name,
         DateTimeOffset createdAt,
         CampaignModules modules,
-        CampaignJournal journal)
+        CampaignJournal journal,
+        CampaignEvents events)
     {
         Id = id;
         Name = name;
         CreatedAt = createdAt;
         Modules = modules;
         Journal = journal;
+        Events = events;
     }
 
     public CampaignId Id { get; }
@@ -49,6 +52,13 @@ public sealed class Campaign
     /// </summary>
     public CampaignJournal Journal { get; }
 
+    /// <summary>
+    /// This campaign's announcement channel. Exposed because the shell hosting the campaign has no
+    /// other way to hear what its modules announce - a scheduled event coming due is news the GM
+    /// wants, not only news for other modules.
+    /// </summary>
+    public CampaignEvents Events { get; }
+
     public static Campaign Create(
         CampaignName name,
         IEnumerable<ICampaignModule> modules,
@@ -59,13 +69,15 @@ public sealed class Campaign
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         var journal = new CampaignJournal();
+        var events = new CampaignEvents();
 
         return new Campaign(
             CampaignId.New(),
             name,
             timeProvider.GetUtcNow(),
-            CampaignModules.Activate(modules, journal, timeProvider),
-            journal);
+            CampaignModules.Activate(modules, journal, events, timeProvider),
+            journal,
+            events);
     }
 
     /// <summary>
@@ -85,12 +97,14 @@ public sealed class Campaign
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         var journal = new CampaignJournal();
+        var events = new CampaignEvents();
 
         return new Campaign(
             id,
             name,
             createdAt,
-            CampaignModules.Activate(modules, journal, timeProvider),
-            journal);
+            CampaignModules.Activate(modules, journal, events, timeProvider),
+            journal,
+            events);
     }
 }
