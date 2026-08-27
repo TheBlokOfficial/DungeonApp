@@ -3,6 +3,8 @@
              xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
              xmlns:demo="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo"
              xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
+             xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
+             xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
              xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
              xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.CampaignWorkspaceView"
@@ -14,6 +16,12 @@
         </DataTemplate>
         <DataTemplate DataType="clock:ClockPanelViewModel">
             <clock:ClockPanelView />
+        </DataTemplate>
+        <DataTemplate DataType="scheduler:SchedulerPanelViewModel">
+            <scheduler:SchedulerPanelView />
+        </DataTemplate>
+        <DataTemplate DataType="history:HistoryPanelViewModel">
+            <history:HistoryPanelView />
         </DataTemplate>
     </UserControl.DataTemplates>
 

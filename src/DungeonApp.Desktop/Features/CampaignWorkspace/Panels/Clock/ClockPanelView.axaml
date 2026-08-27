@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
+             xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock.ClockPanelView"
              x:DataType="clock:ClockPanelViewModel">
 
@@ -27,7 +28,7 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="clock:ClockStepViewModel">
+                    <DataTemplate x:DataType="panels:PanelActionViewModel">
                         <Button Margin="0,0,6,6"
                                 Padding="14,0"
                                 Height="{DynamicResource DungeonControlHeight}"

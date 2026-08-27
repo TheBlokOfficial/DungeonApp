@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DungeonApp.Core;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Journal;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -15,8 +17,18 @@ namespace DungeonApp.Desktop.Shell;
 /// operation, keep the refusal readable, write the result down.
 /// </para>
 /// </summary>
-public sealed class CampaignSession(Campaign campaign, ICampaignRepository repository)
+public sealed class CampaignSession(
+    Campaign campaign,
+    ICampaignRepository repository,
+    ICampaignJournalStore journal)
 {
+    /// <summary>
+    /// Raised after an operation has been committed. Panels that show something derived from the
+    /// campaign - a pending list, the chronicle - reload on this rather than each subscribing to
+    /// every module's announcements and still missing the GM's own corrections.
+    /// </summary>
+    public event Action? Committed;
+
     public Campaign Campaign { get; } = campaign;
 
     /// <summary>
@@ -50,9 +62,30 @@ public sealed class CampaignSession(Campaign campaign, ICampaignRepository repos
         {
             // The change stands in memory and the next successful save will carry it, so this is a
             // warning rather than a rollback - but the GM has to know the table is not on disk.
+            Committed?.Invoke();
+
             return "Zmiana nie została zapisana na dysku. Sprawdź dostęp do katalogu kampanii.";
         }
 
+        Committed?.Invoke();
+
         return null;
+    }
+
+    /// <summary>
+    /// The tail of the chronicle, most recent first. Read from disk rather than from memory: the
+    /// campaign holds only what has not been written yet.
+    /// </summary>
+    public async Task<IReadOnlyList<JournalEntry>> ReadChronicleAsync(int limit)
+    {
+        try
+        {
+            return await journal.ReadRecentAsync(Campaign.Id, limit);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // A chronicle that cannot be read is a loss, never a failure: it holds no state.
+            return [];
+        }
     }
 }

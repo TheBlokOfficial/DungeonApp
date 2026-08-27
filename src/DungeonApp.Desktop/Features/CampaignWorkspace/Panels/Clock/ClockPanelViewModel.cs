@@ -9,14 +9,6 @@ using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
 
-/// <summary>One offered jump forward. A label and the command that takes it.</summary>
-public sealed class ClockStepViewModel(string label, ICommand command)
-{
-    public string Label { get; } = label;
-
-    public ICommand Command { get; } = command;
-}
-
 /// <summary>
 /// The world clock on the desk. It reads the module and asks it to move; it does not decide what a
 /// legal move is, and it does not phrase the refusal - both belong to the module.
@@ -43,7 +35,7 @@ public sealed class ClockPanelViewModel : ObservableObject
         ];
     }
 
-    public IReadOnlyList<ClockStepViewModel> Steps { get; }
+    public IReadOnlyList<PanelActionViewModel> Steps { get; }
 
     /// <summary>Elapsed since the campaign began. Not a date: the core keeps no calendar.</summary>
     public string Elapsed => CampaignTime.Describe(_clock.Now.Elapsed);
@@ -74,7 +66,7 @@ public sealed class ClockPanelViewModel : ObservableObject
         private set => SetField(ref _message, value);
     }
 
-    private ClockStepViewModel Step(string label, TimeSpan amount)
+    private PanelActionViewModel Step(string label, TimeSpan amount)
         => new(label, new AsyncCommand(() => AdvanceAsync(amount), () => CanAdvance));
 
     private async Task AdvanceAsync(TimeSpan amount)

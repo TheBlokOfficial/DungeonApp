@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Journal;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -22,6 +23,7 @@ public sealed class AppShellViewModel : ObservableObject
 
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ICampaignRepository _campaigns;
+    private readonly ICampaignJournalStore _journal;
     private readonly CampaignLibraryViewModel _campaignLibrary;
 
     private object _currentWorkspaceContent;
@@ -37,10 +39,12 @@ public sealed class AppShellViewModel : ObservableObject
     public AppShellViewModel(
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
+        ICampaignJournalStore journal,
         CreateCampaign createCampaign)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
+        _journal = journal;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected);
@@ -72,7 +76,7 @@ public sealed class AppShellViewModel : ObservableObject
 
     private Task OpenCampaignAsync(Campaign campaign)
     {
-        _openCampaign = new CampaignSession(campaign, _campaigns);
+        _openCampaign = new CampaignSession(campaign, _campaigns, _journal);
         _campaignWorkspace = new CampaignWorkspaceViewModel(_layoutStore, _openCampaign);
 
         TopBar.ContextTitle = campaign.Name.Value;

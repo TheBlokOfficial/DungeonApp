@@ -143,6 +143,17 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject
 
     private void Restore(WorkspaceLayout layout)
     {
+        // Rebuilding the desk creates fresh bodies, so the outgoing ones have to let go of whatever
+        // they were listening to first. Without this, resetting the layout leaves every previous
+        // panel subscribed to the session and quietly reacting from off-screen.
+        foreach (var panel in Panels)
+        {
+            if (panel.Body is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+
         Panels.Clear();
         MinimizedPanels.Clear();
 

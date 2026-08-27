@@ -20,6 +20,7 @@ public partial class App : Avalonia.Application
 {
     private WorkspaceLayoutStore? _layoutStore;
     private ModuleCatalog? _modules;
+    private JsonCampaignJournalStore? _journal;
     private JsonCampaignRepository? _campaigns;
     private AppShellViewModel? _shell;
 
@@ -57,9 +58,9 @@ public partial class App : Avalonia.Application
 
         // A separate store from the campaign's own: the chronicle is append-only, grows without
         // limit, and losing it must never cost the campaign.
-        ICampaignJournalStore journal = new JsonCampaignJournalStore(libraryPath);
+        _journal = new JsonCampaignJournalStore(libraryPath);
 
-        _campaigns = new JsonCampaignRepository(libraryPath, _modules, journal, TimeProvider.System);
+        _campaigns = new JsonCampaignRepository(libraryPath, _modules, _journal, TimeProvider.System);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -69,6 +70,7 @@ public partial class App : Avalonia.Application
             _shell = new AppShellViewModel(
                 _layoutStore!,
                 _campaigns!,
+                _journal!,
                 new CreateCampaign(_campaigns!, _modules!, TimeProvider.System));
 
             desktop.MainWindow = new MainWindow

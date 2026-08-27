@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using DungeonApp.Core.Modules.Clock;
+using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler;
 using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
@@ -26,6 +29,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 public sealed class PanelCatalog
 {
     public const string ClockId = "session.clock";
+    public const string SchedulerId = "session.scheduler";
     public const string PartyId = "session.party";
     public const string HistoryId = "session.history";
 
@@ -61,18 +65,32 @@ public sealed class PanelCatalog
                 // Bounded 240-360, straight out of the UI contract's panel growth strategies.
                 new PanelConstraints(240, 200, 360, double.PositiveInfinity),
                 () => new ClockPanelViewModel(session, clock)));
+
+            // Only alongside the clock, which the module itself already requires: a plan measured in
+            // world time is meaningless without something to measure it against.
+            if (session.Campaign.Modules.TryGet<SchedulerModule>(out var scheduler))
+            {
+                descriptors.Add(new WorkspacePanelDescriptor(
+                    SchedulerId,
+                    "Harmonogram",
+                    "DungeonIconHistory",
+                    WorkspacePanelGroup.World,
+                    new PanelPlacement(672, 328, 360, 396),
+                    new PanelConstraints(280, 240, double.PositiveInfinity, double.PositiveInfinity),
+                    () => new SchedulerPanelViewModel(session, scheduler, clock)));
+            }
         }
 
+        // Always offered. The chronicle belongs to the campaign itself, not to any module, so
+        // there is no configuration under which a campaign has nothing to explain.
         descriptors.Add(new WorkspacePanelDescriptor(
             HistoryId,
-            "Historia zmian",
+            "Kronika",
             "DungeonIconHistory",
-            WorkspacePanelGroup.Session,
-            new PanelPlacement(0, 328, 1032, 396),
-            new PanelConstraints(320, 160, double.PositiveInfinity, double.PositiveInfinity),
-            () => new DemoPanelViewModel(
-                "Historia zmian",
-                "Atrapa panelu. Kronika jest już zapisywana; ten panel jeszcze jej nie czyta.")));
+            WorkspacePanelGroup.Campaign,
+            new PanelPlacement(0, 328, 664, 396),
+            new PanelConstraints(320, 200, double.PositiveInfinity, double.PositiveInfinity),
+            () => new HistoryPanelViewModel(session)));
 
         return new PanelCatalog(descriptors);
     }

@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
+             x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History.HistoryPanelView"
+             x:DataType="history:HistoryPanelViewModel">
+
+    <Panel>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Entries}" Margin="16,12">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="history:ChronicleEntryViewModel">
+                        <Grid Margin="0,0,0,10"
+                              ColumnDefinitions="Auto,Auto,*"
+                              ColumnSpacing="12">
+                            <!-- Fixed-width leading columns: the eye scans down the summaries, and
+                                 a long module name must not push them out of alignment. -->
+                            <TextBlock Width="96"
+                                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                       Text="{Binding At}" />
+                            <TextBlock Grid.Column="1"
+                                       Width="120"
+                                       FontSize="{DynamicResource DungeonHelperFontSize}"
+                                       Foreground="{DynamicResource DungeonAccentBrush}"
+                                       Text="{Binding Source}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <StackPanel Grid.Column="2" Spacing="2">
+                                <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                           Text="{Binding Summary}"
+                                           TextWrapping="Wrap" />
+                                <!-- The half that makes the system explainable, so it is shown, not
+                                     hidden behind a hover or a detail view. -->
+                                <TextBlock FontSize="{DynamicResource DungeonHelperFontSize}"
+                                           FontStyle="Italic"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                           IsVisible="{Binding HasReason}"
+                                           Text="{Binding Reason}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <TextBlock HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="{DynamicResource DungeonHelperFontSize}"
+                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                   IsVisible="{Binding IsEmpty}"
+                   Text="Nic się jeszcze nie wydarzyło." />
+    </Panel>
+</UserControl>

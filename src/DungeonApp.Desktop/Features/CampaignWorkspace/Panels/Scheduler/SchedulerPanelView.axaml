@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
+             xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
+             x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler.SchedulerPanelView"
+             x:DataType="scheduler:SchedulerPanelViewModel">
+
+    <Grid Margin="16" RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="10">
+        <TextBlock Classes="eyebrow" Text="ZAPLANUJ" />
+
+        <StackPanel Grid.Row="1" Spacing="6">
+            <TextBox PlaceholderText="Co ma się wydarzyć"
+                     Text="{Binding Name, Mode=TwoWay}"
+                     Height="{DynamicResource DungeonControlHeight}"
+                     VerticalContentAlignment="Center" />
+            <TextBox PlaceholderText="Powód"
+                     Text="{Binding Reason, Mode=TwoWay}"
+                     Height="{DynamicResource DungeonControlHeight}"
+                     VerticalContentAlignment="Center" />
+        </StackPanel>
+
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding Delays}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="panels:PanelActionViewModel">
+                    <Button Margin="0,0,6,6"
+                            Padding="14,0"
+                            Height="{DynamicResource DungeonControlHeight}"
+                            Content="{Binding Label}"
+                            Command="{Binding Command}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border Grid.Row="3"
+                BorderBrush="{DynamicResource DungeonBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="{DynamicResource DungeonCornerRadius}">
+            <Panel>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding Pending}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="scheduler:ScheduledEventViewModel">
+                                <!-- Fixed row height: the list must stay scannable however long a name is. -->
+                                <Grid Height="{DynamicResource DungeonNavigationRowHeight}"
+                                      Margin="12,0"
+                                      ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="12">
+                                    <TextBlock VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                               Text="{Binding Name}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Grid.Column="1"
+                                               VerticalAlignment="Center"
+                                               FontSize="{DynamicResource DungeonHelperFontSize}"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                               Text="{Binding Remaining}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Same cell: the empty state cannot resize the frame around it. -->
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="{DynamicResource DungeonHelperFontSize}"
+                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                           IsVisible="{Binding IsEmpty}"
+                           Text="Świat na nic nie czeka." />
+            </Panel>
+        </Border>
+
+        <!-- Reserved slot: a refusal appears and clears without moving the list above it. -->
+        <TextBlock Grid.Row="4"
+                   MinHeight="16"
+                   FontSize="{DynamicResource DungeonHelperFontSize}"
+                   Foreground="{DynamicResource DungeonWarningBrush}"
+                   TextWrapping="Wrap"
+                   Text="{Binding Message}" />
+    </Grid>
+</UserControl>
