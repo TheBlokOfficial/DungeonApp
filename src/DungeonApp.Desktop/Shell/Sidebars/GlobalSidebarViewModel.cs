@@ -1,64 +1,58 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using DungeonApp.Desktop.Settings;
-using DungeonApp.Desktop.Themes;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
 
 public sealed class GlobalSidebarViewModel : ObservableObject
 {
-    private readonly Action<AppSettings> _applyAndPersist;
-    private AppSettings _settings;
+    private readonly Action<NavigationItemViewModel> _onSelected;
+    private readonly IReadOnlyList<NavigationItemViewModel> _allItems;
 
-    public GlobalSidebarViewModel(AppSettings settings, Action<AppSettings> applyAndPersist)
+    public GlobalSidebarViewModel(Action<NavigationItemViewModel> onSelected)
     {
-        _settings = settings;
-        _applyAndPersist = applyAndPersist;
+        _onSelected = onSelected;
 
         LibraryItems =
         [
-            new NavigationItemViewModel("DungeonIconBookOpen", "Kampanie", true),
-            new NavigationItemViewModel("DungeonIconUsers", "Bohaterowie"),
-            new NavigationItemViewModel("DungeonIconBoxes", "Paczki zawartości")
+            CreateItem("campaigns", "DungeonIconBookOpen", "Kampanie"),
+            CreateItem("characters", "DungeonIconUsers", "Bohaterowie"),
+            CreateItem("content-packs", "DungeonIconBoxes", "Paczki zawartości")
         ];
-        SettingsItem = new NavigationItemViewModel("DungeonIconSettings", "Ustawienia");
-        QuickSettings = new QuickSettingsViewModel(_settings.ScaleProfile, OnProfileSelected);
-        ToggleSidebarVariantCommand = new AsyncCommand(ToggleSidebarVariant);
+        SystemItems = [CreateItem("settings", "DungeonIconSettings", "Ustawienia")];
+        _allItems = [.. LibraryItems, .. SystemItems];
+
+        LibraryItems[0].IsActive = true;
     }
 
     public IReadOnlyList<NavigationItemViewModel> LibraryItems { get; }
 
-    public NavigationItemViewModel SettingsItem { get; }
+    public IReadOnlyList<NavigationItemViewModel> SystemItems { get; }
 
-    public QuickSettingsViewModel QuickSettings { get; }
-
-    public SidebarVariant CurrentVariant => _settings.SidebarVariant;
-
-    public bool IsCompact => CurrentVariant == SidebarVariant.Compact;
-
-    public string ToggleActionLabel => IsCompact ? "Rozwiń sidebar" : "Zwiń sidebar";
-
-    public ICommand ToggleSidebarVariantCommand { get; }
-
-    private void OnProfileSelected(UiScaleProfile profile)
+    private NavigationItemViewModel CreateItem(string id, string iconResourceKey, string label)
     {
-        _settings = _settings with { ScaleProfile = profile };
-        _applyAndPersist(_settings);
+        NavigationItemViewModel? item = null;
+        item = new NavigationItemViewModel(id, iconResourceKey, label, new AsyncCommand(() =>
+        {
+            Select(item!);
+            return Task.CompletedTask;
+        }));
+        return item;
     }
 
-    private Task ToggleSidebarVariant()
+    private void Select(NavigationItemViewModel selected)
     {
-        _settings = _settings with
+        if (selected.IsActive)
         {
-            SidebarVariant = _settings.SidebarVariant == SidebarVariant.Full ? SidebarVariant.Compact : SidebarVariant.Full
-        };
-        _applyAndPersist(_settings);
-        RaisePropertyChanged(nameof(CurrentVariant));
-        RaisePropertyChanged(nameof(IsCompact));
-        RaisePropertyChanged(nameof(ToggleActionLabel));
-        return Task.CompletedTask;
+            return;
+        }
+
+        foreach (var item in _allItems)
+        {
+            item.IsActive = item == selected;
+        }
+
+        _onSelected(selected);
     }
 }

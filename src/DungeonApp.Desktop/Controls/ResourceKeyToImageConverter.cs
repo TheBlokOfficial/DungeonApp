@@ -3,7 +3,7 @@ using System.Globalization;
 using Avalonia;
 using Avalonia.Data.Converters;
 
-namespace DungeonApp.Desktop.Shell.Navigation;
+namespace DungeonApp.Desktop.Controls;
 
 public sealed class ResourceKeyToImageConverter : IValueConverter
 {

@@ -1,6 +1,8 @@
 # Kontrakt UI v1
 
-> **Status:** zaakceptowany kontrakt implementacyjny — wersja 1.1 — 2026-08-24
+> **Status:** zaakceptowany kontrakt implementacyjny — wersja 1.2 — 2026-08-27
+>
+> **Zmiana 1.2:** pulpit kampanii przestaje być sztywnym gridem i staje się powierzchnią z pływającymi panelami. Zakaz swobodnego przemieszczania paneli zawężony do ekranów innych niż pulpit; grid dashboardu przekwalifikowany na układ domyślny; dołożona sekcja „Powierzchnia pulpitu kampanii”.
 
 Normatywne wartości geometrii, responsywności i zachowania shellu Desktop przed pierwszą fazą implementacji Avalonia. Jeżeli makieta, PoC albo lokalny styl XAML są sprzeczne z tym dokumentem, pierwszeństwo ma kontrakt. Nie zamraża zawartości przyszłych modułów — określa wspólny układ współrzędnych, w którym moduły muszą działać.
 
@@ -136,6 +138,8 @@ Liczone dla właściwego obszaru workspace'u po odjęciu sidebara, chrome i padd
 
 Brak dodatkowych breakpointów bez rzeczywistej zmiany architektury informacji — żadnego osobnego wariantu per fizyczna rozdzielczość. W obrębie wariantu panele mogą płynnie zmieniać szerokość przez star sizing; położenie i rola paneli pozostają stabilne.
 
+Breakpointy **nie dotyczą pulpitu kampanii**. Pulpit nie ma wariantów kompozycji — ma powierzchnię, na której o położeniu paneli decyduje użytkownik. Obowiązują tam reguły z sekcji „Powierzchnia pulpitu kampanii”.
+
 ## Strategie wzrostu paneli
 
 Każdy panel deklaruje jedną politykę:
@@ -154,7 +158,9 @@ Każdy panel deklaruje jedną politykę:
 
 ## Dashboard aktywnej sesji
 
-Jawny grid semantyczny — nie masonry ani auto-tiling.
+> **Od wersji 1.2 poniższe wymiary opisują domyślne rozmieszczenie paneli na pulpicie, a nie wymuszony grid.** Są punktem startowym pierwszego uruchomienia i celem akcji „Przywróć układ domyślny”. Po pierwszym przesunięciu panelu przez użytkownika o jego położeniu decyduje zapisany układ.
+
+Proporcje wyprowadzone z jawnego gridu semantycznego — nie z masonry ani auto-tilingu.
 
 **`Compact`/`Standard`** (dwanaście logicznych kolumn):
 
@@ -225,9 +231,48 @@ Każdy panel zachowuje ten sam zewnętrzny wymiar w stanach `Loading` / `Empty` 
 
 **Stosujemy:** `Grid` dla shellu/dashboardów/podziałów strukturalnych; fixed sizing dla chrome i kontrolek; star sizing dla pozostałej przestrzeni; `MinWidth`/`MaxWidth`/`MinHeight`/`MaxHeight` dla kontraktów paneli; container queries dla lokalnej adaptacji; `ItemsRepeater` + `UniformGridLayout` dla równorzędnych kolekcji kafli; `ScrollViewer` w formalnie ograniczonym viewporcie; `UseLayoutRounding="True"` w głównym drzewie.
 
-**Nie stosujemy w v1:** globalnego `MaxWidth` workspace'u; `Viewbox`/transformacji skalującej całe UI; automatycznego masonry; nieograniczonego `WrapPanel` dla narzędzi sesyjnych; swobodnego dokowania/przemieszczania paneli; płynnego animowania wymiarów głównych regionów; pomiarów zależnych od długości bieżącej treści.
+**Nie stosujemy w v1:** globalnego `MaxWidth` workspace'u; `Viewbox`/transformacji skalującej całe UI; automatycznego masonry; nieograniczonego `WrapPanel` dla narzędzi sesyjnych; płynnego animowania wymiarów głównych regionów; pomiarów zależnych od długości bieżącej treści.
+
+Swobodne przemieszczanie i skalowanie paneli jest dozwolone **wyłącznie na powierzchni pulpitu kampanii**. Wszystkie pozostałe ekrany — biblioteka, kreator, rejestry, baza wiedzy, ustawienia — pozostają na deterministycznej siatce i nie oferują tej swobody. Rozróżnienie ma być czytelne bez klikania: pulpit rysuje teksturę siatki tła, ekrany statyczne mają płaskie tło.
 
 `GridSplitter` dopuszczalny wyłącznie tam, gdzie model pracy naturalnie tego wymaga (np. drzewo dokumentów–edytor–inspektor); musi respektować `Min`/`Max`, krok zgodny z siatką i zapisywać rozmiar wybrany przez użytkownika.
+
+## Powierzchnia pulpitu kampanii
+
+Pulpit kampanii to blat: panele mają pozycję i rozmiar wybrane przez użytkownika, a nie przypisaną komórkę siatki. Nie są to okna systemowe — żyją wewnątrz obszaru roboczego.
+
+| Element | Wartość |
+| --- | ---: |
+| Padding blatu | `16` |
+| Przerwa między panelami | `8` |
+| Krok snappingu | `4` |
+| Promień przyciągania do krawędzi | `8` |
+| Belka tytułu panelu | `36` (`34` / `36` / `40` wg profilu) |
+| Cel trafienia uchwytu krawędzi | `6` (`6` / `6` / `8`) |
+| Cel trafienia uchwytu narożnego | `12` (`12` / `12` / `14`) |
+| Minimalny panel | `240 × 152` (`240×144` / `240×152` / `260×168`) |
+| Karta talii | `44` (`40` / `44` / `48`) |
+| Okres tekstury siatki tła | `32` |
+
+Minimum panelu to **większa** z dwóch wartości: minimum profilu i minimum zadeklarowane przez deskryptor panelu.
+
+**Dwie geometrie.** Każdy panel ma geometrię *pożądaną* — ostatnią ustawioną jawnym gestem użytkownika — oraz *efektywną*, wyliczaną z niej przy każdej zmianie rozmiaru blatu. Zapisywana jest wyłącznie pożądana. Bez tego rozdziału zmniejszenie okna trwale niszczy układ: panele podkulają się i po powiększeniu okna już tam zostają.
+
+**Dopasowanie nigdy nie skaluje.** Gdy blat się kurczy, panel najpierw jest przesuwany do środka; zmniejszany jest dopiero wtedy, gdy samo przesunięcie nie wystarcza, i nigdy poniżej swojego minimum. Powiększenie blatu przywraca geometrię pożądaną co do jednostki.
+
+**Maksymalizacja** panelu nie nadpisuje geometrii pożądanej — to ona jest geometrią przywrócenia.
+
+**Limity paneli** z sekcji „Strategie wzrostu paneli" obowiązują dosłownie: `Bounded` to `MinWidth`/`MaxWidth` panelu, `FluidData` to brak górnego limitu.
+
+**Egzekwowanie limitów przy zmianie rozmiaru** odbywa się w przestrzeni krawędzi i zawsze przez cofnięcie krawędzi ciągniętej, nigdy kotwiczonej. Ustawienie samej szerokości poniżej minimum pozwoliłoby systemowi layoutu po cichu ją przyciąć przy już zapisanej pozycji, przez co panel wędrowałby w bok.
+
+**Klamrowanie** utrzymuje cały panel wewnątrz blatu — nie tylko jego belkę tytułu.
+
+**Zamknięty panel zachowuje ostatnie położenie.** Ponowne otwarcie z talii wraca w to samo miejsce.
+
+**Talia** leży w lewym dolnym rogu blatu: wolnostojące kwadratowe karty bez tła i ramy wspólnego kontenera. Skrajnie z lewej stos kart otwierający listę narzędzi, dalej karty paneli zminimalizowanych. Talia nie jest paskiem narzędzi i nie rezerwuje pasa blatu.
+
+**Trwałość układu.** Jeden zapisany układ na kampanię, w logicznych jednostkach DIP, zapisywany po zakończonym geście z debounce'em. Uszkodzony, niekompletny lub pochodzący z nieznanej wersji plik nigdy nie blokuje startu — aplikacja wraca wtedy do układu domyślnego. Panel o nieznanym identyfikatorze jest pomijany, reszta układu wczytuje się normalnie.
 
 ## Macierz weryfikacji
 
@@ -242,12 +287,14 @@ Każdy kluczowy ekran sprawdzamy co najmniej w:
 | `2048 × 1152` | typowy efektywny obszar 1440p przy podwyższonym skalowaniu |
 | `2560 × 1440` | duży wariant przy 100% |
 
+Układ pulpitu dodatkowo: ułożony przy `2560` i otwarty przy `1280`, oraz cykl zmniejszenia i powiększenia okna w jednej sesji — panele wracają dokładnie na poprzednie miejsca.
+
 Dodatkowo: pełny i kompaktowy sidebar; najkrótsze/najdłuższe etykiety; wartości jedno- do czterocyfrowe; pustą i przewijaną listę; loading/empty/ready/error; brak ikony/assetu; zmianę rozmiaru przez każdy breakpoint w obu kierunkach; profile `Small`/`Medium`/`Large` przy skalowaniu `100%`/`125%`/`150%`/`200%`; maksymalizację, przywrócenie, zmianę monitora o innym DPI; fokus klawiatury i kolejność nawigacji.
 
 Weryfikacja kończy się niepowodzeniem, jeśli zmiana danych bez zmiany rozmiaru okna przesuwa główne regiony, zmienia wysokość panelu albo reorganizuje dashboard.
 
 ## Decyzje odłożone poza v1
 
-Swobodne dokowanie paneli · zapisywane dowolne układy dashboardu · czwarta lub kolejne główne kolumny pulpitu · automatyczny masonry · tryb sesji ukrywający chrome systemowy · osobne profile layoutu dla wielu monitorów.
+Nazwane presety układu · linie pomocnicze snappingu · dokowanie do krawędzi w stylu Windows Snap · wyrywanie panelu do osobnego okna lub na drugi monitor · wiele instancji tego samego panelu · automatyczny masonry · tryb sesji ukrywający chrome systemowy · osobne profile layoutu dla wielu monitorów.
 
 Każda wymaga osobnego uzasadnienia UX i kontraktu trwałości/stabilności.

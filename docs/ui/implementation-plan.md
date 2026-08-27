@@ -36,11 +36,12 @@ Otwarcie kampanii nie przełącza jeszcze kontekstu shellu — potwierdza popraw
 
 ## Faza 2 — nawigacja i trwały stan okna
 
-- jawny router trzech kontekstów: globalny, kreator, workspace kampanii;
+- ✅ podstawowa nawigacja globalna: sidebar (grupy "Biblioteka"/"System") przełącza zawartość obszaru roboczego przez `AppShellViewModel.CurrentWorkspaceContent` + `DataTemplate`, na razie na proste placeholdery;
+- jawny router pozostałych dwóch kontekstów (kreator, workspace kampanii) — do zrobienia, gdy wrócą;
 - deskryptory ekranów zamiast warunków rozproszonych po widokach;
-- aktywne/niedostępne pozycje nawigacji, obsługa klawiatury;
-- ✅ pełny i kompaktowy wariant sidebara — dedykowany przełącznik w stopce sidebara, zapisywany trwale;
-- ✅ zapis i bezpieczne przywracanie profilu skali UI i wariantu sidebara (`AppSettingsStore`, `%LocalAppData%\DungeonApp\settings.json`) — zapis rozmiaru/pozycji okna pozostaje do zrobienia;
+- obsługa klawiatury dla nawigacji;
+- wariant kompaktowy sidebara świadomie usunięty (2026-08-26) — kod miał być jak najprostszy; wróci, jeśli będzie realna potrzeba;
+- ✅ zapis i bezpieczne przywracanie profilu skali UI (`AppSettingsStore`, `%LocalAppData%\DungeonApp\settings.json`) — zapis rozmiaru/pozycji okna pozostaje do zrobienia; ekran Ustawień w sidebarze jest na razie placeholderem, bez pickera skali UI;
 - pierwsze testy ViewModeli shellu i routingu.
 
 ## Faza 3 — kreator kampanii

@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop.Settings;
@@ -40,7 +39,7 @@ public sealed class AppSettingsStore(string directoryPath)
                 return AppSettings.Default;
             }
 
-            return new AppSettings(document.ScaleProfile, document.SidebarVariant);
+            return new AppSettings(document.ScaleProfile);
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
@@ -54,7 +53,7 @@ public sealed class AppSettingsStore(string directoryPath)
 
         Directory.CreateDirectory(directoryPath);
 
-        var document = new SettingsDocument(settings.ScaleProfile, settings.SidebarVariant);
+        var document = new SettingsDocument(settings.ScaleProfile);
         var destinationPath = GetPath();
         var temporaryPath = $"{destinationPath}.{Guid.NewGuid():N}.tmp";
 
@@ -78,5 +77,5 @@ public sealed class AppSettingsStore(string directoryPath)
 
     private string GetPath() => Path.Combine(directoryPath, "settings.json");
 
-    private sealed record SettingsDocument(UiScaleProfile ScaleProfile, SidebarVariant SidebarVariant);
+    private sealed record SettingsDocument(UiScaleProfile ScaleProfile);
 }

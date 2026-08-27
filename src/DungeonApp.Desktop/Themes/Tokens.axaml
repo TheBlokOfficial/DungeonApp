@@ -34,6 +34,24 @@
     <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
     <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
 
+    <!--
+        Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
+        floating panel can diverge from other surfaces later without touching any view.
+        A minimized panel is the same object in another state, so the deck cards share these.
+    -->
+    <SolidColorBrush x:Key="DungeonPanelWindowBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
+    <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+    <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+    <!--
+        The active panel changes only this brush. Changing BorderThickness instead would resize the
+        panel every time focus moved - see docs/ui/visual-direction.md, "mocniejsza rama = inny
+        token koloru, nie wieksza grubosc".
+    -->
+    <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonAccentColor}" />
+    <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
+         It must stay Transparent rather than null, because null is not hit-testable. -->
+    <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
+
     <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
 

@@ -2,15 +2,11 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
-using DungeonApp.Desktop.Shell.Sidebars;
 
 namespace DungeonApp.Desktop.Themes;
 
 public static class UiScaleProfiles
 {
-    /// <summary>Sidebar width in its compact variant, independent of the active scale profile.</summary>
-    private const double CompactSidebarWidth = 56;
-
     /// <summary>
     /// Parses a one-run <c>--ui-scale=</c> override from the command line. Returns null when no
     /// override was given, so the caller falls back to the persisted
@@ -34,7 +30,7 @@ public static class UiScaleProfiles
         return null;
     }
 
-    public static void Apply(Avalonia.Application application, UiScaleProfile profile, SidebarVariant sidebarVariant)
+    public static void Apply(Avalonia.Application application, UiScaleProfile profile)
     {
         var metrics = profile switch
         {
@@ -51,7 +47,14 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 64,
                 ControlHeight: 36,
                 NavigationRowHeight: 40,
-                ActionIconSize: 16),
+                ActionIconSize: 16,
+                PanelHeaderHeight: 34,
+                PanelTitleFont: 12,
+                PanelMinWidth: 240,
+                PanelMinHeight: 144,
+                PanelResizeBorderThickness: 6,
+                PanelResizeCornerSize: 12,
+                DeckCardSize: 40),
             UiScaleProfile.Large => new UiMetrics(
                 BaseFont: 17,
                 NavigationFont: 17,
@@ -65,7 +68,14 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 76,
                 ControlHeight: 42,
                 NavigationRowHeight: 46,
-                ActionIconSize: 18),
+                ActionIconSize: 18,
+                PanelHeaderHeight: 40,
+                PanelTitleFont: 15,
+                PanelMinWidth: 260,
+                PanelMinHeight: 168,
+                PanelResizeBorderThickness: 8,
+                PanelResizeCornerSize: 14,
+                DeckCardSize: 48),
             _ => new UiMetrics(
                 BaseFont: 15,
                 NavigationFont: 15,
@@ -79,7 +89,14 @@ public static class UiScaleProfiles
                 WorkspaceHeaderHeight: 68,
                 ControlHeight: 38,
                 NavigationRowHeight: 42,
-                ActionIconSize: 16)
+                ActionIconSize: 16,
+                PanelHeaderHeight: 36,
+                PanelTitleFont: 13,
+                PanelMinWidth: 240,
+                PanelMinHeight: 152,
+                PanelResizeBorderThickness: 6,
+                PanelResizeCornerSize: 12,
+                DeckCardSize: 44)
         };
 
         Set(application, "DungeonBaseFontSize", metrics.BaseFont);
@@ -90,9 +107,8 @@ public static class UiScaleProfiles
         Set(application, "DungeonWorkspaceTitleFontSize", metrics.WorkspaceTitleFont);
         Set(application, "DungeonBrandMarkFontSize", metrics.BaseFont + 3);
 
-        var sidebarWidth = sidebarVariant == SidebarVariant.Compact ? CompactSidebarWidth : metrics.SidebarWidth;
         Set(application, "DungeonTopBarHeight", new GridLength(metrics.TopBarHeight));
-        Set(application, "DungeonSidebarWidth", new GridLength(sidebarWidth));
+        Set(application, "DungeonSidebarWidth", new GridLength(metrics.SidebarWidth));
         Set(application, "DungeonStatusBarHeight", new GridLength(metrics.StatusBarHeight));
         Set(application, "DungeonWorkspaceHeaderHeight", metrics.WorkspaceHeaderHeight);
         Set(application, "DungeonControlHeight", metrics.ControlHeight);
@@ -101,6 +117,29 @@ public static class UiScaleProfiles
         Set(application, "DungeonTopBarActionSize", metrics.TopBarHeight);
         Set(application, "DungeonMinimumWindowWidth", profile == UiScaleProfile.Large ? 1180d : 1024d);
         Set(application, "DungeonMinimumWindowHeight", profile == UiScaleProfile.Large ? 760d : 680d);
+
+        Set(application, "DungeonPanelHeaderHeight", metrics.PanelHeaderHeight);
+        Set(application, "DungeonPanelHeaderActionSize", metrics.PanelHeaderHeight);
+        Set(application, "DungeonPanelTitleFontSize", metrics.PanelTitleFont);
+        Set(application, "DungeonPanelResizeBorderThickness", metrics.PanelResizeBorderThickness);
+        Set(application, "DungeonPanelResizeCornerSize", metrics.PanelResizeCornerSize);
+        Set(application, "DungeonDeckCardSize", metrics.DeckCardSize);
+
+        // Read back by Controls/Workspace/WorkspaceMetricsResolver on every gesture and surface
+        // resize. Changing a profile therefore changes the panel size floor even when the desk
+        // itself did not change size, so the workspace has to re-fit its panels on profile change
+        // and not only on SizeChanged.
+        Set(application, "DungeonPanelMinWidth", metrics.PanelMinWidth);
+        Set(application, "DungeonPanelMinHeight", metrics.PanelMinHeight);
+
+        // Profile-independent, but sizes all the same, so they stay with the single size writer
+        // rather than drifting into Tokens.axaml. Values from docs/ui/contract.md.
+        Set(application, "DungeonWorkspacePadding", 16d);
+        // Thickness twin of the value above, for views that need it as a Margin. Kept next to its
+        // source so the two can never disagree.
+        Set(application, "DungeonWorkspacePaddingThickness", new Avalonia.Thickness(16));
+        Set(application, "DungeonPanelGap", 8d);
+        Set(application, "DungeonDeckCardSpacing", 8d);
     }
 
     private static void Set(Avalonia.Application application, string key, object value) =>
@@ -119,5 +158,12 @@ public static class UiScaleProfiles
         double WorkspaceHeaderHeight,
         double ControlHeight,
         double NavigationRowHeight,
-        double ActionIconSize);
+        double ActionIconSize,
+        double PanelHeaderHeight,
+        double PanelTitleFont,
+        double PanelMinWidth,
+        double PanelMinHeight,
+        double PanelResizeBorderThickness,
+        double PanelResizeCornerSize,
+        double DeckCardSize);
 }

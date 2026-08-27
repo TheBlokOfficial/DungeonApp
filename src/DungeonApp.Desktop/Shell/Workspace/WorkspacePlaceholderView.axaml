@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
+             x:Class="DungeonApp.Desktop.Shell.Workspace.WorkspacePlaceholderView"
+             x:DataType="workspace:WorkspacePlaceholderViewModel">
+
+    <!--
+        Flat background on purpose. The grid texture now means "things float here" and belongs to
+        the campaign desk alone (see Themes/DungeonControls.axaml); a static screen that showed it
+        would promise a freedom it does not offer.
+    -->
+    <Grid Background="{DynamicResource DungeonBackgroundBrush}">
+        <TextBlock Text="{Binding Title}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="{DynamicResource DungeonWorkspaceTitleFontSize}"
+                   Foreground="{DynamicResource DungeonTextMutedBrush}" />
+    </Grid>
+</UserControl>

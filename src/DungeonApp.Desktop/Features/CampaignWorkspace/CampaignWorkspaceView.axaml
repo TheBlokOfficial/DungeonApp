@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
+             xmlns:demo="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Demo"
+             xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
+             xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
+             x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.CampaignWorkspaceView"
+             x:DataType="workspace:CampaignWorkspaceViewModel">
+
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="demo:DemoPanelViewModel">
+            <demo:DemoPanelView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Grid>
+        <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}" />
+
+        <!-- After the surface in document order, so the cards lie on top of the desk. A panel can
+             never be lost under them: the clamp keeps every panel fully inside the surface. -->
+        <deck:PanelDeckView />
+    </Grid>
+</UserControl>

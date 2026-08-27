@@ -4,27 +4,19 @@
              xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
              xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
+             xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
+             xmlns:campaignWorkspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
              x:DataType="shell:AppShellViewModel">
 
-    <UserControl.Resources>
-        <SolidColorBrush x:Key="DungeonWorkspaceGridLineBrush"
-                         Color="{DynamicResource DungeonBorderColor}"
-                         Opacity="0.12" />
-        <Pen x:Key="DungeonWorkspaceGridPen"
-             Brush="{StaticResource DungeonWorkspaceGridLineBrush}"
-             Thickness="1" />
-        <StreamGeometry x:Key="DungeonWorkspaceGridGeometry">M 0,0 L 32,0 M 0,0 L 0,32</StreamGeometry>
-        <DrawingBrush x:Key="DungeonWorkspaceGridPatternBrush"
-                      TileMode="Tile"
-                      SourceRect="0,0,32,32"
-                      DestinationRect="0,0,32,32">
-            <DrawingBrush.Drawing>
-                <GeometryDrawing Geometry="{StaticResource DungeonWorkspaceGridGeometry}"
-                                 Pen="{StaticResource DungeonWorkspaceGridPen}" />
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
-    </UserControl.Resources>
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="workspace:WorkspacePlaceholderViewModel">
+            <workspace:WorkspacePlaceholderView />
+        </DataTemplate>
+        <DataTemplate DataType="campaignWorkspace:CampaignWorkspaceViewModel">
+            <campaignWorkspace:CampaignWorkspaceView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -45,16 +37,9 @@
                                     Grid.Column="0"
                                     DataContext="{Binding Sidebar}" />
 
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Border Background="{DynamicResource DungeonBackgroundBrush}" />
-            <Border Background="{StaticResource DungeonWorkspaceGridPatternBrush}"
-                    IsHitTestVisible="False" />
-            <TextBlock Text="Obszar roboczy"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="{DynamicResource DungeonWorkspaceTitleFontSize}"
-                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
-        </Grid>
+        <ContentControl Grid.Row="1"
+                        Grid.Column="1"
+                        Content="{Binding CurrentWorkspaceContent}" />
 
         <statusBar:StatusBarView Grid.Row="2"
                                  Grid.Column="0"

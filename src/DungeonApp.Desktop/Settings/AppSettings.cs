@@ -1,4 +1,3 @@
-using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop.Settings;
@@ -7,7 +6,7 @@ namespace DungeonApp.Desktop.Settings;
 /// Persisted, app-level shell preferences. Distinct from campaign data: losing this file must
 /// never block startup, so callers fall back to <see cref="Default"/> instead of throwing.
 /// </summary>
-public sealed record AppSettings(UiScaleProfile ScaleProfile, SidebarVariant SidebarVariant)
+public sealed record AppSettings(UiScaleProfile ScaleProfile)
 {
-    public static AppSettings Default { get; } = new(UiScaleProfile.Medium, SidebarVariant.Full);
+    public static AppSettings Default { get; } = new(UiScaleProfile.Medium);
 }

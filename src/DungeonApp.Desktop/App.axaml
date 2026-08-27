@@ -8,6 +8,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/Tokens.axaml" />
                 <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/Icons.axaml" />
+                <!-- Control themes are resources, not styles, so this belongs here and not in
+                     Application.Styles below. Must come after Tokens and Icons, which it uses. -->
+                <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/DungeonControls.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
