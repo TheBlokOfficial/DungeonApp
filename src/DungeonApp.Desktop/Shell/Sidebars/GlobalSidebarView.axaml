@@ -16,8 +16,7 @@
                     Classes.active="{Binding IsActive}"
                     Command="{Binding SelectCommand}"
                     IsHitTestVisible="{Binding !IsActive}"
-                    RenderTransform="{x:Null}"
-                    Transitions="{x:Null}">
+                    RenderTransform="{x:Null}">
                 <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
@@ -50,6 +49,12 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="FontSize" Value="{DynamicResource DungeonNavigationFontSize}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.10" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.10" />
+                </Transitions>
+            </Setter>
             <Setter Property="Template">
                 <ControlTemplate>
                     <Border Background="{TemplateBinding Background}"

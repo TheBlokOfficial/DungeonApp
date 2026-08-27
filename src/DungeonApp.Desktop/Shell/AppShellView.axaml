@@ -37,9 +37,13 @@
                                     Grid.Column="0"
                                     DataContext="{Binding Sidebar}" />
 
-        <ContentControl Grid.Row="1"
-                        Grid.Column="1"
-                        Content="{Binding CurrentWorkspaceContent}" />
+        <TransitioningContentControl Grid.Row="1"
+                                     Grid.Column="1"
+                                     Content="{Binding CurrentWorkspaceContent}">
+            <TransitioningContentControl.PageTransition>
+                <CrossFade Duration="0:0:0.14" />
+            </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
 
         <statusBar:StatusBarView Grid.Row="2"
                                  Grid.Column="0"
