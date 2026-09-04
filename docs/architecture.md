@@ -7,6 +7,15 @@ faktycznie zależy — żyje w `docs/code-map.md` i jest generowany osobno.
 Rozjazd między tymi dwoma dokumentami jest sygnałem długu, nie błędem
 zapisu.
 
+## Uwaga o kierunku
+
+Ten dokument opisuje szwy **takie, jakie obowiązują dzisiaj**. Część z nich
+ma świadomie zaplanowaną przyszłość, opisaną w `docs/vision.md`: treść
+kampanii wyprowadza się spod własności narzędzi do wspólnych, wersjonowanych
+sekcji danych, a narzędzia zbiegają do bezstanowej logiki. Nie bierz
+obecnego kształtu za docelowy — wyzwalacz przebudowy i jej zakres stoją w
+wizji.
+
 ## Dwie warstwy
 
 `DungeonApp.Core` nie wie nic o interfejsie. `DungeonApp.Desktop` zna Core
