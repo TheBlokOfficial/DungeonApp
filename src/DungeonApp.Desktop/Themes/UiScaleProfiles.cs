@@ -142,7 +142,7 @@ public static class UiScaleProfiles
         Set(application, "DungeonPanelMinHeight", metrics.PanelMinHeight);
 
         // Profile-independent, but sizes all the same, so they stay with the single size writer
-        // rather than drifting into Tokens.axaml. Values from docs/ui/contract.md.
+        // rather than drifting into Tokens.axaml. See docs/ui.md for where the numbers live.
         Set(application, "DungeonWorkspaceEdgeMargin", WorkspaceGridSettings.EdgeMargin);
         Set(application, "DungeonPanelGap", WorkspaceGridSettings.PanelGap);
         Set(application, "DungeonDeckCardSpacing", WorkspaceGridSettings.PanelGap);

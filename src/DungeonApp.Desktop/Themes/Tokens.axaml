@@ -90,6 +90,6 @@
         are NOT declared here. They are the sole responsibility of
         Themes/UiScaleProfiles.cs, which sets them on Application.Resources before any
         window is created (see App.axaml.cs Initialize()). Keeping one writer avoids the
-        two sets of numbers drifting apart. See docs/ui/contract.md for the source values.
+        two sets of numbers drifting apart. See docs/ui.md for where the numbers live.
     -->
 </ResourceDictionary>

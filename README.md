@@ -1,33 +1,51 @@
 # DungeonApp
 
-Desktopowa aplikacja dla Mistrza Gry, która utrzymuje spójny stan kampanii i automatyzuje księgowość reguł, bez odbierania sesji jej tradycyjnego, stołowego charakteru.
+Desktopowy panel Mistrza Gry: utrzymuje spójny stan kampanii i prowadzi
+księgowość reguł, nie odbierając sesji jej stołowego charakteru. Nie jest
+stołem wirtualnym ani grą dla graczy — pełne granice produktu opisuje
+[wizja](docs/vision.md).
 
-## Struktura solution
+C#/.NET 10, Avalonia. Jedna maszyna, jeden użytkownik, bez warstwy
+sieciowej.
+
+## Uruchomienie
+
+```bash
+dotnet run --project src/DungeonApp.Desktop
+```
+
+## Build i testy
+
+```bash
+dotnet build DungeonApp.sln
+dotnet test tests/DungeonApp.Core.Tests/DungeonApp.Core.Tests.csproj
+dotnet test tests/DungeonApp.Desktop.Tests/DungeonApp.Desktop.Tests.csproj
+```
+
+## Struktura
 
 ```text
 src/
-  DungeonApp.Core/      # Logika gry — kampanie, reguły, moduły. Bez Avalonia.
-  DungeonApp.Desktop/   # Aplikacja Avalonia — shell, sidebar, ustawienia, motyw
+  DungeonApp.Core/      # Kampanie, moduły, dziennik, zapis. Bez Avalonia.
+  DungeonApp.Desktop/   # Aplikacja Avalonia — shell, biurko, panele, motyw.
 tests/
   DungeonApp.Core.Tests/
   DungeonApp.Desktop.Tests/
-docs/                   # Ustalenia projektowe
-```
-
-Podział na dwa projekty produkcyjne jest zabiegiem higienicznym: logika gry ma być
-testowalna bez okna. Granicy pilnuje test architektoniczny, który odrzuca każdą
-referencję do Avalonia w `Core`.
-
-Poprzednia warstwa domenowa była prototypem i została usunięta. `Core` powstaje od nowa,
-przyrostami — patrz [wizja i fundamenty](docs/product/vision.md). Aktualny stan prac i to,
-co jest następne, opisuje [Co dalej](docs/product/roadmap.md).
-
-## Dokumentacja projektowa
-
-Zobacz [docs/README.md](docs/README.md) po pełny indeks. Struktura:
-
-```text
 docs/
-  product/  # wizja i fundamenty produktu, stan prac
-  ui/       # kierunek wizualny, IA, architektura komponentów, kontrakt, plan implementacji
 ```
+
+Podział na dwa projekty produkcyjne jest zabiegiem higienicznym: logika ma
+być testowalna bez okna. Granicy pilnuje test architektoniczny, który
+odrzuca każdą referencję do Avalonii w `Core`.
+
+## Dokumentacja
+
+| Dokument | Co zawiera |
+|---|---|
+| [wizja](docs/vision.md) | czym produkt jest, czego świadomie nie robi, co odłożone |
+| [architektura](docs/architecture.md) | szwy i niezmienniki: co wolno, co jest egzekwowane |
+| [mapa kodu](docs/code-map.md) | stan faktyczny zależności i przepływów, ze stemplem commita |
+| [UI](docs/ui.md) | język wizualny, gdzie mieszkają liczby, reguły komponentowe |
+
+`CLAUDE.md` opisuje styl i tryb pracy z agentem — nie jest dokumentacją
+projektu.
