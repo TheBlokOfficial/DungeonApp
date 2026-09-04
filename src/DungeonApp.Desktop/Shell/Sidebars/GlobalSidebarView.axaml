@@ -44,23 +44,30 @@
             <Setter Property="Margin" Value="0" />
             <Setter Property="CornerRadius" Value="0" />
             <Setter Property="Background" Value="#00000000" />
-            <Setter Property="BorderThickness" Value="4,1,1,1" />
             <Setter Property="BorderBrush" Value="#00000000" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="FontSize" Value="{DynamicResource DungeonNavigationFontSize}" />
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
+                    <!-- Pasek akcentu jest nakładką o stałej szerokości, nie wcięciem
+                         przez BorderThickness: BorderThickness zmniejsza obszar wypełnienia
+                         tła, więc obramowanie przezroczyste (hover) i nieprzezroczyste
+                         (aktywny) pokrywałyby różne szerokości. Wypełnienie zawsze na pełnych
+                         granicach, a pasek warstwą na wierzchu — dzięki temu hover i stan
+                         aktywny są identyczne co do piksela poza samym paskiem. -->
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Border Width="4"
+                                HorizontalAlignment="Left"
+                                Background="{TemplateBinding BorderBrush}" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Padding="{TemplateBinding Padding}"
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter>
         </Style>
