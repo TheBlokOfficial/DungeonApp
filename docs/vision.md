@@ -49,7 +49,7 @@ Stąd trzy decyzje:
   zamiast po cichu uszkodzić całość. Kopia zapasowa to skopiowany katalog
   kampanii z zewnątrz — model save game, nie mechanizm wewnątrz formatu
   zapisu. To wyklucza wersjonowanie per plik, regenerację i historię
-  pokoleń wewnątrz kampanii: manifest i pliki sekcji noszą wspólny numer
+  pokoleń wewnątrz kampanii: manifest i pliki bloków danych noszą wspólny numer
   pokolenia, a rozjazd między nimi znaczy zapis przerwany w połowie, nic
   więcej — to wykrywanie uszkodzenia, nie historia. Zapis jest atomowy.
 - **Zakładanie kampanii pyta o tożsamość** — nazwa, system, data startowa —
@@ -150,9 +150,9 @@ To nie jest trójkąt, tylko pętla o jednokierunkowych krawędziach:
 2. **Okno → narzędzie.** Kliknięcie niczego nie zmienia samo; okno zgłasza
    nazwany zamiar („przesuń o trzy dni").
 3. **Narzędzie → dane.** Narzędzie oddaje przekształcenie, a rdzeń stosuje
-   je do bieżącej wartości sekcji. To jedyne miejsce, w którym powstaje
+   je do bieżącej wartości bloku danych. To jedyne miejsce, w którym powstaje
    nowy stan.
-4. **Dane → okno.** Sekcja się zmieniła, okno odczytuje ją ponownie. Bez
+4. **Dane → okno.** Blok danych się zmienił, okno odczytuje go ponownie. Bez
    odpytywania w pętli i bez przesyłania wartości w zdarzeniu.
 
 Narzędzie nigdy nie woła okna.
@@ -176,18 +176,18 @@ bezstanowych usług nad wspólną treścią. Czas świata należy do świata, ni
 zegara; zegar wie tylko, co znaczy „przesuń o trzy dni" i co się wtedy sypie.
 
 **Kierunek zapisu:** kampania na dysku to tożsamość plus `data` — nazwane,
-wersjonowane sekcje treści, których rdzeń nie interpretuje. Nie `heroes`,
+wersjonowane bloki danych, których rdzeń nie interpretuje. Nie `heroes`,
 `npc`, `locations` jako pola formatu, bo wtedy rdzeń poznaje tożsamość rzeczy
-w świecie i przy trzecim systemie okaże się, że zna ją źle. Sekcja powstaje
-przy pierwszym zapisie, więc nieużywane narzędzie kosztuje zero. Deklaracja
-kształtu nie jest własnością danych: sekcję może czytać i zmieniać każde
-narzędzie, które ją zadeklarowało. Kształty treści systemowej należą do
-definicji systemu, nie do narzędzia.
+w świecie i przy trzecim systemie okaże się, że zna ją źle. Blok danych
+powstaje przy pierwszym zapisie, więc nieużywane narzędzie kosztuje zero.
+Deklaracja kształtu nie jest własnością danych: blok danych może czytać i
+zmieniać każde narzędzie, które go zadeklarowało. Kształty treści systemowej
+należą do definicji systemu, nie do narzędzia.
 
 Definicja i treść kampanii to dwa różne światy danych. Definicja — czym
 jest dana rzecz, jakie ma pola — leży poza treścią kampanii, jest wspólna
-dla systemu i kampania jej nie zmienia. Treść kampanii to sekcje: zmienne,
-własne dla kampanii, w jej katalogu. Kampania trzyma referencję do
+dla systemu i kampania jej nie zmienia. Treść kampanii to bloki danych:
+zmienne, własne dla kampanii, w jej katalogu. Kampania trzyma referencję do
 definicji plus dane instancji — zapis w rodzaju „core:iron_sword, sztuk: 1"
 — nigdy kopię definicji. Gdy referencja się nie rozwiązuje (brak definicji
 przy odczycie), dane zostają nienaruszone: fakt jest zgłaszany jako
@@ -197,10 +197,11 @@ sprawdza, czy cel referencji istnieje — sprawdza tylko, że pole ma postać
 referencji; inaczej kampania zapisana przy komplecie definicji stałaby się
 niezapisywalna po ich zmianie.
 
-Sekcje są **rejestrowane, nie posiadane**. Rejestr żyje w rdzeniu i trzyma
-nazwę sekcji, jej bieżącą wersję, jej **kształt** i ścieżki migracji — nic
-więcej. Kształt opisuje budowę: z jakich nazwanych pól i jakich typów sekcja się
-składa. Język kształtu startuje na minimum — zestaw nazwanych pól o typach
+Bloki danych są **rejestrowane, nie posiadane**. Rejestr żyje w rdzeniu i
+trzyma nazwę bloku danych, jego bieżącą wersję, jego **kształt** i ścieżki
+migracji — nic więcej. Kształt opisuje budowę: z jakich nazwanych pól i
+jakich typów blok danych się składa. Język kształtu startuje na minimum —
+zestaw nazwanych pól o typach
 prostych — a zagnieżdżanie, warianty i referencje dochodzą,
 gdy pojawi się treść, która ich wymaga. Rdzeń przy zapisie sprawdza
 zgodność wyniku z zadeklarowanym kształtem, ale kształt nigdy nie niesie
@@ -209,37 +210,38 @@ musi być większa od tamtej" — nie; reguła między wartościami to robota
 narzędzia albo robota MG. Bez tej granicy język kształtu stałby się
 interpreterem, przed którym ten dokument już ostrzega w części o systemie
 gry. Znajomość budowy nie jest znajomością znaczenia: rdzeń wie, z jakich pól
-i typów sekcja się składa, nie wie, czym te rzeczy są w świecie gry — ta granica zostaje w mocy. Narzędzie deklaruje wyłącznie,
-których sekcji używa — które czyta, które zmienia. Granica jest postawiona
-świadomie: nazwa sekcji w rejestrze to wpis w tablicy, nie pole w schemacie
-formatu zapisu. Rejestr jest następcą dzisiejszego katalogu modułów, nie
+i typów blok danych się składa, nie wie, czym te rzeczy są w świecie gry — ta granica zostaje w mocy. Narzędzie deklaruje wyłącznie,
+których bloków danych używa — które czyta, które zmienia. Granica jest
+postawiona świadomie: nazwa bloku danych w rejestrze to wpis w tablicy, nie
+pole w schemacie formatu zapisu. Rejestr jest następcą dzisiejszego katalogu modułów, nie
 drugim rejestrem obok niego, i dziedziczy jego własność — wpis wprost w
 pliku, zero magii ładowania, zmiana widoczna w diffie.
 
 **Zapis to przekształcenie, nie gotowa treść.** Narzędzie nie oddaje nowej
-wartości sekcji — oddaje przekształcenie, które rdzeń stosuje do wartości
-bieżącej. Powód: narzędzia budzone zdarzeniami pracują kaskadowo, więc
-treść wyliczona na kopii sprzed cudzego zapisu po cichu skasowałaby tamten
-zapis. Przekształcenie daje ten sam wynik niezależnie od tego, co zaszło
-między odczytem a zapisem. Rdzeń przekształcenia nie interpretuje —
-wykonuje je, sprawdza zgodność wyniku z zadeklarowanym kształtem sekcji i
-ogłasza na magistrali, że sekcja się zmieniła. Zapis nie niesie nazwy ani
-powodu: istnieje po to, żeby wiadomo było, że sekcja się zmieniła, nie
-dlaczego. Ogłoszenie niesie samą nazwę sekcji, nigdy nowej wartości —
-okno po zmianie odczytuje sekcję ponownie i to domyka pętlę
-okno→narzędzie→dane→okno. Jedno wejście zapisu na sekcję, brak drugiej
-drogi — i to jest jedyne egzekwowanie tej reguły, trzyma się na kształcie
+wartości bloku danych — oddaje przekształcenie, które rdzeń stosuje do
+wartości bieżącej. Powód: narzędzia budzone zdarzeniami pracują kaskadowo,
+więc treść wyliczona na kopii sprzed cudzego zapisu po cichu skasowałaby
+tamten zapis. Przekształcenie daje ten sam wynik niezależnie od tego, co
+zaszło między odczytem a zapisem. Rdzeń przekształcenia nie interpretuje —
+wykonuje je, sprawdza zgodność wyniku z zadeklarowanym kształtem bloku
+danych i ogłasza na magistrali, że blok danych się zmienił. Zapis nie niesie
+nazwy ani powodu: istnieje po to, żeby wiadomo było, że blok danych się
+zmienił, nie dlaczego. Ogłoszenie niesie samą nazwę bloku danych, nigdy
+nowej wartości — okno po zmianie odczytuje blok danych ponownie i to domyka
+pętlę okno→narzędzie→dane→okno. Jedno wejście zapisu na blok danych, brak
+drugiej drogi — i to jest jedyne egzekwowanie tej reguły, trzyma się na
+kształcie
 API, nie na teście. Z tego wynika wprost, że „cofnij" jest poza
 zakresem produktu — nie jako odłożone na później, tylko jako wykluczone
 przez format zapisu: stan jest migawką, a zapis nie niesie historii, z
 której dałoby się maszynowo odtworzyć poprzedni stan.
 
-**Brak sekcji znaczy „jeszcze nic tu nie ma", nie „zapis rozerwany".**
+**Brak bloku danych znaczy „jeszcze nic tu nie ma", nie „zapis rozerwany".**
 Narzędzie dodane w czerwcu musi działać na kampanii założonej w marcu. Dziś
 kod robi odwrotnie i traktuje brak wpisu jako rozerwany zapis — to do
 naprawienia razem z przebudową, nie wcześniej.
 
-**Kiedy to budujemy:** najpierw. Fundament — rejestr sekcji plus jedyne
+**Kiedy to budujemy:** najpierw. Fundament — rejestr bloków danych plus jedyne
 wejście zapisu — powstaje przed pierwszym prawdziwym narzędziem, nie jako
 reakcja na ból przy drugim. Nie ma bowiem na czym tego bólu poczekać:
 prototypowe narzędzia, które miały go pokazać, zostały usunięte.
