@@ -51,7 +51,9 @@ Stąd trzy decyzje:
   zapisu. To wyklucza wersjonowanie per plik, regenerację i historię
   pokoleń wewnątrz kampanii: manifest i pliki bloków danych noszą wspólny numer
   pokolenia, a rozjazd między nimi znaczy zapis przerwany w połowie, nic
-  więcej — to wykrywanie uszkodzenia, nie historia. Zapis jest atomowy.
+  więcej — to wykrywanie uszkodzenia, nie historia. Poszczególne pliki są
+  podmieniane atomowo, a manifest trafia na dysk po plikach bloków; wspólne
+  pokolenie pozwala wykryć przerwany zapis wieloplikowy.
 - **Zakładanie kampanii pyta o tożsamość** — nazwa, system, data startowa —
   nie o konfigurację. Zaczynasz od treści, nie od ustawień.
 
@@ -164,7 +166,7 @@ jako funkcję nad danymi, nie jako własny stan.
 
 ## Treść kampanii a stan narzędzia
 
-To są **dwie różne rzeczy**, dziś zlepione w kodzie.
+To są **dwie różne rzeczy**.
 
 Rozstrzyga długość życia: **czy ta treść ma sens, gdy narzędzia nie ma?**
 Data w świecie, skład drużyny, zaplanowane wydarzenia, notatki — mają.
@@ -197,9 +199,11 @@ sprawdza, czy cel referencji istnieje — sprawdza tylko, że pole ma postać
 referencji; inaczej kampania zapisana przy komplecie definicji stałaby się
 niezapisywalna po ich zmianie.
 
-Bloki danych są **rejestrowane, nie posiadane**. Rejestr żyje w rdzeniu i
-trzyma nazwę bloku danych, jego bieżącą wersję, jego **kształt** i ścieżki
-migracji — nic więcej. Kształt opisuje budowę: z jakich nazwanych pól i
+Bloki danych są **rejestrowane, nie posiadane**. Kontrakt rejestru żyje w
+rdzeniu, a korzeń kompozycji wpisuje do niego wbudowane bloki. Rejestr trzyma
+nazwę bloku danych, jego bieżącą wersję i jego **kształt**. Ścieżek migracji
+jeszcze nie ma; powstaną przy pierwszym rzeczywistym podniesieniu wersji.
+Kształt opisuje budowę: z jakich nazwanych pól i
 jakich typów blok danych się składa. Język kształtu startuje na minimum —
 zestaw nazwanych pól o typach
 prostych — a zagnieżdżanie, warianty i referencje dochodzą,
@@ -211,11 +215,10 @@ narzędzia albo robota MG. Bez tej granicy język kształtu stałby się
 interpreterem, przed którym ten dokument już ostrzega w części o systemie
 gry. Znajomość budowy nie jest znajomością znaczenia: rdzeń wie, z jakich pól
 i typów blok danych się składa, nie wie, czym te rzeczy są w świecie gry — ta granica zostaje w mocy. Narzędzie deklaruje wyłącznie,
-których bloków danych używa — które czyta, które zmienia. Granica jest
-postawiona świadomie: nazwa bloku danych w rejestrze to wpis w tablicy, nie
-pole w schemacie formatu zapisu. Rejestr jest następcą dzisiejszego katalogu modułów, nie
-drugim rejestrem obok niego, i dziedziczy jego własność — wpis wprost w
-pliku, zero magii ładowania, zmiana widoczna w diffie.
+których bloków danych używa. Granica jest postawiona świadomie: nazwa bloku
+danych w rejestrze to wpis w tablicy, nie pole w schemacie formatu zapisu.
+Rejestr jest jedynym takim miejscem: wpis wprost w pliku, zero magii
+ładowania, zmiana widoczna w diffie.
 
 **Zapis to przekształcenie, nie gotowa treść.** Narzędzie nie oddaje nowej
 wartości bloku danych — oddaje przekształcenie, które rdzeń stosuje do
@@ -237,14 +240,20 @@ przez format zapisu: stan jest migawką, a zapis nie niesie historii, z
 której dałoby się maszynowo odtworzyć poprzedni stan.
 
 **Brak bloku danych znaczy „jeszcze nic tu nie ma", nie „zapis rozerwany".**
-Narzędzie dodane w czerwcu musi działać na kampanii założonej w marcu. Dziś
-kod robi odwrotnie i traktuje brak wpisu jako rozerwany zapis — to do
-naprawienia razem z przebudową, nie wcześniej.
+Blok powstaje dopiero przy pierwszym zapisie, więc narzędzie dodane później
+działa także na starszej kampanii.
 
-**Kiedy to budujemy:** najpierw. Fundament — rejestr bloków danych plus jedyne
-wejście zapisu — powstaje przed pierwszym prawdziwym narzędziem, nie jako
-reakcja na ból przy drugim. Nie ma bowiem na czym tego bólu poczekać:
-prototypowe narzędzia, które miały go pokazać, zostały usunięte.
+**Blok nieczytelny pozostaje nietknięty.** Gdy bieżąca wersja aplikacji nie
+zna identyfikatora bloku albo nie obsługuje zapisanej wersji jego kształtu,
+kampania nadal się otwiera, a blok jest zgłoszony jako nieczytelny. Kolejny
+zapis zachowuje surowy plik wartości i wpis manifestu tego bloku; zapis przez
+`Apply` jest odrzucany, aby nie nadpisać treści, której nie udało się
+odczytać.
+
+**Kolejność budowy:** fundament — rejestr bloków danych plus jedyne wejście
+zapisu — powstał przed pierwszym prawdziwym narzędziem, nie jako reakcja na
+ból przy drugim. Nie było bowiem na czym tego bólu poczekać: prototypowe
+narzędzia, które miały go pokazać, zostały usunięte.
 
 ## Zdarzenia
 

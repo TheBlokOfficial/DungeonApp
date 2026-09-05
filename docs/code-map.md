@@ -1,6 +1,6 @@
 # Mapa kodu
 
-Stan na commit 3571de6 (2026-09-05).
+Stan katalogu roboczego po blokach 3–4 (2026-09-05).
 
 Dokument opisuje stan faktyczny (kto od kogo zależy, którędy płyną dane).
 Reguły normatywne żyją w `docs/architecture.md`.
@@ -10,97 +10,116 @@ Reguły normatywne żyją w `docs/architecture.md`.
 | Katalog | Po co istnieje |
 |---|---|
 | `src/DungeonApp.Core` | Logika domenowa i persystencja, bez referencji do Avalonia/UI. |
-| `src/DungeonApp.Core/Campaigns` | Tożsamość i tworzenie kampanii (`Campaign`, `CampaignId`, `CreateCampaign`, `ICampaignRepository`). |
-| `src/DungeonApp.Core/Events` | Magistrala zdarzeń wewnątrz kampanii (`CampaignEvents`, `ICampaignEvent`) — dziś bez żadnego zdefiniowanego typu zdarzenia w `src/`. |
-| `src/DungeonApp.Core/Modules` | Kontrakt modułu, katalog modułów, kolejność aktywacji (`ICampaignModule`, `ModuleCatalog`, `CampaignModules`) — dziś bez żadnego modułu domenowego zarejestrowanego w kompozycji. |
-| `src/DungeonApp.Core/Persistence` | Jedyne miejsce z `System.IO` w Core — zapis/odczyt kampanii jako JSON na dysku. |
+| `src/DungeonApp.Core/Campaigns` | Tożsamość, tworzenie i port zapisu kampanii (`Campaign`, `CampaignId`, `CreateCampaign`, `ICampaignRepository`). |
+| `src/DungeonApp.Core/DataBlocks` | Rejestr wersjonowanych bloków, ich kształty, wartości kampanii i zdarzenie `DataBlockChanged`; także reprezentacja bloku nieczytelnego. |
+| `src/DungeonApp.Core/Events` | Magistrala zdarzeń wewnątrz jednej kampanii (`CampaignEvents`, `ICampaignEvent`). |
+| `src/DungeonApp.Core/Persistence` | Jedyny dostęp do dysku w Core: zapis/odczyt kampanii i wartości bloków danych jako JSON. |
+| `src/DungeonApp.Core/Tools` | Kontrakt bezstanowego narzędzia (`ITool`) i pierwsze narzędzie, `Tools/Counter/CounterTool`. |
 | `src/DungeonApp.Desktop` | Aplikacja Avalonia — UI, ViewModele, kompozycja aplikacji (`App.axaml.cs`). |
 | `src/DungeonApp.Desktop/Assets` | Fonty (Alegreya), ikony SVG (Lucide), licencje. |
 | `src/DungeonApp.Desktop/Controls` | Kontrolki wielokrotnego użytku (`Controls/Workspace`). |
-| `src/DungeonApp.Desktop/Features/CampaignLibrary` | Ekran wyboru/tworzenia kampanii — bez sekcji wyboru modułów: tworzenie kampanii zawsze woła `CreateCampaign` z pustą listą modułów. |
+| `src/DungeonApp.Desktop/Features/CampaignLibrary` | Ekran wyboru i tworzenia kampanii. |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace` | Widok roboczy otwartej kampanii: talia paneli, układ, cache przygotowania. |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace/Deck` | Widok talii paneli (`PanelDeckView`). |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace/Layout` | Zapis/odczyt układu workspace'u na dysku (`WorkspaceLayoutStore`, `WorkspaceLayoutSession`). |
-| `src/DungeonApp.Desktop/Features/CampaignWorkspace/Panels` | Ogólny kontrakt panelu i pusty katalog paneli (`PanelCatalog`, `WorkspacePanelDescriptor`, `WorkspacePanelViewModel`, `PanelActionViewModel`) — żadnego panelu per moduł Core dziś nie ma. |
+| `src/DungeonApp.Desktop/Features/CampaignWorkspace/Panels` | Kontrakt i katalog paneli oraz pierwszy panel `CounterPanelView` z jego ViewModelem. |
 | `src/DungeonApp.Desktop/Settings` | Ustawienia aplikacji na dysku (`AppSettingsStore`). |
 | `src/DungeonApp.Desktop/Shell` | Powłoka okna: pasek boczny, pasek statusu, pasek górny, sesja kampanii. |
 | `src/DungeonApp.Desktop/Shell/Sidebars` | Globalny pasek boczny nawigacji. |
 | `src/DungeonApp.Desktop/Shell/StatusBar` | Pasek statusu. |
 | `src/DungeonApp.Desktop/Shell/TopBar` | Pasek górny. |
 | `src/DungeonApp.Desktop/Shell/Workspace` | Placeholder workspace'u (brak otwartej kampanii). |
-| `src/DungeonApp.Desktop/Startup` | Sekwencja kroków startu aplikacji (`IStartupStep`, cztery kroki w kompozycji, `VisualWarmupHost`, `StartupUiContext`). Zawiera też `WarmPanelVisualStep` — ogólny mechanizm rozgrzewki panelu, dziś w `App.axaml.cs` nieużyty (brak paneli do rozgrzania). |
+| `src/DungeonApp.Desktop/Startup` | Sekwencja kroków startu aplikacji (`IStartupStep`, cztery kroki w kompozycji, `VisualWarmupHost`, `StartupUiContext`). Zawiera też `WarmPanelVisualStep` — ogólny mechanizm rozgrzewki pojedynczego panelu, dziś nieinstancjonowany w `App.axaml.cs`. |
 | `src/DungeonApp.Desktop/Themes` | Skala UI, tokeny, style kontrolek, ikony (`Tokens.axaml`, `Icons.axaml`, `UiScaleProfiles.cs`). |
 | `src/DungeonApp.Desktop/ViewModels` | Bazowe klasy ViewModel (`ObservableObject`, `AsyncCommand`). |
-| `tests/DungeonApp.Core.Tests` | Testy Core: architektura, kampanie, moduły (na atrapie `StubModule`), zdarzenia, persystencja. |
-| `tests/DungeonApp.Desktop.Tests` | Testy Desktop: cache przygotowania, magazyn układu. |
+| `tests/DungeonApp.Core.Tests` | Testy Core: architektura, kampanie, bloki danych, zdarzenia, persystencja i narzędzie licznika. |
+| `tests/DungeonApp.Desktop.Tests` | Testy Desktop: cache przygotowania, magazyn układu i ViewModel panelu licznika. |
 | `tools/MockupRenderer` | Narzędzie deweloperskie poza `DungeonApp.sln`: renderuje `.axaml` z `design/mockups/` do PNG headless (Skia), z atrapą danych z JSON. Własny `README.md`. |
 
-## 2. Graf modułów
+## 2. Graf bloków danych i narzędzi
 
-Katalog modułów (`ModuleCatalog`) istnieje, ale kompozycja aplikacji
-(`App.axaml.cs`) tworzy `new ModuleCatalog()` i nie rejestruje w nim ani
-jednego modułu — `Register` nie jest wołane. Żaden moduł domenowy (zegar,
-kości, drużyna, harmonogram) nie istnieje dziś w `src/`; jedyny typ
-implementujący `ICampaignModule` w repozytorium to `StubModule` w
-`tests/DungeonApp.Core.Tests/Fakes`, używany wyłącznie przez testy.
+`Campaign` tworzy własne `CampaignEvents` i `CampaignDataBlocks` przez
+`Create`, a przy odczycie odtwarza je przez `Restore`. `CampaignDataBlocks`
+zna `DataBlockRegistry` i magistralę: `Apply` sprawdza wynik transformacji
+według kształtu, zapisuje zamrożoną wartość i publikuje `DataBlockChanged`.
+`Core/Persistence` używa kontraktów kampanii i bloków danych, lecz typy z
+`Core/DataBlocks` nie znają JSON.
 
-Konsekwencja: `CreateCampaign` zawsze dostaje pustą listę modułów
-(`CampaignLibraryViewModel.CreateAsync` woła `_createCampaign.ExecuteAsync(NewCampaignName, [])`),
-a `PanelCatalog.For(...)` zawsze zwraca pustą listę deskryptorów — patrz
-sekcja 6.
+`ITool` wymaga wyłącznie `Uses`. `CounterTool` deklaruje blok `counter`,
+wersję 1 i kształt obiektu z całkowitym polem `count`; zwraca transformacje
+zwiększenia lub zmniejszenia. Nie zapisuje kampanii ani nie zna innego
+narzędzia.
 
-### Wywołania `Get<T>()` / `TryGet<T>()`
-
-Brak wywołań `CampaignModules.Get<T>()`/`TryGet<T>()` w `src/`. Jedyne
-użycia (`Modules.Get<StubModule>()`) leżą w
-`tests/DungeonApp.Core.Tests/Persistence/ModuleStatePersistenceTests.cs`.
+Korzeń kompozycji (`Desktop/App.axaml.cs`) tworzy `CounterTool`, rejestruje
+jego blok w `DataBlockRegistry` i sprawdza każdy identyfikator z `Uses`.
+Rejestr oraz repozytorium trafiają następnie do tworzenia i otwierania
+kampanii. Nie ma katalogu narzędzi, automatycznego skanowania ani aktywacji.
 
 ## 3. Zdarzenia
 
-Magistrala zdarzeń (`CampaignEvents`, `ICampaignEvent`) istnieje w
-`Core/Events`, ale w `src/` nie ma dziś żadnego typu implementującego
-`ICampaignEvent` — bez modułów domenowych nie ma nic, co publikowałoby albo
-konsumowało zdarzenie. Tabela typ/publikujący/konsument jest dziś pusta.
+| Typ | Publikujący | Konsument w `src/` |
+|---|---|---|
+| `DataBlockChanged` | `CampaignDataBlocks.Apply` | `CounterPanelViewModel`, wyłącznie dla identyfikatora `counter` |
 
-`tests/DungeonApp.Core.Tests/Events/CampaignEventsTests.cs` ćwiczy magistralę
-na zdarzeniach zdefiniowanych lokalnie w pliku testowym, nie na typach z `src/`.
+`CampaignEvents` jest synchroniczna i przypisana do jednej kampanii. Dopasowuje
+dokładny typ zdarzenia, zachowuje kolejność subskrypcji, pracuje z limitem
+kaskady i publikuje po migawce listy subskrypcji. `Subscribe` zwraca
+idempotentne `IDisposable`, którego odpięcie usuwa tę konkretną rejestrację.
+`DataBlockChanged` niesie tylko `DataBlockId`; panel po nim odczytuje wartość
+ponownie, zamiast pobierać ją ze zdarzenia.
+
+`Core.Tests/Events/CampaignEventsTests.cs` sprawdza mechanikę magistrali na
+lokalnych typach zdarzeń. Zachowanie `DataBlockChanged` przy `Apply` pokrywają
+`Core.Tests/DataBlocks/CampaignDataBlocksTests.cs` i
+`Desktop.Tests/CounterPanelViewModelTests.cs`.
 
 ## 4. Granica Core / Desktop
 
-Referencja projektu: `DungeonApp.Desktop.csproj` → `ProjectReference` na `DungeonApp.Core.csproj` (jedyna referencja międzyprojektowa w repo). `Core` nie referencjonuje `DungeonApp.Desktop` — brak trafień `using DungeonApp.Desktop` w `src/DungeonApp.Core`.
+Referencja produkcyjna: `DungeonApp.Desktop.csproj` → `ProjectReference` na
+`DungeonApp.Core.csproj`. `Core` nie referencjonuje `DungeonApp.Desktop` —
+brak trafień `using DungeonApp.Desktop` w `src/DungeonApp.Core`.
 
 | Warstwa Desktop | Używane pojęcie Core |
 |---|---|
-| `App.axaml.cs`, `Shell/*`, `Features/CampaignLibrary/*` | `Core.Campaigns` (`Campaign`, `CreateCampaign`, `ICampaignRepository`), `Core.Modules` (`ModuleCatalog`), `Core.Persistence` (`JsonCampaignRepository`) |
-| `Startup/*` | `Core.Campaigns` (`CampaignId`, `ICampaignRepository`), do zbudowania `CampaignSession` na potrzeby rozgrzewki (`WarmCampaignWorkspaceVisualStep`) |
+| `App.axaml.cs` | `Core.Campaigns`, `Core.DataBlocks`, `Core.Persistence`, `Core.Tools.Counter`; tworzy rejestr, repozytorium i kompozycję aplikacji. |
+| `Shell/*`, `Features/CampaignLibrary/*` | `Core.Campaigns` i `Core.Persistence`; `CampaignSession` przechowuje otwartą kampanię i repozytorium. |
+| `Features/CampaignWorkspace/Panels/*` | `Core.DataBlocks` oraz `Core.Tools.Counter`; `CounterPanelViewModel` działa przez `CampaignSession`. |
+| `Startup/*` | `Core.Campaigns` i `Core.Persistence`, aby przygotować kampanię oraz jej układ przed otwarciem. |
 
-Żaden plik pod `Features/CampaignWorkspace/Panels` nie sięga dziś po
-konkretny moduł Core — katalog paneli jest pusty (sekcja 6), więc nie ma
-panelu, który mógłby to zrobić.
+`CampaignWorkspaceView.axaml` wiąże `CounterPanelViewModel` z
+`CounterPanelView` przez lokalny `DataTemplate`; sam widok nie odwołuje się do
+typów Core.
 
 ## 5. Przepływ zapisu
 
-Kompozycja (`App.axaml.cs`, `Initialize()`):
-`libraryPath = MyDocuments/DungeonApp/Campaigns` → `JsonCampaignRepository(libraryPath, modules)`, wstrzyknięty do `AppShellViewModel`. `ModuleCatalog` przekazany do repozytorium jest pusty (sekcja 2) — repozytorium odmówi otwarcia każdego zapisu, który wymienia jakikolwiek moduł.
+Kompozycja (`App.axaml.cs`, `Initialize()`): `libraryPath =
+MyDocuments/DungeonApp/Campaigns` → `JsonCampaignRepository(libraryPath,
+dataBlocks)`, wstrzyknięty do `AppShellViewModel`. Ta sama instancja
+`DataBlockRegistry` służy repozytorium oraz tworzeniu kampanii.
 
 Ścieżka zapisu jednej kampanii (`JsonCampaignRepository`, `Core/Persistence/JsonCampaignRepository.cs`):
 - katalog kampanii: `<libraryPath>/<CampaignId:D>/`
 - `campaign.json` — manifest kampanii (zapis atomowy: plik tymczasowy → `File.Move(overwrite:true)`)
-- `<katalog>/modules/<ModuleId>.json` — stan każdego aktywnego modułu (`CaptureState()` → JSON), analogicznie atomowo; dziś zawsze pusty zbiór, bo żaden moduł nie jest aktywny
-- kopii zapasowych repozytorium nie tworzy — mechanizm rolujących backupów (`<katalog>/backups/...`) został usunięty razem z resztą warstwy domenowej
-- kroniki kampanii nie ma — `Core/Journal` (moduł, wpisy, magazyn) zniknął w całości; nie ma dziś nic w `src/`, co czytałoby albo pisało dziennik sesji
+- `<katalog>/datablocks/<DataBlockId>.json` — wartość każdego zapisanego bloku, z jego wersją i numerem pokolenia; blok bez wartości nie ma pliku
+- kopii zapasowych repozytorium nie tworzy — mechanizm rolujących backupów (`<katalog>/backups/...`) został usunięty wraz ze starym mechanizmem modułów
+- kroniki kampanii nie ma — nie ma dziś nic w `src/`, co czytałoby albo pisało dziennik sesji
 
-Odczyt: `JsonCampaignRepository` czyta `campaign.json`, tworzy moduły przez `ModuleCatalog.Create`, wywołuje `RestoreState(object, version)` z danymi z `modules/<id>.json`.
+Repozytorium zapisuje najpierw pliki bloków, a manifest na końcu; wspólny numer
+pokolenia wykrywa przerwany zapis. Przy odczycie buduje wartości przez
+`DataBlockValueSerializer` według zarejestrowanego kształtu i przekazuje je do
+`Campaign.Restore`. Blok o nieznanym identyfikatorze albo nieobsługiwanej
+wersji jest oznaczany jako nieczytelny; przy kolejnym zapisie jego dotychczasowy
+plik i wpis manifestu są zachowywane.
 
 Odrębnie w warstwie Desktop:
 - `Settings/AppSettingsStore.cs` — `settings.json` w `%LocalAppData%/DungeonApp`
-- `Features/CampaignWorkspace/Layout/WorkspaceLayoutStore.cs` — `<katalog>/layouts/<workspaceId>.json`, zapis atomowy analogiczny do repozytorium Core
+- `Features/CampaignWorkspace/Layout/WorkspaceLayoutStore.cs` — `%LocalAppData%/DungeonApp/layouts/<workspaceId>.json`, zapis atomowy
 
 ### Wystąpienia `System.IO` w `src/`
 
 | Plik | Charakter użycia |
 |---|---|
-| `Core/Persistence/JsonCampaignRepository.cs` | Pełny odczyt/zapis kampanii i stanu modułów na dysku (bez backupu) — zgodne z regułą. |
+| `Core/Persistence/JsonCampaignRepository.cs` | Pełny odczyt/zapis kampanii i bloków danych na dysku (bez backupu) — zgodne z regułą. |
 | `Desktop/Settings/AppSettingsStore.cs` | Pełny odczyt/zapis `settings.json` — poza `Core/Persistence`. |
 | `Desktop/Features/CampaignWorkspace/Layout/WorkspaceLayoutStore.cs` | Pełny odczyt/zapis layoutu — poza `Core/Persistence`. |
 | `Desktop/App.axaml.cs` | Tylko `Path.Combine` do zbudowania ścieżek przekazywanych dalej do Core; brak `File.`/`Directory.`. |
@@ -113,23 +132,28 @@ Odrębnie w warstwie Desktop:
 
 Struktura: `Shell` (powłoka okna, nawigacja, pasek statusu/góry) → `Features/CampaignLibrary` (wybór/tworzenie kampanii) → `Features/CampaignWorkspace` (talia paneli otwartej kampanii).
 
-Katalog paneli (`PanelCatalog.For(CampaignSession)`) zawsze zwraca pustą
-listę — komentarz w kodzie mówi to wprost: „This build ships no panels: the
-descriptor set is always empty, and every campaign opens onto a bare desk
-until a panel is added back.” Nie ma dziś w repozytorium ani jednego panelu
-per moduł (Zegar/Kości/Drużyna/Harmonogram/Historia zniknęły wraz z modułami
-i kroniką) — tabela panel↔ViewModel↔moduł jest więc pusta. Kontrakt panelu
-(`WorkspacePanelDescriptor`, `WorkspacePanelViewModel`, `PanelActionViewModel`)
-i widok talii (`CampaignWorkspace/Deck/PanelDeckView.axaml.cs`) zostały, ale
-bez treści do wyświetlenia — kampania otwiera się na pustym biurku.
+`PanelCatalog.For(CampaignSession)` zwraca jeden singletonowy deskryptor
+`counter`. Tworzy on `CounterPanelViewModel` dla aktualnej sesji; nowy pusty
+układ otwiera go na blacie, a układ zapisany przed jego dodaniem umieszcza go
+w talii zminimalizowanych paneli. `CampaignWorkspaceView.axaml` ma szablon
+danych, który wiąże ten ViewModel z `CounterPanelView`.
 
-Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy, w tym skala `DungeonSpacingXs..Xxxl`/`DungeonPaddingXs..Xxxl`), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek, w tym styl `ProgressBar`), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI). Istniejące widoki nie są dziś przepięte na nową skalę odstępów — liczby wpisane wprost zostały jak były.
+`CounterPanelViewModel` czyta blok `counter` bezpośrednio z kampanii i
+subskrybuje wyłącznie `DataBlockChanged` tego identyfikatora. Dla wartości
+niezapisanej pokazuje zero, a dla bloku nieczytelnego ukrywa wartość i
+wyłącza oba polecenia. Oba przyciski kierują transformację z `CounterTool`
+przez `CampaignSession.ExecuteAsync`, więc zapis przechodzi przez
+repozytorium. Wspólny stan zajętości blokuje oba polecenia; przepełnienie nie
+zmienia stanu, a błąd dysku zostawia zmianę w pamięci i komunikat. `Dispose`
+odpina subskrypcję i blokuje polecenia.
+
+Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy, w tym skala `DungeonSpacingXs..Xxxl`/`DungeonPaddingXs..Xxxl`), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek, w tym styl `ProgressBar`), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI).
 
 ### Start aplikacji
 
 Korzeń kompozycji: `App.Initialize()` buduje `CampaignWorkspacePreparationCache`, `CampaignLibraryViewModel` i jawną tablicę `IStartupStep[]` (kolejność w tablicy = kolejność wykonania); `OnFrameworkInitializationCompleted` dopiero wtedy konstruuje `AppShellViewModel`, przyjmujący te trzy jako parametry — powłoka nic z tego sama nie tworzy.
 
-Cztery kroki w `Startup/` (kontrakt `IStartupStep`, opisany w `docs/architecture.md`): `LoadCampaignLibraryStep`, `WarmCampaignDataStep`, `WarmCampaignWorkspaceVisualStep`, `WarmWorkspacePlaceholderStep` — w tej kolejności w tablicy. Klasa `WarmPanelVisualStep` (rozgrzewka jednego typu panelu deski) istnieje w `Startup/`, ale `App.axaml.cs` nie tworzy z niej żadnej instancji: bez paneli (sekcja 6) nie ma czego rozgrzewać per typ. Wspólna mechanika rozgrzewki wizualnej: `VisualWarmupHost.AttachAndWaitAsync`.
+Cztery kroki w `Startup/` (kontrakt `IStartupStep`, opisany w `docs/architecture.md`): `LoadCampaignLibraryStep`, `WarmCampaignDataStep`, `WarmCampaignWorkspaceVisualStep`, `WarmWorkspacePlaceholderStep` — w tej kolejności w tablicy. Klasa `WarmPanelVisualStep` (rozgrzewka jednego typu panelu deski) istnieje w `Startup/`, ale `App.axaml.cs` nie tworzy z niej instancji. Wspólna mechanika rozgrzewki wizualnej: `VisualWarmupHost.AttachAndWaitAsync`.
 
 Runner: `AppShellViewModel.RunStartupAsync(StartupUiContext)`; wywołanie: `AppShellView.OnLoaded` (jeden `await`, jednorazowo, strzeżone flagą `_startupStarted`). Postęp startu (`CompletedSteps`/`TotalSteps`) liczony krokami, bez wag.
 
@@ -145,15 +169,17 @@ Dług: `CampaignLibraryViewModel` przyjmuje `Func<CampaignId, Task>` jako callba
 | `Core.Tests/Campaigns/CampaignNameTests.cs` | Walidację `CampaignName`. |
 | `Core.Tests/Campaigns/CampaignTests.cs` | Zachowanie encji `Campaign` i jej tożsamości. |
 | `Core.Tests/Campaigns/CreateCampaignTests.cs` | Przypadek użycia tworzenia kampanii (`CreateCampaign`). |
-| `Core.Tests/Events/CampaignEventsTests.cs` | Magistralę zdarzeń: kolejność, kaskadę, izolację między instancjami — na zdarzeniach zdefiniowanych lokalnie w teście, nie na typach z `src/`. |
+| `Core.Tests/DataBlocks/CampaignDataBlocksTests.cs` | Odczyt i `Apply`: kształty, mrożenie, normalizację, zdarzenie oraz odmowę dla bloku nieczytelnego. |
+| `Core.Tests/DataBlocks/DataBlockIdTests.cs` | Walidację i porównywanie identyfikatorów bloków. |
+| `Core.Tests/DataBlocks/DataBlockRegistryTests.cs` | Rejestrację, opis, brak i duplikat bloku. |
+| `Core.Tests/DataBlocks/DataBlockShapeTests.cs` | Dopasowanie kształtów pierwotnych i obiektowych. |
+| `Core.Tests/Events/CampaignEventsTests.cs` | Magistralę zdarzeń: kolejność, kaskadę, izolację instancji, odpinanie i migawkę subskrypcji — na zdarzeniach zdefiniowanych lokalnie w teście. |
 | `Core.Tests/Fakes/FixedTimeProvider.cs` | Test double: zegar zamrożony na jednej chwili. |
 | `Core.Tests/Fakes/InMemoryCampaignRepository.cs` | Test double: repozytorium kampanii w pamięci, zastępujące dysk w testach przypadków użycia. |
-| `Core.Tests/Fakes/StubModule.cs` | Test double: moduł bez zachowania, do testów montażu zestawu modułów i persystencji — jedyna implementacja `ICampaignModule` w repozytorium poza `src/`. |
 | `Core.Tests/Fakes/TemporaryLibrary.cs` | Test double: tymczasowa biblioteka kampanii na prawdziwym systemie plików. |
-| `Core.Tests/Modules/CampaignModulesTests.cs` | Aktywację zestawu modułów: kolejność topologiczna, cykl, brakująca zależność (na `StubModule`). |
-| `Core.Tests/Modules/ModuleCatalogTests.cs` | `ModuleCatalog`: rejestrację, domknięcie zależności, kolejność. |
-| `Core.Tests/Modules/ModuleIdTests.cs` | Walidację `ModuleId` (bezpieczeństwo jako nazwa pliku). |
-| `Core.Tests/Persistence/JsonCampaignRepositoryTests.cs` | `JsonCampaignRepository`: zapis atomowy, listowanie, odmowy. |
-| `Core.Tests/Persistence/ModuleStatePersistenceTests.cs` | Serializację/deserializację stanu modułu do i z JSON (na `StubModule`). |
+| `Core.Tests/Persistence/DataBlockPersistenceTests.cs` | Pliki wartości bloków, pokolenia, odczyt według kształtu oraz zachowanie bloku nieczytelnego przy ponownym zapisie. |
+| `Core.Tests/Persistence/JsonCampaignRepositoryTests.cs` | Manifest kampanii, listowanie, odmowy i numery pokoleń. |
+| `Core.Tests/Tools/Counter/CounterToolTests.cs` | Transformacje licznika, jego deklarację `Uses` i przejście transformacji przez `Apply`. |
 | `Desktop.Tests/CampaignWorkspacePreparationCacheTests.cs` | `CampaignWorkspacePreparationCache`. |
+| `Desktop.Tests/CounterPanelViewModelTests.cs` | Odczyt, zdarzenie, zapis, błąd dysku, przepełnienie, blok nieczytelny, wspólne blokowanie komend i `Dispose` panelu licznika. |
 | `Desktop.Tests/WorkspaceLayoutStoreTests.cs` | `WorkspaceLayoutStore`: zapis/odczyt układu workspace'u na dysku. |

@@ -2,23 +2,18 @@
 
 Ten dokument mówi **co wolno**: gdzie biegną szwy, co jest egzekwowane
 kodem, a co wyłącznie umową. Opis stanu faktycznego — kto od kogo dziś
-faktycznie zależy — żyje w `docs/code-map.md` i jest generowany osobno.
+faktycznie zależy — żyje w `docs/code-map.md` i jest weryfikowany osobno.
 
 Rozjazd między tymi dwoma dokumentami jest sygnałem długu, nie błędem
 zapisu.
 
-## Uwaga o kierunku
+## Słownik i kierunek
 
-Ten dokument opisuje szwy **takie, jakie obowiązują dzisiaj**. Część z nich
-ma świadomie zaplanowaną przyszłość, opisaną w `docs/vision.md`: treść
-kampanii wyprowadza się spod własności narzędzi do wspólnych, wersjonowanych
-bloków danych, a narzędzia zbiegają do bezstanowej logiki. Nie bierz
-obecnego kształtu za docelowy — wyzwalacz przebudowy i jej zakres stoją w
-wizji.
-
-Docelowy słownik projektu to **narzędzie, dane, okno** — pojęcie „modułu",
-którym posługują się dalsze sekcje tego dokumentu, jest nazwą dzisiejszego
-mechanizmu, nie elementem docelowego słownika.
+Projekt mówi o **narzędziu, danych i oknie**. Narzędzie jest bezstanową
+logiką w `DungeonApp.Core`; dane kampanii mieszkają we wspólnych,
+wersjonowanych blokach danych; okno należy do `DungeonApp.Desktop` i
+przedstawia dane. Pojęcie „modułu” nie opisuje już żadnego mechanizmu w
+kodzie.
 
 ## Dwie warstwy
 
@@ -69,16 +64,11 @@ woła `PrepareAsync`/`ApplyAsync` kroku po kroku i oddaje sterowanie
 dispatcherowi między nimi; `AppShellView.OnLoaded` to jedno wywołanie tego
 runnera, odpalane dopiero po pierwszym renderze lekkiej powłoki.
 
-Rozgrzewka wizualna jest rozbita na osobny krok per typ panelu
-(`WarmPanelVisualStep`, po jednej instancji na Zegar/Kości/Drużynę/Historię/
-Harmonogram) zamiast jednego kroku rozgrzewającego całą talię naraz: jeden
-zbiorczy krok trzymałby wątek UI przez czas rozgrzania wszystkich paneli i
-zamroziłby pasek postępu na jednej, długiej pozycji zamiast przesuwać go
-krok po kroku. Wspólną mechanikę attach → `Loaded` → drenaż dispatchera →
-detach kroki dzielą przez `VisualWarmupHost`. Jedynym wyjątkiem od rozbicia
-per-typ jest stół kampanii (`WarmCampaignWorkspaceVisualStep`): panele na
-prawdziwym stole pochodzą z zapisanego układu użytkownika, więc nie są
-statycznie wyliczalne per typ tak jak syntetyczne panele rozgrzewane osobno.
+`WarmPanelVisualStep` jest ogólnym krokiem rozgrzewki jednego typu panelu;
+korzeń kompozycji nie rejestruje dziś jego instancji. Wspólną mechanikę
+attach → `Loaded` → drenaż dispatchera → detach dzieli z innymi krokami przez
+`VisualWarmupHost`. Stół kampanii rozgrzewa `WarmCampaignWorkspaceVisualStep`,
+bo jego panele wynikają z zapisanego układu użytkownika.
 
 **Dług, świadomie zostawiony:** `CampaignLibraryViewModel` potrzebuje w
 konstruktorze callbacku otwierającego kampanię, a callback ten prowadzi do
@@ -108,87 +98,83 @@ pojęcia interfejsu — szerokość panelu, pozycję na biurku, profil UI. Rdze�
 nie wie o warstwie UI i to jest ważniejsze.
 
 **Egzekwowane:** nic. To konwencja — żaden test nie zatrzyma odczytu pliku
-dopisanego w module ani w ViewModelu panelu.
+dopisanego w narzędziu ani w ViewModelu panelu.
 
-**Stan faktyczny:** zgodny. W `Core` `System.IO` występuje wyłącznie w
-`JsonCampaignJournalStore` i `JsonCampaignRepository`. W `Desktop` — w
-`Settings/AppSettingsStore` i `Features/CampaignWorkspace/Layout/WorkspaceLayoutStore`,
-oba mieszczą się w wyjątku na stan lokalny interfejsu.
+**Stan faktyczny:** zgodny. W `Core` rzeczywisty odczyt i zapis plików
+wykonuje wyłącznie `JsonCampaignRepository`. W `Desktop` pliki czytają i
+zapisują tylko `Settings/AppSettingsStore` oraz
+`Features/CampaignWorkspace/Layout/WorkspaceLayoutStore`, oba dla lokalnego
+stanu interfejsu. `App` jedynie buduje ścieżki, a `CampaignSession` rozpoznaje
+wyjątki dyskowe bez własnego dostępu do plików.
 
-## Kontrakt modułu
+## Narzędzia i rejestr bloków danych
 
-Moduł deklaruje się manifestem. `ICampaignModule` wymaga właściwości
-`Manifest` typu `ModuleManifest`, który niesie: `ModuleId`, nazwę
-wyświetlaną, wersję stanu (`StateVersion`) i listę wymaganych modułów
-(`Requires`).
+`ITool` wymaga tylko `IReadOnlyList<DataBlockId> Uses`. Narzędzie nie ma
+cyklu życia, własnego stanu, katalogu ani zależności od innego narzędzia.
+Może deklarować, których bloków używa; nie deklaruje kolejności aktywacji,
+bo nic nie jest aktywowane.
 
-**Egzekwowane kompilatorem i runtime'em:** modułu bez manifestu nie da się
-skompilować. `ModuleCatalog.Register` odrzuca rejestrację, w której
-`manifest.Id` nie zgadza się z deklarowanym identyfikatorem, oraz
-rejestrację duplikatu — w obu wypadkach rzuca `ArgumentException`.
+Każdy blok danych jest opisany przez `DataBlockId`, wersję i `DataBlockShape`.
+`DataBlockRegistry` odrzuca duplikat i pozwala odczytać opis tylko znanego
+bloku. Rejestracje wbudowanych bloków i narzędzi są wpisane jawnie w
+`App.Initialize()`; korzeń kompozycji sprawdza też, czy każdy blok z `Uses`
+jest zarejestrowany. Nie ma skanowania dysku ani assembly i nie ma jeszcze
+katalogu narzędzi — pojawi się dopiero, gdy drugie narzędzie go uzasadni.
 
-Katalog modułów nie skanuje dysku ani assembly — rejestracje są wpisane
-wprost w `ModuleCatalog`. Dodanie modułu to edycja tego pliku, świadoma i
-widoczna w diffie. To celowe: nie chcemy magii ładowania.
+**Egzekwowane:** kompilator wymaga `Uses` od implementacji `ITool`, a
+`DataBlockRegistry` sprawdza duplikaty w runtime. Jawność rejestracji,
+sprawdzenie wszystkich narzędzi w korzeniu kompozycji oraz brak katalogu są
+konwencją.
 
-## Zależności i kolejność ładowania
+## Dane, zapis i nieczytelne bloki
 
-Moduł deklaruje swoje zależności w `Manifest.Requires`. Aktywacja odbywa
-się w porządku topologicznym — zależność jest gotowa, zanim ruszy moduł,
-który jej potrzebuje.
+`CampaignDataBlocks` przechowuje wartości kampanii. Żyjąca kampania zmienia
+blok wyłącznie przez `Apply(DataBlockId, Func<object?, object>)`: otrzymuje
+ona wartość bieżącą (albo `null` dla bloku nigdy niezapisanego), sprawdza
+wynik według zarejestrowanego kształtu, zamraża go i ogłasza
+`DataBlockChanged`. `Hydrate` jest osobną fabryką odtworzenia kampanii z
+dysku; nie publikuje zdarzeń i nie jest drogą zmiany już żyjącej kampanii.
 
-**Egzekwowane i przetestowane:** `CampaignModules.SortByDependency` sortuje
-przez DFS z wykrywaniem cyklu i rzuca `ModuleActivationException` z kodem
-`CircularDependency`. Moduł, którego zależność jest wyłączona, nie
-aktywuje się wcale (`MissingDependency`). Pokrycie w `CampaignModulesTests`:
-odmowa przy pętli zależności, aktywacja zależności przed modułem, który je
-zadeklarował, dokładnie jedna aktywacja na moduł, odmowa przy zależności
-wyłączonej.
+Narzędzie zwraca przekształcenie, a nie gotową treść. `CounterTool` jest
+pierwszym przykładem: deklaruje blok `counter`, zwraca przekształcenia
+zwiększenia i zmniejszenia, a przepełnienie wykrywa `checked`. Rdzeń zna
+kształt danych, lecz nie ich znaczenie; serializację JSON zna wyłącznie
+warstwa `Core/Persistence`.
 
-To jedyny niezmiennik z pełnym pokryciem testowym. Traktuj go jako wzorzec
-tego, jak powinny wyglądać pozostałe.
+`JsonCampaignRepository` zapisuje manifest i wartości bloków jako jedną
+generację. Nieczytelny blok — nieznany rejestrowi albo zapisany w
+nieobsługiwanej wersji — jest oznaczany przy odczycie, pozostaje poza
+wartościami roboczymi i nie może zostać zapisany przez `Apply`. Przy kolejnym
+zapisie repozytorium zachowuje jego plik i wpis manifestu. Ścieżek migracji
+jeszcze nie ma.
 
-## Komunikacja między modułami
+**Egzekwowane:** API `CampaignDataBlocks` nie wystawia settera ani indeksatora,
+a testy pokrywają zgodność kształtu, publikację zdarzenia, normalizację i
+ochronę bloku nieczytelnego. Granica JSON w `Core/Persistence`, jedyność
+wejścia do zapisu oraz brak alternatywnej drogi z warstwy Desktop wynikają z
+kształtu API i konwencji, nie z osobnego testu architektonicznego.
 
-Moduły mają dwie legalne drogi do siebie i różnią się one kierunkiem:
+## Komunikacja i sesja kampanii
 
-- **Ogłoszenie zmiany** — wyłącznie przez `CampaignEvents`. Moduł, który
-  coś zmienił, publikuje zdarzenie i nie wie, kto go słucha. Nigdy nie
-  wywołuje cudzej metody, żeby powiadomić o fakcie.
-- **Zapytanie o stan** — przez `CampaignModules.Get<TModule>()`, typowane i
-  synchroniczne. Wolno wyłącznie modułowi, który zadeklarował tamten moduł
-  w `Manifest.Requires`.
+Narzędzia komunikują się pośrednio: wspólne bloki odpowiadają na pytanie
+„jak jest”, a `CampaignEvents` na pytanie „co się stało”. Publikujący nie zna
+odbiorców; zdarzenie niesie fakt, nie wartość bloku. `DataBlockChanged`
+niesie tylko identyfikator, więc okno po jego otrzymaniu odczytuje dane
+ponownie.
 
-Rozróżnienie jest istotne: pytanie o cudzy stan to nie to samo co
-ogłoszenie własnej zmiany. Pierwsze tworzy zależność jawną, zadeklarowaną i
-uporządkowaną topologicznie. Drugie, robione wprost, tworzyłoby zależność
-ukrytą i cykliczną.
+`CampaignEvents` działa synchronicznie dla jednej kampanii, dopasowuje
+dokładny typ zdarzenia, zachowuje kolejność subskrypcji i ogranicza kaskadę.
+`Subscribe` zwraca idempotentne `IDisposable`; odpięcie dotyczy dokładnie
+tej referencyjnej rejestracji, którą zwróciło wywołanie. Publikacja iteruje
+po migawce aktualnych subskrypcji, więc zmiany subskrypcji podczas obsługi
+wpływają dopiero na następne zdarzenie.
 
-**Egzekwowane pośrednio:** `Get<T>()` na module niezadeklarowanym w
-`Requires` rzuci w runtime. Nie ma natomiast niczego, co zabroniłoby
-modułowi sięgnąć po inny bez deklaracji, ani testu pilnującego, że
-powiadomienia idą zdarzeniami.
-
-Dziś z tej ścieżki korzysta `SchedulerModule`, sięgając po `ClockModule`.
-
-## Stan modułu i zapis
-
-Moduł nigdy nie wie, że istnieje JSON. Oddaje swój stan jako `object`
-(`CaptureState()`), deklaruje jego typ (`StateType`) i przyjmuje go z
-powrotem (`RestoreState()`). Wersję formatu niesie `Manifest.StateVersion`.
-
-Serializacja żyje wyłącznie w `Core/Persistence` — `JsonCampaignRepository`
-zamienia oddany obiekt na JSON i z powrotem, operując na `Type` podanym
-przez moduł.
-
-**Egzekwowane:** nic. To konwencja podparta kształtem interfejsu — moduł
-zwraca `object`, więc technicznie mógłby serializować sam i nikt by tego
-nie złapał. Stan faktyczny jest dziś czysty: w `Core/Modules` nie ma ani
-`System.Text.Json`, ani atrybutów serializacji.
-
-Konsekwencja praktyczna: zmiana kształtu stanu modułu to zmiana formatu
-zapisu. Podniesienie `StateVersion` bez ścieżki migracji zepsuje istniejące
-kampanie.
+`CampaignSession` w Desktop koordynuje operację na otwartej kampanii i jej
+zapis do `ICampaignRepository`. Panel przekazuje mu operację zawierającą
+`Apply`; po błędzie dysku zmiana pozostaje w pamięci, a sesja zwraca
+komunikat. Brak bezpośredniego wywołania narzędzie → narzędzie oraz używanie
+sesji do operacji paneli są konwencją; magistrala i bloki nie mogą jej same
+wymusić.
 
 ## Bilans egzekwowania
 
@@ -196,12 +182,11 @@ kampanie.
 |---|---|
 | Granica Core / Desktop | test częściowy (brak referencji do Avalonii) |
 | Dostęp do dysku | konwencja |
-| Kontrakt modułu | kompilator + walidacja przy rejestracji |
-| Zależności i kolejność | test pełny |
-| Komunikacja między modułami | częściowo runtime, reszta konwencja |
-| Stan i zapis | konwencja |
+| Kontrakt narzędzia i rejestr bloków | kompilator dla `Uses`, runtime dla duplikatu bloku, reszta konwencja |
+| Komunikacja pośrednia | testy magistrali i bloków danych, brak krawędzi narzędzie → narzędzie to konwencja |
+| Stan bloków i zapis | testy zachowania `Apply`, persystencji i bloków nieczytelnych; granice warstw to konwencja |
 
-Cztery z sześciu szwów nie mają dziś zabezpieczenia, które zatrzymałoby
-naruszenie automatycznie. Dopóki tak jest, `docs/code-map.md` pełni rolę
-zastępczą: pokazuje stan faktyczny, więc rozjazd z tym dokumentem widać
-bez wchodzenia w kod.
+Większość szwów nadal wymaga przeglądu kodu: testy sprawdzają zachowanie, ale
+nie zastępują jawnej kompozycji ani zależności pośrednich. `docs/code-map.md`
+opisuje stan faktyczny, dlatego rozjazd z tym dokumentem pozostaje sygnałem
+długu.
