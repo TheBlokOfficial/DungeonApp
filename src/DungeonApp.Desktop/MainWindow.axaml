@@ -16,8 +16,8 @@
 
         <!--
             Full-window startup curtain: covers topbar, sidebar and workspace alike, not just the
-            workspace cell. Temporary and minimal on purpose - a plain surface, a progress bar and a
-            message. Composition and branding are a later, separate mockup pass.
+            workspace cell. Układ portowany z zaakceptowanego mockupu (wariant A): oś pionowa,
+            wszystko wyśrodkowane - marka, nazwa, pasek postępu, tekst kroku.
 
             IsHitTestVisible drops the instant AppShellViewModel.IsReady flips; the fade itself is a
             transition on Opacity and is not waited on.
@@ -43,11 +43,33 @@
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Spacing="{DynamicResource DungeonSpacingLg}">
+                <Border Width="{DynamicResource DungeonBrandMarkLargeFrameSize}"
+                        Height="{DynamicResource DungeonBrandMarkLargeFrameSize}"
+                        HorizontalAlignment="Center"
+                        BorderBrush="{DynamicResource DungeonAccentBrush}"
+                        BorderThickness="1">
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontFamily="{DynamicResource DungeonDisplayFont}"
+                               FontSize="{DynamicResource DungeonBrandMarkLargeFontSize}"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource DungeonAccentBrightBrush}"
+                               Text="D" />
+                </Border>
+
+                <TextBlock HorizontalAlignment="Center"
+                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                           Text="DungeonApp" />
+
                 <ProgressBar Width="{DynamicResource DungeonLoadingProgressBarWidth}"
                              Height="{DynamicResource DungeonLoadingProgressBarHeight}"
+                             HorizontalAlignment="Center"
                              Minimum="0"
                              Maximum="{Binding TotalSteps}"
                              Value="{Binding CompletedSteps}" />
+
                 <TextBlock HorizontalAlignment="Center"
                            Foreground="{DynamicResource DungeonTextRegularBrush}"
                            Text="{Binding StartupMessage}" />
