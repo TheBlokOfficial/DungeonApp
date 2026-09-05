@@ -1,29 +1,31 @@
 using System;
 using System.Linq;
 using DungeonApp.Core.Modules;
-using DungeonApp.Core.Modules.Clock;
-using DungeonApp.Core.Modules.Party;
-using DungeonApp.Core.Modules.Scheduler;
+using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Modules;
 
 public sealed class ModuleCatalogTests
 {
+    private static readonly ModuleId ClockId = ModuleId.Create("core.clock");
+    private static readonly ModuleId SchedulerId = ModuleId.Create("core.scheduler");
+    private static readonly ModuleId PartyId = ModuleId.Create("core.party");
+
     private readonly ModuleCatalog _catalog = new ModuleCatalog()
-        .Register(ClockModule.Id, () => new ClockModule())
-        .Register(SchedulerModule.Id, () => new SchedulerModule())
-        .Register(PartyModule.Id, () => new PartyModule());
+        .Register(ClockId, () => new StubModule("core.clock"))
+        .Register(SchedulerId, () => new StubModule("core.scheduler", "core.clock"))
+        .Register(PartyId, () => new StubModule("core.party"));
 
     /// <summary>What the GM is offered, in the order the composition root meant.</summary>
     [Fact]
     public void Lists_what_this_build_can_make_in_registration_order()
         => Assert.Equal(
-            [ClockModule.Id, SchedulerModule.Id, PartyModule.Id],
+            [ClockId, SchedulerId, PartyId],
             _catalog.Manifests.Select(manifest => manifest.Id));
 
     [Fact]
     public void Describes_a_module_without_a_campaign_to_put_it_in()
-        => Assert.Equal("Zegar kampanii", _catalog.Describe(ClockModule.Id).DisplayName);
+        => Assert.Equal("core.clock", _catalog.Describe(ClockId).DisplayName);
 
     [Fact]
     public void Refuses_to_describe_a_module_this_build_does_not_have()
@@ -37,20 +39,20 @@ public sealed class ModuleCatalogTests
     [Fact]
     public void Adds_what_the_chosen_modules_need()
         => Assert.Equal(
-            [ClockModule.Id, SchedulerModule.Id],
-            _catalog.WithRequirements([SchedulerModule.Id]));
+            [ClockId, SchedulerId],
+            _catalog.WithRequirements([SchedulerId]));
 
     [Fact]
     public void Settles_on_the_same_order_whatever_order_it_is_given()
         => Assert.Equal(
-            _catalog.WithRequirements([PartyModule.Id, SchedulerModule.Id]),
-            _catalog.WithRequirements([SchedulerModule.Id, PartyModule.Id]));
+            _catalog.WithRequirements([PartyId, SchedulerId]),
+            _catalog.WithRequirements([SchedulerId, PartyId]));
 
     [Fact]
     public void Keeps_a_module_once_even_when_it_is_both_chosen_and_needed()
         => Assert.Equal(
-            [ClockModule.Id, SchedulerModule.Id],
-            _catalog.WithRequirements([ClockModule.Id, SchedulerModule.Id, ClockModule.Id]));
+            [ClockId, SchedulerId],
+            _catalog.WithRequirements([ClockId, SchedulerId, ClockId]));
 
     [Fact]
     public void Closes_an_empty_choice_to_nothing()
@@ -63,10 +65,10 @@ public sealed class ModuleCatalogTests
     [Fact]
     public void Refuses_a_factory_filed_under_the_wrong_name()
         => Assert.Throws<ArgumentException>(
-            () => _catalog.Register(ModuleId.Create("core.cokolwiek"), () => new ClockModule()));
+            () => _catalog.Register(ModuleId.Create("core.cokolwiek"), () => new StubModule("core.clock")));
 
     [Fact]
     public void Refuses_the_same_module_twice()
         => Assert.Throws<ArgumentException>(
-            () => _catalog.Register(ClockModule.Id, () => new ClockModule()));
+            () => _catalog.Register(ClockId, () => new StubModule("core.clock")));
 }

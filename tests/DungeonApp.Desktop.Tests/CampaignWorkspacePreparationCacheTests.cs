@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
@@ -22,7 +21,6 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
         var repository = new CountingRepository(campaign);
         var cache = new CampaignWorkspacePreparationCache(
             repository,
-            new EmptyJournalStore(),
             new WorkspaceLayoutStore(_directory));
         var summary = new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt);
 
@@ -35,7 +33,6 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
         Assert.Same(campaign, prepared.Campaign);
         Assert.Equal(1, repository.GetCount);
         Assert.True(prepared.Layout.IsEmpty);
-        Assert.Empty(prepared.Chronicle);
     }
 
     [Fact]
@@ -45,7 +42,6 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
         var repository = new CountingRepository(null);
         var cache = new CampaignWorkspacePreparationCache(
             repository,
-            new EmptyJournalStore(),
             new WorkspaceLayoutStore(_directory));
         var summary = new CampaignSummary(id, CampaignName.Create("Usunięta"), DateTimeOffset.UtcNow);
 
@@ -78,20 +74,5 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
         public Task<IReadOnlyList<CampaignSummary>> ListAsync(
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<CampaignSummary>>([]);
-    }
-
-    private sealed class EmptyJournalStore : ICampaignJournalStore
-    {
-        public Task AppendAsync(
-            CampaignId campaign,
-            IReadOnlyList<JournalEntry> entries,
-            CancellationToken cancellationToken = default) =>
-            Task.CompletedTask;
-
-        public Task<IReadOnlyList<JournalEntry>> ReadRecentAsync(
-            CampaignId campaign,
-            int limit,
-            CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<JournalEntry>>([]);
     }
 }

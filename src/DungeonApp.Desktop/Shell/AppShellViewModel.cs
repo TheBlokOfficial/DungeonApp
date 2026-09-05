@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -27,7 +26,6 @@ public sealed class AppShellViewModel : ObservableObject
 
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ICampaignRepository _campaigns;
-    private readonly ICampaignJournalStore _journal;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignWorkspacePreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
@@ -48,14 +46,12 @@ public sealed class AppShellViewModel : ObservableObject
     public AppShellViewModel(
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
-        ICampaignJournalStore journal,
         CampaignLibraryViewModel campaignLibrary,
         CampaignWorkspacePreparationCache preparations,
         IStartupStep[] startupSteps)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
-        _journal = journal;
         _preparations = preparations;
         _campaignLibrary = campaignLibrary;
         _startupSteps = startupSteps;
@@ -163,7 +159,7 @@ public sealed class AppShellViewModel : ObservableObject
         var preparation = await _preparations.TakeAsync(id);
         var campaign = preparation.Campaign;
 
-        _openCampaign = new CampaignSession(campaign, _campaigns, _journal);
+        _openCampaign = new CampaignSession(campaign, _campaigns);
         _campaignWorkspace = new CampaignWorkspaceViewModel(
             _layoutStore,
             _openCampaign,

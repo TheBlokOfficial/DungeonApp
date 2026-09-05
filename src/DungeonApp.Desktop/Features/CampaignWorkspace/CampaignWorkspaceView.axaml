@@ -1,33 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
-             xmlns:clock="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock"
-             xmlns:dice="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice"
-             xmlns:party="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party"
-             xmlns:scheduler="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler"
-             xmlns:history="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History"
              xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
              xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.CampaignWorkspaceView"
              x:DataType="workspace:CampaignWorkspaceViewModel">
-
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="party:PartyPanelViewModel">
-            <party:PartyPanelView />
-        </DataTemplate>
-        <DataTemplate DataType="clock:ClockPanelViewModel">
-            <clock:ClockPanelView />
-        </DataTemplate>
-        <DataTemplate DataType="dice:DicePanelViewModel">
-            <dice:DicePanelView />
-        </DataTemplate>
-        <DataTemplate DataType="scheduler:SchedulerPanelViewModel">
-            <scheduler:SchedulerPanelView />
-        </DataTemplate>
-        <DataTemplate DataType="history:HistoryPanelViewModel">
-            <history:HistoryPanelView />
-        </DataTemplate>
-    </UserControl.DataTemplates>
 
     <Grid>
         <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}" />

@@ -16,7 +16,7 @@ public enum CampaignStoreFailure
 
     /// <summary>
     /// The manifest and the module state files disagree: a save was interrupted between them. Better
-    /// reported and recovered from a backup than half loaded in silence.
+    /// reported than half loaded in silence.
     /// </summary>
     TornSave,
 

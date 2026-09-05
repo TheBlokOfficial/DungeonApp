@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
@@ -24,7 +23,7 @@ public sealed class ModuleStatePersistenceTests : IDisposable
     public void Dispose() => _library.Dispose();
 
     private JsonCampaignRepository Repository() =>
-        new(_library.Path, _catalog, new JsonCampaignJournalStore(_library.Path), new FixedTimeProvider(Moment));
+        new(_library.Path, _catalog);
 
     private static Campaign NewCampaign(params ICampaignModule[] modules)
         => Campaign.Create(CampaignName.Create("Kroniki Doliny"), modules, new FixedTimeProvider(Moment));
@@ -107,8 +106,7 @@ public sealed class ModuleStatePersistenceTests : IDisposable
         var campaign = NewCampaign(new StubModule("core.clock"));
         await Repository().SaveAsync(campaign);
 
-        var withoutTheModule = new JsonCampaignRepository(
-            _library.Path, new ModuleCatalog(), new JsonCampaignJournalStore(_library.Path), new FixedTimeProvider(Moment));
+        var withoutTheModule = new JsonCampaignRepository(_library.Path, new ModuleCatalog());
 
         var exception = await Assert.ThrowsAsync<CampaignStoreException>(
             () => withoutTheModule.GetAsync(campaign.Id));
@@ -134,8 +132,7 @@ public sealed class ModuleStatePersistenceTests : IDisposable
         var beforeDisabling = File.ReadAllText(statePath);
 
         // The same campaign, saved again with the module switched off.
-        var withoutModule = Campaign.Restore(
-            withModule.Id, withModule.Name, withModule.CreatedAt, [], new FixedTimeProvider(Moment));
+        var withoutModule = Campaign.Restore(withModule.Id, withModule.Name, withModule.CreatedAt, []);
         await Repository().SaveAsync(withoutModule);
 
         Assert.Equal(beforeDisabling, File.ReadAllText(statePath));
@@ -160,20 +157,6 @@ public sealed class ModuleStatePersistenceTests : IDisposable
         var summary = Assert.Single(await Repository().ListAsync());
 
         Assert.Equal(campaign.Id, summary.Id);
-    }
-
-    [Fact]
-    public async Task Backs_up_the_module_state_together_with_the_manifest()
-    {
-        var campaign = NewCampaign(new StubModule("core.clock"));
-
-        await Repository().SaveAsync(campaign);
-        await Repository().SaveAsync(campaign);
-
-        var backup = Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "backups", "gen-000001");
-
-        Assert.True(File.Exists(Path.Combine(backup, "campaign.json")));
-        Assert.True(File.Exists(Path.Combine(backup, "modules", "core.clock.json")));
     }
 
     [Fact]

@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DungeonApp.Core;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -13,19 +11,18 @@ namespace DungeonApp.Desktop.Shell;
 /// <para>
 /// The Core deliberately has no notion of a current campaign, so this is where that lives. Every
 /// module panel runs its operations through <see cref="ExecuteAsync"/> rather than reaching for the
-/// repository, which keeps the three steps that must always happen together in one place: run the
-/// operation, keep the refusal readable, write the result down.
+/// repository, which keeps the two steps that must always happen together in one place: run the
+/// operation, then write the result down.
 /// </para>
 /// </summary>
 public sealed class CampaignSession(
     Campaign campaign,
-    ICampaignRepository repository,
-    ICampaignJournalStore journal)
+    ICampaignRepository repository)
 {
     /// <summary>
     /// Raised after an operation has been committed. Panels that show something derived from the
-    /// campaign - a pending list, the chronicle - reload on this rather than each subscribing to
-    /// every module's announcements and still missing the GM's own corrections.
+    /// campaign reload on this rather than each subscribing to every module's announcements and
+    /// still missing the GM's own corrections.
     /// </summary>
     public event Action? Committed;
 
@@ -70,22 +67,5 @@ public sealed class CampaignSession(
         Committed?.Invoke();
 
         return null;
-    }
-
-    /// <summary>
-    /// The tail of the chronicle, most recent first. Read from disk rather than from memory: the
-    /// campaign holds only what has not been written yet.
-    /// </summary>
-    public async Task<IReadOnlyList<JournalEntry>> ReadChronicleAsync(int limit)
-    {
-        try
-        {
-            return await journal.ReadRecentAsync(Campaign.Id, limit);
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            // A chronicle that cannot be read is a loss, never a failure: it holds no state.
-            return [];
-        }
     }
 }

@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 
 namespace DungeonApp.Core.Persistence;
@@ -18,8 +16,7 @@ namespace DungeonApp.Core.Persistence;
 /// <para>
 /// The split follows consistency boundaries rather than subject matter. The manifest and the module
 /// states commit together and share a generation counter, so a save interrupted between them is
-/// detectable instead of silently half loaded. The journal and the desk layout have their own
-/// lifecycles and their own criticality, so they live apart and cannot take the campaign down.
+/// detectable instead of silently half loaded.
 /// </para>
 /// <para>
 /// State belonging to a module that is switched off, or that this build has never heard of, is
@@ -29,18 +26,13 @@ namespace DungeonApp.Core.Persistence;
 /// </summary>
 public sealed class JsonCampaignRepository(
     string libraryPath,
-    ModuleCatalog catalog,
-    ICampaignJournalStore journalStore,
-    TimeProvider timeProvider) : ICampaignRepository
+    ModuleCatalog catalog) : ICampaignRepository
 {
     /// <summary>Independent of the application version: it only ever tracks the shape of these files.</summary>
     public const int CurrentFormatVersion = 1;
 
     private const string DocumentFileName = "campaign.json";
     private const string ModuleDirectoryName = "modules";
-    private const string BackupDirectoryName = "backups";
-    private const string BackupGenerationPrefix = "gen-";
-    private const int MaxBackups = 5;
 
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
@@ -61,10 +53,6 @@ public sealed class JsonCampaignRepository(
         // concept never leaks into the domain model.
         var previous = await TryReadManifestAsync(manifestPath, cancellationToken);
         var generation = (previous?.Generation ?? 0) + 1;
-
-        // The whole previous generation is preserved before any of it is overwritten. Restoring
-        // half of one would be worse than restoring nothing.
-        BackUpExisting(directory, previous?.Generation ?? 0);
 
         var entries = new List<ModuleEntry>();
         var temporaryPaths = new List<string>();
@@ -113,11 +101,6 @@ public sealed class JsonCampaignRepository(
             // The manifest lands last. Its arrival is what marks the whole generation as committed,
             // and what a torn save is measured against.
             File.Move(temporaryManifestPath, manifestPath, overwrite: true);
-
-            // Only after the campaign is safely committed. The chronicle explains a saved world, so
-            // it must never be the reason one fails to save.
-            await journalStore.AppendAsync(campaign.Id, campaign.Journal.Pending, cancellationToken);
-            campaign.Journal.MarkWritten();
         }
         finally
         {
@@ -147,14 +130,13 @@ public sealed class JsonCampaignRepository(
         var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
         var name = ValidateManifest(manifest, manifestPath);
 
-        // Built, then wired by Campaign.Restore, then filled. Activation happens exactly once, and
-        // inside the campaign, because the campaign owns the journal the contexts are built around.
+        // Built, then wired by Campaign.Restore, then filled. Activation happens exactly once,
+        // inside the campaign, before any module state is restored onto it.
         var campaign = Campaign.Restore(
             new CampaignId(manifest.Id),
             name,
             manifest.CreatedAt,
-            CreateModules(manifest, manifestPath),
-            timeProvider);
+            CreateModules(manifest, manifestPath));
 
         foreach (var module in campaign.Modules.Active)
         {
@@ -386,10 +368,10 @@ public sealed class JsonCampaignRepository(
         }
         catch (CampaignStoreException)
         {
-            // An unreadable manifest is about to be replaced and has already been backed up. It
-            // cannot be trusted to say which generation the module files are at, so the counter
-            // restarts and every active module is rewritten at the new one; anything retained keeps
-            // whatever the unreadable manifest would have said, which is nothing.
+            // An unreadable manifest is about to be replaced. It cannot be trusted to say which
+            // generation the module files are at, so the counter restarts and every active module is
+            // rewritten at the new one; anything retained keeps whatever the unreadable manifest
+            // would have said, which is nothing.
             return null;
         }
     }
@@ -409,60 +391,6 @@ public sealed class JsonCampaignRepository(
         {
             throw new CampaignStoreException(
                 CampaignStoreFailure.Unreadable, $"Could not read the campaign document at {path}.", ex);
-        }
-    }
-
-    /// <summary>
-    /// Copies the manifest and every module state file into one generation directory, so a backup
-    /// can be restored as the consistent set it was.
-    /// </summary>
-    private static void BackUpExisting(string campaignDirectory, long generation)
-    {
-        var manifestPath = Path.Combine(campaignDirectory, DocumentFileName);
-
-        if (!File.Exists(manifestPath))
-        {
-            return;
-        }
-
-        var backupRoot = Path.Combine(campaignDirectory, BackupDirectoryName);
-
-        // Zero padded so the plain name sort is also the generation order.
-        var backupDirectory = Path.Combine(
-            backupRoot,
-            BackupGenerationPrefix + generation.ToString("D6", CultureInfo.InvariantCulture));
-
-        try
-        {
-            Directory.CreateDirectory(backupDirectory);
-            File.Copy(manifestPath, Path.Combine(backupDirectory, DocumentFileName), overwrite: true);
-
-            var moduleDirectory = Path.Combine(campaignDirectory, ModuleDirectoryName);
-
-            if (Directory.Exists(moduleDirectory))
-            {
-                var backupModules = Path.Combine(backupDirectory, ModuleDirectoryName);
-                Directory.CreateDirectory(backupModules);
-
-                foreach (var file in Directory.EnumerateFiles(moduleDirectory, "*.json"))
-                {
-                    File.Copy(file, Path.Combine(backupModules, Path.GetFileName(file)), overwrite: true);
-                }
-            }
-
-            var stale = Directory
-                .EnumerateDirectories(backupRoot, BackupGenerationPrefix + "*")
-                .OrderByDescending(directory => directory, StringComparer.Ordinal)
-                .Skip(MaxBackups);
-
-            foreach (var directory in stale)
-            {
-                Directory.Delete(directory, recursive: true);
-            }
-        }
-        catch (IOException)
-        {
-            // A backup is a convenience. Failing to make one must not block saving the campaign.
         }
     }
 

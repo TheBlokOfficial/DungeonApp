@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
@@ -17,11 +16,8 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 /// </summary>
 public sealed class CampaignWorkspacePreparationCache(
     ICampaignRepository campaigns,
-    ICampaignJournalStore journal,
     WorkspaceLayoutStore layouts)
 {
-    private const int ChronicleLimit = 100;
-
     private readonly object _gate = new();
     private readonly Dictionary<CampaignId, Task<CampaignWorkspacePreparation>> _preparations = [];
 
@@ -119,17 +115,9 @@ public sealed class CampaignWorkspacePreparationCache(
             .ConfigureAwait(false)
             ?? throw new CampaignUnavailableException(id);
 
-        var layoutTask = layouts.LoadAsync(id.ToString(), cancellationToken);
-        var chronicleTask = journal.ReadRecentAsync(id, ChronicleLimit, cancellationToken);
+        var layout = await layouts.LoadAsync(id.ToString(), cancellationToken).ConfigureAwait(false);
 
-        await Task.WhenAll(layoutTask, chronicleTask).ConfigureAwait(false);
-
-        return new CampaignWorkspacePreparation(
-            campaign,
-            await layoutTask.ConfigureAwait(false),
-            Panels.History.ChroniclePresentation.Describe(
-                campaign,
-                await chronicleTask.ConfigureAwait(false)));
+        return new CampaignWorkspacePreparation(campaign, layout);
     }
 
     private async Task WarmBoundedAsync(

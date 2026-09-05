@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DungeonApp.Core.Events;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Tests.Fakes;
 
@@ -10,9 +9,9 @@ namespace DungeonApp.Core.Tests.Modules;
 
 public sealed class CampaignModulesTests
 {
-    /// <summary>The journal and clock are incidental here; these tests are about the set itself.</summary>
+    /// <summary>The clock naming is incidental here; these tests are about the set itself.</summary>
     private static CampaignModules Activate(IEnumerable<ICampaignModule> modules)
-        => CampaignModules.Activate(modules, new CampaignJournal(), new CampaignEvents(), TimeProvider.System);
+        => CampaignModules.Activate(modules, new CampaignEvents());
 
     [Fact]
     public void Refuses_the_same_module_twice()

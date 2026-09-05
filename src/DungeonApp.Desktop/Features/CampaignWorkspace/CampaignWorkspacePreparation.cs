@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 
@@ -11,5 +9,4 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 /// </summary>
 public sealed record CampaignWorkspacePreparation(
     Campaign Campaign,
-    WorkspaceLayout Layout,
-    IReadOnlyList<ChronicleEntryViewModel> Chronicle);
+    WorkspaceLayout Layout);

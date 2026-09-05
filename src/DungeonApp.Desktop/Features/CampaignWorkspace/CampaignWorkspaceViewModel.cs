@@ -37,7 +37,7 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
         CampaignSession campaign,
         CampaignWorkspacePreparation preparation)
     {
-        _catalog = PanelCatalog.For(campaign, preparation.Chronicle);
+        _catalog = PanelCatalog.For(campaign);
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
         // one campaign has no business following them into another.

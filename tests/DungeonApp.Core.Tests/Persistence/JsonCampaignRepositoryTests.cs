@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Modules;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
@@ -19,8 +18,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     private readonly ModuleCatalog _catalog = new();
     private readonly JsonCampaignRepository _repository;
 
-    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(
-        _library.Path, _catalog, new JsonCampaignJournalStore(_library.Path), new FixedTimeProvider(Moment));
+    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path, _catalog);
 
     public void Dispose() => _library.Dispose();
 
@@ -64,9 +62,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var repository = new JsonCampaignRepository(
             Path.Combine(_library.Path, "not-created-yet"),
-            _catalog,
-            new JsonCampaignJournalStore(_library.Path),
-            new FixedTimeProvider(Moment));
+            _catalog);
 
         Assert.Empty(await repository.ListAsync());
     }
@@ -190,54 +186,6 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
 
         Assert.Empty(Directory.EnumerateFiles(_library.CampaignDirectory(campaign.Id.Value), "*.tmp"));
     }
-
-    /// <summary>The first save has nothing to preserve; every later one does.</summary>
-    [Fact]
-    public async Task Starts_backing_up_only_once_there_is_something_to_lose()
-    {
-        var campaign = NewCampaign();
-        var backups = BackupRoot(campaign);
-
-        await _repository.SaveAsync(campaign);
-        Assert.False(Directory.Exists(backups));
-
-        await _repository.SaveAsync(campaign);
-        Assert.Single(Directory.EnumerateDirectories(backups));
-    }
-
-    /// <summary>
-    /// A backup is a whole generation, not a loose file: restoring half of one would be worse than
-    /// restoring nothing once modules keep state files beside the manifest.
-    /// </summary>
-    [Fact]
-    public async Task Keeps_each_backup_as_a_complete_generation()
-    {
-        var campaign = NewCampaign();
-
-        await _repository.SaveAsync(campaign);
-        await _repository.SaveAsync(campaign);
-
-        var backup = Assert.Single(Directory.EnumerateDirectories(BackupRoot(campaign)));
-
-        Assert.Equal("gen-000001", Path.GetFileName(backup));
-        Assert.True(File.Exists(Path.Combine(backup, "campaign.json")));
-    }
-
-    [Fact]
-    public async Task Rotates_backups_so_the_directory_cannot_grow_without_limit()
-    {
-        var campaign = NewCampaign();
-
-        for (var save = 0; save < 9; save++)
-        {
-            await _repository.SaveAsync(campaign);
-        }
-
-        Assert.Equal(5, Directory.EnumerateDirectories(BackupRoot(campaign)).Count());
-    }
-
-    private string BackupRoot(Campaign campaign)
-        => Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "backups");
 
     private JsonElement ReadManifest(Campaign campaign)
         => JsonDocument.Parse(File.ReadAllText(_library.DocumentPath(campaign.Id.Value))).RootElement;

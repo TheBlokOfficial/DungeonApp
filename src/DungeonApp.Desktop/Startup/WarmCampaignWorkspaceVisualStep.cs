@@ -2,7 +2,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Journal;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -16,17 +15,16 @@ namespace DungeonApp.Desktop.Startup;
 /// wtedy rozgrzewka jest tożsama z tym, co zobaczy pierwsze otwarcie. Bez kampanii rozgrzewa sam
 /// szkielet widoku.
 /// <para>
-/// To jedyny fragment deski, którego nie da się rozbić dalej: panele na prawdziwym stole pochodzą z
-/// zapisanego układu użytkownika (<c>WorkspaceSurface.ItemsSource</c>), więc nie są tu statycznie
-/// wyliczalne per typ - w odróżnieniu od syntetycznych paneli rozgrzewanych osobno poniżej.
+/// Panele na prawdziwym stole pochodzą z zapisanego układu użytkownika
+/// (<c>WorkspaceSurface.ItemsSource</c>), więc nie są tu statycznie wyliczalne per typ - stąd
+/// rozgrzewka bierze cały widok deski naraz, zamiast rozbijać go na osobne kroki per panel.
 /// </para>
 /// </summary>
 public sealed class WarmCampaignWorkspaceVisualStep(
     CampaignWorkspacePreparationCache preparations,
     WarmCampaignDataStep dataStep,
     WorkspaceLayoutStore layoutStore,
-    ICampaignRepository campaigns,
-    ICampaignJournalStore journal) : IStartupStep
+    ICampaignRepository campaigns) : IStartupStep
 {
     private CampaignWorkspaceViewModel? _warmupViewModel;
 
@@ -41,7 +39,7 @@ public sealed class WarmCampaignWorkspaceVisualStep(
             return;
         }
 
-        var session = new CampaignSession(preparation.Campaign, campaigns, journal);
+        var session = new CampaignSession(preparation.Campaign, campaigns);
         _warmupViewModel = new CampaignWorkspaceViewModel(layoutStore, session, preparation);
     }
 
