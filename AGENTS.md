@@ -12,9 +12,6 @@ Dokumenty projektu:
 bezpośrednim poleceniem — polecenie wygrywa; zanotuj wtedy, że dokument
 wymaga aktualizacji.
 
-Jeżeli pracujesz jako Codex albo ChatGPT, przeczytaj również `CODEX.md`,
-który określa wyłącznie sposób prowadzenia sesji.
-
 ## Weryfikacja
 
 ```bash

@@ -1,6 +1,9 @@
-Przeczytaj `AGENTS.md` przed rozpoczęciem pracy. Jest jedynym źródłem zasad
-projektu. Ten plik określa wyłącznie sposób prowadzenia sesji przez Claude
-Code.
+Zanim zrobisz cokolwiek innego w tej sesji, przeczytaj `AGENTS.md`. To jest
+obowiązujący opis projektu — czym jest, jak się go weryfikuje, gdzie biegną
+pilnowane szwy, w jakim języku się pisze, jak się commituje, jak aktualizuje
+dokumentację, jak wygląda praca nad interfejsem. Niniejszy plik mówi
+wyłącznie o tym, jak Ty, Claude Code, masz prowadzić sesję nad tym
+projektem — nie powtarza faktów o projekcie i nie jest ich substytutem.
 
 ## Twoja rola
 
@@ -72,7 +75,5 @@ ograniczeniem.
 
 ## Commity
 
-- Jeżeli `AGENTS.md` i polecenie użytkownika dopuszczają wykonanie commitu,
-  robi go wyłącznie agent główny.
-- W ramach zleconego commitowania commituj osobno każdy zamknięty blok pracy,
-  zanim zlecisz kolejny.
+- Commituje wyłącznie agent główny, osobno po każdym zamkniętym bloku pracy.
+- Commituj zamknięty blok, zanim zlecisz kolejny.
