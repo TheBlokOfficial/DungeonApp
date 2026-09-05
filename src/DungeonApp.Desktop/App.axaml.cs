@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.Tools.Counter;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -20,6 +21,7 @@ public partial class App : Avalonia.Application
 {
     private WorkspaceLayoutStore? _layoutStore;
     private DataBlockRegistry? _dataBlocks;
+    private CounterTool? _counterTool;
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
@@ -45,10 +47,22 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // The one place the built-in data blocks are named. A campaign whose save mentions a data
-        // block missing from here is opened anyway, with that block left unread - see
-        // CampaignDataBlocks.UnreadableBlocks. Empty for now: no data block ships in this build yet.
-        _dataBlocks = new DataBlockRegistry();
+        // Jedyne miejsce, w którym jawnie zgłaszają się wbudowane bloki danych i narzędzia.
+        _counterTool = new CounterTool();
+        _dataBlocks = new DataBlockRegistry()
+            .Register(
+                CounterTool.DataBlockId,
+                CounterTool.DataBlockVersion,
+                CounterTool.DataBlockShape);
+
+        foreach (var usedDataBlock in _counterTool.Uses)
+        {
+            if (!_dataBlocks.Knows(usedDataBlock))
+            {
+                throw new InvalidOperationException(
+                    $"Narzędzie licznika używa niezarejestrowanego bloku danych '{usedDataBlock}'.");
+            }
+        }
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
