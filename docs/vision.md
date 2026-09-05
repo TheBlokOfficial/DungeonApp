@@ -97,6 +97,64 @@ ustawienia. Jak prezentować pełną kartę pojedynczej postaci, rozstrzygniemy,
 gdy będzie powstawać — ale wejściem do niej jest okno listy, nie osobny
 byt obok biurka.
 
+### Rama i zasobnik
+
+Podział jest po zachowaniu, nie po wyglądzie: **co da się zminimalizować,
+przesunąć i przeskalować, jest oknem; co stoi nieruchomo, jest ramą.**
+
+Ramie należy się to, czego okno nie może albo nie powinno obsłużyć:
+zarządzanie samymi oknami (zasobnik nie może być oknem, bo musiałby
+zarządzać sobą), przechodzenie między kontekstami aplikacji, stan aplikacji,
+wejście do ustawień. Wszystko, co dotyczy treści kampanii, jest oknem —
+dlatego zegar nie ma odpowiednika w ramie, choć bywa najczęściej sprawdzany.
+
+Jedno dopowiedzenie, żeby regułę dało się czytać dosłownie: **rama niesie
+tożsamość, nie stan.** Nazwa kampanii w nagłówku odpowiada na pytanie „gdzie
+jestem", nie „jak stoją sprawy w świecie". Rama mówi, gdzie jesteś i co robi
+aplikacja; okna mówią, co dzieje się w świecie.
+
+Zasobnik jest wspólny dla wszystkich kampanii jako pojemnik — zmienne jest
+tylko jego wypełnienie. Leżą w nim **dwie różne rzeczy**:
+
+- **kwadraciki okien** — zminimalizowanych i dostępnych; kliknięcie kładzie
+  okno na blacie;
+- **miniature panele** — osobny byt o podobnej zasadzie działania, siedzący
+  w zarezerwowanym slocie.
+
+Miniatura **nie jest trzecim stanem okna** („otwarte / zminimalizowane / w
+slocie"), tylko **obecnością równoległą**: mini-zegar może siedzieć w
+zasobniku, podczas gdy pełne okno zegara leży otwarte na blacie. Dlatego
+kliknięcie w miniaturę nie przywraca okna — miniatura robi swoje, okno
+otwiera się kwadracikiem.
+
+Miniatura jest opcjonalną własnością panelu, nie nowym rodzajem bytu: panel
+albo deklaruje postać zwartą, albo nie da się go wstawić do slotu. Postać
+zwarta i pełna to **dwa widoki nad tym samym odczytem, nie dwie
+implementacje**, a przyciski miniatury wysyłają **te same nazwane
+polecenia** co przyciski okna. Dwie ścieżki do jednej akcji zawsze się w
+końcu rozjeżdżają.
+
+### Przepływ: okno, narzędzie, dane
+
+To nie jest trójkąt, tylko pętla o jednokierunkowych krawędziach:
+
+1. **Dane → okno.** Okno czyta dane bezpośrednio, nie przez narzędzie. Gdyby
+   pytało narzędzie o wartości, narzędzie stałoby się warstwą dostępu do
+   danych i wróciłaby własność treści przez narzędzia.
+2. **Okno → narzędzie.** Kliknięcie niczego nie zmienia samo; okno zgłasza
+   nazwany zamiar („przesuń o trzy dni").
+3. **Narzędzie → dane.** Narzędzie wylicza następstwa i zapisuje je jako
+   nazwane zmiany. To jedyne miejsce, w którym powstaje nowy stan.
+4. **Dane → okno.** Sekcja się zmieniła, okno odczytuje ją ponownie. Bez
+   odpytywania w pętli i bez przesyłania wartości w zdarzeniu.
+
+Narzędzie nigdy nie woła okna.
+
+Wyjątek od „okno czyta dane wprost": **odczyt wyliczony** — sformatowana data
+w kalendarzu świata, „ile dni do najbliższego wydarzenia", suma obciążenia
+drużyny — jest obliczeniem, więc należy do narzędzia. Narzędzie wystawia go
+jako funkcję nad danymi, nie jako własny stan.
+
 ## Treść kampanii a stan narzędzia
 
 To są **dwie różne rzeczy**, dziś zlepione w kodzie.
