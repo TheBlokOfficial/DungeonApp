@@ -117,13 +117,37 @@ ViewModel, wychodzi zwykle technicznie sprawne, ale wizualnie niechlujne.
    podpięcia pod ViewModel: statyczne dane, zero logiki, zero integracji.
 2. Renderuje mockup do PNG i **na tym kończy zadanie**. Nie ogląda własnego
    renderu, nie klika po podglądzie, nie porównuje wariantów.
+   Kadr renderu dobiera się do powierzchni, jaką element docelowo zajmuje —
+   element oceniany na pustym tle wygląda lepiej, niż będzie wyglądał
+   naprawdę, bo z niczym nie konkuruje o uwagę:
+   - wypełnia całe okno — render sam w sobie, jest własnym kontekstem;
+   - żyje wewnątrz obszaru roboczego — render na **statycznej scenie**:
+     atrapie sidebara, górnego paska i tła workspace'u, do której wstawia
+     się wariant;
+   - mały element — dwa rendery, izolowany i na scenie.
+   Scena jest martwym `UserControl`-em w `design/mockups/`, budowanym raz i
+   używanym przez kolejne mockupy. Nigdy nie jest to żywy shell: podpięcie
+   pod prawdziwe ViewModele to ta integracja, której faza mockupu unika.
 3. Ty przekazujesz obraz użytkownikowi, bez własnej krytyki wizualnej.
    Ocenę robi użytkownik. Dopiero po jego akceptacji zlecasz wdrożenie do
    docelowego widoku jako osobne zadanie — port decyzji (układ, odstępy,
    hierarchia), nie kopiowanie pliku mockupu żywcem.
-4. Przy większych elementach proś od razu o 2–3 warianty. Wybór z kilku
+4. Przy większych elementach proś od razu o kilka wariantów. Wybór z kilku
    albo złożenie ich najlepszych części daje lepszy efekt niż ocena
-   pojedynczej propozycji.
+   pojedynczej propozycji. Wszystkie warianty robi **jeden** subagent w
+   jednym zleceniu — koszt zadania siedzi w wczytaniu `Themes/` i budowie
+   renderu, więc osobni agenci płacą za to samo wielokrotnie.
+   Reżim zlecenia:
+   - Każdy wariant dostaje własny **hint strukturalny** — ograniczenie
+     układu, wykonalne bez oceny estetycznej („logo wyrównane do lewej na
+     szerokości sidebara, pasek pełnej szerokości przy dolnej krawędzi").
+     Hinty nastrojowe („więcej swobody", „nowocześniej") są zakazane:
+     subagent nie ma gustu, więc odda wariant pierwszy plus ozdobniki.
+   - Agent pisze **wszystkie** pliki, zanim wyrenderuje którykolwiek — inaczej
+     iteruje wariant B na bazie A i warianty się zlewają.
+   - Agent nie wybiera faworyta i nie komentuje wariantów.
+   Jeśli runda wróci wizualnie jednorodna, dorzuć pojedynczy wariant w nowym
+   agencie, z ostrzejszym ograniczeniem.
 5. `design/mockups/` jest jednorazowe — pliki, które przegrały, kasujesz.
 
 ## UI: robota mechaniczna, nie artystyczna
