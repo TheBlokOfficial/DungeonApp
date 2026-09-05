@@ -85,6 +85,30 @@
     <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
 
     <!--
+        Skala odstępów, wyrażona jako literały powtarzające się w widokach.
+        Dwa równoległe zestawy: Double dla Spacing/Width/Height oraz Thickness dla Margin/Padding.
+    -->
+    <x:Double x:Key="DungeonSpacingXs">6</x:Double>
+    <x:Double x:Key="DungeonSpacingSm">8</x:Double>
+    <x:Double x:Key="DungeonSpacingMd">12</x:Double>
+    <x:Double x:Key="DungeonSpacingLg">16</x:Double>
+    <x:Double x:Key="DungeonSpacingXl">20</x:Double>
+    <x:Double x:Key="DungeonSpacingXxl">24</x:Double>
+    <x:Double x:Key="DungeonSpacingXxxl">32</x:Double>
+
+    <Thickness x:Key="DungeonPaddingXs">6</Thickness>
+    <Thickness x:Key="DungeonPaddingSm">8</Thickness>
+    <Thickness x:Key="DungeonPaddingMd">12</Thickness>
+    <Thickness x:Key="DungeonPaddingLg">16</Thickness>
+    <Thickness x:Key="DungeonPaddingXl">20</Thickness>
+    <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
+    <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
+
+    <!-- Pasek postępu ładowania. -->
+    <x:Double x:Key="DungeonLoadingProgressBarWidth">320</x:Double>
+    <x:Double x:Key="DungeonLoadingProgressBarHeight">4</x:Double>
+
+    <!--
         Profile-dependent tokens (font sizes, control/row heights, shell dimensions,
         DungeonSidebarWidth, DungeonMinimumWindowWidth/Height)
         are NOT declared here. They are the sole responsibility of

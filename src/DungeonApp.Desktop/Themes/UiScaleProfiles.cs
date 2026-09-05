@@ -56,7 +56,9 @@ public static class UiScaleProfiles
                 PanelMinHeight: 144,
                 PanelResizeBorderThickness: 6,
                 PanelResizeCornerSize: 12,
-                DeckCardSize: 40),
+                DeckCardSize: 40,
+                DungeonBrandMarkLargeFrameSize: 80,
+                DungeonBrandMarkLargeFontSize: 56),
             UiScaleProfile.Large => new UiMetrics(
                 BaseFont: 17,
                 NavigationFont: 17,
@@ -78,7 +80,9 @@ public static class UiScaleProfiles
                 PanelMinHeight: 168,
                 PanelResizeBorderThickness: 8,
                 PanelResizeCornerSize: 14,
-                DeckCardSize: 48),
+                DeckCardSize: 48,
+                DungeonBrandMarkLargeFrameSize: 112,
+                DungeonBrandMarkLargeFontSize: 72),
             _ => new UiMetrics(
                 BaseFont: 15,
                 NavigationFont: 15,
@@ -100,7 +104,9 @@ public static class UiScaleProfiles
                 PanelMinHeight: 152,
                 PanelResizeBorderThickness: 6,
                 PanelResizeCornerSize: 12,
-                DeckCardSize: 44)
+                DeckCardSize: 44,
+                DungeonBrandMarkLargeFrameSize: 96,
+                DungeonBrandMarkLargeFontSize: 64)
         };
 
         Set(application, "DungeonBaseFontSize", metrics.BaseFont);
@@ -110,6 +116,8 @@ public static class UiScaleProfiles
         Set(application, "DungeonStatusFontSize", metrics.StatusFont);
         Set(application, "DungeonWorkspaceTitleFontSize", metrics.WorkspaceTitleFont);
         Set(application, "DungeonBrandMarkFontSize", metrics.BaseFont + 3);
+        Set(application, "DungeonBrandMarkLargeFrameSize", metrics.DungeonBrandMarkLargeFrameSize);
+        Set(application, "DungeonBrandMarkLargeFontSize", metrics.DungeonBrandMarkLargeFontSize);
 
         Set(application, "DungeonTopBarHeight", new GridLength(metrics.TopBarHeight));
         Set(application, "DungeonSidebarWidth", new GridLength(metrics.SidebarWidth));
@@ -175,5 +183,7 @@ public static class UiScaleProfiles
         double PanelMinHeight,
         double PanelResizeBorderThickness,
         double PanelResizeCornerSize,
-        double DeckCardSize);
+        double DeckCardSize,
+        double DungeonBrandMarkLargeFrameSize,
+        double DungeonBrandMarkLargeFontSize);
 }
