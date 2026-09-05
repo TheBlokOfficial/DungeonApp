@@ -1,6 +1,6 @@
 # Mapa kodu
 
-Stan na commit 57a5d3a (2026-08-27).
+Stan na commit 4299eca (2026-09-05).
 
 Dokument opisuje stan faktyczny (kto od kogo zależy, którędy płyną dane).
 Reguły normatywne żyją w `docs/architecture.md`.
@@ -33,10 +33,12 @@ Reguły normatywne żyją w `docs/architecture.md`.
 | `src/DungeonApp.Desktop/Shell/StatusBar` | Pasek statusu. |
 | `src/DungeonApp.Desktop/Shell/TopBar` | Pasek górny. |
 | `src/DungeonApp.Desktop/Shell/Workspace` | Placeholder workspace'u (brak otwartej kampanii). |
+| `src/DungeonApp.Desktop/Startup` | Sekwencja kroków startu aplikacji (`IStartupStep`, dziewięć kroków, `VisualWarmupHost`, `StartupUiContext`). |
 | `src/DungeonApp.Desktop/Themes` | Skala UI, tokeny, style kontrolek, ikony (`Tokens.axaml`, `Icons.axaml`, `UiScaleProfiles.cs`). |
 | `src/DungeonApp.Desktop/ViewModels` | Bazowe klasy ViewModel (`ObservableObject`, `AsyncCommand`). |
 | `tests/DungeonApp.Core.Tests` | Testy Core: architektura, kampanie, moduły, zdarzenia, persystencja. |
 | `tests/DungeonApp.Desktop.Tests` | Testy Desktop: wybór modułów w bibliotece kampanii, cache przygotowania, magazyn układu. |
+| `tools/MockupRenderer` | Narzędzie deweloperskie poza `DungeonApp.sln`: renderuje `.axaml` z `design/mockups/` do PNG headless (Skia), z atrapą danych z JSON. Własny `README.md`. |
 
 ## 2. Graf modułów
 
@@ -76,6 +78,7 @@ Referencja projektu: `DungeonApp.Desktop.csproj` → `ProjectReference` na `Dung
 | `Panels/Scheduler/SchedulerPanelViewModel.cs` | `Core.Modules.Clock`, `Core.Modules.Scheduler` |
 | `Panels/History/HistoryPanelViewModel.cs` | `Core.Journal` (`CampaignJournal`/`JournalEntry`) |
 | `App.axaml.cs`, `Shell/*`, `Features/CampaignLibrary/*` | `Core.Campaigns` (`Campaign`, `CreateCampaign`, `ICampaignRepository`), `Core.Modules` (`ModuleCatalog`), `Core.Persistence` (`JsonCampaignRepository`, `JsonCampaignJournalStore`), `Core.Journal` |
+| `Startup/*` | `Core.Campaigns` (`CampaignId`, `ICampaignRepository`), `Core.Journal` (`ICampaignJournalStore`) — w `WarmCampaignWorkspaceVisualStep`, do zbudowania `CampaignSession` na potrzeby rozgrzewki |
 
 ## 5. Przepływ zapisu
 
@@ -123,7 +126,19 @@ Struktura: `Shell` (powłoka okna, nawigacja, pasek statusu/góry) → `Features
 
 Katalog paneli: `Panels/PanelCatalog.cs` + `Panels/WorkspacePanelDescriptor.cs` (deskryptor: panel ↔ moduł); rejestrowanie i widoczność paneli w talii: `CampaignWorkspace/Deck/PanelDeckView.axaml.cs`.
 
-Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI).
+Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy, w tym nowa skala `DungeonSpacingXs..Xxxl`/`DungeonPaddingXs..Xxxl`), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek, w tym nowy styl `ProgressBar`), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI). Istniejące widoki nie są dziś przepięte na nową skalę odstępów — liczby wpisane wprost zostały jak były.
+
+### Start aplikacji
+
+Korzeń kompozycji: `App.Initialize()` buduje `CampaignWorkspacePreparationCache`, `CampaignLibraryViewModel` i jawną tablicę `IStartupStep[]` (kolejność w tablicy = kolejność wykonania); `OnFrameworkInitializationCompleted` dopiero wtedy konstruuje `AppShellViewModel`, przyjmujący te trzy jako parametry — powłoka nic z tego sama nie tworzy.
+
+Dziewięć kroków w `Startup/` (kontrakt `IStartupStep`, opisany w `docs/architecture.md`): `LoadCampaignLibraryStep`, `WarmCampaignDataStep`, `WarmCampaignWorkspaceVisualStep`, `WarmWorkspacePlaceholderStep`, 5× `WarmPanelVisualStep` (Drużyna, Zegar, Kronika, Harmonogram, Kości — w tej kolejności w tablicy). Wspólna mechanika rozgrzewki wizualnej: `VisualWarmupHost.AttachAndWaitAsync`.
+
+Runner: `AppShellViewModel.RunStartupAsync(StartupUiContext)`; wywołanie: `AppShellView.OnLoaded` (jeden `await`, jednorazowo, strzeżone flagą `_startupStarted`). Postęp startu (`CompletedSteps`/`TotalSteps`) liczony krokami, bez wag.
+
+Zasłona startowa (`StartupCurtain`) mieszka w `MainWindow.axaml`, jako drugie dziecko `Panel`-a nad `shell:AppShellView` — przykrywa cały interfejs, nie tylko komórkę workspace'u. `AppShellView.axaml` trzyma już tylko niewidoczny `WarmupHost`, do którego kroki wizualne podpinają swoje kontrolki.
+
+Dług: `CampaignLibraryViewModel` przyjmuje `Func<CampaignId, Task>` jako callback otwarcia kampanii; w `App.Initialize()` domyka się on nad polem `_shell` (`id => _shell!.OpenCampaignAsync(id)`), bo powłoka jeszcze nie istnieje w tym momencie. `AppShellViewModel.OpenCampaignAsync` jest z tego powodu `internal`, nie `private`. Brak dziś testu pokrywającego `Startup/*` w `Desktop.Tests`.
 
 ## 7. Testy
 

@@ -30,6 +30,64 @@ dziś struktura projektów, nie test — Core nie ma referencji do Desktop,
 więc odwrócenie zależności wymagałoby świadomej edycji `.csproj`. To
 wystarczające, dopóki projektów są dwa.
 
+## Sekwencja startowa
+
+Start aplikacji to jawna tablica kroków za kontraktem `IStartupStep`
+(`Desktop/Startup`), wykonywanych po kolei w kolejności, w jakiej stoją w
+tablicy. Kontrakt żyje **w całości w `DungeonApp.Desktop`**, nie w Core —
+połowa jego pracy (`ApplyAsync`) z definicji dotyka żywego drzewa Avalonii
+(podpina kontrolki pod `WarmupHost`, czeka na `Loaded`), więc Core, który nic
+o UI nie wie, nie mógłby tego kontraktu wystawić bez złamania szwu z sekcji
+wyżej. To, że część kroków (np. wczytanie biblioteki kampanii) nie dotyka UI
+wcale, nie przenosi ich do Core: to wciąż elementy jednej, jawnie
+uporządkowanej sekwencji startu interfejsu, nie osobny mechanizm domenowy.
+
+Każdy krok rozdziela dwie fazy:
+
+- `PrepareAsync` — praca w tle: dysk, obliczenia, zero dotykania drzewa
+  wizualnego;
+- `ApplyAsync(StartupUiContext, ...)` — wątek UI, nakłada efekt kroku na
+  żywy interfejs.
+
+Stan potrzebny między fazami krok trzyma we własnym prywatnym polu (np.
+`WarmCampaignDataStep` pamięta identyfikator kampanii do rozgrzania wizualnej
+strony); kontrakt nie ma współdzielonego miejsca na taki stan — to świadomie
+zminimalizowane, każdy krok niesie tylko to, czego sam potrzebuje.
+`StartupUiContext` niesie wyłącznie referencję do `WarmupHost`, żeby faza UI
+nie musiała znać typu `AppShellView`.
+
+Zgłoszenie w korzeniu kompozycji: `App.Initialize()` buduje jawną tablicę
+`IStartupStep[]` i przekazuje ją do `AppShellViewModel` jako parametr
+konstruktora — kolejność w tablicy jest kolejnością wykonania, więc zmiana
+kolejności to widoczna w diffie edycja jednego miejsca, nie efekt uboczny
+gdzieś indziej. Runner, `AppShellViewModel.RunStartupAsync(StartupUiContext)`,
+woła `PrepareAsync`/`ApplyAsync` kroku po kroku i oddaje sterowanie
+dispatcherowi między nimi; `AppShellView.OnLoaded` to jedno wywołanie tego
+runnera, odpalane dopiero po pierwszym renderze lekkiej powłoki.
+
+Rozgrzewka wizualna jest rozbita na osobny krok per typ panelu
+(`WarmPanelVisualStep`, po jednej instancji na Zegar/Kości/Drużynę/Historię/
+Harmonogram) zamiast jednego kroku rozgrzewającego całą talię naraz: jeden
+zbiorczy krok trzymałby wątek UI przez czas rozgrzania wszystkich paneli i
+zamroziłby pasek postępu na jednej, długiej pozycji zamiast przesuwać go
+krok po kroku. Wspólną mechanikę attach → `Loaded` → drenaż dispatchera →
+detach kroki dzielą przez `VisualWarmupHost`. Jedynym wyjątkiem od rozbicia
+per-typ jest stół kampanii (`WarmCampaignWorkspaceVisualStep`): panele na
+prawdziwym stole pochodzą z zapisanego układu użytkownika, więc nie są
+statycznie wyliczalne per typ tak jak syntetyczne panele rozgrzewane osobno.
+
+**Dług, świadomie zostawiony:** `CampaignLibraryViewModel` potrzebuje w
+konstruktorze callbacku otwierającego kampanię, a callback ten prowadzi do
+`AppShellViewModel.OpenCampaignAsync` — metody na powłoce, która w momencie
+budowy biblioteki (`App.Initialize()`) jeszcze nie istnieje (powstaje dopiero
+w `OnFrameworkInitializationCompleted`). Rozwiązane domknięciem nad polem
+`_shell` (`id => _shell!.OpenCampaignAsync(id)`), rozstrzyganym dopiero przy
+pierwszym kliknięciu, długo po tym jak powłoka na pewno już istnieje;
+`OpenCampaignAsync` podniesione z `private` na `internal`, żeby korzeń
+kompozycji mógł się do niej domknąć. Świadomy wybór — alternatywą był osobny
+mechanizm późnego wiązania zbudowany dla jednego callbacku, uznany za
+nieproporcjonalny do problemu.
+
 ## Dostęp do dysku
 
 Granica jest o **rodzaj danych**, nie o użyte API:
