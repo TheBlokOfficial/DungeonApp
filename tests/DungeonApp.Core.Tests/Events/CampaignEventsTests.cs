@@ -139,4 +139,51 @@ public sealed class CampaignEventsTests
         runaway = false;
         _events.Publish(new Announced(0));
     }
+
+    [Fact]
+    public void Disposing_one_of_two_equal_handler_registrations_removes_only_its_own_registration()
+    {
+        var heard = 0;
+        Action<Announced> handler = _ => heard++;
+
+        var first = _events.Subscribe(handler);
+        _events.Subscribe(handler);
+
+        first.Dispose();
+        _events.Publish(new Announced(1));
+
+        Assert.Equal(1, heard);
+    }
+
+    [Fact]
+    public void Disposing_the_second_of_three_registrations_removes_its_exact_handler()
+    {
+        var heard = new List<string>();
+        Action<Announced> handler = _ => heard.Add("A");
+
+        var first = _events.Subscribe(handler);
+        _events.Subscribe<Announced>(_ => heard.Add("B"));
+        var second = _events.Subscribe(handler);
+
+        second.Dispose();
+        second.Dispose();
+        _events.Publish(new Announced(1));
+
+        Assert.Equal(["A", "B"], heard);
+        first.Dispose();
+    }
+
+    [Fact]
+    public void Disposing_a_registration_during_a_publish_keeps_the_current_snapshot_intact()
+    {
+        var heard = 0;
+        IDisposable? second = null;
+        _events.Subscribe<Announced>(_ => second!.Dispose());
+        second = _events.Subscribe<Announced>(_ => heard++);
+
+        _events.Publish(new Announced(1));
+        _events.Publish(new Announced(2));
+
+        Assert.Equal(1, heard);
+    }
 }

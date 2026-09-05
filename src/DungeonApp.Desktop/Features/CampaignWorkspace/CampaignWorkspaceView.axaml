@@ -1,10 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:deck="using:DungeonApp.Desktop.Features.CampaignWorkspace.Deck"
+             xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
              xmlns:surface="using:DungeonApp.Desktop.Controls.Workspace"
              xmlns:workspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.CampaignWorkspaceView"
              x:DataType="workspace:CampaignWorkspaceViewModel">
+
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="panels:CounterPanelViewModel">
+            <panels:CounterPanelView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
 
     <Grid>
         <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}" />

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace DungeonApp.Core.Events;
 
 /// <summary>
-/// How modules inside one campaign hear about facts. Kept as small as it can be, because a general
-/// purpose bus is where determinism and explainability usually go to die.
+/// Jak części jednej kampanii słyszą o faktach. Mechanizm pozostaje mały, bo ogólna magistrala
+/// szybko zaciera kolejność i przyczynę zmian.
 /// <para>
 /// Four guarantees, each one deliberate:
 /// </para>
@@ -14,9 +15,7 @@ namespace DungeonApp.Core.Events;
 /// threads, no ordering that depends on when something happened to be scheduled.</item>
 /// <item>One instance per campaign. Never static, never global; two open campaigns cannot hear each
 /// other.</item>
-/// <item>Deterministic order. Handlers run in subscription order, and modules subscribe while being
-/// activated, so the order is the campaign's settled activation order. The same save produces the
-/// same result tomorrow.</item>
+/// <item>Deterministyczna kolejność. Handlery działają w kolejności subskrypcji.</item>
 /// <item>A capped cascade. A publish/subscribe loop surfaces as a named error rather than a hang.</item>
 /// </list>
 /// <para>
@@ -32,12 +31,12 @@ public sealed class CampaignEvents
     /// </summary>
     public const int MaxEventsPerCommand = 1000;
 
-    private readonly Dictionary<Type, List<Delegate>> _handlers = [];
+    private readonly Dictionary<Type, List<Subscription>> _handlers = [];
 
     private int _depth;
     private int _dispatched;
 
-    public void Subscribe<TEvent>(Action<TEvent> handler) where TEvent : ICampaignEvent
+    public IDisposable Subscribe<TEvent>(Action<TEvent> handler) where TEvent : ICampaignEvent
     {
         ArgumentNullException.ThrowIfNull(handler);
 
@@ -46,7 +45,9 @@ public sealed class CampaignEvents
             _handlers[typeof(TEvent)] = handlers = [];
         }
 
-        handlers.Add(handler);
+        var subscription = new Subscription(handler);
+        handlers.Add(subscription);
+        return new SubscriptionHandle(() => handlers.Remove(subscription));
     }
 
     public void Publish<TEvent>(TEvent announcement) where TEvent : ICampaignEvent
@@ -62,8 +63,8 @@ public sealed class CampaignEvents
         if (++_dispatched > MaxEventsPerCommand)
         {
             throw new EventCascadeException(
-                $"One command produced more than {MaxEventsPerCommand} events. "
-                + "Two modules are almost certainly answering each other.");
+                $"Jedno polecenie wywołało więcej niż {MaxEventsPerCommand} zdarzeń. "
+                + "Narzędzia prawdopodobnie odpowiadają na swoje własne zdarzenia.");
         }
 
         _depth++;
@@ -75,16 +76,32 @@ public sealed class CampaignEvents
                 return;
             }
 
-            // A copy, so a module that subscribes while handling does not join the round it is in
-            // the middle of - and so the list can be added to safely during dispatch.
-            foreach (var handler in handlers.ToArray())
+            // Migawka zachowuje porządek bieżącego ogłoszenia. Subskrypcja albo odpięcie w trakcie
+            // obsługi wpływa dopiero na następne zdarzenie.
+            foreach (var subscription in handlers.ToArray())
             {
-                ((Action<TEvent>)handler)(announcement);
+                ((Action<TEvent>)subscription.Handler)(announcement);
             }
         }
         finally
         {
             _depth--;
+        }
+    }
+
+    private sealed class Subscription(Delegate handler)
+    {
+        public Delegate Handler { get; } = handler;
+    }
+
+    private sealed class SubscriptionHandle(Action unsubscribe) : IDisposable
+    {
+        private Action? _unsubscribe = unsubscribe;
+
+        public void Dispose()
+        {
+            var unsubscribe = Interlocked.Exchange(ref _unsubscribe, null);
+            unsubscribe?.Invoke();
         }
     }
 }

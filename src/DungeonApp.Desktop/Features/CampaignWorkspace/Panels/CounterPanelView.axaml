@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:panels="using:DungeonApp.Desktop.Features.CampaignWorkspace.Panels"
+             x:Class="DungeonApp.Desktop.Features.CampaignWorkspace.Panels.CounterPanelView"
+             x:DataType="panels:CounterPanelViewModel">
+    <Grid Margin="{DynamicResource DungeonPaddingMd}"
+          RowDefinitions="*,Auto"
+          RowSpacing="{DynamicResource DungeonSpacingMd}">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="{DynamicResource DungeonSpacingMd}">
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontFamily="{DynamicResource DungeonDisplayFont}"
+                       FontSize="{DynamicResource DungeonWorkspaceTitleFontSize}"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                       IsVisible="{Binding HasReadableValue}"
+                       Text="{Binding Count}"
+                       TextTrimming="None"
+                       TextWrapping="Wrap" />
+            <Grid Grid.Column="1"
+                  RowDefinitions="*,*"
+                  RowSpacing="{DynamicResource DungeonSpacingXs}">
+                <Button Classes="primary"
+                        Command="{Binding IncrementCommand}"
+                        Content="+1" />
+                <Button Grid.Row="1"
+                        Command="{Binding DecrementCommand}"
+                        Content="−1" />
+            </Grid>
+        </Grid>
+        <TextBlock Grid.Row="1"
+                   Foreground="{DynamicResource DungeonWarningBrush}"
+                   IsVisible="{Binding HasMessage}"
+                   Text="{Binding Message}"
+                   TextWrapping="Wrap" />
+    </Grid>
+</UserControl>

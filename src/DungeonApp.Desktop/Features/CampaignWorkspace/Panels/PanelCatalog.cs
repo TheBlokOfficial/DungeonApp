@@ -8,9 +8,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 /// <summary>
 /// The only place panel identifiers are spelled out, built for one open campaign.
 /// <para>
-/// Per campaign rather than static, because what the desk can offer follows what the campaign has
-/// switched on. This build ships no panels: the descriptor set is always empty, and every campaign
-/// opens onto a bare desk until a panel is added back.
+/// Powstaje dla jednej kampanii, bo blat oferuje okna należące do jej bieżącej sesji.
 /// </para>
 /// </summary>
 public sealed class PanelCatalog
@@ -19,12 +17,34 @@ public sealed class PanelCatalog
 
     public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
 
-    public static PanelCatalog For(CampaignSession session) => new([]);
+    public static PanelCatalog For(CampaignSession session)
+    {
+        var minimum = WorkspaceMetrics.Fallback;
+
+        return new(
+        [
+            new WorkspacePanelDescriptor(
+                "counter",
+                "Licznik",
+                "DungeonIconDatabase",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(
+                    WorkspaceGridSettings.CellSize,
+                    WorkspaceGridSettings.CellSize,
+                    minimum.MinPanelWidth,
+                    minimum.MinPanelHeight),
+                new PanelConstraints(
+                    minimum.MinPanelWidth,
+                    minimum.MinPanelHeight,
+                    double.PositiveInfinity,
+                    double.PositiveInfinity),
+                () => new CounterPanelViewModel(session)),
+        ]);
+    }
 
     /// <summary>
-    /// Returns null for an identifier this campaign does not offer. Callers must treat that as
-    /// "skip this entry", never as an error: a saved layout naming a panel the campaign no longer
-    /// has - because its module was switched off - still has to load.
+    /// Zwraca null dla identyfikatora, którego ta kampania nie oferuje. Odtworzenie zapisu pomija
+    /// taki wpis, aby stary układ nie blokował otwarcia kampanii.
     /// </summary>
     public WorkspacePanelDescriptor? Find(string id) =>
         All.FirstOrDefault(descriptor => descriptor.Id == id);
