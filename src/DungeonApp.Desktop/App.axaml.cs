@@ -11,9 +11,18 @@ using DungeonApp.Core.Modules.Dice;
 using DungeonApp.Core.Modules.Party;
 using DungeonApp.Core.Modules.Scheduler;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Desktop.Controls.Workspace;
+using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Clock;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Dice;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.History;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Party;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels.Scheduler;
 using DungeonApp.Desktop.Settings;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop;
@@ -24,6 +33,9 @@ public partial class App : Avalonia.Application
     private ModuleCatalog? _modules;
     private JsonCampaignJournalStore? _journal;
     private JsonCampaignRepository? _campaigns;
+    private CampaignWorkspacePreparationCache? _preparations;
+    private CampaignLibraryViewModel? _campaignLibrary;
+    private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
     public override void Initialize()
@@ -65,6 +77,50 @@ public partial class App : Avalonia.Application
         _journal = new JsonCampaignJournalStore(libraryPath);
 
         _campaigns = new JsonCampaignRepository(libraryPath, _modules, _journal, TimeProvider.System);
+
+        // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
+        // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
+        _preparations = new CampaignWorkspacePreparationCache(_campaigns, _journal, _layoutStore);
+
+        // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
+        // otwierające kampanię prowadzi do metody na powłoce, która jeszcze nie istnieje - domyka się
+        // nad polem `_shell` i rozstrzyga dopiero przy pierwszym kliknięciu, długo po tym jak
+        // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
+        _campaignLibrary = new CampaignLibraryViewModel(
+            _campaigns,
+            new CreateCampaign(_campaigns, _modules, TimeProvider.System),
+            _modules,
+            id => _shell!.OpenCampaignAsync(id));
+
+        // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Rozgrzewka wizualna jest
+        // rozbita na osobne kroki per typ panelu, żeby żaden jeden krok nie trzymał dispatchera przez
+        // czas rozgrzania całej deski naraz (patrz WarmCampaignWorkspaceVisualStep o tym, czemu sam
+        // stół kampanii został wyjątkiem).
+        var libraryStep = new LoadCampaignLibraryStep(_campaignLibrary);
+        var dataStep = new WarmCampaignDataStep(_preparations, libraryStep);
+
+        _startupSteps =
+        [
+            libraryStep,
+            dataStep,
+            new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns, _journal),
+            new WarmWorkspacePlaceholderStep(),
+            new WarmPanelVisualStep(
+                "Przygotowywanie panelu drużyny…",
+                () => new PanelWindow { Width = 480, Height = 260, Content = new PartyPanelView() }),
+            new WarmPanelVisualStep(
+                "Przygotowywanie panelu zegara…",
+                () => new PanelWindow { Width = 360, Height = 260, Content = new ClockPanelView() }),
+            new WarmPanelVisualStep(
+                "Przygotowywanie panelu kroniki…",
+                () => new PanelWindow { Width = 480, Height = 320, Content = new HistoryPanelView() }),
+            new WarmPanelVisualStep(
+                "Przygotowywanie panelu harmonogramu…",
+                () => new PanelWindow { Width = 360, Height = 320, Content = new SchedulerPanelView() }),
+            new WarmPanelVisualStep(
+                "Przygotowywanie panelu kości…",
+                () => new PanelWindow { Width = 480, Height = 128, Content = new DicePanelView() })
+        ];
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -75,8 +131,9 @@ public partial class App : Avalonia.Application
                 _layoutStore!,
                 _campaigns!,
                 _journal!,
-                new CreateCampaign(_campaigns!, _modules!, TimeProvider.System),
-                _modules!);
+                _campaignLibrary!,
+                _preparations!,
+                _startupSteps!);
 
             desktop.MainWindow = new MainWindow
             {

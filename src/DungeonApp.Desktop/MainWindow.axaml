@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="using:DungeonApp.Desktop.Shell"
         x:Class="DungeonApp.Desktop.MainWindow"
+        x:DataType="shell:AppShellViewModel"
         Width="1280"
         Height="800"
         MinWidth="{DynamicResource DungeonMinimumWindowWidth}"
@@ -10,5 +11,47 @@
         UseLayoutRounding="True"
         Title="DungeonApp">
 
-    <shell:AppShellView />
+    <Panel>
+        <shell:AppShellView />
+
+        <!--
+            Full-window startup curtain: covers topbar, sidebar and workspace alike, not just the
+            workspace cell. Temporary and minimal on purpose - a plain surface, a progress bar and a
+            message. Composition and branding are a later, separate mockup pass.
+
+            IsHitTestVisible drops the instant AppShellViewModel.IsReady flips; the fade itself is a
+            transition on Opacity and is not waited on.
+        -->
+        <Border Name="StartupCurtain"
+                Classes.ready="{Binding IsReady}"
+                IsHitTestVisible="{Binding IsStarting}"
+                Background="{DynamicResource DungeonBackstageBrush}">
+            <Border.Styles>
+                <Style Selector="Border#StartupCurtain">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="Transitions">
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.25" />
+                        </Transitions>
+                    </Setter>
+                </Style>
+                <Style Selector="Border#StartupCurtain.ready">
+                    <Setter Property="Opacity" Value="0" />
+                </Style>
+            </Border.Styles>
+
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="{DynamicResource DungeonSpacingLg}">
+                <ProgressBar Width="{DynamicResource DungeonLoadingProgressBarWidth}"
+                             Height="{DynamicResource DungeonLoadingProgressBarHeight}"
+                             Minimum="0"
+                             Maximum="{Binding TotalSteps}"
+                             Value="{Binding CompletedSteps}" />
+                <TextBlock HorizontalAlignment="Center"
+                           Foreground="{DynamicResource DungeonTextRegularBrush}"
+                           Text="{Binding StartupMessage}" />
+            </StackPanel>
+        </Border>
+    </Panel>
 </Window>

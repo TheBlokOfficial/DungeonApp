@@ -68,37 +68,10 @@
                                  DataContext="{Binding StatusBar}" />
 
         <!--
-            Startup is a readiness gate, not a splash screen: the real frame is already visible and
-            rendered, while storage and the cold campaign visual path are prepared. Navigation is
-            enabled only when the promise behind IsReady is true.
+            The startup readiness gate itself now lives one level up, in MainWindow: a full-window
+            curtain covers topbar, sidebar and workspace alike, not just this cell. This view keeps
+            only the invisible warmup host the startup steps attach their controls to.
         -->
-        <Border Grid.Row="1"
-                Grid.Column="1"
-                ZIndex="100"
-                IsVisible="{Binding IsStarting}"
-                Background="{DynamicResource DungeonBackstageBrush}">
-            <Border Width="400"
-                    Padding="24"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="{DynamicResource DungeonBackstageCardBrush}"
-                    BorderBrush="{DynamicResource DungeonBorderBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource DungeonCornerRadius}"
-                    BoxShadow="0 4 12 0 #30000000">
-                <StackPanel Spacing="14">
-                    <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}"
-                               FontSize="22"
-                               FontWeight="SemiBold"
-                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                               Text="Przygotowywanie aplikacji" />
-                    <TextBlock Foreground="{DynamicResource DungeonTextRegularBrush}"
-                               Text="{Binding StartupMessage}"
-                               TextWrapping="Wrap" />
-                    <ProgressBar IsIndeterminate="True" Height="4" />
-                </StackPanel>
-            </Border>
-        </Border>
 
         <!-- Attached only long enough to apply real workspace templates and complete one layout. -->
         <ContentControl Name="WarmupHost"

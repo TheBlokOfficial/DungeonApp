@@ -1,7 +1,9 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Journal;
-using DungeonApp.Core.Modules;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -9,6 +11,7 @@ using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.TopBar;
 using DungeonApp.Desktop.Shell.Workspace;
+using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell;
@@ -27,10 +30,12 @@ public sealed class AppShellViewModel : ObservableObject
     private readonly ICampaignJournalStore _journal;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignWorkspacePreparationCache _preparations;
+    private readonly IStartupStep[] _startupSteps;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
     private string _startupMessage = "Przygotowywanie biblioteki kampanii…";
+    private int _completedSteps;
 
     /// <summary>
     /// Both null while no campaign is open, and both replaced on every open: a desk belongs to one
@@ -39,25 +44,25 @@ public sealed class AppShellViewModel : ObservableObject
     /// </summary>
     private CampaignSession? _openCampaign;
     private CampaignWorkspaceViewModel? _campaignWorkspace;
-    private CampaignId? _warmupCampaignId;
 
     public AppShellViewModel(
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
         ICampaignJournalStore journal,
-        CreateCampaign createCampaign,
-        ModuleCatalog modules)
+        CampaignLibraryViewModel campaignLibrary,
+        CampaignWorkspacePreparationCache preparations,
+        IStartupStep[] startupSteps)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
         _journal = journal;
-        _preparations = new CampaignWorkspacePreparationCache(campaigns, journal, layoutStore);
+        _preparations = preparations;
+        _campaignLibrary = campaignLibrary;
+        _startupSteps = startupSteps;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected);
         StatusBar = new StatusBarViewModel("Gotowe");
-
-        _campaignLibrary = new CampaignLibraryViewModel(campaigns, createCampaign, modules, OpenCampaignAsync);
 
         // Backstage first. The desk is uncovered by opening a campaign, never before.
         _currentWorkspaceContent = _campaignLibrary;
@@ -89,6 +94,14 @@ public sealed class AppShellViewModel : ObservableObject
         private set => SetField(ref _startupMessage, value);
     }
 
+    public int TotalSteps => _startupSteps.Length;
+
+    public int CompletedSteps
+    {
+        get => _completedSteps;
+        private set => SetField(ref _completedSteps, value);
+    }
+
     public object CurrentWorkspaceContent
     {
         get => _currentWorkspaceContent;
@@ -96,48 +109,44 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Reads and prepares every campaign after the first frame. The view completes startup only
-    /// after its own visual warmup, so enabled navigation is a promise that both data and templates
-    /// are ready.
+    /// Uruchamia jawnie zarejestrowaną sekwencję kroków startowych - dane, potem rozgrzewka
+    /// wizualna, krok po kroku, z oddaniem sterowania dispatcherowi między nimi, żeby pasek postępu
+    /// zdążył się odświeżyć i żaden krok nie zamroził UI dłużej niż to, co sam rozgrzewa. Awaria
+    /// żadnego kroku nie blokuje wejścia do aplikacji - degraduje do zwykłego leniwego wczytywania.
     /// </summary>
-    public async Task InitializeAsync()
+    public async Task RunStartupAsync(StartupUiContext ui)
     {
-        StartupMessage = "Przygotowywanie biblioteki kampanii…";
-        var summaries = await _campaignLibrary.LoadAsync();
-
-        StartupMessage = "Przygotowywanie stołów kampanii…";
-        await _preparations.WarmAsync(summaries);
-
-        _warmupCampaignId = summaries.Count > 0 ? summaries[0].Id : null;
-
-        StartupMessage = "Optymalizowanie interfejsu…";
-    }
-
-    /// <summary>
-    /// Builds the same campaign ViewModel the navigation path will use, but borrows rather than
-    /// consumes its prepared data. The view attaches it for one real frame and disposes it before
-    /// enabling input.
-    /// </summary>
-    public async Task<CampaignWorkspaceViewModel?> CreateWorkspaceWarmupAsync()
-    {
-        if (_warmupCampaignId is not { } id ||
-            await _preparations.PeekAsync(id) is not { } preparation)
+        try
         {
-            return null;
-        }
+            foreach (var step in _startupSteps)
+            {
+                StartupMessage = step.Describe();
 
-        var session = new CampaignSession(preparation.Campaign, _campaigns, _journal);
-        return new CampaignWorkspaceViewModel(_layoutStore, session, preparation);
+                await step.PrepareAsync(CancellationToken.None).ConfigureAwait(true);
+                await step.ApplyAsync(ui, CancellationToken.None).ConfigureAwait(true);
+
+                CompletedSteps++;
+
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+            }
+
+            CompleteStartup();
+        }
+        catch (Exception)
+        {
+            ui.WarmupHost.Content = null;
+            CompleteStartupWithWarning();
+        }
     }
 
-    public void CompleteStartup()
+    private void CompleteStartup()
     {
         StartupMessage = string.Empty;
         IsReady = true;
         StatusBar.Message = "Gotowe";
     }
 
-    public void CompleteStartupWithWarning()
+    private void CompleteStartupWithWarning()
     {
         StartupMessage = string.Empty;
         IsReady = true;
@@ -147,7 +156,9 @@ public sealed class AppShellViewModel : ObservableObject
     /// <summary>Writes anything the shell has pending. Called from the application's shutdown hooks.</summary>
     public void FlushPendingState() => _campaignWorkspace?.FlushLayout();
 
-    private async Task OpenCampaignAsync(CampaignId id)
+    // Internal, nie private: korzeń kompozycji (App.Initialize) domyka na tę metodę wskaźnik
+    // zwrotny biblioteki kampanii, zanim ta instancja powłoki w ogóle powstanie.
+    internal async Task OpenCampaignAsync(CampaignId id)
     {
         var preparation = await _preparations.TakeAsync(id);
         var campaign = preparation.Campaign;
