@@ -1,6 +1,6 @@
 # Mapa kodu
 
-Stan na commit 4299eca (2026-09-05).
+Stan na commit 3571de6 (2026-09-05).
 
 Dokument opisuje stan faktyczny (kto od kogo zależy, którędy płyną dane).
 Reguły normatywne żyją w `docs/architecture.md`.
@@ -11,60 +11,59 @@ Reguły normatywne żyją w `docs/architecture.md`.
 |---|---|
 | `src/DungeonApp.Core` | Logika domenowa i persystencja, bez referencji do Avalonia/UI. |
 | `src/DungeonApp.Core/Campaigns` | Tożsamość i tworzenie kampanii (`Campaign`, `CampaignId`, `CreateCampaign`, `ICampaignRepository`). |
-| `src/DungeonApp.Core/Events` | Magistrala zdarzeń wewnątrz kampanii (`CampaignEvents`, `ICampaignEvent`). |
-| `src/DungeonApp.Core/Journal` | Kronika kampanii — wpisy i interfejs magazynu (`CampaignJournal`, `JournalEntry`, `ICampaignJournalStore`). |
-| `src/DungeonApp.Core/Modules` | Kontrakt modułu, katalog modułów, kolejność aktywacji (`ICampaignModule`, `ModuleCatalog`, `CampaignModules`). |
-| `src/DungeonApp.Core/Modules/Clock` | Moduł zegara światowego. |
-| `src/DungeonApp.Core/Modules/Dice` | Moduł rzutów kośćmi. |
-| `src/DungeonApp.Core/Modules/Party` | Moduł drużyny. |
-| `src/DungeonApp.Core/Modules/Scheduler` | Moduł harmonogramu zdarzeń świata. |
-| `src/DungeonApp.Core/Persistence` | Jedyne miejsce z `System.IO` — zapis/odczyt kampanii i kroniki jako JSON na dysku. |
+| `src/DungeonApp.Core/Events` | Magistrala zdarzeń wewnątrz kampanii (`CampaignEvents`, `ICampaignEvent`) — dziś bez żadnego zdefiniowanego typu zdarzenia w `src/`. |
+| `src/DungeonApp.Core/Modules` | Kontrakt modułu, katalog modułów, kolejność aktywacji (`ICampaignModule`, `ModuleCatalog`, `CampaignModules`) — dziś bez żadnego modułu domenowego zarejestrowanego w kompozycji. |
+| `src/DungeonApp.Core/Persistence` | Jedyne miejsce z `System.IO` w Core — zapis/odczyt kampanii jako JSON na dysku. |
 | `src/DungeonApp.Desktop` | Aplikacja Avalonia — UI, ViewModele, kompozycja aplikacji (`App.axaml.cs`). |
 | `src/DungeonApp.Desktop/Assets` | Fonty (Alegreya), ikony SVG (Lucide), licencje. |
 | `src/DungeonApp.Desktop/Controls` | Kontrolki wielokrotnego użytku (`Controls/Workspace`). |
-| `src/DungeonApp.Desktop/Features/CampaignLibrary` | Ekran wyboru/tworzenia kampanii. |
+| `src/DungeonApp.Desktop/Features/CampaignLibrary` | Ekran wyboru/tworzenia kampanii — bez sekcji wyboru modułów: tworzenie kampanii zawsze woła `CreateCampaign` z pustą listą modułów. |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace` | Widok roboczy otwartej kampanii: talia paneli, układ, cache przygotowania. |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace/Deck` | Widok talii paneli (`PanelDeckView`). |
 | `src/DungeonApp.Desktop/Features/CampaignWorkspace/Layout` | Zapis/odczyt układu workspace'u na dysku (`WorkspaceLayoutStore`, `WorkspaceLayoutSession`). |
-| `src/DungeonApp.Desktop/Features/CampaignWorkspace/Panels` | Panele per moduł Core (Clock, Dice, History, Party, Scheduler) + katalog paneli. |
+| `src/DungeonApp.Desktop/Features/CampaignWorkspace/Panels` | Ogólny kontrakt panelu i pusty katalog paneli (`PanelCatalog`, `WorkspacePanelDescriptor`, `WorkspacePanelViewModel`, `PanelActionViewModel`) — żadnego panelu per moduł Core dziś nie ma. |
 | `src/DungeonApp.Desktop/Settings` | Ustawienia aplikacji na dysku (`AppSettingsStore`). |
 | `src/DungeonApp.Desktop/Shell` | Powłoka okna: pasek boczny, pasek statusu, pasek górny, sesja kampanii. |
 | `src/DungeonApp.Desktop/Shell/Sidebars` | Globalny pasek boczny nawigacji. |
 | `src/DungeonApp.Desktop/Shell/StatusBar` | Pasek statusu. |
 | `src/DungeonApp.Desktop/Shell/TopBar` | Pasek górny. |
 | `src/DungeonApp.Desktop/Shell/Workspace` | Placeholder workspace'u (brak otwartej kampanii). |
-| `src/DungeonApp.Desktop/Startup` | Sekwencja kroków startu aplikacji (`IStartupStep`, dziewięć kroków, `VisualWarmupHost`, `StartupUiContext`). |
+| `src/DungeonApp.Desktop/Startup` | Sekwencja kroków startu aplikacji (`IStartupStep`, cztery kroki w kompozycji, `VisualWarmupHost`, `StartupUiContext`). Zawiera też `WarmPanelVisualStep` — ogólny mechanizm rozgrzewki panelu, dziś w `App.axaml.cs` nieużyty (brak paneli do rozgrzania). |
 | `src/DungeonApp.Desktop/Themes` | Skala UI, tokeny, style kontrolek, ikony (`Tokens.axaml`, `Icons.axaml`, `UiScaleProfiles.cs`). |
 | `src/DungeonApp.Desktop/ViewModels` | Bazowe klasy ViewModel (`ObservableObject`, `AsyncCommand`). |
-| `tests/DungeonApp.Core.Tests` | Testy Core: architektura, kampanie, moduły, zdarzenia, persystencja. |
-| `tests/DungeonApp.Desktop.Tests` | Testy Desktop: wybór modułów w bibliotece kampanii, cache przygotowania, magazyn układu. |
+| `tests/DungeonApp.Core.Tests` | Testy Core: architektura, kampanie, moduły (na atrapie `StubModule`), zdarzenia, persystencja. |
+| `tests/DungeonApp.Desktop.Tests` | Testy Desktop: cache przygotowania, magazyn układu. |
 | `tools/MockupRenderer` | Narzędzie deweloperskie poza `DungeonApp.sln`: renderuje `.axaml` z `design/mockups/` do PNG headless (Skia), z atrapą danych z JSON. Własny `README.md`. |
 
 ## 2. Graf modułów
 
-| ModuleId | Typ i ścieżka | StateVersion | Requires |
-|---|---|---|---|
-| `core.clock` | `ClockModule`, `Core/Modules/Clock/ClockModule.cs` | 1 | `[]` |
-| `core.scheduler` | `SchedulerModule`, `Core/Modules/Scheduler/SchedulerModule.cs` | 1 | `[core.clock]` |
-| `core.party` | `PartyModule`, `Core/Modules/Party/PartyModule.cs` | 1 | `[]` |
-| `core.dice` | `DiceModule`, `Core/Modules/Dice/DiceModule.cs` | 1 | `[]` |
+Katalog modułów (`ModuleCatalog`) istnieje, ale kompozycja aplikacji
+(`App.axaml.cs`) tworzy `new ModuleCatalog()` i nie rejestruje w nim ani
+jednego modułu — `Register` nie jest wołane. Żaden moduł domenowy (zegar,
+kości, drużyna, harmonogram) nie istnieje dziś w `src/`; jedyny typ
+implementujący `ICampaignModule` w repozytorium to `StubModule` w
+`tests/DungeonApp.Core.Tests/Fakes`, używany wyłącznie przez testy.
 
-Rejestracja w katalogu (`App.axaml.cs`): Clock, Scheduler, Party, Dice — w tej kolejności.
+Konsekwencja: `CreateCampaign` zawsze dostaje pustą listę modułów
+(`CampaignLibraryViewModel.CreateAsync` woła `_createCampaign.ExecuteAsync(NewCampaignName, [])`),
+a `PanelCatalog.For(...)` zawsze zwraca pustą listę deskryptorów — patrz
+sekcja 6.
 
 ### Wywołania `Get<T>()` / `TryGet<T>()`
 
-| Wołający (plik) | Sięga po | Pokryte w `Manifest.Requires`? |
-|---|---|---|
-| `Core/Modules/Scheduler/SchedulerModule.cs:52` — `context.Modules.Get<ClockModule>()` | `ClockModule` | Tak — `SchedulerModule.Manifest.Requires = [ClockModule.Id]`. |
-
-Innych wywołań `Get<T>()`/`TryGet<T>()` w `src/` brak — Desktop nie sięga do `CampaignModules.Get<T>()`, panele dostają moduł wprost przez konstruktor ViewModelu (patrz sekcja 6).
+Brak wywołań `CampaignModules.Get<T>()`/`TryGet<T>()` w `src/`. Jedyne
+użycia (`Modules.Get<StubModule>()`) leżą w
+`tests/DungeonApp.Core.Tests/Persistence/ModuleStatePersistenceTests.cs`.
 
 ## 3. Zdarzenia
 
-| Typ zdarzenia | Definicja | Publikuje (plik) | Konsumuje (pliki) |
-|---|---|---|---|
-| `WorldTimeAdvanced` | `Core/Modules/Clock/ClockModule.cs:81` | `ClockModule.cs:66` (`AdvanceTime`) | `SchedulerModule.cs:55` (`OnWorldTimeAdvanced`) |
-| `ScheduledWorldEventDue` | `Core/Modules/Scheduler/SchedulerModule.cs:12` | `SchedulerModule.cs:122` (po przejściu due) | **brak konsumenta w `src/`** |
+Magistrala zdarzeń (`CampaignEvents`, `ICampaignEvent`) istnieje w
+`Core/Events`, ale w `src/` nie ma dziś żadnego typu implementującego
+`ICampaignEvent` — bez modułów domenowych nie ma nic, co publikowałoby albo
+konsumowało zdarzenie. Tabela typ/publikujący/konsument jest dziś pusta.
+
+`tests/DungeonApp.Core.Tests/Events/CampaignEventsTests.cs` ćwiczy magistralę
+na zdarzeniach zdefiniowanych lokalnie w pliku testowym, nie na typach z `src/`.
 
 ## 4. Granica Core / Desktop
 
@@ -72,25 +71,24 @@ Referencja projektu: `DungeonApp.Desktop.csproj` → `ProjectReference` na `Dung
 
 | Warstwa Desktop | Używane pojęcie Core |
 |---|---|
-| `Panels/Clock/ClockPanelViewModel.cs` | `Core.Modules.Clock` (`ClockModule`, `CampaignTime`) |
-| `Panels/Dice/DicePanelViewModel.cs` | `Core.Modules.Dice` (`DiceModule`) |
-| `Panels/Party/PartyPanelViewModel.cs` | `Core.Modules.Party` (`PartyModule`) |
-| `Panels/Scheduler/SchedulerPanelViewModel.cs` | `Core.Modules.Clock`, `Core.Modules.Scheduler` |
-| `Panels/History/HistoryPanelViewModel.cs` | `Core.Journal` (`CampaignJournal`/`JournalEntry`) |
-| `App.axaml.cs`, `Shell/*`, `Features/CampaignLibrary/*` | `Core.Campaigns` (`Campaign`, `CreateCampaign`, `ICampaignRepository`), `Core.Modules` (`ModuleCatalog`), `Core.Persistence` (`JsonCampaignRepository`, `JsonCampaignJournalStore`), `Core.Journal` |
-| `Startup/*` | `Core.Campaigns` (`CampaignId`, `ICampaignRepository`), `Core.Journal` (`ICampaignJournalStore`) — w `WarmCampaignWorkspaceVisualStep`, do zbudowania `CampaignSession` na potrzeby rozgrzewki |
+| `App.axaml.cs`, `Shell/*`, `Features/CampaignLibrary/*` | `Core.Campaigns` (`Campaign`, `CreateCampaign`, `ICampaignRepository`), `Core.Modules` (`ModuleCatalog`), `Core.Persistence` (`JsonCampaignRepository`) |
+| `Startup/*` | `Core.Campaigns` (`CampaignId`, `ICampaignRepository`), do zbudowania `CampaignSession` na potrzeby rozgrzewki (`WarmCampaignWorkspaceVisualStep`) |
+
+Żaden plik pod `Features/CampaignWorkspace/Panels` nie sięga dziś po
+konkretny moduł Core — katalog paneli jest pusty (sekcja 6), więc nie ma
+panelu, który mógłby to zrobić.
 
 ## 5. Przepływ zapisu
 
 Kompozycja (`App.axaml.cs`, `Initialize()`):
-`libraryPath = MyDocuments/DungeonApp/Campaigns` → `JsonCampaignJournalStore(libraryPath)` i `JsonCampaignRepository(libraryPath, modules, journal, TimeProvider.System)`, wstrzyknięte do `AppShellViewModel`.
+`libraryPath = MyDocuments/DungeonApp/Campaigns` → `JsonCampaignRepository(libraryPath, modules)`, wstrzyknięty do `AppShellViewModel`. `ModuleCatalog` przekazany do repozytorium jest pusty (sekcja 2) — repozytorium odmówi otwarcia każdego zapisu, który wymienia jakikolwiek moduł.
 
 Ścieżka zapisu jednej kampanii (`JsonCampaignRepository`, `Core/Persistence/JsonCampaignRepository.cs`):
 - katalog kampanii: `<libraryPath>/<CampaignId:D>/`
 - `campaign.json` — manifest kampanii (zapis atomowy: plik tymczasowy → `File.Move(overwrite:true)`)
-- `<katalog>/modules/<ModuleId>.json` — stan każdego aktywnego modułu (`CaptureState()` → JSON), analogicznie atomowo
-- `<katalog>/backups/<znacznik>/` — kopia `campaign.json` i `modules/*.json` przy operacji backupu
-- kronika osobno, przez `JsonCampaignJournalStore` (`Core/Persistence/JsonCampaignJournalStore.cs`): `<katalog>/journal/<rok-miesiąc>.jsonl`, dopisywana (`File.AppendAllLinesAsync`), nigdy nadpisywana
+- `<katalog>/modules/<ModuleId>.json` — stan każdego aktywnego modułu (`CaptureState()` → JSON), analogicznie atomowo; dziś zawsze pusty zbiór, bo żaden moduł nie jest aktywny
+- kopii zapasowych repozytorium nie tworzy — mechanizm rolujących backupów (`<katalog>/backups/...`) został usunięty razem z resztą warstwy domenowej
+- kroniki kampanii nie ma — `Core/Journal` (moduł, wpisy, magazyn) zniknął w całości; nie ma dziś nic w `src/`, co czytałoby albo pisało dziennik sesji
 
 Odczyt: `JsonCampaignRepository` czyta `campaign.json`, tworzy moduły przez `ModuleCatalog.Create`, wywołuje `RestoreState(object, version)` z danymi z `modules/<id>.json`.
 
@@ -102,8 +100,7 @@ Odrębnie w warstwie Desktop:
 
 | Plik | Charakter użycia |
 |---|---|
-| `Core/Persistence/JsonCampaignRepository.cs` | Pełny odczyt/zapis/backup na dysku — zgodne z regułą. |
-| `Core/Persistence/JsonCampaignJournalStore.cs` | Pełny odczyt/dopisywanie plików kroniki — zgodne z regułą. |
+| `Core/Persistence/JsonCampaignRepository.cs` | Pełny odczyt/zapis kampanii i stanu modułów na dysku (bez backupu) — zgodne z regułą. |
 | `Desktop/Settings/AppSettingsStore.cs` | Pełny odczyt/zapis `settings.json` — poza `Core/Persistence`. |
 | `Desktop/Features/CampaignWorkspace/Layout/WorkspaceLayoutStore.cs` | Pełny odczyt/zapis layoutu — poza `Core/Persistence`. |
 | `Desktop/App.axaml.cs` | Tylko `Path.Combine` do zbudowania ścieżek przekazywanych dalej do Core; brak `File.`/`Directory.`. |
@@ -116,23 +113,23 @@ Odrębnie w warstwie Desktop:
 
 Struktura: `Shell` (powłoka okna, nawigacja, pasek statusu/góry) → `Features/CampaignLibrary` (wybór/tworzenie kampanii) → `Features/CampaignWorkspace` (talia paneli otwartej kampanii).
 
-| Panel | ViewModel (plik) | Moduł/pojęcie Core |
-|---|---|---|
-| Zegar | `Panels/Clock/ClockPanelViewModel.cs` | `ClockModule` |
-| Kości | `Panels/Dice/DicePanelViewModel.cs` | `DiceModule` |
-| Drużyna | `Panels/Party/PartyPanelViewModel.cs` | `PartyModule` |
-| Harmonogram | `Panels/Scheduler/SchedulerPanelViewModel.cs` | `SchedulerModule`, `ClockModule` |
-| Historia | `Panels/History/HistoryPanelViewModel.cs` | `CampaignJournal` (`Core.Journal`) |
+Katalog paneli (`PanelCatalog.For(CampaignSession)`) zawsze zwraca pustą
+listę — komentarz w kodzie mówi to wprost: „This build ships no panels: the
+descriptor set is always empty, and every campaign opens onto a bare desk
+until a panel is added back.” Nie ma dziś w repozytorium ani jednego panelu
+per moduł (Zegar/Kości/Drużyna/Harmonogram/Historia zniknęły wraz z modułami
+i kroniką) — tabela panel↔ViewModel↔moduł jest więc pusta. Kontrakt panelu
+(`WorkspacePanelDescriptor`, `WorkspacePanelViewModel`, `PanelActionViewModel`)
+i widok talii (`CampaignWorkspace/Deck/PanelDeckView.axaml.cs`) zostały, ale
+bez treści do wyświetlenia — kampania otwiera się na pustym biurku.
 
-Katalog paneli: `Panels/PanelCatalog.cs` + `Panels/WorkspacePanelDescriptor.cs` (deskryptor: panel ↔ moduł); rejestrowanie i widoczność paneli w talii: `CampaignWorkspace/Deck/PanelDeckView.axaml.cs`.
-
-Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy, w tym nowa skala `DungeonSpacingXs..Xxxl`/`DungeonPaddingXs..Xxxl`), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek, w tym nowy styl `ProgressBar`), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI). Istniejące widoki nie są dziś przepięte na nową skalę odstępów — liczby wpisane wprost zostały jak były.
+Zasoby motywu: `Themes/Tokens.axaml` (skala/kolory/odstępy, w tym skala `DungeonSpacingXs..Xxxl`/`DungeonPaddingXs..Xxxl`), `Themes/Icons.axaml` (ikony SVG), `Themes/BuiltInControls.axaml` i `Themes/DungeonControls.axaml` (style kontrolek, w tym styl `ProgressBar`), `Themes/UiScaleProfiles.cs`/`UiScaleProfile.cs` (profile skalowania UI). Istniejące widoki nie są dziś przepięte na nową skalę odstępów — liczby wpisane wprost zostały jak były.
 
 ### Start aplikacji
 
 Korzeń kompozycji: `App.Initialize()` buduje `CampaignWorkspacePreparationCache`, `CampaignLibraryViewModel` i jawną tablicę `IStartupStep[]` (kolejność w tablicy = kolejność wykonania); `OnFrameworkInitializationCompleted` dopiero wtedy konstruuje `AppShellViewModel`, przyjmujący te trzy jako parametry — powłoka nic z tego sama nie tworzy.
 
-Dziewięć kroków w `Startup/` (kontrakt `IStartupStep`, opisany w `docs/architecture.md`): `LoadCampaignLibraryStep`, `WarmCampaignDataStep`, `WarmCampaignWorkspaceVisualStep`, `WarmWorkspacePlaceholderStep`, 5× `WarmPanelVisualStep` (Drużyna, Zegar, Kronika, Harmonogram, Kości — w tej kolejności w tablicy). Wspólna mechanika rozgrzewki wizualnej: `VisualWarmupHost.AttachAndWaitAsync`.
+Cztery kroki w `Startup/` (kontrakt `IStartupStep`, opisany w `docs/architecture.md`): `LoadCampaignLibraryStep`, `WarmCampaignDataStep`, `WarmCampaignWorkspaceVisualStep`, `WarmWorkspacePlaceholderStep` — w tej kolejności w tablicy. Klasa `WarmPanelVisualStep` (rozgrzewka jednego typu panelu deski) istnieje w `Startup/`, ale `App.axaml.cs` nie tworzy z niej żadnej instancji: bez paneli (sekcja 6) nie ma czego rozgrzewać per typ. Wspólna mechanika rozgrzewki wizualnej: `VisualWarmupHost.AttachAndWaitAsync`.
 
 Runner: `AppShellViewModel.RunStartupAsync(StartupUiContext)`; wywołanie: `AppShellView.OnLoaded` (jeden `await`, jednorazowo, strzeżone flagą `_startupStarted`). Postęp startu (`CompletedSteps`/`TotalSteps`) liczony krokami, bez wag.
 
@@ -148,26 +145,15 @@ Dług: `CampaignLibraryViewModel` przyjmuje `Func<CampaignId, Task>` jako callba
 | `Core.Tests/Campaigns/CampaignNameTests.cs` | Walidację `CampaignName`. |
 | `Core.Tests/Campaigns/CampaignTests.cs` | Zachowanie encji `Campaign` i jej tożsamości. |
 | `Core.Tests/Campaigns/CreateCampaignTests.cs` | Przypadek użycia tworzenia kampanii (`CreateCampaign`). |
-| `Core.Tests/Events/CampaignEventsTests.cs` | Magistralę zdarzeń: kolejność, kaskadę, izolację między instancjami. |
+| `Core.Tests/Events/CampaignEventsTests.cs` | Magistralę zdarzeń: kolejność, kaskadę, izolację między instancjami — na zdarzeniach zdefiniowanych lokalnie w teście, nie na typach z `src/`. |
 | `Core.Tests/Fakes/FixedTimeProvider.cs` | Test double: zegar zamrożony na jednej chwili. |
 | `Core.Tests/Fakes/InMemoryCampaignRepository.cs` | Test double: repozytorium kampanii w pamięci, zastępujące dysk w testach przypadków użycia. |
-| `Core.Tests/Fakes/StubModule.cs` | Test double: moduł bez zachowania, do testów montażu zestawu modułów. |
+| `Core.Tests/Fakes/StubModule.cs` | Test double: moduł bez zachowania, do testów montażu zestawu modułów i persystencji — jedyna implementacja `ICampaignModule` w repozytorium poza `src/`. |
 | `Core.Tests/Fakes/TemporaryLibrary.cs` | Test double: tymczasowa biblioteka kampanii na prawdziwym systemie plików. |
-| `Core.Tests/Modules/CampaignModulesTests.cs` | Aktywację zestawu modułów: kolejność topologiczna, cykl, brakująca zależność. |
-| `Core.Tests/Modules/ClockModuleTests.cs` | Zachowanie `ClockModule` (upływ czasu, publikacja `WorldTimeAdvanced`). |
-| `Core.Tests/Modules/DiceModuleTests.cs` | Zachowanie `DiceModule` przy ustalonym seedzie. |
-| `Core.Tests/Modules/DiceNotationTests.cs` | Parsowanie notacji kości. |
+| `Core.Tests/Modules/CampaignModulesTests.cs` | Aktywację zestawu modułów: kolejność topologiczna, cykl, brakująca zależność (na `StubModule`). |
 | `Core.Tests/Modules/ModuleCatalogTests.cs` | `ModuleCatalog`: rejestrację, domknięcie zależności, kolejność. |
 | `Core.Tests/Modules/ModuleIdTests.cs` | Walidację `ModuleId` (bezpieczeństwo jako nazwa pliku). |
-| `Core.Tests/Modules/PartyModuleTests.cs` | Zachowanie `PartyModule`. |
-| `Core.Tests/Modules/SchedulerModuleTests.cs` | Zachowanie `SchedulerModule`, w tym `Get<ClockModule>()` i subskrypcję `WorldTimeAdvanced`. |
-| `Core.Tests/Persistence/CampaignJournalTests.cs` | Zachowanie `CampaignJournal` (dodawanie wpisów). |
-| `Core.Tests/Persistence/ClockRoundTripTests.cs` | Pełny cykl `ClockModule`: utworzenie, zapis, ponowne otwarcie. |
-| `Core.Tests/Persistence/DiceRoundTripTests.cs` | Pełny cykl `DiceModule` z pustym stanem przez zapis/odczyt. |
-| `Core.Tests/Persistence/JsonCampaignRepositoryTests.cs` | `JsonCampaignRepository`: zapis atomowy, listowanie, backup, odmowy. |
-| `Core.Tests/Persistence/ModuleStatePersistenceTests.cs` | Serializację/deserializację stanu modułu do i z JSON. |
-| `Core.Tests/Persistence/PartyRoundTripTests.cs` | Pełny cykl `PartyModule` przez zapis/odczyt. |
-| `Core.Tests/Persistence/SchedulerRoundTripTests.cs` | Pełny cykl dwóch współpracujących modułów (`SchedulerModule`+`ClockModule`) przez zapis/odczyt. |
-| `Desktop.Tests/CampaignLibraryModuleChoiceTests.cs` | Że wybór modułów na ekranie biblioteki nigdy nie zleca Core zestawu odrzucanego przez `ModuleCatalog`. |
+| `Core.Tests/Persistence/JsonCampaignRepositoryTests.cs` | `JsonCampaignRepository`: zapis atomowy, listowanie, odmowy. |
+| `Core.Tests/Persistence/ModuleStatePersistenceTests.cs` | Serializację/deserializację stanu modułu do i z JSON (na `StubModule`). |
 | `Desktop.Tests/CampaignWorkspacePreparationCacheTests.cs` | `CampaignWorkspacePreparationCache`. |
 | `Desktop.Tests/WorkspaceLayoutStoreTests.cs` | `WorkspaceLayoutStore`: zapis/odczyt układu workspace'u na dysku. |
