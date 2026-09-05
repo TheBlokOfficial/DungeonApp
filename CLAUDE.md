@@ -34,9 +34,9 @@ część wyłącznie konwencją — dokument mówi które i dlaczego.
 3. Sposób, w jaki część systemu deklaruje swoje istnienie i to, czego używa.
 4. Sposób, w jaki części systemu porozumiewają się między sobą — zawsze
    pośrednio, nigdy przez bezpośrednie sięgnięcie do siebie nawzajem.
-5. Nieznajomość formatu zapisu przez logikę domenową oraz jedyność drogi
-   zapisu: nowy stan powstaje wyłącznie w jednym miejscu, zawsze nazwany
-   i uzasadniony.
+5. Nieznajomość formatu zapisu przez logikę domenową, jedyność drogi
+   zapisu — nowy stan powstaje wyłącznie w jednym miejscu — oraz zgodność
+   każdego zapisu z zadeklarowanym kształtem danych.
 
 Nazwy dzisiejszych mechanizmów, które to realizują, celowo nie padają tutaj
 — żyją w `docs/architecture.md`, bo mogą się zmienić. Powyższe własności

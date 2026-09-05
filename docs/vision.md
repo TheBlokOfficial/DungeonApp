@@ -26,7 +26,7 @@ bo systemowe jest głównie rozstrzyganie, a księgowość jest wspólna.
 Granica: **automatyzujemy wszystko, co jest deterministyczne po decyzji MG,
 i nigdy samą decyzję.** „MG mówi: długi odpoczynek" → aplikacja stosuje
 odnowienia dla całej drużyny. „MG mówi: trafił za 7" → aplikacja odejmuje 7
-i zapisuje w kronice. Aplikacja nigdy nie pyta, czy trafił.
+od zdrowia. Aplikacja nigdy nie pyta, czy trafił.
 
 To jest zarazem sprawdzian dla każdej przyszłej funkcji: *czy ona
 rozstrzyga, czy pamięta?* Jeśli rozstrzyga — wypada z zakresu albo wymaga
@@ -43,10 +43,15 @@ sprawy stoją.
 
 Stąd trzy decyzje:
 
-- **Stan jako migawka, nie event sourcing.** Kampania trzyma bieżący stan.
-  Kronika jest zapisem dla człowieka, nie źródłem prawdy do odtworzenia.
+- **Stan jako migawka, nie event sourcing.** Kampania trzyma bieżący stan,
+  nie dziennik zdarzeń, z którego dałoby się go maszynowo odtworzyć.
 - **Kampania to katalog, nie plik.** Rozerwany zapis daje się wtedy wykryć,
-  zamiast po cichu uszkodzić całość.
+  zamiast po cichu uszkodzić całość. Kopia zapasowa to skopiowany katalog
+  kampanii z zewnątrz — model save game, nie mechanizm wewnątrz formatu
+  zapisu. To wyklucza wersjonowanie per plik, regenerację i historię
+  pokoleń wewnątrz kampanii: manifest i pliki sekcji noszą wspólny numer
+  pokolenia, a rozjazd między nimi znaczy zapis przerwany w połowie, nic
+  więcej — to wykrywanie uszkodzenia, nie historia. Zapis jest atomowy.
 - **Zakładanie kampanii pyta o tożsamość** — nazwa, system, data startowa —
   nie o konfigurację. Zaczynasz od treści, nie od ustawień.
 
@@ -82,16 +87,17 @@ schowania w zasobniku i przywrócenia.
 
 - **Zasobnik trzyma panele, nie narzędzia.** Co jest pod spodem — logika czy
   treść — jest dla zasobnika niewidoczne. MG nigdy nie widzi słowa
-  „narzędzie"; widzi okna: Drużyna, Czas świata, Kronika.
+  „narzędzie"; widzi okna: Drużyna, Czas świata, Notatki.
 - **Panele i narzędzia nie stoją w relacji jeden do jednego.** Jedno
   narzędzie może dać dwa okna; jedno okno może czerpać z dwóch źródeł.
-  Panel może też nie mieć narzędzia pod spodem — kronika taki jest.
+  Panel może też nie mieć narzędzia pod spodem — notatki są takim
+  przypadkiem: wpisana treść po prostu leży, nic z niej nie wynika samo.
 - **Logika nigdy nie mieszka w panelu.** Panel przedstawia i przyjmuje
   polecenia, nie wylicza następstw. Narzędziem jest to, co zostaje po
   zabraniu okna — i co da się przetestować bez okna.
 
 Reguła nie ma wyjątków: **wszystko, co leży na blacie, korzysta z modelu
-okna** — lista postaci tak samo jak kronika czy zegar. Poza biurkiem żyją
+okna** — lista postaci tak samo jak notatki czy zegar. Poza biurkiem żyją
 tylko widoki powłoki, których blat nie dotyczy: biblioteka kampanii i
 ustawienia. Jak prezentować pełną kartę pojedynczej postaci, rozstrzygniemy,
 gdy będzie powstawać — ale wejściem do niej jest okno listy, nie osobny
@@ -143,8 +149,9 @@ To nie jest trójkąt, tylko pętla o jednokierunkowych krawędziach:
    danych i wróciłaby własność treści przez narzędzia.
 2. **Okno → narzędzie.** Kliknięcie niczego nie zmienia samo; okno zgłasza
    nazwany zamiar („przesuń o trzy dni").
-3. **Narzędzie → dane.** Narzędzie wylicza następstwa i zapisuje je jako
-   nazwane zmiany. To jedyne miejsce, w którym powstaje nowy stan.
+3. **Narzędzie → dane.** Narzędzie oddaje przekształcenie, a rdzeń stosuje
+   je do bieżącej wartości sekcji. To jedyne miejsce, w którym powstaje
+   nowy stan.
 4. **Dane → okno.** Sekcja się zmieniła, okno odczytuje ją ponownie. Bez
    odpytywania w pętli i bez przesyłania wartości w zdarzeniu.
 
@@ -177,26 +184,55 @@ kształtu nie jest własnością danych: sekcję może czytać i zmieniać każd
 narzędzie, które ją zadeklarowało. Kształty treści systemowej należą do
 definicji systemu, nie do narzędzia.
 
+Definicja i treść kampanii to dwa różne światy danych. Definicja — czym
+jest dana rzecz, jakie ma pola — leży poza treścią kampanii, jest wspólna
+dla systemu i kampania jej nie zmienia. Treść kampanii to sekcje: zmienne,
+własne dla kampanii, w jej katalogu. Kampania trzyma referencję do
+definicji plus dane instancji — zapis w rodzaju „core:iron_sword, sztuk: 1"
+— nigdy kopię definicji. Gdy referencja się nie rozwiązuje (brak definicji
+przy odczycie), dane zostają nienaruszone: fakt jest zgłaszany jako
+nieodnaleziony, nic nie jest usuwane ani „naprawiane" — kampania otwiera
+się normalnie, a po przywróceniu definicji wszystko wraca samo. Zapis nie
+sprawdza, czy cel referencji istnieje — sprawdza tylko, że pole ma postać
+referencji; inaczej kampania zapisana przy komplecie definicji stałaby się
+niezapisywalna po ich zmianie.
+
 Sekcje są **rejestrowane, nie posiadane**. Rejestr żyje w rdzeniu i trzyma
-nazwę sekcji, jej bieżącą wersję i ścieżki migracji — nic więcej. Kształtu
-treści ani walidacji pól rejestr nie zna: rdzeń wie, że sekcja istnieje i w
-jakiej jest wersji, nie wie, co ona znaczy. Narzędzie deklaruje wyłącznie,
+nazwę sekcji, jej bieżącą wersję, jej **kształt** i ścieżki migracji — nic
+więcej. Kształt opisuje budowę: z jakich nazwanych pól i jakich typów sekcja się
+składa. Język kształtu startuje na minimum — zestaw nazwanych pól o typach
+prostych — a zagnieżdżanie, warianty i referencje dochodzą,
+gdy pojawi się treść, która ich wymaga. Rdzeń przy zapisie sprawdza
+zgodność wyniku z zadeklarowanym kształtem, ale kształt nigdy nie niesie
+reguły między wartościami: „to pole jest referencją" — tak, „ta wartość
+musi być większa od tamtej" — nie; reguła między wartościami to robota
+narzędzia albo robota MG. Bez tej granicy język kształtu stałby się
+interpreterem, przed którym ten dokument już ostrzega w części o systemie
+gry. Znajomość budowy nie jest znajomością znaczenia: rdzeń wie, z jakich pól
+i typów sekcja się składa, nie wie, czym te rzeczy są w świecie gry — ta granica zostaje w mocy. Narzędzie deklaruje wyłącznie,
 których sekcji używa — które czyta, które zmienia. Granica jest postawiona
 świadomie: nazwa sekcji w rejestrze to wpis w tablicy, nie pole w schemacie
 formatu zapisu. Rejestr jest następcą dzisiejszego katalogu modułów, nie
 drugim rejestrem obok niego, i dziedziczy jego własność — wpis wprost w
 pliku, zero magii ładowania, zmiana widoczna w diffie.
 
-**Zmiany są nazwane, nie przypisywane.** Narzędzie samo wylicza nową treść
-sekcji, ale jedyne wejście zapisu wymaga podania nazwy zmiany i powodu —
-„zwiększ zmęczenie o jeden, powód: dzień marszu". Rdzeń nowej treści nie
-interpretuje: podstawia ją, podbija generację i zapisuje wpis w kronice.
-Nie ma drugiej drogi zapisu — to jedyne egzekwowanie tej reguły, trzyma się
-na kształcie API, nie na teście. Z tego wynika wprost, że „cofnij" jest poza
+**Zapis to przekształcenie, nie gotowa treść.** Narzędzie nie oddaje nowej
+wartości sekcji — oddaje przekształcenie, które rdzeń stosuje do wartości
+bieżącej. Powód: narzędzia budzone zdarzeniami pracują kaskadowo, więc
+treść wyliczona na kopii sprzed cudzego zapisu po cichu skasowałaby tamten
+zapis. Przekształcenie daje ten sam wynik niezależnie od tego, co zaszło
+między odczytem a zapisem. Rdzeń przekształcenia nie interpretuje —
+wykonuje je, sprawdza zgodność wyniku z zadeklarowanym kształtem sekcji i
+ogłasza na magistrali, że sekcja się zmieniła. Zapis nie niesie nazwy ani
+powodu: istnieje po to, żeby wiadomo było, że sekcja się zmieniła, nie
+dlaczego. Ogłoszenie niesie samą nazwę sekcji, nigdy nowej wartości —
+okno po zmianie odczytuje sekcję ponownie i to domyka pętlę
+okno→narzędzie→dane→okno. Jedno wejście zapisu na sekcję, brak drugiej
+drogi — i to jest jedyne egzekwowanie tej reguły, trzyma się na kształcie
+API, nie na teście. Z tego wynika wprost, że „cofnij" jest poza
 zakresem produktu — nie jako odłożone na później, tylko jako wykluczone
-przez format zapisu: stan jest migawką, a kronika zapisem wyjaśnialnym dla
-człowieka, nie danymi, z których dałoby się maszynowo odtworzyć poprzedni
-stan.
+przez format zapisu: stan jest migawką, a zapis nie niesie historii, z
+której dałoby się maszynowo odtworzyć poprzedni stan.
 
 **Brak sekcji znaczy „jeszcze nic tu nie ma", nie „zapis rozerwany".**
 Narzędzie dodane w czerwcu musi działać na kampanii założonej w marcu. Dziś
@@ -253,10 +289,8 @@ albo zostaje ręczną robotą MG.
 ## Odłożone świadomie
 
 - **Tryb aktywnej sesji.** Sesja jako byt trwały, z początkiem i końcem.
-- **Konsola sesji.** Wolny wpis MG-a do kroniki — najtańsze domknięcie
-  pierwszego wycinka.
-- **Przedmioty i paczki treści.** Przedmiot jako referencja do definicji z
-  paczki plus nadpisania instancji.
+- **System paczek treści.** Instalacja, źródło i dystrybucja paczek z
+  definicjami — samą referencję do definicji treść kampanii już zakłada.
 - **Pełna obsługa klawiatury.** Wymóg wynikający z użycia przy stole.
 
 ## Czego nie wskrzeszamy
