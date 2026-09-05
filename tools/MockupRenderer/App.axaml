@@ -1,0 +1,25 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MockupRenderer.App"
+             RequestedThemeVariant="Dark">
+
+    <!--
+        Minimalna aplikacja-nosiciel dla headlessowego renderu. Ładuje te same
+        słowniki motywu co DungeonApp.Desktop, żeby DynamicResource użyte
+        w renderowanym mockupie rozwiązywały się tak samo jak w prawdziwej aplikacji.
+    -->
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/Tokens.axaml" />
+                <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/Icons.axaml" />
+                <ResourceInclude Source="avares://DungeonApp.Desktop/Themes/DungeonControls.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://DungeonApp.Desktop/Themes/BuiltInControls.axaml" />
+    </Application.Styles>
+</Application>
