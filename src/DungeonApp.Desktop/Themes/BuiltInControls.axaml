@@ -119,4 +119,19 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
     </Style>
+
+    <!--
+        Fluent's default ProgressBar carries system blue (track and indicator both come from the
+        control's Background/Foreground, which the base theme maps onto the template's track and
+        indicator borders) and a rounded corner baked into the same CornerRadius property. Neither
+        appears anywhere else in the app's palette, so both are overridden here. Corners are square
+        outright (no token: this is an absence of rounding, not a value from the radius scale).
+        The base theme already resolves MinHeight to 4, matching DungeonLoadingProgressBarHeight,
+        so no override is needed there.
+    -->
+    <Style Selector="ProgressBar">
+        <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrightBrush}" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
 </Styles>
