@@ -177,21 +177,36 @@ kształtu nie jest własnością danych: sekcję może czytać i zmieniać każd
 narzędzie, które ją zadeklarowało. Kształty treści systemowej należą do
 definicji systemu, nie do narzędzia.
 
-**Zmiany są nazwane, nie przypisywane.** Narzędzie nie ustawia wartości po
-cichu, tylko zgłasza „zwiększ zmęczenie o jeden, powód: dzień marszu" — a
-warstwa treści stosuje to, podbija generację i zapisuje wpis w kronice. To
-jedyny mechanizm dający obiecaną wyjaśnialną historię.
+Sekcje są **rejestrowane, nie posiadane**. Rejestr żyje w rdzeniu i trzyma
+nazwę sekcji, jej bieżącą wersję i ścieżki migracji — nic więcej. Kształtu
+treści ani walidacji pól rejestr nie zna: rdzeń wie, że sekcja istnieje i w
+jakiej jest wersji, nie wie, co ona znaczy. Narzędzie deklaruje wyłącznie,
+których sekcji używa — które czyta, które zmienia. Granica jest postawiona
+świadomie: nazwa sekcji w rejestrze to wpis w tablicy, nie pole w schemacie
+formatu zapisu. Rejestr jest następcą dzisiejszego katalogu modułów, nie
+drugim rejestrem obok niego, i dziedziczy jego własność — wpis wprost w
+pliku, zero magii ładowania, zmiana widoczna w diffie.
+
+**Zmiany są nazwane, nie przypisywane.** Narzędzie samo wylicza nową treść
+sekcji, ale jedyne wejście zapisu wymaga podania nazwy zmiany i powodu —
+„zwiększ zmęczenie o jeden, powód: dzień marszu". Rdzeń nowej treści nie
+interpretuje: podstawia ją, podbija generację i zapisuje wpis w kronice.
+Nie ma drugiej drogi zapisu — to jedyne egzekwowanie tej reguły, trzyma się
+na kształcie API, nie na teście. Z tego wynika wprost, że „cofnij" jest poza
+zakresem produktu — nie jako odłożone na później, tylko jako wykluczone
+przez format zapisu: stan jest migawką, a kronika zapisem wyjaśnialnym dla
+człowieka, nie danymi, z których dałoby się maszynowo odtworzyć poprzedni
+stan.
 
 **Brak sekcji znaczy „jeszcze nic tu nie ma", nie „zapis rozerwany".**
 Narzędzie dodane w czerwcu musi działać na kampanii założonej w marcu. Dziś
 kod robi odwrotnie i traktuje brak wpisu jako rozerwany zapis — to do
 naprawienia razem z przebudową, nie wcześniej.
 
-**Kiedy to budujemy:** nie teraz. Dziś boli w jednym miejscu — przy drużynie
-— a przebudowa persystencji na jednym przykładzie to projektowanie pod
-wyobrażoną zmienność. **Wyzwalacz: drugie narzędzie, które musi czytać albo
-zmieniać bohaterów** (zasoby, odpoczynek, inicjatywa z listą uczestników).
-Do tego czasu nie utrwalamy głębiej własności treści przez narzędzie.
+**Kiedy to budujemy:** najpierw. Fundament — rejestr sekcji plus jedyne
+wejście zapisu — powstaje przed pierwszym prawdziwym narzędziem, nie jako
+reakcja na ból przy drugim. Nie ma bowiem na czym tego bólu poczekać:
+prototypowe narzędzia, które miały go pokazać, zostały usunięte.
 
 ## Zdarzenia
 
@@ -205,6 +220,14 @@ przekroczyła próg, na który ktoś czekał.
 - **Nie publikujemy zdarzeń bez słuchacza.**
 - Publikujący nie wie, kto słucha — i to jest różnica między magistralą a
   zależnością między konkretnymi narzędziami.
+- **Narzędzie nie zależy od innego narzędzia.** Nie ma deklaracji zależności
+  między narzędziami, nie ma porządku aktywacji, nie ma typowanego sięgania
+  po inne narzędzie. Zostają dwa kanały pośrednie: wspólne dane odpowiadają
+  na pytanie „jak jest", magistrala na pytanie „co się stało". Brak
+  krawędzi narzędzie→narzędzie znosi problem cykli i kolejności aktywacji —
+  nie ma czego sortować topologicznie — kosztem dociążenia magistrali: to
+  ona staje się jedyną drogą, którą jedno narzędzie reaguje na działanie
+  drugiego.
 
 ## System gry
 

@@ -16,6 +16,10 @@ sekcji danych, a narzędzia zbiegają do bezstanowej logiki. Nie bierz
 obecnego kształtu za docelowy — wyzwalacz przebudowy i jej zakres stoją w
 wizji.
 
+Docelowy słownik projektu to **narzędzie, dane, okno** — pojęcie „modułu",
+którym posługują się dalsze sekcje tego dokumentu, jest nazwą dzisiejszego
+mechanizmu, nie elementem docelowego słownika.
+
 ## Dwie warstwy
 
 `DungeonApp.Core` nie wie nic o interfejsie. `DungeonApp.Desktop` zna Core

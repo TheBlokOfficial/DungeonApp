@@ -31,10 +31,12 @@ część wyłącznie konwencją — dokument mówi które i dlaczego.
 
 1. Granica między rdzeniem a interfejsem — rdzeń nie wie o warstwie UI.
 2. Dostęp do dysku: tylko warstwa zapisu, nigdzie indziej.
-3. Sposób, w jaki część systemu deklaruje swoje istnienie i zależności.
-4. Kolejność inicjalizacji i zakaz zależności cyklicznych.
-5. Sposób, w jaki części systemu porozumiewają się między sobą.
-6. Znajomość formatu zapisu przez logikę domenową.
+3. Sposób, w jaki część systemu deklaruje swoje istnienie i to, czego używa.
+4. Sposób, w jaki części systemu porozumiewają się między sobą — zawsze
+   pośrednio, nigdy przez bezpośrednie sięgnięcie do siebie nawzajem.
+5. Nieznajomość formatu zapisu przez logikę domenową oraz jedyność drogi
+   zapisu: nowy stan powstaje wyłącznie w jednym miejscu, zawsze nazwany
+   i uzasadniony.
 
 Nazwy dzisiejszych mechanizmów, które to realizują, celowo nie padają tutaj
 — żyją w `docs/architecture.md`, bo mogą się zmienić. Powyższe własności

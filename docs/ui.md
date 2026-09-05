@@ -89,10 +89,14 @@ kategorie kluczy, nigdy same liczby.
 | `src/DungeonApp.Desktop/Themes/UiScaleProfiles.cs` | jedyny pisarz wszystkich tokenów zależnych od profilu `Small`/`Medium`/`Large`: rozmiary fontów, wysokości topbara/sidebara/statusbara/nagłówka workspace'u, wysokości kontrolek i wierszy nawigacji/kampanii, rozmiar ikon akcji, minimalny rozmiar okna, geometria nagłówka i minimów panelu pulpitu, rozmiar karty w dolnym pasku. Ustawiane na `Application.Resources` przed utworzeniem pierwszego okna. |
 | `src/DungeonApp.Desktop/Controls/Workspace/WorkspaceGridSettings.cs` | geometria blatu żywej sesji: rozmiar komórki siatki tła, tryby i krok snapowania (zwykły/precyzyjny), promień przyciągania, czas animacji domknięcia snapu, odstęp między panelami, margines krawędzi blatu. Czytane zarówno przez rendering siatki (`WorkspaceGridBackground`), jak i przez obliczenia geometrii panelu (`PanelGeometry`, `PanelWindow`) — jedno źródło, żeby siatka widoczna i snap nie rozjechały się. |
 
-**Znane luki.** W `Tokens.axaml` nie ma osobnej, nazwanej skali odstępów
-(marginesów/paddingów) — wartości odstępu, które nie są geometrią blatu,
-występują dziś lokalnie w widokach (np. `ColumnSpacing`/`Margin` wprost w
-`DungeonControls.axaml`), nie jako wspólne tokeny. Rozmiar ikon nie jest
+**Znane luki.** Nazwana skala odstępów (marginesów/paddingów) w
+`Tokens.axaml` istnieje — czternaście tokenów `DungeonSpacing*`/
+`DungeonPadding*` — ale jest zbudowana, niedokończona: dziś korzysta z niej
+wyłącznie `MainWindow.axaml`, żaden inny widok nie jest na nią przepięty.
+Odstępy poza geometrią blatu w pozostałych widokach nadal występują
+lokalnie (np. `ColumnSpacing`/`Margin` wprost w `DungeonControls.axaml`) —
+to nie jest „do zbudowania", tylko lista widoków do przepięcia na istniejącą
+skalę. Rozmiar ikon nie jest
 zamkniętą, nazwaną skalą: `ActionIconSize` to jedna wartość na profil skali
 (nie samodzielny wybór wariantu ikony), więc wyjątek dla „zamkniętej małej
 skali rozmiarów ikon" z zasad projektu **nie ma dziś odpowiednika w
@@ -161,7 +165,5 @@ drzewa), `Controls/Workspace/` (geometria i kontrolki blatu żywej sesji),
 - **Jasny/ciemny wariant powierzchni redakcyjnej** (statblock dopasowany
   do pulpitu vs. kremowy) — decyzja otwarta, wymaga porównania na tej
   samej treści przed implementacją.
-- **Nazwana skala odstępów (spacing)** jako token w `Tokens.axaml` — dziś
-  odstępy poza geometrią blatu żyją lokalnie w widokach.
 - **Zamknięta, nazwana skala rozmiarów ikon** — dziś istnieje jeden
   rozmiar ikony akcji na profil skali, nie wybieralna skala.
