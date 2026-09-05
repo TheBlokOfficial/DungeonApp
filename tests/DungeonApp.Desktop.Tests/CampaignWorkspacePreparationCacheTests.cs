@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.DataBlocks;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
@@ -17,7 +18,7 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
     [Fact]
     public async Task WarmAsync_MakesFirstTakeUsePreparedCampaign()
     {
-        var campaign = Campaign.Create(CampaignName.Create("Rozgrzana"), [], TimeProvider.System);
+        var campaign = Campaign.Create(CampaignName.Create("Rozgrzana"), new DataBlockRegistry(), TimeProvider.System);
         var repository = new CountingRepository(campaign);
         var cache = new CampaignWorkspacePreparationCache(
             repository,

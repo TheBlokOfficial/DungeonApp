@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Events;
-using DungeonApp.Core.Modules;
 
 namespace DungeonApp.Core.Campaigns;
 
@@ -9,8 +9,8 @@ namespace DungeonApp.Core.Campaigns;
 /// The root of everything the GM owns. State lives inside a campaign; shared definitions live
 /// outside it in the registries and are only referenced from here.
 /// <para>
-/// The campaign hosts modules but does not interpret them: it knows which are switched on and in
-/// what order, and nothing about what any of them means.
+/// The campaign hosts data blocks but does not interpret them: it knows which ones this build
+/// registers and what is currently stored in each, and nothing about what any of it means.
 /// </para>
 /// </summary>
 public sealed class Campaign
@@ -19,13 +19,13 @@ public sealed class Campaign
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
-        CampaignModules modules,
+        CampaignDataBlocks dataBlocks,
         CampaignEvents events)
     {
         Id = id;
         Name = name;
         CreatedAt = createdAt;
-        Modules = modules;
+        DataBlocks = dataBlocks;
         Events = events;
     }
 
@@ -39,22 +39,22 @@ public sealed class Campaign
     /// </summary>
     public DateTimeOffset CreatedAt { get; }
 
-    public CampaignModules Modules { get; }
+    public CampaignDataBlocks DataBlocks { get; }
 
     /// <summary>
     /// This campaign's announcement channel. Exposed because the shell hosting the campaign has no
-    /// other way to hear what its modules announce - a scheduled event coming due is news the GM
-    /// wants, not only news for other modules.
+    /// other way to hear what changes inside it - a data block being written is news the GM wants,
+    /// not only news for other listeners.
     /// </summary>
     public CampaignEvents Events { get; }
 
     public static Campaign Create(
         CampaignName name,
-        IEnumerable<ICampaignModule> modules,
+        DataBlockRegistry registry,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(modules);
+        ArgumentNullException.ThrowIfNull(registry);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         var events = new CampaignEvents();
@@ -63,7 +63,7 @@ public sealed class Campaign
             CampaignId.New(),
             name,
             timeProvider.GetUtcNow(),
-            CampaignModules.Activate(modules, events),
+            CampaignDataBlocks.Create(registry, events),
             events);
     }
 
@@ -75,10 +75,13 @@ public sealed class Campaign
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
-        IEnumerable<ICampaignModule> modules)
+        DataBlockRegistry registry,
+        IReadOnlyDictionary<DataBlockId, object> values,
+        IReadOnlyDictionary<DataBlockId, DataBlockUnreadableReason>? unreadable = null)
     {
         ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(modules);
+        ArgumentNullException.ThrowIfNull(registry);
+        ArgumentNullException.ThrowIfNull(values);
 
         var events = new CampaignEvents();
 
@@ -86,7 +89,7 @@ public sealed class Campaign
             id,
             name,
             createdAt,
-            CampaignModules.Activate(modules, events),
+            CampaignDataBlocks.Hydrate(registry, events, values, unreadable),
             events);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using DungeonApp.Core.Events;
 
 namespace DungeonApp.Core.DataBlocks;
@@ -31,6 +32,7 @@ public sealed class CampaignDataBlocks
     private readonly DataBlockRegistry _registry;
     private readonly CampaignEvents _events;
     private readonly Dictionary<DataBlockId, object> _values = [];
+    private readonly Dictionary<DataBlockId, DataBlockUnreadableReason> _unreadable = [];
 
     private CampaignDataBlocks(DataBlockRegistry registry, CampaignEvents events)
     {
@@ -55,11 +57,19 @@ public sealed class CampaignDataBlocks
     /// that returns a brand new instance, so there is no way to call it again on an instance that
     /// already exists; the only path back into an existing <see cref="CampaignDataBlocks"/> stays
     /// <see cref="Apply"/>.
+    /// <para>
+    /// <paramref name="unreadable"/> names the ids the caller could not turn into a value at all - an
+    /// id this registry has never heard of, or one stored at a shape version this build has no
+    /// migration for. Nothing is inferred here: the persistence layer is the one that knows which
+    /// case it hit and why, this method only records what it is told. An id must not appear in both
+    /// <paramref name="values"/> and <paramref name="unreadable"/>.
+    /// </para>
     /// </summary>
     public static CampaignDataBlocks Hydrate(
         DataBlockRegistry registry,
         CampaignEvents events,
-        IReadOnlyDictionary<DataBlockId, object> values)
+        IReadOnlyDictionary<DataBlockId, object> values,
+        IReadOnlyDictionary<DataBlockId, DataBlockUnreadableReason>? unreadable = null)
     {
         ArgumentNullException.ThrowIfNull(registry);
         ArgumentNullException.ThrowIfNull(events);
@@ -85,12 +95,35 @@ public sealed class CampaignDataBlocks
             dataBlocks._values[id] = Freeze(value, shape);
         }
 
+        foreach (var (id, reason) in unreadable ?? new Dictionary<DataBlockId, DataBlockUnreadableReason>())
+        {
+            if (dataBlocks._values.ContainsKey(id))
+            {
+                throw new ArgumentException(
+                    $"Data block '{id}' is named in both {nameof(values)} and {nameof(unreadable)}.", nameof(unreadable));
+            }
+
+            dataBlocks._unreadable[id] = reason;
+        }
+
         return dataBlocks;
     }
 
     /// <summary>The data block's current value, or null when nothing has ever been written to it.</summary>
+    /// <exception cref="DataBlockUnreadableException">
+    /// The data block has a value on disk that this build could not read back. Check
+    /// <see cref="IsUnreadable"/> first to avoid the exception on an expected path.
+    /// </exception>
     public object? Read(DataBlockId id)
     {
+        // Checked first, ahead of the registry: an id marked unreadable because this build no longer
+        // registers it must still report the same "unreadable", not fall through to "unknown build"
+        // wording depending on incidental registry membership.
+        if (_unreadable.TryGetValue(id, out var reason))
+        {
+            throw new DataBlockUnreadableException(id, reason);
+        }
+
         if (!_registry.Knows(id))
         {
             throw new InvalidOperationException($"Data block '{id}' is not part of this build.");
@@ -98,6 +131,20 @@ public sealed class CampaignDataBlocks
 
         return _values.TryGetValue(id, out var value) ? value : null;
     }
+
+    /// <summary>Whether this data block survived hydration unread - see <see cref="UnreadableBlocks"/>.</summary>
+    public bool IsUnreadable(DataBlockId id) => _unreadable.ContainsKey(id);
+
+    /// <summary>
+    /// Every data block this campaign could not read back, for a caller (the UI) that wants to tell
+    /// the GM about it. Never thrown, never silently dropped - the campaign opens with these ids
+    /// simply absent from <see cref="Read"/>'s working set.
+    /// </summary>
+    public IReadOnlyCollection<UnreadableDataBlock> UnreadableBlocks =>
+        [.. _unreadable.Select(pair => new UnreadableDataBlock(pair.Key, pair.Value))];
+
+    /// <summary>Every data block that currently has a value, for a caller (the store) deciding what to write.</summary>
+    public IReadOnlyCollection<DataBlockId> WrittenBlocks => _values.Keys.ToArray();
 
     /// <summary>
     /// The only way to change a data block's value.
@@ -110,9 +157,18 @@ public sealed class CampaignDataBlocks
     /// <see cref="DataBlockChanged"/> get published on the campaign's event bus.
     /// </para>
     /// </summary>
+    /// <exception cref="DataBlockUnreadableException">
+    /// The data block has a value on disk that this build could not read back. Accepting a write here
+    /// would replace content nobody managed to read first, which is exactly what this guards against.
+    /// </exception>
     public void Apply(DataBlockId id, Func<object?, object> transform)
     {
         ArgumentNullException.ThrowIfNull(transform);
+
+        if (_unreadable.TryGetValue(id, out var unreadableReason))
+        {
+            throw new DataBlockUnreadableException(id, unreadableReason);
+        }
 
         if (!_registry.Knows(id))
         {

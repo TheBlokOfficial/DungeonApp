@@ -4,10 +4,9 @@ using System.Collections.Generic;
 namespace DungeonApp.Core.DataBlocks;
 
 /// <summary>
-/// The data blocks this build knows how to make - the data-side counterpart of
-/// <see cref="Modules.ModuleCatalog"/>.
+/// The data blocks this build knows about.
 /// <para>
-/// Unlike a module, a data block is data, not behaviour: there is nothing to instantiate, so this
+/// A data block is data, not behaviour: there is nothing to instantiate, so this
 /// registry holds shapes and versions rather than factories. It does not model dependencies either
 /// - data blocks do not declare requirements on one another the way modules do.
 /// </para>

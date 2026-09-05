@@ -3,36 +3,38 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Modules;
+using DungeonApp.Core.DataBlocks;
 
 namespace DungeonApp.Core.Persistence;
 
 /// <summary>
-/// Stores each campaign as its own directory, in the shape of a game save: a manifest beside
-/// smaller files owned by whoever the state belongs to.
+/// Stores each campaign as its own directory, in the shape of a game save: a manifest beside smaller
+/// files owned by whoever the data belongs to.
 /// <para>
-/// The split follows consistency boundaries rather than subject matter. The manifest and the module
-/// states commit together and share a generation counter, so a save interrupted between them is
-/// detectable instead of silently half loaded.
+/// The split follows consistency boundaries rather than subject matter. The manifest and the data
+/// block value files commit together and share a generation counter, so a save interrupted between
+/// them is detectable instead of silently half loaded.
 /// </para>
 /// <para>
-/// State belonging to a module that is switched off, or that this build has never heard of, is
-/// carried through untouched. Disabling a module and enabling it again must not cost the GM its
-/// contents.
+/// A data block this build cannot read - because its id is not registered, or its stored value is at
+/// a shape version this build has no migration for - is carried through untouched: its value file is
+/// never rewritten and its manifest entry is copied forward exactly as it was. See
+/// <see cref="CampaignDataBlocks.UnreadableBlocks"/> for how the campaign itself represents that.
 /// </para>
 /// </summary>
 public sealed class JsonCampaignRepository(
     string libraryPath,
-    ModuleCatalog catalog) : ICampaignRepository
+    DataBlockRegistry registry) : ICampaignRepository
 {
     /// <summary>Independent of the application version: it only ever tracks the shape of these files.</summary>
     public const int CurrentFormatVersion = 1;
 
     private const string DocumentFileName = "campaign.json";
-    private const string ModuleDirectoryName = "modules";
+    private const string DataBlockDirectoryName = "datablocks";
 
     private readonly JsonSerializerOptions _serializerOptions = new()
     {
@@ -54,32 +56,37 @@ public sealed class JsonCampaignRepository(
         var previous = await TryReadManifestAsync(manifestPath, cancellationToken);
         var generation = (previous?.Generation ?? 0) + 1;
 
-        var entries = new List<ModuleEntry>();
+        var entries = new List<DataBlockEntry>();
         var temporaryPaths = new List<string>();
         string? temporaryManifestPath = null;
 
         try
         {
-            foreach (var module in campaign.Modules.Active)
+            foreach (var id in campaign.DataBlocks.WrittenBlocks)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var manifest = module.Manifest;
-                var state = new ModuleStateDocument(
-                    manifest.Id.Value,
-                    manifest.StateVersion,
-                    generation,
-                    JsonSerializer.SerializeToElement(module.CaptureState(), module.StateType, _serializerOptions));
+                var registration = registry.Describe(id);
+                var value = campaign.DataBlocks.Read(id)
+                    ?? throw new InvalidOperationException($"Data block '{id}' is listed as written but reads back null.");
 
-                temporaryPaths.Add(await WriteModuleStateAsync(directory, manifest.Id, state, cancellationToken));
-                entries.Add(new ModuleEntry(manifest.Id.Value, manifest.StateVersion, generation));
+                var document = new DataBlockDocument(
+                    BlockId: id.Value,
+                    Version: registration.Version,
+                    Generation: generation,
+                    Value: DataBlockValueSerializer.ToNode(value, registration.Shape));
+
+                temporaryPaths.Add(await WriteDataBlockAsync(directory, id, document, cancellationToken));
+                entries.Add(new DataBlockEntry(id.Value, registration.Version, generation));
             }
 
-            // Everything the campaign is not currently running keeps its recorded entry and its file
-            // exactly as they were, at the generation they were last written at.
-            entries.AddRange(RetainedEntries(previous, campaign.Modules));
+            // A data block this session could not read - unknown id, or an unsupported stored version
+            // - keeps its recorded entry and its file exactly as they were, at the generation they
+            // were last written at. That is the whole point of never loading it into memory: nothing
+            // here has anything new to write for it.
+            entries.AddRange(RetainedEntries(previous, campaign.DataBlocks));
 
-            var document = new CampaignManifest(
+            var manifestDocument = new CampaignManifest(
                 CurrentFormatVersion,
                 campaign.Id.Value,
                 campaign.Name.Value,
@@ -88,10 +95,9 @@ public sealed class JsonCampaignRepository(
                 Ruleset: null,
                 ContentPacks: [],
                 Generation: generation,
-                ActiveModules: [.. campaign.Modules.Active.Select(module => module.Manifest.Id.Value)],
-                Modules: entries);
+                DataBlocks: entries);
 
-            temporaryManifestPath = await WriteTemporaryAsync(manifestPath, document, cancellationToken);
+            temporaryManifestPath = await WriteTemporaryAsync(manifestPath, manifestDocument, cancellationToken);
 
             foreach (var temporaryPath in temporaryPaths)
             {
@@ -105,7 +111,7 @@ public sealed class JsonCampaignRepository(
         finally
         {
             // The manifest's own temporary belongs here too: a move that fails partway through the
-            // module files would otherwise leave it behind for the next save to trip over.
+            // data block files would otherwise leave it behind for the next save to trip over.
             IEnumerable<string> leftovers = temporaryManifestPath is null
                 ? temporaryPaths
                 : [.. temporaryPaths, temporaryManifestPath];
@@ -130,25 +136,58 @@ public sealed class JsonCampaignRepository(
         var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
         var name = ValidateManifest(manifest, manifestPath);
 
-        // Built, then wired by Campaign.Restore, then filled. Activation happens exactly once,
-        // inside the campaign, before any module state is restored onto it.
-        var campaign = Campaign.Restore(
-            new CampaignId(manifest.Id),
-            name,
-            manifest.CreatedAt,
-            CreateModules(manifest, manifestPath));
+        var values = new Dictionary<DataBlockId, object>();
+        var unreadable = new Dictionary<DataBlockId, DataBlockUnreadableReason>();
 
-        foreach (var module in campaign.Modules.Active)
+        foreach (var entry in manifest.DataBlocks ?? [])
         {
-            await RestoreModuleStateAsync(directory, module, manifest, manifestPath, cancellationToken);
+            if (!DataBlockId.TryCreate(entry.Id, out var blockId))
+            {
+                throw new CampaignStoreException(
+                    CampaignStoreFailure.Invalid, $"The campaign at {manifestPath} names an unusable data block '{entry.Id}'.");
+            }
+
+            if (!registry.Knows(blockId))
+            {
+                // Not an error: a build older or newer than the one that wrote this save may simply
+                // not have this data block. It stays on the shelf, unread, rather than blocking the
+                // whole campaign from opening.
+                unreadable[blockId] = DataBlockUnreadableReason.UnknownToRegistry;
+                continue;
+            }
+
+            var registration = registry.Describe(blockId);
+
+            if (entry.Version != registration.Version)
+            {
+                // No migration path exists yet (deliberately deferred) - a version this build does not
+                // recognize is left untouched rather than guessed at.
+                unreadable[blockId] = DataBlockUnreadableReason.UnsupportedVersion;
+                continue;
+            }
+
+            values[blockId] = await ReadDataBlockValueAsync(
+                directory, blockId, entry, registration, manifestPath, cancellationToken);
         }
 
-        return campaign;
+        try
+        {
+            // Built, then hydrated in one call - unlike the old module path, there is no activation
+            // step: data blocks are data, not behaviour, so there is nothing to instantiate first.
+            return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, registry, values, unreadable);
+        }
+        catch (DataBlockShapeMismatchException ex)
+        {
+            throw new CampaignStoreException(
+                CampaignStoreFailure.Invalid,
+                $"The campaign at {manifestPath} has a data block value that does not fit its declared shape.",
+                ex);
+        }
     }
 
     /// <summary>
-    /// Reads manifests only. Drawing the shelf must not cost the state of every module in every
-    /// campaign, and a campaign whose module state is torn still deserves to be listed.
+    /// Reads manifests only. Drawing the shelf must not cost the value of every data block in every
+    /// campaign, and a campaign whose data block values are torn still deserves to be listed.
     /// </summary>
     public async Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
     {
@@ -217,78 +256,40 @@ public sealed class JsonCampaignRepository(
         return name;
     }
 
-    /// <summary>
-    /// Turns the manifest's list of switched-on modules into instances, or refuses. No activation
-    /// and no state here - only the question of whether this build can make what the save names.
-    /// </summary>
-    private IReadOnlyList<ICampaignModule> CreateModules(CampaignManifest manifest, string manifestPath)
-    {
-        var active = new List<ICampaignModule>();
-
-        foreach (var rawId in manifest.ActiveModules ?? [])
-        {
-            if (!ModuleId.TryCreate(rawId, out var id))
-            {
-                throw new CampaignStoreException(
-                    CampaignStoreFailure.Invalid, $"The campaign at {manifestPath} names an unusable module '{rawId}'.");
-            }
-
-            // Refused rather than skipped: opening a campaign without a module it is supposed to be
-            // running would quietly show the GM an incomplete world. The state file is untouched,
-            // so a build that has the module can still open it.
-            if (!catalog.Knows(id))
-            {
-                throw new CampaignStoreException(
-                    CampaignStoreFailure.UnknownModule,
-                    $"The campaign at {manifestPath} needs module '{id}', which is not part of this build.");
-            }
-
-            active.Add(catalog.Create(id));
-        }
-
-        return active;
-    }
-
-    private async Task RestoreModuleStateAsync(
+    private async Task<object> ReadDataBlockValueAsync(
         string directory,
-        ICampaignModule module,
-        CampaignManifest manifest,
+        DataBlockId id,
+        DataBlockEntry entry,
+        DataBlockRegistration registration,
         string manifestPath,
         CancellationToken cancellationToken)
     {
-        var id = module.Manifest.Id;
+        var valuePath = GetDataBlockPath(directory, id);
 
-        var entry = (manifest.Modules ?? []).FirstOrDefault(candidate => candidate.Id == id.Value)
-            ?? throw new CampaignStoreException(
-                CampaignStoreFailure.TornSave,
-                $"The campaign at {manifestPath} runs module '{id}' but records no state for it.");
-
-        var statePath = GetModuleStatePath(directory, id);
-
-        if (!File.Exists(statePath))
+        if (!File.Exists(valuePath))
         {
             throw new CampaignStoreException(
-                CampaignStoreFailure.TornSave, $"The state file for module '{id}' is missing.");
+                CampaignStoreFailure.TornSave, $"The value file for data block '{id}' is missing.");
         }
 
-        ModuleStateDocument? document;
+        DataBlockDocument? document;
 
         try
         {
-            await using var stream = File.OpenRead(statePath);
-            document = await JsonSerializer.DeserializeAsync<ModuleStateDocument>(
+            await using var stream = File.OpenRead(valuePath);
+            document = await JsonSerializer.DeserializeAsync<DataBlockDocument>(
                 stream, _serializerOptions, cancellationToken);
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
         {
             throw new CampaignStoreException(
-                CampaignStoreFailure.Unreadable, $"Could not read the state of module '{id}'.", ex);
+                CampaignStoreFailure.Unreadable, $"Could not read the value of data block '{id}'.", ex);
         }
 
         if (document is null)
         {
             throw new CampaignStoreException(
-                CampaignStoreFailure.Unreadable, $"The state file for module '{id}' is empty.");
+                CampaignStoreFailure.Unreadable, $"The value file for data block '{id}' is empty.");
         }
 
         // The whole point of the counter: a file left behind by an interrupted save disagrees with
@@ -297,45 +298,38 @@ public sealed class JsonCampaignRepository(
         {
             throw new CampaignStoreException(
                 CampaignStoreFailure.TornSave,
-                $"Module '{id}' is stored at generation {document.Generation} but the manifest "
+                $"Data block '{id}' is stored at generation {document.Generation} but the manifest "
                 + $"expects {entry.Generation}. The save was interrupted.");
         }
 
-        object? state;
-
         try
         {
-            state = document.State.Deserialize(module.StateType, _serializerOptions);
+            return DataBlockValueSerializer.FromNode(document.Value, registration.Shape);
         }
-        catch (JsonException ex)
+        catch (Exception ex) when (ex is FormatException or InvalidOperationException or JsonException)
         {
             throw new CampaignStoreException(
-                CampaignStoreFailure.Invalid, $"The stored state of module '{id}' does not fit its type.", ex);
+                CampaignStoreFailure.Invalid, $"The stored value of data block '{id}' does not fit its shape.", ex);
         }
-
-        if (state is null)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.Invalid, $"The stored state of module '{id}' is null.");
-        }
-
-        // The recorded version, not the current one: migrating an older shape is the module's job.
-        module.RestoreState(state, document.StateVersion);
     }
 
-    private static IEnumerable<ModuleEntry> RetainedEntries(CampaignManifest? previous, CampaignModules active) =>
-        (previous?.Modules ?? [])
-            .Where(entry => !ModuleId.TryCreate(entry.Id, out var id) || !active.Contains(id));
+    private static IEnumerable<DataBlockEntry> RetainedEntries(CampaignManifest? previous, CampaignDataBlocks dataBlocks)
+    {
+        var written = new HashSet<DataBlockId>(dataBlocks.WrittenBlocks);
 
-    private async Task<string> WriteModuleStateAsync(
+        return (previous?.DataBlocks ?? [])
+            .Where(entry => !DataBlockId.TryCreate(entry.Id, out var id) || !written.Contains(id));
+    }
+
+    private async Task<string> WriteDataBlockAsync(
         string directory,
-        ModuleId id,
-        ModuleStateDocument state,
+        DataBlockId id,
+        DataBlockDocument document,
         CancellationToken cancellationToken)
     {
-        Directory.CreateDirectory(Path.Combine(directory, ModuleDirectoryName));
+        Directory.CreateDirectory(Path.Combine(directory, DataBlockDirectoryName));
 
-        return await WriteTemporaryAsync(GetModuleStatePath(directory, id), state, cancellationToken);
+        return await WriteTemporaryAsync(GetDataBlockPath(directory, id), document, cancellationToken);
     }
 
     /// <summary>
@@ -369,8 +363,8 @@ public sealed class JsonCampaignRepository(
         catch (CampaignStoreException)
         {
             // An unreadable manifest is about to be replaced. It cannot be trusted to say which
-            // generation the module files are at, so the counter restarts and every active module is
-            // rewritten at the new one; anything retained keeps whatever the unreadable manifest
+            // generation the data block files are at, so the counter restarts and every written block
+            // is rewritten at the new one; anything retained keeps whatever the unreadable manifest
             // would have said, which is nothing.
             return null;
         }
@@ -401,8 +395,8 @@ public sealed class JsonCampaignRepository(
 
     private string GetCampaignDirectory(CampaignId id) => Path.Combine(libraryPath, id.Value.ToString("D"));
 
-    private static string GetModuleStatePath(string campaignDirectory, ModuleId id) =>
-        Path.Combine(campaignDirectory, ModuleDirectoryName, $"{id.Value}.json");
+    private static string GetDataBlockPath(string campaignDirectory, DataBlockId id) =>
+        Path.Combine(campaignDirectory, DataBlockDirectoryName, $"{id.Value}.json");
 
     private sealed record CampaignManifest(
         int FormatVersion,
@@ -412,22 +406,18 @@ public sealed class JsonCampaignRepository(
         string? Ruleset,
         IReadOnlyList<string>? ContentPacks,
         long Generation,
-        IReadOnlyList<string>? ActiveModules,
-        IReadOnlyList<ModuleEntry>? Modules);
+        IReadOnlyList<DataBlockEntry>? DataBlocks);
 
     /// <summary>
-    /// What the manifest remembers about one module's state file: which shape it is in, and which
-    /// generation it was last written at. The second half is what makes a torn save detectable.
+    /// What the manifest remembers about one data block's value file: which shape version it is in,
+    /// and which generation it was last written at. The second half is what makes a torn save
+    /// detectable.
     /// </summary>
-    private sealed record ModuleEntry(string Id, int StateVersion, long Generation);
+    private sealed record DataBlockEntry(string Id, int Version, long Generation);
 
     /// <summary>
-    /// The envelope around a module's own state. The state itself stays an opaque element until the
-    /// module's declared type is known, so the store never needs to understand what it holds.
+    /// The envelope around one data block's value. The value itself stays an opaque JSON node until
+    /// the block's registered shape is known, so the store never guesses at a type before checking.
     /// </summary>
-    private sealed record ModuleStateDocument(
-        string ModuleId,
-        int StateVersion,
-        long Generation,
-        JsonElement State);
+    private sealed record DataBlockDocument(string BlockId, int Version, long Generation, JsonNode? Value);
 }

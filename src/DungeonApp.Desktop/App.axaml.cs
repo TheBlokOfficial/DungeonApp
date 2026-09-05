@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Modules;
+using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -19,7 +19,7 @@ namespace DungeonApp.Desktop;
 public partial class App : Avalonia.Application
 {
     private WorkspaceLayoutStore? _layoutStore;
-    private ModuleCatalog? _modules;
+    private DataBlockRegistry? _dataBlocks;
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
@@ -45,9 +45,10 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // The one place the built-in modules are named. A campaign whose save mentions a module
-        // missing from here is refused rather than opened incomplete.
-        _modules = new ModuleCatalog();
+        // The one place the built-in data blocks are named. A campaign whose save mentions a data
+        // block missing from here is opened anyway, with that block left unread - see
+        // CampaignDataBlocks.UnreadableBlocks. Empty for now: no data block ships in this build yet.
+        _dataBlocks = new DataBlockRegistry();
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
@@ -56,7 +57,7 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Campaigns");
 
-        _campaigns = new JsonCampaignRepository(libraryPath, _modules);
+        _campaigns = new JsonCampaignRepository(libraryPath, _dataBlocks);
 
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
@@ -68,7 +69,7 @@ public partial class App : Avalonia.Application
         // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
         _campaignLibrary = new CampaignLibraryViewModel(
             _campaigns,
-            new CreateCampaign(_campaigns, _modules, TimeProvider.System),
+            new CreateCampaign(_campaigns, _dataBlocks, TimeProvider.System),
             id => _shell!.OpenCampaignAsync(id));
 
         // Jawna tablica - kolejność w niej JEST kolejnością wykonania.

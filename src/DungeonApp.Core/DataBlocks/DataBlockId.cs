@@ -6,8 +6,8 @@ namespace DungeonApp.Core.DataBlocks;
 /// <summary>
 /// A data block's permanent identifier, such as <c>party.roster</c>.
 /// <para>
-/// The character set mirrors <c>ModuleId</c> deliberately: a data block value is bound to become a
-/// file name inside the campaign directory, same as a module's state. Lowercase only: a
+/// The character set is deliberately narrow: a data block value is bound to become a file name
+/// inside the campaign directory. Lowercase only: a
 /// case-insensitive filesystem would let <c>Party.Roster</c> and <c>party.roster</c> collide on
 /// disk while looking distinct in code.
 /// </para>

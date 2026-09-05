@@ -226,4 +226,76 @@ public sealed class CampaignDataBlocksTests
             _registry,
             _events,
             new Dictionary<DataBlockId, object> { [ScoreId] = "3" }));
+
+    private CampaignDataBlocks MakeDataBlocksWithUnreadable(
+        DataBlockId id, DataBlockUnreadableReason reason = DataBlockUnreadableReason.UnsupportedVersion)
+        => CampaignDataBlocks.Hydrate(
+            _registry,
+            _events,
+            values: new Dictionary<DataBlockId, object>(),
+            unreadable: new Dictionary<DataBlockId, DataBlockUnreadableReason> { [id] = reason });
+
+    [Fact]
+    public void A_data_block_named_as_unreadable_is_reported_as_such()
+    {
+        var dataBlocks = MakeDataBlocksWithUnreadable(NoteId, DataBlockUnreadableReason.UnsupportedVersion);
+
+        Assert.True(dataBlocks.IsUnreadable(NoteId));
+        var reported = Assert.Single(dataBlocks.UnreadableBlocks);
+        Assert.Equal(NoteId, reported.Id);
+        Assert.Equal(DataBlockUnreadableReason.UnsupportedVersion, reported.Reason);
+    }
+
+    /// <summary>
+    /// Read must not collapse "unreadable" into "never written": both would otherwise show up to a
+    /// caller as null, and the first write through Apply would then quietly overwrite content nobody
+    /// managed to read first.
+    /// </summary>
+    [Fact]
+    public void Read_on_an_unreadable_data_block_throws_instead_of_pretending_it_is_empty()
+    {
+        var dataBlocks = MakeDataBlocksWithUnreadable(NoteId);
+
+        var exception = Assert.Throws<DataBlockUnreadableException>(() => dataBlocks.Read(NoteId));
+
+        Assert.Equal(NoteId, exception.Id);
+    }
+
+    [Fact]
+    public void Apply_on_an_unreadable_data_block_is_rejected()
+    {
+        var dataBlocks = MakeDataBlocksWithUnreadable(NoteId);
+
+        Assert.Throws<DataBlockUnreadableException>(() => dataBlocks.Apply(NoteId, _ => "New note."));
+    }
+
+    [Fact]
+    public void A_data_block_that_was_never_written_is_not_reported_as_unreadable()
+    {
+        var dataBlocks = MakeDataBlocks();
+
+        Assert.False(dataBlocks.IsUnreadable(NoteId));
+        Assert.Null(dataBlocks.Read(NoteId));
+        Assert.Empty(dataBlocks.UnreadableBlocks);
+    }
+
+    [Fact]
+    public void Hydrate_refuses_an_id_named_both_readable_and_unreadable()
+        => Assert.Throws<ArgumentException>(() => CampaignDataBlocks.Hydrate(
+            _registry,
+            _events,
+            values: new Dictionary<DataBlockId, object> { [NoteId] = "A note." },
+            unreadable: new Dictionary<DataBlockId, DataBlockUnreadableReason>
+            {
+                [NoteId] = DataBlockUnreadableReason.UnsupportedVersion,
+            }));
+
+    [Fact]
+    public void WrittenBlocks_lists_exactly_the_ids_that_have_a_value()
+    {
+        var dataBlocks = MakeDataBlocks();
+        dataBlocks.Apply(NoteId, _ => "A note.");
+
+        Assert.Equal([NoteId], dataBlocks.WrittenBlocks);
+    }
 }

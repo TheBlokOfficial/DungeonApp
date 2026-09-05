@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Modules;
+using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
 
@@ -15,15 +15,17 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     private static readonly DateTimeOffset Moment = new(2026, 8, 27, 18, 30, 0, TimeSpan.Zero);
 
     private readonly TemporaryLibrary _library = new();
-    private readonly ModuleCatalog _catalog = new();
+    private readonly DataBlockRegistry _registry = new();
     private readonly JsonCampaignRepository _repository;
 
-    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path, _catalog);
+    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path, _registry);
 
     public void Dispose() => _library.Dispose();
 
-    private static Campaign NewCampaign(string name = "Kroniki Doliny", params ICampaignModule[] modules)
-        => Campaign.Create(CampaignName.Create(name), modules, new FixedTimeProvider(Moment));
+    private static Campaign NewCampaign(string name, DataBlockRegistry registry) =>
+        Campaign.Create(CampaignName.Create(name), registry, new FixedTimeProvider(Moment));
+
+    private Campaign NewCampaign(string name = "Kroniki Doliny") => NewCampaign(name, _registry);
 
     [Fact]
     public async Task Reads_back_everything_it_wrote()
@@ -62,7 +64,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var repository = new JsonCampaignRepository(
             Path.Combine(_library.Path, "not-created-yet"),
-            _catalog);
+            _registry);
 
         Assert.Empty(await repository.ListAsync());
     }
@@ -142,11 +144,11 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// The reserved fields are a contract, not decoration: they exist so the first ruleset, content
-    /// pack and module become entries rather than a reshaping of the manifest.
+    /// The reserved fields are a contract, not decoration: they exist so the first ruleset and content
+    /// pack become entries rather than a reshaping of the manifest.
     /// </summary>
     [Fact]
-    public async Task Reserves_room_for_the_ruleset_content_packs_and_modules()
+    public async Task Reserves_room_for_the_ruleset_and_content_packs()
     {
         var campaign = NewCampaign();
         await _repository.SaveAsync(campaign);
@@ -156,7 +158,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(JsonCampaignRepository.CurrentFormatVersion, root.GetProperty("formatVersion").GetInt32());
         Assert.Equal(JsonValueKind.Null, root.GetProperty("ruleset").ValueKind);
         Assert.Empty(root.GetProperty("contentPacks").EnumerateArray());
-        Assert.Empty(root.GetProperty("modules").EnumerateArray());
+        Assert.Empty(root.GetProperty("dataBlocks").EnumerateArray());
     }
 
     /// <summary>

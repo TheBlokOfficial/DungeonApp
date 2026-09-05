@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Modules;
+using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Campaigns;
@@ -14,7 +14,7 @@ public sealed class CreateCampaignTests
     private readonly CreateCampaign _createCampaign;
 
     public CreateCampaignTests()
-        => _createCampaign = new CreateCampaign(_repository, new ModuleCatalog(), new FixedTimeProvider(Moment));
+        => _createCampaign = new CreateCampaign(_repository, new DataBlockRegistry(), new FixedTimeProvider(Moment));
 
     [Fact]
     public async Task Stores_the_campaign_it_created()

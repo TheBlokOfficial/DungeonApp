@@ -152,7 +152,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            var campaign = await _createCampaign.ExecuteAsync(NewCampaignName, []);
+            var campaign = await _createCampaign.ExecuteAsync(NewCampaignName);
 
             NewCampaignName = string.Empty;
             Status = $"Utworzono kampanię „{campaign.Name.Value}”.";
