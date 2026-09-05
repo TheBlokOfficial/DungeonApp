@@ -99,6 +99,16 @@ Raport subagenta wchodzi do twojego kontekstu w całości. Żądaj raportu
 rzeczowego, uporządkowanego według pytań ze zlecenia, bez streszczania
 projektu i bez powtarzania treści zadania.
 
+Praca zlecona subagentowi kończy się u niego — nie przekazuje jej dalej.
+Raport opisuje stan faktyczny na dysku, nigdy zamiar: „zgłoszę wynik, gdy
+wróci" to nieudane zadanie, nie postęp. Zawiedziony subagent bywa cichy —
+oddaje raport brzmiący jak sukces, choć nie powstał żaden plik.
+
+Zakazy z tego dokumentu docierają do subagenta słabiej niż treść zlecenia.
+Te, których złamanie jest kosztowne — commitowanie, delegowanie dalej —
+powtarzaj wprost w każdym briefie, a po raporcie sprawdzaj skutek u siebie:
+`git log` obok `git status`, listing katalogu, uruchomienie testów.
+
 ## Commity
 
 - Commituje wyłącznie agent główny, osobno po każdym zamkniętym bloku pracy.
@@ -115,7 +125,16 @@ ViewModel, wychodzi zwykle technicznie sprawne, ale wizualnie niechlujne.
 1. Subagent tworzy mockup jako izolowany `UserControl` w `design/mockups/`
    — korzysta z istniejących stylów, ikon i palety z `Themes/`, ale bez
    podpięcia pod ViewModel: statyczne dane, zero logiki, zero integracji.
-2. Renderuje mockup do PNG i **na tym kończy zadanie**. Nie ogląda własnego
+   Nie czyta ViewModeli i nie rozważa, jak coś zostanie zaimplementowane —
+   ale nie wolno mu być ślepym na funkcję. Zlecenie musi podać, co element
+   robi i **w jakich stanach bywa**: pusto, w trakcie, błąd, dane dłuższe
+   niż miejsce, lista na dwieście pozycji. Bez tego powstaje projekt
+   wyłącznie przypadku szczęśliwego, a brakujące stany dorabia się później
+   na oko w docelowym widoku — czyli tam, gdzie miało ich nie być.
+   Dane statyczne mają być niewygodne, nie reprezentacyjne.
+2. Renderuje mockup do PNG **narzędziem projektu z `tools/`**, nigdy
+   harnessem budowanym na miejscu — składnia w jego `README.md`. Na tym
+   **kończy zadanie**. Nie ogląda własnego
    renderu, nie klika po podglądzie, nie porównuje wariantów.
    Kadr renderu dobiera się do powierzchni, jaką element docelowo zajmuje —
    element oceniany na pustym tle wygląda lepiej, niż będzie wyglądał
@@ -128,6 +147,15 @@ ViewModel, wychodzi zwykle technicznie sprawne, ale wizualnie niechlujne.
    Scena jest martwym `UserControl`-em w `design/mockups/`, budowanym raz i
    używanym przez kolejne mockupy. Nigdy nie jest to żywy shell: podpięcie
    pod prawdziwe ViewModele to ta integracja, której faza mockupu unika.
+   Render ma rozmiar okna z chwili, w której element jest widziany, nigdy
+   dobrany płótnem — inaczej ocenia się obrazek, nie ekran. Dla elementu
+   obszaru roboczego to okno zmaksymalizowane na typowym monitorze, bo tak
+   wygląda sesja; rozmiar domyślny z `MainWindow.axaml` to rozmiar pierwszego
+   uruchomienia, nie ten, w którym się pracuje. Dla elementu widocznego
+   wyłącznie na starcie — odwrotnie.
+   Wariant wybrany przez użytkownika warto skontrolować drugim renderem w
+   przeciwnym rozmiarze: układ dobry w dużym oknie potrafi rozjechać się w
+   małym i odwrotnie. Robi się to po odsiewie, nie dla każdego wariantu.
 3. Ty przekazujesz obraz użytkownikowi, bez własnej krytyki wizualnej.
    Ocenę robi użytkownik. Dopiero po jego akceptacji zlecasz wdrożenie do
    docelowego widoku jako osobne zadanie — port decyzji (układ, odstępy,
@@ -166,6 +194,11 @@ się reguł, które nie wymagają gustu, tylko wykonania:
 - **Ikony tylko z istniejącego zasobu SVG**, w rozmiarze branym z klucza w
   `Themes/`, nigdy wpisanym wprost. Brakującej ikony nie rysujemy ad hoc —
   to zgłoszenie.
+- **Kontrolka wbudowana bez własnego stylu w `Themes/` przynosi paletę i
+  zaokrąglenia Avalonii.** Przechodzi przy tym przez zakaz magicznych liczb,
+  bo żadnej liczby nie wpisano — a mimo to wnosi kolor spoza projektu. Brak
+  stylu to zgłoszenie, tak samo jak brakująca ikona; kolor dobrany lokalnie
+  w widoku, żeby zakryć problem, jest gorszy niż samo zgłoszenie.
 - **Jedna faza na raz.** Najpierw struktura i hierarchia, potem wyrównanie
   i odstępy względem skali, na końcu przegląd na renderze.
 - **Zawsze kończ renderem, nigdy własną oceną.** Render PNG to punkt
@@ -182,5 +215,19 @@ Przy punktowej poprawce z gotową diagnozą — wdrażaj od razu, bez pytania.
 ## Dokumentacja po zmianach
 
 Aktualizuj `docs/` jednym przejściem na końcu bloku pracy, nie po każdym
-commicie. `docs/code-map.md` nie jest łatana — regeneruje ją subagent,
-nadpisując plik w całości.
+commicie.
+
+`docs/code-map.md` weryfikuje się w całości, a poprawia punktowo. Subagent
+czyta mapę od początku do końca i każde jej twierdzenie sprawdza wobec kodu
+— także te, których dzisiejsza zmiana nie dotyczy. Poprawia nieprawdziwe,
+dopisuje brakujące, usuwa nieistniejące.
+
+Samo dopisanie nowego kawałka nie wystarcza i jest najczęstszym sposobem, w
+jaki mapa zaczyna kłamać: zmiana w jednym miejscu unieważnia zdania leżące
+gdzie indziej, a agent patrzący na diff nie ma jak do nich trafić. Weryfikacja
+całości je łapie, bo mapa jest listą kontrolną sama dla siebie — a kosztuje
+proporcjonalnie do swojego rozmiaru, nie do rozmiaru projektu.
+
+Regeneracja od zera, z przemieleniem codebase'u, jest trybem awaryjnym: na
+sytuację, gdy mapa rozjechała się na tyle, że weryfikacja jej twierdzeń
+przestaje mieć sens.
