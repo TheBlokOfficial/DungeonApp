@@ -12,7 +12,7 @@
             <Setter Property="Height" Value="{DynamicResource DungeonCampaignRowHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
@@ -84,12 +84,10 @@
             <!-- List records are independent documents. Spacing replaces the continuous grid of
                  table rules, while this remains the page's only scrolling region. -->
             <Panel Grid.Row="3" MinHeight="0">
-                <ScrollViewer Name="CampaignList"
-                              Classes="campaign-list"
+                <ScrollViewer Classes="campaign-list"
                               HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Hidden"
                               AllowAutoHide="True"
-                              ScrollChanged="OnCampaignListScrollChanged"
                               IsVisible="{Binding HasCampaigns}">
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
@@ -132,34 +130,6 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
-
-                <!-- These overlays communicate that the archive continues, without restoring a
-                     table-like scrollbar. They are enabled only when content exists beyond the
-                     corresponding edge of the viewport. -->
-                <Border Name="CampaignListTopFade"
-                        Height="28"
-                        VerticalAlignment="Top"
-                        IsHitTestVisible="False"
-                        IsVisible="False">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                            <GradientStop Offset="0" Color="{DynamicResource DungeonBackstageColor}" />
-                            <GradientStop Offset="1" Color="#00181918" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                </Border>
-                <Border Name="CampaignListBottomFade"
-                        Height="28"
-                        VerticalAlignment="Bottom"
-                        IsHitTestVisible="False"
-                        IsVisible="False">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                            <GradientStop Offset="0" Color="#00181918" />
-                            <GradientStop Offset="1" Color="{DynamicResource DungeonBackstageColor}" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                </Border>
 
                 <TextBlock Margin="20,0"
                            HorizontalAlignment="Center"
