@@ -36,6 +36,7 @@
         <Color x:Key="DungeonAccentColor">#C9973A</Color>                <!-- Złoto-karmelowy akcent z mockupu -->
         <Color x:Key="DungeonAccentBrightColor">#C9973A</Color>
         <Color x:Key="DungeonAccentActionColor">#C9973A</Color>
+        <Color x:Key="DungeonAccentDimColor">#8A7040</Color>
         <Color x:Key="DungeonPrimaryDisabledColor">#3B2915</Color>
 
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -58,6 +59,7 @@
         <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
         <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+        <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
         <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />

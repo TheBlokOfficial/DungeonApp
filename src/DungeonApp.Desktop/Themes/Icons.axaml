@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Pen x:Key="DungeonIconPen" Brush="{DynamicResource DungeonTextMutedBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
     <Pen x:Key="DungeonIconPrimaryPen" Brush="{DynamicResource DungeonTextPrimaryBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
+    <Pen x:Key="DungeonCampaignEmblemPen" Brush="{DynamicResource DungeonAccentDimBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
 
     <DrawingImage x:Key="DungeonIconSearch" Viewbox="0,0,24,24">
         <DrawingGroup>
@@ -16,6 +17,13 @@
         <DrawingGroup>
             <GeometryDrawing Geometry="M12,5 L12,21" Pen="{StaticResource DungeonIconPen}" />
             <GeometryDrawing Geometry="M20.001,19 A2,2 0 0 0 22,17 L22,5 A2,2 0 0 0 20.001,3 L16,3.002 A5,5 0 0 0 12,5 A5,5 0 0 0 8,3 L4,3 A2,2 0 0 0 2,5 L2,17 A2,2 0 0 0 3.999,19 L8,19 A5,5 0 0 1 12,21 A5,5 0 0 1 16,19 Z" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <!-- Record emblem is intentionally distinct from the neutral navigation icon. -->
+    <DrawingImage x:Key="DungeonIconCampaignRecord" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,5 L12,21" Pen="{StaticResource DungeonCampaignEmblemPen}" />
+            <GeometryDrawing Geometry="M20.001,19 A2,2 0 0 0 22,17 L22,5 A2,2 0 0 0 20.001,3 L16,3.002 A5,5 0 0 0 12,5 A5,5 0 0 0 8,3 L4,3 A2,2 0 0 0 2,5 L2,17 A2,2 0 0 0 3.999,19 L8,19 A5,5 0 0 1 12,21 A5,5 0 0 1 16,19 Z" Pen="{StaticResource DungeonCampaignEmblemPen}" />
         </DrawingGroup>
     </DrawingImage>
     <DrawingImage x:Key="DungeonIconUsers" Viewbox="0,0,24,24">
