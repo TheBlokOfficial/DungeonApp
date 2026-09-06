@@ -125,8 +125,25 @@
 
                 <ItemsControl Grid.Row="1"
                               HorizontalAlignment="Stretch"
+                              IsVisible="{Binding !IsCampaignOpen}"
                               ItemsSource="{Binding LibraryItems}"
                               ItemTemplate="{StaticResource NavigationItemTemplate}" />
+
+                <Button Grid.Row="1"
+                        Classes="nav-button"
+                        Command="{Binding CloseCampaignCommand}"
+                        IsVisible="{Binding IsCampaignOpen}">
+                    <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
+                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                               Height="{DynamicResource DungeonActionIconSize}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Source="{StaticResource DungeonIconBookOpen}" />
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="Biblioteka kampanii" />
+                    </Grid>
+                </Button>
             </Grid>
         </Grid>
     </Border>

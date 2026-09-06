@@ -57,7 +57,7 @@ public sealed class AppShellViewModel : ObservableObject
         _startupSteps = startupSteps;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
-        Sidebar = new GlobalSidebarViewModel(OnSectionSelected);
+        Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
 
         // Backstage first. The desk is uncovered by opening a campaign, never before.
@@ -167,6 +167,7 @@ public sealed class AppShellViewModel : ObservableObject
 
         TopBar.ContextTitle = campaign.Name.Value;
         TopBar.IsCampaignOpen = true;
+        Sidebar.IsCampaignOpen = true;
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
         CurrentWorkspaceContent = _campaignWorkspace;
     }
@@ -182,6 +183,7 @@ public sealed class AppShellViewModel : ObservableObject
 
         TopBar.ContextTitle = CampaignsSectionLabel;
         TopBar.IsCampaignOpen = false;
+        Sidebar.IsCampaignOpen = false;
         StatusBar.Message = "Gotowe";
         CurrentWorkspaceContent = _campaignLibrary;
 

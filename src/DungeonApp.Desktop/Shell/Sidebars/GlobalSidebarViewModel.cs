@@ -9,8 +9,11 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 {
     private readonly Action<NavigationItemViewModel> _onSelected;
     private readonly IReadOnlyList<NavigationItemViewModel> _allItems;
+    private bool _isCampaignOpen;
 
-    public GlobalSidebarViewModel(Action<NavigationItemViewModel> onSelected)
+    public GlobalSidebarViewModel(
+        Action<NavigationItemViewModel> onSelected,
+        Func<Task> closeCampaign)
     {
         _onSelected = onSelected;
 
@@ -21,9 +24,28 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         _allItems = LibraryItems;
 
         LibraryItems[0].IsActive = true;
+        CloseCampaignCommand = new AsyncCommand(closeCampaign, () => IsCampaignOpen);
     }
 
     public IReadOnlyList<NavigationItemViewModel> LibraryItems { get; }
+
+    public AsyncCommand CloseCampaignCommand { get; }
+
+    /// <summary>
+    /// The campaign workspace has no global top bar. Its route back to the library therefore lives
+    /// in this global rail, in the same position as the mockup's "Biblioteka kampanii" affordance.
+    /// </summary>
+    public bool IsCampaignOpen
+    {
+        get => _isCampaignOpen;
+        set
+        {
+            if (SetField(ref _isCampaignOpen, value))
+            {
+                CloseCampaignCommand.RaiseCanExecuteChanged();
+            }
+        }
+    }
 
     private NavigationItemViewModel CreateItem(string id, string iconResourceKey, string label)
     {
