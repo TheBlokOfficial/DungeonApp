@@ -1,119 +1,126 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Color x:Key="DungeonBackgroundColor">#121313</Color>
-    <Color x:Key="DungeonSurfaceColor">#181918</Color>
-    <Color x:Key="DungeonSurfaceHeaderColor">#1E1E1C</Color>
-    <!--
-        Application depth hierarchy. These semantic roles intentionally remain separate from the
-        generic surface tokens even where their current color values match. The outer frame,
-        backstage workspace and live campaign desk may evolve independently without making a
-        header or panel change color as a side effect.
-    -->
-    <Color x:Key="DungeonFrameColor">#1E1E1C</Color>
-    <Color x:Key="DungeonFrameHoverColor">#2A2925</Color>
-    <Color x:Key="DungeonBackstageColor">#181918</Color>
-    <Color x:Key="DungeonBackstageCardColor">#1E1E1C</Color>
-    <Color x:Key="DungeonBackstageRowHoverColor">#2A2925</Color>
-    <Color x:Key="DungeonDeskColor">#121313</Color>
-    <Color x:Key="DungeonSurfaceActiveColor">#2B251D</Color>
-    <Color x:Key="DungeonSurfaceHoverColor">#201F1C</Color>
-    <Color x:Key="DungeonBorderColor">#4A443C</Color>
-    <Color x:Key="DungeonBorderStrongColor">#5A5146</Color>
-    <Color x:Key="DungeonTextPrimaryColor">#F1E7D7</Color>
-    <Color x:Key="DungeonTextRegularColor">#BBB4AA</Color>
-    <Color x:Key="DungeonTextMutedColor">#8E877E</Color>
-    <Color x:Key="DungeonAccentColor">#B47C36</Color>
-    <Color x:Key="DungeonAccentBrightColor">#D19A52</Color>
-    <Color x:Key="DungeonAccentActionColor">#8B5727</Color>
-    <Color x:Key="DungeonPrimaryDisabledColor">#4A3520</Color>
-    <Color x:Key="DungeonSuccessColor">#84A98B</Color>
-    <Color x:Key="DungeonWarningColor">#CF9B55</Color>
-    <Color x:Key="DungeonDangerColor">#C76767</Color>
+    <ResourceDictionary xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        <Color x:Key="DungeonBackgroundColor">#121313</Color>
+        <Color x:Key="DungeonSurfaceColor">#181918</Color>
+        <Color x:Key="DungeonSurfaceHeaderColor">#1E1E1C</Color>
+        <!--
+            Application depth hierarchy. These semantic roles intentionally remain separate from the
+            generic surface tokens even where their current color values match. The outer frame,
+            backstage workspace and live campaign desk may evolve independently without making a
+            header or panel change color as a side effect.
+        -->
+        <!-- TŁA I OBSZAR ROBOCZY (Spójna, niemal czarna baza hebanowa) -->
+        <Color x:Key="DungeonBackstageColor">#141312</Color>
+        <!-- Ciemne tło paska bocznego (koniec z brązem) -->
+        <Color x:Key="DungeonDeskColor">#100F0E</Color>                  <!-- Tło obszaru roboczego -->
+        <Color x:Key="DungeonFrameColor">#1A1816</Color>                 <!-- Karty i nagłówki -->
+        <Color x:Key="DungeonFrameHoverColor">#221F1C</Color>
+        <Color x:Key="DungeonBackstageCardColor">#1A1816</Color>
+        <Color x:Key="DungeonBackstageRowHoverColor">#221F1C</Color>
+        <Color x:Key="DungeonSurfaceActiveColor">#261E14</Color>
+        <!-- Bardzo ciemny akcent pod zaznaczoną zakładką -->
+        <Color x:Key="DungeonSurfaceHoverColor">#1E1A15</Color>
 
-    <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
-    <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
-    <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
-    <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
-    <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
-    <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
-    <SolidColorBrush x:Key="DungeonBackstageCardBrush" Color="{DynamicResource DungeonBackstageCardColor}" />
-    <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
-    <SolidColorBrush x:Key="DungeonDeskBrush" Color="{DynamicResource DungeonDeskColor}" />
-    <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
-    <SolidColorBrush x:Key="DungeonSurfaceHoverBrush" Color="{DynamicResource DungeonSurfaceHoverColor}" />
-    <SolidColorBrush x:Key="DungeonBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
-    <SolidColorBrush x:Key="DungeonBorderStrongBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-    <SolidColorBrush x:Key="DungeonTextPrimaryBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
-    <SolidColorBrush x:Key="DungeonTextRegularBrush" Color="{DynamicResource DungeonTextRegularColor}" />
-    <SolidColorBrush x:Key="DungeonTextMutedBrush" Color="{DynamicResource DungeonTextMutedColor}" />
-    <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
-    <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
-    <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
-    <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
-    <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
-    <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
-    <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
+        <!-- RAMKI -->
+        <Color x:Key="DungeonBorderColor">#2E271F</Color>               <!-- Subtelna ramka podziału -->
+        <Color x:Key="DungeonBorderStrongColor">#A87330</Color>
+        <!-- Czyste, mosiężne złoto na aktywne krawędzie -->
 
-    <!-- Form chrome. Inputs are shallow backstage insets, never pieces of the darker live desk. -->
-    <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
-    <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
-    <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-    <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonAccentActionColor}" />
-    <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
+        <!-- TEKSTY -->
+        <Color x:Key="DungeonTextPrimaryColor">#ECE4D8</Color>          <!-- Jasny pergamin (aktywne) -->
+        <Color x:Key="DungeonTextRegularColor">#B5ABA0</Color>          <!-- Standardowy tekst -->
+        <Color x:Key="DungeonTextMutedColor">#736B61</Color>            <!-- Przyciemnione (nieaktywne pozycje) -->
 
-    <!--
-        Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
-        floating panel can diverge from other surfaces later without touching any view.
-        A minimized panel is the same object in another state, so the deck cards share these.
-    -->
-    <SolidColorBrush x:Key="DungeonPanelWindowBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
-    <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
-    <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
-    <!--
-        The active panel changes only this brush. A stronger neutral border keeps focus legible
-        without making ordinary window selection look like a warning or validation state. Changing
-        BorderThickness instead would resize the panel every time focus moved.
-    -->
-    <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-    <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
-         It must stay Transparent rather than null, because null is not hit-testable. -->
-    <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
+        <!-- AKCENTY -->
+        <Color x:Key="DungeonAccentColor">#B87B32</Color>                <!-- Złoto-karmelowy akcent z mockupu -->
+        <Color x:Key="DungeonAccentBrightColor">#D69342</Color>
+        <Color x:Key="DungeonAccentActionColor">#9E6625</Color>
+        <Color x:Key="DungeonPrimaryDisabledColor">#3B2915</Color>
 
-    <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
-    <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
+        <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
+        <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
+        <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+        <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
+        <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
+        <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
+        <SolidColorBrush x:Key="DungeonBackstageCardBrush" Color="{DynamicResource DungeonBackstageCardColor}" />
+        <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
+        <SolidColorBrush x:Key="DungeonDeskBrush" Color="{DynamicResource DungeonDeskColor}" />
+        <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
+        <SolidColorBrush x:Key="DungeonSurfaceHoverBrush" Color="{DynamicResource DungeonSurfaceHoverColor}" />
+        <SolidColorBrush x:Key="DungeonBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+        <SolidColorBrush x:Key="DungeonBorderStrongBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <SolidColorBrush x:Key="DungeonTextPrimaryBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
+        <SolidColorBrush x:Key="DungeonTextRegularBrush" Color="{DynamicResource DungeonTextRegularColor}" />
+        <SolidColorBrush x:Key="DungeonTextMutedBrush" Color="{DynamicResource DungeonTextMutedColor}" />
+        <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
+        <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
+        <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+        <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
+        <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
+        <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
+        <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
 
-    <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
+        <!-- Form chrome. Inputs are shallow backstage insets, never pieces of the darker live desk. -->
+        <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
+        <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+        <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+        <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
 
-    <!--
-        Skala odstępów, wyrażona jako literały powtarzające się w widokach.
-        Dwa równoległe zestawy: Double dla Spacing/Width/Height oraz Thickness dla Margin/Padding.
-    -->
-    <x:Double x:Key="DungeonSpacingXs">6</x:Double>
-    <x:Double x:Key="DungeonSpacingSm">8</x:Double>
-    <x:Double x:Key="DungeonSpacingMd">12</x:Double>
-    <x:Double x:Key="DungeonSpacingLg">16</x:Double>
-    <x:Double x:Key="DungeonSpacingXl">20</x:Double>
-    <x:Double x:Key="DungeonSpacingXxl">24</x:Double>
-    <x:Double x:Key="DungeonSpacingXxxl">32</x:Double>
+        <!--
+            Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
+            floating panel can diverge from other surfaces later without touching any view.
+            A minimized panel is the same object in another state, so the deck cards share these.
+        -->
+        <SolidColorBrush x:Key="DungeonPanelWindowBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
+        <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+        <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+        <!--
+            The active panel changes only this brush. A stronger neutral border keeps focus legible
+            without making ordinary window selection look like a warning or validation state. Changing
+            BorderThickness instead would resize the panel every time focus moved.
+        -->
+        <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
+             It must stay Transparent rather than null, because null is not hit-testable. -->
+        <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
-    <Thickness x:Key="DungeonPaddingXs">6</Thickness>
-    <Thickness x:Key="DungeonPaddingSm">8</Thickness>
-    <Thickness x:Key="DungeonPaddingMd">12</Thickness>
-    <Thickness x:Key="DungeonPaddingLg">16</Thickness>
-    <Thickness x:Key="DungeonPaddingXl">20</Thickness>
-    <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
-    <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
+        <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
+        <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
 
-    <!-- Pasek postępu ładowania. -->
-    <x:Double x:Key="DungeonLoadingProgressBarWidth">192</x:Double>
-    <x:Double x:Key="DungeonLoadingProgressBarHeight">4</x:Double>
+        <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
 
-    <!--
-        Profile-dependent tokens (font sizes, control/row heights, shell dimensions,
-        DungeonSidebarWidth, DungeonMinimumWindowWidth/Height)
-        are NOT declared here. They are the sole responsibility of
-        Themes/UiScaleProfiles.cs, which sets them on Application.Resources before any
-        window is created (see App.axaml.cs Initialize()). Keeping one writer avoids the
-        two sets of numbers drifting apart. See docs/ui.md for where the numbers live.
-    -->
-</ResourceDictionary>
+        <!--
+            Skala odstępów, wyrażona jako literały powtarzające się w widokach.
+            Dwa równoległe zestawy: Double dla Spacing/Width/Height oraz Thickness dla Margin/Padding.
+        -->
+        <x:Double x:Key="DungeonSpacingXs">6</x:Double>
+        <x:Double x:Key="DungeonSpacingSm">8</x:Double>
+        <x:Double x:Key="DungeonSpacingMd">12</x:Double>
+        <x:Double x:Key="DungeonSpacingLg">16</x:Double>
+        <x:Double x:Key="DungeonSpacingXl">20</x:Double>
+        <x:Double x:Key="DungeonSpacingXxl">24</x:Double>
+        <x:Double x:Key="DungeonSpacingXxxl">32</x:Double>
+
+        <Thickness x:Key="DungeonPaddingXs">6</Thickness>
+        <Thickness x:Key="DungeonPaddingSm">8</Thickness>
+        <Thickness x:Key="DungeonPaddingMd">12</Thickness>
+        <Thickness x:Key="DungeonPaddingLg">16</Thickness>
+        <Thickness x:Key="DungeonPaddingXl">20</Thickness>
+        <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
+        <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
+
+        <!-- Pasek postępu ładowania. -->
+        <x:Double x:Key="DungeonLoadingProgressBarWidth">192</x:Double>
+        <x:Double x:Key="DungeonLoadingProgressBarHeight">4</x:Double>
+
+        <!--
+            Profile-dependent tokens (font sizes, control/row heights, shell dimensions,
+            DungeonSidebarWidth, DungeonMinimumWindowWidth/Height)
+            are NOT declared here. They are the sole responsibility of
+            Themes/UiScaleProfiles.cs, which sets them on Application.Resources before any
+            window is created (see App.axaml.cs Initialize()). Keeping one writer avoids the
+            two sets of numbers drifting apart. See docs/ui.md for where the numbers live.
+        -->
+    </ResourceDictionary>
