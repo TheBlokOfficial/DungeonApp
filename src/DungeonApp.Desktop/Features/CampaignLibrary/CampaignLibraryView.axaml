@@ -22,14 +22,6 @@
         <Style Selector="Button.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
-        <!-- Avalonia's Fluent ScrollViewer draws its bar over the viewport. The list reserves
-             this narrow gutter itself, so campaign metadata never passes underneath the thumb. -->
-        <Style Selector="ScrollViewer.campaign-list /template/ ScrollBar">
-            <Setter Property="Width" Value="10" />
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
     </UserControl.Styles>
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
@@ -92,13 +84,14 @@
             <!-- List records are independent documents. Spacing replaces the continuous grid of
                  table rules, while this remains the page's only scrolling region. -->
             <Panel Grid.Row="3" MinHeight="0">
-                <ScrollViewer Classes="campaign-list"
+                <ScrollViewer Name="CampaignList"
+                              Classes="campaign-list"
                               HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Hidden"
                               AllowAutoHide="True"
+                              ScrollChanged="OnCampaignListScrollChanged"
                               IsVisible="{Binding HasCampaigns}">
-                    <ItemsControl Margin="0,0,14,0"
-                                  ItemsSource="{Binding Campaigns}">
+                    <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Button Classes="campaign-row" Command="{Binding OpenCommand}">
@@ -139,6 +132,34 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
+
+                <!-- These overlays communicate that the archive continues, without restoring a
+                     table-like scrollbar. They are enabled only when content exists beyond the
+                     corresponding edge of the viewport. -->
+                <Border Name="CampaignListTopFade"
+                        Height="28"
+                        VerticalAlignment="Top"
+                        IsHitTestVisible="False"
+                        IsVisible="False">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                            <GradientStop Offset="0" Color="{DynamicResource DungeonBackstageColor}" />
+                            <GradientStop Offset="1" Color="#00181918" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Name="CampaignListBottomFade"
+                        Height="28"
+                        VerticalAlignment="Bottom"
+                        IsHitTestVisible="False"
+                        IsVisible="False">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                            <GradientStop Offset="0" Color="#00181918" />
+                            <GradientStop Offset="1" Color="{DynamicResource DungeonBackstageColor}" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
 
                 <TextBlock Margin="20,0"
                            HorizontalAlignment="Center"

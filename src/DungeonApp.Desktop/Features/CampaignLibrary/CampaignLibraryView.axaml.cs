@@ -1,6 +1,8 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
@@ -11,6 +13,26 @@ public partial class CampaignLibraryView : UserControl
     {
         InitializeComponent();
         AddHandler(InputElement.PointerPressedEvent, OnPreviewPointerPressed, RoutingStrategies.Tunnel);
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        // Extent and viewport are available only after the first layout pass.
+        Dispatcher.UIThread.Post(UpdateCampaignListFades, DispatcherPriority.Loaded);
+    }
+
+    private void OnCampaignListScrollChanged(object? sender, ScrollChangedEventArgs e)
+        => UpdateCampaignListFades();
+
+    private void UpdateCampaignListFades()
+    {
+        const double edgeTolerance = 0.5;
+        var verticalRange = Math.Max(0, CampaignList.Extent.Height - CampaignList.Viewport.Height);
+        var hasOverflow = verticalRange > edgeTolerance;
+
+        CampaignListTopFade.IsVisible = hasOverflow && CampaignList.Offset.Y > edgeTolerance;
+        CampaignListBottomFade.IsVisible = hasOverflow && CampaignList.Offset.Y < verticalRange - edgeTolerance;
     }
 
     private void OnPreviewPointerPressed(object? sender, PointerPressedEventArgs e)
