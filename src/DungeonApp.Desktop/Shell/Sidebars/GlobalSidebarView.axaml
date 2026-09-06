@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:easings="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
              mc:Ignorable="d"
              d:DesignWidth="216"
              d:DesignHeight="728"
@@ -132,7 +133,26 @@
                         <Border Width="64"
                                 Height="40"
                                 HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
+                                VerticalAlignment="Center"
+                                Opacity="{Binding CollapsibleTextOpacity}">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <Border.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18">
+                                                <DoubleTransition.Easing>
+                                                    <easings:CubicEaseInOut />
+                                                </DoubleTransition.Easing>
+                                            </DoubleTransition>
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </Border.RenderTransform>
                             <Border Width="24"
                                     Height="24"
                                     HorizontalAlignment="Center"
@@ -174,22 +194,25 @@
                             </TextBlock.RenderTransform>
                         </TextBlock>
                     </Grid>
+
+                    <!-- One persistent toggle follows the sidebar's right-hand 64px rail. As the
+                         panel narrows, that rail naturally lands on the navigation icon axis and
+                         replaces the fading brand mark without changing containers or rows. -->
+                    <Grid Width="64"
+                          HorizontalAlignment="Right">
+                        <Button Classes="sidebar-toggle"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Command="{Binding ToggleCollapsedCommand}">
+                            <Image Width="{DynamicResource DungeonActionIconSize}"
+                                   Height="{DynamicResource DungeonActionIconSize}"
+                                   Source="{StaticResource DungeonIconMenu}" />
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
 
             <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="0,0,0,8" RowDefinitions="44,Auto,*">
-                <Grid Grid.Row="0"
-                      Width="64"
-                      HorizontalAlignment="Right">
-                    <Button Classes="sidebar-toggle"
-                            Width="32"
-                            Height="32"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Command="{Binding ToggleCollapsedCommand}">
-                        <Image Width="16" Height="16" Source="{StaticResource DungeonIconMenu}" />
-                    </Button>
-                </Grid>
                 <TextBlock Grid.Row="0"
                            Margin="16,0,64,3"
                            Classes="sidebar-section-heading eyebrow"
@@ -214,48 +237,61 @@
                         </TextBlock.RenderTransform>
                 </TextBlock>
 
-                <ItemsControl Grid.Row="1"
-                              Margin="0,8,0,0"
-                              HorizontalAlignment="Stretch"
-                              IsVisible="{Binding !IsCampaignOpen}"
-                              ItemsSource="{Binding LibraryItems}"
-                              ItemTemplate="{StaticResource NavigationItemTemplate}" />
-
-                <Button Grid.Row="1"
-                        Classes="nav-button"
-                        Margin="0,8,0,0"
-                        Command="{Binding CloseCampaignCommand}"
-                        ToolTip.Tip="Biblioteka kampanii"
-                        IsVisible="{Binding IsCampaignOpen}">
-                    <Grid Classes="nav-content" ColumnDefinitions="64,*">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
-                               Height="{DynamicResource DungeonActionIconSize}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Source="{StaticResource DungeonIconBookOpen}" />
-                        <TextBlock Grid.Column="1"
-                                   Classes="nav-label"
-                                   Margin="-8,0,12,0"
-                                   Opacity="{Binding CollapsibleTextOpacity}"
-                                   VerticalAlignment="Center"
-                                   Text="Biblioteka kampanii">
-                            <TextBlock.Transitions>
+                <Grid Grid.Row="1"
+                      Margin="0,8,0,0">
+                    <Grid.RenderTransform>
+                        <TranslateTransform Y="{Binding NavigationItemsOffset}">
+                            <TranslateTransform.Transitions>
                                 <Transitions>
-                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                    <DoubleTransition Property="Y" Duration="0:0:0.18">
+                                        <DoubleTransition.Easing>
+                                            <easings:CubicEaseInOut />
+                                        </DoubleTransition.Easing>
+                                    </DoubleTransition>
                                 </Transitions>
-                            </TextBlock.Transitions>
-                            <TextBlock.RenderTransform>
-                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
-                                    <TranslateTransform.Transitions>
-                                        <Transitions>
-                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
-                                        </Transitions>
-                                    </TranslateTransform.Transitions>
-                                </TranslateTransform>
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
-                    </Grid>
-                </Button>
+                            </TranslateTransform.Transitions>
+                        </TranslateTransform>
+                    </Grid.RenderTransform>
+
+                    <ItemsControl HorizontalAlignment="Stretch"
+                                  IsVisible="{Binding !IsCampaignOpen}"
+                                  ItemsSource="{Binding LibraryItems}"
+                                  ItemTemplate="{StaticResource NavigationItemTemplate}" />
+
+                    <Button Classes="nav-button"
+                            Command="{Binding CloseCampaignCommand}"
+                            ToolTip.Tip="Biblioteka kampanii"
+                            IsVisible="{Binding IsCampaignOpen}">
+                        <Grid Classes="nav-content" ColumnDefinitions="64,*">
+                            <Image Width="{DynamicResource DungeonActionIconSize}"
+                                   Height="{DynamicResource DungeonActionIconSize}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Source="{StaticResource DungeonIconBookOpen}" />
+                            <TextBlock Grid.Column="1"
+                                       Classes="nav-label"
+                                       Margin="-8,0,12,0"
+                                       Opacity="{Binding CollapsibleTextOpacity}"
+                                       VerticalAlignment="Center"
+                                       Text="Biblioteka kampanii">
+                                <TextBlock.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                    </Transitions>
+                                </TextBlock.Transitions>
+                                <TextBlock.RenderTransform>
+                                    <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                        <TranslateTransform.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                            </Transitions>
+                                        </TranslateTransform.Transitions>
+                                    </TranslateTransform>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
+                        </Grid>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
         <Border Width="1"
