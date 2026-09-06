@@ -43,7 +43,7 @@
         <Grid Background="Transparent"
               MinHeight="0"
               Margin="28,20,28,24">
-            <Grid RowDefinitions="Auto,Auto,Auto,*">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto">
 
             <StackPanel Spacing="6">
                 <TextBlock Classes="muted" Text="Kampanie" />
@@ -161,23 +161,16 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <!-- The empty state occupies the exact place of the first record. It does not
-                     reserve a list viewport or use vertical centring, because there is no list
-                     to scroll yet. -->
-                <Border Height="{DynamicResource DungeonCampaignRowHeight}"
-                        Background="Transparent"
-                        BorderBrush="{DynamicResource DungeonBorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="{DynamicResource DungeonControlCornerRadius}"
-                        IsVisible="{Binding IsEmpty}">
-                    <TextBlock Margin="20,0"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                               Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
-                               TextAlignment="Center"
-                               TextWrapping="Wrap" />
-                </Border>
+                <!-- A calm, horizontally centred hint: it belongs to the creation flow, not to
+                     an imaginary first row. The Auto row keeps it immediately below the creator. -->
+                <TextBlock Margin="20,20,20,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                           IsVisible="{Binding IsEmpty}"
+                           Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
+                           TextAlignment="Center"
+                           TextWrapping="Wrap" />
             </Panel>
             </Grid>
 
