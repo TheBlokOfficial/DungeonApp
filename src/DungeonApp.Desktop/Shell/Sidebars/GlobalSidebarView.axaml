@@ -15,8 +15,6 @@
             <Button Classes="nav-button"
                     Classes.active="{Binding IsActive}"
                     Command="{Binding SelectCommand}"
-                    Width="{Binding CompactButtonWidth}"
-                    HorizontalAlignment="{Binding CompactButtonAlignment}"
                     RenderTransform="{x:Null}"
                     ToolTip.Tip="{Binding Label}"
                     Transitions="{x:Null}">
@@ -111,7 +109,7 @@
         </Style>
         <Style Selector="Button.sidebar-toggle:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
     </UserControl.Styles>
 
@@ -178,13 +176,13 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="8,0,8,8" RowDefinitions="52,Auto,*">
+            <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="8,0,8,8" RowDefinitions="44,Auto,*">
                 <Button Grid.Row="0"
                         Classes="sidebar-toggle"
-                        Width="{Binding HamburgerWidth}"
-                        Height="40"
+                        Width="32"
+                        Height="32"
                         Margin="0,6,0,6"
-                        HorizontalAlignment="{Binding HamburgerAlignment}"
+                        HorizontalAlignment="Right"
                         Command="{Binding ToggleCollapsedCommand}">
                     <Button.RenderTransform>
                         <TranslateTransform X="{Binding HamburgerOffset}">
@@ -230,8 +228,6 @@
                 <Button Grid.Row="1"
                         Classes="nav-button"
                         Command="{Binding CloseCampaignCommand}"
-                        Width="{Binding CompactButtonWidth}"
-                        HorizontalAlignment="{Binding CompactButtonAlignment}"
                         ToolTip.Tip="Biblioteka kampanii"
                         IsVisible="{Binding IsCampaignOpen}">
                     <Grid Classes="nav-content" ColumnDefinitions="40,*" ColumnSpacing="8">
