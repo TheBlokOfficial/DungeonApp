@@ -41,7 +41,7 @@
     </UserControl.Styles>
 
     <Border Background="{DynamicResource DungeonFrameBrush}"
-            BorderBrush="{DynamicResource DungeonBorderBrush}"
+            BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
             BorderThickness="0,0,0,1">
         <Grid>
             <!-- Column 0 must stay bound to DungeonSidebarWidth (same resource AppShellView's
@@ -56,7 +56,7 @@
                 <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
                 <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
             </Grid.ColumnDefinitions>
-            <Border Grid.Column="0" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" BorderBrush="{DynamicResource DungeonBorderStrongBrush}" BorderThickness="0,0,1,0">
                 <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="8">
                     <Border Width="24"
                             Height="24"

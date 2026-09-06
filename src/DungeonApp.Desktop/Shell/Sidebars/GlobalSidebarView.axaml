@@ -85,7 +85,7 @@
     <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
          exclusive to an open campaign; the contrast here gives static screens depth without it. -->
     <Border Background="{DynamicResource DungeonFrameBrush}"
-            BorderBrush="{DynamicResource DungeonBorderBrush}"
+            BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
             BorderThickness="0,0,1,0">
         <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*">
             <TextBlock Margin="8,0"

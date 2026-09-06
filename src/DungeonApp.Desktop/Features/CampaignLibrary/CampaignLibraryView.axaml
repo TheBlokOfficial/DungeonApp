@@ -43,14 +43,14 @@
 
             <Border Grid.Row="1"
                     Background="{DynamicResource DungeonBackstageCardBrush}"
-                    BorderBrush="{DynamicResource DungeonBorderBrush}"
+                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="1"
                     CornerRadius="{DynamicResource DungeonCornerRadius}"
                     ClipToBounds="True"
                     MinHeight="0">
                 <Grid MinHeight="0" RowDefinitions="Auto,Auto,*,Auto">
                     <Border Padding="20,18,20,14"
-                            BorderBrush="{DynamicResource DungeonBorderBrush}"
+                            BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                             BorderThickness="0,0,0,1">
                         <StackPanel Spacing="8">
                             <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
