@@ -45,18 +45,27 @@
             </StackPanel>
 
             <Border Grid.Row="1"
-                    Background="{DynamicResource DungeonBackstageCardBrush}"
+                    Background="{DynamicResource DungeonBackstageBrush}"
                     BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="1"
                     CornerRadius="{DynamicResource DungeonCornerRadius}"
                     ClipToBounds="True"
                     MinHeight="0">
-                <Grid MinHeight="0" RowDefinitions="Auto,Auto,*,Auto">
-                    <Border Padding="20,18,20,14"
+                <Grid MinHeight="0" RowDefinitions="Auto,Auto,Auto,*,Auto">
+                    <!-- Section headers are a slightly raised surface. The form and records sit on
+                         the quieter body beneath, so the shelf's structure comes from planes before
+                         it comes from rules. -->
+                    <Border Background="{DynamicResource DungeonSurfaceHeaderBrush}"
+                            Padding="20,12,20,8">
+                        <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
+                    </Border>
+
+                    <Border Grid.Row="1"
+                            Background="{DynamicResource DungeonBackstageBrush}"
+                            Padding="20,0,20,14"
                             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                             BorderThickness="0,0,0,1">
                         <StackPanel Spacing="8">
-                            <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                 <TextBox PlaceholderText="Nazwa nowej kampanii"
                                          Text="{Binding NewCampaignName, Mode=TwoWay}"
@@ -83,14 +92,15 @@
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Grid.Row="1"
-                               Margin="20,8,20,6"
-                               Classes="eyebrow"
-                               Text="ZAPISANE KAMPANIE" />
+                    <Border Grid.Row="2"
+                            Background="{DynamicResource DungeonSurfaceHeaderBrush}"
+                            Padding="20,8,20,6">
+                        <TextBlock Classes="eyebrow" Text="ZAPISANE KAMPANIE" />
+                    </Border>
 
                     <!-- This is the only scrolling region. Its star-sized parent can shrink at the
                          minimum window size, without ever pushing the shell beyond the viewport. -->
-                    <Panel Grid.Row="2"
+                    <Panel Grid.Row="3"
                            Margin="0,0,0,12"
                            MinHeight="0">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled"
@@ -139,7 +149,7 @@
                                    TextWrapping="Wrap" />
                     </Panel>
 
-                    <Border Grid.Row="3"
+                    <Border Grid.Row="4"
                             Padding="20,0,20,14"
                             IsVisible="{Binding HasStatus}">
                         <TextBlock VerticalAlignment="Center"
