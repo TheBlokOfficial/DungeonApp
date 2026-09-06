@@ -135,8 +135,10 @@
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
         <x:Double x:Key="DungeonTopBarActionSize">50</x:Double>
-        <x:Double x:Key="DungeonMinimumWindowWidth">1024</x:Double>
-        <x:Double x:Key="DungeonMinimumWindowHeight">680</x:Double>
+        <!-- The smallest supported desktop workspace still shows its complete chrome, the campaign
+             form and a usable list viewport. Data beyond that viewport scrolls inside the shelf. -->
+        <x:Double x:Key="DungeonMinimumWindowWidth">1280</x:Double>
+        <x:Double x:Key="DungeonMinimumWindowHeight">720</x:Double>
         <x:Double x:Key="DungeonPanelHeaderHeight">36</x:Double>
         <x:Double x:Key="DungeonPanelHeaderActionSize">36</x:Double>
         <x:Double x:Key="DungeonPanelTitleFontSize">13</x:Double>
