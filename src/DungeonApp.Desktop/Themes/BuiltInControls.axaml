@@ -16,7 +16,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonEyebrowFontSize}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="LetterSpacing" Value="0.7" />
-        <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
     <Style Selector="TextBlock.muted">

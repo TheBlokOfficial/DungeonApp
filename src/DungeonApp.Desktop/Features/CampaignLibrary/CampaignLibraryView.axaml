@@ -32,13 +32,14 @@
     <!-- At the supported minimum window (1280×720), this host fits the whole static library
          structure: heading, creation form, shelf frame and a stable list viewport. Larger windows
          add backstage space rather than stretching the shelf. -->
-    <controls:AnchoredContentHost MaxContentWidth="920" MaxContentHeight="614">
+    <controls:AnchoredContentHost MaxContentWidth="1040" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
               Margin="28,20,28,24"
               RowDefinitions="Auto,Auto,Auto,*,Auto">
 
             <StackPanel Spacing="6">
+                <TextBlock Classes="muted" Text="Kampanie" />
                 <TextBlock Classes="workspace-title" Text="Biblioteka kampanii" />
                 <TextBlock Classes="muted"
                            Text="Otwórz istniejącą kampanię albo utwórz nową." />
@@ -80,9 +81,10 @@
                                 Height="{DynamicResource DungeonControlHeight}"
                                 Padding="20,0" />
                     </Grid>
-                    <TextBlock MinHeight="16"
+                    <TextBlock
                                FontSize="{DynamicResource DungeonHelperFontSize}"
                                Foreground="{DynamicResource DungeonDangerBrush}"
+                               IsVisible="{Binding HasNameError}"
                                Text="{Binding NameError}" />
                 </StackPanel>
             </Border>
@@ -96,6 +98,8 @@
                  table rules, while this remains the page's only scrolling region. -->
             <Panel Grid.Row="3" MinHeight="0">
                 <ScrollViewer Classes="campaign-list"
+                              Height="{DynamicResource DungeonCampaignListViewportHeight}"
+                              VerticalAlignment="Top"
                               HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Hidden"
                               AllowAutoHide="True"

@@ -27,6 +27,9 @@
     <DrawingImage x:Key="DungeonIconChevronRight" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M9,5 L16,12 L9,19" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
+    <DrawingImage x:Key="DungeonIconBrandMark" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M12,2 L20,7 L20,17 L12,22 L4,17 L4,7 Z" Pen="{StaticResource DungeonIconPrimaryPen}" />
+    </DrawingImage>
     <!-- Record emblem is intentionally distinct from the neutral navigation icon. -->
     <DrawingImage x:Key="DungeonIconCampaignRecord" Viewbox="0,0,24,24">
         <DrawingGroup>

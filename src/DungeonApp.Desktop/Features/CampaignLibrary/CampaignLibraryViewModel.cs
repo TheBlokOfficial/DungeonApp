@@ -71,8 +71,16 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public string? NameError
     {
         get => _nameError;
-        private set => SetField(ref _nameError, value);
+        private set
+        {
+            if (SetField(ref _nameError, value))
+            {
+                RaisePropertyChanged(nameof(HasNameError));
+            }
+        }
     }
+
+    public bool HasNameError => !string.IsNullOrWhiteSpace(NameError);
 
     /// <summary>The last thing that happened, shown under the list. Null when there is nothing to say.</summary>
     public string? Status

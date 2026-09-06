@@ -131,7 +131,7 @@
         <x:Double x:Key="DungeonHelperFontSize">12</x:Double>
         <x:Double x:Key="DungeonEyebrowFontSize">10</x:Double>
         <x:Double x:Key="DungeonStatusFontSize">12</x:Double>
-        <x:Double x:Key="DungeonWorkspaceTitleFontSize">23</x:Double>
+        <x:Double x:Key="DungeonWorkspaceTitleFontSize">22</x:Double>
         <x:Double x:Key="DungeonCampaignNameFontSize">15</x:Double>
         <x:Double x:Key="DungeonBrandNameFontSize">16</x:Double>
         <x:Double x:Key="DungeonBrandMarkFontSize">16</x:Double>
@@ -145,6 +145,7 @@
         <x:Double x:Key="DungeonNavigationRowHeight">42</x:Double>
         <x:Double x:Key="DungeonCampaignRowHeight">44</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
+        <x:Double x:Key="DungeonCampaignListViewportHeight">284</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
         <x:Double x:Key="DungeonTopBarActionSize">50</x:Double>
         <!-- The smallest supported desktop workspace still shows its complete chrome, the campaign
