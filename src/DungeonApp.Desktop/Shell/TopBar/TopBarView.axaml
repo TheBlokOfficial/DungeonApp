@@ -40,7 +40,7 @@
         </Style>
     </UserControl.Styles>
 
-    <Border Background="{DynamicResource DungeonFrameBrush}"
+    <Border Background="{DynamicResource DungeonBackstageBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,0,1">
         <Grid>

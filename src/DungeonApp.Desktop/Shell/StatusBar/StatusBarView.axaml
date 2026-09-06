@@ -8,7 +8,7 @@
              d:DesignHeight="24"
              x:Class="DungeonApp.Desktop.Shell.StatusBar.StatusBarView"
              x:DataType="vm:StatusBarViewModel">
-    <Border Background="{DynamicResource DungeonFrameBrush}"
+    <Border Background="{DynamicResource DungeonBackstageBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,1,0,0">
         <Grid Margin="12,0" ColumnSpacing="12">
