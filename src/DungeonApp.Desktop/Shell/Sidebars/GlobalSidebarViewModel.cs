@@ -57,6 +57,9 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
                 RaisePropertyChanged(nameof(SidebarWidth));
                 RaisePropertyChanged(nameof(SidebarToggleToolTip));
+                RaisePropertyChanged(nameof(CollapsibleTextOpacity));
+                RaisePropertyChanged(nameof(CollapsibleTextOffset));
+                RaisePropertyChanged(nameof(HamburgerOffset));
             }
         }
     }
@@ -68,6 +71,10 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     public double CollapsibleTextOpacity => IsCollapsed ? 0 : 1;
 
     public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
+
+    // The compact rail keeps the hamburger on its original row. Its small horizontal adjustment
+    // centres the 32px control in the 64px rail without introducing a second layout variant.
+    public double HamburgerOffset => IsCollapsed ? -8 : 0;
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives
