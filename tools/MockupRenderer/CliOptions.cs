@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using DungeonApp.Desktop.Themes;
 
 namespace MockupRenderer;
 
@@ -17,12 +16,11 @@ internal sealed class CliOptions
     public required string OutputPath { get; init; }
     public double Width { get; init; } = 1280;
     public double Height { get; init; } = 800;
-    public UiScaleProfile ScaleProfile { get; init; } = UiScaleProfile.Medium;
     public string? DataContextPath { get; init; }
 
     public const string Usage =
         "Użycie: MockupRenderer <wejście.axaml> <wyjście.png> " +
-        "[--width=N] [--height=N] [--scale=Small|Medium|Large] [--data=kontekst.json]";
+        "[--width=N] [--height=N] [--data=kontekst.json]";
 
     public static bool TryParse(string[] args, out CliOptions options, out string error)
     {
@@ -32,7 +30,6 @@ internal sealed class CliOptions
         var positional = new List<string>();
         double width = 1280;
         double height = 800;
-        var scale = UiScaleProfile.Medium;
         string? dataPath = null;
 
         foreach (var arg in args)
@@ -50,14 +47,6 @@ internal sealed class CliOptions
                 if (!double.TryParse(heightValue, NumberStyles.Float, CultureInfo.InvariantCulture, out height) || height <= 0)
                 {
                     error = $"Niepoprawna wysokość: '{heightValue}'.";
-                    return false;
-                }
-            }
-            else if (TryReadFlag(arg, "--scale=", out var scaleValue))
-            {
-                if (!Enum.TryParse(scaleValue, ignoreCase: true, out scale))
-                {
-                    error = $"Nieznany profil skalowania: '{scaleValue}' (dozwolone: Small, Medium, Large).";
                     return false;
                 }
             }
@@ -94,7 +83,6 @@ internal sealed class CliOptions
             OutputPath = positional[1],
             Width = width,
             Height = height,
-            ScaleProfile = scale,
             DataContextPath = dataPath,
         };
         return true;

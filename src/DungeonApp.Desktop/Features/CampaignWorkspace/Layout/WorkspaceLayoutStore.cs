@@ -11,7 +11,7 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
 /// <summary>
 /// Reads and writes a desk arrangement as JSON, following the same shape as
-/// <see cref="DungeonApp.Desktop.Settings.AppSettingsStore"/>: a separate on-disk DTO, hand mapping,
+/// a separate on-disk DTO with hand mapping,
 /// and a safe write through a temporary file plus an atomic move.
 /// <para>
 /// One file per workspace rather than a section inside settings.json, so a corrupt layout can never

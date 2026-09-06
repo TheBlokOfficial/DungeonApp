@@ -10,10 +10,8 @@ using DungeonApp.Core.Tools.Counter;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
-using DungeonApp.Desktop.Settings;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
-using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop;
 
@@ -35,14 +33,6 @@ public partial class App : Avalonia.Application
         var appDataDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "DungeonApp");
-        var settingsStore = new AppSettingsStore(appDataDirectory);
-        var loaded = settingsStore.Load();
-        var settings = Program.UiScaleProfileOverride is { } overrideProfile
-            ? loaded with { ScaleProfile = overrideProfile }
-            : loaded;
-
-        UiScaleProfiles.Apply(this, settings.ScaleProfile);
-
         // Kept as fields rather than locals, because the shell needs them once the window is built.
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);

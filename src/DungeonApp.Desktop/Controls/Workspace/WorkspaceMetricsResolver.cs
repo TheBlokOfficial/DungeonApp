@@ -3,8 +3,7 @@ using Avalonia;
 namespace DungeonApp.Desktop.Controls.Workspace;
 
 /// <summary>
-/// Reads the scale-profile metrics the geometry pipeline needs out of application resources
-/// (written by <see cref="DungeonApp.Desktop.Themes.UiScaleProfiles"/>).
+/// Reads the workspace metrics the geometry pipeline needs out of application resources.
 /// <para>
 /// Called once per gesture and once per surface resize — never per pointer move. The resolved
 /// value is then passed down as a <see cref="WorkspaceMetrics"/> so the math itself never touches

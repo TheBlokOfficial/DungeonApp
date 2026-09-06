@@ -23,7 +23,6 @@ Opcje (wszystkie opcjonalne):
 
 - `--width=N` — szerokość okna renderu w pikselach (domyślnie `1280`),
 - `--height=N` — wysokość okna renderu w pikselach (domyślnie `800`),
-- `--scale=Small|Medium|Large` — profil skalowania UI z `UiScaleProfiles`
   (domyślnie `Medium`),
 - `--data=kontekst.json` — plik z atrapą kontekstu danych (patrz niżej).
 

@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Markup.Xaml;
-using DungeonApp.Desktop.Themes;
 
 namespace MockupRenderer;
 
@@ -52,8 +51,6 @@ public static class Program
         builder.SetupWithoutStarting();
 
         var app = (App)Application.Current!;
-        UiScaleProfiles.Apply(app, options.ScaleProfile);
-
         var xaml = File.ReadAllText(options.InputPath);
         var control = (Control)AvaloniaRuntimeXamlLoader.Load(xaml, typeof(DungeonApp.Desktop.App).Assembly);
 
