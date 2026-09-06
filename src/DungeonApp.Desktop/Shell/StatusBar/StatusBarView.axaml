@@ -16,7 +16,7 @@
                  sidebar column and TopBarView use) so this leading cell lines up with the
                  sidebar above, including when its variant (full/compact) changes. -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
+                <ColumnDefinition Width="{Binding SidebarWidth}" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>

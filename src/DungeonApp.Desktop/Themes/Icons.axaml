@@ -14,6 +14,11 @@
     <DrawingImage x:Key="DungeonIconCommand" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M15,6 L15,18 A3,3 0 1 0 18,15 L6,15 A3,3 0 1 0 9,18 L9,6 A3,3 0 1 0 6,9 L18,9 A3,3 0 1 0 15,6" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
+    <DrawingImage x:Key="DungeonIconMenu" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M5,7 L19,7 M5,12 L19,12 M5,17 L19,17" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
     <DrawingImage x:Key="DungeonIconBookOpen" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M12,5 L12,21" Pen="{StaticResource DungeonIconPen}" />

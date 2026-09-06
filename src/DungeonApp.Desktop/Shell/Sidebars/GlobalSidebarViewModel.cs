@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
@@ -10,6 +11,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     private readonly Action<NavigationItemViewModel> _onSelected;
     private readonly IReadOnlyList<NavigationItemViewModel> _allItems;
     private bool _isCampaignOpen;
+    private bool _isCollapsed;
 
     public GlobalSidebarViewModel(
         Action<NavigationItemViewModel> onSelected,
@@ -25,11 +27,44 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
         LibraryItems[0].IsActive = true;
         CloseCampaignCommand = new AsyncCommand(closeCampaign, () => IsCampaignOpen);
+        ToggleCollapsedCommand = new AsyncCommand(() =>
+        {
+            IsCollapsed = !IsCollapsed;
+            return Task.CompletedTask;
+        });
     }
 
     public IReadOnlyList<NavigationItemViewModel> LibraryItems { get; }
 
     public AsyncCommand CloseCampaignCommand { get; }
+
+    public AsyncCommand ToggleCollapsedCommand { get; }
+
+    /// <summary>
+    /// The compact rail deliberately keeps the same 40px icon targets as the expanded navigation,
+    /// while returning workspace to the current page.
+    /// </summary>
+    public bool IsCollapsed
+    {
+        get => _isCollapsed;
+        private set
+        {
+            if (SetField(ref _isCollapsed, value))
+            {
+                foreach (var item in _allItems)
+                {
+                    item.IsSidebarCollapsed = value;
+                }
+
+                RaisePropertyChanged(nameof(SidebarWidth));
+                RaisePropertyChanged(nameof(SidebarToggleToolTip));
+            }
+        }
+    }
+
+    public GridLength SidebarWidth => new(IsCollapsed ? 64 : 224);
+
+    public string SidebarToggleToolTip => IsCollapsed ? "Rozwiń panel boczny" : "Zwiń panel boczny";
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives

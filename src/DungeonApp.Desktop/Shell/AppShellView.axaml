@@ -22,7 +22,7 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <Grid IsHitTestVisible="{Binding IsReady}">
+    <Grid x:Name="ShellLayout" IsHitTestVisible="{Binding IsReady}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="{DynamicResource DungeonStatusBarHeight}" />

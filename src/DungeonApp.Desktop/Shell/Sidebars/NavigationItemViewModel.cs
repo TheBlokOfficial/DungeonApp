@@ -7,6 +7,7 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     : ObservableObject
 {
     private bool _isActive;
+    private bool _isSidebarCollapsed;
 
     public string Id { get; } = id;
 
@@ -20,5 +21,11 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     {
         get => _isActive;
         set => SetField(ref _isActive, value);
+    }
+
+    public bool IsSidebarCollapsed
+    {
+        get => _isSidebarCollapsed;
+        set => SetField(ref _isSidebarCollapsed, value);
     }
 }

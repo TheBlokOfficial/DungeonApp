@@ -8,23 +8,26 @@
              d:DesignWidth="216"
              d:DesignHeight="728"
              x:Class="DungeonApp.Desktop.Shell.Sidebars.GlobalSidebarView"
-             x:DataType="vm:GlobalSidebarViewModel">
+             x:DataType="vm:GlobalSidebarViewModel"
+             Classes.compact="{Binding IsCollapsed}">
     <UserControl.Resources>
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
         <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
             <Button Classes="nav-button"
                     Classes.active="{Binding IsActive}"
                     Command="{Binding SelectCommand}"
-                    IsHitTestVisible="{Binding !IsActive}"
                     RenderTransform="{x:Null}"
+                    ToolTip.Tip="{Binding Label}"
                     Transitions="{x:Null}">
-                <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
+                <Grid Classes="nav-content" ColumnDefinitions="32,*" ColumnSpacing="8">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
                     <TextBlock Grid.Column="1"
+                               Classes="nav-label"
+                               IsVisible="{Binding !IsSidebarCollapsed}"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis"
                                ToolTip.Tip="{Binding Label}"
@@ -40,7 +43,7 @@
              Avalonia's named Transparent color, whose RGB channels are white. -->
         <Style Selector="Button.nav-button">
             <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
-            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Padding" Value="8,0" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
             <Setter Property="Background" Value="#00000000" />
@@ -81,6 +84,35 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
+        <Style Selector="Button.sidebar-toggle">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
+        </Style>
+        <Style Selector="Button.sidebar-toggle:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        </Style>
+        <Style Selector="UserControl.compact Button.nav-button">
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="UserControl.compact TextBlock.nav-label">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="UserControl.compact TextBlock.sidebar-section-heading">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="UserControl.compact Grid.sidebar-navigation">
+            <Setter Property="Margin" Value="12,16,12,8" />
+        </Style>
     </UserControl.Styles>
 
     <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
@@ -88,41 +120,60 @@
     <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
             BorderThickness="0,0,1,0">
-        <Grid RowDefinitions="52,*">
+        <Grid RowDefinitions="Auto,*">
             <!-- The brand belongs with global navigation, so static backstage pages do not spend
                  a second horizontal strip repeating application chrome. -->
             <Border BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="0,0,0,1">
-                <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="8">
-                    <Border Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
-                            BorderThickness="1"
-                            CornerRadius="{DynamicResource DungeonControlCornerRadius}">
-                        <TextBlock HorizontalAlignment="Center"
+                <Grid Height="92" RowDefinitions="52,40">
+                    <Grid Grid.Row="0"
+                          Margin="12,0,8,0"
+                          ColumnDefinitions="40,*"
+                          ColumnSpacing="4">
+                        <Border Width="40"
+                                Height="40"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                            <Border Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="{DynamicResource DungeonControlCornerRadius}">
+                                <TextBlock HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                                           FontSize="{DynamicResource DungeonBrandMarkFontSize}"
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                           Text="D" />
+                            </Border>
+                        </Border>
+                        <TextBlock Grid.Column="1"
                                    VerticalAlignment="Center"
                                    FontFamily="{DynamicResource DungeonDisplayFont}"
-                                   FontSize="{DynamicResource DungeonBrandMarkFontSize}"
+                                   FontSize="{DynamicResource DungeonBrandNameFontSize}"
                                    FontWeight="Medium"
                                    Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                   Text="D" />
-                    </Border>
-                    <TextBlock Grid.Column="1"
-                               VerticalAlignment="Center"
-                               FontFamily="{DynamicResource DungeonDisplayFont}"
-                               FontSize="{DynamicResource DungeonBrandNameFontSize}"
-                               FontWeight="Medium"
-                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                               Text="DungeonApp" />
+                                   IsVisible="{Binding !IsCollapsed}"
+                                   Text="DungeonApp" />
+                    </Grid>
+                    <Button Grid.Row="1"
+                            Classes="sidebar-toggle"
+                            HorizontalAlignment="Center"
+                            Command="{Binding ToggleCollapsedCommand}"
+                            ToolTip.Tip="{Binding SidebarToggleToolTip}">
+                        <Image Width="16" Height="16" Source="{StaticResource DungeonIconMenu}" />
+                    </Button>
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" Margin="8,16,8,8" RowDefinitions="24,Auto,*">
-                <TextBlock Margin="8,0"
-                           Classes="eyebrow"
+            <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="8,16,8,8" RowDefinitions="Auto,Auto,*">
+                <TextBlock Margin="8,0,8,8"
+                           Classes="sidebar-section-heading eyebrow"
                            Foreground="{DynamicResource DungeonTextMutedBrush}"
+                           IsVisible="{Binding !IsCollapsed}"
                            LetterSpacing="0.7"
                            VerticalAlignment="Center"
                            Text="BIBLIOTEKA KAMPANII" />
@@ -136,14 +187,17 @@
                 <Button Grid.Row="1"
                         Classes="nav-button"
                         Command="{Binding CloseCampaignCommand}"
+                        ToolTip.Tip="Biblioteka kampanii"
                         IsVisible="{Binding IsCampaignOpen}">
-                    <Grid ColumnDefinitions="24,*" ColumnSpacing="8">
+                    <Grid Classes="nav-content" ColumnDefinitions="32,*" ColumnSpacing="8">
                         <Image Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Source="{StaticResource DungeonIconBookOpen}" />
                         <TextBlock Grid.Column="1"
+                                   Classes="nav-label"
+                                   IsVisible="{Binding !IsCollapsed}"
                                    VerticalAlignment="Center"
                                    Text="Biblioteka kampanii" />
                     </Grid>
