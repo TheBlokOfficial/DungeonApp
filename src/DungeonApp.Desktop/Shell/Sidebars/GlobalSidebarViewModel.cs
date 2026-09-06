@@ -59,7 +59,6 @@ public sealed class GlobalSidebarViewModel : ObservableObject
                 RaisePropertyChanged(nameof(SidebarToggleToolTip));
                 RaisePropertyChanged(nameof(CollapsibleTextOpacity));
                 RaisePropertyChanged(nameof(CollapsibleTextOffset));
-                RaisePropertyChanged(nameof(HamburgerOffset));
             }
         }
     }
@@ -71,10 +70,6 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     public double CollapsibleTextOpacity => IsCollapsed ? 0 : 1;
 
     public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
-
-    // The button remains right-anchored in the expanded panel; in the compact rail the offset
-    // places the SVG on the same axis as the brand and navigation glyphs.
-    public double HamburgerOffset => IsCollapsed ? -8 : 0;
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives
