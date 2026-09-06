@@ -45,7 +45,9 @@
         <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <!-- Used only by wide, static backstage views. The first half stays calm so the gradient
              does not read as decoration behind the actual content. -->
-        <LinearGradientBrush x:Key="DungeonBackstageWideBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <LinearGradientBrush x:Key="DungeonBackstageWideBrush"
+                             StartPoint="0,0"
+                             EndPoint="2400,1000">
             <GradientStop Offset="0" Color="{DynamicResource DungeonBackstageColor}" />
             <GradientStop Offset="0.42" Color="{DynamicResource DungeonBackstageColor}" />
             <GradientStop Offset="0.74" Color="#12110F" />
