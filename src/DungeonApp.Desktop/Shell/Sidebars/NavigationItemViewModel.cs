@@ -26,6 +26,17 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     public bool IsSidebarCollapsed
     {
         get => _isSidebarCollapsed;
-        set => SetField(ref _isSidebarCollapsed, value);
+        set
+        {
+            if (SetField(ref _isSidebarCollapsed, value))
+            {
+                RaisePropertyChanged(nameof(LabelOpacity));
+                RaisePropertyChanged(nameof(LabelOffset));
+            }
+        }
     }
+
+    public double LabelOpacity => IsSidebarCollapsed ? 0 : 1;
+
+    public double LabelOffset => IsSidebarCollapsed ? -12 : 0;
 }

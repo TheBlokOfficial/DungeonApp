@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
@@ -62,9 +61,13 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         }
     }
 
-    public GridLength SidebarWidth => new(IsCollapsed ? 64 : 224);
+    public double SidebarWidth => IsCollapsed ? 64 : 224;
 
     public string SidebarToggleToolTip => IsCollapsed ? "Rozwiń panel boczny" : "Zwiń panel boczny";
+
+    public double CollapsibleTextOpacity => IsCollapsed ? 0 : 1;
+
+    public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives

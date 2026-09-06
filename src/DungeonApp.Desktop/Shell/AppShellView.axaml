@@ -6,10 +6,11 @@
              xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
              xmlns:campaignWorkspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
+             xmlns:easings="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
              x:DataType="shell:AppShellViewModel"
              Loaded="OnLoaded">
-
     <UserControl.DataTemplates>
         <DataTemplate DataType="workspace:WorkspacePlaceholderViewModel">
             <workspace:WorkspacePlaceholderView />
@@ -22,57 +23,40 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <Grid x:Name="ShellLayout" IsHitTestVisible="{Binding IsReady}">
+    <Grid IsHitTestVisible="{Binding IsReady}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="{DynamicResource DungeonStatusBarHeight}" />
         </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" LastChildFill="True">
+            <!-- Native transition rather than a timer: the workspace follows the live edge. -->
+            <sidebars:GlobalSidebarView DockPanel.Dock="Left"
+                                        DataContext="{Binding Sidebar}"
+                                        Width="{Binding SidebarWidth}">
+                <sidebars:GlobalSidebarView.Transitions>
+                    <animation:Transitions>
+                        <animation:DoubleTransition Property="Width" Duration="0:0:0.18">
+                            <animation:DoubleTransition.Easing>
+                                <easings:CubicEaseInOut />
+                            </animation:DoubleTransition.Easing>
+                        </animation:DoubleTransition>
+                    </animation:Transitions>
+                </sidebars:GlobalSidebarView.Transitions>
+            </sidebars:GlobalSidebarView>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{DynamicResource DungeonSidebarWidth}" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+            <Border Background="{DynamicResource DungeonBackstageBrush}"
+                    BoxShadow="inset 0 0 8 0 #24000000">
+                <Grid>
+                    <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
+                        <TransitioningContentControl.PageTransition>
+                            <CrossFade Duration="0:0:0.14" />
+                        </TransitioningContentControl.PageTransition>
+                    </TransitioningContentControl>
+                    <ContentControl Name="WarmupHost" ZIndex="99" IsHitTestVisible="False" />
+                </Grid>
+            </Border>
+        </DockPanel>
 
-        <sidebars:GlobalSidebarView Grid.Row="0"
-                                    Grid.Column="0"
-                                    DataContext="{Binding Sidebar}" />
-
-        <!--
-            The workspace surface is persistent while pages change. Static pages have transparent
-            roots, so CrossFade affects their content without fading an identical full-size fill and
-            exposing the window underneath. The live campaign desk deliberately paints over this
-            layer with its darker grid surface, making backstage <-> desk a meaningful transition.
-
-            This shallow inset is the middle depth level. The campaign desk owns a stronger inset
-            and a grid; the outer frame owns neither.
-        -->
-        <Border Grid.Row="0"
-                Grid.Column="1"
-                Background="{DynamicResource DungeonBackstageBrush}"
-                BoxShadow="inset 0 0 8 0 #24000000">
-            <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
-                <TransitioningContentControl.PageTransition>
-                    <CrossFade Duration="0:0:0.14" />
-                </TransitioningContentControl.PageTransition>
-            </TransitioningContentControl>
-        </Border>
-
-        <statusBar:StatusBarView Grid.Row="1"
-                                 Grid.Column="0"
-                                 Grid.ColumnSpan="2"
-                                 DataContext="{Binding StatusBar}" />
-
-        <!--
-            The startup readiness gate itself now lives one level up, in MainWindow: a full-window
-            curtain covers topbar, sidebar and workspace alike, not just this cell. This view keeps
-            only the invisible warmup host the startup steps attach their controls to.
-        -->
-
-        <!-- Attached only long enough to apply real workspace templates and complete one layout. -->
-        <ContentControl Name="WarmupHost"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        ZIndex="99"
-                        IsHitTestVisible="False" />
+        <statusBar:StatusBarView Grid.Row="1" DataContext="{Binding StatusBar}" />
     </Grid>
 </UserControl>

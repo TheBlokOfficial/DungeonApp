@@ -8,8 +8,7 @@
              d:DesignWidth="216"
              d:DesignHeight="728"
              x:Class="DungeonApp.Desktop.Shell.Sidebars.GlobalSidebarView"
-             x:DataType="vm:GlobalSidebarViewModel"
-             Classes.compact="{Binding IsCollapsed}">
+             x:DataType="vm:GlobalSidebarViewModel">
     <UserControl.Resources>
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
         <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
@@ -19,7 +18,7 @@
                     RenderTransform="{x:Null}"
                     ToolTip.Tip="{Binding Label}"
                     Transitions="{x:Null}">
-                <Grid Classes="nav-content" ColumnDefinitions="32,*" ColumnSpacing="8">
+                <Grid Classes="nav-content" ColumnDefinitions="40,*" ColumnSpacing="8">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            HorizontalAlignment="Center"
@@ -27,11 +26,26 @@
                            Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
                     <TextBlock Grid.Column="1"
                                Classes="nav-label"
-                               IsVisible="{Binding !IsSidebarCollapsed}"
+                               Opacity="{Binding LabelOpacity}"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis"
                                ToolTip.Tip="{Binding Label}"
-                               Text="{Binding Label}" />
+                               Text="{Binding Label}">
+                        <TextBlock.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </TextBlock.Transitions>
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="{Binding LabelOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
                 </Grid>
             </Button>
         </DataTemplate>
@@ -42,8 +56,8 @@
              transparent black also prevents a future brush transition from interpolating through
              Avalonia's named Transparent color, whose RGB channels are white. -->
         <Style Selector="Button.nav-button">
-            <Setter Property="Height" Value="{DynamicResource DungeonNavigationRowHeight}" />
-            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="4,0" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
             <Setter Property="Background" Value="#00000000" />
@@ -97,35 +111,20 @@
             <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         </Style>
-        <Style Selector="UserControl.compact Button.nav-button">
-            <Setter Property="Width" Value="40" />
-            <Setter Property="Height" Value="40" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-        </Style>
-        <Style Selector="UserControl.compact TextBlock.nav-label">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="UserControl.compact TextBlock.sidebar-section-heading">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="UserControl.compact Grid.sidebar-navigation">
-            <Setter Property="Margin" Value="12,16,12,8" />
-        </Style>
     </UserControl.Styles>
 
     <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
          exclusive to an open campaign; the contrast here gives static screens depth without it. -->
     <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
-            BorderThickness="0,0,1,0">
+            BorderThickness="0,0,1,0"
+            ClipToBounds="True">
         <Grid RowDefinitions="Auto,*">
             <!-- The brand belongs with global navigation, so static backstage pages do not spend
                  a second horizontal strip repeating application chrome. -->
             <Border BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="0,0,0,1">
-                <Grid Height="92" RowDefinitions="52,40">
+                <Grid Height="52">
                     <Grid Grid.Row="0"
                           Margin="12,0,8,0"
                           ColumnDefinitions="40,*"
@@ -156,40 +155,74 @@
                                    FontSize="{DynamicResource DungeonBrandNameFontSize}"
                                    FontWeight="Medium"
                                    Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                   IsVisible="{Binding !IsCollapsed}"
-                                   Text="DungeonApp" />
+                                   Opacity="{Binding CollapsibleTextOpacity}"
+                                   Text="DungeonApp">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </TextBlock.Transitions>
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
                     </Grid>
-                    <Button Grid.Row="1"
-                            Classes="sidebar-toggle"
-                            HorizontalAlignment="Center"
-                            Command="{Binding ToggleCollapsedCommand}"
-                            ToolTip.Tip="{Binding SidebarToggleToolTip}">
-                        <Image Width="16" Height="16" Source="{StaticResource DungeonIconMenu}" />
-                    </Button>
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="8,16,8,8" RowDefinitions="Auto,Auto,*">
-                <TextBlock Margin="8,0,8,8"
+            <Grid Grid.Row="1" Classes="sidebar-navigation" Margin="8,0,8,8" RowDefinitions="44,24,Auto,*">
+                <Button Grid.Row="0"
+                        Classes="sidebar-toggle"
+                        Width="32"
+                        Height="32"
+                        Margin="0,6,0,6"
+                        HorizontalAlignment="Right"
+                        Command="{Binding ToggleCollapsedCommand}"
+                        ToolTip.Tip="{Binding SidebarToggleToolTip}">
+                    <Image Width="16" Height="16" Source="{StaticResource DungeonIconMenu}" />
+                </Button>
+                <TextBlock Grid.Row="1"
+                           Margin="8,0"
                            Classes="sidebar-section-heading eyebrow"
                            Foreground="{DynamicResource DungeonTextMutedBrush}"
-                           IsVisible="{Binding !IsCollapsed}"
+                           Opacity="{Binding CollapsibleTextOpacity}"
                            LetterSpacing="0.7"
                            VerticalAlignment="Center"
-                           Text="BIBLIOTEKA KAMPANII" />
+                           Text="BIBLIOTEKA KAMPANII">
+                    <TextBlock.Transitions>
+                        <Transitions>
+                            <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                        </Transitions>
+                    </TextBlock.Transitions>
+                    <TextBlock.RenderTransform>
+                        <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                            <TranslateTransform.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                </Transitions>
+                            </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </TextBlock.RenderTransform>
+                </TextBlock>
 
-                <ItemsControl Grid.Row="1"
+                <ItemsControl Grid.Row="2"
                               HorizontalAlignment="Stretch"
                               IsVisible="{Binding !IsCampaignOpen}"
                               ItemsSource="{Binding LibraryItems}"
                               ItemTemplate="{StaticResource NavigationItemTemplate}" />
 
-                <Button Grid.Row="1"
+                <Button Grid.Row="2"
                         Classes="nav-button"
                         Command="{Binding CloseCampaignCommand}"
                         ToolTip.Tip="Biblioteka kampanii"
                         IsVisible="{Binding IsCampaignOpen}">
-                    <Grid Classes="nav-content" ColumnDefinitions="32,*" ColumnSpacing="8">
+                    <Grid Classes="nav-content" ColumnDefinitions="40,*" ColumnSpacing="8">
                         <Image Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                HorizontalAlignment="Center"
@@ -197,9 +230,24 @@
                                Source="{StaticResource DungeonIconBookOpen}" />
                         <TextBlock Grid.Column="1"
                                    Classes="nav-label"
-                                   IsVisible="{Binding !IsCollapsed}"
+                                   Opacity="{Binding CollapsibleTextOpacity}"
                                    VerticalAlignment="Center"
-                                   Text="Biblioteka kampanii" />
+                                   Text="Biblioteka kampanii">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </TextBlock.Transitions>
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
                     </Grid>
                 </Button>
             </Grid>

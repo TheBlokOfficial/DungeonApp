@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
@@ -59,6 +60,8 @@ public sealed class AppShellViewModel : ObservableObject
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
+        StatusBar.SidebarWidth = Sidebar.SidebarWidth;
+        Sidebar.PropertyChanged += OnSidebarPropertyChanged;
 
         // Backstage first. The desk is uncovered by opening a campaign, never before.
         _currentWorkspaceContent = _campaignLibrary;
@@ -69,6 +72,14 @@ public sealed class AppShellViewModel : ObservableObject
     public GlobalSidebarViewModel Sidebar { get; }
 
     public StatusBarViewModel StatusBar { get; }
+
+    private void OnSidebarPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(GlobalSidebarViewModel.SidebarWidth))
+        {
+            StatusBar.SidebarWidth = Sidebar.SidebarWidth;
+        }
+    }
 
     public bool IsReady
     {
