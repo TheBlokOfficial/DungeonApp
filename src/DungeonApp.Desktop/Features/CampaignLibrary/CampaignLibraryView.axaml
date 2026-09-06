@@ -12,10 +12,11 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
-            <Setter Property="Margin" Value="8,2" />
-            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="20,0" />
         </Style>
         <Style Selector="Button.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
@@ -95,7 +96,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="library:CampaignRowViewModel">
                                         <Button Classes="campaign-row" Command="{Binding OpenCommand}">
-                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
                                                 <TextBlock VerticalAlignment="Center"
                                                            FontFamily="{DynamicResource DungeonDisplayFont}"
                                                            FontSize="{DynamicResource DungeonBaseFontSize}"
@@ -107,6 +108,14 @@
                                                            FontSize="{DynamicResource DungeonHelperFontSize}"
                                                            Foreground="{DynamicResource DungeonTextMutedBrush}"
                                                            Text="{Binding CreatedAt}" />
+                                                <!-- The chevron makes the row's purpose clear without adding a second,
+                                                     redundant button or inventing campaign metadata. -->
+                                                <TextBlock Grid.Column="2"
+                                                           Margin="4,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="22"
+                                                           Foreground="{DynamicResource DungeonAccentBrush}"
+                                                           Text="›" />
                                             </Grid>
                                         </Button>
                                     </DataTemplate>
