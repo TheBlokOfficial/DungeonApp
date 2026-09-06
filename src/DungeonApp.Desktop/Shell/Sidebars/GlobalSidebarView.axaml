@@ -17,7 +17,6 @@
                     Classes.active="{Binding IsActive}"
                     Command="{Binding SelectCommand}"
                     RenderTransform="{x:Null}"
-                    ToolTip.Tip="{Binding Label}"
                     Transitions="{x:Null}">
                 <Grid Classes="nav-content" ColumnDefinitions="64,*">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
@@ -31,7 +30,6 @@
                                Opacity="{Binding LabelOpacity}"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis"
-                               ToolTip.Tip="{Binding Label}"
                                Text="{Binding Label}">
                         <TextBlock.Transitions>
                             <Transitions>
@@ -239,6 +237,20 @@
 
                 <Grid Grid.Row="1"
                       Margin="0,8,0,0">
+                    <Grid.RenderTransform>
+                        <TranslateTransform Y="{Binding NavigationItemsOffset}">
+                            <TranslateTransform.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Y" Duration="0:0:0.18">
+                                        <DoubleTransition.Easing>
+                                            <easings:CubicEaseInOut />
+                                        </DoubleTransition.Easing>
+                                    </DoubleTransition>
+                                </Transitions>
+                            </TranslateTransform.Transitions>
+                        </TranslateTransform>
+                    </Grid.RenderTransform>
+
                     <ItemsControl HorizontalAlignment="Stretch"
                                   IsVisible="{Binding !IsCampaignOpen}"
                                   ItemsSource="{Binding LibraryItems}"
@@ -246,7 +258,6 @@
 
                     <Button Classes="nav-button"
                             Command="{Binding CloseCampaignCommand}"
-                            ToolTip.Tip="Biblioteka kampanii"
                             IsVisible="{Binding IsCampaignOpen}">
                         <Grid Classes="nav-content" ColumnDefinitions="64,*">
                             <Image Width="{DynamicResource DungeonActionIconSize}"
