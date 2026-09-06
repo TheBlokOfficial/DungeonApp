@@ -56,4 +56,28 @@ public partial class CampaignLibraryView : UserControl
         _topLevel.FocusManager.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
     }
 
+    private static void OnDeletePointerEntered(object? sender, PointerEventArgs e)
+    {
+        SetDeleteHoverState(sender, isHovered: true);
+    }
+
+    private static void OnDeletePointerExited(object? sender, PointerEventArgs e)
+    {
+        SetDeleteHoverState(sender, isHovered: false);
+    }
+
+    private static void SetDeleteHoverState(object? sender, bool isHovered)
+    {
+        if (sender is not Control deleteButton)
+        {
+            return;
+        }
+
+        var row = deleteButton.FindAncestorOfType<Border>();
+        if (row is not null)
+        {
+            row.Classes.Set("delete-hover", isHovered);
+        }
+    }
+
 }

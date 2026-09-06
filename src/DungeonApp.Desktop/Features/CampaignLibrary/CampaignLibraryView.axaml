@@ -21,6 +21,11 @@
         <Style Selector="Border.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
+        <!-- A destructive action owns its hover state. Keep the record at rest while its trash
+             control is hovered, so it never looks like opening and deleting are one action. -->
+        <Style Selector="Border.campaign-row.delete-hover:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        </Style>
         <Style Selector="Button.campaign-open">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -174,7 +179,9 @@
                                         </Grid>
                                         <Button Grid.Column="3"
                                                 Classes="campaign-delete"
-                                                Command="{Binding DeleteCommand}">
+                                                Command="{Binding DeleteCommand}"
+                                                PointerEntered="OnDeletePointerEntered"
+                                                PointerExited="OnDeletePointerExited">
                                             <Image Width="16"
                                                    Height="16"
                                                    Source="{StaticResource DungeonIconTrash}" />
