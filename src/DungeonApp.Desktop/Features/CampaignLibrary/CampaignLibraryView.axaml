@@ -198,26 +198,6 @@
             </Panel>
             </Grid>
 
-            <!-- Status is a transient toast, deliberately layered above the page rather than
-                 inserted below its content. This keeps an empty-library hint from acquiring a
-                 competing second label after an action. -->
-            <Border HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    MaxWidth="320"
-                    Margin="0,2,0,0"
-                    Padding="12,8"
-                    Background="{DynamicResource DungeonBackstageCardBrush}"
-                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
-                    BorderThickness="1"
-                    CornerRadius="{DynamicResource DungeonControlCornerRadius}"
-                    IsVisible="{Binding HasStatus}"
-                    ZIndex="1">
-                <TextBlock FontSize="{DynamicResource DungeonHelperFontSize}"
-                           Foreground="{DynamicResource DungeonTextRegularBrush}"
-                           Text="{Binding Status}"
-                           TextTrimming="CharacterEllipsis"
-                           TextWrapping="Wrap" />
-            </Border>
         </Grid>
     </controls:AnchoredContentHost>
 </UserControl>
