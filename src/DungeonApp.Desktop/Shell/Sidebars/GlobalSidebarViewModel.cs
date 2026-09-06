@@ -72,9 +72,9 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
     public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
 
-    // The button is right-anchored while its SVG must share the optical axis of the brand and
-    // navigation glyphs. The compact correction accounts for the rail's asymmetric frame edge.
-    public double HamburgerOffset => IsCollapsed ? -11 : 0;
+    // The button remains right-anchored in the expanded panel; in the compact rail the offset
+    // places the SVG on the same axis as the brand and navigation glyphs.
+    public double HamburgerOffset => IsCollapsed ? -8 : 0;
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives
