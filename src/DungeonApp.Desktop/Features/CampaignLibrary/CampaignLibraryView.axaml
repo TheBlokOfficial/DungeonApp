@@ -24,17 +24,25 @@
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
          its content, so switching static screens never crossfades a full-size opaque background. -->
-    <Border Background="Transparent">
-        <Grid Width="784"
-              Margin="32,56,32,32"
-              HorizontalAlignment="Center"
+    <ScrollViewer Background="Transparent"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto"
+                  AllowAutoHide="True">
+        <!-- A left-aligned reading column, not a centred dialog. It uses the whole narrow workspace
+             but deliberately stops growing on ultrawide screens, leaving calm backstage space rather
+             than a stretched form or a fake dashboard. -->
+        <Grid MaxWidth="1040"
+              Margin="24,32,40,40"
+              HorizontalAlignment="Left"
               VerticalAlignment="Top"
               RowDefinitions="Auto,Auto"
-              RowSpacing="10">
+              RowSpacing="20">
 
-            <!-- The top bar already names the route. A small context label is enough here and
-                 avoids turning this static backstage screen into a centred welcome modal. -->
-            <TextBlock Classes="eyebrow" Text="BIBLIOTEKA" />
+            <StackPanel Spacing="6">
+                <TextBlock Classes="workspace-title" Text="Biblioteka kampanii" />
+                <TextBlock Classes="muted"
+                           Text="Otwórz istniejącą kampanię albo utwórz nową." />
+            </StackPanel>
 
             <Border Grid.Row="1"
                     Background="{DynamicResource DungeonBackstageCardBrush}"
@@ -81,33 +89,29 @@
 
                         <Panel Grid.Row="1"
                                Margin="0,0,0,12"
-                               MinHeight="{DynamicResource DungeonCampaignRowHeight}"
-                               MaxHeight="{DynamicResource DungeonCampaignListMaxHeight}">
-                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                          MaxHeight="{DynamicResource DungeonCampaignListMaxHeight}"
-                                          IsVisible="{Binding HasCampaigns}">
-                                <ItemsControl ItemsSource="{Binding Campaigns}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                            <Button Classes="campaign-row" Command="{Binding OpenCommand}">
-                                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                                    <TextBlock VerticalAlignment="Center"
-                                                               FontFamily="{DynamicResource DungeonDisplayFont}"
-                                                               FontSize="{DynamicResource DungeonBaseFontSize}"
-                                                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                                               Text="{Binding Name}"
-                                                               TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock Grid.Column="1"
-                                                               VerticalAlignment="Center"
-                                                               FontSize="{DynamicResource DungeonHelperFontSize}"
-                                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                                               Text="{Binding CreatedAt}" />
-                                                </Grid>
-                                            </Button>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                               MinHeight="{DynamicResource DungeonCampaignRowHeight}">
+                            <ItemsControl IsVisible="{Binding HasCampaigns}"
+                                          ItemsSource="{Binding Campaigns}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="library:CampaignRowViewModel">
+                                        <Button Classes="campaign-row" Command="{Binding OpenCommand}">
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                                <TextBlock VerticalAlignment="Center"
+                                                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                                                           FontSize="{DynamicResource DungeonBaseFontSize}"
+                                                           Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                                           Text="{Binding Name}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Grid.Column="1"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="{DynamicResource DungeonHelperFontSize}"
+                                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                           Text="{Binding CreatedAt}" />
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
                             <!-- Loading and empty occupy the same first-row floor as real data. -->
                             <TextBlock Margin="20,0"
@@ -133,5 +137,5 @@
                 </Grid>
             </Border>
         </Grid>
-    </Border>
+    </ScrollViewer>
 </UserControl>
