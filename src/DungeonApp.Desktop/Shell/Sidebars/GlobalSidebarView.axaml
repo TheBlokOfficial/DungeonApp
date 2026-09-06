@@ -87,18 +87,47 @@
     <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
             BorderThickness="0,0,1,0">
-        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*">
-            <TextBlock Margin="8,0"
-                       Classes="eyebrow"
-                       Foreground="{DynamicResource DungeonTextMutedBrush}"
-                       LetterSpacing="1"
-                       VerticalAlignment="Center"
-                       Text="BIBLIOTEKA KAMPANII" />
+        <Grid RowDefinitions="52,*">
+            <!-- The brand belongs with global navigation, so static backstage pages do not spend
+                 a second horizontal strip repeating application chrome. -->
+            <Border BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+                    BorderThickness="0,0,0,1">
+                <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="8">
+                    <Border Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource DungeonAccentBrush}"
+                            BorderThickness="1">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{DynamicResource DungeonDisplayFont}"
+                                   FontSize="{DynamicResource DungeonBrandMarkFontSize}"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource DungeonAccentBrightBrush}"
+                                   Text="D" />
+                    </Border>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                               Text="DungeonApp" />
+                </Grid>
+            </Border>
 
-            <ItemsControl Grid.Row="1"
-                          HorizontalAlignment="Stretch"
-                          ItemsSource="{Binding LibraryItems}"
-                          ItemTemplate="{StaticResource NavigationItemTemplate}" />
+            <Grid Grid.Row="1" Margin="8,16,8,8" RowDefinitions="24,Auto,*">
+                <TextBlock Margin="8,0"
+                           Classes="eyebrow"
+                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                           LetterSpacing="1"
+                           VerticalAlignment="Center"
+                           Text="BIBLIOTEKA KAMPANII" />
+
+                <ItemsControl Grid.Row="1"
+                              HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding LibraryItems}"
+                              ItemTemplate="{StaticResource NavigationItemTemplate}" />
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

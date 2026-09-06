@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:shell="using:DungeonApp.Desktop.Shell"
-             xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
              xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
              xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
@@ -25,7 +24,6 @@
 
     <Grid IsHitTestVisible="{Binding IsReady}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="{DynamicResource DungeonTopBarHeight}" />
             <RowDefinition Height="*" />
             <RowDefinition Height="{DynamicResource DungeonStatusBarHeight}" />
         </Grid.RowDefinitions>
@@ -35,10 +33,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <topBar:TopBarView Grid.ColumnSpan="2"
-                           DataContext="{Binding TopBar}" />
-
-        <sidebars:GlobalSidebarView Grid.Row="1"
+        <sidebars:GlobalSidebarView Grid.Row="0"
                                     Grid.Column="0"
                                     DataContext="{Binding Sidebar}" />
 
@@ -51,7 +46,7 @@
             This shallow inset is the middle depth level. The campaign desk owns a stronger inset
             and a grid; the outer frame owns neither.
         -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="0"
                 Grid.Column="1"
                 Background="{DynamicResource DungeonBackstageBrush}"
                 BoxShadow="inset 0 0 8 0 #24000000">
@@ -62,7 +57,7 @@
             </TransitioningContentControl>
         </Border>
 
-        <statusBar:StatusBarView Grid.Row="2"
+        <statusBar:StatusBarView Grid.Row="1"
                                  Grid.Column="0"
                                  Grid.ColumnSpan="2"
                                  DataContext="{Binding StatusBar}" />
@@ -75,7 +70,7 @@
 
         <!-- Attached only long enough to apply real workspace templates and complete one layout. -->
         <ContentControl Name="WarmupHost"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="1"
                         ZIndex="99"
                         IsHitTestVisible="False" />
