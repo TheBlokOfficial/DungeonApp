@@ -28,10 +28,13 @@
          its content, so switching static screens never crossfades a full-size opaque background. -->
     <!-- The host fills the shell but pins its bounded child at the top-left. This avoids the
          centring side effect of MaxWidth/MaxHeight while preserving a finite list viewport. -->
-    <controls:AnchoredContentHost MaxContentWidth="1104" MaxContentHeight="782">
+    <!-- At the supported minimum window (1280×720), this host fits the whole static library
+         structure: heading, creation form, shelf frame and a stable list viewport. Larger windows
+         add backstage space rather than stretching the shelf. -->
+    <controls:AnchoredContentHost MaxContentWidth="1056" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
-              Margin="24,32,40,40"
+              Margin="24,24,40,16"
               RowDefinitions="Auto,*"
               RowSpacing="20">
 
