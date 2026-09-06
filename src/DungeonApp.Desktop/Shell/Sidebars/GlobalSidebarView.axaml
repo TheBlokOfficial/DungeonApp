@@ -239,20 +239,6 @@
 
                 <Grid Grid.Row="1"
                       Margin="0,8,0,0">
-                    <Grid.RenderTransform>
-                        <TranslateTransform Y="{Binding NavigationItemsOffset}">
-                            <TranslateTransform.Transitions>
-                                <Transitions>
-                                    <DoubleTransition Property="Y" Duration="0:0:0.18">
-                                        <DoubleTransition.Easing>
-                                            <easings:CubicEaseInOut />
-                                        </DoubleTransition.Easing>
-                                    </DoubleTransition>
-                                </Transitions>
-                            </TranslateTransform.Transitions>
-                        </TranslateTransform>
-                    </Grid.RenderTransform>
-
                     <ItemsControl HorizontalAlignment="Stretch"
                                   IsVisible="{Binding !IsCampaignOpen}"
                                   ItemsSource="{Binding LibraryItems}"
