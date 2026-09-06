@@ -6,12 +6,6 @@
              x:DataType="library:CampaignLibraryViewModel">
 
     <UserControl.Styles>
-        <Style Selector="Grid.campaign-library-backstage">
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
-        </Style>
-        <Style Selector="Grid.campaign-library-backstage.wide-backstage">
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageWideBrush}" />
-        </Style>
         <!-- A shelf row. Fixed height on purpose: the list must stay scannable and must not
              re-flow because one campaign has a longer name than the rest. -->
         <Style Selector="Border.campaign-row">
@@ -58,7 +52,13 @@
     <!-- At the supported minimum window (1280×720), this host fits the whole static library
          structure: heading, creation form, shelf frame and a stable list viewport. Larger windows
          add backstage space rather than stretching the shelf. -->
-    <Grid x:Name="BackstageSurface" Classes="campaign-library-backstage">
+    <Grid Background="{DynamicResource DungeonBackstageBrush}">
+    <!-- The vignette has a fixed canvas rather than percentage-based visibility. Resizing the
+         window therefore reveals or clips its right side without recolouring the whole surface. -->
+    <Border Width="2200"
+            HorizontalAlignment="Left"
+            Background="{DynamicResource DungeonBackstageWideBrush}"
+            IsHitTestVisible="False" />
     <controls:AnchoredContentHost MaxContentWidth="760" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
