@@ -143,9 +143,9 @@
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
         <x:Double x:Key="DungeonControlHeight">38</x:Double>
         <x:Double x:Key="DungeonNavigationRowHeight">38</x:Double>
-        <x:Double x:Key="DungeonCampaignRowHeight">44</x:Double>
+        <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
-        <x:Double x:Key="DungeonCampaignListViewportHeight">284</x:Double>
+        <x:Double x:Key="DungeonCampaignListViewportHeight">258</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
         <x:Double x:Key="DungeonTopBarActionSize">50</x:Double>
         <!-- The smallest supported desktop workspace still shows its complete chrome, the campaign

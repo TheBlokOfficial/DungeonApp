@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -7,21 +8,35 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
 public partial class CampaignLibraryView : UserControl
 {
+    private TopLevel? _topLevel;
+
     public CampaignLibraryView()
     {
         InitializeComponent();
-        AddHandler(InputElement.PointerPressedEvent, OnPreviewPointerPressed, RoutingStrategies.Tunnel);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _topLevel = TopLevel.GetTopLevel(this);
+        _topLevel?.AddHandler(InputElement.PointerPressedEvent, OnPreviewPointerPressed, RoutingStrategies.Tunnel);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _topLevel?.RemoveHandler(InputElement.PointerPressedEvent, OnPreviewPointerPressed);
+        _topLevel = null;
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void OnPreviewPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        if (_topLevel is null || !e.GetCurrentPoint(_topLevel).Properties.IsLeftButtonPressed)
         {
             return;
         }
 
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel?.FocusManager.GetFocusedElement() is not TextBox focusedTextBox)
+        if (_topLevel.FocusManager.GetFocusedElement() is not TextBox focusedTextBox)
         {
             return;
         }
@@ -38,6 +53,13 @@ public partial class CampaignLibraryView : UserControl
 
         // Avalonia 12.0.5 clears focus by focusing a null element. The dedicated ClearFocus API is
         // newer; keep this call explicit until the framework upgrade makes that API available.
-        topLevel.FocusManager.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
+        _topLevel.FocusManager.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
+    }
+
+    private static void OnCampaignDeleteClick(object? sender, RoutedEventArgs e)
+    {
+        // A campaign row is itself an open button. Stop the nested destructive action from also
+        // bubbling into that row and opening the campaign as it is being deleted.
+        e.Handled = true;
     }
 }

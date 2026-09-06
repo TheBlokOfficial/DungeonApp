@@ -16,8 +16,8 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-            <Setter Property="Margin" Value="0,0,0,4" />
-            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Margin" Value="0,0,0,3" />
+            <Setter Property="Padding" Value="10,0" />
             <Setter Property="FontWeight" Value="Normal" />
         </Style>
         <Style Selector="Button.campaign-row:pointerover">
@@ -29,6 +29,13 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="ToolTip.Tip" Value="Usuń kampanię" />
+        </Style>
+        <Style Selector="Button.campaign-delete:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         </Style>
     </UserControl.Styles>
 
@@ -39,7 +46,7 @@
     <!-- At the supported minimum window (1280×720), this host fits the whole static library
          structure: heading, creation form, shelf frame and a stable list viewport. Larger windows
          add backstage space rather than stretching the shelf. -->
-    <controls:AnchoredContentHost MaxContentWidth="680" MaxContentHeight="614">
+    <controls:AnchoredContentHost MaxContentWidth="760" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
               Margin="28,20,28,24">
@@ -116,7 +123,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Button Classes="campaign-row" Command="{Binding OpenCommand}">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="8">
                                         <Border Width="28"
                                                 Height="28"
                                                 CornerRadius="{DynamicResource DungeonControlCornerRadius}"
@@ -143,7 +150,8 @@
                                                    Text="{Binding CreatedAt}" />
                                         <Button Grid.Column="3"
                                                 Classes="campaign-delete"
-                                                Command="{Binding DeleteCommand}">
+                                                Command="{Binding DeleteCommand}"
+                                                Click="OnCampaignDeleteClick">
                                             <Image Width="16"
                                                    Height="16"
                                                    Source="{StaticResource DungeonIconTrash}" />
@@ -151,7 +159,6 @@
                                         <Image Grid.Column="4"
                                                Width="16"
                                                Height="16"
-                                               Margin="4,0,0,0"
                                                VerticalAlignment="Center"
                                                Source="{StaticResource DungeonIconChevronRight}" />
                                     </Grid>
