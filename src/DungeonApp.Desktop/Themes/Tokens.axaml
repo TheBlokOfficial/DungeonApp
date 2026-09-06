@@ -1,8 +1,8 @@
     <ResourceDictionary xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <Color x:Key="DungeonBackgroundColor">#121313</Color>
-        <Color x:Key="DungeonSurfaceColor">#181918</Color>
-        <Color x:Key="DungeonSurfaceHeaderColor">#1E1E1C</Color>
+        <Color x:Key="DungeonBackgroundColor">#141110</Color>
+        <Color x:Key="DungeonSurfaceColor">#1A1613</Color>
+        <Color x:Key="DungeonSurfaceHeaderColor">#1A1613</Color>
         <!--
             Application depth hierarchy. These semantic roles intentionally remain separate from the
             generic surface tokens even where their current color values match. The outer frame,
@@ -10,31 +10,32 @@
             header or panel change color as a side effect.
         -->
         <!-- TŁA I OBSZAR ROBOCZY (Spójna, niemal czarna baza hebanowa) -->
-        <Color x:Key="DungeonBackstageColor">#141312</Color>
+        <Color x:Key="DungeonBackstageColor">#141110</Color>
         <!-- Ciemne tło paska bocznego (koniec z brązem) -->
-        <Color x:Key="DungeonDeskColor">#100F0E</Color>                  <!-- Tło obszaru roboczego -->
-        <Color x:Key="DungeonFrameColor">#1A1816</Color>                 <!-- Karty i nagłówki -->
-        <Color x:Key="DungeonFrameHoverColor">#221F1C</Color>
-        <Color x:Key="DungeonBackstageCardColor">#1A1816</Color>
-        <Color x:Key="DungeonBackstageRowHoverColor">#221F1C</Color>
-        <Color x:Key="DungeonSurfaceActiveColor">#261E14</Color>
+        <Color x:Key="DungeonDeskColor">#141110</Color>                  <!-- Tło obszaru roboczego -->
+        <Color x:Key="DungeonFrameColor">#1A1613</Color>                 <!-- Karty i nagłówki -->
+        <Color x:Key="DungeonFrameHoverColor">#2A2118</Color>
+        <Color x:Key="DungeonBackstageCardColor">#1F1A15</Color>
+        <Color x:Key="DungeonBackstageRowColor">#211C17</Color>
+        <Color x:Key="DungeonBackstageRowHoverColor">#2A2118</Color>
+        <Color x:Key="DungeonSurfaceActiveColor">#2A2118</Color>
         <!-- Bardzo ciemny akcent pod zaznaczoną zakładką -->
-        <Color x:Key="DungeonSurfaceHoverColor">#1E1A15</Color>
+        <Color x:Key="DungeonSurfaceHoverColor">#211C17</Color>
 
         <!-- RAMKI -->
-        <Color x:Key="DungeonBorderColor">#2E271F</Color>               <!-- Subtelna ramka podziału -->
-        <Color x:Key="DungeonBorderStrongColor">#A87330</Color>
+        <Color x:Key="DungeonBorderColor">#332A20</Color>               <!-- Subtelna ramka podziału -->
+        <Color x:Key="DungeonBorderStrongColor">#4A3C2A</Color>
         <!-- Czyste, mosiężne złoto na aktywne krawędzie -->
 
         <!-- TEKSTY -->
-        <Color x:Key="DungeonTextPrimaryColor">#ECE4D8</Color>          <!-- Jasny pergamin (aktywne) -->
-        <Color x:Key="DungeonTextRegularColor">#B5ABA0</Color>          <!-- Standardowy tekst -->
-        <Color x:Key="DungeonTextMutedColor">#736B61</Color>            <!-- Przyciemnione (nieaktywne pozycje) -->
+        <Color x:Key="DungeonTextPrimaryColor">#E8DDC8</Color>          <!-- Jasny pergamin (aktywne) -->
+        <Color x:Key="DungeonTextRegularColor">#9C9080</Color>          <!-- Standardowy tekst -->
+        <Color x:Key="DungeonTextMutedColor">#6E6252</Color>            <!-- Przyciemnione (nieaktywne pozycje) -->
 
         <!-- AKCENTY -->
-        <Color x:Key="DungeonAccentColor">#B87B32</Color>                <!-- Złoto-karmelowy akcent z mockupu -->
-        <Color x:Key="DungeonAccentBrightColor">#D69342</Color>
-        <Color x:Key="DungeonAccentActionColor">#9E6625</Color>
+        <Color x:Key="DungeonAccentColor">#C9973A</Color>                <!-- Złoto-karmelowy akcent z mockupu -->
+        <Color x:Key="DungeonAccentBrightColor">#C9973A</Color>
+        <Color x:Key="DungeonAccentActionColor">#C9973A</Color>
         <Color x:Key="DungeonPrimaryDisabledColor">#3B2915</Color>
 
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -44,6 +45,7 @@
         <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
         <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <SolidColorBrush x:Key="DungeonBackstageCardBrush" Color="{DynamicResource DungeonBackstageCardColor}" />
+        <SolidColorBrush x:Key="DungeonBackstageRowBrush" Color="{DynamicResource DungeonBackstageRowColor}" />
         <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
         <SolidColorBrush x:Key="DungeonDeskBrush" Color="{DynamicResource DungeonDeskColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
