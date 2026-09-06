@@ -55,11 +55,4 @@ public partial class CampaignLibraryView : UserControl
         // newer; keep this call explicit until the framework upgrade makes that API available.
         _topLevel.FocusManager.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
     }
-
-    private static void OnCampaignDeleteClick(object? sender, RoutedEventArgs e)
-    {
-        // A campaign row is itself an open button. Stop the nested destructive action from also
-        // bubbling into that row and opening the campaign as it is being deleted.
-        e.Handled = true;
-    }
 }
