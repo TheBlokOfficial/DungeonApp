@@ -29,6 +29,12 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
     public Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default)
         => Task.FromResult(_campaigns.GetValueOrDefault(id));
 
+    public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)
+    {
+        _campaigns.Remove(id);
+        return Task.CompletedTask;
+    }
+
     public Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<CampaignSummary>>(
             _campaigns.Values

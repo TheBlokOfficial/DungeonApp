@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Pen x:Key="DungeonIconPen" Brush="{DynamicResource DungeonTextMutedBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
     <Pen x:Key="DungeonIconPrimaryPen" Brush="{DynamicResource DungeonTextPrimaryBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
+    <Pen x:Key="DungeonIconDangerPen" Brush="{DynamicResource DungeonDangerBrush}" Thickness="1.5" LineCap="Round" LineJoin="Round" />
     <Pen x:Key="DungeonCampaignEmblemPen" Brush="{DynamicResource DungeonAccentDimBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
 
     <DrawingImage x:Key="DungeonIconSearch" Viewbox="0,0,24,24">
@@ -29,6 +30,11 @@
     </DrawingImage>
     <DrawingImage x:Key="DungeonIconBrandMark" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M12,2 L20,7 L20,17 L12,22 L4,17 L4,7 Z" Pen="{StaticResource DungeonIconPrimaryPen}" />
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconTrash" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M4,7 L20,7 M9,7 L9,4 L15,4 L15,7 M6,7 L7,20 L17,20 L18,7 M10,11 L10,17 M14,11 L14,17" Pen="{StaticResource DungeonIconDangerPen}" />
+        </DrawingGroup>
     </DrawingImage>
     <!-- Record emblem is intentionally distinct from the neutral navigation icon. -->
     <DrawingImage x:Key="DungeonIconCampaignRecord" Viewbox="0,0,24,24">

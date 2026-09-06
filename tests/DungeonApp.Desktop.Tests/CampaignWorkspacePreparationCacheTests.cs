@@ -72,6 +72,8 @@ public sealed class CampaignWorkspacePreparationCacheTests : IDisposable
             return Task.FromResult(campaign?.Id == id ? campaign : null);
         }
 
+        public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
         public Task<IReadOnlyList<CampaignSummary>> ListAsync(
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<CampaignSummary>>([]);

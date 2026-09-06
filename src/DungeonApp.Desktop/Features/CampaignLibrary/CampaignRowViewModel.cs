@@ -13,13 +13,17 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// </summary>
 public sealed class CampaignRowViewModel
 {
-    public CampaignRowViewModel(CampaignSummary summary, Func<CampaignRowViewModel, Task> open)
+    public CampaignRowViewModel(
+        CampaignSummary summary,
+        Func<CampaignRowViewModel, Task> open,
+        Func<CampaignRowViewModel, Task> delete)
     {
         Id = summary.Id;
         Name = summary.Name.Value;
         // Stored in UTC, read by a person sitting in their own timezone.
         CreatedAt = summary.CreatedAt.ToLocalTime().ToString("d MMM yyyy", CultureInfo.CurrentCulture);
         OpenCommand = new AsyncCommand(() => open(this));
+        DeleteCommand = new AsyncCommand(() => delete(this));
     }
 
     public CampaignId Id { get; }
@@ -29,4 +33,6 @@ public sealed class CampaignRowViewModel
     public string CreatedAt { get; }
 
     public ICommand OpenCommand { get; }
+
+    public ICommand DeleteCommand { get; }
 }

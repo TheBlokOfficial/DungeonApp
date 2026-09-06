@@ -61,6 +61,7 @@
                                 CornerRadius="{TemplateBinding CornerRadius}" />
                         <Border Width="4"
                                 HorizontalAlignment="Left"
+                                CornerRadius="{TemplateBinding CornerRadius}"
                                 Background="{TemplateBinding BorderBrush}" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
@@ -100,11 +101,13 @@
                             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                             BorderThickness="1"
                             CornerRadius="{DynamicResource DungeonControlCornerRadius}">
-                        <Image Width="16"
-                               Height="16"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Source="{StaticResource DungeonIconBrandMark}" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{DynamicResource DungeonDisplayFont}"
+                                   FontSize="{DynamicResource DungeonBrandMarkFontSize}"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                   Text="D" />
                     </Border>
                     <TextBlock Grid.Column="1"
                                VerticalAlignment="Center"

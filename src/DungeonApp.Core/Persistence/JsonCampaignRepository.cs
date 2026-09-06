@@ -229,6 +229,18 @@ public sealed class JsonCampaignRepository(
             .ToArray();
     }
 
+    public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var directory = GetCampaignDirectory(id);
+        if (Directory.Exists(directory))
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+
+        return Task.CompletedTask;
+    }
+
     private CampaignName ValidateManifest(CampaignManifest manifest, string path)
     {
         // A newer format is refused whole. Guessing at fields a future build added is exactly how a

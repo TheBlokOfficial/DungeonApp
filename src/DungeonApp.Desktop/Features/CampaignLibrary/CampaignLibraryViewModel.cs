@@ -133,7 +133,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
             foreach (var summary in summaries)
             {
-                Campaigns.Add(new CampaignRowViewModel(summary, OpenAsync));
+                Campaigns.Add(new CampaignRowViewModel(summary, OpenAsync, DeleteAsync));
             }
 
             _isLoaded = true;
@@ -197,6 +197,27 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         {
             Status = $"Kampania „{row.Name}” już nie istnieje.";
             await LoadAsync();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task DeleteAsync(CampaignRowViewModel row)
+    {
+        IsBusy = true;
+        try
+        {
+            await _campaigns.DeleteAsync(row.Id);
+            Campaigns.Remove(row);
+            RaisePropertyChanged(nameof(IsEmpty));
+            RaisePropertyChanged(nameof(HasCampaigns));
+            Status = $"Usunięto kampanię „{row.Name}”.";
+        }
+        catch (System.IO.IOException)
+        {
+            Status = $"Nie udało się usunąć kampanii „{row.Name}”.";
         }
         finally
         {

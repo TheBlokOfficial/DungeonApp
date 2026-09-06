@@ -138,11 +138,11 @@
         <x:Double x:Key="DungeonBrandMarkLargeFrameSize">96</x:Double>
         <x:Double x:Key="DungeonBrandMarkLargeFontSize">64</x:Double>
         <GridLength x:Key="DungeonTopBarHeight">52</GridLength>
-        <GridLength x:Key="DungeonSidebarWidth">212</GridLength>
+        <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
         <x:Double x:Key="DungeonControlHeight">38</x:Double>
-        <x:Double x:Key="DungeonNavigationRowHeight">42</x:Double>
+        <x:Double x:Key="DungeonNavigationRowHeight">38</x:Double>
         <x:Double x:Key="DungeonCampaignRowHeight">44</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
         <x:Double x:Key="DungeonCampaignListViewportHeight">284</x:Double>

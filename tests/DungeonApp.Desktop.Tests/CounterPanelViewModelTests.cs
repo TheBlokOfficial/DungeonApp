@@ -217,6 +217,8 @@ public sealed class CounterPanelViewModelTests
         public Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default) =>
             Task.FromResult<Campaign?>(null);
 
+        public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
         public Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<CampaignSummary>>([]);
     }

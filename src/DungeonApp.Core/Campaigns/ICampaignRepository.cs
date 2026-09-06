@@ -15,6 +15,8 @@ public interface ICampaignRepository
     /// <summary>Returns null for an unknown id: a missing campaign is an answer, not a failure.</summary>
     Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default);
 
+    Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// The shelf, not the contents. Ordering is deterministic so the library screen never reshuffles
     /// between reads; which order the GM actually sees is the screen's decision.

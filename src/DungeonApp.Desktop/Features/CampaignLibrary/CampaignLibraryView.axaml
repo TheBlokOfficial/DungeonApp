@@ -23,6 +23,13 @@
         <Style Selector="Button.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
+        <Style Selector="Button.campaign-delete">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
     </UserControl.Styles>
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
@@ -32,7 +39,7 @@
     <!-- At the supported minimum window (1280×720), this host fits the whole static library
          structure: heading, creation form, shelf frame and a stable list viewport. Larger windows
          add backstage space rather than stretching the shelf. -->
-    <controls:AnchoredContentHost MaxContentWidth="1040" MaxContentHeight="614">
+    <controls:AnchoredContentHost MaxContentWidth="680" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
               Margin="28,20,28,24"
@@ -108,7 +115,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Button Classes="campaign-row" Command="{Binding OpenCommand}">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="12">
                                         <Border Width="28"
                                                 Height="28"
                                                 CornerRadius="{DynamicResource DungeonControlCornerRadius}"
@@ -133,7 +140,14 @@
                                                    FontSize="{DynamicResource DungeonHelperFontSize}"
                                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
                                                    Text="{Binding CreatedAt}" />
-                                        <Image Grid.Column="3"
+                                        <Button Grid.Column="3"
+                                                Classes="campaign-delete"
+                                                Command="{Binding DeleteCommand}">
+                                            <Image Width="16"
+                                                   Height="16"
+                                                   Source="{StaticResource DungeonIconTrash}" />
+                                        </Button>
+                                        <Image Grid.Column="4"
                                                Width="16"
                                                Height="16"
                                                Margin="4,0,0,0"
