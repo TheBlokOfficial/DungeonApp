@@ -242,8 +242,15 @@ public static class PanelGeometry
         var availableWidth = Math.Max(constraints.MinWidth, surfaceWidth - (2 * metrics.EdgeMargin));
         var availableHeight = Math.Max(constraints.MinHeight, surfaceHeight - (2 * metrics.EdgeMargin));
 
-        var width = Math.Max(constraints.MinWidth, Math.Min(desired.Width, availableWidth));
-        var height = Math.Max(constraints.MinHeight, Math.Min(desired.Height, availableHeight));
+        // Maksimum obowiązuje także przy odtwarzaniu zapisanego układu, nie tylko podczas resize.
+        var width = Math.Clamp(
+            Math.Min(desired.Width, availableWidth),
+            constraints.MinWidth,
+            constraints.EffectiveMaxWidth);
+        var height = Math.Clamp(
+            Math.Min(desired.Height, availableHeight),
+            constraints.MinHeight,
+            constraints.EffectiveMaxHeight);
 
         var x = Math.Clamp(desired.X, metrics.EdgeMargin, Math.Max(metrics.EdgeMargin, surfaceWidth - metrics.EdgeMargin - width));
         var y = Math.Clamp(desired.Y, metrics.EdgeMargin, Math.Max(metrics.EdgeMargin, surfaceHeight - metrics.EdgeMargin - height));

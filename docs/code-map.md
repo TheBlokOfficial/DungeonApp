@@ -135,8 +135,11 @@ Struktura: `Shell` (powłoka okna, nawigacja, pasek statusu/góry) → `Features
 `PanelCatalog.For(CampaignSession)` zwraca jeden singletonowy deskryptor
 `counter`. Tworzy on `CounterPanelViewModel` dla aktualnej sesji; nowy pusty
 układ otwiera go na blacie, a układ zapisany przed jego dodaniem umieszcza go
-w talii zminimalizowanych paneli. `CampaignWorkspaceView.axaml` ma szablon
-danych, który wiąże ten ViewModel z `CounterPanelView`.
+w talii zminimalizowanych paneli. Deskryptor licznika deklaruje minimalny
+rozmiar `256×192` DIP i maksymalny `384×256` DIP, wyrównane do komórek siatki;
+`FitInto` respektuje te granice także przy odtwarzaniu zapisanego układu.
+`CampaignWorkspaceView.axaml` ma szablon danych, który wiąże ten ViewModel z
+`CounterPanelView`.
 
 `CounterPanelViewModel` czyta blok `counter` bezpośrednio z kampanii i
 subskrybuje wyłącznie `DataBlockChanged` tego identyfikatora. Dla wartości
@@ -182,4 +185,5 @@ Dług: `CampaignLibraryViewModel` przyjmuje `Func<CampaignId, Task>` jako callba
 | `Core.Tests/Tools/Counter/CounterToolTests.cs` | Transformacje licznika, jego deklarację `Uses` i przejście transformacji przez `Apply`. |
 | `Desktop.Tests/CampaignWorkspacePreparationCacheTests.cs` | `CampaignWorkspacePreparationCache`. |
 | `Desktop.Tests/CounterPanelViewModelTests.cs` | Odczyt, zdarzenie, zapis, błąd dysku, przepełnienie, blok nieczytelny, wspólne blokowanie komend i `Dispose` panelu licznika. |
+| `Desktop.Tests/PanelGeometryTests.cs` | Ograniczenie odtwarzanego układu do minimalnego i maksymalnego rozmiaru panelu. |
 | `Desktop.Tests/WorkspaceLayoutStoreTests.cs` | `WorkspaceLayoutStore`: zapis/odczyt układu workspace'u na dysku. |

@@ -18,17 +18,17 @@ public static class WorkspaceGridSettings
     public const double CellSize = 32;
 
     /// <summary>
-    /// Normal panel placement favors a clearly perceptible half-cell rhythm. Holding the precision
-    /// modifier during a gesture temporarily selects the quarter-cell rhythm instead.
+    /// Normal panel placement follows the visible cell grid. Holding the precision modifier during
+    /// a gesture temporarily selects the half-cell rhythm instead.
     /// </summary>
-    public const WorkspaceGridSnapMode DefaultSnapMode = WorkspaceGridSnapMode.HalfCell;
+    public const WorkspaceGridSnapMode DefaultSnapMode = WorkspaceGridSnapMode.FullCell;
 
-    public const WorkspaceGridSnapMode PreciseSnapMode = WorkspaceGridSnapMode.QuarterCell;
+    public const WorkspaceGridSnapMode PreciseSnapMode = WorkspaceGridSnapMode.HalfCell;
 
-    /// <summary>Normal snap step: currently one half of a 32-DIP cell, or 16 DIP.</summary>
+    /// <summary>Normal snap step: one 32-DIP cell.</summary>
     public const double DefaultSnapStep = CellSize / (int)DefaultSnapMode;
 
-    /// <summary>Precision-modifier snap step: currently one quarter cell, or 8 DIP.</summary>
+    /// <summary>Precision-modifier snap step: one half of a 32-DIP cell, or 16 DIP.</summary>
     public const double PreciseSnapStep = CellSize / (int)PreciseSnapMode;
 
     /// <summary>
@@ -42,6 +42,22 @@ public static class WorkspaceGridSettings
 
     /// <summary>Default gap between neighbouring panels, aligned to the precise snap interval.</summary>
     public const double PanelGap = PreciseSnapStep;
+
+    /// <summary>
+    /// Minimalny rozmiar panelu licznika, przy którym karta wartości, przyciski i komunikat nie
+    /// ściskają się wzajemnie.
+    /// </summary>
+    public const double CounterPanelMinWidth = CellSize * 8;
+
+    public const double CounterPanelMinHeight = CellSize * 6;
+
+    /// <summary>
+    /// Maksymalny rozmiar panelu licznika, wyrażony w widocznych komórkach siatki, żeby okno
+    /// pozostawało wyrównane do blatu zamiast rozrastać się w pustą powierzchnię.
+    /// </summary>
+    public const double CounterPanelMaxWidth = CellSize * 12;
+
+    public const double CounterPanelMaxHeight = CellSize * 8;
 
     /// <summary>
     /// Panels may touch the surface boundary. Clamping still prevents them from leaving it.

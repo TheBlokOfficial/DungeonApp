@@ -61,7 +61,9 @@ Stąd trzy decyzje:
 
 **Wszystkie narzędzia są wbudowane i zawsze obecne.** Nie ma wtyczek, nie ma
 ładowania z dysku, nie ma wyboru zestawu per kampania. Zestaw narzędzi jest
-własnością wersji aplikacji, nie kampanii.
+własnością wersji aplikacji, nie kampanii. Ta sama zasada rządzi nawigacją:
+zestaw zakładek nawigacji jest własnością wersji aplikacji, nie kampanii —
+dokładnie jak zestaw narzędzi (patrz `docs/ui.md`).
 
 **Narzędziem jest logika produkująca następstwa.** Test: czy z jednego
 wejścia wynikają konsekwencje, których nikt nie wpisał? Przesunięcie czasu
@@ -72,6 +74,13 @@ narzędziem — to notatki.
 Dodatkowo logika musi zdejmować z MG robotę **powtarzalną i mechaniczną**.
 Automatyzacja, która nie oszczędza powtarzalnego wysiłku, jest ozdobą na
 notatkach.
+
+Z tego testu wynika wprost, że **aplikacja nie liczy karty postaci** —
+klasa pancerza, modyfikatory cech, premia z biegłości. To nie jest robota
+powtarzalna: ustala się ją raz przy tworzeniu postaci i potem stoi, więc
+automatyzacja niczego by tu nie oszczędziła — byłaby ozdobą na notatkach,
+którą zasada wyżej już wyklucza. Panel MG odczytuje wartość i ją odejmuje;
+nie buduje postaci.
 
 Konsekwencja: zestaw zostaje mały sam z siebie, bo logika jest droga do
 napisania i utrzymywana na zawsze — także wtedy, gdy nikt jej nie otwiera od
@@ -98,12 +107,16 @@ schowania w zasobniku i przywrócenia.
   polecenia, nie wylicza następstw. Narzędziem jest to, co zostaje po
   zabraniu okna — i co da się przetestować bez okna.
 
-Reguła nie ma wyjątków: **wszystko, co leży na blacie, korzysta z modelu
-okna** — lista postaci tak samo jak notatki czy zegar. Poza biurkiem żyją
-tylko widoki powłoki, których blat nie dotyczy: biblioteka kampanii i
-ustawienia. Jak prezentować pełną kartę pojedynczej postaci, rozstrzygniemy,
-gdy będzie powstawać — ale wejściem do niej jest okno listy, nie osobny
-byt obok biurka.
+Reguła nie ma wyjątków na samym blacie: **wszystko, co leży na blacie,
+korzysta z modelu okna** — lista postaci tak samo jak notatki czy zegar.
+Blat nie jest jednak całym workspace'em kampanii, tylko jednym z jej
+ekranów — Stołem (patrz `docs/ui.md`, sekcja Nawigacja): obok niego żyje
+zaplecze — Drużyna, Świat, Wiedza, Kampania — zwykłe ekrany formularzy i
+list, do których model okna się nie stosuje, bo nic tam nie leży na
+blacie. Dopiero poza kampanią w ogóle, tam gdzie żadnego blatu nie ma, żyją
+widoki powłoki: biblioteka kampanii i ustawienia. Jak prezentować pełną
+kartę pojedynczej postaci, rozstrzygniemy, gdy będzie powstawać — ale
+wejściem do niej jest okno listy, nie osobny byt obok biurka.
 
 ### Rama i zasobnik
 
@@ -162,7 +175,12 @@ Narzędzie nigdy nie woła okna.
 Wyjątek od „okno czyta dane wprost": **odczyt wyliczony** — sformatowana data
 w kalendarzu świata, „ile dni do najbliższego wydarzenia", suma obciążenia
 drużyny — jest obliczeniem, więc należy do narzędzia. Narzędzie wystawia go
-jako funkcję nad danymi, nie jako własny stan.
+jako funkcję nad danymi, nie jako własny stan. Z tego wynika wprost, że
+**wartości pochodne nigdy nie są zapisywane** — żyją wyłącznie jako wynik
+funkcji, nigdy jako pole bloku danych. Jawna korekta, którą MG wprowadza
+ręcznie (np. tymczasowa kara do klasy pancerza), jest natomiast treścią
+kampanii: to jego decyzja, i nie wolno jej mylić z zapamiętanym wynikiem
+obliczenia.
 
 ## Treść kampanii a stan narzędzia
 
@@ -199,6 +217,21 @@ sprawdza, czy cel referencji istnieje — sprawdza tylko, że pole ma postać
 referencji; inaczej kampania zapisana przy komplecie definicji stałaby się
 niezapisywalna po ich zmianie.
 
+**Treść systemowa mieszka w paczkach.** Paczki są globalne dla instalacji,
+nie własnością kampanii — a kampania deklaruje w manifeście, których
+wymaga: model modpacka, chcesz grać na tym zestawie, miej te paczki.
+Kampania otwarta bez wymaganej paczki zgłasza po nazwie, czego brakuje; to
+jest funkcja, nie tryb awaryjny, i korzysta wprost z opisanego wyżej
+zachowania nierozwiązanej referencji — dane zostają nietknięte, nic nie
+jest naprawiane, a po doinstalowaniu paczki kampania odzyskuje pełną treść
+sama.
+
+Pojęcie „homebrew" nie istnieje w tym projekcie: paczka autorska i paczka
+wydawnicza to ten sam byt, różni je wyłącznie metadana o autorze, nigdy
+mechanizm. Klucz paczki jest przestrzenią nazw referencji — w „core:iron_sword"
+`core` jest kluczem paczki — więc kolizja nazw dwóch paczek jest niemożliwa
+z konstrukcji, nie z konwencji nazewnictwa.
+
 Bloki danych są **rejestrowane, nie posiadane**. Kontrakt rejestru żyje w
 rdzeniu, a korzeń kompozycji wpisuje do niego wbudowane bloki. Rejestr trzyma
 nazwę bloku danych, jego bieżącą wersję i jego **kształt**. Ścieżek migracji
@@ -206,8 +239,14 @@ jeszcze nie ma; powstaną przy pierwszym rzeczywistym podniesieniu wersji.
 Kształt opisuje budowę: z jakich nazwanych pól i
 jakich typów blok danych się składa. Język kształtu startuje na minimum —
 zestaw nazwanych pól o typach
-prostych — a zagnieżdżanie, warianty i referencje dochodzą,
-gdy pojawi się treść, która ich wymaga. Rdzeń przy zapisie sprawdza
+prostych — a zagnieżdżanie, listy i referencje dochodzą,
+gdy pojawi się treść, która ich wymaga. Warianty do tego języka nie
+dochodzą nigdy — rosną wyłącznie po stronie katalogu treści systemowej,
+którego kształt bierze się z typów C#, nie z tego rejestru (patrz
+„Katalog treści systemowej" w `docs/architecture.md`); wcześniejsze
+brzmienie tego zdania wymieniało warianty jako kolejny krok tego samego
+języka, co było niedopowiedzeniem, poprawionym przy okazji tamtej decyzji.
+Rdzeń przy zapisie sprawdza
 zgodność wyniku z zadeklarowanym kształtem, ale kształt nigdy nie niesie
 reguły między wartościami: „to pole jest referencją" — tak, „ta wartość
 musi być większa od tamtej" — nie; reguła między wartościami to robota
@@ -279,19 +318,31 @@ przekroczyła próg, na który ktoś czekał.
 ## System gry
 
 **Systemowa jest treść, nie kod.** Żadnego silnika reguł i żadnego osobnego
-projektu na ruleset. Struktura jest wspólna dla systemów TTRPG („zasób
-nazwany, z maksimum i regułą odnawiania" opisuje punkty życia, poczytalność
-i pęd równie dobrze), a różni się to, co odnawia i kiedy — czyli dane.
+projektu na ruleset. **Kod nie zna żadnego systemu gry:** nie ma i nie
+będzie kodu pisanego pod D&D 5e. Kampania deklaruje w manifeście, których
+paczek treści używa (patrz „Treść kampanii a stan narzędzia" wyżej); kod
+nigdy nie rozgałęzia się po tej wartości. Struktura jest wspólna dla
+systemów TTRPG („zasób nazwany, z maksimum i regułą odnawiania" opisuje
+punkty życia, poczytalność i pęd równie dobrze), a różni się to, co odnawia
+i kiedy — czyli dane. Ta sama wspólność obejmuje arytmetykę, która zostaje w
+kodzie: odejmowanie i dodawanie zasobów, odnowienie zasobów według
+zadeklarowanej reguły, przesunięcie kalendarza z kaskadą, sumę wag — nic z
+tego nie wymaga wiedzieć, w co gramy.
 
 Dwa zabezpieczenia:
 
 - **Definicja systemu jest deklaratywna i głupia — żadnych wyrażeń.** Jeśli
   reguła wymaga wyrażenia, to reguła dla MG. Inaczej za rok mamy interpreter
-  zamiast narzędzia.
-- **Pierwszy system wpisujemy konkretnie, ale w jednym miejscu.** Nie
-  budujemy warstwy konfiguracji, zanim działa jeden system. Uogólnienie ma
-  być refaktoryzacją, nie przepisaniem. Drugi system jest wyzwalaczem, nie
-  założeniem.
+  zamiast narzędzia. To samo dotyczy warunków: warunek nie jest wykonywalny
+  nigdzie, ani w danych, ani w kodzie — „jeśli nosisz zbroję ciężką…" jest
+  tekstem dla MG, dokładnie tak jak reguła wymagająca wyrażenia.
+- **Paczka niesie system, kod nigdy.** Wcześniej zakładaliśmy, że pierwszy
+  system wpiszemy konkretnie w kodzie, w jednym miejscu, i uogólnimy dopiero
+  przy drugim — ten plan odpada, bo okazał się zbędnym krokiem pośrednim:
+  skoro kampania i tak trzyma tylko referencję do definicji poza sobą, a
+  definicja leży w paczce (patrz wyżej), pierwszy system może być paczką od
+  razu, tak jak każdy kolejny, zamiast czekać na drugi system, żeby dopiero
+  wtedy wyjść z kodu.
 
 To samo dotyczy notatek: mogą mieć nazwy i kategorie, nigdy zależności
 między wartościami. Wartość reagująca na inną wartość awansuje do narzędzia
@@ -300,8 +351,11 @@ albo zostaje ręczną robotą MG.
 ## Odłożone świadomie
 
 - **Tryb aktywnej sesji.** Sesja jako byt trwały, z początkiem i końcem.
-- **System paczek treści.** Instalacja, źródło i dystrybucja paczek z
-  definicjami — samą referencję do definicji treść kampanii już zakłada.
+- **Instalacja, źródło i dystrybucja paczek treści.** Że paczki istnieją,
+  są globalne dla instalacji i że kampania deklaruje w manifeście, których
+  wymaga, jest już rozstrzygnięte (patrz „Treść kampanii a stan
+  narzędzia" wyżej i „Katalog treści systemowej" w `docs/architecture.md`);
+  otwarte zostaje tylko, skąd paczka trafia na dysk i jak się ją instaluje.
 - **Pełna obsługa klawiatury.** Wymóg wynikający z użycia przy stole.
 
 ## Czego nie wskrzeszamy

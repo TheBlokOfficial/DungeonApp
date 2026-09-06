@@ -112,7 +112,10 @@ wyjątki dyskowe bez własnego dostępu do plików.
 `ITool` wymaga tylko `IReadOnlyList<DataBlockId> Uses`. Narzędzie nie ma
 cyklu życia, własnego stanu, katalogu ani zależności od innego narzędzia.
 Może deklarować, których bloków używa; nie deklaruje kolejności aktywacji,
-bo nic nie jest aktywowane.
+bo nic nie jest aktywowane. Nie deklaruje też, których definicji katalogu
+paczek używa — katalog jest tylko do odczytu i globalny, nie coś, co
+narzędzie posiada; `Uses` dotyczy wyłącznie bloków danych, bo tylko bloki
+się zapisuje (patrz „Katalog treści systemowej" niżej).
 
 Każdy blok danych jest opisany przez `DataBlockId`, wersję i `DataBlockShape`.
 `DataBlockRegistry` odrzuca duplikat i pozwala odczytać opis tylko znanego
@@ -125,6 +128,46 @@ katalogu narzędzi — pojawi się dopiero, gdy drugie narzędzie go uzasadni.
 `DataBlockRegistry` sprawdza duplikaty w runtime. Jawność rejestracji,
 sprawdzenie wszystkich narzędzi w korzeniu kompozycji oraz brak katalogu są
 konwencją.
+
+## Katalog treści systemowej
+
+Rdzeń rozróżnia **dwa różne mechanizmy kształtu, świadomie**. Blok danych —
+kształt w `DataBlockRegistry`, sprawdzany w czasie działania przy zapisie
+(patrz „Dane, zapis i nieczytelne bloki" niżej). Wpis katalogu paczek —
+kształt wzięty wprost z typów C#, sprawdzany przez kompilator, nigdy przez
+rejestr. Powód rozdziału: rdzeń zapisuje bloki danych, a katalogu nie
+zapisuje nigdy — nie potrzebuje więc jego kształtu do niczego poza
+odczytem, dla którego kompilator wystarcza.
+
+Z tego rozdziału wynika granica **języka kształtu bloków**: rośnie on o
+trzy rzeczy i nie więcej — zagnieżdżony rekord, listę, referencję. Warianty
+oznaczone typem, mapy i niejednorodne zestawy pól nie wchodzą do tego
+języka wcale. Cała ta złożoność (warianty klasy pancerza potwora, obrażenia
+„albo kość, albo wybór", mapa poziomu czaru na formułę) leży po stronie
+katalogu, a katalog kształtu z rejestru nie używa. To jest zapora przed
+językiem kształtu pełzającym w stronę interpretera, przed czym ostrzega
+`docs/vision.md`; wcześniejsze brzmienie tamtego dokumentu dopuszczało
+warianty jako kolejny krok tego samego języka co zagnieżdżanie i
+referencje — to było niedopowiedzenie, poprawione przy tej okazji.
+
+Katalog to pliki JSON na dysku, bez bazy danych. Aplikacja nigdy nie
+zapisuje do katalogu paczek; odczyt wykonuje jeden jawny czytnik w
+`Core/Persistence`, zgodnie z istniejącym szwem opisanym w „Dostęp do
+dysku" wyżej. Baza danych odpada świadomie: jeden użytkownik, jeden proces,
+a kopia zapasowa ma pozostać skopiowanym katalogiem — ten sam model, co dla
+kampanii (`docs/vision.md`), nie eksport z silnika bazy.
+
+Wpis katalogu ma zamkniętą, krótką listę pól, które kod czyta i liczy —
+dziś waga i cena; dla statbloków dojdą zasoby. Reszta wpisu to statystyki
+(pary etykieta-wartość) oraz sekcje z nagłówkiem i tekstem, których kod nie
+interpretuje, tylko pokazuje. Konsekwencja praktyczna: dodanie zaklęcia,
+potwora czy akcji legendarnej to zero linijek kodu; zmiana tego, co jest
+liczone, to zmiana kodu.
+
+Nowa reguła odnawiania zasobu spoza zamkniętej listy (pełne, połowa, stała
+wartość, z opcjonalnym minimum) jest zgłoszeniem, nie nowym polem w pliku
+paczki. Nazwy rodzajów odpoczynku nie są w kodzie — deklaruje je paczka
+systemowa.
 
 ## Dane, zapis i nieczytelne bloki
 
@@ -183,6 +226,8 @@ wymusić.
 | Granica Core / Desktop | test częściowy (brak referencji do Avalonii) |
 | Dostęp do dysku | konwencja |
 | Kontrakt narzędzia i rejestr bloków | kompilator dla `Uses`, runtime dla duplikatu bloku, reszta konwencja |
+| Kształt wpisu katalogu treści systemowej | kompilator (typy C#), nigdy `DataBlockRegistry` |
+| Katalog tylko do odczytu, `Uses` ograniczone do bloków danych | konwencja — jeden czytnik w `Core/Persistence`, zero pisarzy do katalogu |
 | Komunikacja pośrednia | testy magistrali i bloków danych, brak krawędzi narzędzie → narzędzie to konwencja |
 | Stan bloków i zapis | testy zachowania `Apply`, persystencji i bloków nieczytelnych; granice warstw to konwencja |
 

@@ -77,7 +77,56 @@ mają tę samą geometrię kontenera.
 makiety do odtworzenia piksel w piksel, tylko odniesienie dla nastroju,
 głębi i gęstości interfejsu.
 
-## 2. Gdzie mieszkają liczby
+## 2. Nawigacja
+
+**Szyna jest dwustanowa, nie kontekstowa.** Trzy strefy o stałej kolejności:
+tożsamość u góry, kontekst w środku, Ustawienia na dole. Tożsamość to nazwa
+otwartej kampanii — będąca zarazem drogą powrotu do biblioteki — a gdy
+żadna kampania nie jest otwarta, jej brak. Kontekst to jedna z dwóch list
+pozycji, obu wpisanych w kodzie wprost, przełączanych jednym warunkiem: czy
+kampania jest otwarta. Słowo „kontekstowa" jest świadomie odrzucone —
+zaprasza do pełzania, w którym pozycje szyny zaczynają reagować na dane
+(liczbę graczy, obecność notatek, cokolwiek), a wtedy szyna przestaje być
+przewidywalnym punktem odniesienia i staje się kolejnym miejscem, które
+trzeba sprawdzić, żeby wiedzieć, co jest dostępne.
+
+**Niezmiennik:** poza nazwą kampanii nic w szynie nie wynika z treści
+kampanii. Pozycja szyny wyliczona z czegokolwiek innego niż „czy kampania
+jest otwarta" jest błędem, nie wariantem do rozważenia.
+
+Zakładka nie znika, gdy jest pusta — pokazuje stan pusty, nie brakującą
+pozycję. To ta sama dyscyplina, co reguła o jednakowej geometrii stanów z
+sekcji 1 (`loading`/`empty`/`ready`/`error`).
+
+Szyna daje się zwinąć jawną akcją użytkownika. Postać wizualna zwinięcia —
+ikony czy etykiety, szerokość, animacja — jest przedmiotem rundy mockupów,
+nie tego dokumentu.
+
+**Zakładki globalne** (bez otwartej kampanii): Kampanie, Paczki zawartości,
+Ustawienia. Pozycja „Bohaterowie" nie wraca: postać należy do kampanii, a
+globalny rejestr bohaterów przeczyłby zasadzie z `docs/vision.md`, że
+kampanię definiuje jej stan, nie zestaw możliwości.
+
+**Zakładki kampanii:** Stół, Drużyna, Świat, Wiedza, Kampania. Stół jest
+jedynym ekranem o powierzchni stołu (ciemnej, `Desk`) i jedynym miejscem, w
+którym istnieją okna i zasobnik; pozostałe cztery są zapleczem (`Backstage`).
+To konkretne przypisanie reguły „granica biegnie po trybie pracy, nie po
+kontekście kampanii" z sekcji 1: tam ta reguła była zasadą ogólną, tu jest
+podziałem — z piątki zakładek kampanii dokładnie jedna jest stołem.
+
+Ta sama treść ma przy tym dwie twarze: szybką na Stole, w trakcie
+prowadzenia, i pełną na zapleczu, przy przygotowaniu. To nie jest
+duplikacja — Stół i zaplecze mają różny cel ekranu, więc ten sam Entity
+(drużyna, wiedza) pokazuje się na obu inaczej, nie jest tym samym widokiem
+skopiowanym dwa razy.
+
+**Trzy formy prezentacji wpisu i tylko trzy:** wiersz na liście, karta,
+podgląd w dymku. Jeden renderer za wszystkimi trzema — karta zaklęcia,
+przedmiotu i potwora różnią się ilością treści, nie strukturą (patrz „wpis
+katalogu" w `docs/architecture.md`). Karta jest widokiem do czytania, nie
+formularzem — zgodnie z prezentacją statbloku z referencji w sekcji 1.
+
+## 3. Gdzie mieszkają liczby
 
 Kod jest jedynym źródłem prawdy dla wartości — ten dokument wskazuje pliki i
 kategorie kluczy, nigdy same liczby.
@@ -87,7 +136,7 @@ kategorie kluczy, nigdy same liczby.
 | `src/DungeonApp.Desktop/Themes/Tokens.axaml` | paleta kolorów (tło, powierzchnie, role głębi `Frame`/`Backstage`/`Desk`, obramowania, tekst, akcent, semantyka sukces/ostrzeżenie/błąd, chrome formularzy i paneli), promień narożnika, referencje do dwóch rodzin fontów. Jawnie **nie** trzyma tokenów zależnych od profilu skali (patrz niżej) — dopisany komentarz w pliku wskazuje na `UiScaleProfiles.cs` jako jedynego pisarza tych wartości. |
 | `src/DungeonApp.Desktop/Themes/Icons.axaml` | zestaw `DrawingImage` ikon SVG (obecnie ok. tuzina symboli nawigacji/akcji) plus dwa warianty pióra (`DungeonIconPen`, `DungeonIconPrimaryPen`) determinujące grubość i zaokrąglenie linii. |
 | `src/DungeonApp.Desktop/Themes/UiScaleProfiles.cs` | jedyny pisarz wszystkich tokenów zależnych od profilu `Small`/`Medium`/`Large`: rozmiary fontów, wysokości topbara/sidebara/statusbara/nagłówka workspace'u, wysokości kontrolek i wierszy nawigacji/kampanii, rozmiar ikon akcji, minimalny rozmiar okna, geometria nagłówka i minimów panelu pulpitu, rozmiar karty w dolnym pasku. Ustawiane na `Application.Resources` przed utworzeniem pierwszego okna. |
-| `src/DungeonApp.Desktop/Controls/Workspace/WorkspaceGridSettings.cs` | geometria blatu żywej sesji: rozmiar komórki siatki tła, tryby i krok snapowania (zwykły/precyzyjny), promień przyciągania, czas animacji domknięcia snapu, odstęp między panelami, margines krawędzi blatu. Czytane zarówno przez rendering siatki (`WorkspaceGridBackground`), jak i przez obliczenia geometrii panelu (`PanelGeometry`, `PanelWindow`) — jedno źródło, żeby siatka widoczna i snap nie rozjechały się. |
+| `src/DungeonApp.Desktop/Controls/Workspace/WorkspaceGridSettings.cs` | geometria blatu żywej sesji: rozmiar komórki siatki tła, tryby i krok snapowania (zwykły/precyzyjny), promień przyciągania, czas animacji domknięcia snapu, odstęp między panelami, margines krawędzi blatu oraz ograniczenia rozmiaru panelu licznika. Czytane zarówno przez rendering siatki (`WorkspaceGridBackground`), jak i przez obliczenia geometrii panelu (`PanelGeometry`, `PanelWindow`) — jedno źródło, żeby siatka widoczna i snap nie rozjechały się. |
 
 **Znane luki.** Nazwana skala odstępów (marginesów/paddingów) w
 `Tokens.axaml` istnieje — czternaście tokenów `DungeonSpacing*`/
@@ -103,7 +152,7 @@ skali rozmiarów ikon" z zasad projektu **nie ma dziś odpowiednika w
 kodzie** — jeśli mockup potrzebuje więcej niż jednego rozmiaru ikony
 naraz, to sygnał do zgłoszenia, nie do wpisania liczby na oko.
 
-## 3. Reguły komponentowe
+## 4. Reguły komponentowe
 
 **Kiedy wydzielić komponent.** Element staje się `UserControl`/
 `TemplatedControl`, gdy spełnia co najmniej jedno: reprezentuje samodzielne
@@ -146,7 +195,7 @@ drzewa), `Controls/Workspace/` (geometria i kontrolki blatu żywej sesji),
 `Themes/` (tokeny, kontrolki, ikony, profile skali), `Assets/`, `Settings/`,
 `ViewModels/`.
 
-## 4. ZAMIERZONE — nie istnieje dziś w kodzie
+## 5. ZAMIERZONE — nie istnieje dziś w kodzie
 
 - **Breakpointy workspace'u `Compact`/`Standard`/`Wide`** i przypisane im
   kompozycje dashboardu — brak w kodzie logiki reagującej na szerokość
@@ -155,13 +204,22 @@ drzewa), `Controls/Workspace/` (geometria i kontrolki blatu żywej sesji),
 - **Strategie wzrostu paneli `FixedMetric`/`Bounded`/`FluidData`/
   `Document`** jako formalny, nazwany kontrakt — brak typu/atrybutu
   niosącego tę deklarację w kodzie.
-- **Docelowa architektura informacji workspace'u kampanii** (grupy
-  `Sesja`/`Świat`/`Wiedza`/`Kampania`, wariant kompaktowy sidebara) —
-  sidebar globalny ma dziś tylko grupy biblioteki/systemu; wariant
-  kompaktowy został świadomie usunięty i wróci przy realnej potrzebie.
+- **Nawigacja i architektura informacji workspace'u kampanii** (zakładki
+  `Stół`/`Drużyna`/`Świat`/`Wiedza`/`Kampania`, szyna dwustanowa opisana w
+  sekcji 2) — rozstrzygnięte powyżej, ale nie istnieje w kodzie: sidebar
+  globalny ma dziś tylko grupy biblioteki/systemu, workspace kampanii nie
+  ma jeszcze tych pięciu zakładek. Wariant kompaktowy sidebara został
+  świadomie usunięty i wróci przy realnej potrzebie — to samo w sobie
+  pozostaje otwarte.
 - **Paczki zawartości i baza wiedzy** (Entity jako kanoniczna tożsamość
-  łącząca statblock, notatki, relacje, backlinki) — moduły i ekrany tego
-  obszaru jeszcze nie istnieją.
+  łącząca statblock, notatki, relacje, backlinki) — mechanizm paczek jest
+  już rozstrzygnięty (`docs/vision.md`, „Katalog treści systemowej" w
+  `docs/architecture.md`, trzy formy prezentacji wpisu z sekcji 2), ale
+  moduły i ekrany tego obszaru jeszcze nie istnieją w kodzie.
+- **Okno Starcia**, wraz z miejscem na stan ulotny — bieżące punkty życia
+  przeciwnika w trwającym starciu, które nie przeżywa samego starcia (ta
+  sama kategoria co kolejność inicjatywy w „Treść kampanii a stan
+  narzędzia", `docs/vision.md`) — otwarte.
 - **Jasny/ciemny wariant powierzchni redakcyjnej** (statblock dopasowany
   do pulpitu vs. kremowy) — decyzja otwarta, wymaga porównania na tej
   samej treści przed implementacją.

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DungeonApp.Desktop.Controls.Workspace;
@@ -20,6 +21,8 @@ public sealed class PanelCatalog
     public static PanelCatalog For(CampaignSession session)
     {
         var minimum = WorkspaceMetrics.Fallback;
+        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.CounterPanelMinWidth);
+        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.CounterPanelMinHeight);
 
         return new(
         [
@@ -31,13 +34,13 @@ public sealed class PanelCatalog
                 new PanelPlacement(
                     WorkspaceGridSettings.CellSize,
                     WorkspaceGridSettings.CellSize,
-                    minimum.MinPanelWidth,
-                    minimum.MinPanelHeight),
+                    minWidth,
+                    minHeight),
                 new PanelConstraints(
-                    minimum.MinPanelWidth,
-                    minimum.MinPanelHeight,
-                    double.PositiveInfinity,
-                    double.PositiveInfinity),
+                    minWidth,
+                    minHeight,
+                    WorkspaceGridSettings.CounterPanelMaxWidth,
+                    WorkspaceGridSettings.CounterPanelMaxHeight),
                 () => new CounterPanelViewModel(session)),
         ]);
     }
