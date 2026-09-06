@@ -82,9 +82,9 @@
         </Style>
     </UserControl.Styles>
 
-    <!-- Backstage chrome stays quieter than a campaign desk. The grid belongs only to an open
-         campaign, while this flat surface keeps the library legible without pretending to be one. -->
-    <Border Background="{DynamicResource DungeonBackstageBrush}"
+    <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
+         exclusive to an open campaign; the contrast here gives static screens depth without it. -->
+    <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,1,0">
         <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*">
