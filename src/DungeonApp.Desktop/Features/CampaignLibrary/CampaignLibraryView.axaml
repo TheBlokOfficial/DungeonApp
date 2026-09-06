@@ -25,18 +25,15 @@
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
          its content, so switching static screens never crossfades a full-size opaque background. -->
-    <ScrollViewer Background="Transparent"
-                  HorizontalScrollBarVisibility="Disabled"
-                  VerticalScrollBarVisibility="Auto"
-                  AllowAutoHide="True">
-        <!-- A left-aligned reading column, not a centred dialog. It uses the whole narrow workspace
-             but deliberately stops growing on ultrawide screens, leaving calm backstage space rather
-             than a stretched form or a fake dashboard. -->
-        <Grid MaxWidth="1040"
+    <!-- The shell gives this view a finite workspace. Keep that contract: the page itself never
+         scrolls, while the campaign list consumes only the remaining height inside its shelf. -->
+    <Grid Background="Transparent"
+          MinHeight="0"
+          MaxWidth="1040"
               Margin="24,32,40,40"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Top"
-              RowDefinitions="Auto,Auto"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              RowDefinitions="Auto,*"
               RowSpacing="20">
 
             <StackPanel Spacing="6">
@@ -50,8 +47,11 @@
                     BorderBrush="{DynamicResource DungeonBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="{DynamicResource DungeonCornerRadius}"
-                    ClipToBounds="True">
-                <Grid RowDefinitions="Auto,Auto,Auto">
+                    ClipToBounds="True"
+                    MaxHeight="640"
+                    MinHeight="0"
+                    VerticalAlignment="Stretch">
+                <Grid MinHeight="0" RowDefinitions="Auto,Auto,*,Auto">
                     <Border Padding="20,18,20,14"
                             BorderBrush="{DynamicResource DungeonBorderBrush}"
                             BorderThickness="0,0,0,1">
@@ -83,16 +83,21 @@
                         </StackPanel>
                     </Border>
 
-                    <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
-                        <TextBlock Margin="20,8,20,6"
-                                   Classes="eyebrow"
-                                   Text="ZAPISANE KAMPANIE" />
+                    <TextBlock Grid.Row="1"
+                               Margin="20,8,20,6"
+                               Classes="eyebrow"
+                               Text="ZAPISANE KAMPANIE" />
 
-                        <Panel Grid.Row="1"
-                               Margin="0,0,0,12"
-                               MinHeight="{DynamicResource DungeonCampaignRowHeight}">
-                            <ItemsControl IsVisible="{Binding HasCampaigns}"
-                                          ItemsSource="{Binding Campaigns}">
+                    <!-- This is the only scrolling region. Its star-sized parent can shrink at the
+                         minimum window size, without ever pushing the shell beyond the viewport. -->
+                    <Panel Grid.Row="2"
+                           Margin="0,0,0,12"
+                           MinHeight="0">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollBarVisibility="Auto"
+                                      AllowAutoHide="True"
+                                      IsVisible="{Binding HasCampaigns}">
+                            <ItemsControl ItemsSource="{Binding Campaigns}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="library:CampaignRowViewModel">
                                         <Button Classes="campaign-row" Command="{Binding OpenCommand}">
@@ -121,20 +126,20 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                        </ScrollViewer>
 
-                            <!-- Loading and empty occupy the same first-row floor as real data. -->
-                            <TextBlock Margin="20,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                       IsVisible="{Binding IsEmpty}"
-                                       Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
-                                       TextAlignment="Center"
-                                       TextWrapping="Wrap" />
-                        </Panel>
-                    </Grid>
+                        <!-- Loading and empty occupy the same bounded list area as real data. -->
+                        <TextBlock Margin="20,0"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   IsVisible="{Binding IsEmpty}"
+                                   Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+                    </Panel>
 
-                    <Border Grid.Row="2"
+                    <Border Grid.Row="3"
                             Padding="20,0,20,14"
                             IsVisible="{Binding HasStatus}">
                         <TextBlock VerticalAlignment="Center"
@@ -145,6 +150,5 @@
                     </Border>
                 </Grid>
             </Border>
-        </Grid>
-    </ScrollViewer>
+    </Grid>
 </UserControl>
