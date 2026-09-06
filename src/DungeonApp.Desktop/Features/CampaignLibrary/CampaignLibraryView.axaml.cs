@@ -8,11 +8,16 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
 public partial class CampaignLibraryView : UserControl
 {
+    // Below this width there is no appreciable unused backstage area, so the page intentionally
+    // remains a flat surface. This measures the content area, not the whole native window.
+    private const double WideBackstageThreshold = 1440;
+
     private TopLevel? _topLevel;
 
     public CampaignLibraryView()
     {
         InitializeComponent();
+        BackstageSurface.SizeChanged += OnBackstageSurfaceSizeChanged;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -20,6 +25,7 @@ public partial class CampaignLibraryView : UserControl
         base.OnAttachedToVisualTree(e);
         _topLevel = TopLevel.GetTopLevel(this);
         _topLevel?.AddHandler(InputElement.PointerPressedEvent, OnPreviewPointerPressed, RoutingStrategies.Tunnel);
+        UpdateBackstageTreatment(BackstageSurface.Bounds.Width);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -54,5 +60,23 @@ public partial class CampaignLibraryView : UserControl
         // Avalonia 12.0.5 clears focus by focusing a null element. The dedicated ClearFocus API is
         // newer; keep this call explicit until the framework upgrade makes that API available.
         _topLevel.FocusManager.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
+    }
+
+    private void OnBackstageSurfaceSizeChanged(object? sender, SizeChangedEventArgs e) =>
+        UpdateBackstageTreatment(e.NewSize.Width);
+
+    private void UpdateBackstageTreatment(double width)
+    {
+        const string wideBackstageClass = "wide-backstage";
+        var shouldUseGradient = width >= WideBackstageThreshold;
+
+        if (shouldUseGradient && !BackstageSurface.Classes.Contains(wideBackstageClass))
+        {
+            BackstageSurface.Classes.Add(wideBackstageClass);
+        }
+        else if (!shouldUseGradient)
+        {
+            BackstageSurface.Classes.Remove(wideBackstageClass);
+        }
     }
 }

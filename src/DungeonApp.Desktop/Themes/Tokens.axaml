@@ -14,6 +14,7 @@
         <Color x:Key="DungeonFrameColor">#1B1917</Color>
         <Color x:Key="DungeonFrameHoverColor">#282522</Color>
         <Color x:Key="DungeonBackstageColor">#151412</Color>
+        <Color x:Key="DungeonBackstageEdgeColor">#100F0E</Color>
         <Color x:Key="DungeonBackstageCardColor">#1F1D1A</Color>
         <Color x:Key="DungeonBackstageRowColor">#221F1C</Color>
         <Color x:Key="DungeonBackstageRowHoverColor">#282522</Color>
@@ -42,6 +43,14 @@
         <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
         <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
         <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
+        <!-- Used only by wide, static backstage views. The first half stays calm so the gradient
+             does not read as decoration behind the actual content. -->
+        <LinearGradientBrush x:Key="DungeonBackstageWideBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0" Color="{DynamicResource DungeonBackstageColor}" />
+            <GradientStop Offset="0.42" Color="{DynamicResource DungeonBackstageColor}" />
+            <GradientStop Offset="0.74" Color="#12110F" />
+            <GradientStop Offset="1" Color="{DynamicResource DungeonBackstageEdgeColor}" />
+        </LinearGradientBrush>
         <SolidColorBrush x:Key="DungeonBackstageCardBrush" Color="{DynamicResource DungeonBackstageCardColor}" />
         <SolidColorBrush x:Key="DungeonBackstageRowBrush" Color="{DynamicResource DungeonBackstageRowColor}" />
         <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
