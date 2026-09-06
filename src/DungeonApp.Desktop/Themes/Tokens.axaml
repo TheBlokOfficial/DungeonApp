@@ -67,7 +67,7 @@
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-        <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonAccentActionColor}" />
+        <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
         <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
 
         <!--

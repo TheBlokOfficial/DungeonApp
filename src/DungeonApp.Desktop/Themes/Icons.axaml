@@ -19,6 +19,14 @@
             <GeometryDrawing Geometry="M20.001,19 A2,2 0 0 0 22,17 L22,5 A2,2 0 0 0 20.001,3 L16,3.002 A5,5 0 0 0 12,5 A5,5 0 0 0 8,3 L4,3 A2,2 0 0 0 2,5 L2,17 A2,2 0 0 0 3.999,19 L8,19 A5,5 0 0 1 12,21 A5,5 0 0 1 16,19 Z" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <DrawingImage x:Key="DungeonIconPencil" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M4,20 L8.4,19 L19,8.4 A2.1,2.1 0 0 0 16,5.4 L5.4,16 Z M14.7,6.7 L17.7,9.7" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <DrawingImage x:Key="DungeonIconChevronRight" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M9,5 L16,12 L9,19" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
     <!-- Record emblem is intentionally distinct from the neutral navigation icon. -->
     <DrawingImage x:Key="DungeonIconCampaignRecord" Viewbox="0,0,24,24">
         <DrawingGroup>

@@ -18,6 +18,7 @@
             <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
             <Setter Property="Margin" Value="0,0,0,4" />
             <Setter Property="Padding" Value="12,0" />
+            <Setter Property="FontWeight" Value="Normal" />
         </Style>
         <Style Selector="Button.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
@@ -54,14 +55,24 @@
                 <StackPanel Spacing="8">
                     <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <TextBox PlaceholderText="Nazwa nowej kampanii"
-                                 Text="{Binding NewCampaignName, Mode=TwoWay}"
-                                 Height="{DynamicResource DungeonControlHeight}"
-                                 VerticalContentAlignment="Center">
+                        <Grid>
+                            <TextBox Padding="36,0,12,0"
+                                     PlaceholderText="Nazwa nowej kampanii"
+                                     Text="{Binding NewCampaignName, Mode=TwoWay}"
+                                     Height="{DynamicResource DungeonControlHeight}"
+                                     VerticalContentAlignment="Center">
                             <TextBox.KeyBindings>
                                 <KeyBinding Gesture="Enter" Command="{Binding CreateCommand}" />
                             </TextBox.KeyBindings>
-                        </TextBox>
+                            </TextBox>
+                            <Image Width="16"
+                                   Height="16"
+                                   Margin="12,0,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   Source="{StaticResource DungeonIconPencil}" />
+                        </Grid>
                         <Button Grid.Column="1"
                                 Classes="primary"
                                 Content="+  Utwórz"
@@ -118,12 +129,12 @@
                                                    FontSize="{DynamicResource DungeonHelperFontSize}"
                                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
                                                    Text="{Binding CreatedAt}" />
-                                        <TextBlock Grid.Column="3"
-                                                   Margin="4,0,0,0"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="22"
-                                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                                   Text="›" />
+                                        <Image Grid.Column="3"
+                                               Width="16"
+                                               Height="16"
+                                               Margin="4,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Source="{StaticResource DungeonIconChevronRight}" />
                                     </Grid>
                                 </Button>
                             </DataTemplate>

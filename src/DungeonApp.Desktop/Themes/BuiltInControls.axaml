@@ -9,7 +9,7 @@
     <Style Selector="TextBlock.workspace-title">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonWorkspaceTitleFontSize}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
     </Style>
     <Style Selector="TextBlock.eyebrow">

@@ -112,7 +112,7 @@
                                VerticalAlignment="Center"
                                FontFamily="{DynamicResource DungeonDisplayFont}"
                                FontSize="{DynamicResource DungeonBrandNameFontSize}"
-                               FontWeight="SemiBold"
+                               FontWeight="Medium"
                                Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                Text="DungeonApp" />
                 </Grid>
