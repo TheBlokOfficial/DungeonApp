@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -29,6 +31,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     private string? _status;
     private bool _isBusy;
     private bool _isLoaded;
+    private int _statusVersion;
 
     public CampaignLibraryViewModel(
         ICampaignRepository campaigns,
@@ -82,7 +85,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
     public bool HasNameError => !string.IsNullOrWhiteSpace(NameError);
 
-    /// <summary>The last thing that happened, shown under the list. Null when there is nothing to say.</summary>
+    /// <summary>A short, transient confirmation or recovery hint. Null when no toast is visible.</summary>
     public string? Status
     {
         get => _status;
@@ -144,7 +147,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         // not a reason to abort the readiness pipeline and leave the shell permanently gated.
         catch (Exception ex) when (ex is CampaignStoreException or System.IO.IOException or UnauthorizedAccessException)
         {
-            Status = "Nie udało się odczytać biblioteki kampanii.";
+            ShowStatus("Nie udało się odczytać biblioteki kampanii.");
         }
         finally
         {
@@ -163,11 +166,11 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             var campaign = await _createCampaign.ExecuteAsync(NewCampaignName);
 
             NewCampaignName = string.Empty;
-            Status = $"Utworzono kampanię „{campaign.Name.Value}”.";
+            ShowStatus($"Utworzono kampanię „{campaign.Name.Value}”.");
         }
         catch (System.IO.IOException)
         {
-            Status = "Nie udało się zapisać kampanii na dysku.";
+            ShowStatus("Nie udało się zapisać kampanii na dysku.");
         }
         finally
         {
@@ -187,15 +190,15 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         }
         catch (CampaignStoreException ex)
         {
-            Status = DescribeStoreFailure(ex.Failure, row.Name);
+            ShowStatus(DescribeStoreFailure(ex.Failure, row.Name));
         }
         catch (System.IO.IOException)
         {
-            Status = $"Nie udało się odczytać kampanii „{row.Name}”.";
+            ShowStatus($"Nie udało się odczytać kampanii „{row.Name}”.");
         }
         catch (CampaignUnavailableException)
         {
-            Status = $"Kampania „{row.Name}” już nie istnieje.";
+            ShowStatus($"Kampania „{row.Name}” już nie istnieje.");
             await LoadAsync();
         }
         finally
@@ -213,11 +216,11 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             Campaigns.Remove(row);
             RaisePropertyChanged(nameof(IsEmpty));
             RaisePropertyChanged(nameof(HasCampaigns));
-            Status = $"Usunięto kampanię „{row.Name}”.";
+            ShowStatus($"Usunięto kampanię „{row.Name}”.");
         }
         catch (System.IO.IOException)
         {
-            Status = $"Nie udało się usunąć kampanii „{row.Name}”.";
+            ShowStatus($"Nie udało się usunąć kampanii „{row.Name}”.");
         }
         finally
         {
@@ -239,4 +242,26 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         CampaignStoreFailure.Invalid => $"Zapis kampanii „{name}” jest niekompletny.",
         _ => $"Zapis kampanii „{name}” jest uszkodzony."
     };
+
+    private void ShowStatus(string message)
+    {
+        Status = message;
+        var version = Interlocked.Increment(ref _statusVersion);
+        _ = ClearStatusAfterDelayAsync(version);
+    }
+
+    private async Task ClearStatusAfterDelayAsync(int version)
+    {
+        await Task.Delay(TimeSpan.FromSeconds(4));
+
+        // The delay's continuation may not run on Avalonia's UI context during a test or startup.
+        // Route the observable update through the dispatcher and keep only the newest toast alive.
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (version == Volatile.Read(ref _statusVersion))
+            {
+                Status = null;
+            }
+        });
+    }
 }

@@ -42,8 +42,8 @@
     <controls:AnchoredContentHost MaxContentWidth="680" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
-              Margin="28,20,28,24"
-              RowDefinitions="Auto,Auto,Auto,*,Auto">
+              Margin="28,20,28,24">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
 
             <StackPanel Spacing="6">
                 <TextBlock Classes="muted" Text="Kampanie" />
@@ -99,6 +99,7 @@
             <TextBlock Grid.Row="2"
                        Margin="2,24,0,8"
                        Classes="eyebrow"
+                       IsVisible="{Binding HasCampaigns}"
                        Text="ZAPISANE KAMPANIE" />
 
             <!-- List records are independent documents. Spacing replaces the continuous grid of
@@ -160,24 +161,45 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <TextBlock Margin="20,0"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Foreground="{DynamicResource DungeonTextMutedBrush}"
-                           IsVisible="{Binding IsEmpty}"
-                           Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
-                           TextAlignment="Center"
-                           TextWrapping="Wrap" />
+                <!-- The empty state occupies the exact place of the first record. It does not
+                     reserve a list viewport or use vertical centring, because there is no list
+                     to scroll yet. -->
+                <Border Height="{DynamicResource DungeonCampaignRowHeight}"
+                        Background="Transparent"
+                        BorderBrush="{DynamicResource DungeonBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="{DynamicResource DungeonControlCornerRadius}"
+                        IsVisible="{Binding IsEmpty}">
+                    <TextBlock Margin="20,0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               Text="Nie ma jeszcze żadnej kampanii. Nazwij pierwszą powyżej."
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                </Border>
             </Panel>
+            </Grid>
 
-            <Border Grid.Row="4"
-                    Padding="0,8,0,0"
-                    IsVisible="{Binding HasStatus}">
-                <TextBlock VerticalAlignment="Center"
-                           FontSize="{DynamicResource DungeonHelperFontSize}"
-                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+            <!-- Status is a transient toast, deliberately layered above the page rather than
+                 inserted below its content. This keeps an empty-library hint from acquiring a
+                 competing second label after an action. -->
+            <Border HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    MaxWidth="320"
+                    Margin="0,2,0,0"
+                    Padding="12,8"
+                    Background="{DynamicResource DungeonBackstageCardBrush}"
+                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+                    BorderThickness="1"
+                    CornerRadius="{DynamicResource DungeonControlCornerRadius}"
+                    IsVisible="{Binding HasStatus}"
+                    ZIndex="1">
+                <TextBlock FontSize="{DynamicResource DungeonHelperFontSize}"
+                           Foreground="{DynamicResource DungeonTextRegularBrush}"
                            Text="{Binding Status}"
-                           TextTrimming="CharacterEllipsis" />
+                           TextTrimming="CharacterEllipsis"
+                           TextWrapping="Wrap" />
             </Border>
         </Grid>
     </controls:AnchoredContentHost>
