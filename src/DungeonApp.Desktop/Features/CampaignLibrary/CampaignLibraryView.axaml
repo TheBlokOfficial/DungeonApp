@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:library="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Features.CampaignLibrary.CampaignLibraryView"
              x:DataType="library:CampaignLibraryViewModel">
 
@@ -25,14 +26,12 @@
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
          its content, so switching static screens never crossfades a full-size opaque background. -->
-    <!-- The shell gives this view a finite workspace. Keep that contract: the page itself never
-         scrolls, while the campaign list consumes only the remaining height inside its shelf. -->
-    <Grid Background="Transparent"
-          MinHeight="0"
-          MaxWidth="1040"
+    <!-- The host fills the shell but pins its bounded child at the top-left. This avoids the
+         centring side effect of MaxWidth/MaxHeight while preserving a finite list viewport. -->
+    <controls:AnchoredContentHost MaxContentWidth="1104" MaxContentHeight="782">
+        <Grid Background="Transparent"
+              MinHeight="0"
               Margin="24,32,40,40"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"
               RowDefinitions="Auto,*"
               RowSpacing="20">
 
@@ -48,9 +47,7 @@
                     BorderThickness="1"
                     CornerRadius="{DynamicResource DungeonCornerRadius}"
                     ClipToBounds="True"
-                    MaxHeight="640"
-                    MinHeight="0"
-                    VerticalAlignment="Stretch">
+                    MinHeight="0">
                 <Grid MinHeight="0" RowDefinitions="Auto,Auto,*,Auto">
                     <Border Padding="20,18,20,14"
                             BorderBrush="{DynamicResource DungeonBorderBrush}"
@@ -150,5 +147,6 @@
                     </Border>
                 </Grid>
             </Border>
-    </Grid>
+        </Grid>
+    </controls:AnchoredContentHost>
 </UserControl>
