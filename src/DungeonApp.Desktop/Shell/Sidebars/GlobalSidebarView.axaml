@@ -85,30 +85,17 @@
     <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderBrush}"
             BorderThickness="0,0,1,0">
-        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*,24,Auto">
+        <Grid Margin="8,16,8,8" RowDefinitions="24,Auto,*">
             <TextBlock Margin="8,0"
                        Classes="eyebrow"
                        Foreground="{DynamicResource DungeonTextMutedBrush}"
                        LetterSpacing="1"
                        VerticalAlignment="Center"
-                       Text="BIBLIOTEKA" />
+                       Text="BIBLIOTEKA KAMPANII" />
 
             <ItemsControl Grid.Row="1"
                           HorizontalAlignment="Stretch"
                           ItemsSource="{Binding LibraryItems}"
-                          ItemTemplate="{StaticResource NavigationItemTemplate}" />
-
-            <TextBlock Grid.Row="3"
-                       Margin="8,0"
-                       Classes="eyebrow"
-                       Foreground="{DynamicResource DungeonTextMutedBrush}"
-                       LetterSpacing="1"
-                       VerticalAlignment="Center"
-                       Text="SYSTEM" />
-
-            <ItemsControl Grid.Row="4"
-                          HorizontalAlignment="Stretch"
-                          ItemsSource="{Binding SystemItems}"
                           ItemTemplate="{StaticResource NavigationItemTemplate}" />
         </Grid>
     </Border>

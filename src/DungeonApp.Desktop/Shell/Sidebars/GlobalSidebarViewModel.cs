@@ -16,19 +16,14 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
         LibraryItems =
         [
-            CreateItem("campaigns", "DungeonIconBookOpen", "Kampanie"),
-            CreateItem("characters", "DungeonIconUsers", "Bohaterowie"),
-            CreateItem("content-packs", "DungeonIconBoxes", "Paczki zawartości")
+            CreateItem("campaigns", "DungeonIconBookOpen", "Kampanie")
         ];
-        SystemItems = [CreateItem("settings", "DungeonIconSettings", "Ustawienia")];
-        _allItems = [.. LibraryItems, .. SystemItems];
+        _allItems = LibraryItems;
 
         LibraryItems[0].IsActive = true;
     }
 
     public IReadOnlyList<NavigationItemViewModel> LibraryItems { get; }
-
-    public IReadOnlyList<NavigationItemViewModel> SystemItems { get; }
 
     private NavigationItemViewModel CreateItem(string id, string iconResourceKey, string label)
     {
