@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using Avalonia.Layout;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
@@ -32,6 +33,8 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
             {
                 RaisePropertyChanged(nameof(LabelOpacity));
                 RaisePropertyChanged(nameof(LabelOffset));
+                RaisePropertyChanged(nameof(CompactButtonWidth));
+                RaisePropertyChanged(nameof(CompactButtonAlignment));
             }
         }
     }
@@ -39,4 +42,10 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     public double LabelOpacity => IsSidebarCollapsed ? 0 : 1;
 
     public double LabelOffset => IsSidebarCollapsed ? -12 : 0;
+
+    public double CompactButtonWidth => IsSidebarCollapsed ? 40 : double.NaN;
+
+    public HorizontalAlignment CompactButtonAlignment => IsSidebarCollapsed
+        ? HorizontalAlignment.Center
+        : HorizontalAlignment.Stretch;
 }

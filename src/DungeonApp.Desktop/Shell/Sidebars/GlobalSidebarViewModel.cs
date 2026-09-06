@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia.Layout;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
@@ -60,6 +61,10 @@ public sealed class GlobalSidebarViewModel : ObservableObject
                 RaisePropertyChanged(nameof(CollapsibleTextOpacity));
                 RaisePropertyChanged(nameof(CollapsibleTextOffset));
                 RaisePropertyChanged(nameof(HamburgerOffset));
+                RaisePropertyChanged(nameof(HamburgerWidth));
+                RaisePropertyChanged(nameof(HamburgerAlignment));
+                RaisePropertyChanged(nameof(CompactButtonWidth));
+                RaisePropertyChanged(nameof(CompactButtonAlignment));
             }
         }
     }
@@ -74,7 +79,19 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
     // The compact rail keeps the hamburger on its original row. Its small horizontal adjustment
     // centres the 32px control in the 64px rail without introducing a second layout variant.
-    public double HamburgerOffset => IsCollapsed ? -8 : 0;
+    public double HamburgerOffset => 0;
+
+    public double HamburgerWidth => IsCollapsed ? 40 : 32;
+
+    public HorizontalAlignment HamburgerAlignment => IsCollapsed
+        ? HorizontalAlignment.Center
+        : HorizontalAlignment.Right;
+
+    public double CompactButtonWidth => IsCollapsed ? 40 : double.NaN;
+
+    public HorizontalAlignment CompactButtonAlignment => IsCollapsed
+        ? HorizontalAlignment.Center
+        : HorizontalAlignment.Stretch;
 
     /// <summary>
     /// The campaign workspace has no global top bar. Its route back to the library therefore lives
