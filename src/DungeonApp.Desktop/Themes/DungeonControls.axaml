@@ -3,23 +3,17 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls"
                     xmlns:workspace="using:DungeonApp.Desktop.Controls.Workspace">
 
-    <!--
-        Control themes for the project's own templated controls. This has to be a ResourceDictionary
-        merged into Application.Resources - Themes/BuiltInControls.axaml has a <Styles> root and
-        cannot hold a ControlTheme. A custom TemplatedControl inherits no implicit theme from
-        FluentTheme, so without the two keyed by {x:Type ...} below, both controls would render as
-        nothing at all.
-    -->
-
+    <!-- Konwertery i pędzle -->
     <controls:ResourceKeyToImageConverter x:Key="DungeonIconResourceConverter" />
 
-    <!--
-        DungeonApp owns the base button chrome instead of inheriting Fluent's pressed transform and
-        pressed presenter palette. A button still has its behavioural :pressed pseudo-class, but it
-        has no visual treatment: immediate :pointerover is the sole transient pointer feedback.
-        Persistent states such as disabled, focus-visible, checked or selected remain separate
-        semantic concerns.
-    -->
+    <SolidColorBrush x:Key="DungeonWorkspaceGridLineBrush"
+                     Color="{DynamicResource DungeonBorderColor}"
+                     Opacity="0.12" />
+
+    <!-- =================================================================== -->
+    <!-- MOTYWY PRZYCISKÓW                                                   -->
+    <!-- =================================================================== -->
+
     <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -45,17 +39,6 @@
         </Style>
     </ControlTheme>
 
-    <!--
-        Desk texture. The grid line means something now: it marks a surface things float on, so it
-        belongs to the campaign desk and nowhere else. Static screens keep a flat background.
-        WorkspaceGridBackground and the snap calculations both read WorkspaceGridSettings, so the
-        visible cell and its snap subdivisions cannot drift apart.
-    -->
-    <SolidColorBrush x:Key="DungeonWorkspaceGridLineBrush"
-                     Color="{DynamicResource DungeonBorderColor}"
-                     Opacity="0.12" />
-
-    <!-- Square, borderless icon button for the panel title bar. -->
     <ControlTheme x:Key="DungeonPanelHeaderActionTheme" TargetType="Button">
         <Setter Property="Width" Value="{DynamicResource DungeonPanelHeaderActionSize}" />
         <Setter Property="Height" Value="{DynamicResource DungeonPanelHeaderActionSize}" />
@@ -81,10 +64,12 @@
         </Style>
     </ControlTheme>
 
+    <!-- =================================================================== -->
+    <!-- OBSZAR ROBOCZY (WORKSPACE)                                          -->
+    <!-- =================================================================== -->
+
     <ControlTheme x:Key="{x:Type workspace:WorkspaceSurface}" TargetType="workspace:WorkspaceSurface">
         <Setter Property="Background" Value="{DynamicResource DungeonDeskBrush}" />
-        <!-- Canvas does not clip its children; without this a dragged panel paints over the
-             sidebar and the status bar. -->
         <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="ItemsPanel">
             <ItemsPanelTemplate>
@@ -93,17 +78,11 @@
         </Setter>
         <Setter Property="Template">
             <ControlTemplate>
-                <!-- No padding or border: the presenter, rendered grid and gesture Canvas share
-                     one coordinate space, including the zero-position surface edge. -->
-                <!-- One native inset shadow produces a continuous rectangular falloff, including
-                     corners. Border draws it above its background and below child content, so the
-                     grid stays legible and panels touching an edge are never dimmed. -->
                 <Border Background="{TemplateBinding Background}"
                         BoxShadow="inset 0 0 22 0 #50000000">
                     <Grid>
-                        <workspace:WorkspaceGridBackground
-                            GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
-                            IsHitTestVisible="False" />
+                        <workspace:WorkspaceGridBackground GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
+                                                    IsHitTestVisible="False" />
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </Grid>
@@ -111,6 +90,10 @@
             </ControlTemplate>
         </Setter>
     </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- PŁYWAJĄCE OKNO (PANEL WINDOW)                                       -->
+    <!-- =================================================================== -->
 
     <ControlTheme x:Key="{x:Type workspace:PanelWindow}" TargetType="workspace:PanelWindow">
         <Setter Property="Background" Value="{DynamicResource DungeonPanelWindowBackgroundBrush}" />
@@ -123,53 +106,48 @@
         <Setter Property="RenderTransform" Value="scale(1) translate(0px, 0px)" />
         <Setter Property="Transitions">
             <Transitions>
-                <DoubleTransition Property="Opacity"
-                                  Duration="0:0:0.16"
-                                  Easing="CubicEaseOut" />
-                <TransformOperationsTransition Property="RenderTransform"
-                                               Duration="0:0:0.16"
-                                               Easing="CubicEaseOut" />
+                <DoubleTransition Property="Opacity" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
             </Transitions>
         </Setter>
+
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
+                    <!-- Główna struktura okna -->
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid RowDefinitions="Auto,*">
+                            <!-- Pasek tytułowy -->
                             <Border Name="PART_TitleBar"
                                     Background="{DynamicResource DungeonPanelWindowHeaderBrush}"
                                     Height="{DynamicResource DungeonPanelHeaderHeight}">
-                                <Grid>
-                                    <Grid ColumnDefinitions="Auto,*,Auto"
-                                          Margin="8,0,1,1"
-                                          ColumnSpacing="8">
-                                        <Image Width="{DynamicResource DungeonActionIconSize}"
-                                               Height="{DynamicResource DungeonActionIconSize}"
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      Margin="8,0,1,1"
+                                      ColumnSpacing="8">
+                                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                                           Height="{DynamicResource DungeonActionIconSize}"
+                                           VerticalAlignment="Center"
+                                           Source="{TemplateBinding IconResourceKey, Converter={StaticResource DungeonIconResourceConverter}}" />
+                                    <TextBlock Grid.Column="1"
                                                VerticalAlignment="Center"
-                                               Source="{TemplateBinding IconResourceKey, Converter={StaticResource DungeonIconResourceConverter}}" />
-                                        <TextBlock Grid.Column="1"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="{DynamicResource DungeonPanelTitleFontSize}"
-                                                   FontWeight="Medium"
-                                                   Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   ToolTip.Tip="{TemplateBinding Title}"
-                                                   Text="{TemplateBinding Title}" />
-                                        <!-- Actions are rendered in a root overlay. Matching slots
-                                             keep long titles from painting underneath them. -->
-                                        <StackPanel Grid.Column="2"
-                                                    Orientation="Horizontal"
-                                                    IsHitTestVisible="False">
-                                            <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
-                                            <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
-                                        </StackPanel>
-                                    </Grid>
+                                               FontSize="{DynamicResource DungeonPanelTitleFontSize}"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip.Tip="{TemplateBinding Title}"
+                                               Text="{TemplateBinding Title}" />
+                                    
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" IsHitTestVisible="False">
+                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
+                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
+                                    </StackPanel>
                                 </Grid>
                             </Border>
 
+                            <!-- Zawartość okna -->
                             <ContentPresenter Grid.Row="1"
                                               Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content}"
@@ -177,61 +155,22 @@
                         </Grid>
                     </Border>
 
-                    <!--
-                        Resize gutters, overlaid on top of the chrome. Every grip needs an explicit
-                        Transparent background: a null background is invisible to hit-testing, so
-                        the grips would silently do nothing. The centre cell is left empty, so the
-                        panel content underneath keeps receiving pointer input.
-                    -->
+                    <!-- Siatka uchwytów zmiany rozmiaru (Zoptymalizowana klasami) -->
                     <Grid Name="PART_ResizeGrid"
                           RowDefinitions="Auto,*,Auto"
                           ColumnDefinitions="Auto,*,Auto"
                           IsHitTestVisible="{TemplateBinding CanResize}">
-                        <Border Name="PART_ResizeNW" Grid.Row="0" Grid.Column="0" ZIndex="1"
-                                Width="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Height="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="TopLeftCorner" />
-                        <Border Name="PART_ResizeN" Grid.Row="0" Grid.Column="1"
-                                VerticalAlignment="Top"
-                                Height="{DynamicResource DungeonPanelResizeBorderThickness}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="TopSide" />
-                        <Border Name="PART_ResizeNE" Grid.Row="0" Grid.Column="2" ZIndex="1"
-                                Width="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Height="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="TopRightCorner" />
-                        <Border Name="PART_ResizeW" Grid.Row="1" Grid.Column="0"
-                                HorizontalAlignment="Left"
-                                Width="{DynamicResource DungeonPanelResizeBorderThickness}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="LeftSide" />
-                        <Border Name="PART_ResizeE" Grid.Row="1" Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                Width="{DynamicResource DungeonPanelResizeBorderThickness}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="RightSide" />
-                        <Border Name="PART_ResizeSW" Grid.Row="2" Grid.Column="0" ZIndex="1"
-                                Width="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Height="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="BottomLeftCorner" />
-                        <Border Name="PART_ResizeS" Grid.Row="2" Grid.Column="1"
-                                VerticalAlignment="Bottom"
-                                Height="{DynamicResource DungeonPanelResizeBorderThickness}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                Cursor="BottomSide" />
-                        <Border Name="PART_ResizeSE" Grid.Row="2" Grid.Column="2" ZIndex="1"
-                                Width="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Height="{DynamicResource DungeonPanelResizeCornerSize}"
-                                Background="{DynamicResource DungeonPanelResizeGripBrush}"
-                                 Cursor="BottomRightCorner" />
+                        <Border Name="PART_ResizeNW" Grid.Row="0" Grid.Column="0" Classes="grip-corner" Cursor="TopLeftCorner" />
+                        <Border Name="PART_ResizeN"  Grid.Row="0" Grid.Column="1" Classes="grip-edge grip-edge-ns" VerticalAlignment="Top" Cursor="TopSide" />
+                        <Border Name="PART_ResizeNE" Grid.Row="0" Grid.Column="2" Classes="grip-corner" Cursor="TopRightCorner" />
+                        <Border Name="PART_ResizeW"  Grid.Row="1" Grid.Column="0" Classes="grip-edge grip-edge-ew" HorizontalAlignment="Left" Cursor="LeftSide" />
+                        <Border Name="PART_ResizeE"  Grid.Row="1" Grid.Column="2" Classes="grip-edge grip-edge-ew" HorizontalAlignment="Right" Cursor="RightSide" />
+                        <Border Name="PART_ResizeSW" Grid.Row="2" Grid.Column="0" Classes="grip-corner" Cursor="BottomLeftCorner" />
+                        <Border Name="PART_ResizeS"  Grid.Row="2" Grid.Column="1" Classes="grip-edge grip-edge-ns" VerticalAlignment="Bottom" Cursor="BottomSide" />
+                        <Border Name="PART_ResizeSE" Grid.Row="2" Grid.Column="2" Classes="grip-corner" Cursor="BottomRightCorner" />
                     </Grid>
 
-                    <!-- Local dimensions intentionally outrank the broad application Button style.
-                         The overlay keeps standard full-height window actions clickable above the
-                         north-east resize grip. -->
+                    <!-- Przyciski akcji nagłówka -->
                     <StackPanel HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
@@ -241,7 +180,7 @@
                                 Theme="{StaticResource DungeonPanelHeaderActionTheme}"
                                 IsVisible="{TemplateBinding CanMinimize}"
                                 Command="{TemplateBinding MinimizeCommand}"
-                                ToolTip.Tip="Zminimalizuj">
+                                ToolTip.Tip="{DynamicResource DungeonStringMinimizeToolTip}">
                             <Image Width="{DynamicResource DungeonActionIconSize}"
                                    Height="{DynamicResource DungeonActionIconSize}"
                                    Source="{StaticResource DungeonIconDockBottom}" />
@@ -251,7 +190,7 @@
                                 Height="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Theme="{StaticResource DungeonPanelHeaderActionTheme}"
                                 Command="{TemplateBinding ToggleMaximizeCommand}"
-                                ToolTip.Tip="Maksymalizuj">
+                                ToolTip.Tip="{DynamicResource DungeonStringMaximizeToolTip}">
                             <Grid>
                                 <Image Name="PART_MaximizeIcon"
                                        Width="{DynamicResource DungeonActionIconSize}"
@@ -265,15 +204,13 @@
                         </Button>
                     </StackPanel>
 
-                    <!-- Header divider is redrawn above the full-height action backgrounds. -->
+                    <!-- Ramka i krawędź nagłówka -->
                     <Border Height="{DynamicResource DungeonPanelHeaderHeight}"
                             VerticalAlignment="Top"
                             BorderBrush="{DynamicResource DungeonBorderBrush}"
                             BorderThickness="0,0,0,1"
                             IsHitTestVisible="False" />
 
-                    <!-- Draw the frame last. Child backgrounds and hover states can never cover it,
-                         while hit testing remains owned by the resize grid underneath. -->
                     <Border IsHitTestVisible="False"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
@@ -282,14 +219,33 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Brush only. Thickening the border here would change the panel's size every time focus
-             moved between panels. -->
+        <!-- =============================================================== -->
+        <!-- STYLE I SELEKTORY STANÓW                                         -->
+        <!-- =============================================================== -->
+
+        <!-- Reusable Grips Styles -->
+        <Style Selector="^ /template/ Border.grip-corner">
+            <Setter Property="ZIndex" Value="1" />
+            <Setter Property="Width" Value="{DynamicResource DungeonPanelResizeCornerSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonPanelResizeCornerSize}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonPanelResizeGripBrush}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border.grip-edge">
+            <Setter Property="Background" Value="{DynamicResource DungeonPanelResizeGripBrush}" />
+        </Style>
+        <Style Selector="^ /template/ Border.grip-edge-ns">
+            <Setter Property="Height" Value="{DynamicResource DungeonPanelResizeBorderThickness}" />
+        </Style>
+        <Style Selector="^ /template/ Border.grip-edge-ew">
+            <Setter Property="Width" Value="{DynamicResource DungeonPanelResizeBorderThickness}" />
+        </Style>
+
+        <!-- Stany interakcji i aktywacji okna -->
         <Style Selector="^:active">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
         </Style>
 
-        <!-- Keep the minimized panel arranged for the short exit/entry transition, but remove it
-             from hit testing immediately; its deck card is the only interactive representation. -->
         <Style Selector="^:minimized">
             <Setter Property="Opacity" Value="0" />
             <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
@@ -299,6 +255,8 @@
         <Style Selector="^:maximized /template/ Grid#PART_ResizeGrid">
             <Setter Property="IsHitTestVisible" Value="False" />
         </Style>
+
+        <!-- Stany ikon przycisków nagłówka -->
         <Style Selector="^ /template/ Image#PART_RestoreIcon">
             <Setter Property="IsVisible" Value="False" />
         </Style>
@@ -309,14 +267,12 @@
             <Setter Property="IsVisible" Value="True" />
         </Style>
         <Style Selector="^:maximized /template/ Button#PART_MaximizeButton">
-            <Setter Property="ToolTip.Tip" Value="Przywróć" />
+            <Setter Property="ToolTip.Tip" Value="{DynamicResource DungeonStringRestoreToolTip}" />
         </Style>
 
-        <!-- During a gesture the content must not react to the pointer sweeping across it. -->
-        <Style Selector="^:dragging /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="IsHitTestVisible" Value="False" />
-        </Style>
-        <Style Selector="^:resizing /template/ ContentPresenter#PART_ContentPresenter">
+        <!-- Połączony selektor blokady myszy przy manipulacji oknem -->
+        <Style Selector="^:dragging /template/ ContentPresenter#PART_ContentPresenter,
+                       ^:resizing /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="IsHitTestVisible" Value="False" />
         </Style>
     </ControlTheme>
