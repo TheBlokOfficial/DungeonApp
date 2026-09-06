@@ -22,6 +22,14 @@
         <Style Selector="Button.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
+        <!-- Avalonia's Fluent ScrollViewer draws its bar over the viewport. The list reserves
+             this narrow gutter itself, so campaign metadata never passes underneath the thumb. -->
+        <Style Selector="ScrollViewer.campaign-list /template/ ScrollBar">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
     </UserControl.Styles>
 
     <!-- The persistent backstage surface is painted by AppShellView. This view contributes only
@@ -84,11 +92,13 @@
             <!-- List records are independent documents. Spacing replaces the continuous grid of
                  table rules, while this remains the page's only scrolling region. -->
             <Panel Grid.Row="3" MinHeight="0">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                <ScrollViewer Classes="campaign-list"
+                              HorizontalScrollBarVisibility="Disabled"
                               VerticalScrollBarVisibility="Auto"
                               AllowAutoHide="True"
                               IsVisible="{Binding HasCampaigns}">
-                    <ItemsControl ItemsSource="{Binding Campaigns}">
+                    <ItemsControl Margin="0,0,14,0"
+                                  ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Button Classes="campaign-row" Command="{Binding OpenCommand}">
