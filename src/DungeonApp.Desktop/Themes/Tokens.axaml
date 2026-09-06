@@ -1,44 +1,41 @@
     <ResourceDictionary xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <Color x:Key="DungeonBackgroundColor">#141110</Color>
-        <Color x:Key="DungeonSurfaceColor">#1A1613</Color>
-        <Color x:Key="DungeonSurfaceHeaderColor">#1A1613</Color>
+        <!-- KOLORY ============================================================ -->
+        <Color x:Key="DungeonBackgroundColor">#151412</Color>
+        <Color x:Key="DungeonSurfaceColor">#1B1917</Color>
+        <Color x:Key="DungeonSurfaceHeaderColor">#1B1917</Color>
         <!--
             Application depth hierarchy. These semantic roles intentionally remain separate from the
             generic surface tokens even where their current color values match. The outer frame,
             backstage workspace and live campaign desk may evolve independently without making a
             header or panel change color as a side effect.
         -->
-        <!-- TŁA I OBSZAR ROBOCZY (Spójna, niemal czarna baza hebanowa) -->
-        <Color x:Key="DungeonBackstageColor">#141110</Color>
-        <!-- Ciemne tło paska bocznego (koniec z brązem) -->
-        <Color x:Key="DungeonDeskColor">#141110</Color>                  <!-- Tło obszaru roboczego -->
-        <Color x:Key="DungeonFrameColor">#1A1613</Color>                 <!-- Karty i nagłówki -->
-        <Color x:Key="DungeonFrameHoverColor">#2A2118</Color>
-        <Color x:Key="DungeonBackstageCardColor">#1F1A15</Color>
-        <Color x:Key="DungeonBackstageRowColor">#211C17</Color>
-        <Color x:Key="DungeonBackstageRowHoverColor">#2A2118</Color>
-        <Color x:Key="DungeonSurfaceActiveColor">#2A2118</Color>
-        <!-- Bardzo ciemny akcent pod zaznaczoną zakładką -->
-        <Color x:Key="DungeonSurfaceHoverColor">#211C17</Color>
+        <!-- TŁA I OBSZAR ROBOCZY -->
+        <Color x:Key="DungeonFrameColor">#1B1917</Color>
+        <Color x:Key="DungeonFrameHoverColor">#282522</Color>
+        <Color x:Key="DungeonBackstageColor">#151412</Color>
+        <Color x:Key="DungeonBackstageCardColor">#1F1D1A</Color>
+        <Color x:Key="DungeonBackstageRowColor">#221F1C</Color>
+        <Color x:Key="DungeonBackstageRowHoverColor">#282522</Color>
+        <Color x:Key="DungeonDeskColor">#151412</Color>
+        <Color x:Key="DungeonSurfaceActiveColor">#282522</Color>
+        <Color x:Key="DungeonSurfaceHoverColor">#221F1C</Color>
+        <Color x:Key="DungeonBorderColor">#302C28</Color>
+        <Color x:Key="DungeonBorderStrongColor">#413C36</Color>
+        <Color x:Key="DungeonTextPrimaryColor">#E8E4DA</Color>
+        <Color x:Key="DungeonTextRegularColor">#9B9A95</Color>
+        <Color x:Key="DungeonTextMutedColor">#6C6B66</Color>
+        <Color x:Key="DungeonAccentColor">#B8843B</Color>
+        <Color x:Key="DungeonAccentBrightColor">#B8843B</Color>
+        <Color x:Key="DungeonAccentActionColor">#B8843B</Color>
+        <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
+        <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
+        <Color x:Key="DungeonPrimaryDisabledColor">#302C28</Color>
+        <Color x:Key="DungeonSuccessColor">#84A98B</Color>
+        <Color x:Key="DungeonWarningColor">#CF9B55</Color>
+        <Color x:Key="DungeonDangerColor">#9C4530</Color>
 
-        <!-- RAMKI -->
-        <Color x:Key="DungeonBorderColor">#332A20</Color>               <!-- Subtelna ramka podziału -->
-        <Color x:Key="DungeonBorderStrongColor">#4A3C2A</Color>
-        <!-- Czyste, mosiężne złoto na aktywne krawędzie -->
-
-        <!-- TEKSTY -->
-        <Color x:Key="DungeonTextPrimaryColor">#E8DDC8</Color>          <!-- Jasny pergamin (aktywne) -->
-        <Color x:Key="DungeonTextRegularColor">#9C9080</Color>          <!-- Standardowy tekst -->
-        <Color x:Key="DungeonTextMutedColor">#6E6252</Color>            <!-- Przyciemnione (nieaktywne pozycje) -->
-
-        <!-- AKCENTY -->
-        <Color x:Key="DungeonAccentColor">#C9973A</Color>                <!-- Złoto-karmelowy akcent z mockupu -->
-        <Color x:Key="DungeonAccentBrightColor">#C9973A</Color>
-        <Color x:Key="DungeonAccentActionColor">#C9973A</Color>
-        <Color x:Key="DungeonAccentDimColor">#8A7040</Color>
-        <Color x:Key="DungeonPrimaryDisabledColor">#3B2915</Color>
-
+        <!-- PĘDZLE ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
@@ -60,12 +57,13 @@
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
         <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
+        <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
         <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
 
-        <!-- Form chrome. Inputs are shallow backstage insets, never pieces of the darker live desk. -->
+        <!-- PĘDZLE KONTROLEK I PANELI ========================================= -->
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
@@ -90,11 +88,18 @@
              It must stay Transparent rather than null, because null is not hit-testable. -->
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
+        <!-- TYPOGRAFIA ========================================================= -->
         <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
-        <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/Alegreya#Alegreya</FontFamily>
+        <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/CormorantGaramond#Cormorant Garamond</FontFamily>
 
-        <CornerRadius x:Key="DungeonCornerRadius">2</CornerRadius>
+        <CornerRadius x:Key="DungeonWindowCornerRadius">6</CornerRadius>
+        <CornerRadius x:Key="DungeonCardCornerRadius">6</CornerRadius>
+        <CornerRadius x:Key="DungeonControlCornerRadius">5</CornerRadius>
+        <CornerRadius x:Key="DungeonNavigationCornerRadius">4</CornerRadius>
+        <!-- Compatibility alias for campaign controls not yet split into card/control variants. -->
+        <CornerRadius x:Key="DungeonCornerRadius">5</CornerRadius>
 
+        <!-- ODSTĘPY I ZAOKRĄGLENIA ============================================= -->
         <!--
             Skala odstępów, wyrażona jako literały powtarzające się w widokach.
             Dwa równoległe zestawy: Double dla Spacing/Width/Height oraz Thickness dla Margin/Padding.
@@ -115,27 +120,30 @@
         <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
         <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
 
+        <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->
         <x:Double x:Key="DungeonLoadingProgressBarWidth">192</x:Double>
         <x:Double x:Key="DungeonLoadingProgressBarHeight">4</x:Double>
 
         <!-- Stałe wymiary interfejsu. -->
-        <x:Double x:Key="DungeonBaseFontSize">15</x:Double>
-        <x:Double x:Key="DungeonNavigationFontSize">15</x:Double>
-        <x:Double x:Key="DungeonHelperFontSize">13</x:Double>
-        <x:Double x:Key="DungeonEyebrowFontSize">11</x:Double>
-        <x:Double x:Key="DungeonStatusFontSize">11</x:Double>
-        <x:Double x:Key="DungeonWorkspaceTitleFontSize">26</x:Double>
-        <x:Double x:Key="DungeonBrandMarkFontSize">18</x:Double>
+        <x:Double x:Key="DungeonBaseFontSize">13</x:Double>
+        <x:Double x:Key="DungeonNavigationFontSize">13</x:Double>
+        <x:Double x:Key="DungeonHelperFontSize">12</x:Double>
+        <x:Double x:Key="DungeonEyebrowFontSize">10</x:Double>
+        <x:Double x:Key="DungeonStatusFontSize">12</x:Double>
+        <x:Double x:Key="DungeonWorkspaceTitleFontSize">23</x:Double>
+        <x:Double x:Key="DungeonCampaignNameFontSize">15</x:Double>
+        <x:Double x:Key="DungeonBrandNameFontSize">16</x:Double>
+        <x:Double x:Key="DungeonBrandMarkFontSize">16</x:Double>
         <x:Double x:Key="DungeonBrandMarkLargeFrameSize">96</x:Double>
         <x:Double x:Key="DungeonBrandMarkLargeFontSize">64</x:Double>
         <GridLength x:Key="DungeonTopBarHeight">52</GridLength>
-        <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
+        <GridLength x:Key="DungeonSidebarWidth">212</GridLength>
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
         <x:Double x:Key="DungeonControlHeight">38</x:Double>
         <x:Double x:Key="DungeonNavigationRowHeight">42</x:Double>
-        <x:Double x:Key="DungeonCampaignRowHeight">52</x:Double>
+        <x:Double x:Key="DungeonCampaignRowHeight">44</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
         <x:Double x:Key="DungeonTopBarActionSize">50</x:Double>
@@ -151,8 +159,13 @@
         <x:Double x:Key="DungeonDeckCardSize">44</x:Double>
         <x:Double x:Key="DungeonPanelMinWidth">240</x:Double>
         <x:Double x:Key="DungeonPanelMinHeight">152</x:Double>
-        <x:Double x:Key="DungeonWorkspaceEdgeMargin">24</x:Double>
+        <x:Double x:Key="DungeonWorkspaceEdgeMargin">0</x:Double>
         <x:Double x:Key="DungeonPanelGap">12</x:Double>
         <x:Double x:Key="DungeonDeckCardSpacing">12</x:Double>
         <Thickness x:Key="DungeonDeckEdgeInsetThickness">12</Thickness>
+
+        <!-- TEKSTY ============================================================= -->
+        <x:String x:Key="DungeonStringMinimizeToolTip">Zminimalizuj</x:String>
+        <x:String x:Key="DungeonStringMaximizeToolTip">Maksymalizuj</x:String>
+        <x:String x:Key="DungeonStringRestoreToolTip">Przywróć</x:String>
     </ResourceDictionary>

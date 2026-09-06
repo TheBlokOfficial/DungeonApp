@@ -14,7 +14,8 @@
     </Style>
     <Style Selector="TextBlock.eyebrow">
         <Setter Property="FontSize" Value="{DynamicResource DungeonEyebrowFontSize}" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="LetterSpacing" Value="0.7" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
@@ -31,7 +32,7 @@
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
@@ -42,6 +43,7 @@
     <Style Selector="Button.primary">
         <Setter Property="Background" Value="{DynamicResource DungeonAccentActionBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
     </Style>
     <Style Selector="Button.primary:pointerover">
         <Setter Property="Background" Value="{DynamicResource DungeonAccentColor}" />
@@ -70,7 +72,7 @@
 
     <Style Selector="TextBox">
         <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
         <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
@@ -117,7 +119,31 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+    </Style>
+
+    <!--
+        Scrollowanie: jeden pionowy scrollbar, bez przycisków krokowych. Fluent domyślnie
+        animuje widoczność scrollbarów i dodaje przyciski LineUp/LineDown; dla aplikacji
+        desktopowej pasek ma być stałym elementem layoutu i służyć wyłącznie do przeciągania
+        uchwytu oraz przewijania kółkiem.
+    -->
+    <Style Selector="ScrollViewer">
+        <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="AllowAutoHide" Value="False" />
+    </Style>
+    <Style Selector="ScrollBar">
+        <Setter Property="AllowAutoHide" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+    </Style>
+    <Style Selector="ScrollBar /template/ RepeatButton#PART_LineUpButton,
+                    ScrollBar /template/ RepeatButton#PART_LineDownButton,
+                    ScrollBar /template/ RepeatButton#PART_LineLeftButton,
+                    ScrollBar /template/ RepeatButton#PART_LineRightButton">
+        <Setter Property="IsVisible" Value="False" />
     </Style>
 
     <!--

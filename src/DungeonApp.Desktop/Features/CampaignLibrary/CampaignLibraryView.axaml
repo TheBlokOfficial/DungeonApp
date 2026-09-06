@@ -15,8 +15,8 @@
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="6" />
-            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Margin" Value="0,0,0,4" />
             <Setter Property="Padding" Value="12,0" />
         </Style>
         <Style Selector="Button.campaign-row:pointerover">
@@ -34,7 +34,7 @@
     <controls:AnchoredContentHost MaxContentWidth="920" MaxContentHeight="614">
         <Grid Background="Transparent"
               MinHeight="0"
-              Margin="24,24,40,16"
+              Margin="28,20,28,24"
               RowDefinitions="Auto,Auto,Auto,*,Auto">
 
             <StackPanel Spacing="6">
@@ -48,7 +48,7 @@
                     Background="{DynamicResource DungeonBackstageCardBrush}"
                     BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="{DynamicResource DungeonCardCornerRadius}"
                     ClipToBounds="True"
                     Padding="14,12">
                 <StackPanel Spacing="8">
@@ -96,7 +96,7 @@
                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
                                         <Border Width="28"
                                                 Height="28"
-                                                CornerRadius="4"
+                                                CornerRadius="{DynamicResource DungeonControlCornerRadius}"
                                                 Background="{DynamicResource DungeonBackstageBrush}"
                                                 BorderBrush="{DynamicResource DungeonBorderBrush}"
                                                 BorderThickness="1">
@@ -109,7 +109,7 @@
                                         <TextBlock Grid.Column="1"
                                                    VerticalAlignment="Center"
                                                    FontFamily="{DynamicResource DungeonDisplayFont}"
-                                                   FontSize="{DynamicResource DungeonBaseFontSize}"
+                                                   FontSize="{DynamicResource DungeonCampaignNameFontSize}"
                                                    Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                                    Text="{Binding Name}"
                                                    TextTrimming="CharacterEllipsis" />
