@@ -1,0 +1,7 @@
+{
+  "formatVersion": 1,
+  "id": "dnd5e",
+  "kind": "system",
+  "name": "D&D 5e",
+  "version": { "major": 1, "minor": 0 }
+}
