@@ -511,8 +511,16 @@ model bezpieczeństwa to **walidacja przy wczytaniu plus limity rozmiarowe**:
   szablon** — odwołanie do nieistniejącego pola jest błędem wczytania, nie błędem w trakcie gry.
 * Niewypełnione wymagane pole kontraktu jest wykrywane przy wczytaniu, nie przy użyciu.
 * Identyfikatory paczek i wpisów podlegają **ograniczeniom znakowym**, tak samo jak dzisiejszy
-  `DataBlockId`, ograniczony właśnie dlatego, że staje się nazwą pliku. To zamyka przechodzenie po
-  ścieżkach.
+  `DataBlockId`. Żadna ścieżka na dysku nie jest budowana z danych — tożsamość paczki mieszka
+  w jej manifeście, nie w nazwie katalogu — więc ograniczenie chroni schemat adresowania
+  `paczka:id`, a nie system plików.
+
+**Konwencja nazewnicza w paczkach: identyfikatory po angielsku, etykiety i treść po polsku.**
+`id`, nazwy pól i referencje `paczka:szablon` są angielskie; `name`, `label` i wszystkie wartości są
+w języku treści. Dotyczy to identyfikatorów wymyślanych przez autora paczki, nie kluczy samego
+formatu — te są angielskie z definicji. Ta sama linia obowiązuje w kodzie od początku: `DataBlockId`
+ma wartość `counter`, a komunikaty dla Mistrza Gry są po polsku. Zmiana identyfikatora jest zmianą
+treści, nie formatu, więc nie dotyka ani kodu, ani wersji katalogu.
 * **Limity:** rozmiar paczki, głębokość zagnieżdżenia wyrażenia, głębokość zagnieżdżenia instancji,
   liczba i rozmiar kości w jednym rzucie, limit eskalacji eksplozji. Bez pętli w języku to
   wystarcza, żeby czas ewaluacji był ograniczony z góry.
@@ -799,6 +807,16 @@ Odpowiedź „nie" na którekolwiek pytanie oznacza, że kształt jest przebran�
    treść, czyli powoduje dokładnie tę erozję granicy, której pilnuje sekcja 8. Ta potrzeba ma być
    policzona jako argument za porządnym rozwiązaniem autorstwa, a nie przemycić je bocznymi
    drzwiami.
+
+   **To pytanie zebrało trzy niezależne przesłanki i przestało być spekulacją.** (a) DM ubierający
+   goblina nie ma jak zapisać wyniku jako czegoś wielokrotnego użytku. (b) Dokument przygody
+   z sekcji 14 jest treścią, którą **trzeba** napisać długim tekstem, więc format zapisu musi to
+   wytrzymać. (c) Przy pierwszym ręcznie napisanym wpisie okazało się, że płaska mapa dwudziestu
+   krótkich wartości czyta się dobrze — bo statblok na papierze też jest płaską listą — ale trzy
+   bloki prozy wciśnięte w napisy JSON-a, z `\n\n` udającym akapit, to **dokument zapisany w polu
+   formularza**. Wąskim gardłem jest długi tekst, nie liczba pól, i to jest wskazówka co do
+   kształtu rozwiązania: grupowanie wartości niczego nie naprawia, a dodatkowo wiązałoby wpis
+   z układem jego karty, wbrew rozdziałowi `fields` i `card`.
 4. **Liczba przełączników w znaczniku binarnym** jest w v1 stała. Liczba przygotowanych zaklęć
    zależy od poziomu, więc prędzej czy później zechce być formułą. Odłożone.
 

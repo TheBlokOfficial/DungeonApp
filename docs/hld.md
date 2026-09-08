@@ -7,6 +7,12 @@ komuś (człowiekowi lub agentowi AI) możliwość oceny projektu bez czytania k
 Zakres przejrzany w całości: `src/DungeonApp.Core`, `src/DungeonApp.Desktop`, `tests/`,
 `tools/MockupRenderer`, pliki `.csproj`, `Directory.Build.props`, `DungeonApp.sln`.
 
+> **Odświeżenie punktowe.** Po sesji, która dołożyła warstwę treści (paczki, rejestr, ekran
+> rejestru), zaktualizowano wyłącznie fragmenty jej dotyczące: mapa modułów, sekwencja startowa,
+> nawigacja i strategia testów. Reszta dokumentu nie została ponownie zaudytowana i opisuje stan
+> sprzed tej sesji. Projekt docelowy warstwy treści opisuje
+> [content-architecture.md](content-architecture.md).
+
 ---
 
 ## 1. Czym jest aplikacja i czym nie jest
@@ -74,6 +80,7 @@ mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
 | `Events/CampaignEvents.cs` | Prosta, synchroniczna magistrala zdarzeń *per kampania* (nigdy statyczna/globalna) z limitem kaskady (`MaxEventsPerCommand = 1000`). |
 | `Events/ICampaignEvent.cs`, `EventCascadeException.cs` | Kontrakt zdarzenia (nazwa w czasie przeszłym) i wyjątek pętli zdarzeń. |
 | `Tools/ITool.cs` | Kontrakt narzędzia: deklaruje tylko, jakich `DataBlockId` używa (`Uses`). Żadnej innej logiki w interfejsie. |
+| `Content/*` | Warstwa treści: model paczki (`SystemPack`/`ContentPack`, `Template`, `Entry`), zamknięte katalogi `CardElement` (`StatblockElement`, `ProseElement`) i `FieldValue` (`TextValue`, `IntegerValue`), wczytywanie i walidacja (`ContentPackLoader`) oraz rejestr (`ContentRegistry`, `RegisteredEntry`). Paczka jest odrzucana w całości i mówi dlaczego; wpis bez szablonu zostaje w rejestrze oznaczony, wzorem `UnreadableDataBlock`. Zero wiedzy o rodzajach wpisów. |
 | `Tools/Counter/CounterTool.cs` | Jedyna dziś implementacja `ITool`. Definiuje kształt bloku `counter` (pole `count`: Integer) i dwie transformacje: `Increment`/`Decrement` (z `checked` — przepełnienie rzuca `OverflowException`). |
 | `Persistence/JsonCampaignRepository.cs` | Jedyna implementacja `ICampaignRepository`. Format zapisu na dysku, transakcyjność, obsługa błędów — patrz sekcja 5. |
 | `Persistence/DataBlockValueSerializer.cs` | Konwersja wartość ↔ `JsonNode`, zawsze prowadzona przez `DataBlockShape` (nigdy „co się da z JSON-a wyczytać"). |
@@ -91,7 +98,8 @@ mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
 | `Program.cs`, `MainWindow.axaml(.cs)` | Standardowy bootstrap Avalonia; `MainWindow` to pusta powłoka bez logiki. |
 | `Shell/AppShellViewModel.cs` | Właściciel „gdzie jest GM": biblioteka kampanii vs otwarte biurko, sekwencja startowa, przełączanie sekcji bocznych. |
 | `Shell/CampaignSession.cs` | Jedyna droga zmiany otwartej kampanii: `ExecuteAsync(operation)` — wykonaj operację, zapisz, ogłoś `Committed`. |
-| `Shell/Sidebars/*` | Globalny pasek boczny nawigacji (kolapsowalny), dziś z jedną realną sekcją („Kampanie") — reszta ląduje na placeholderze. |
+| `Shell/Sidebars/*` | Globalny pasek boczny nawigacji (kolapsowalny), dziś z dwiema realnymi sekcjami („Kampanie", „Rejestr") — cokolwiek nierozpoznanego ląduje na placeholderze. |
+| `Features/Registry/*` | Ekran rejestru: lista wpisów, karta wybranego wpisu składana z elementów w kolejności z szablonu, view modele elementów karty i ich widoki. Odstęp między elementami karty ustawia host, nigdy element. |
 | `Shell/TopBar/*` | Pasek kontekstu: tytuł otwartej kampanii + akcja zamknięcia. |
 | `Shell/StatusBar/*` | Pasek stanu na dole (komunikaty typu „Gotowe", szerokość zsynchronizowana z sidebarem). |
 | `Shell/Workspace/WorkspacePlaceholderView(Model)` | Widok zastępczy dla każdej sekcji nawigacji poza „Kampanie" — dosłowny placeholder, `record WorkspacePlaceholderViewModel(string Title)`. |
@@ -232,9 +240,13 @@ podsumowania (mogły się zmienić, gdy kampania była otwarta).
 **`CampaignSession`** — jedyna droga zmiany otwartej kampanii (patrz sekcja 4). Nie jest
 przechowywana w Core świadomie: „aktualnie otwarta kampania" to stan powłoki, nie domeny.
 
-**Sekwencja startowa (`Startup/*`, `IStartupStep`)** — czteroetapowa, cała żyje w Desktop (Core
+**Sekwencja startowa (`Startup/*`, `IStartupStep`)** — pięcioetapowa, cała żyje w Desktop (Core
 nie wie, że start istnieje):
 
+0. `LoadContentPacksStep` — wczytuje i waliduje paczki **przed** półką kampanii, buduje
+   `ContentRegistry` i trzyma go dla powłoki. Bez własnego `try/catch`: wadliwa paczka nie jest
+   wyjątkiem, tylko pozycją w `RejectedPacks`, więc „odrzucona paczka nie blokuje startu" wynika
+   z kształtu loadera, a nie z łapania błędów.
 1. `LoadCampaignLibraryStep` — wczytuje półkę (`ICampaignRepository.ListAsync`), trzyma wynik dla
    kolejnych kroków.
 2. `WarmCampaignDataStep` — rozgrzewa dane *każdej* kampanii z półki przez
@@ -389,8 +401,11 @@ nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per rul
 | Domena — zdarzenia | `CampaignEventsTests` (12) | Kolejność subskrypcji, kaskada, limit `MaxEventsPerCommand`. |
 | Domena — narzędzie | `CounterToolTests` (6) | Increment/decrement, przepełnienie. |
 | Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12) | Zapis/odczyt na prawdziwym systemie plików (`TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków. |
+| Warstwa treści | `ContentPackLoaderTests`, `ContentIdTests`, `FieldNameTests` | Wczytywanie i walidacja na prawdziwym systemie plików (`TemporaryPacks`), wszystkie reguły odrzucenia, wszystkie powody nierozwiązania, limity. Ręcznie napisane paczki w `tests/DungeonApp.Core.Tests/Packs/` są wczytywane jako test akceptacyjny — format jest specyfikacją, więc specyfikacja jest wykonywana. |
+| Desktop — rejestr | `RegistryViewModelTests`, `LoadContentPacksStepTests` | Kolejność elementów karty zgodna z szablonem, formatowanie wartości, pominięcie pustych pól opcjonalnych, trzy powody nierozwiązania, pusty rejestr, krok startowy wobec paczki wadliwej obok poprawnej. |
 | Architektura | `CoreIndependenceTests` (1 test) | Odrzuca referencję `Avalonia*` w zestawie `DungeonApp.Core` przez refleksję (`GetReferencedAssemblies`). To jedyny test wymuszający granicę Core/Desktop mechanicznie — bez niego podział na dwa projekty byłby czystą konwencją. |
 | Desktop — cache przygotowania | `CampaignWorkspacePreparationCacheTests` (2) | Rozgrzewka trafia w pierwsze `Take`, kampania usunięta z półki nie blokuje startu. |
+| Architektura | `CoreEntryKindIndependenceTests` (2 testy) | Bliźniak powyższego dla drugiej granicy: silnik nie zna rodzajów wpisów. Skan słownictwa po źródłach `Core`, ze słownikiem wyprowadzanym z paczek fixture'owych, więc zakaz poszerza się sam wraz z treścią. Drugi test pilnuje, żeby skan nie przeszedł przez to, że niczego nie znalazł. |
 | Desktop — panel licznika | `CounterPanelViewModelTests` (9) | Najlepiej pokryty plik warstwy Desktop: stan początkowy, odświeżenie po zdarzeniu zewnętrznym, przepełnienie, błąd zapisu na dysk, nieodczytywalny blok, wyścig zapisów, dispose. |
 | Desktop — geometria | `PanelGeometryTests` (2) | Tylko `FitInto` (dopasowanie do min/max) — **`ClampMove`, `SnapMove`, `SnapResize`, `ConstrainResize`, `Maximize` nie mają dedykowanych testów jednostkowych**, mimo że to najbardziej złożona czysta logika w warstwie Desktop. |
 | Desktop — układ | `WorkspaceLayoutStoreTests` (1) | Tylko happy-path zapis→odczyt. Brak testów na: uszkodzony plik, nieznaną wersję, `MaxPanels`, sanityzację id. |
@@ -400,7 +415,8 @@ sekcji/kampanii — zero testów), `CampaignWorkspaceViewModel` (restauracja uk�
 minimalizacja/maksymalizacja, z/order — zero testów), `WorkspaceLayoutSession` (debounce, flush —
 zero testów), `PanelWindow` (cała logika gestów pointer — wymagałaby testów UI/headless, których nie
 ma), sidebary, top bar, status bar (trywialne, ale bez testów), wszystkie cztery kroki startowe
-(`Startup/*` — zero testów jednostkowych; testowane tylko pośrednio przez uruchomienie aplikacji).
+(poza `LoadContentPacksStep`, który testy ma; pozostałe cztery kroki `Startup/*` — zero testów
+jednostkowych, testowane tylko pośrednio przez uruchomienie aplikacji).
 
 **Rola `CoreIndependenceTests`:** to nie jest test funkcjonalności, tylko test **granicy
 architektonicznej**. Jego jedynym zadaniem jest nie dopuścić, żeby ktoś (człowiek albo agent AI)

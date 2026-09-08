@@ -85,16 +85,16 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.NotNull(registered.Template);
         var template = registered.Template!;
 
-        Assert.Equal("goblinoidy", registered.Address.Pack.Value);
+        Assert.Equal("goblinoids", registered.Address.Pack.Value);
         Assert.Equal("goblin", registered.Address.Entry.Value);
         Assert.Equal("dnd5e", registered.Entry.Template.Pack.Value);
-        Assert.Equal("potwor", registered.Entry.Template.Template.Value);
-        Assert.Equal("potwor", template.Id.Value);
+        Assert.Equal("monster", registered.Entry.Template.Template.Value);
+        Assert.Equal("monster", template.Id.Value);
 
         var values = registered.Entry.Values;
-        var kp = Assert.IsType<IntegerValue>(values[FieldName.Create("kp")]);
+        var kp = Assert.IsType<IntegerValue>(values[FieldName.Create("ac")]);
         Assert.Equal(15L, kp.Value);
-        Assert.IsType<TextValue>(values[FieldName.Create("wyzwanie")]);
+        Assert.IsType<TextValue>(values[FieldName.Create("challenge")]);
 
         Assert.Equal(7, template.Card.Count);
         Assert.IsType<StatblockElement>(template.Card[0]);
@@ -106,8 +106,8 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.IsType<ProseElement>(template.Card[6]);
 
         var defenseAndSpeed = (StatblockElement)template.Card[1];
-        var kpTrait = defenseAndSpeed.Traits.Single(trait => trait.Field == FieldName.Create("kp"));
-        Assert.Equal(FieldName.Create("kpZrodlo"), kpTrait.Secondary);
+        var kpTrait = defenseAndSpeed.Traits.Single(trait => trait.Field == FieldName.Create("ac"));
+        Assert.Equal(FieldName.Create("acSource"), kpTrait.Secondary);
 
         // Only the six-trait "Cechy" block is compact: its values are single numbers, meant to be
         // scanned. The other three carry word- or sentence-length values and stay as declared -

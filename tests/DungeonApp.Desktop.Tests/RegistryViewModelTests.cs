@@ -197,12 +197,6 @@ public sealed class RegistryViewModelTests : IDisposable
         Assert.Equal("humanoid", typRow.Value);
 
         Assert.Equal("Obrona", defenseBlock.Title);
-
-        // "compact" is a claim about the values, carried through to the view so the element can
-        // honour it. Which geometry that becomes is the view's business, not the pack's.
-        Assert.True(defenseBlock.IsCompact);
-        Assert.False(typBlock.IsCompact);
-        Assert.False(skillsBlock.IsCompact);
         Assert.Equal(2, defenseBlock.Rows.Count);
 
         // The template marks "Obrona" compact; IsCompact carries that straight through from the
