@@ -532,12 +532,23 @@ po kliknięciu pozycji i który narzędzie biurka może pokazać, gdy DM chce zo
 konkretnej instancji. Okno na biurku to narzędzie — na przykład lista kart bohaterów albo tracker
 tur — a karta jest tym, co takie narzędzie wyświetla.
 
-**Sekcje panelu bocznego.** Dziś jest jedna realna („Kampanie"), reszta renderuje placeholder,
-a `AppShellViewModel` nosi komentarz o tymczasowym rusztowaniu. Docelowo:
+**Nawigacja ma dwa niezależne poziomy.** Globalna szyna boczna mówi, w której części aplikacji
+jesteś. Przełącznik powierzchni mówi, na której powierzchni otwartej kampanii. Rozdzielenie jest
+rozstrzygnięciem, a nie szczegółem układu — z niego wynika reszta tej sekcji.
 
-* **Kampanie** — półka, wejście w kampanię, biurko z oknami. Bez zmian koncepcyjnych.
+**Globalna szyna ma trzy pozycje i to jest liczba docelowa**, nie stan przejściowy do zapełnienia.
+Dziś realna jest jedna („Kampanie"), reszta renderuje placeholder, a `AppShellViewModel` nosi
+komentarz o tymczasowym rusztowaniu.
+
+* **Kampanie** — półka i wejście w kampanię. Bez zmian koncepcyjnych.
 * **Rejestr** — przeglądanie zainstalowanej treści **poza kampanią**: lista wpisów z filtrem po
   paczce i szablonie, karta wybranego wpisu, lista zainstalowanych paczek. Tylko do odczytu.
+* **Ustawienia.**
+
+Sufit to pięć. Dojść mogą jeszcze **zarządzanie paczkami**, gdy zasłuży (patrz niżej), oraz
+**autorstwo treści**, jeśli pytanie 3 z sekcji 19 rozstrzygnie się na korzyść pisania paczek
+w aplikacji. Nic poza tym nie przechodzi kryterium: wszystko inne jest albo powierzchnią kampanii,
+albo oknem biurka, albo rodzajem wpisu.
 
 **Karta renderuje się tą samą ścieżką w rejestrze i w kampanii.** W rejestrze — z samego wpisu, bez
 nakładki, bez edycji. W kampanii — ten sam skład elementów, zasilony instancją i edytowalny. To nie
@@ -546,6 +557,109 @@ przy stole.**
 
 Zarządzanie paczkami (instalacja, usunięcie) jest widokiem podrzędnym rejestru. Osobną sekcję
 najwyższego poziomu dostanie dopiero, gdy na nią zasłuży.
+
+### Kontekstowy sidebar — odrzucony
+
+Szyna, której **zawartość** zmienia się po wejściu w kampanię, jest odrzucona. Rozstrzygnięcie jest
+starsze od tego dokumentu i zapisujemy je tutaj, bo jego brak spowodował, że wróciło w propozycji
+raz jeszcze.
+
+Trzy powody, każdy wystarczający osobno:
+
+* **Pozycje pochodziłyby z danych.** Wczesny szkic wypełniał szynę nazwami w rodzaju „Bestiariusz",
+  „Przedmioty", „Lokacje" — czyli rodzajami wpisów, których silnik z założenia nie zna (sekcja 4).
+  Praktycznie: literówka w nazwie pola odrzuca paczkę, a wraz z nią **znikają pozycje nawigacji**.
+  Nawigacja przestaje działać, bo autor pomylił klucz w pliku tekstowym. Do tego kampania deklaruje
+  jedną paczkę systemową, więc zbiór szablonów różni się między kampaniami — globalna szyna
+  o zawartości zależnej od tego, co masz otwarte, nie jest nawigacją, tylko widokiem, który ją udaje.
+* **Szablon nie jest kategorią.** Szablon deklaruje kształt, nie rodzaj rzeczy. Jeden szablon
+  `statblok` może obsługiwać potwory, NPC-e i zwierzęta naraz, a trzy szablony mogą opisywać to, co
+  DM uważa za jedno. Grupowanie po szablonie jest taksonomią silnika, nie człowieka.
+* **Nie miałaby własnej treści.** Wszystko, co należy do jednej kampanii, jest z definicji oknem
+  biurka, bo biurko jest warsztatem kampanii, a okna są jego jednostkami. Szyna kampanii mogłaby
+  więc być wyłącznie drugim sposobem otwierania okien.
+
+Osobno: **rejestr nie jest miejscem wewnątrz kampanii.** Wpisy to referencje, kampania zawiera
+instancje. Wybór wpisu z rejestru jest w kampanii potrzebny — sekcja 15(d) na nim stoi — ale jest
+**momentem, nie miejscem**: przywoływanym z narzędzia, przelotnym, znikającym po wyborze. Błąd
+wczesnego szkicu polegał na zamienieniu czynności chwilowej w stałe miejsce docelowe.
+
+### Kampania jest zbiorem powierzchni
+
+**Kampania nie jest tożsama z biurkiem.** Biurko jest jedną z jej powierzchni, nie jedyną.
+Powierzchnie są **kompilowane i policzalne w czasie budowania** — nigdy wyprowadzane z paczek — i
+jest ich kilka, nie kilkanaście. Przełącznik między nimi należy do kampanii, nie do globalnej szyny;
+dzięki temu szyna pozostaje w pełni globalna, a poprzedni podrozdział nie zostaje unieważniony.
+
+Powierzchnie, które przechodzą kryterium z następnego podrozdziału:
+
+* **Biurko** — okna narzędzi. Stan świata oglądany kątem oka, w wielu rzeczach naraz.
+* **Świat** — przegląd instancji tej kampanii, lista plus karta. Ten sam kształt co rejestr,
+  pogrupowany wewnątrz danymi — czyli grupowanie z danych tam, gdzie jest legalne.
+* **Fabuła** — dokumenty scenariusza, patrz niżej.
+* **Kronika** — pełna historia zmian. Jednocześnie okno (ogon ostatnich zdarzeń) i powierzchnia
+  (całość). To nie jest niespójność, tylko dwie długości tego samego.
+
+### Okno czy powierzchnia — kryterium
+
+Zasięg danych nie wystarcza do rozstrzygnięcia, bo biurko i powierzchnie kampanii mają ten sam
+zasięg. Rozstrzyga **tryb obcowania**:
+
+> Czy patrzy się na to kątem oka obok innych rzeczy, czy się w tym przebywa?
+
+**Peryferyjne i równoczesne → okno biurka.** Kolejka tur, drużyna, zegar świata, kostki, notatka
+sesyjna, ekwipunek. Patrzysz na nie *w trakcie* robienia czegoś innego.
+
+**Centralne i wyłączne → powierzchnia.** Długi tekst, w którym się czyta i scrolluje. Maksymalizacja
+okna daje rozmiar, ale nie daje wyłączności — nadal jest ramką z paskiem tytułu i resztą biurka pod
+spodem.
+
+Okna są legalne mimo swojej konkretności, bo stoi za nimi mechanizm z sekcji 6: narzędzie publikuje
+**kontrakt prezentacji**, a szablon deklaruje, czym go wypełnia. Dzięki temu okno jest konkretne
+i zaprojektowane, nie wiedząc, co pokazuje.
+
+### Dokument przygody
+
+Scenariusz — długi tekst z odhaczanymi krokami, wybranymi wariantami i wpisywanymi kwotami — jest
+**wpisem, którego karta jest edytowalna nad instancją**. Nie wymaga ani jednego nowego mechanizmu:
+
+* tekst scenariusza jest **treścią** (przygoda przyjeżdża jako paczka);
+* odhaczenia i wpisane wartości są **nakładką instancji** w kampanii;
+* aktualizacja przygody w obrębie tej samej wersji major nie kasuje odhaczeń — ta sama gwarancja, co
+  przy każdym innym polu (sekcja 17).
+
+Nowego elementu katalogu też nie wymaga: sekcja 9 mówi wprost, że **dane kampanii są formularzem**
+i że każde pole instancji jest edytowalne. Karta w rejestrze jest tylko do odczytu, ta sama karta nad
+instancją jest formularzem. Zmienna sekwencja różnych elementów nie łamie reguły jednorodności
+z sekcji 5 — ta reguła dotyczy wnętrza **jednego** elementu, a karta jest sekwencją elementów
+z założenia.
+
+Autor pisze taki dokument w markdownie, w zwykłym edytorze, wplatając w tekst **markery** wybierające
+pola z zamkniętego katalogu. Składnia wyboru nie ma znaczenia architektonicznego — markdown
+z markerami to inna serializacja tego samego, co tablica w JSON-ie. Wiążą natomiast cztery warunki:
+
+1. **Podzbiór markdowna jest zamknięty i nie zawiera układu.** Markdown opisuje strukturę
+   *dokumentu*, nigdy strukturę *aplikacji*: nagłówki, akapity, listy, cytaty, wyróżnienia, tabele —
+   tak; surowy HTML, szerokości, kolumny, kolory, wymiarowanie obrazków — nie. Passthrough HTML jest
+   wyłączony, bo to jedna furtka, przez którą wchodzi wszystko naraz.
+2. **Marker jest walidowalny przy wczytaniu.** Musi być jednoznacznie ogranicznikowany i nieść własne
+   id. Dokument z markerem zniekształconym, z id powtórzonym albo z id, które nie jest poprawną nazwą
+   pola, jest odrzucany jak każda inna wadliwa paczka (sekcja 13). Bez tego literówka w markerze nie
+   jest błędem, tylko zwykłym tekstem — a to jest dokładnie ta klasa cichej awarii, której sekcja 13
+   zakazuje.
+3. **Markery znajduje się w drzewie, nie regeksem po pliku.** Wyrażenie regularne po surowym tekście
+   trafi marker w bloku kodu, w linku i w komórce tabeli.
+4. **Pola zadeklarowane przez dokument są prywatne dla dokumentu.** Dokument sam ogłasza swoje pola
+   interaktywne, czyli warstwa 3 deklaruje kształt — wyłom w sekcji 8, dopuszczalny wyłącznie dlatego,
+   że te pola nie mają konsumenta. Reguła warstw istnieje po to, żeby konsument mógł polegać na
+   zadeklarowanym kształcie. W chwili, gdy formuła albo inne okno ma przeczytać „czy brama została
+   otwarta", to pole musi być zadeklarowane w szablonie jak każde inne.
+
+**Nierozstrzygnięte:** katalog pól formularza, kształt markera, dokładny podzbiór markdowna, oraz to,
+czy dokument dostaje własny szablon, czy jest zwykłą kartą o długiej liście elementów. Zbiega się to
+z pytaniem 3 z sekcji 19 w jedno pytanie — **jak człowiek pisze treść do tej aplikacji** — i przygoda
+jest dla niego mocniejszym motywatorem niż ubrany goblin, bo jest treścią, którą **trzeba** napisać
+długim tekstem.
 
 ---
 
