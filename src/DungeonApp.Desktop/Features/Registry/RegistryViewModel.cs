@@ -52,12 +52,21 @@ public sealed class RegistryViewModel : ObservableObject
             if (SetField(ref _selectedEntry, value))
             {
                 RaisePropertyChanged(nameof(HasSelection));
+                RaisePropertyChanged(nameof(ShowSelectionPrompt));
                 RecomputeCard();
             }
         }
     }
 
     public bool HasSelection => SelectedEntry is not null;
+
+    /// <summary>
+    /// Whether to invite the reader to pick something. An empty registry already says why the list
+    /// is bare, and telling someone to choose from a list that has nothing in it contradicts that
+    /// on the same screen. <see cref="IsEmpty"/> never changes for a given instance, so this only
+    /// has to be raised alongside the selection.
+    /// </summary>
+    public bool ShowSelectionPrompt => !HasSelection && !IsEmpty;
 
     /// <summary>
     /// The selected entry's card, in template order - empty when nothing is selected, when the

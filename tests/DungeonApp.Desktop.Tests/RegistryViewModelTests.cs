@@ -297,4 +297,28 @@ public sealed class RegistryViewModelTests : IDisposable
         Assert.Empty(viewModel.Card);
         Assert.Null(viewModel.UnresolvedMessage);
     }
+
+    /// <summary>
+    /// An empty registry already explains why the list is bare. Inviting the reader to pick from it
+    /// as well puts two contradicting sentences on one screen.
+    /// </summary>
+    [Fact]
+    public async Task Empty_registry_does_not_invite_a_selection()
+    {
+        var registry = await new ContentPackLoader(_packs.Path).LoadAsync(CancellationToken.None);
+
+        Assert.False(new RegistryViewModel(registry).ShowSelectionPrompt);
+    }
+
+    [Fact]
+    public async Task A_populated_registry_invites_a_selection_until_one_is_made()
+    {
+        var viewModel = await BuildViewModelAsync();
+
+        Assert.True(viewModel.ShowSelectionPrompt);
+
+        viewModel.SelectedEntry = viewModel.Entries[0];
+
+        Assert.False(viewModel.ShowSelectionPrompt);
+    }
 }

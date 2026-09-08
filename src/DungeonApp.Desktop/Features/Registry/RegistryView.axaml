@@ -108,7 +108,7 @@
                 <TextBlock Classes="workspace-title" Text="{Binding SelectedEntry.Name}" />
             </StackPanel>
 
-            <TextBlock IsVisible="{Binding !HasSelection}"
+            <TextBlock IsVisible="{Binding ShowSelectionPrompt}"
                        Foreground="{DynamicResource DungeonTextMutedBrush}"
                        Text="Wybierz wpis z listy po lewej, aby zobaczyć kartę." />
 
