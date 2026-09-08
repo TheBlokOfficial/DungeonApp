@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Content;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tools.Counter;
@@ -23,6 +24,7 @@ public partial class App : Avalonia.Application
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
+    private LoadContentPacksStep? _contentPacksStep;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
@@ -63,6 +65,15 @@ public partial class App : Avalonia.Application
 
         _campaigns = new JsonCampaignRepository(libraryPath, _dataBlocks);
 
+        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (sekcja 12) - obok, nie pod
+        // danymi aplikacji.
+        var packsPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "DungeonApp",
+            "Packs");
+
+        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath));
+
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
         _preparations = new CampaignWorkspacePreparationCache(_campaigns, _layoutStore);
@@ -82,6 +93,9 @@ public partial class App : Avalonia.Application
 
         _startupSteps =
         [
+            // Paczki treści przed półką kampanii (sekcja 15a): rejestr musi istnieć zanim
+            // cokolwiek próbuje rozwiązywać wobec niego referencje.
+            _contentPacksStep,
             libraryStep,
             dataStep,
             new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns),
