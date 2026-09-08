@@ -128,40 +128,4 @@ public sealed class LoadContentPacksStepTests : IDisposable
 
         Assert.False(string.IsNullOrWhiteSpace(step.Describe()));
     }
-
-    /// <summary>
-    /// A throwaway packs directory on the real filesystem, kept local to this test file because the
-    /// Desktop test project does not reference DungeonApp.Core.Tests and this task adds no such
-    /// reference. Mirrors <c>DungeonApp.Core.Tests.Fakes.TemporaryPacks</c> in spirit, trimmed to
-    /// what these tests need.
-    /// </summary>
-    private sealed class TestPacks : IDisposable
-    {
-        public TestPacks()
-        {
-            Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"dungeonapp-desktop-packs-{Guid.NewGuid():N}");
-            Directory.CreateDirectory(Path);
-        }
-
-        public string Path { get; }
-
-        public void WriteFile(string packDirectoryName, string relativePath, string content)
-        {
-            var fullPath = System.IO.Path.Combine(Path, packDirectoryName, relativePath);
-            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath)!);
-            File.WriteAllText(fullPath, content);
-        }
-
-        public void Dispose()
-        {
-            try
-            {
-                Directory.Delete(Path, recursive: true);
-            }
-            catch (IOException)
-            {
-                // A leftover temp directory is not worth failing a green test over.
-            }
-        }
-    }
 }

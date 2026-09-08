@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:elements="using:DungeonApp.Desktop.Features.Registry.Elements"
+             x:Class="DungeonApp.Desktop.Features.Registry.Elements.StatblockElementView"
+             x:DataType="elements:StatblockElementViewModel">
+
+    <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
+         them out (RegistryView), not to the element itself. See the content architecture doc. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+        <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
+        <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="elements:StatblockRowViewModel">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                        <TextBlock Classes="muted" Text="{Binding Label}" />
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="{DynamicResource DungeonSpacingXs}">
+                            <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
+                            <TextBlock Classes="muted"
+                                       IsVisible="{Binding HasSecondary}"
+                                       Text="{Binding Secondary}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

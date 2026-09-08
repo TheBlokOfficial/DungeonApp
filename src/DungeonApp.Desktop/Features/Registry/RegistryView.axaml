@@ -1,0 +1,135 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:registry="using:DungeonApp.Desktop.Features.Registry"
+             xmlns:elements="using:DungeonApp.Desktop.Features.Registry.Elements"
+             x:Class="DungeonApp.Desktop.Features.Registry.RegistryView"
+             x:DataType="registry:RegistryViewModel">
+
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="elements:StatblockElementViewModel">
+            <elements:StatblockElementView />
+        </DataTemplate>
+        <DataTemplate DataType="elements:ProseElementViewModel">
+            <elements:ProseElementView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <UserControl.Styles>
+        <!-- One entry, one row. Mirrors CampaignLibraryView's campaign-row: a flat, bordered record
+             with no per-row noise beyond what a list needs to stay scannable. The gap between rows
+             is the list's own ItemsPanel spacing, not a margin any one row carries. -->
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingSm}" />
+        </Style>
+        <Style Selector="ListBoxItem:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        </Style>
+        <Style Selector="ListBoxItem:selected:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Same kind of backstage screen as the campaign library, so it shares its background token.
+         Columns split evenly - a proportion, not a chosen pixel size, so there is no token for it. -->
+    <Grid Background="{DynamicResource DungeonBackstageBrush}"
+          ColumnDefinitions="*,*"
+          Margin="{DynamicResource DungeonPaddingXxl}"
+          ColumnSpacing="{DynamicResource DungeonSpacingXxl}">
+
+        <!-- Left: every entry the registry knows about. -->
+        <Grid Grid.Column="0"
+              RowDefinitions="Auto,*"
+              RowSpacing="{DynamicResource DungeonSpacingXl}"
+              MinHeight="0">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <TextBlock Classes="muted" Text="Rejestr" />
+                <TextBlock Classes="workspace-title" Text="Rejestr treści" />
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          IsVisible="{Binding !IsEmpty}">
+                <ListBox ItemsSource="{Binding Entries}"
+                         SelectedItem="{Binding SelectedEntry, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="registry:RegistryEntryRowViewModel">
+                            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                           Text="{Binding Name}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Classes="muted" Text="{Binding Address}" />
+                                <TextBlock Classes="muted"
+                                           IsVisible="{Binding !IsUnresolved}"
+                                           Text="{Binding TemplateName}" />
+                                <TextBlock Classes="muted"
+                                           Foreground="{DynamicResource DungeonWarningBrush}"
+                                           IsVisible="{Binding IsUnresolved}"
+                                           Text="Nierozwiązany wpis" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+
+            <TextBlock Grid.Row="1"
+                       VerticalAlignment="Top"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                       IsVisible="{Binding IsEmpty}"
+                       Text="Nie ma jeszcze żadnej paczki treści. Umieść ją w Dokumenty\DungeonApp\Packs i uruchom aplikację ponownie."
+                       TextWrapping="Wrap" />
+        </Grid>
+
+        <!-- Right: the selected entry's card. A deliberately raw vertical stack - no per-element
+             borders, no section headers beyond an element's own title, no columns. Spacing between
+             elements is set once, here, on the host - never carried by an element itself. -->
+        <Grid Grid.Column="1"
+              RowDefinitions="Auto,*"
+              RowSpacing="{DynamicResource DungeonSpacingXl}"
+              MinHeight="0">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" IsVisible="{Binding HasSelection}">
+                <TextBlock Classes="muted" Text="{Binding SelectedEntry.PackName}" />
+                <TextBlock Classes="workspace-title" Text="{Binding SelectedEntry.Name}" />
+            </StackPanel>
+
+            <TextBlock IsVisible="{Binding !HasSelection}"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                       Text="Wybierz wpis z listy po lewej, aby zobaczyć kartę." />
+
+            <Grid Grid.Row="1" RowDefinitions="Auto,*" MinHeight="0">
+                <TextBlock IsVisible="{Binding HasUnresolvedMessage}"
+                           Foreground="{DynamicResource DungeonWarningBrush}"
+                           Text="{Binding UnresolvedMessage}"
+                           TextWrapping="Wrap" />
+
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Disabled"
+                              IsVisible="{Binding HasCard}">
+                    <ItemsControl ItemsSource="{Binding Card}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="{DynamicResource DungeonSpacingLg}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

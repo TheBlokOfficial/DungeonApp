@@ -4,9 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
+using DungeonApp.Desktop.Features.Registry;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.TopBar;
@@ -24,12 +26,15 @@ public sealed class AppShellViewModel : ObservableObject
 {
     private const string CampaignsSectionId = "campaigns";
     private const string CampaignsSectionLabel = "Kampanie";
+    private const string RegistrySectionId = "registry";
+    private const string RegistrySectionLabel = "Rejestr";
 
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ICampaignRepository _campaigns;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignWorkspacePreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
+    private readonly Func<ContentRegistry> _contentRegistry;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
@@ -44,18 +49,28 @@ public sealed class AppShellViewModel : ObservableObject
     private CampaignSession? _openCampaign;
     private CampaignWorkspaceViewModel? _campaignWorkspace;
 
+    /// <summary>
+    /// Built lazily on first entry into the registry section, not in this constructor: at the point
+    /// the shell is constructed, startup has not run yet, so the packs behind
+    /// <paramref name="contentRegistry"/> are not loaded. Held afterwards for the shell's lifetime,
+    /// the same shape as <see cref="_campaignWorkspace"/>.
+    /// </summary>
+    private RegistryViewModel? _registry;
+
     public AppShellViewModel(
         WorkspaceLayoutStore layoutStore,
         ICampaignRepository campaigns,
         CampaignLibraryViewModel campaignLibrary,
         CampaignWorkspacePreparationCache preparations,
-        IStartupStep[] startupSteps)
+        IStartupStep[] startupSteps,
+        Func<ContentRegistry> contentRegistry)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
         _preparations = preparations;
         _campaignLibrary = campaignLibrary;
         _startupSteps = startupSteps;
+        _contentRegistry = contentRegistry;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
@@ -204,9 +219,18 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     // Temporary scaffolding until the real context router exists: it dispatches on the section id
-    // rather than its label, and every section other than campaigns still lands on the placeholder.
+    // rather than its label, one branch per section, and anything it does not recognise still lands
+    // on the placeholder. Navigation is being redesigned, so this stays a chain rather than growing
+    // into a router that would have to be dismantled first.
     private void OnSectionSelected(NavigationItemViewModel section)
     {
+        if (section.Id == RegistrySectionId)
+        {
+            TopBar.ContextTitle = RegistrySectionLabel;
+            CurrentWorkspaceContent = _registry ??= new RegistryViewModel(_contentRegistry());
+            return;
+        }
+
         if (section.Id != CampaignsSectionId)
         {
             TopBar.ContextTitle = section.Label;

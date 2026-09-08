@@ -6,6 +6,7 @@
              xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
              xmlns:campaignWorkspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             xmlns:registry="using:DungeonApp.Desktop.Features.Registry"
              xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
              xmlns:easings="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
@@ -20,6 +21,9 @@
         </DataTemplate>
         <DataTemplate DataType="campaignLibrary:CampaignLibraryViewModel">
             <campaignLibrary:CampaignLibraryView />
+        </DataTemplate>
+        <DataTemplate DataType="registry:RegistryViewModel">
+            <registry:RegistryView />
         </DataTemplate>
     </UserControl.DataTemplates>
 

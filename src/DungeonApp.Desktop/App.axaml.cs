@@ -112,7 +112,8 @@ public partial class App : Avalonia.Application
                 _campaigns!,
                 _campaignLibrary!,
                 _preparations!,
-                _startupSteps!);
+                _startupSteps!,
+                () => _contentPacksStep!.Registry);
 
             desktop.MainWindow = new MainWindow
             {
