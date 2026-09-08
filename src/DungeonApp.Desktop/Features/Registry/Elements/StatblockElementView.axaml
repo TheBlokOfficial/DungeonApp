@@ -6,7 +6,12 @@
 
     <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
          them out (RegistryView), not to the element itself. See the content architecture doc. -->
-    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+    <!-- The shared size scope starts here, at one element, and deliberately not higher: the label
+         column is shared by the rows of THIS statblock, so a long label widens its own block and
+         leaves the neighbouring one alone. Without a scope every row measures its own Auto column
+         and the values come out ragged - six three-letter labels only look like a column by
+         accident. -->
+    <StackPanel Grid.IsSharedSizeScope="True" Spacing="{DynamicResource DungeonSpacingXs}">
         <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
         <ItemsControl ItemsSource="{Binding Rows}">
             <ItemsControl.ItemsPanel>
@@ -16,7 +21,11 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="elements:StatblockRowViewModel">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="StatblockLabel" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <TextBlock Classes="muted" Text="{Binding Label}" />
                         <StackPanel Grid.Column="1"
                                     Orientation="Horizontal"
