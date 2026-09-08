@@ -4,41 +4,66 @@
              x:Class="DungeonApp.Desktop.Features.Registry.Elements.StatblockElementView"
              x:DataType="elements:StatblockElementViewModel">
 
+    <!-- The row template is shared by both layouts below (non-compact and compact) so the two
+         never drift apart - same label/value/secondary rendering either way, only the panel that
+         arranges the rows differs. -->
+    <UserControl.Resources>
+        <DataTemplate x:Key="StatblockRowTemplate" x:DataType="elements:StatblockRowViewModel">
+            <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="StatblockLabel" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Classes="muted" Text="{Binding Label}" />
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="{DynamicResource DungeonSpacingXs}">
+                    <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
+                    <TextBlock Classes="muted"
+                               IsVisible="{Binding HasSecondary}"
+                               Text="{Binding SecondaryDisplay}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
          them out (RegistryView), not to the element itself. See the content architecture doc. -->
     <!-- The shared size scope starts here, at one element, and deliberately not higher: the label
          column is shared by the rows of THIS statblock, so a long label widens its own block and
          leaves the neighbouring one alone. Without a scope every row measures its own Auto column
          and the values come out ragged - six three-letter labels only look like a column by
-         accident. -->
+         accident. Both layouts below sit inside this one scope, so a template that switches
+         between them keeps a single shared label column either way. -->
     <StackPanel Grid.IsSharedSizeScope="True" Spacing="{DynamicResource DungeonSpacingXs}">
         <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
-        <ItemsControl ItemsSource="{Binding Rows}">
+
+        <!-- Non-compact: one pair per row, unchanged. -->
+        <ItemsControl ItemsSource="{Binding Rows}"
+                      IsVisible="{Binding !IsCompact}"
+                      ItemTemplate="{StaticResource StatblockRowTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="elements:StatblockRowViewModel">
-                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" SharedSizeGroup="StatblockLabel" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Classes="muted" Text="{Binding Label}" />
-                        <StackPanel Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    Spacing="{DynamicResource DungeonSpacingXs}">
-                            <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
-                            <TextBlock Classes="muted"
-                                       IsVisible="{Binding HasSecondary}"
-                                       Text="{Binding SecondaryDisplay}"
-                                       TextWrapping="Wrap" />
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Compact: the engine's own layout decision (three columns, filled row-major in
+             template order) - not something a pack can ask for. "compact" only claims the values
+             are short and scannable; this is one way to honor that claim today, free to change in
+             a later release without touching any pack. -->
+        <ItemsControl ItemsSource="{Binding Rows}"
+                      IsVisible="{Binding IsCompact}"
+                      ItemTemplate="{StaticResource StatblockRowTemplate}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="3"
+                                 RowSpacing="{DynamicResource DungeonSpacingXs}"
+                                 ColumnSpacing="{DynamicResource DungeonSpacingSm}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
         </ItemsControl>
     </StackPanel>
 </UserControl>

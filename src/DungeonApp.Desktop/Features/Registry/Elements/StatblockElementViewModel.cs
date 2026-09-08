@@ -16,10 +16,11 @@ namespace DungeonApp.Desktop.Features.Registry.Elements;
 /// </summary>
 public sealed class StatblockElementViewModel
 {
-    private StatblockElementViewModel(string? title, IReadOnlyList<StatblockRowViewModel> rows)
+    private StatblockElementViewModel(string? title, IReadOnlyList<StatblockRowViewModel> rows, bool isCompact)
     {
         Title = title;
         Rows = rows;
+        IsCompact = isCompact;
     }
 
     public string? Title { get; }
@@ -27,6 +28,13 @@ public sealed class StatblockElementViewModel
     public bool HasTitle => !string.IsNullOrEmpty(Title);
 
     public IReadOnlyList<StatblockRowViewModel> Rows { get; }
+
+    /// <summary>
+    /// Carries <see cref="StatblockElement.Compact"/> straight through unchanged - the view model
+    /// layer is not where the content-vs-layout decision gets made, only where it gets passed along
+    /// to whatever the view does with it.
+    /// </summary>
+    public bool IsCompact { get; }
 
     /// <summary>
     /// Builds the rendered rows for one statblock element, or <c>null</c> when the entry supplied no
@@ -58,6 +66,6 @@ public sealed class StatblockElementViewModel
             rows.Add(new StatblockRowViewModel(fields[trait.Field].Label, FieldValueText.Format(value), secondary));
         }
 
-        return rows.Count == 0 ? null : new StatblockElementViewModel(element.Title, rows);
+        return rows.Count == 0 ? null : new StatblockElementViewModel(element.Title, rows, element.Compact);
     }
 }

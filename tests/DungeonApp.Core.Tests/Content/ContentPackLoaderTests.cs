@@ -108,6 +108,18 @@ public sealed class ContentPackLoaderTests : IDisposable
         var defenseAndSpeed = (StatblockElement)template.Card[1];
         var kpTrait = defenseAndSpeed.Traits.Single(trait => trait.Field == FieldName.Create("kp"));
         Assert.Equal(FieldName.Create("kpZrodlo"), kpTrait.Secondary);
+
+        // Only the six-trait "Cechy" block is compact: its values are single numbers, meant to be
+        // scanned. The other three carry word- or sentence-length values and stay as declared -
+        // no parameter, which parses the same as "compact": false.
+        var sizeTypeAlignment = (StatblockElement)template.Card[0];
+        var traitsBlock = (StatblockElement)template.Card[2];
+        var skillsAndSenses = (StatblockElement)template.Card[3];
+
+        Assert.False(sizeTypeAlignment.Compact);
+        Assert.False(defenseAndSpeed.Compact);
+        Assert.True(traitsBlock.Compact);
+        Assert.False(skillsAndSenses.Compact);
     }
 
     // ---------------------------------------------------------------------
@@ -470,6 +482,57 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var rejected = Assert.Single(registry.RejectedPacks);
         Assert.Contains("missing", rejected.Reason);
+    }
+
+    [Fact]
+    public async Task A_statblock_elements_compact_flag_loads_true_when_set_and_false_when_absent()
+    {
+        const string json = """
+            {
+              "id": "thing",
+              "name": "Thing",
+              "version": 1,
+              "catalogVersion": 1,
+              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
+              "card": [
+                { "element": "statblock", "traits": [ { "field": "label" } ], "compact": true },
+                { "element": "statblock", "traits": [ { "field": "label" } ] }
+              ]
+            }
+            """;
+        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
+        _packs.WriteFile("sys", "templates/t.json", json);
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        var template = Assert.Single(registry.SystemPacks).Templates.Single();
+
+        Assert.True(((StatblockElement)template.Card[0]).Compact);
+        Assert.False(((StatblockElement)template.Card[1]).Compact);
+    }
+
+    [Fact]
+    public async Task Rejects_a_statblock_elements_compact_flag_with_a_non_boolean_value()
+    {
+        const string json = """
+            {
+              "id": "thing",
+              "name": "Thing",
+              "version": 1,
+              "catalogVersion": 1,
+              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
+              "card": [ { "element": "statblock", "traits": [ { "field": "label" } ], "compact": "tak" } ]
+            }
+            """;
+        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
+        _packs.WriteFile("sys", "templates/t.json", json);
+
+        var registry = await Loader().LoadAsync();
+
+        var rejected = Assert.Single(registry.RejectedPacks);
+        Assert.Contains("t.json", rejected.Reason);
+        Assert.Contains("#0", rejected.Reason);
     }
 
     // ---------------------------------------------------------------------

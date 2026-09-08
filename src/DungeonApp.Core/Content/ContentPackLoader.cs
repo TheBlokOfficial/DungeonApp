@@ -455,7 +455,7 @@ public sealed class ContentPackLoader(string packsPath)
             traits.Add(new StatblockTrait(field, secondary));
         }
 
-        return new StatblockElement(dto.Title, [.. traits]);
+        return new StatblockElement(dto.Title, [.. traits], dto.Compact ?? false);
     }
 
     private ProseElement ParseProseElement(
@@ -717,7 +717,7 @@ public sealed class ContentPackLoader(string packsPath)
 
     private sealed record FieldDeclarationDto(string? Id, string? Label, string? Type, bool? Required);
 
-    private sealed record StatblockElementDto(string? Element, string? Title, List<StatblockTraitDto>? Traits);
+    private sealed record StatblockElementDto(string? Element, string? Title, List<StatblockTraitDto>? Traits, bool? Compact);
 
     private sealed record StatblockTraitDto(string? Field, string? Secondary);
 

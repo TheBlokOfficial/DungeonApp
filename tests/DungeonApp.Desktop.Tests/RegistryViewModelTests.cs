@@ -51,6 +51,7 @@ public sealed class RegistryViewModelTests : IDisposable
             {
               "element": "statblock",
               "title": "Obrona",
+              "compact": true,
               "traits": [ { "field": "kp", "secondary": "kpZrodlo" }, { "field": "pz" } ]
             },
             { "element": "statblock", "title": "Biegłości", "traits": [ { "field": "umiejetnosci" } ] },
@@ -196,7 +197,20 @@ public sealed class RegistryViewModelTests : IDisposable
         Assert.Equal("humanoid", typRow.Value);
 
         Assert.Equal("Obrona", defenseBlock.Title);
+
+        // "compact" is a claim about the values, carried through to the view so the element can
+        // honour it. Which geometry that becomes is the view's business, not the pack's.
+        Assert.True(defenseBlock.IsCompact);
+        Assert.False(typBlock.IsCompact);
+        Assert.False(skillsBlock.IsCompact);
         Assert.Equal(2, defenseBlock.Rows.Count);
+
+        // The template marks "Obrona" compact; IsCompact carries that straight through from the
+        // card element to the view model. The other two blocks left "compact" undeclared, which
+        // parses as false.
+        Assert.False(typBlock.IsCompact);
+        Assert.True(defenseBlock.IsCompact);
+        Assert.False(skillsBlock.IsCompact);
 
         var kpRow = defenseBlock.Rows[0];
         Assert.Equal("KP", kpRow.Label);

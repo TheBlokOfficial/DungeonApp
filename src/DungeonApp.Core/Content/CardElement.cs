@@ -23,7 +23,13 @@ public abstract record CardElement
 }
 
 /// <summary>A list of traits, each an optional heading's worth of named values.</summary>
-public sealed record StatblockElement(string? Title, IReadOnlyList<StatblockTrait> Traits) : CardElement;
+/// <param name="Compact">
+/// A claim about the content, not about layout: these values are short and meant to be scanned,
+/// not read as prose. It does not say how many columns, how wide, or anything else visual - that
+/// stays the renderer's decision, free to change release over release without any pack needing an
+/// update. A pack that wants a different visual arrangement has no parameter for it; this one isn't it.
+/// </param>
+public sealed record StatblockElement(string? Title, IReadOnlyList<StatblockTrait> Traits, bool Compact) : CardElement;
 
 /// <summary>A single block of static text, read straight out of one of the entry's text fields.</summary>
 public sealed record ProseElement(string? Title, FieldName Field) : CardElement;

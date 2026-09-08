@@ -53,6 +53,7 @@
     {
       "element": "statblock",
       "title": "Cechy",
+      "compact": true,
       "traits": [
         { "field": "sila" },
         { "field": "zrecznosc" },
