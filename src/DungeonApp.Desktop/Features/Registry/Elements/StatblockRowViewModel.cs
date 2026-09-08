@@ -8,4 +8,12 @@ namespace DungeonApp.Desktop.Features.Registry.Elements;
 public sealed record StatblockRowViewModel(string Label, string Value, string? Secondary)
 {
     public bool HasSecondary => Secondary is not null;
+
+    /// <summary>
+    /// The secondary value in brackets, which is how every trad statblock on paper writes it:
+    /// KP 15 (zbroja skórzana, tarcza), PZ 7 (2k6), Wyzwanie 1/4 (50 PD). Without them "PZ 7 2k6"
+    /// is three numbers in a row and the reader has to guess where the value ends - a delimiter is
+    /// what makes the pair readable, not decoration on top of it.
+    /// </summary>
+    public string? SecondaryDisplay => Secondary is null ? null : $"({Secondary})";
 }

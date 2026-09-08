@@ -24,7 +24,7 @@
                             <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
                             <TextBlock Classes="muted"
                                        IsVisible="{Binding HasSecondary}"
-                                       Text="{Binding Secondary}"
+                                       Text="{Binding SecondaryDisplay}"
                                        TextWrapping="Wrap" />
                         </StackPanel>
                     </Grid>

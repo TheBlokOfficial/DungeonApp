@@ -203,6 +203,8 @@ public sealed class RegistryViewModelTests : IDisposable
         Assert.Equal("15", kpRow.Value);
         Assert.True(kpRow.HasSecondary);
         Assert.Equal("zbroja skórzana, tarcza", kpRow.Secondary);
+        // Bracketed for display: without a delimiter "15 zbroja skórzana, tarcza" runs together.
+        Assert.Equal("(zbroja skórzana, tarcza)", kpRow.SecondaryDisplay);
 
         var pzRow = defenseBlock.Rows[1];
         Assert.Equal("7", pzRow.Value);
@@ -239,6 +241,7 @@ public sealed class RegistryViewModelTests : IDisposable
         Assert.Equal("10", kpRow.Value);
         Assert.False(kpRow.HasSecondary);
         Assert.Null(kpRow.Secondary);
+        Assert.Null(kpRow.SecondaryDisplay);
 
         Assert.DoesNotContain(viewModel.Card, element =>
             element is StatblockElementViewModel statblock && statblock.Title == "Biegłości");
