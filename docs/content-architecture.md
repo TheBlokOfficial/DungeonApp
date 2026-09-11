@@ -3,6 +3,11 @@
 **Status: projekt, nie stan faktyczny.** [hld.md](hld.md) opisuje to, co jest w kodzie dzisiaj.
 Ten dokument opisuje cel. Dopóki oba się rozjeżdżają, prawdą o kodzie jest `hld.md`.
 
+Część projektu jest już zbudowana — paczki i ich walidacja, rejestr, dwie pozycje katalogu
+elementów karty, pierwszy kontrakt prezentacji. Nie zmienia to statusu tego dokumentu: nadal
+rozstrzyga, **jak ma być**, a nie relacjonuje, jak jest. Tam, gdzie rozstrzygnięcie zapadło
+w zderzeniu z kodem, jest to zapisane wraz z tym, co kosztowało.
+
 Źródłem koncepcji jest [rpg_systems.md](rpg_systems.md) — dokument pisany w oderwaniu od tego
 repozytorium. Ten dokument jest jego **osadzeniem w projekcie**: rozstrzyga nazwy, odrzuca to,
 czego nie bierzemy, i nazywa granice wobec kodu, który już istnieje. Tam, gdzie `rpg_systems.md`
@@ -42,15 +47,14 @@ Rozstrzygamy ją nazwą.
 | **instancja** | Ten konkretny egzemplarz żyjący w kampanii: referencja do wpisu plus nakładka. |
 | **nakładka** | To, czym instancja odbiega od wpisu. Rzadka — przechowuje wyłącznie odchylenia. |
 | **karta** | Pełna reprezentacja wpisu lub instancji — widok szczegółowy. **Jedna z wielu reprezentacji, nie jedyna.** |
-| **element karty** | Jednostka z zamkniętego katalogu silnika, z której składa się karta: statblok, lista pozycji, pasek zasobu, akcja rzutu, blok prozy, znacznik binarny. **To są „narzędzia" z `rpg_systems.md`.** |
-| **kontrakt prezentacji** | Nazwany, zamknięty zestaw pól publikowany przez konsumenta, który pokazuje cudze wpisy w skrócie (wiersz ekwipunku, uczestnik kolejki tur, wkład do pola). Szablon deklaruje, czym go wypełnia. |
-| **szablon** | Deklaracja z paczki systemowej: z jakich elementów składa się karta danego rodzaju wpisu, jakie ma sloty i które kontrakty wypełnia. |
+| **element karty** | Jednostka z zamkniętego katalogu silnika, z której składa się karta: lista cech, lista pozycji, pasek zasobu, akcja rzutu, blok prozy, znacznik binarny. **To są „narzędzia" z `rpg_systems.md`.** |
+| **kontrakt prezentacji** | Nazwany, zamknięty zestaw pól, będący **pozycją katalogu silnika**, a nie własnością pojedynczego widoku. Opisuje jedną potrzebę informacyjną (wiersz listy, wiersz ekwipunku, uczestnik kolejki tur, wkład do pola); jeden kontrakt może mieć wielu konsumentów, jeden konsument może czytać kilka kontraktów. Szablon deklaruje wyłącznie, czym go wypełnia. |
+| **szablon** | Deklaracja z paczki: z jakich elementów składa się karta danego rodzaju wpisu, jakie ma sloty i które kontrakty wypełnia. |
 | **slot** | Zadeklarowane przez szablon miejsce na dołączone wpisy (ekwipunek, zaklęcia na broni, efekty na postaci). |
 | **narzędzie** (`ITool`) | Backend okna na biurku kampanii — istniejące pojęcie, **bez zmian**. Deklaruje, z jakich bloków danych korzysta. |
 | **panel / okno** | Pływające okno na biurku. Kontener; hostuje narzędzie. |
 | **blok danych** | Istniejący mechanizm stanu kampanii o kształcie znanym w czasie kompilacji. Substrat narzędzi biurka. |
-| **paczka systemowa** | Warstwa 2: wyłącznie szablony. „D&D 5e" to dokładnie to i nic więcej. |
-| **paczka treści** | Warstwa 3: wyłącznie wpisy. **Wszystko tutaj jest homebrew z definicji** — patrz sekcja 11. |
+| **paczka** | Jednostka dystrybucji i instalacji: katalog z manifestem, niosący szablony, wpisy albo jedno i drugie. **Paczka nie ma rodzaju** — patrz sekcja 11. Wszystko, co wnosi w warstwie trzeciej, jest homebrew z definicji. |
 | **rejestr** | To, co silnik wie o zainstalowanych paczkach po ich wczytaniu i zwalidowaniu. Wspólny, tylko do odczytu. |
 
 Dwa doprecyzowania nazewnicze wobec źródła:
@@ -93,8 +97,12 @@ spłaszczamy jej.
 |---|---|---|
 | **1. Silnik** | `DungeonApp.Core` | Katalog elementów karty, katalog kontraktów prezentacji, silnik formuł, wczytywanie i walidacja paczek, rejestr, magazyn instancji, istniejące narzędzia i bloki danych. Zero Avalonii. |
 | | `DungeonApp.Desktop` | Widoki elementów karty, składanie karty z układu szablonu, widoki skrótowych reprezentacji, ekran rejestru, okna biurka. |
-| **2. Szablony** | paczki systemowe | Kształt: z czego składa się karta, jakie są sloty, które kontrakty wpis wypełnia. |
-| **3. Wpisy** | paczki treści + instancje w kampanii | Wartości i odchylenia — patrz sekcja 8. |
+| **2. Szablony** | katalog `templates/` w paczce | Kształt: z czego składa się karta, jakie są sloty, które kontrakty wpis wypełnia. |
+| **3. Wpisy** | katalog `entries/` w paczce + instancje w kampanii | Wartości i odchylenia — patrz sekcja 8. |
+
+**Warstwa nie jest własnością paczki, tylko pozycji w niej.** Jedna paczka może nieść oba katalogi;
+warstwę rozstrzyga to, czym dana pozycja jest — szablonem czy wpisem — a nie to, w jakim katalogu
+na dysku mieszka. Patrz sekcja 11.
 
 **Oba katalogi mieszkają w `Core`**, mimo że mają widoki. Katalog jest zobowiązaniem zakresowym
 i podlega walidacji przy wczytaniu paczki, więc musi być znany warstwie, która paczki waliduje.
@@ -110,8 +118,8 @@ aplikacji i wolno mu być konkretnym; wpis nie.
 
 **Jeden poziom szablonowania, nie dwa.** „Karta postaci" nie jest pojęciem silnika ani
 szablonowanym kontenerem — jest szablonem o nazwie `postać gracza`, mieszkającym w paczce
-systemowej i składanym z tego samego zamkniętego katalogu elementów, co karta goblina. Sześć cech
-z D&D to statblok sparametryzowany sześcioma nazwami; silnik nie wie, że to cechy, ani że jest ich
+i składanym z tego samego zamkniętego katalogu elementów, co karta goblina. Sześć cech
+z D&D to lista cech sparametryzowana sześcioma nazwami; silnik nie wie, że to cechy, ani że jest ich
 sześć. Wrażenie, że taka karta „ma gotowe API do ekwipunku", opisuje dwie osobne rzeczy — katalog
 elementów i kontrakt prezentacji, obie w sekcji 6 — a żadna z nich nie jest szablonem kontenera.
 
@@ -130,7 +138,7 @@ Konsekwencje przyjęte świadomie:
 * **Nowy rodzaj elementu lub kontraktu = nowe wydanie aplikacji.** Katalogi nie są rozszerzalne
   przez dane.
 * **Reguła jednorodności.** Zmienna liczba **jednorodnych** elementów jest dozwolona (dowolnie
-  długi statblok); zmienny skład **różnych typów** obok siebie — nie. To jedyne kryterium
+  długa lista cech); zmienny skład **różnych typów** obok siebie — nie. To jedyne kryterium
   odróżniające konfigurowalny element od przebranego silnika UI.
 
 „Zamknięty" znaczy **zamknięty wobec danych**, nie „kompletny na zawsze". Kolejne wydania
@@ -169,6 +177,76 @@ się na liście do wyboru**. Odrzucenie jest fizyczne, nie proceduralne.
 Katalog kontraktów jest zamknięty wobec danych i wersjonowany razem z katalogiem elementów — to
 jedna oś wersjonowania, nie dwie.
 
+### Kontrakt jest jednostką potrzeby informacyjnej, nie własnością widżetu
+
+Skoro kontrakt jest pozycją katalogu, to **nie należy do konsumenta, który go pierwszy zamówił**.
+Wynikają z tego dwie rzeczy, których brak sprawiłby, że szablon rośnie o wypełnienie na każde nowe
+okno:
+
+* **Jeden kontrakt, wielu konsumentów.** Lista rejestru, przegląd instancji na powierzchni „Świat"
+  i przelotny wybór wpisu z sekcji 15(d) chcą tego samego: nazwy, krótkiego deskryptora, kategorii.
+  To jeden kontrakt, nie trzy.
+* **Jeden konsument, wiele kontraktów.** Wiersz ekwipunku czyta kontrakt listy (etykieta) **i**
+  kontrakt niesienia (waga). Nie powiela deklaracji, tylko sięga po dwie.
+
+**Liczba kontraktów jest więc ograniczona liczbą różnych potrzeb informacyjnych, a nie liczbą
+widoków.** Praktyczna konsekwencja: sporo przyszłych kontraktów będzie jedno- lub dwupolowych, bo
+ich treścią nie jest pole, tylko odpowiedź na pytanie „czy tę rzecz da się tu w ogóle użyć".
+
+**Cena współdzielenia, przyjęta świadomie:** konsument nie może sobie rozszerzyć cudzego kontraktu.
+Gdy lista rejestru zechce czegoś, czego nie chce żaden inny jej współużytkownik, ma dwie legalne
+drogi — opcjonalne pole, które reszta ignoruje, albo drugi kontrakt. Trzeciej nie ma.
+
+### Test odróżniający kontrakt od formy pośredniej
+
+Kuszącą alternatywą dla kontraktów jest **jedna uniwersalna forma pośrednia**: wpis opisuje siebie
+ustrukturyzowanym rekordem, a konsumenci biorą z niego, co im pasuje. Jest odrzucona, bo przenosi
+projektowanie interfejsu do danych tylnymi drzwiami — o zawartości takiego rekordu i jego kolejności
+decydowałby autor szablonu, wbrew sekcji 5. Rozstrzyga jedno pytanie:
+
+> **Czy autor szablonu może dodać do tego pole?**
+> Nie → kontrakt. Tak → forma pośrednia, czyli przebrany silnik UI.
+
+Kontrakt jest zbiorem rzeczy **pokazywalnych**; nie wolno mu nieść nadmiaru, którego żaden jego
+konsument nie wyświetla. Trzy rzeczy zamieniłyby kontrakt w formę pośrednią i są zakazane: pole
+o zawartości ustalanej przez szablon („lista dodatkowych wartości"), jakikolwiek parametr wyglądu
+podany przez dane zamiast wybrany z zamkniętego słownika katalogu, oraz konsument czytający pole,
+którego kontrakt nie deklaruje.
+
+### Katalog kontraktów — wersja 1
+
+Jedna pozycja: **`summary`** — skrócona reprezentacja wpisu, czyli to, czym jest wiersz listy
+w odróżnieniu od karty. Dwa pola, **oba opcjonalne**:
+
+| Pole | Znaczenie |
+|---|---|
+| `category` | Grupuje listę wpisów. Wypełniona ścieżką (a nie stałą) jest tym, co pozwala potworowi i NPC-owi dzielić szablon, a różnić się grupą. |
+| `descriptor` | Jeden krótki napis obok nazwy: skala wyzwania, rzadkość, poziom zaklęcia, rola w świecie. |
+
+Wypełnienie ma **dwa zamknięte kształty**: stała wpisana w szablonie albo ścieżka do pola wpisu.
+Sekcja 6 przewiduje trzeci — formułę — ale silnika formuł nie ma, więc wariant byłby kształtem bez
+niczego za sobą. Dołożenie go później jest czysto addytywne.
+
+**`null` a pusty napis to dwa różne fakty.** Pole niewypełnione przez szablon oraz ścieżka do
+opcjonalnego pola, którego wpis nie podał, dają brak — nie pusty napis. Konsument musi umieć
+odróżnić „nie ma czego pokazać" od „jest, ale puste".
+
+**Kategoria jest opcjonalna, a wpisy bez niej trafiają do grupy resztkowej.** Wybór przeciw
+ostrzejszej walidacji, i to świadomy: literówka w deklaracji kontraktu nie ma prawa **ukryć treści
+przed Mistrzem Gry**. To ta sama zasada, którą kierują się `UnreadableDataBlock` i wpis
+nierozwiązany — wadliwa treść zostaje widoczna i oznaczona, nigdy nie znika po cichu. Wpisy
+nierozwiązane trafiają tam z tego samego powodu: nie mają szablonu, więc nie mają kategorii.
+
+**Kwalifikacja jest odłożona, nie pominięta.** `summary` nie ma pola wymaganego, więc nie ma zbioru
+kandydatów do policzenia — mechanizm opisany wyżej jest projektem, nie kodem. **Warunek powrotu:**
+pierwszy kontrakt z polem wymaganym, czyli najpewniej kontrakt niesienia albo uczestnika kolejki tur.
+
+**Następny kontrakt jest już rozstrzygnięty co do kształtu:** lista pozycji, renderując dołączony
+wpis, czyta `summary` po nazwę i deskryptor **plus osobny, jednopolowy kontrakt niosący treść
+pozycji** — akapit, który w statbloku potwora stoi pod nazwą akcji. Świadomie **nie** jest to
+opcjonalne pole `summary`: lista rejestru nigdy nie pokaże akapitu, więc `summary` niosłoby pole,
+którego żaden jego konsument nie wyświetla, i przestałoby przechodzić test powyżej.
+
 To jest uogólnienie **„zdolności"** ze źródła. Źródło definiuje je wąsko, jako „udział
 w narzędziach sceny"; u nas scen nie ma, a mechanizm okazuje się potrzebny wszędzie tam, gdzie
 jeden wpis pokazuje inny — również wewnątrz karty, w liście pozycji.
@@ -179,7 +257,7 @@ jeden wpis pokazuje inny — również wewnątrz karty, w liście pozycji.
 
 | Element | Odpowiedzialność |
 |---|---|
-| statblok | Lista cech; każda z opcjonalną wartością pochodną z formuły. |
+| lista cech | Jednorodna lista nazwanych wartości; każda z opcjonalną wartością pochodną z formuły. **Nie nazywa się „statblok"** — statblok to cała karta, a to jest jedna lista wewnątrz niej; nazwa ma przywoływać regułę jednorodności z sekcji 5. Parametry `compact` i `selfDescribing` są **deklaracjami o treści, nie o układzie**: pierwszy mówi, że wartości są krótkie i skanowalne, drugi — że nazywają się same, więc etykieta obok nic nie wnosi. Żaden nie mówi, jak to wygląda. |
 | lista pozycji | Jednorodna lista; opcjonalna ilość na pozycję. Pozycje są **albo** dołączonymi wpisami (renderowanymi przez kontrakt prezentacji), **albo** czystym tekstem — lista deklaruje, które, i nie miesza. Pokrywa ekwipunek, tagi, cechy, amunicję, efekty, zaklęcia na broni. |
 | pasek zasobu | Wartość bieżąca i maksymalna; maksimum stałe **albo** liczone formułą — nigdy oba naraz. |
 | akcja rzutu | Etykieta plus dowolnie długa lista nazwanych formuł. Pokrywa pojedynczy rzut rozstrzygający i akcję wieloetapową (trafienie + obrażenia). Grupa („Akcje", „Legendarne", „Reakcje") jest **parametrem**, nie osobnym elementem-nagłówkiem. |
@@ -375,7 +453,7 @@ kontener błędów skryptu oraz element „akcja skryptowa". To jednocześnie **
 źródłowego** — po tej decyzji model bezpieczeństwa redukuje się do sekcji 13.
 
 **Zakaz gałęzi pełni drugą, ważniejszą rolę niż bezpieczeństwo: uniemożliwia warstwie drugiej
-napisanie silnika reguł.** Autor paczki systemowej nie może zapisać „jeśli ciężki pancerz, to zeruj
+napisanie silnika reguł.** Autor paczki nie może zapisać „jeśli ciężki pancerz, to zeruj
 zręczność", bo nie ma czym. Może napisać `min(zręczność, pancerz.limit)` — ale to arytmetyka nad
 tym, co DM sam założył, a limit deklaruje ten konkretny pancerz o sobie samym. Aplikacja nadal nie
 wie, co to „ciężki pancerz". `min` i `max` przenoszą trochę reguł, ale przenoszą je **do danych
@@ -411,29 +489,47 @@ a nie dopisujemy skryptów.
 
 ## 11. Paczki i zależności
 
-**Paczka systemowa (warstwa 2)** wnosi wyłącznie szablony. „D&D 5e" to dokładnie to i nic więcej:
-kształt karty postaci, kształt statbloku potwora, jakie są sloty, co się sumuje do czego.
+**Paczka nie ma rodzaju.** Katalog paczki może nieść szablony, wpisy albo jedno i drugie; manifest
+nie deklaruje, czym paczka jest, bo obecność katalogu `templates/` lub `entries/` **jest** tą
+deklaracją. „D&D 5e" wolno więc wieźć naraz kształt statbloku potwora i sam bestiariusz.
 
-**Paczka treści (warstwa 3)** wnosi wyłącznie wpisy — potwory, przedmioty, zaklęcia, efekty.
-**Wszystko tutaj jest homebrew z definicji**, niezależnie od tego, czy stoi w oficjalnym
-podręczniku. Aplikacja nie zna pojęcia autorytetu i nie musi go znać.
+Rozdział na paczkę systemową i paczkę treści istniał wcześniej i **został usunięty**, bo mieszał
+dwie niezależne rzeczy: **jednostkę dystrybucji** (co instaluje się i wersjonuje razem)
+z **warstwą zależności** (czy pozycja jest kształtem, czy wartością). Autor własnego systemu wraz
+z bestiariuszem wydawał dwie paczki wersjonowane osobno — a to jedna rzecz i osobne wersjonowanie
+było o niej kłamstwem. Rodzaj paczki był przy okazji jedyną rzeczą w tej warstwie, po której
+cokolwiek się rozgałęziało.
 
-**Jedyną dozwoloną krawędzią zależności jest 3 → 2.** Paczka treści może zależeć od dowolnie wielu
-paczek systemowych; paczka systemowa nie zależy od niczego, a treść nie zależy od treści. Dzięki
-temu zależności są dwudzielne i nie tworzą grafu: nie ma problemu diamentu, zakresów wersji ani
-kolejności wczytywania. „Wiele" przestaje być ryzykiem, bo głębokość jest zawsze jeden.
+**Wszystko, co paczka wnosi w warstwie trzeciej, jest homebrew z definicji**, niezależnie od tego,
+czy stoi w oficjalnym podręczniku. Aplikacja nie zna pojęcia autorytetu i nie musi go znać.
 
-Każdy wpis wskazuje dokładnie jeden szablon. Paczka treści może zawierać wpisy dla różnych
-systemów; te, których szablonu brakuje, po prostu się nie rozwiązują.
+**Jedyną dozwoloną krawędzią zależności nadal jest 3 → 2 — ale jest to reguła o pozycjach, nie
+o paczkach.** Wpis wskazuje szablon; szablon nie wskazuje niczego. Graf pozycji zostaje dwudzielny
+o głębokości zawsze jeden, niezależnie od tego, w której paczce leżą oba końce krawędzi: nie ma
+problemu diamentu, zakresów wersji ani kolejności wczytywania. Krawędź może teraz zamykać się
+wewnątrz jednej paczki (wpis wskazujący szablon-sąsiada) i nie zmienia to o niej niczego —
+rozwiązywanie referencji nie pyta, czy dwa końce dzielą adres.
 
-Ta sama zasada obowiązuje **wewnątrz** warstwy trzeciej: wpis może wskazywać inny wpis w zawartości
-początkowej slotu (goblin ze swoim tasakiem), ale **wyłącznie z własnej paczki**. Gdyby mógł
-sięgnąć do cudzej, powstałaby krawędź 3 → 3 i cała gwarancja płaskich zależności by upadła.
-Instancji to nie dotyczy — ona rozwiązuje referencje wobec wszystkich paczek kampanii, bo jest
-stanem świata, nie treścią.
+Każdy wpis wskazuje dokładnie jeden szablon. Paczka może zawierać wpisy dla różnych systemów;
+te, których szablonu brakuje, po prostu się nie rozwiązują.
 
-**Kampania deklaruje jedną paczkę systemową i dowolnie wiele paczek treści.** Jedna kampania to
-jedna gra.
+**Jedna przestrzeń nazw na paczkę.** Ponieważ szablon i wpis adresuje się tak samo — `paczka:id` —
+id szablonu i id wpisu nie mogą kolidować w obrębie jednej paczki. Kolizja czyniłaby adres
+niejednoznacznym, a nie tylko powtórzonym, więc jest błędem wczytania.
+
+Zasada „tylko własna paczka" obowiązuje **wewnątrz** warstwy trzeciej bez zmian: wpis może wskazywać
+inny wpis w zawartości początkowej slotu (goblin ze swoim tasakiem), ale wyłącznie z własnej paczki.
+Gdyby mógł sięgnąć do cudzej, powstałaby krawędź 3 → 3 i gwarancja płaskich zależności by upadła.
+Po scaleniu paczek reguła ta jest znacznie mniej dotkliwa niż była: goblin i jego bułat mieszkają
+teraz naturalnie w tej samej paczce co szablon, którym się posługują. Instancji to nie dotyczy —
+ona rozwiązuje referencje wobec wszystkich paczek kampanii, bo jest stanem świata, nie treścią.
+
+**Co ta zmiana kosztuje, wprost.** „Jedna kampania to jedna gra" przestaje być własnością
+wymuszalną przez policzenie paczek systemowych — kampania deklaruje jedną listę paczek, a to, czy
+gra w jeden system, wynika z tego, co Mistrz Gry zainstalował, a nie z kształtu manifestu. Ginie też
+kontrola pomyłki autorskiej („paczka systemowa z wpisami"), przyjęta jako tania do oddania.
+Osobno, koszt społeczny, nie techniczny: paczki scalone gorzej się podmienia — cudzy bestiariusz do
+tego samego systemu jest nadal możliwy, ale przestaje być jedyną formą, w jakiej treść się wydaje.
 
 ### Szablony są płaskie — bez dziedziczenia
 
@@ -472,8 +568,46 @@ wyłącznie w obrębie paczki, bez nadpisywania — zadeklarowanie tego samego p
 wczytania, nie cichym scaleniem. Zachowuje to jedną regułę rozstrzygania, brak diamentu, brak
 odejmowania i lokalne wersjonowanie.
 
-**Wyzwalacz do powrotu:** pierwsza paczka systemowa przekraczająca kilkanaście szablonów albo taka,
+**Wyzwalacz do powrotu:** pierwsza paczka przekraczająca kilkanaście szablonów albo taka,
 w której to samo wypełnienie kontraktu powtarza się w większości z nich. Wcześniej to spekulacja.
+
+### Szablon w szablonie — odrzucony, razem z poziomami
+
+Osobno od dziedziczenia odrzucamy **osadzanie jednego szablonu w drugim**: żeby szablon potwora
+deklarował, że jego umiejętności mają kształt dany przez szablon umiejętności, i wypisywał je jako
+listę. Odrzucona jest też propozycja ratująca to przed cyklem, czyli **poziomy szablonów**, gdzie
+szablon poziomu 2 wolno osadzić w szablonie poziomu 1, ale nie odwrotnie.
+
+Powód, dla którego to w ogóle wraca, jest prawdziwy: akcje i cechy szczególne potwora **nie dają się
+sensownie zapisać jednym długim napisem** z `\n\n` udającym akapit. To jest realny problem i trzeba
+go rozwiązać.
+
+**Rozwiązuje go slot, bez ani jednego nowego mechanizmu i bez krawędzi 2 → 2.** Szablon deklaruje
+slot `akcje`; wpis wypełnia go referencjami do wpisów `bułat`, `krótki łuk`; każdy z nich wskazuje
+własny szablon z własną kartą; element listy pozycji renderuje je przez kontrakt prezentacji.
+Kluczowe: **szablon potwora nie zna szablonu akcji.** Zna tylko slot i to, że slot przyjmuje wpisy —
+który szablon te wpisy wskazują, rozstrzyga się dopiero w warstwie trzeciej.
+
+Poziomy łamią cykl, ale nie naprawiają czterech rzeczy:
+
+* **Wersjonowanie łamie się tak samo jak przy dziedziczeniu.** Dziś wpis wiąże się z wersją szablonu
+  i bump zostawia to wiązanie jawnie nieaktualne. Przy osadzaniu podbicie szablonu osadzonego po
+  cichu zmieniałoby efektywny kształt każdego wpisu związanego z szablonem-gospodarzem. Poziomy
+  ograniczają głębokość, nie to.
+* **Wartości przestają być płaskie.** Osadzony szablon powtarzalny wymaga, żeby `values` niosło listę
+  obiektów. To rozbija zamkniętą hierarchię wartości i wprowadza zagnieżdżone drzewo, którego
+  sekcja 19.3(c) odmawia. W modelu slotu `values` zostaje płaskie — wartością slotu jest lista
+  referencji.
+* **Poziom to nowa taksonomia, którą silnik musi znać.** Deklaracja `"poziom": 2` jest daną mówiącą
+  silnikowi o kategorii szablonu — system rodzajów pod inną nazwą, na osi, której nikt nie potrzebuje.
+* **Znika wielokrotny użytek.** „Zwinna ucieczka" osadzona wewnątrz wpisu goblina nie jest
+  wyszukiwalna w rejestrze, nie ma własnej karty i nie da się jej dać hobgoblinowi. Jako wpis — ma
+  wszystko troje. Kryterium z sekcji 8 brzmi „czy chcesz tego użyć ponownie", a atak bułatem powtarza
+  się w połowie bestiariusza.
+
+Czego slot **nie** załatwia: `description` nadal jest jednym długim tekstem w polu formularza.
+Wąskie gardło z sekcji 19.3(c) — długi tekst, nie liczba pól — zostaje otwarte i sloty go nie
+zamykają.
 
 ---
 
@@ -484,17 +618,26 @@ Pokrywa się to z podziałem, który projekt już stosuje — dokument użytkown
 
 | Co | Gdzie | Charakter |
 |---|---|---|
-| Paczki systemowe i treści | `Documents\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — ma być widoczny i kopiowalny. |
+| Paczki | `Documents\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — ma być widoczny i kopiowalny. |
 | Kampanie (instancje, stan narzędzi, manifest) | `Documents\DungeonApp\Campaigns\<id>\` | Istniejąca lokalizacja, bez zmian. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Istniejąca lokalizacja, bez zmian. Stan aplikacji, nie dokument. |
 
-Manifest kampanii ma już zarezerwowane, dziś martwe pole `ContentPacks` — ożywiamy je jako listę
-`{ id, major }`. Daje to istotną własność bezpieczeństwa: **zainstalowanie nowej paczki nie może po
-cichu zmienić otwartej kampanii.** Kampania rozwiązuje referencje wyłącznie wobec paczek, które
-sama deklaruje.
+Manifest kampanii niesie **jedną listę paczek** o kształcie `{ id, major }`, pod kluczem `packs`.
+Daje to istotną własność bezpieczeństwa: **zainstalowanie nowej paczki nie może po cichu zmienić
+otwartej kampanii.** Kampania rozwiązuje referencje wyłącznie wobec paczek, które sama deklaruje.
+Lista jest dziś zawsze pusta i nikt jej nie czyta — nic jeszcze nie powołuje instancji do kampanii —
+ale ma docelowy kształt, nadany, póki była dowodnie pusta wszędzie.
 
-Drugiego zarezerwowanego pola, `Ruleset`, **nie ożywiamy** — `ContentPacks` wraz z deklaracją
-paczki systemowej wystarcza. Nie wymyślamy dla niego znaczenia.
+Drugie zarezerwowane pole, `Ruleset`, **zostało usunięte, nie odłożone.** Wcześniejsza decyzja
+brzmiała „nie ożywiamy go i nie wymyślamy dla niego znaczenia"; wożenie pola, dla którego świadomie
+nie przewidujemy zastosowania, jest gorsze niż jego brak.
+
+Żadna z tych dwóch zmian nie podniosła wersji formatu i nie wymagała migracji: deserializacja
+manifestu kampanii jest **celowo pobłażliwa** — w odróżnieniu od wczytywania paczek nie ustawia
+`UnmappedMemberHandling.Disallow` — więc starszy `campaign.json` niosący `ruleset` i `contentPacks`
+po prostu ma te klucze zignorowane. To nie jest argument, tylko sprawdzany fakt: pilnuje go test
+wczytujący manifest w starym kształcie. Gdyby ktoś kiedyś dokręcił tam ścisłość, ten test padnie
+i powie dlaczego — zamiast cicho zepsuć zapisane kampanie.
 
 ---
 
@@ -526,6 +669,25 @@ treści, nie formatu, więc nie dotyka ani kodu, ani wersji katalogu.
   wystarcza, żeby czas ewaluacji był ograniczony z góry.
 * Odrzucona paczka nie przewraca aplikacji — aplikacja startuje bez niej i mówi, której zabrakło
   i dlaczego.
+
+**Odrzucenie musi być zupełne, nie tylko głośne.** Skoro odrzucona paczka ma być tak dobra jak
+niezainstalowana, to **rejestr nie może zawierać wpisu rozwiązanego wobec szablonu z paczki, której
+w rejestrze nie ma.** Bez tej reguły Mistrz Gry widzi komunikat „paczka X odrzucona", a wpis z paczki
+Y renderuje się jak gdyby nigdy nic — czyli dokładnie ta klasa cichej niespójności, której zakazuje
+cała ta sekcja. Reguła stała się osiągalna dopiero po scaleniu paczek: wcześniej paczka dostarczająca
+szablony nie miała wpisów, którymi mogłaby się wywrócić.
+
+Rozstrzyga to zasada **„paczka odpowiada za własne pliki"**: wartości wpisu waliduje się wobec
+szablonu, do którego się rozwiązał, a jeśli paczka dostarczająca ten szablon sama zostaje odrzucona,
+wpis po prostu **się nie rozwiązuje** — tak, jakby tamtej paczki nigdy nie zainstalowano. Paczka
+odrzucona za własny sprzeczny wpis zostaje odrzucona nawet wtedy, gdy szablon, któremu przeczyła,
+zniknął po drodze: jej własny plik jest błędny wobec kształtu, który legalnie stał na dysku.
+
+**Komunikaty walidacji są częścią interfejsu autora treści, nie szczegółem implementacyjnym.** Część
+reguł egzekwuje dziś ścisła deserializacja, więc komunikat potrafi nieść nazwę typu wewnętrznego
+zamiast nazwy klucza, który autor pomylił. Jest to spójne z resztą wczytywania i na razie
+akceptowane — ale jest **długiem wobec pytania 3 z sekcji 19**: w dniu, w którym człowiek zacznie
+pisać paczki ręcznie, komunikat mówiący o „polu, którego nie da się zmapować" jest bezużyteczny.
 
 ---
 
@@ -578,11 +740,14 @@ Trzy powody, każdy wystarczający osobno:
   „Przedmioty", „Lokacje" — czyli rodzajami wpisów, których silnik z założenia nie zna (sekcja 4).
   Praktycznie: literówka w nazwie pola odrzuca paczkę, a wraz z nią **znikają pozycje nawigacji**.
   Nawigacja przestaje działać, bo autor pomylił klucz w pliku tekstowym. Do tego kampania deklaruje
-  jedną paczkę systemową, więc zbiór szablonów różni się między kampaniami — globalna szyna
+  własną listę paczek, więc zbiór szablonów różni się między kampaniami — globalna szyna
   o zawartości zależnej od tego, co masz otwarte, nie jest nawigacją, tylko widokiem, który ją udaje.
+  Granica tego zakazu jest wąska i wyłożona niżej: **grupowanie treści wewnątrz skompilowanego
+  ekranu jest legalne**, nawigacja z danych — nie.
 * **Szablon nie jest kategorią.** Szablon deklaruje kształt, nie rodzaj rzeczy. Jeden szablon
-  `statblok` może obsługiwać potwory, NPC-e i zwierzęta naraz, a trzy szablony mogą opisywać to, co
-  DM uważa za jedno. Grupowanie po szablonie jest taksonomią silnika, nie człowieka.
+  o kształcie statbloku może obsługiwać potwory, NPC-e i zwierzęta naraz, a trzy szablony mogą
+  opisywać to, co DM uważa za jedno. Grupowanie po szablonie jest taksonomią silnika, nie człowieka —
+  dlatego kategoria mieszka w kontrakcie prezentacji, a nie w tożsamości szablonu.
 * **Nie miałaby własnej treści.** Wszystko, co należy do jednej kampanii, jest z definicji oknem
   biurka, bo biurko jest warsztatem kampanii, a okna są jego jednostkami. Szyna kampanii mogłaby
   więc być wyłącznie drugim sposobem otwierania okien.
@@ -591,6 +756,47 @@ Osobno: **rejestr nie jest miejscem wewnątrz kampanii.** Wpisy to referencje, k
 instancje. Wybór wpisu z rejestru jest w kampanii potrzebny — sekcja 15(d) na nim stoi — ale jest
 **momentem, nie miejscem**: przywoływanym z narzędzia, przelotnym, znikającym po wyborze. Błąd
 wczesnego szkicu polegał na zamienieniu czynności chwilowej w stałe miejsce docelowe.
+
+### Grupowanie z danych — legalne wewnątrz ekranu, nie w nawigacji
+
+Poprzedni podrozdział bywa czytany szerzej, niż mówi, więc granica wprost: **odrzucona jest szyna
+nawigacji o zawartości z danych, a nie grupowanie treści wewnątrz skompilowanego ekranu.**
+
+Rejestr wolno pogrupować i ofiltrować po `category` z kontraktu `summary` — zakładki „Potwory /
+Przedmioty / Zaklęcia / NPC", nagłówki grup, licznik przy każdej. Ekran jest skompilowany, jego
+układ nie pochodzi z paczki, a z danych pochodzi wyłącznie **zawartość jednego wymiaru**. Sekcja 14
+dopuszcza to zresztą już przy powierzchni „Świat" („pogrupowany wewnątrz danymi — czyli grupowanie
+z danych tam, gdzie jest legalne").
+
+Różnica jest sprawdzalna po skutku awarii: literówka w paczce psuje **etykietę zakładki**, a nie
+nawigację. Nie da się nią zgubić drogi powrotnej, bo szyna stoi obok i nie zależy od treści.
+
+**Kategorii nie wolno wywodzić z szablonu.** Szablon deklaruje kształt, nie rodzaj rzeczy: jeden
+szablon statbloku obsługuje potwory, NPC-e i zwierzęta naraz. Grupowanie po szablonie byłoby
+taksonomią silnika, nie człowieka — dlatego kategoria jest polem kontraktu wypełnianym **ścieżką do
+pola wpisu**, a nie stałą szablonu, wszędzie tam, gdzie wpisy dzielące kształt mają się różnić grupą.
+
+### Co wolno wziąć z danych w liście wpisów, a czego nie
+
+Rozstrzygnięcia wywołane pierwszym pełnym makietowaniem ekranu rejestru:
+
+* **Odznaka przy wierszu** (skala wyzwania, rzadkość, poziom zaklęcia, rola NPC-a) — legalna, to
+  `descriptor` z `summary`. Ale **jej wygląd nie może zależeć od wartości**: jeśli rzadkość jest
+  kolorową pigułką, a poziom zaklęcia szarym tekstem, bo tak zdecydowała paczka, sekcja 5 upada.
+  Legalne są dwie drogi: jedno traktowanie dla całego pola, albo **zamknięty, mały katalog wariantów
+  odznaki** jako parametr kontraktu, walidowany przy wczytaniu.
+* **Ikona przy wierszu** — dopuszczalna wyłącznie przy **zamkniętym słowniku ikon w katalogu**.
+  Dane wybierają z listy, której nie ustalają; nigdy nie podają klucza zasobu.
+* **Filtry fasetowe** („Wyzwanie" tylko dla potworów) — przechodzą regułę jednorodności z sekcji 5,
+  bo to zmienna liczba **jednorodnych** faset, a nie zmienny skład różnych typów obok siebie.
+  Kształt nierozstrzygnięty; wymagają więcej niż jednego pola do filtrowania, żeby przestać być
+  spekulacją.
+* **Wpisy nierozwiązane i paczki odrzucone muszą mieć na tym ekranie swoje miejsce.** Sekcja 13
+  wymaga, żeby aplikacja powiedziała, której paczki zabrakło i dlaczego; rejestr jest jedynym
+  kanałem, którym Mistrz Gry się o tym dowiaduje. Projekt ekranu, który tego nie przewiduje, jest
+  niekompletny — nie kosmetycznie, tylko funkcjonalnie.
+* **Tworzenie, edycja i usuwanie wpisu w rejestrze są poza v1.** Rejestr jest tylko do odczytu,
+  dopóki nie rozstrzygnie się pytanie 3 z sekcji 19.
 
 ### Kampania jest zbiorem powierzchni
 
@@ -680,7 +886,7 @@ startu.
 **(b) Przeglądanie rejestru.** Sekcja `Rejestr` → lista wpisów → karta złożona z elementów według
 układu szablonu, bez nakładki. Nie wymaga otwartej kampanii.
 
-**(c) Otwarcie kampanii.** Manifest → paczka systemowa i paczki treści → rozwiązanie referencji
+**(c) Otwarcie kampanii.** Manifest → zadeklarowane paczki → rozwiązanie referencji
 wobec rejestru (nierozwiązane oznaczone) → wczytanie instancji i stanu narzędzi → biurko
 z zapisanego układu.
 
@@ -711,18 +917,22 @@ licznik istniał. Zmienia się magazyn docelowy, nie kształt przepływu.
 | `CampaignSession` | Bez zmian. Nadal jedyna droga zmiany otwartej kampanii. |
 | `CampaignEvents` | Bez zmian — i rozstrzyga pytanie otwarte źródła, patrz niżej. |
 | `JsonCampaignRepository` | Rozszerzone o magazyn instancji; te same prymitywy zapisu. |
-| `CampaignManifest.ContentPacks` | **Ożywione.** `Ruleset` — nie. |
+| `CampaignManifest` | `Ruleset` **usunięte**. `ContentPacks` przekształcone w jedną listę `packs` o kształcie `{ id, major }` — nadal pusta i nieczytana. Wersja formatu bez zmian, bo parser jest pobłażliwy; pilnuje tego test wstecznej zgodności. |
 | `WorkspaceLayoutStore`, `PanelGeometry`, `WorkspaceSurface` | Bez zmian. |
-| `CoreIndependenceTests` | Bez zmian; kandydat na bliźniaczy test zakazujący dispatchu po rodzaju wpisu w `Core`. |
+| `CoreIndependenceTests` | Bez zmian. Bliźniak — `CoreEntryKindIndependenceTests` — **istnieje**: skanuje słownictwo `Core` przeciw nazwom wziętym z fixture'ów, więc zakaz poszerza się sam wraz z treścią. Obejmuje też komentarze, nie tylko kod. |
 | Sidebar | Sekcja `Rejestr` przestaje być placeholderem. |
 | Nowe w `Core` | Wczytywanie i walidacja paczek, rejestr, katalog elementów karty, katalog kontraktów, silnik formuł, magazyn instancji. |
+| `SystemPack` / `ContentPack` | **Scalone** w jeden `Pack` niosący szablony i wpisy. Rodzaj paczki zniknął z formatu i z kodu — patrz sekcja 11. |
+| Element „statblok" | **Przemianowany** na listę cech. Statblok to cała karta; element jest jedną listą wewnątrz niej. |
+| Katalog kontraktów | **Istnieje**, z jedną pozycją: `summary`. Kwalifikacja odłożona do pierwszego kontraktu z polem wymaganym. |
+| Fixture'y paczek | Są wykonywaną specyfikacją formatu i **pokazują oba kształty naraz**: paczkę scaloną z referencją wewnątrzpaczkową oraz paczkę z samymi wpisami z referencją międzypaczkową. |
 
 **Dwa magazyny stanu, każdy z własnym źródłem kształtu:**
 
 | Magazyn | Co trzyma | Kto waliduje kształt |
 |---|---|---|
 | bloki danych (istniejący) | stan narzędzi biurka | `DataBlockShape`, znany w czasie kompilacji |
-| magazyn instancji (nowy) | nakładki instancji, wraz z zagnieżdżonymi | szablon z paczki systemowej |
+| magazyn instancji (nowy) | nakładki instancji, wraz z zagnieżdżonymi | szablon z paczki |
 
 Magazyn instancji stoi na tych samych prymitywach zapisu co bloki danych — plik na instancję
 kampanii, zapis przez plik tymczasowy plus atomowe przeniesienie, licznik generacji, wykrywanie
@@ -783,7 +993,7 @@ Odpowiedź „nie" na którekolwiek pytanie oznacza, że kształt jest przebran�
 | Blok prozy i znacznik binarny poza v1 | W v1 | Bez nich katalog nie renderuje statbloku żadnego systemu klasy „trad". |
 | „Lista wpisów" jako nazwa elementu | „Lista pozycji" | „Wpis" jest zajęty przez pozycję rejestru. |
 | Byt referencjonowany przez ID i nigdy nie duplikowany | Wpis + instancja z rzadką nakładką | Trzy gobliny mają trzy różne stany, a referencja i tak nie jest duplikowana. |
-| Warstwy 2 i 3 nierozdzielone jako jednostki dystrybucji | Paczka systemowa i paczka treści, krawędź wyłącznie 3 → 2 | Homebrew musi być możliwe bez powielania szablonu; graf zależności — nie. |
+| Warstwy 2 i 3 nierozdzielone jako jednostki dystrybucji | Warstwa jest własnością **pozycji**, nie paczki; jedna paczka może nieść oba katalogi, krawędź wyłącznie 3 → 2 | Homebrew musi być możliwe bez powielania szablonu; graf zależności — nie. Jednostka dystrybucji to inna oś niż warstwa zależności i mieszanie ich było błędem — patrz sekcja 11. |
 | Efekty międzybytowe „świadomie odłożone" | Nie odłożone — wykluczone przez pięć zakazów z sekcji 9 | Nie jest to brak funkcji, tylko granica produktu. |
 | Pytanie otwarte: kronika zdarzeń | Rozstrzygnięte przez istniejący `CampaignEvents` | Mechanizm już jest. |
 | Pytanie otwarte: kształt sceny | Nieaktualne | Scen nie ma. |
@@ -817,8 +1027,35 @@ Odpowiedź „nie" na którekolwiek pytanie oznacza, że kształt jest przebran�
    formularza**. Wąskim gardłem jest długi tekst, nie liczba pól, i to jest wskazówka co do
    kształtu rozwiązania: grupowanie wartości niczego nie naprawia, a dodatkowo wiązałoby wpis
    z układem jego karty, wbrew rozdziałowi `fields` i `card`.
+
+   **Zagnieżdżanie wartości wróciło raz jeszcze i zostało odrzucone ponownie, z mocniejszym
+   uzasadnieniem.** Grupa, której autor wpisu szuka, **już istnieje — w `card`, nie w `fields`**:
+   sześć cech stoi razem w jednym elemencie listy cech, KP i PZ w drugim. Płaskie zostają wyłącznie
+   deklaracja i przestrzeń adresowa, i mają zostać płaskie, bo: formuła czyta pole po nazwie i musi
+   być walidowalna wobec ścieżek deklarowanych przez szablon, a zagnieżdżenie zamienia każdą
+   referencję w ścieżkę z regułami rozstrzygania zakresu; identyfikator pola dopuszcza dziś wyłącznie
+   litery i cyfry, więc drzewo wymagałoby wpuszczenia separatora do celowo wąskiego zbioru znaków;
+   kontrakty prezentacji wypełnia się **nazwanym** polem, więc kontrakt zacząłby wiedzieć o strukturze
+   wpisu; nakładka instancji jest rzadka i kluczowana polem, a rzadkość w drzewie przestaje być
+   darmowa; wreszcie grupowanie istniałoby w `fields` **obok** grupowania w `card` i mogłoby się z nim
+   nie zgadzać, co wymagałoby nowej reguły rozstrzygania za zero korzyści.
+
+   Odrzucone jest też obejście pośrednie: kosmetyczne grupowanie w pliku wpisu, spłaszczane przy
+   wczytaniu. To dwa sposoby zapisania tego samego, kłamstwo loadera i koniec porównywalności diffów.
+
+   **Sloty zmniejszają ten problem, ale go nie zamykają.** Akcje i cechy szczególne przestają być
+   prozą w napisie, kiedy stają się dołączonymi wpisami — ale `description` nadal jest jednym długim
+   tekstem w polu formularza. Pytanie zostaje otwarte.
 4. **Liczba przełączników w znaczniku binarnym** jest w v1 stała. Liczba przygotowanych zaklęć
    zależy od poziomu, więc prędzej czy później zechce być formułą. Odłożone.
+5. **Zamknięte słowniki wyglądu.** Trzy rzeczy z makiety rejestru czekają na ten sam rodzaj decyzji:
+   słownik ikon, z którego dane wybierają, ale którego nie ustalają; katalog wariantów odznaki, jeśli
+   deskryptor ma mieć więcej niż jedno traktowanie; oraz kształt faset filtrowania. Wszystkie trzy są
+   legalne wyłącznie jako zamknięte katalogi silnika i wszystkie trzy są dziś spekulacją — żadna nie
+   ma jeszcze dwóch niezależnych zastosowań, które kazałyby wybrać kształt.
+6. **Komunikaty walidacji jako interfejs autora treści.** Patrz sekcja 13. Zbiega się z pytaniem 3:
+   dopóki paczki pisze się bez pomocy aplikacji, komunikat odrzucenia jest jedyną informacją zwrotną,
+   jaką autor dostaje.
 
 **Świadomie nierozstrzygnięte na tym etapie:** konkretna implementacja poszczególnych narzędzi
 biurka — w tym to, skąd tracker tur bierze inicjatywę i jak wygląda jego okno. Mechanizm jest
