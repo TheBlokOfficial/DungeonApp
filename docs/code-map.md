@@ -1,14 +1,31 @@
-# DungeonApp — High-Level Design / Architecture Overview
+# DungeonApp — mapa kodu
 
-**Status: opis stanu faktycznego. Nie rozstrzyga niczego.** Dokument opisuje **rzeczywisty** stan
-repozytorium na dzień jego napisania — nie plan, nie intencję z README. Przy rozbieżności z kodem
-prawdą jest kod, a ten dokument jest do poprawienia. Cel: dać komuś (człowiekowi lub agentowi AI)
-możliwość oceny projektu bez czytania każdej linii kodu.
+**Status: opis stanu faktycznego. Nie rozstrzyga niczego.** Ten dokument mówi, **co jest w kodzie
+dzisiaj** i gdzie co leży. Przy rozbieżności z kodem prawdą jest kod, a dokument jest do poprawienia.
+Cel: dać człowiekowi albo agentowi możliwość zorientowania się w repozytorium bez czytania każdej
+linii.
 
-Projekt docelowy — czyli to, do czego kod ma dojść — opisuje [architecture.md](architecture.md).
+Projekt docelowy — to, do czego kod ma dojść — opisuje [architecture.md](architecture.md).
 **Ten dokument i tamten rozjeżdżają się celowo i będą rozjeżdżać się coraz bardziej**, dopóki nie
-zostaną wykonane kroki z sekcji 20 tamtego. Rozbieżność jest planem, nie usterką; lista różnic jest
-tam, nie tu.
+zostaną wykonane kroki z sekcji *Kolejność prac* tamtego. Rozbieżność jest planem, nie usterką;
+lista różnic jest tam, nie tu.
+
+## Od czego zacząć czytanie kodu
+
+1. `src/DungeonApp.Desktop/App.axaml.cs` — korzeń kompozycji. Tam aplikacja składa wszystkie
+   zależności ręcznie, bez kontenera DI. Jedyne miejsce, które widzi całość naraz.
+2. `Shell/AppShellViewModel.cs` — przełącza między biblioteką kampanii a biurkiem otwartej kampanii.
+3. `DungeonApp.Core`: `Campaign`, `CampaignDataBlocks`, `JsonCampaignRepository` — stan, jego zmiana
+   i trwały zapis.
+4. Licznik jako kompletny przekrój pionowy: `CounterTool` → `CounterPanelViewModel` →
+   `CampaignSession` → `JsonCampaignRepository`.
+
+**Licznik jest rusztowaniem, nie funkcją.** Powstał, żeby udowodnić, że cała ścieżka od gestu do
+zapisu na dysku działa i daje się przetestować. Zniknie, gdy powstanie pierwsze prawdziwe narzędzie
+biurka. Z samego kodu — dopracowanego i najlepiej pokrytego testami w repozytorium — łatwo wyciągnąć
+przeciwny wniosek, więc to zdanie jest tu celowo.
+
+Testy w `tests/` są zarazem wykonywalną specyfikacją opisanych tu zachowań.
 
 Zakres przejrzany w całości: `src/DungeonApp.Core`, `src/DungeonApp.Desktop`, `tests/`,
 pliki `.csproj`, `Directory.Build.props`, `DungeonApp.sln`.
@@ -20,8 +37,8 @@ pliki `.csproj`, `Directory.Build.props`, `DungeonApp.sln`.
 > sprzed tamtej sesji. (2) `tools/MockupRenderer` został usunięty razem z `design/mockups/*.axaml`;
 > wzmianki o nim wyczyszczono, ale reszta dokumentu nie była przy tej okazji ponownie audytowana.
 >
-> **Do pełnej regeneracji po wykonaniu kroków 1–5** z sekcji 20 `architecture.md` — wcześniej
-> regeneracja byłaby pracą do wyrzucenia.
+> **Do pełnej regeneracji po wykonaniu kroków 1–5** z sekcji *Kolejność prac* w `architecture.md` —
+> wcześniej regeneracja byłaby pracą do wyrzucenia.
 
 ---
 

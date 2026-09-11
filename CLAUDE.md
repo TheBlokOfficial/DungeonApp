@@ -5,7 +5,8 @@
 Aplikacja prowadzi księgowość i nie egzekwuje reguł. Poniższe pięć własności
 jest technicznym przełożeniem tej zasady. Każdą da się sprawdzić, czytając sam
 diff — bez znajomości intencji autora i bez uruchamiania aplikacji.
-Uzasadnienie, konsekwencje i test asystenta: `docs/architecture.md`, sekcja 9.
+Uzasadnienie, konsekwencje i test asystenta: `docs/architecture.md`, sekcja
+"Granica automatyzacji".
 
 Kierunki już raz rozważone i odrzucone, wraz z argumentami, są w
 `docs/decisions.md`. Przeczytaj je, zanim zaproponujesz zmianę architektury —
