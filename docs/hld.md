@@ -1,17 +1,27 @@
 # DungeonApp — High-Level Design / Architecture Overview
 
-Dokument opisuje **rzeczywisty** stan repozytorium na dzień jego napisania — nie plan, nie
-intencję z README. Tam, gdzie kod i README się rozjeżdżają, jest to odnotowane wprost. Cel: dać
-komuś (człowiekowi lub agentowi AI) możliwość oceny projektu bez czytania każdej linii kodu.
+**Status: opis stanu faktycznego. Nie rozstrzyga niczego.** Dokument opisuje **rzeczywisty** stan
+repozytorium na dzień jego napisania — nie plan, nie intencję z README. Przy rozbieżności z kodem
+prawdą jest kod, a ten dokument jest do poprawienia. Cel: dać komuś (człowiekowi lub agentowi AI)
+możliwość oceny projektu bez czytania każdej linii kodu.
+
+Projekt docelowy — czyli to, do czego kod ma dojść — opisuje [architecture.md](architecture.md).
+**Ten dokument i tamten rozjeżdżają się celowo i będą rozjeżdżać się coraz bardziej**, dopóki nie
+zostaną wykonane kroki z sekcji 20 tamtego. Rozbieżność jest planem, nie usterką; lista różnic jest
+tam, nie tu.
 
 Zakres przejrzany w całości: `src/DungeonApp.Core`, `src/DungeonApp.Desktop`, `tests/`,
-`tools/MockupRenderer`, pliki `.csproj`, `Directory.Build.props`, `DungeonApp.sln`.
+pliki `.csproj`, `Directory.Build.props`, `DungeonApp.sln`.
 
-> **Odświeżenie punktowe.** Po sesji, która dołożyła warstwę treści (paczki, rejestr, ekran
-> rejestru), zaktualizowano wyłącznie fragmenty jej dotyczące: mapa modułów, sekwencja startowa,
-> nawigacja i strategia testów. Reszta dokumentu nie została ponownie zaudytowana i opisuje stan
-> sprzed tej sesji. Projekt docelowy warstwy treści opisuje
-> [content-architecture.md](content-architecture.md).
+> **Dwa zastrzeżenia do wieku treści.** (1) Dokument był ostatnio odświeżany punktowo — po sesji
+> scalającej `SystemPack`/`ContentPack` w `Pack` zaktualizowano wyłącznie mapę modułów (§3), manifest
+> kampanii (§5), punkty rozszerzeń (§8), strategię testów (§9) i ocenę stanu (§10); sekwencja
+> startowa (§6) i nawigacja zostały wtedy sprawdzone i pozostają aktualne, reszta opisuje stan
+> sprzed tamtej sesji. (2) `tools/MockupRenderer` został usunięty razem z `design/mockups/*.axaml`;
+> wzmianki o nim wyczyszczono, ale reszta dokumentu nie była przy tej okazji ponownie audytowana.
+>
+> **Do pełnej regeneracji po wykonaniu kroków 1–5** z sekcji 20 `architecture.md` — wcześniej
+> regeneracja byłaby pracą do wyrzucenia.
 
 ---
 
@@ -30,9 +40,10 @@ z jednym kompletnym, ale celowo trywialnym narzędziem (licznikiem)**, który ma
 ścieżka od gestu UI do zapisu na dysku działa i jest testowalna. Docelowe „prawdziwe" narzędzia
 GM-a (dziennik, NPC, zasoby itd.) nie istnieją jeszcze w kodzie.
 
-Repozytorium zawiera też trzeci, pomocniczy projekt (`tools/MockupRenderer`) do renderowania
-statycznych zrzutów `.axaml` na PNG na potrzeby projektowania UI — nie jest częścią aplikacji i nie
-wchodzi w skład `DungeonApp.sln`.
+Repozytorium zawiera wyłącznie dwa projekty produkcyjne i dwa testowe. Pomocniczy renderer mockupów
+(`tools/MockupRenderer`) został usunięty — mockupy powstają poza repozytorium, a sprawdzeniem
+transkrypcji do prawdziwych tokenów jest uruchomienie aplikacji. W `design/mockups/` zostały same
+PNG-i jako materiał projektowy.
 
 ---
 
@@ -42,7 +53,7 @@ wchodzi w skład `DungeonApp.sln`.
 |---|---|
 | Język | C#, `<LangVersion>latest</LangVersion>` (Directory.Build.props) |
 | TFM wszystkich projektów | `net10.0` |
-| `Nullable` | `enable` we wszystkich `.csproj` (Core, Desktop, testy, MockupRenderer) |
+| `Nullable` | `enable` we wszystkich `.csproj` (Core, Desktop, oba projekty testowe) |
 | `EnforceCodeStyleInBuild` | `true` (globalnie, Directory.Build.props) |
 | Warnings-as-errors | **nie skonfigurowane.** Ani `Directory.Build.props`, ani żaden `.csproj` nie ustawia `TreatWarningsAsErrors`. Kod jest pisany zdyscyplinowanie, ale nic w buildzie tego nie wymusza mechanicznie — dyscyplina, nie mechanizm. |
 | UI framework | Avalonia **12.0.5** (`Avalonia`, `Avalonia.Desktop`, `Avalonia.Themes.Fluent`, `Avalonia.Fonts.Inter`) |
@@ -50,14 +61,11 @@ wchodzi w skład `DungeonApp.sln`.
 | Diagnostyka | `AvaloniaUI.DiagnosticsSupport 2.2.3`, dołączane tylko w konfiguracji `Debug` |
 | Publish | `PublishReadyToRun = true` — mniej JIT-a przy pierwszym użyciu widoku w publikowanym buildzie |
 | Testy | xUnit 2.9.3, `Microsoft.NET.Test.Sdk` 17.14.1, `coverlet.collector` — brak Moq/NSubstitute/FluentAssertions; podwójne (Fakes) pisane ręcznie |
-| MockupRenderer | dodatkowo `Avalonia.Skia`, `Avalonia.Headless`, `Avalonia.Markup.Xaml.Loader` — rendering offscreen |
 | Kontener DI | **brak.** Kompozycja obiektów jest ręczna, w `App.axaml.cs` (patrz sekcja 6) |
 | Serializacja | wbudowany `System.Text.Json` (`System.Text.Json.Nodes`), camelCase, indentowany JSON |
 
 Solucja `DungeonApp.sln` obejmuje 4 projekty: `DungeonApp.Desktop`, `DungeonApp.Core`,
-`DungeonApp.Core.Tests`, `DungeonApp.Desktop.Tests`. `tools/MockupRenderer` żyje poza solucją
-(potwierdzone komentarzem w jego `.csproj`), ale referencuje `DungeonApp.Desktop.csproj`, żeby
-mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
+`DungeonApp.Core.Tests`, `DungeonApp.Desktop.Tests` — i nic poza nimi.
 
 ---
 
@@ -80,12 +88,25 @@ mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
 | `Events/CampaignEvents.cs` | Prosta, synchroniczna magistrala zdarzeń *per kampania* (nigdy statyczna/globalna) z limitem kaskady (`MaxEventsPerCommand = 1000`). |
 | `Events/ICampaignEvent.cs`, `EventCascadeException.cs` | Kontrakt zdarzenia (nazwa w czasie przeszłym) i wyjątek pętli zdarzeń. |
 | `Tools/ITool.cs` | Kontrakt narzędzia: deklaruje tylko, jakich `DataBlockId` używa (`Uses`). Żadnej innej logiki w interfejsie. |
-| `Content/*` | Warstwa treści: model paczki (`SystemPack`/`ContentPack`, `Template`, `Entry`), zamknięte katalogi `CardElement` (`StatblockElement`, `ProseElement`) i `FieldValue` (`TextValue`, `IntegerValue`), wczytywanie i walidacja (`ContentPackLoader`) oraz rejestr (`ContentRegistry`, `RegisteredEntry`). Paczka jest odrzucana w całości i mówi dlaczego; wpis bez szablonu zostaje w rejestrze oznaczony, wzorem `UnreadableDataBlock`. Zero wiedzy o rodzajach wpisów. |
+| `Content/*` | Warstwa treści: model paczki (`Pack` — jeden typ, następca dawnego podziału `SystemPack`/`ContentPack`; `pack.json` nie niesie już klucza `kind`, a katalog paczki może mieć `templates/`, `entries/`, oba naraz albo żaden), `Template` (z opcjonalnym `Summary: SummaryContract?`), `Entry`; zamknięte katalogi `CardElement` (`TraitListElement`, `ProseElement`) i `ContractFill` (`LiteralFill`, `FieldFill`) oraz `FieldValue` (`TextValue`, `IntegerValue`); wczytywanie i walidacja (`ContentPackLoader`, dwuprzebiegowe rozwiązywanie szablonów — patrz niżej) oraz rejestr (`ContentRegistry` z jedną listą `Packs`, `RegisteredEntry`, `SummaryContractResolution`). Paczka jest odrzucana w całości i mówi dlaczego; wpis bez szablonu zostaje w rejestrze oznaczony, wzorem `UnreadableDataBlock`. Nowa reguła odrzucenia: identyfikator szablonu i identyfikator wpisu nie mogą się pokrywać w jednej paczce — `pack:id` to jedna przestrzeń adresowa, tak samo dla `TemplateReference` jak dla `EntryAddress`. Zero wiedzy o rodzajach wpisów. |
 | `Tools/Counter/CounterTool.cs` | Jedyna dziś implementacja `ITool`. Definiuje kształt bloku `counter` (pole `count`: Integer) i dwie transformacje: `Increment`/`Decrement` (z `checked` — przepełnienie rzuca `OverflowException`). |
 | `Persistence/JsonCampaignRepository.cs` | Jedyna implementacja `ICampaignRepository`. Format zapisu na dysku, transakcyjność, obsługa błędów — patrz sekcja 5. |
 | `Persistence/DataBlockValueSerializer.cs` | Konwersja wartość ↔ `JsonNode`, zawsze prowadzona przez `DataBlockShape` (nigdy „co się da z JSON-a wyczytać"). |
 | `Persistence/CampaignStoreException.cs` | Typowany błąd repozytorium: `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`, `UnknownModule` (ten ostatni: zdefiniowany, ale nieużywany — nie ma dziś modułów, które można by nie znać). |
 | `CampaignRuleException.cs` | Wyjątek „reguła kampanii odmówiła" — komunikat czytany wprost przez GM-a (po polsku, gdy dotyczy licznika). |
+
+**Rozwiązywanie szablonów (`ContentPackLoader.LoadAsync`)** jest dwuprzebiegowe, żeby dotrzymać
+reguły „paczka odrzucona jest tak, jakby nie była zainstalowana" teraz, gdy jedna paczka może nieść
+i szablony, i wpisy. Przebieg 1 rozwiązuje wpisy każdej paczki wobec pełnego słownika wszystkich
+wczytanych paczek wyłącznie po to, żeby wykryć, które paczki odrzuca ich własny wpis sprzeczny z
+szablonem — wyniki tego przebiegu są odrzucane, bo słownik zaraz się skurczy. Przebieg 2 usuwa te
+paczki ze słownika i rozwiązuje wszystko ponownie: każda paczka, wobec której wpis może się jeszcze
+rozwiązać, jest paczką, która za chwilę trafi do `Packs`, więc niezmiennik — żaden rozwiązany wpis
+nie wskazuje na szablon z paczki nieobecnej w `Packs` — trzyma się z konstrukcji. Bez drugiego
+przebiegu wpis zdrowej paczki B mógłby w tym samym przebiegu rozwiązać się wobec szablonu paczki A,
+która właśnie w tym przebiegu zostaje odrzucona. Paczka, która zawiniła w przebiegu 1, zostaje
+odrzucona nawet jeśli paczka, z którą kolidował jej wpis, sama zniknie w przebiegu 2 — wina zostaje
+przy własnym pliku, niezależnie od losu drugiej strony.
 
 **Granica:** `DungeonApp.Core.Tests/Architecture/CoreIndependenceTests.cs` odrzuca każdą referencję
 `Avalonia*` w zestawie `DungeonApp.Core` — patrz sekcja 9.
@@ -99,7 +120,7 @@ mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
 | `Shell/AppShellViewModel.cs` | Właściciel „gdzie jest GM": biblioteka kampanii vs otwarte biurko, sekwencja startowa, przełączanie sekcji bocznych. |
 | `Shell/CampaignSession.cs` | Jedyna droga zmiany otwartej kampanii: `ExecuteAsync(operation)` — wykonaj operację, zapisz, ogłoś `Committed`. |
 | `Shell/Sidebars/*` | Globalny pasek boczny nawigacji (kolapsowalny), dziś z dwiema realnymi sekcjami („Kampanie", „Rejestr") — cokolwiek nierozpoznanego ląduje na placeholderze. |
-| `Features/Registry/*` | Ekran rejestru: lista wpisów, karta wybranego wpisu składana z elementów w kolejności z szablonu, view modele elementów karty i ich widoki. Odstęp między elementami karty ustawia host, nigdy element. |
+| `Features/Registry/*` | Ekran rejestru: lista wpisów (`RegistryEntryRowViewModel`, z `Category`/`Descriptor` rozwiązanymi przez `SummaryContractResolution`), karta wybranego wpisu składana z elementów w kolejności z szablonu (`TraitListElementViewModel`/`TraitRowViewModel`, `ProseElementViewModel` i ich widoki — element karty, który dawniej nazywał się `statblock`/`StatblockElement`, dziś nazywa się `traits`/`TraitListElement`). Odstęp między elementami karty ustawia host, nigdy element. `RegistryViewModel.Groups` grupuje te same wiersze po `Category` (z grupą resztkową „Bez kategorii" na końcu) — zbudowane i przetestowane, ale dziś martwe: żaden `.axaml` się do tego nie wiąże, `RegistryView` nadal renderuje płaską `Entries`, a `Category`/`Descriptor` samych wierszy też nigdzie się jeszcze nie wyświetlają. |
 | `Shell/TopBar/*` | Pasek kontekstu: tytuł otwartej kampanii + akcja zamknięcia. |
 | `Shell/StatusBar/*` | Pasek stanu na dole (komunikaty typu „Gotowe", szerokość zsynchronizowana z sidebarem). |
 | `Shell/Workspace/WorkspacePlaceholderView(Model)` | Widok zastępczy dla każdej sekcji nawigacji poza „Kampanie" — dosłowny placeholder, `record WorkspacePlaceholderViewModel(string Title)`. |
@@ -118,13 +139,6 @@ mockupy używały tych samych stylów/tokenów co prawdziwa aplikacja.
 |---|---|
 | `DungeonApp.Core.Tests` | Domena: kampanie, bloki danych, zdarzenia, narzędzie licznika, persystencja, plus test architektoniczny. |
 | `DungeonApp.Desktop.Tests` | Wąski: cache przygotowania biurka, `CounterPanelViewModel` (najlepiej pokryty plik w całym repo — 9 testów), fragment geometrii paneli, jeden test magazynu układu. |
-
-### `tools/MockupRenderer`
-
-CLI: `MockupRenderer <wejście.axaml> <wyjście.png> [--width=] [--height=] [--data=kontekst.json]`.
-Ładuje plik `.axaml` w headless Avalonii, opcjonalnie podpina wygenerowany w locie (przez
-`System.Reflection.Emit`) obiekt CLR jako `DataContext` z płaskiego JSON-a, renderuje do PNG. Służy
-do produkowania zrzutów projektowych, nie jest uruchamiany jako część aplikacji ani testów.
 
 ---
 
@@ -182,9 +196,15 @@ datablocks/<blockId>.json    # jedna wartość na plik
 ```
 
 **Manifest** (`CampaignManifest`, rekord wewnętrzny) niesie: `FormatVersion` (dziś zawsze `1`),
-`Id`, `Name`, `CreatedAt`, zarezerwowane `Ruleset`/`ContentPacks` (zawsze `null`/`[]` — pod
-przyszłość, nieużywane), `Generation` (licznik generacji zapisu) i listę `DataBlockEntry(Id,
-Version, Generation)`.
+`Id`, `Name`, `CreatedAt`, `Packs` (lista `PackReference(Id, Major)` — paczki, wobec których
+kampania rozwiązuje referencje treści; zawsze zapisywana jako pusta lista, bo nic jeszcze nie osadza
+treści w konkretnej kampanii), `Generation` (licznik generacji zapisu) i listę `DataBlockEntry(Id,
+Version, Generation)`. Dawne, zarezerwowane pole `Ruleset` zniknęło z kodu w tym wydaniu — nie
+zostało niczym zastąpione, po prostu go nie ma. `CurrentFormatVersion` mimo to nie wzrósł: odczyt
+manifestu jest wyrozumiały (nie ustawia `JsonUnmappedMemberHandling.Disallow`, w przeciwieństwie do
+`ContentPackLoader`), więc stary manifest z osieroconym kluczem `"ruleset"` i starą nazwą
+`"contentPacks"` nadal wczytuje się pod wersją 1 bez żadnej migracji — potwierdzone testem, który
+wczytuje manifest w starym kształcie.
 
 **Wartość bloku** (`DataBlockDocument`) niesie `BlockId`, `Version`, `Generation` i sam `JsonNode`
 zserializowany przez `DataBlockValueSerializer` **zgodnie z zarejestrowanym kształtem**, nigdy „jak
@@ -387,8 +407,10 @@ stosują bez kroków 1–2.
 
 Uwaga: katalog paneli jest dziś budowany **per otwarta sesja kampanii**
 (`PanelCatalog.For(session)`), więc każdy nowy panel domyślnie trafia na biurko każdej kampanii —
-nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per ruleset (pola `Ruleset`/
-`ContentPacks` w manifeście kampanii są zarezerwowane, ale nieużywane).
+nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per zestaw paczek (pole `Packs`
+w manifeście kampanii istnieje jako `PackReference(Id, Major)`, ale jest zawsze zapisywane puste i
+nic go dziś nie czyta; dawne pole `Ruleset` o podobnej roli zniknęło z manifestu w tym wydaniu kodu,
+patrz sekcja 5).
 
 ---
 
@@ -397,12 +419,12 @@ nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per rul
 | Warstwa | Plik(i) | Co pokrywają |
 |---|---|---|
 | Domena — kampanie | `CampaignTests`, `CampaignNameTests`, `CreateCampaignTests` | Tworzenie/odtwarzanie, walidacja nazwy, use case tworzenia. |
-| Domena — bloki danych | `CampaignDataBlocksTests` (24 testy — najliczniejszy plik w Core), `DataBlockIdTests`, `DataBlockRegistryTests`, `DataBlockShapeTests` (15) | Cykl `Apply`/`Read`, zamrażanie wartości, `unreadable`, walidacja kształtów, znakowe ograniczenia ID. |
+| Domena — bloki danych | `CampaignDataBlocksTests` (24 testy), `DataBlockIdTests`, `DataBlockRegistryTests`, `DataBlockShapeTests` (15) | Cykl `Apply`/`Read`, zamrażanie wartości, `unreadable`, walidacja kształtów, znakowe ograniczenia ID. |
 | Domena — zdarzenia | `CampaignEventsTests` (12) | Kolejność subskrypcji, kaskada, limit `MaxEventsPerCommand`. |
 | Domena — narzędzie | `CounterToolTests` (6) | Increment/decrement, przepełnienie. |
-| Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12) | Zapis/odczyt na prawdziwym systemie plików (`TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków. |
-| Warstwa treści | `ContentPackLoaderTests`, `ContentIdTests`, `FieldNameTests` | Wczytywanie i walidacja na prawdziwym systemie plików (`TemporaryPacks`), wszystkie reguły odrzucenia, wszystkie powody nierozwiązania, limity. Ręcznie napisane paczki w `tests/DungeonApp.Core.Tests/Packs/` są wczytywane jako test akceptacyjny — format jest specyfikacją, więc specyfikacja jest wykonywana. |
-| Desktop — rejestr | `RegistryViewModelTests`, `LoadContentPacksStepTests` | Kolejność elementów karty zgodna z szablonem, formatowanie wartości, pominięcie pustych pól opcjonalnych, trzy powody nierozwiązania, pusty rejestr, krok startowy wobec paczki wadliwej obok poprawnej. |
+| Persystencja | `JsonCampaignRepositoryTests` (13 — w tym test, że manifest zapisany przez starszy build, ze starym kluczem `ruleset` i `contentPacks`, nadal się wczytuje), `DataBlockPersistenceTests` (12) | Zapis/odczyt na prawdziwym systemie plików (`TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków. |
+| Warstwa treści | `ContentPackLoaderTests` (54 testy — dziś najliczniejszy plik testowy w całym repo), `ContentIdTests`, `FieldNameTests` | Wczytywanie i walidacja na prawdziwym systemie plików (`TemporaryPacks`), wszystkie reguły odrzucenia (w tym kolizję id między szablonem i wpisem w jednej paczce, i dwie paczki dzielące jeden id), wszystkie powody nierozwiązania, oba warianty `ContractFill` (literał/pole), obie flagi `TraitListElement` (`compact`/`selfDescribing`), dwuprzebiegowe rozwiązywanie (paczka odrzucona przez własny wpis nie zaraża zdrowej paczki, na której szablonie ten wpis się opierał). Ręcznie napisane paczki w `tests/DungeonApp.Core.Tests/Packs/` (`dnd5e`, z szablonami i wpisami w jednej paczce; `goblinoids`, odwołujący się do szablonu w `dnd5e`) są wczytywane jako test akceptacyjny — format jest specyfikacją, więc specyfikacja jest wykonywana. |
+| Desktop — rejestr | `RegistryViewModelTests` (17 testów), `LoadContentPacksStepTests` (5) | Kolejność elementów karty zgodna z szablonem, formatowanie wartości, pominięcie pustych pól opcjonalnych, trzy powody nierozwiązania, pusty rejestr, grupowanie po `Category` (kolejność grup, grupa resztkowa „Bez kategorii" zawsze na końcu, `Entries` niezmienione przez grupowanie), rozwiązanie `Category`/`Descriptor` z obu wariantów `ContractFill`, krok startowy wobec paczki wadliwej obok poprawnej. |
 | Architektura | `CoreIndependenceTests` (1 test) | Odrzuca referencję `Avalonia*` w zestawie `DungeonApp.Core` przez refleksję (`GetReferencedAssemblies`). To jedyny test wymuszający granicę Core/Desktop mechanicznie — bez niego podział na dwa projekty byłby czystą konwencją. |
 | Desktop — cache przygotowania | `CampaignWorkspacePreparationCacheTests` (2) | Rozgrzewka trafia w pierwsze `Take`, kampania usunięta z półki nie blokuje startu. |
 | Architektura | `CoreEntryKindIndependenceTests` (2 testy) | Bliźniak powyższego dla drugiej granicy: silnik nie zna rodzajów wpisów. Skan słownictwa po źródłach `Core`, ze słownikiem wyprowadzanym z paczek fixture'owych, więc zakaz poszerza się sam wraz z treścią. Drugi test pilnuje, żeby skan nie przeszedł przez to, że niczego nie znalazł. |
@@ -458,8 +480,20 @@ której mówi README, byłaby tylko deklaracją w dokumentacji, nie czymś wymus
 - **`WarmPanelVisualStep`** istnieje jako gotowa klasa, ale nie jest podpięty do sekwencji
   startowej w `App.axaml.cs` — martwy kod albo niedokończona funkcja (nie da się stwierdzić z
   samego kodu, które).
-- **Pola `Ruleset`/`ContentPacks`** w manifeście kampanii są zarezerwowane, zawsze `null`/`[]`, i
-  nieużywane nigdzie indziej — świadomie odłożona przyszłość, ale dziś martwe.
+- **Pole `Packs`** w manifeście kampanii (`PackReference(Id, Major)`, następca dawnego
+  `ContentPacks`) jest dziś zawsze zapisywane jako pusta lista i nic go nigdzie nie czyta — świadomie
+  odłożona przyszłość (patrz sekcja 5), ale dziś martwe. Dawne pole `Ruleset` o podobnej roli po
+  prostu zniknęło z kodu w tym wydaniu; nie jest już nawet zarezerwowane.
+- **`RegistryViewModel.Groups`** grupuje wiersze rejestru po `Category` i ma własne testy
+  (`RegistryViewModelTests`), ale jest dziś martwe z tego samego powodu co `WarmPanelVisualStep`:
+  żaden `.axaml` się do niego nie wiąże — `RegistryView` nadal renderuje płaską `Entries`. Ten sam
+  los ma pierwszy kontrakt prezentacyjny (`SummaryContract`): `Category`/`Descriptor` są rozwiązywane
+  i wystawione na każdym wierszu rejestru, ale sama karta rejestru ich jeszcze nigdzie nie
+  wyświetla. Podobnie flaga `TraitListElement.SelfDescribing` — parsowana, niesiona przez
+  `TraitListElementViewModel.IsSelfDescribing`, ale nieodczytana przez `TraitListElementView`
+  (w przeciwieństwie do `Compact`, który realnie przełącza układ na trzy kolumny). Wszystkie trzy to
+  scaffolding czekający na konsumenta, nie martwy kod bez przeznaczenia — ale dziś nie robią nic
+  poza tym, że przechodzą testy.
 - **`CampaignStoreFailure.UnknownModule`** zdefiniowany, ale nic go dziś nie rzuca — nie ma
   koncepcji „modułu" w obecnym kodzie (jest tylko `ITool`/blok danych).
 
@@ -490,9 +524,6 @@ której mówi README, byłaby tylko deklaracją w dokumentacji, nie czymś wymus
   (`CampaignLibraryViewModel.CreateAsync` łapie `IOException` z komentarzem „Persistent feedback
   belongs to a future error state, not a temporary toast" — czyli znany, nazwany, ale nie
   zaadresowany brak UX błędów).
-- **`MockupRenderer`** żyje poza `.sln` i nie ma własnych testów — to narzędzie deweloperskie,
-  akceptowalne, ale warto pamiętać, że nic automatycznie nie sprawdza, czy nadal się buduje wraz z
-  resztą repo.
 
 ### Zgodność z README
 README opisuje intencję trafnie i bez nadmiernych obietnic — jest w tym względzie rzadko

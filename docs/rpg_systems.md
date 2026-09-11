@@ -1,6 +1,21 @@
 # Asystent DM (TTRPG) — Koncepcja Architektoniczna
 ## Wersja 6 — dokument decyzji projektowych
 
+> **Status: źródło historyczne. Nie obowiązuje i nie rozstrzyga niczego.**
+>
+> Dokument powstał w oderwaniu od tego repozytorium i jest pierwotnym źródłem pojęć, na których
+> stoi projekt. Każda jego decyzja została od tamtej pory albo przyjęta, albo jawnie odrzucona —
+> przyjęte są w [architecture.md](architecture.md), odrzucone w [decisions.md](decisions.md),
+> zawsze w brzmieniu tamtych dokumentów, nie tego.
+>
+> Zachowany, bo nadal najlepiej ze wszystkich tłumaczy, **skąd wziął się problem**: dlaczego
+> asystent zbudowany pod jeden system i asystent w pełni konfigurowalny zawodzą z przeciwnych
+> powodów. Reszta jest historią i czyta się ją jako historię.
+>
+> Najważniejsze rzeczy, które nie przetrwały: skrypty Lua (poziom 3), sceny jako byt, podział
+> narzędzi na „narzędzia bytu" i „narzędzia sceny", oraz zamknięty katalog narzędzi wybieranych
+> przez dane. Uzasadnienia są w `decisions.md`.
+
 ---
 
 ## 1. Problem i zakres
