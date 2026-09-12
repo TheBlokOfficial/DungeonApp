@@ -70,7 +70,7 @@ Od czego zacząć czytanie kodu — [docs/code-map.md](docs/code-map.md).
 
 ## Dokumenty
 
-Cztery dokumenty, każdy odpowiada na jedno pytanie. Przy rozbieżności wygrywa ten wyżej.
+Pięć dokumentów, każdy odpowiada na jedno pytanie. Przy rozbieżności wygrywa ten wyżej.
 
 | Dokument | Odpowiada na pytanie | Kiedy po niego sięgnąć |
 |---|---|---|
@@ -78,6 +78,7 @@ Cztery dokumenty, każdy odpowiada na jedno pytanie. Przy rozbieżności wygrywa
 | [docs/architecture.md](docs/architecture.md) | Czym to jest, jak jest zbudowane i dlaczego tak? | żeby się rozeznać (część I) albo coś zmienić (część II–III) |
 | [docs/code-map.md](docs/code-map.md) | Co jest w kodzie dzisiaj i gdzie co leży? | gdy szukasz konkretnego miejsca |
 | [docs/decisions.md](docs/decisions.md) | Co już odrzuciliśmy i dlaczego? | **zanim** zaproponujesz zmianę architektury |
+| [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
 
 Dwie rzeczy, które oszczędzają najwięcej czasu:
 
