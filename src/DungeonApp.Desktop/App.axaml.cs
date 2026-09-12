@@ -45,8 +45,9 @@ public partial class App : Avalonia.Application
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
     /// class - it never runs in the shipped app, which always goes through the constructor above,
     /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
-    /// empty content set list is safe here because design-time tooling only ever calls
-    /// <see cref="Initialize"/>, never <see cref="OnFrameworkInitializationCompleted"/>.
+    /// empty content set list only ever reaches <see cref="Initialize"/> under design-time tooling;
+    /// outside of it, the guard at the top of that method turns this into a loud failure instead of
+    /// a silently empty registry.
     /// </summary>
     public App() : this([])
     {
@@ -54,6 +55,15 @@ public partial class App : Avalonia.Application
 
     public override void Initialize()
     {
+        if (_contentSets.Count == 0 && !Avalonia.Controls.Design.IsDesignMode)
+        {
+            throw new InvalidOperationException(
+                "Aplikacja została zbudowana bez żadnego zestawu treści. W praktyce oznacza to " +
+                "pusty katalog typów, więc każdy wpis w każdej paczce zostanie nierozwiązany, a " +
+                "rejestr treści pozostanie pusty. Napraw to w korzeniu kompozycji - " +
+                "DungeonApp.App/Program.cs - przekazując tam co najmniej jeden zestaw treści.");
+        }
+
         AvaloniaXamlLoader.Load(this);
 
         var appDataDirectory = Path.Combine(
