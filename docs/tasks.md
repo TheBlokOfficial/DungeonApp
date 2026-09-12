@@ -56,8 +56,12 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 Krok 5 z sekcji „Kolejność prac" ([architecture.md](architecture.md)) jest domknięty, więc kolejka
 wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 
-1. **Jeden prymityw zapisu atomowego** — trzy własne implementacje tego samego. Wydzielić
-   **przed** magazynem instancji, nie po.
+1. **Jeden prymityw zapisu atomowego** — wzorzec „zapisz do pliku tymczasowego, potem podmień"
+   jest napisany trzy razy w dwóch miejscach: dwie ścieżki w `JsonCampaignRepository` (bloki
+   danych i manifest) plus `WorkspaceLayoutStore`. Sprawdzone w kodzie 2026-09-12, nie przepisane
+   z poprzedniej wersji tego dokumentu. Wydzielić **przed** magazynem instancji, nie po — inaczej
+   dołoży czwartą. Zadanie mechaniczne, w pełni sprawdzalne testami, bez decyzji projektowych po
+   drodze.
 2. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii.
 3. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
    celowym rusztowaniem, oraz weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
@@ -67,7 +71,7 @@ wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 
 ## Odłożone, poza kolejnością
 
-Trzy pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
+Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
 2026-09-05 i nie mają wyzwalacza — można je wziąć, kiedy pasują.
 
 1. **Testy dla `Startup/*`.** Sekwencja startowa ma pięć kroków; pokrycie ma tylko
@@ -86,6 +90,19 @@ Trzy pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierw
    jako jedyna pozycja z tabeli „Co się dzieje, gdy treść jest zepsuta", o której Mistrz Gry nie
    dowiaduje się z aplikacji: paczka odrzucona za literówkę w manifeście znika dziś po cichu.
    Wyzwalacz: moment, w którym autor zechce zaprojektować dla nich miejsce na ekranie.
+
+4. **Ekran rejestru — trzy rzeczy do oceny autora.** Wyszły dopiero wtedy, gdy pliki niewczytane
+   trafiły na ekran, i żadna nie jest błędem; wszystkie trzy są decyzjami, których nikt jeszcze nie
+   podjął.
+   * **Diagnostyka loadera jest po angielsku.** Do tej pory czytał ją wyłącznie programista, więc
+     nie miało to znaczenia. Teraz ekran opakowuje ją polskim zdaniem i czyta ją Mistrz Gry:
+     „Nie udało się wczytać tego pliku: `'entries/goblin.json' is not valid: ...`". Pytanie jest
+     o produkt, nie o kod — czy te teksty mają być tłumaczone, czy zostają technicznym śladem.
+     To samo dotyczy wyjaśnienia zestawu treści przy odrzuconych wartościach.
+   * **Nazwa pliku pojawia się dwa razy** — raz jako tytuł wiersza, raz wewnątrz komunikatu, bo
+     tekst diagnostyczny sam nazywa plik. Nieszkodliwe, ale widoczne.
+   * **Nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo niesie go
+     ten wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon".
 
 Była też z tamtej sesji trzecia pozycja — usunięcie domknięcia nad `_shell` w `App.Initialize()`.
 Jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma decyzja
