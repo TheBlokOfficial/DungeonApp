@@ -166,7 +166,7 @@ społeczny, nie techniczny: scalone paczki gorzej się podmienia — cudzy besti
 tego samego systemu jest nadal możliwy, ale przestaje być jedyną formą, w jakiej treść
 się wydaje.
 
-### 7. Zagnieżdżanie wartości w polu wpisu — odrzucone dwukrotnie
+### 7. Zagnieżdżanie wartości w polu wpisu — odrzucone trzykrotnie
 
 **Co proponowano.** Żeby wartości wpisu dało się grupować hierarchicznie — zagnieżdżone
 drzewo zamiast płaskiej mapy pól — tak żeby powiązane wartości stały razem.
@@ -193,8 +193,57 @@ zostać płaskie, bo:
 - grupowanie istniałoby w wartościach **obok** grupowania w karcie i mogłoby się z nim
   nie zgadzać, co wymagałoby nowej reguły rozstrzygania za zero korzyści.
 
+**Dlaczego odrzucone — trzecie uzasadnienie** (pomysł wrócił po przeniesieniu typów treści
+do kodu, z konkretną propozycją: `Monster` złożony z podrekordów `Metadata`, `CombatStats`,
+`AbilityScores`, `UtilityTraits`, `ActionSet`, z prymitywami dopiero w liściach). Ta runda
+jest warta zapisania dokładniej niż dwie poprzednie, bo **trzy z pięciu powyższych argumentów
+padły razem z formatem danych** i nie wolno ich już przytaczać:
+
+- argument o wąskim zbiorze znaków w identyfikatorze pola — **martwy**, typ nazwy pola został
+  usunięty razem z szablonami danych;
+- argument o kontraktach prezentacji, które zaczęłyby znać strukturę wpisu — **martwy**,
+  kontrakt jest interfejsem C#, a rekord może go spełnić, nie odsłaniając swojego środka;
+- argument o ścieżkach z regułami rozstrzygania zakresu — **osłabiony do zera**, dostęp do
+  składowej w C# jest jednoznaczny, a kompilator sprawdza go darmo.
+
+Rozstrzygnęły dwa, które przeżyły:
+
+- **Zaproponowane grupy są układem karty przebranym za typ.** Trzy z pięciu pokrywały się
+  z sekcjami karty potwora jeden do jednego (obrona i ruch, sześć cech, biegłości i zmysły),
+  a dwie pozostałe **zlepiały to, co karta rozdziela** — `Metadata` scalała grupę cech z
+  osobnym blokiem prozy, `ActionSet` dwa osobne bloki prozy. Rozjazd dwóch kopii tej samej
+  decyzji objawił się **w samej propozycji**, przed czyjąkolwiek pomyłką. To jest piąty
+  argument z drugiej rundy, potwierdzony konkretem, a nie osłabiony.
+- **Plik wpisu jest płaski i ma taki zostać, więc zagnieżdżony rekord wymaga przekładu
+  w obie strony.** Nie tylko przy czytaniu: nakładka instancji jest wyliczana różnicowaniem
+  rekordu wobec wartości wpisu, więc przekład jest potrzebny też przy zapisie. Dopisanie pola
+  przestaje być zmianą w jednym miejscu i staje się zmianą w trzech, z których dwa mogą się
+  po cichu rozjechać — a objawem rozjazdu jest notatka Mistrza Gry, która nie zapisała się na
+  dysk. Ten ręcznie pisany przekład wartości to dokładnie warstwa, której usunięcie było
+  jednym z powodów przeniesienia typów do kodu.
+
+**Trzy spójne wyjścia, żeby czwarta runda zaczęła się od rozwidlenia.** Półśrodek jest tu
+gorszy od każdego z końców:
+
+| Wariant | Przekład | Status |
+|---|---|---|
+| płasko wszędzie: rekord, plik, łatka | żaden | **przyjęte** |
+| zagnieżdżone wszędzie, **włącznie z plikiem** | żaden | **nie zamknięte** — odmraża format pliku i porównywalność diffów treści; różne od pozycji „Kosmetyczne grupowanie w pliku wpisu", bo tam loader spłaszczał, a tu nikt nie spłaszcza |
+| zagnieżdżony rekord nad płaskim plikiem | dwukierunkowy | odrzucone — to ten półśrodek |
+
+**Czego ta runda NIE odrzuciła.** Dwa najniższe poziomy propozycji — `ArmorClass(Value, Source)`
+i `HitPoints(Value, Formula)` — nie są grupami z karty, są pojęciami domenowymi („ile i z czego"
+jest jedną myślą). **Odłożone, nie odrzucone**, bo nie ma dziś konsumenta, który by rozstrzygnął,
+czy pomagają. **Wyzwalacz:** nakładka instancji — jedyny mechanizm realnie zależny od tego
+kształtu. Rozstrzygać przy niej, na dowodach, nie przed nią.
+
 **Czym to zastąpiono.** Płaska mapa wartości pozostaje jedyną formą. Grupowanie wizualne
-żyje wyłącznie w układzie karty (w elementach karty), nigdy w danych.
+żyje wyłącznie w układzie karty, nigdy w danych. Realna skarga, która tę rundę wywołała —
+dwadzieścia jeden parametrów pozycyjnych konstruuje się licząc przecinki, a zamiana dwóch
+sąsiednich pól tego samego typu przechodzi przez kompilator i przez deserializator — została
+naprawiona osobno i taniej: **wymagane właściwości nazwane zamiast parametrów pozycyjnych**,
+co przy okazji sprawia, że brak wymaganej wartości w pliku odrzuca wpis bez ani jednej linii
+własnej walidacji.
 
 ### 8. Kosmetyczne grupowanie w pliku wpisu, spłaszczane przy wczytaniu
 
