@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace DungeonApp.Core.Tests.Architecture;
+namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
 /// Granica, na której stoi cały podział na dwa projekty: logika gry nie może wiedzieć o UI.
