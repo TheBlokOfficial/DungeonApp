@@ -7,7 +7,7 @@ Pozostałe cztery dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, cz
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź robocza: `feat/content-registry`, niescalona do `master`. Build i 216 testów zielone.
+Gałąź robocza: `feat/content-registry`, niescalona do `master`. Build i 217 testów zielone.
 
 ---
 
@@ -26,50 +26,24 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 * `TreatWarningsAsErrors` — kompilator jest walidatorem treści, więc jego ostrzeżenia są
   ostrzeżeniami o treści.
 
----
+**Domknięte 2026-09-12 (druga sesja):**
 
-## Następne — domknięcie przejścia
-
-Te trzy kończą to, co sesja 2026-09-12 zaczęła, i **nie powinny czekać**: dopóki stary
-mechanizm leży w repozytorium bez konsumenta, czytający nie wie, który z dwóch jest prawdą.
-
-### 1. `code-map.md` opisuje stan sprzed przejścia
-
-Największa zaległość. Dokument opisuje warstwę treści, która już nie istnieje — szablony
-z paczek, katalog elementów karty, walidację wartości wobec deklaracji pól. Wymaga pełnego
-przejścia, nie łatania akapitów.
-
-### 2. Zero zestawów treści ma być awarią głośną, nie cichą
-
-`src/DungeonApp.Desktop/App.axaml.cs` ma bezparametrowy konstruktor `App() : this([])`, dodany
-dla podglądacza XAML. Buduje aplikację z **pustym katalogiem typów** — wtedy każdy wpis jest
-nierozwiązany, rejestr pusty, i **bez jednego komunikatu**. Dziś jest to nieszkodliwe przez
-przypadek (narzędzia projektowe nie wołają `OnFrameworkInitializationCompleted`), a nie przez
-konstrukcję.
-
-Do zrobienia: warunek w tym konstruktorze — gdy `Avalonia.Controls.Design.IsDesignMode` jest
-`false`, rzucić z jasnym komunikatem. To zasada „nic nie znika po cichu" zastosowana do samego
-uruchomienia aplikacji.
-
-### 3. Rozbiórka starego mechanizmu
-
-Bez konsumenta po przejściu zostały:
-
-| Gdzie | Co |
-|---|---|
-| `Desktop/Features/Registry/` | `CardViewModel`, `Elements/FieldValueText`, `Elements/StatblockElementViewModel`, `Elements/StatblockRowViewModel`, `Elements/ProseElementViewModel` |
-| `Core/Content/` | `Template`, `CardElement`, `StatblockTrait`, `FieldDeclaration`, `FieldName`, `FieldType`, `FieldValue` |
-
-Mają jeszcze referencje — z martwych DTO w `ContentPackLoader` i z testów starego formatu.
-Usuwać razem z nimi. **Jeśli którakolwiek referencja okaże się żywa, zatrzymać się i zgłosić:**
-to znaczy, że przepięcie czegoś nie domknęło, i przepisywanie żywego kodu pod rozbiórkę
-zamaskowałoby ten fakt.
+* **Zero zestawów treści jest awarią głośną.** Strażnik w `App.Initialize()` sprawdza sam warunek
+  (pusta lista), nie pośrednika (który konstruktor zadziałał), więc łapie także korzeń kompozycji
+  przekazujący `[]` jawnie. Stoi przed ładowaniem XAML-a, co czyni go sprawdzalnym testem bez
+  uruchamiania Avalonii.
+* **Stary mechanizm treści rozebrany** — dwanaście typów bez konsumenta zniknęło z repozytorium.
+  Żadna referencja nie okazała się żywa; kompilator jest tego dowodem.
+* **`code-map.md` przepisany od zera** wobec kodu, sekcja po sekcji. Przy okazji obalił własne
+  twierdzenie z poprzedniej wersji: pole `Ruleset` w manifeście kampanii nigdy nie zniknęło,
+  a `PackReference` nigdy nie istniał.
 
 ---
 
-## Dalej wg dokumentu architektury
+## Następne — wg dokumentu architektury
 
-Kroki 5–9 z sekcji „Kolejność prac", w tej kolejności:
+Przejście na skompilowane typy treści jest domknięte, więc kolejka wraca do kroków 5–9
+z sekcji „Kolejność prac". Kolejność poniżej jest wiążąca:
 
 1. **Odrzucanie per plik wpisu** — dziś wadliwy manifest odrzuca paczkę, ale pozycje
    nierozwiązane nie są jeszcze widoczne w rejestrze tak, jak wymaga sekcja
@@ -83,13 +57,40 @@ Kroki 5–9 z sekcji „Kolejność prac", w tej kolejności:
 
 ---
 
+## Odłożone, poza kolejnością
+
+Dwie pozycje z sesji 2026-09-05, świadomie odłożone i niezależne od przejścia powyżej.
+Nie mają wyzwalacza — można je wziąć, kiedy pasują.
+
+1. **Testy dla `Startup/*`.** Sekwencja startowa ma pięć kroków; pokrycie ma tylko
+   `LoadContentPacksStep`. Warte zamrożenia: kolejność kroków, degradacja przy błędzie
+   (awaria kroku nie blokuje wejścia) i zgodność `TotalSteps` z długością tablicy.
+   Mechanizm jest jawny, więc łatwy do przetestowania — i łatwy do zepsucia niezauważenie
+   przy dołożeniu kolejnego kroku.
+
+2. **Dokończenie przepięcia widoków na skalę odstępów.** Klucze `DungeonSpacingXs..Xxxl`
+   i `DungeonPaddingXs..Xxxl` istnieją od 2026-09-05. Stan na 2026-09-12: siedem widoków
+   bierze odstępy ze skali, sześć ma nadal liczby wpisane wprost. Mechaniczny diff,
+   dlatego osobno.
+
+Trzecia pozycja z tamtej sesji — usunięcie domknięcia nad `_shell` w `App.Initialize()` —
+jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma
+decyzja z uzasadnieniem.
+
+---
+
 ## Znane problemy
 
-**Plik wykonywalny nie został potwierdzony jako linkujący się.** `dotnet build src/DungeonApp.App`
-pada na `MSB3021`/`MSB3027`: podglądacz XAML z IDE (proces .NET Host) trzyma jego katalog `bin`.
-**To nie jest błąd kodu** — silnik, powłoka, zestaw i wszystkie projekty testowe kompilują się
-czysto. Zamknąć podgląd w IDE i zbudować ponownie. To jedyna rzecz z sesji 2026-09-12
-niesprawdzona do końca.
+**Blokada katalogu `bin` projektu wykonywalnego.** `dotnet build src/DungeonApp.App` pada czasem na
+`MSB3021`/`MSB3027` — „plik jest zablokowany przez .NET Host". Rozpoznane 2026-09-12: to
+`Avalonia.Designer.HostApp` (podglądacz XAML), którego uruchamia Rider, gdy otwarta jest zakładka
+z podglądem `.axaml`; rodzicem procesu jest `rider64.exe`. **To nie jest błąd kodu.** Rozwiązanie:
+zamknąć w IDE zakładkę z podglądem.
+
+Weryfikacja mimo blokady jest pełna: cztery projekty testowe nie zależą od `DungeonApp.App`, więc
+build i testy na nich dają potwierdzenie kompilatora dla silnika, powłoki i zestawu treści.
+Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się linkuje — a to zostało
+potwierdzone osobno 2026-09-12, przy zwolnionym katalogu.
 
 ---
 
