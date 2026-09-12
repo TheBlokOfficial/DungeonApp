@@ -1,9 +1,9 @@
 # DungeonApp — kolejka pracy
 
 **Status: stan na 2026-09-12.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
-Pozostałe cztery dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
+Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
-[decisions.md](decisions.md) co już odrzucono.
+[decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 

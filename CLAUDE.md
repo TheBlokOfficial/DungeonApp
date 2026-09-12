@@ -36,3 +36,10 @@ osobno, zamiast jednego zdania o intencji.
 5. **Zmiana stanu nie wywołuje kolejnej zmiany stanu.** Nic nie subskrybuje
    zmiany po to, żeby zapisać. Zdarzenia powiadamiają widoki i nigdy nie
    mutują.
+
+---
+
+Jak prowadzić tę pracę — zielone światło per etap, styl raportowania, zakazy
+obowiązujące subagentów, rozstrzygnięcia, które wracają — jest w
+`docs/collaboration.md`. Przeczytaj go na początku sesji; tamte zakazy nie są
+powtarzane w każdym poleceniu z osobna.

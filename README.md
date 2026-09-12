@@ -35,11 +35,7 @@ dotnet build DungeonApp.sln
 ```
 
 ```bash
-dotnet test tests/DungeonApp.Core.Tests/DungeonApp.Core.Tests.csproj
-```
-
-```bash
-dotnet test tests/DungeonApp.Desktop.Tests/DungeonApp.Desktop.Tests.csproj
+dotnet test DungeonApp.sln
 ```
 
 ## Struktura
@@ -53,6 +49,8 @@ src/
 tests/
   DungeonApp.Core.Tests/
   DungeonApp.Desktop.Tests/
+  DungeonApp.Architecture.Tests/    # Granice: referencje i słownictwo. Widzi wszystkie warstwy naraz.
+  DungeonApp.Content.Dnd5e.Tests/
 docs/
 ```
 
@@ -70,7 +68,9 @@ Od czego zacząć czytanie kodu — [docs/code-map.md](docs/code-map.md).
 
 ## Dokumenty
 
-Pięć dokumentów, każdy odpowiada na jedno pytanie. Przy rozbieżności wygrywa ten wyżej.
+Każdy dokument odpowiada na jedno pytanie. Pięć pierwszych opisuje aplikację i przy rozbieżności
+wygrywa ten wyżej. Szósty stoi obok tego porządku, bo opisuje nie program, tylko pracę nad nim —
+nigdy więc nie rozjeżdża się z kodem.
 
 | Dokument | Odpowiada na pytanie | Kiedy po niego sięgnąć |
 |---|---|---|
@@ -79,6 +79,7 @@ Pięć dokumentów, każdy odpowiada na jedno pytanie. Przy rozbieżności wygry
 | [docs/code-map.md](docs/code-map.md) | Co jest w kodzie dzisiaj i gdzie co leży? | gdy szukasz konkretnego miejsca |
 | [docs/decisions.md](docs/decisions.md) | Co już odrzuciliśmy i dlaczego? | **zanim** zaproponujesz zmianę architektury |
 | [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
+| [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
 
 Dwie rzeczy, które oszczędzają najwięcej czasu:
 
