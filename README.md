@@ -56,11 +56,11 @@ tests/
 docs/
 ```
 
-Podział na dwa projekty produkcyjne jest zabiegiem higienicznym: logika ma być odseparowana od
+Oddzielenie `Core` od `Desktop` jest zabiegiem higienicznym: logika ma być odseparowana od
 okna. Granicy pilnuje test architektoniczny, który odrzuca każdą referencję do Avalonii w `Core` —
 bez niego separacja byłaby deklaracją w dokumentacji, a nie czymś wymuszonym przez build.
 
-Trzeci projekt produkcyjny — **zestaw treści**, `DungeonApp.Content.Dnd5e` — już istnieje i niesie
+**Zestaw treści**, `DungeonApp.Content.Dnd5e`, już istnieje i niesie
 typy treści, ich widoki i narzędzia biurka. To jedyne miejsce w aplikacji, w którym wolno wiedzieć,
 czym jest potwór. Ponieważ powłoce nie wolno znać żadnego zestawu po imieniu, korzeń kompozycji
 przeniósł się do osobnego projektu wykonywalnego, `DungeonApp.App` — to on jako jedyny wymienia
