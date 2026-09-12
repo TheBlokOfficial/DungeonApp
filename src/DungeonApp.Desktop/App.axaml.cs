@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Content;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tools.Counter;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -17,17 +20,50 @@ namespace DungeonApp.Desktop;
 
 public partial class App : Avalonia.Application
 {
+    // Handed in through the constructor rather than discovered anywhere below - see
+    // DungeonApp.App/Program.cs. Not a service locator: everything built from this list
+    // (the two aggregates below) is still plain constructor injection into the pieces that need it.
+    private readonly IReadOnlyList<IContentSet> _contentSets;
+
     private WorkspaceLayoutStore? _layoutStore;
     private DataBlockRegistry? _dataBlocks;
     private CounterTool? _counterTool;
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
+    private LoadContentPacksStep? _contentPacksStep;
+    private ContentPresentationAggregate? _presentation;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
+    public App(IReadOnlyList<IContentSet> contentSets)
+    {
+        _contentSets = contentSets;
+    }
+
+    /// <summary>
+    /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
+    /// class - it never runs in the shipped app, which always goes through the constructor above,
+    /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
+    /// empty content set list only ever reaches <see cref="Initialize"/> under design-time tooling;
+    /// outside of it, the guard at the top of that method turns this into a loud failure instead of
+    /// a silently empty registry.
+    /// </summary>
+    public App() : this([])
+    {
+    }
+
     public override void Initialize()
     {
+        if (_contentSets.Count == 0 && !Avalonia.Controls.Design.IsDesignMode)
+        {
+            throw new InvalidOperationException(
+                "Aplikacja została zbudowana bez żadnego zestawu treści. W praktyce oznacza to " +
+                "pusty katalog typów, więc każdy wpis w każdej paczce zostanie nierozwiązany, a " +
+                "rejestr treści pozostanie pusty. Napraw to w korzeniu kompozycji - " +
+                "DungeonApp.App/Program.cs - przekazując tam co najmniej jeden zestaw treści.");
+        }
+
         AvaloniaXamlLoader.Load(this);
 
         var appDataDirectory = Path.Combine(
@@ -63,6 +99,18 @@ public partial class App : Avalonia.Application
 
         _campaigns = new JsonCampaignRepository(libraryPath, _dataBlocks);
 
+        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (sekcja 12) - obok, nie pod
+        // danymi aplikacji.
+        var packsPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "DungeonApp",
+            "Packs");
+
+        var contentTypes = new ContentTypeCatalogAggregate(_contentSets);
+        _presentation = new ContentPresentationAggregate(_contentSets);
+
+        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, contentTypes));
+
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
         _preparations = new CampaignWorkspacePreparationCache(_campaigns, _layoutStore);
@@ -82,6 +130,9 @@ public partial class App : Avalonia.Application
 
         _startupSteps =
         [
+            // Paczki treści przed półką kampanii (sekcja 15a): rejestr musi istnieć zanim
+            // cokolwiek próbuje rozwiązywać wobec niego referencje.
+            _contentPacksStep,
             libraryStep,
             dataStep,
             new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns),
@@ -98,7 +149,9 @@ public partial class App : Avalonia.Application
                 _campaigns!,
                 _campaignLibrary!,
                 _preparations!,
-                _startupSteps!);
+                _startupSteps!,
+                () => _contentPacksStep!.Registry,
+                _presentation!);
 
             desktop.MainWindow = new MainWindow
             {

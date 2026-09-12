@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls.Content"
+             x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
+
+    <!-- The designed statblock layout: three size/type/alignment traits with no title, a titled
+         defense-and-speed group, the six abilities in a compact grid, skills-and-senses, then three
+         prose blocks. Spacing between them is set once, here, on the host - never carried by a
+         control itself (see docs/architecture.md, "Deklaracja treści"). -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <controls:TraitListView x:Name="SizeTypeAlignment" />
+        <controls:TraitListView x:Name="DefenseAndSpeed" Title="Obrona i ruch" />
+        <controls:TraitListView x:Name="Abilities" Title="Cechy" Compact="True" />
+        <controls:TraitListView x:Name="SkillsAndSenses" Title="Biegłości i zmysły" />
+        <controls:ProseBlockView x:Name="SpecialAbilitiesBlock" Title="Cechy szczególne" />
+        <controls:ProseBlockView x:Name="ActionsBlock" Title="Akcje" />
+        <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,33 @@
+<!--
+  This project sees every layer at once - Core, Desktop, and every DungeonApp.Content.* zestaw - on
+  purpose. A test that must see all layers together cannot live inside the layer it partly
+  constrains: putting it in DungeonApp.Core.Tests or DungeonApp.Desktop.Tests would force that layer
+  to depend upward on a zestaw just to assert that it doesn't, which is the boundary being guarded
+  breaking on the way to being tested.
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DungeonApp.Core\DungeonApp.Core.csproj" />
+    <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
+  </ItemGroup>
+
+</Project>

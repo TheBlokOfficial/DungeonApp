@@ -1,14 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <OutputType>WinExe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <!-- Reduces JIT work on first use of a view in published desktop builds. -->
+        <PublishReadyToRun>true</PublishReadyToRun>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="12.0.5" />
         <PackageReference Include="Avalonia.Desktop" Version="12.0.5" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.5" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.5" />
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
@@ -17,10 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaResource Include="Assets\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
+      <ProjectReference Include="..\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+      <ProjectReference Include="..\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
     </ItemGroup>
 </Project>

@@ -20,7 +20,8 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
         LibraryItems =
         [
-            CreateItem("campaigns", "DungeonIconBookOpen", "Kampanie")
+            CreateItem("campaigns", "DungeonIconBookOpen", "Kampanie"),
+            CreateItem("registry", "DungeonIconDatabase", "Rejestr")
         ];
         _allItems = LibraryItems;
 

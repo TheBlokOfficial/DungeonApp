@@ -6,5 +6,5 @@ riderModule.iml
 .idea/
 *.sln.DotSettings.user
 .build-tmp/
+.build-verify/
 *.stackdump
-design/mockups/

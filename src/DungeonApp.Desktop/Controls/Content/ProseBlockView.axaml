@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:content="using:DungeonApp.Desktop.Controls.Content"
+             x:Class="DungeonApp.Desktop.Controls.Content.ProseBlockView"
+             x:DataType="content:ProseBlockView">
+
+    <!-- No Margin on this root, ever: spacing between card controls belongs to the card view that
+         lays them out, not to the control itself. See docs/architecture.md, "Deklaracja treści". -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+        <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
+        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>

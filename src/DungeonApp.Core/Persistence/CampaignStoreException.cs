@@ -15,16 +15,10 @@ public enum CampaignStoreFailure
     Invalid,
 
     /// <summary>
-    /// The manifest and the module state files disagree: a save was interrupted between them. Better
+    /// The manifest and the data block value files disagree: a save was interrupted between them. Better
     /// reported than half loaded in silence.
     /// </summary>
-    TornSave,
-
-    /// <summary>
-    /// The campaign has a module switched on that this build cannot make. Its state is left
-    /// untouched on disk, so an older build refusing to open it costs nothing.
-    /// </summary>
-    UnknownModule
+    TornSave
 }
 
 /// <summary>
