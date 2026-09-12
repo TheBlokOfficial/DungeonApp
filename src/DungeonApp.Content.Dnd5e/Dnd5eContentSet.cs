@@ -35,6 +35,8 @@ public sealed class Dnd5eContentSet : IContentSet
 
     public ContentId Id { get; }
 
+    public bool HasSet(ContentId set) => set == Id;
+
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
         if (reference.Set == Id && reference.Type.Value == MonsterTypeId)

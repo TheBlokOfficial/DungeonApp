@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DungeonApp.Core.Content;
 
 namespace DungeonApp.Core.Tests.Fakes;
@@ -15,6 +16,11 @@ internal sealed class FakeContentTypeCatalog(
     IReadOnlyList<ContentTypeDescriptor> descriptors,
     IReadOnlySet<ContentTypeReference>? valuesToReject = null) : IContentTypeCatalog
 {
+    // A "known set" is derived from the descriptors this fake was given, not tracked separately -
+    // every descriptor already names the set it belongs to, so a test that wants "set installed,
+    // type unknown" just registers a descriptor for a sibling type in the same set.
+    public bool HasSet(ContentId set) => descriptors.Any(candidate => candidate.Reference.Set == set);
+
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
         foreach (var candidate in descriptors)

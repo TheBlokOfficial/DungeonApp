@@ -264,13 +264,13 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
     }
 
     /// <summary>
-    /// Resolves every entry in one pack against <paramref name="types"/>, in the single pass section 3
-    /// of the brief describes: <see cref="IContentTypeCatalog.TryGet"/>, then the version, then
-    /// <see cref="IContentTypeCatalog.TryValidate"/>. Every one of the four ways an entry can fail to
-    /// resolve marks only that entry (<see cref="EntryUnresolvedReason"/>) - none of them reject the
-    /// pack itself, which is exactly the "Odrzucanie całej paczki za jeden wadliwy wpis" reversal
-    /// docs/decisions.md records: a content set that rejects one entry's values says nothing about any
-    /// other entry beside it.
+    /// Resolves every entry in one pack against <paramref name="types"/>, in one pass:
+    /// <see cref="IContentTypeCatalog.HasSet"/>, then <see cref="IContentTypeCatalog.TryGet"/>, then
+    /// the version, then <see cref="IContentTypeCatalog.TryValidate"/>. Every one of the four ways an
+    /// entry can fail to resolve marks only that entry (<see cref="EntryUnresolvedReason"/>) - none of
+    /// them reject the pack itself, which is exactly the "Odrzucanie całej paczki za jeden wadliwy
+    /// wpis" reversal docs/decisions.md records: a content set that rejects one entry's values says
+    /// nothing about any other entry beside it.
     /// </summary>
     private static IEnumerable<RegisteredEntry> ResolveEntries(
         ContentId packId, IReadOnlyList<Entry> entries, IContentTypeCatalog types)
@@ -279,9 +279,15 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
         {
             var address = new EntryAddress(packId, entry.Id);
 
-            if (!types.TryGet(entry.Type, out var descriptor))
+            if (!types.HasSet(entry.Type.Set))
             {
                 yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.MissingSet);
+                continue;
+            }
+
+            if (!types.TryGet(entry.Type, out var descriptor))
+            {
+                yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.MissingType);
                 continue;
             }
 

@@ -25,6 +25,8 @@ internal sealed class FakeContentSet(
 {
     public ContentId Id { get; } = id;
 
+    public bool HasSet(ContentId set) => set == Id;
+
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
         foreach (var candidate in descriptors)

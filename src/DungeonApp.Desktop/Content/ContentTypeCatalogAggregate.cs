@@ -11,14 +11,16 @@ namespace DungeonApp.Desktop.Content;
 /// content sets, never a single one, so this is what fills the loader's single-catalog constructor
 /// slot without the loader (or Core) ever learning that more than one content set could exist.
 /// <para>
-/// When no content set matches <see cref="ContentTypeReference.Set"/>, or the matching set does not
-/// itself know the referenced type, both collapse into <c>false</c> here - see
-/// <see cref="EntryUnresolvedReason.MissingSet"/>'s remarks for why <see cref="IContentTypeCatalog"/>'s
-/// two-method shape cannot let a caller tell those two apart.
+/// <see cref="HasSet"/> answers from this aggregate's own list of installed sets, independent of
+/// whether any of them declares the type a given entry names - which is what lets <see
+/// cref="EntryUnresolvedReason.MissingSet"/> and <see cref="EntryUnresolvedReason.MissingType"/>
+/// stay two distinct, both-reachable outcomes instead of collapsing into one.
 /// </para>
 /// </summary>
 public sealed class ContentTypeCatalogAggregate(IReadOnlyList<IContentSet> sets) : IContentTypeCatalog
 {
+    public bool HasSet(ContentId set) => sets.Any(candidate => candidate.Id == set);
+
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
         var set = sets.FirstOrDefault(candidate => candidate.Id == reference.Set);

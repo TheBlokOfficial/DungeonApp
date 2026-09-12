@@ -376,17 +376,14 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
-    // The one-pass resolution: MissingSet, TypeVersionMismatch, ValuesRejected.
+    // The one-pass resolution: MissingSet, MissingType, TypeVersionMismatch, ValuesRejected.
     // ---------------------------------------------------------------------
 
     [Fact]
-    public async Task An_entry_naming_an_unknown_content_type_reference_is_unresolved_as_missing_set()
+    public async Task An_entry_naming_a_set_that_is_not_installed_is_unresolved_as_missing_set()
     {
-        // IContentTypeCatalog.TryGet's two-method contract cannot tell "no content set uses this
-        // id at all" apart from "a content set is known, but it does not declare this type" - see
-        // EntryUnresolvedReason.MissingSet's remarks. Both collapse to MissingSet, which is exactly
-        // what this test locks in: an entirely empty catalog produces the same outcome a catalog
-        // that merely lacks this one type would.
+        // An entirely empty catalog answers HasSet("sys") with false, so this must fail at the
+        // first check - before TryGet is ever asked - and never reach MissingType.
         _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
         _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // points at "sys:thing", unknown to an empty catalog
 
@@ -394,6 +391,25 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var registered = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.MissingSet, registered.Unresolved);
+        Assert.Null(registered.Type);
+    }
+
+    [Fact]
+    public async Task An_entry_naming_an_installed_set_but_an_unknown_type_within_it_is_unresolved_as_missing_type()
+    {
+        // The catalog knows the set "sys" - it declares a sibling type "sys:other" - but it does
+        // not declare "sys:thing", the type this entry names. HasSet("sys") must therefore answer
+        // true while TryGet("sys:thing") still fails, landing on MissingType rather than MissingSet.
+        var sibling = new ContentTypeReference(ContentId.Create("sys"), ContentId.Create("other"));
+        var types = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(sibling, "Other", 1));
+
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // points at "sys:thing"
+
+        var registry = await Loader(types).LoadAsync();
+
+        var registered = Assert.Single(registry.Entries);
+        Assert.Equal(EntryUnresolvedReason.MissingType, registered.Unresolved);
         Assert.Null(registered.Type);
     }
 
