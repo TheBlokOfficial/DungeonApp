@@ -841,14 +841,35 @@ atomowego, test granicy słownictwa rozszerzony na `Desktop`.
 | Granica | Jak egzekwowana | Status |
 |---|---|---|
 | `Core` bez Avalonii | test po referencjach zestawu | istnieje |
-| `Core` i `Desktop` bez słownictwa treści | skan źródeł po słowniku z zestawu | **do napisania — przed rozbiórką starego, nie po** |
+| `Core` i `Desktop` bez **nazw rodzajów** treści | skan źródeł po słowniku z zestawu | **do napisania — przed rozbiórką starego, nie po** |
+| `Core` i `Desktop` bez **nazw pól** treści | koperta: nie ma API przyjmującego nazwę pola | wchodzi z kopertą, nie testem |
 | `Core` i `Desktop` nie referencują zestawu | test po referencjach | do napisania |
+| Zestaw nie referencuje innego zestawu | test po referencjach | do napisania |
 | Narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
 | Brak kaskad zmian stanu | `MaxEventsPerCommand` jako tripwire | istnieje, uzasadnienie do przepisania |
 
 Skan słownictwa jest wart uwagi: **słownik zakazanych słów nie jest wpisany ręcznie — jest wyciągany
-z zestawu.** Dodajesz typ „Zaklęcie" z polem „szkoła" i zakaz sam się o te słowa poszerza. Nikt nie
-musi pamiętać, żeby dopisać je do listy.
+z zestawu.** Dodajesz typ „Zaklęcie" i zakaz sam się o to słowo poszerza. Nikt nie musi pamiętać,
+żeby dopisać je do listy.
+
+**Skan obejmuje nazwy rodzajów, nie nazwy pól — i to jest wzmocnienie granicy, nie ustępstwo.**
+Rozszerzenie słownika na pola sprawdzono na realnym kodzie i odpada: nazwy pól to „nazwa", „typ",
+„rozmiar", „opis", „akcje", a te same słowa stoją w zwykłym kodzie instalacyjnym, który o świecie gry
+nie wie nic. Skan zakazujący ich sypie fałszywymi trafieniami od pierwszego uruchomienia — dziś
+łapałby dwa komentarze ze zwrotem „spelled out" — a **test, który sypie alarmami, zostaje wyłączony
+i wtedy nie pilnuje niczego.** Ręczna lista wyjątków jest gorszym lekarstwem niż choroba: starzeje
+się cicho, a każde kolejne fałszywe trafienie jest zaproszeniem, żeby dopisać do niej słowo, aż
+zostanie sito.
+
+Nazw pól pilnuje więc **kształt kodu**: wartości wpisu przechodzą do zestawu jako koperta
+(*Deklaracja treści*), a w `Core` ani `Desktop` nie istnieje API przyjmujące nazwę pola — nie ma czym
+zapytać. Zakaz przenosi się ze skanu tekstu do systemu typów, który nie zna fałszywych trafień i nie
+da się wyciszyć. **Kryterium powrotu do dyskusji:** pierwszy interfejs w `Core` albo `Desktop`
+przyjmujący nazwę pola jako napis. Wtedy koperta przestała być granicą i trzeba czegoś innego.
+
+Dopasowanie w skanie respektuje granicę CamelCase, nie tylko granicę słowa: bez tego
+`MonsterCardView` w powłoce przechodzi niezauważony (jeden ciąg znaków), a niewinne „spelled"
+zapala alarm. Skan czyta też pliki `.axaml` — widok jest tam, nie w `.cs`.
 
 **Kolejność wobec rozbiórki jest wiążąca:** mechanizm zastępczy powstaje **przed** usunięciem
 mechanizmu, który zastępuje. Inaczej istnieje okno, w którym granicy nie pilnuje nic.
