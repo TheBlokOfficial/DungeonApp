@@ -1,12 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:elements="using:DungeonApp.Desktop.Features.Registry.Elements"
-             x:Class="DungeonApp.Desktop.Features.Registry.Elements.ProseElementView"
-             x:DataType="elements:ProseElementViewModel">
+             xmlns:content="using:DungeonApp.Desktop.Controls.Content"
+             x:Class="DungeonApp.Desktop.Controls.Content.ProseBlockView"
+             x:DataType="content:ProseBlockView">
 
-    <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
-         them out (RegistryView), not to the element itself. See docs/architecture.md, "Deklaracja
-         treści". -->
+    <!-- No Margin on this root, ever: spacing between card controls belongs to the card view that
+         lays them out, not to the control itself. See docs/architecture.md, "Deklaracja treści". -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
         <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
         <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.Tests.Fakes;
@@ -12,56 +13,25 @@ public sealed class ContentPackLoaderTests : IDisposable
 {
     private readonly TemporaryPacks _packs = new();
 
-    /// <summary>A template with one required text field, one required integer field, and one optional text field.</summary>
-    private const string ValidTemplateJson = """
-        {
-          "id": "thing",
-          "name": "Thing",
-          "version": 1,
-          "catalogVersion": 1,
-          "fields": [
-            { "id": "label", "label": "Label", "type": "text" },
-            { "id": "amount", "label": "Amount", "type": "integer" },
-            { "id": "note", "label": "Note", "type": "text", "required": false }
-          ],
-          "card": [
-            { "element": "statblock", "traits": [ { "field": "label" }, { "field": "amount" } ] },
-            { "element": "prose", "field": "note" }
-          ]
-        }
-        """;
-
     private const string ValidEntryJson = """
         {
           "id": "e1",
           "name": "Entry One",
           "template": "sys:thing",
           "templateVersion": 1,
-          "values": { "label": "A", "amount": 3 }
+          "values": { "label": "A" }
         }
         """;
 
     public void Dispose() => _packs.Dispose();
 
-    private ContentPackLoader Loader() => new(_packs.Path);
+    private ContentPackLoader Loader(IContentTypeCatalog? types = null) => new(_packs.Path, types ?? FakeContentTypeCatalog.Empty());
 
-    private static string SystemPackJson(string id, string name = "System", int major = 1, int minor = 0, int formatVersion = 1) =>
+    private static string PackJson(string id, string name = "Pack", int major = 1, int minor = 0, int formatVersion = 1) =>
         $$"""
         {
           "formatVersion": {{formatVersion}},
           "id": "{{id}}",
-          "kind": "system",
-          "name": "{{name}}",
-          "version": { "major": {{major}}, "minor": {{minor}} }
-        }
-        """;
-
-    private static string ContentPackJson(string id, string name = "Content", int major = 1, int minor = 0, int formatVersion = 1) =>
-        $$"""
-        {
-          "formatVersion": {{formatVersion}},
-          "id": "{{id}}",
-          "kind": "content",
           "name": "{{name}}",
           "version": { "major": {{major}}, "minor": {{minor}} }
         }
@@ -74,56 +44,36 @@ public sealed class ContentPackLoaderTests : IDisposable
     [Fact]
     public async Task Loads_the_fixture_packs_cleanly()
     {
-        var registry = await new ContentPackLoader(RepositoryRoot.PackFixtures).LoadAsync();
+        var monster = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("monster"));
+        var gear = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("gear"));
+        var types = FakeContentTypeCatalog.Of(
+            new ContentTypeDescriptor(monster, "Monster", 1),
+            new ContentTypeDescriptor(gear, "Gear", 1));
+
+        var registry = await new ContentPackLoader(RepositoryRoot.PackFixtures, types).LoadAsync();
 
         Assert.Empty(registry.RejectedPacks);
-        Assert.Single(registry.SystemPacks);
-        Assert.Single(registry.ContentPacks);
+        Assert.Equal(2, registry.Packs.Count);
+        Assert.Equal(3, registry.Entries.Count);
+        Assert.All(registry.Entries, entry => Assert.Null(entry.Unresolved));
 
-        var registered = Assert.Single(registry.Entries);
-        Assert.Null(registered.Unresolved);
-        Assert.NotNull(registered.Template);
-        var template = registered.Template!;
+        var goblin = registry.Entries.Single(entry => entry.Address.Entry.Value == "goblin");
 
-        Assert.Equal("goblinoids", registered.Address.Pack.Value);
-        Assert.Equal("goblin", registered.Address.Entry.Value);
-        Assert.Equal("dnd5e", registered.Entry.Template.Pack.Value);
-        Assert.Equal("monster", registered.Entry.Template.Template.Value);
-        Assert.Equal("monster", template.Id.Value);
+        Assert.Equal("goblinoids", goblin.Address.Pack.Value);
+        Assert.Equal(monster, goblin.Entry.Type);
+        Assert.Equal("Monster", goblin.Type!.Value.Name);
 
-        var values = registered.Entry.Values;
-        var kp = Assert.IsType<IntegerValue>(values[FieldName.Create("ac")]);
-        Assert.Equal(15L, kp.Value);
-        Assert.IsType<TextValue>(values[FieldName.Create("challenge")]);
-
-        Assert.Equal(7, template.Card.Count);
-        Assert.IsType<StatblockElement>(template.Card[0]);
-        Assert.IsType<StatblockElement>(template.Card[1]);
-        Assert.IsType<StatblockElement>(template.Card[2]);
-        Assert.IsType<StatblockElement>(template.Card[3]);
-        Assert.IsType<ProseElement>(template.Card[4]);
-        Assert.IsType<ProseElement>(template.Card[5]);
-        Assert.IsType<ProseElement>(template.Card[6]);
-
-        var defenseAndSpeed = (StatblockElement)template.Card[1];
-        var kpTrait = defenseAndSpeed.Traits.Single(trait => trait.Field == FieldName.Create("ac"));
-        Assert.Equal(FieldName.Create("acSource"), kpTrait.Secondary);
-
-        // Only the six-trait "Cechy" block is compact: its values are single numbers, meant to be
-        // scanned. The other three carry word- or sentence-length values and stay as declared -
-        // no parameter, which parses the same as "compact": false.
-        var sizeTypeAlignment = (StatblockElement)template.Card[0];
-        var traitsBlock = (StatblockElement)template.Card[2];
-        var skillsAndSenses = (StatblockElement)template.Card[3];
-
-        Assert.False(sizeTypeAlignment.Compact);
-        Assert.False(defenseAndSpeed.Compact);
-        Assert.True(traitsBlock.Compact);
-        Assert.False(skillsAndSenses.Compact);
+        // A plain Dictionary<string, JsonElement> is not a stand-in for any content type's own
+        // record - it just proves ContentValues.Read<T> deserializes whatever T a caller asks for,
+        // without this test ever naming a content type's shape.
+        var values = goblin.Entry.Values.Read<Dictionary<string, JsonElement>>();
+        Assert.Equal(15, values["ac"].GetInt32());
+        Assert.Equal("1/4 (50 PD)", values["challenge"].GetString());
     }
 
     // ---------------------------------------------------------------------
-    // Rule 1: missing pack.json, invalid JSON, unknown formatVersion.
+    // Manifest: missing pack.json, invalid JSON, unknown formatVersion, unknown key (e.g. a
+    // leftover "kind" - the old two-kind-of-pack split's field, now just an unmapped member).
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -151,7 +101,7 @@ public sealed class ContentPackLoaderTests : IDisposable
     [Fact]
     public async Task Rejects_an_unknown_format_version()
     {
-        _packs.WritePack("bad", SystemPackJson("sys", formatVersion: 99));
+        _packs.WritePack("bad", PackJson("sys", formatVersion: 99));
 
         var registry = await Loader().LoadAsync();
 
@@ -160,14 +110,30 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Contains("99", rejected.Reason);
     }
 
-    // ---------------------------------------------------------------------
-    // Rule 2: invalid id, missing name, unknown kind, missing/invalid version.
-    // ---------------------------------------------------------------------
+    [Fact]
+    public async Task Rejects_a_pack_json_with_an_unknown_key()
+    {
+        const string json = """
+            {
+              "formatVersion": 1,
+              "id": "sys",
+              "kind": "system",
+              "name": "Sys",
+              "version": { "major": 1, "minor": 0 }
+            }
+            """;
+        _packs.WritePack("bad", json);
+
+        var registry = await Loader().LoadAsync();
+
+        var rejected = Assert.Single(registry.RejectedPacks);
+        Assert.Contains("pack.json", rejected.Reason);
+    }
 
     [Fact]
     public async Task Rejects_an_invalid_pack_id()
     {
-        _packs.WritePack("bad", SystemPackJson("Not Valid!"));
+        _packs.WritePack("bad", PackJson("Not Valid!"));
 
         var registry = await Loader().LoadAsync();
 
@@ -182,7 +148,6 @@ public sealed class ContentPackLoaderTests : IDisposable
             {
               "formatVersion": 1,
               "id": "sys",
-              "kind": "system",
               "version": { "major": 1, "minor": 0 }
             }
             """;
@@ -195,33 +160,12 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     [Fact]
-    public async Task Rejects_an_unknown_pack_kind()
-    {
-        const string json = """
-            {
-              "formatVersion": 1,
-              "id": "sys",
-              "kind": "weird",
-              "name": "Sys",
-              "version": { "major": 1, "minor": 0 }
-            }
-            """;
-        _packs.WritePack("bad", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("weird", rejected.Reason);
-    }
-
-    [Fact]
     public async Task Rejects_a_pack_with_no_version()
     {
         const string json = """
             {
               "formatVersion": 1,
               "id": "sys",
-              "kind": "system",
               "name": "Sys"
             }
             """;
@@ -234,58 +178,30 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
-    // Rule 3: a pack brings templates or entries, never both kinds of directory.
+    // A "templates" directory, if present, is inert - never inspected, never a rejection.
     // ---------------------------------------------------------------------
 
     [Fact]
-    public async Task Rejects_a_system_pack_that_has_an_entries_directory()
+    public async Task A_leftover_templates_directory_is_silently_ignored()
     {
-        _packs.WritePack("bad", SystemPackJson("sys"), new Dictionary<string, string>
-        {
-            ["entries/e.json"] = ValidEntryJson
-        });
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "templates/whatever.json", "{ this is not even valid json");
+        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson);
 
         var registry = await Loader().LoadAsync();
 
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("entries", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_a_content_pack_that_has_a_templates_directory()
-    {
-        _packs.WritePack("bad", ContentPackJson("cnt"), new Dictionary<string, string>
-        {
-            ["templates/t.json"] = ValidTemplateJson
-        });
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("templates", rejected.Reason);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Entries);
     }
 
     // ---------------------------------------------------------------------
-    // Rule 4: a duplicated id inside one pack.
+    // A duplicated entry id inside one pack.
     // ---------------------------------------------------------------------
-
-    [Fact]
-    public async Task Rejects_a_duplicate_template_id_within_a_pack()
-    {
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/a.json", ValidTemplateJson);
-        _packs.WriteFile("sys", "templates/b.json", ValidTemplateJson);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("thing", rejected.Reason);
-    }
 
     [Fact]
     public async Task Rejects_a_duplicate_entry_id_within_a_pack()
     {
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
         _packs.WriteFile("cnt", "entries/a.json", ValidEntryJson);
         _packs.WriteFile("cnt", "entries/b.json", ValidEntryJson);
 
@@ -296,247 +212,7 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
-    // Rule 5: template validation - element names, unknown keys, field rules, dangling references.
-    // ---------------------------------------------------------------------
-
-    [Fact]
-    public async Task Rejects_a_template_card_element_of_unknown_type()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [ { "element": "chart", "field": "label" } ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("chart", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_an_unknown_key_at_the_top_level_of_a_template()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "extra": true,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("t.json", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_an_unknown_key_inside_a_field_declaration()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text", "unit": "cm" } ],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("t.json", rejected.Reason);
-    }
-
-    /// <summary>
-    /// A "prose"-only key ("field") smuggled onto a statblock element must be caught even though
-    /// both variants are legitimate keys somewhere in the catalog - the strictness is per element
-    /// type, not a union of every element's keys.
-    /// </summary>
-    [Fact]
-    public async Task Rejects_a_statblock_element_carrying_a_prose_only_key()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [ { "element": "statblock", "traits": [ { "field": "label" } ], "field": "label" } ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("t.json", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_a_duplicate_field_id_within_a_template()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [
-                { "id": "label", "label": "Label", "type": "text" },
-                { "id": "label", "label": "Label Again", "type": "text" }
-              ],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("label", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_a_field_of_unknown_type()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "decimal" } ],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("decimal", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_a_card_element_referencing_an_undeclared_field()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [ { "element": "prose", "field": "missing" } ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("missing", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_a_trait_secondary_referencing_an_undeclared_field()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [ { "element": "statblock", "traits": [ { "field": "label", "secondary": "missing" } ] } ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("missing", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task A_statblock_elements_compact_flag_loads_true_when_set_and_false_when_absent()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [
-                { "element": "statblock", "traits": [ { "field": "label" } ], "compact": true },
-                { "element": "statblock", "traits": [ { "field": "label" } ] }
-              ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        Assert.Empty(registry.RejectedPacks);
-        var template = Assert.Single(registry.SystemPacks).Templates.Single();
-
-        Assert.True(((StatblockElement)template.Card[0]).Compact);
-        Assert.False(((StatblockElement)template.Card[1]).Compact);
-    }
-
-    [Fact]
-    public async Task Rejects_a_statblock_elements_compact_flag_with_a_non_boolean_value()
-    {
-        const string json = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [ { "id": "label", "label": "Label", "type": "text" } ],
-              "card": [ { "element": "statblock", "traits": [ { "field": "label" } ], "compact": "tak" } ]
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", json);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("t.json", rejected.Reason);
-        Assert.Contains("#0", rejected.Reason);
-    }
-
-    // ---------------------------------------------------------------------
-    // Rule 6: entry validation - unknown key, invalid template reference.
+    // Entry file validation: unknown key, invalid content type reference.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -552,7 +228,7 @@ public sealed class ContentPackLoaderTests : IDisposable
               "values": { }
             }
             """;
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
         _packs.WriteFile("cnt", "entries/e.json", json);
 
         var registry = await Loader().LoadAsync();
@@ -565,52 +241,52 @@ public sealed class ContentPackLoaderTests : IDisposable
     [InlineData("systhing")]
     [InlineData("sys:sub:thing")]
     [InlineData("Sys:thing")]
-    public async Task Rejects_an_invalid_template_reference(string templateReference)
+    public async Task Rejects_an_invalid_content_type_reference(string reference)
     {
         var json = $$"""
             {
               "id": "e1",
               "name": "Entry One",
-              "template": "{{templateReference}}",
+              "template": "{{reference}}",
               "templateVersion": 1,
               "values": { }
             }
             """;
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
         _packs.WriteFile("cnt", "entries/e.json", json);
 
         var registry = await Loader().LoadAsync();
 
         var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains(templateReference, rejected.Reason);
+        Assert.Contains(reference, rejected.Reason);
     }
 
     // ---------------------------------------------------------------------
-    // Rule 7: two installed packs with the same id are both rejected.
+    // Two installed packs with the same id are both rejected.
     // ---------------------------------------------------------------------
 
     [Fact]
     public async Task Rejects_both_packs_when_two_share_an_id()
     {
-        _packs.WritePack("first", SystemPackJson("dup"));
-        _packs.WritePack("second", SystemPackJson("dup"));
+        _packs.WritePack("first", PackJson("dup"));
+        _packs.WritePack("second", PackJson("dup"));
 
         var registry = await Loader().LoadAsync();
 
-        Assert.Empty(registry.SystemPacks);
+        Assert.Empty(registry.Packs);
         Assert.Equal(2, registry.RejectedPacks.Count);
         Assert.All(registry.RejectedPacks, rejected => Assert.Contains("dup", rejected.Reason));
     }
 
     // ---------------------------------------------------------------------
-    // Rule 8: size and count limits.
+    // Size and count limits.
     // ---------------------------------------------------------------------
 
     [Fact]
     public async Task Rejects_a_pack_json_over_the_size_limit()
     {
         var oversizedName = new string('a', 1024 * 1024);
-        _packs.WritePack("bad", SystemPackJson("sys", name: oversizedName));
+        _packs.WritePack("bad", PackJson("sys", name: oversizedName));
 
         var registry = await Loader().LoadAsync();
 
@@ -620,46 +296,19 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     [Fact]
-    public async Task Rejects_a_system_pack_with_more_than_ten_thousand_templates()
+    public async Task Rejects_a_pack_with_more_than_ten_thousand_entries()
     {
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
 
         for (var i = 0; i < 10_001; i++)
         {
-            _packs.WriteFile("sys", $"templates/t{i}.json", "{}");
+            _packs.WriteFile("cnt", $"entries/e{i}.json", "{}");
         }
 
         var registry = await Loader().LoadAsync();
 
         var rejected = Assert.Single(registry.RejectedPacks);
         Assert.Contains("10000", rejected.Reason);
-    }
-
-    // ---------------------------------------------------------------------
-    // The forbidden 3 -> 3 dependency edge (section 11).
-    // ---------------------------------------------------------------------
-
-    [Fact]
-    public async Task Rejects_a_content_pack_whose_entry_points_at_a_template_in_another_content_pack()
-    {
-        _packs.WriteFile("cnt-a", "pack.json", ContentPackJson("cnt-a"));
-        _packs.WriteFile("cnt-a", "entries/e.json", """
-            {
-              "id": "e1",
-              "name": "Entry One",
-              "template": "cnt-b:thing",
-              "templateVersion": 1,
-              "values": { }
-            }
-            """);
-        _packs.WriteFile("cnt-b", "pack.json", ContentPackJson("cnt-b"));
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("cnt-b", rejected.Reason);
-        Assert.Single(registry.ContentPacks, pack => pack.Id.Value == "cnt-b");
-        Assert.Empty(registry.Entries);
     }
 
     // ---------------------------------------------------------------------
@@ -670,13 +319,13 @@ public sealed class ContentPackLoaderTests : IDisposable
     public async Task A_rejected_pack_does_not_stop_a_healthy_sibling_from_loading()
     {
         _packs.WriteFile("bad", "pack.json", "{ this is not json");
-        _packs.WritePack("good", SystemPackJson("good-sys"));
+        _packs.WritePack("good", PackJson("good-cnt"));
 
         var registry = await Loader().LoadAsync();
 
         Assert.Single(registry.RejectedPacks);
-        var goodPack = Assert.Single(registry.SystemPacks);
-        Assert.Equal("good-sys", goodPack.Id.Value);
+        var goodPack = Assert.Single(registry.Packs);
+        Assert.Equal("good-cnt", goodPack.Id.Value);
     }
 
     // ---------------------------------------------------------------------
@@ -685,28 +334,28 @@ public sealed class ContentPackLoaderTests : IDisposable
     // ---------------------------------------------------------------------
 
     [Fact]
-    public async Task A_locked_template_file_rejects_only_its_own_pack_and_names_the_file()
+    public async Task A_locked_entry_file_rejects_only_its_own_pack_and_names_the_file()
     {
-        _packs.WriteFile("locked", "pack.json", SystemPackJson("locked-sys"));
-        _packs.WriteFile("locked", "templates/t.json", ValidTemplateJson);
-        _packs.WritePack("good", SystemPackJson("good-sys"));
+        _packs.WriteFile("locked", "pack.json", PackJson("locked-cnt"));
+        _packs.WriteFile("locked", "entries/e.json", ValidEntryJson);
+        _packs.WritePack("good", PackJson("good-cnt"));
 
-        var lockedTemplatePath = System.IO.Path.Combine(_packs.PackDirectory("locked"), "templates", "t.json");
+        var lockedEntryPath = Path.Combine(_packs.PackDirectory("locked"), "entries", "e.json");
 
         // FileShare.None makes the file genuinely unreadable by anyone else for as long as this
         // stream stays open, without touching real OS permissions - a deterministic stand-in for the
         // "IO exception mid-read" case the loader must survive.
-        await using (new FileStream(lockedTemplatePath, FileMode.Open, FileAccess.Read, FileShare.None))
+        await using (new FileStream(lockedEntryPath, FileMode.Open, FileAccess.Read, FileShare.None))
         {
             var registry = await Loader().LoadAsync();
 
             var rejected = Assert.Single(registry.RejectedPacks);
-            Assert.Contains("t.json", rejected.Reason);
+            Assert.Contains("e.json", rejected.Reason);
 
             // This is the assertion that matters most: one unreadable pack must never stop its
             // healthy sibling from loading normally.
-            var goodPack = Assert.Single(registry.SystemPacks);
-            Assert.Equal("good-sys", goodPack.Id.Value);
+            var goodPack = Assert.Single(registry.Packs);
+            Assert.Equal("good-cnt", goodPack.Id.Value);
         }
     }
 
@@ -717,182 +366,108 @@ public sealed class ContentPackLoaderTests : IDisposable
     [Fact]
     public async Task Reports_an_empty_registry_when_the_packs_directory_is_missing()
     {
-        var loader = new ContentPackLoader(Path.Combine(_packs.Path, "does-not-exist"));
+        var loader = new ContentPackLoader(Path.Combine(_packs.Path, "does-not-exist"), FakeContentTypeCatalog.Empty());
 
         var registry = await loader.LoadAsync();
 
-        Assert.Empty(registry.SystemPacks);
-        Assert.Empty(registry.ContentPacks);
+        Assert.Empty(registry.Packs);
         Assert.Empty(registry.Entries);
         Assert.Empty(registry.RejectedPacks);
     }
 
     // ---------------------------------------------------------------------
-    // The three unresolved reasons.
+    // The one-pass resolution: MissingSet, TypeVersionMismatch, ValuesRejected.
     // ---------------------------------------------------------------------
 
     [Fact]
-    public async Task An_entry_naming_a_pack_that_is_not_installed_is_unresolved_as_missing_pack()
+    public async Task An_entry_naming_an_unknown_content_type_reference_is_unresolved_as_missing_set()
     {
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // points at "sys:thing", never installed
+        // IContentTypeCatalog.TryGet's two-method contract cannot tell "no content set uses this
+        // id at all" apart from "a content set is known, but it does not declare this type" - see
+        // EntryUnresolvedReason.MissingSet's remarks. Both collapse to MissingSet, which is exactly
+        // what this test locks in: an entirely empty catalog produces the same outcome a catalog
+        // that merely lacks this one type would.
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // points at "sys:thing", unknown to an empty catalog
 
-        var registry = await Loader().LoadAsync();
+        var registry = await Loader(FakeContentTypeCatalog.Empty()).LoadAsync();
 
         var registered = Assert.Single(registry.Entries);
-        Assert.Equal(EntryUnresolvedReason.MissingPack, registered.Unresolved);
-        Assert.Null(registered.Template);
+        Assert.Equal(EntryUnresolvedReason.MissingSet, registered.Unresolved);
+        Assert.Null(registered.Type);
     }
 
     [Fact]
-    public async Task An_entry_naming_a_template_the_pack_does_not_declare_is_unresolved_as_missing_template()
+    public async Task An_entry_bound_to_a_content_type_at_a_different_version_is_unresolved_as_a_version_mismatch()
     {
-        const string otherTemplate = """
-            {
-              "id": "other",
-              "name": "Other",
-              "version": 1,
-              "catalogVersion": 1,
-              "fields": [],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", otherTemplate);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // points at "sys:thing", which is not declared
+        var reference = new ContentTypeReference(ContentId.Create("sys"), ContentId.Create("thing"));
+        var types = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(reference, "Thing", 2));
 
-        var registry = await Loader().LoadAsync();
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // declares templateVersion 1, catalog is at 2
+
+        var registry = await Loader(types).LoadAsync();
 
         var registered = Assert.Single(registry.Entries);
-        Assert.Equal(EntryUnresolvedReason.MissingTemplate, registered.Unresolved);
+        Assert.Equal(EntryUnresolvedReason.TypeVersionMismatch, registered.Unresolved);
     }
 
     [Fact]
-    public async Task An_entry_bound_to_a_template_at_a_different_version_is_unresolved_as_a_version_mismatch()
+    public async Task An_entry_whose_values_the_catalog_rejects_is_unresolved_with_the_catalogs_own_reason()
     {
-        const string templateAtVersionTwo = """
-            {
-              "id": "thing",
-              "name": "Thing",
-              "version": 2,
-              "catalogVersion": 1,
-              "fields": [
-                { "id": "label", "label": "Label", "type": "text" },
-                { "id": "amount", "label": "Amount", "type": "integer" },
-                { "id": "note", "label": "Note", "type": "text", "required": false }
-              ],
-              "card": []
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", templateAtVersionTwo);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson); // templateVersion 1, template is now at 2
+        var reference = new ContentTypeReference(ContentId.Create("sys"), ContentId.Create("thing"));
+        var types = new FakeContentTypeCatalog(
+            [new ContentTypeDescriptor(reference, "Thing", 1)],
+            new HashSet<ContentTypeReference> { reference });
 
-        var registry = await Loader().LoadAsync();
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", ValidEntryJson);
+
+        var registry = await Loader(types).LoadAsync();
 
         var registered = Assert.Single(registry.Entries);
-        Assert.Equal(EntryUnresolvedReason.TemplateVersionMismatch, registered.Unresolved);
-    }
-
-    // ---------------------------------------------------------------------
-    // An entry that contradicts a template it did resolve against rejects its whole content pack.
-    // ---------------------------------------------------------------------
-
-    [Fact]
-    public async Task Rejects_the_content_pack_when_a_resolved_entry_is_missing_a_required_field()
-    {
-        const string entryMissingAmount = """
-            {
-              "id": "e1",
-              "name": "Entry One",
-              "template": "sys:thing",
-              "templateVersion": 1,
-              "values": { "label": "A" }
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", ValidTemplateJson);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", entryMissingAmount);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("amount", rejected.Reason);
-        Assert.Empty(registry.ContentPacks);
-        Assert.Empty(registry.Entries);
+        Assert.Equal(EntryUnresolvedReason.ValuesRejected, registered.Unresolved);
+        Assert.Equal("rejected by test fake.", registered.UnresolvedDetail);
     }
 
     [Fact]
-    public async Task Rejects_the_content_pack_when_a_resolved_entry_has_the_wrong_value_type()
+    public async Task A_values_rejection_marks_only_that_entry_and_never_its_pack()
     {
-        const string entryWithTextAmount = """
+        var accepted = new ContentTypeReference(ContentId.Create("sys"), ContentId.Create("good"));
+        var rejected = new ContentTypeReference(ContentId.Create("sys"), ContentId.Create("bad"));
+        var types = new FakeContentTypeCatalog(
+            [new ContentTypeDescriptor(accepted, "Good", 1), new ContentTypeDescriptor(rejected, "Bad", 1)],
+            new HashSet<ContentTypeReference> { rejected });
+
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/ok.json", """
             {
-              "id": "e1",
-              "name": "Entry One",
-              "template": "sys:thing",
+              "id": "ok",
+              "name": "Ok",
+              "template": "sys:good",
               "templateVersion": 1,
-              "values": { "label": "A", "amount": "three" }
+              "values": { }
             }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", ValidTemplateJson);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", entryWithTextAmount);
-
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("amount", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task Rejects_the_content_pack_when_a_resolved_entry_supplies_an_undeclared_field()
-    {
-        const string entryWithExtraField = """
+            """);
+        _packs.WriteFile("cnt", "entries/bad.json", """
             {
-              "id": "e1",
-              "name": "Entry One",
-              "template": "sys:thing",
+              "id": "bad-entry",
+              "name": "Bad",
+              "template": "sys:bad",
               "templateVersion": 1,
-              "values": { "label": "A", "amount": 3, "mystery": "x" }
+              "values": { }
             }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", ValidTemplateJson);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", entryWithExtraField);
+            """);
 
-        var registry = await Loader().LoadAsync();
-
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("mystery", rejected.Reason);
-    }
-
-    [Fact]
-    public async Task An_optional_field_left_out_of_an_entry_is_legal()
-    {
-        const string entryWithoutOptionalNote = """
-            {
-              "id": "e1",
-              "name": "Entry One",
-              "template": "sys:thing",
-              "templateVersion": 1,
-              "values": { "label": "A", "amount": 3 }
-            }
-            """;
-        _packs.WriteFile("sys", "pack.json", SystemPackJson("sys"));
-        _packs.WriteFile("sys", "templates/t.json", ValidTemplateJson);
-        _packs.WriteFile("cnt", "pack.json", ContentPackJson("cnt"));
-        _packs.WriteFile("cnt", "entries/e.json", entryWithoutOptionalNote);
-
-        var registry = await Loader().LoadAsync();
+        var registry = await Loader(types).LoadAsync();
 
         Assert.Empty(registry.RejectedPacks);
-        var registered = Assert.Single(registry.Entries);
-        Assert.Null(registered.Unresolved);
-        Assert.NotNull(registered.Template);
+        Assert.Single(registry.Packs);
+
+        var ok = registry.Entries.Single(entry => entry.Address.Entry.Value == "ok");
+        var badEntry = registry.Entries.Single(entry => entry.Address.Entry.Value == "bad-entry");
+
+        Assert.Null(ok.Unresolved);
+        Assert.Equal(EntryUnresolvedReason.ValuesRejected, badEntry.Unresolved);
     }
 }

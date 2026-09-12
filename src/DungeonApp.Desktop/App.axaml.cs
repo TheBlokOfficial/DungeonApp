@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,6 +9,7 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tools.Counter;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -18,6 +20,11 @@ namespace DungeonApp.Desktop;
 
 public partial class App : Avalonia.Application
 {
+    // Handed in through the constructor rather than discovered anywhere below - see
+    // DungeonApp.App/Program.cs. Not a service locator: everything built from this list
+    // (the two aggregates below) is still plain constructor injection into the pieces that need it.
+    private readonly IReadOnlyList<IContentSet> _contentSets;
+
     private WorkspaceLayoutStore? _layoutStore;
     private DataBlockRegistry? _dataBlocks;
     private CounterTool? _counterTool;
@@ -25,8 +32,25 @@ public partial class App : Avalonia.Application
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
     private LoadContentPacksStep? _contentPacksStep;
+    private ContentPresentationAggregate? _presentation;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
+
+    public App(IReadOnlyList<IContentSet> contentSets)
+    {
+        _contentSets = contentSets;
+    }
+
+    /// <summary>
+    /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
+    /// class - it never runs in the shipped app, which always goes through the constructor above,
+    /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
+    /// empty content set list is safe here because design-time tooling only ever calls
+    /// <see cref="Initialize"/>, never <see cref="OnFrameworkInitializationCompleted"/>.
+    /// </summary>
+    public App() : this([])
+    {
+    }
 
     public override void Initialize()
     {
@@ -72,7 +96,10 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Packs");
 
-        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath));
+        var contentTypes = new ContentTypeCatalogAggregate(_contentSets);
+        _presentation = new ContentPresentationAggregate(_contentSets);
+
+        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, contentTypes));
 
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
@@ -113,7 +140,8 @@ public partial class App : Avalonia.Application
                 _campaignLibrary!,
                 _preparations!,
                 _startupSteps!,
-                () => _contentPacksStep!.Registry);
+                () => _contentPacksStep!.Registry,
+                _presentation!);
 
             desktop.MainWindow = new MainWindow
             {

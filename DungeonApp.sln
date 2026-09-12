@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonApp.Desktop.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonApp.Architecture.Tests", "tests\DungeonApp.Architecture.Tests\DungeonApp.Architecture.Tests.csproj", "{DCCAEA53-FB65-412D-A17A-CA06BC15E417}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonApp.Content.Dnd5e.Tests", "tests\DungeonApp.Content.Dnd5e.Tests\DungeonApp.Content.Dnd5e.Tests.csproj", "{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +114,18 @@ Global
 		{DCCAEA53-FB65-412D-A17A-CA06BC15E417}.Release|x64.Build.0 = Release|Any CPU
 		{DCCAEA53-FB65-412D-A17A-CA06BC15E417}.Release|x86.ActiveCfg = Release|Any CPU
 		{DCCAEA53-FB65-412D-A17A-CA06BC15E417}.Release|x86.Build.0 = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|x64.Build.0 = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Debug|x86.Build.0 = Debug|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|x64.ActiveCfg = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|x64.Build.0 = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|x86.ActiveCfg = Release|Any CPU
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,5 +138,6 @@ Global
 		{6F61C0B1-D36B-4D36-8871-904209172FD7} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{D157233A-C388-4CF0-8A6F-A4CE9D92D00D} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{DCCAEA53-FB65-412D-A17A-CA06BC15E417} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{4A6E9B1A-9B2E-4B2D-8B0B-2D6A1F3C9E01} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

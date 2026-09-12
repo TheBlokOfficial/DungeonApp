@@ -11,36 +11,16 @@ public sealed class LoadContentPacksStepTests : IDisposable
 {
     private readonly TestPacks _packs = new();
 
-    private const string SystemPackJson = """
-        {
-          "formatVersion": 1,
-          "id": "sys",
-          "kind": "system",
-          "name": "System",
-          "version": { "major": 1, "minor": 0 }
-        }
-        """;
+    private static readonly ContentTypeReference ThingReference =
+        new(ContentId.Create("sys"), ContentId.Create("thing"));
 
-    private const string TemplateJson = """
-        {
-          "id": "thing",
-          "name": "Thing",
-          "version": 1,
-          "catalogVersion": 1,
-          "fields": [
-            { "id": "label", "label": "Label", "type": "text" }
-          ],
-          "card": [
-            { "element": "statblock", "traits": [ { "field": "label" } ] }
-          ]
-        }
-        """;
+    private static FakeContentSet ThingContentSet() =>
+        new(ContentId.Create("sys"), [new ContentTypeDescriptor(ThingReference, "Thing", 1)]);
 
-    private const string ContentPackJson = """
+    private const string PackJson = """
         {
           "formatVersion": 1,
           "id": "content",
-          "kind": "content",
           "name": "Content",
           "version": { "major": 1, "minor": 0 }
         }
@@ -59,22 +39,20 @@ public sealed class LoadContentPacksStepTests : IDisposable
     public void Dispose() => _packs.Dispose();
 
     [Fact]
-    public async Task PrepareAsync_populates_registry_with_system_pack_and_resolved_entry()
+    public async Task PrepareAsync_populates_registry_with_pack_and_resolved_entry()
     {
-        _packs.WriteFile("sys", "pack.json", SystemPackJson);
-        _packs.WriteFile("sys", "templates/thing.json", TemplateJson);
-        _packs.WriteFile("content", "pack.json", ContentPackJson);
+        _packs.WriteFile("content", "pack.json", PackJson);
         _packs.WriteFile("content", "entries/e1.json", EntryJson);
 
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
 
         await step.PrepareAsync(CancellationToken.None);
 
         Assert.Empty(step.Registry.RejectedPacks);
-        Assert.Single(step.Registry.SystemPacks);
+        Assert.Single(step.Registry.Packs);
         var registered = Assert.Single(step.Registry.Entries);
         Assert.Null(registered.Unresolved);
-        Assert.NotNull(registered.Template);
+        Assert.NotNull(registered.Type);
     }
 
     // The single most important test here: a broken pack must never keep a good sibling pack, or
@@ -82,15 +60,15 @@ public sealed class LoadContentPacksStepTests : IDisposable
     [Fact]
     public async Task PrepareAsync_does_not_throw_when_one_pack_is_malformed_and_keeps_the_valid_one()
     {
-        _packs.WriteFile("sys", "pack.json", SystemPackJson);
-        _packs.WriteFile("sys", "templates/thing.json", TemplateJson);
+        _packs.WriteFile("good", "pack.json", PackJson.Replace("\"content\"", "\"good\""));
+        _packs.WriteFile("good", "entries/e1.json", EntryJson);
         _packs.WriteFile("broken", "pack.json", "{ this is not json");
 
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
 
         await step.PrepareAsync(CancellationToken.None);
 
-        Assert.Single(step.Registry.SystemPacks);
+        Assert.Single(step.Registry.Packs);
         var rejected = Assert.Single(step.Registry.RejectedPacks);
         Assert.Contains("broken", rejected.Location);
     }
@@ -99,12 +77,11 @@ public sealed class LoadContentPacksStepTests : IDisposable
     public async Task PrepareAsync_does_not_throw_when_packs_directory_is_missing()
     {
         var missingPath = Path.Combine(_packs.Path, "does-not-exist");
-        var step = new LoadContentPacksStep(new ContentPackLoader(missingPath));
+        var step = new LoadContentPacksStep(new ContentPackLoader(missingPath, ThingContentSet()));
 
         await step.PrepareAsync(CancellationToken.None);
 
-        Assert.Empty(step.Registry.SystemPacks);
-        Assert.Empty(step.Registry.ContentPacks);
+        Assert.Empty(step.Registry.Packs);
         Assert.Empty(step.Registry.Entries);
         Assert.Empty(step.Registry.RejectedPacks);
     }
@@ -112,11 +89,10 @@ public sealed class LoadContentPacksStepTests : IDisposable
     [Fact]
     public void Registry_is_an_empty_registry_before_PrepareAsync_runs()
     {
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
 
         Assert.NotNull(step.Registry);
-        Assert.Empty(step.Registry.SystemPacks);
-        Assert.Empty(step.Registry.ContentPacks);
+        Assert.Empty(step.Registry.Packs);
         Assert.Empty(step.Registry.Entries);
         Assert.Empty(step.Registry.RejectedPacks);
     }
@@ -124,7 +100,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
     [Fact]
     public void Describe_returns_a_non_empty_message()
     {
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
 
         Assert.False(string.IsNullOrWhiteSpace(step.Describe()));
     }

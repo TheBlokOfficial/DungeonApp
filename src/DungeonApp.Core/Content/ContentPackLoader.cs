@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -14,11 +13,14 @@ namespace DungeonApp.Core.Content;
 /// Scans a directory of installed packs, validates each one, and builds the <see cref="ContentRegistry"/>
 /// the rest of the engine reads from. Takes its path in the constructor the same way
 /// <see cref="Persistence.JsonCampaignRepository"/> does - there is no container here, and this is the
-/// composition root's job to wire up, not something the engine resolves for itself.
+/// composition root's job to wire up, not something the engine resolves for itself. <paramref
+/// name="types"/> is the engine's only window into content types (see <see cref="IContentTypeCatalog"/>)
+/// - the composition root hands in the aggregate over every installed content set.
 /// <para>
-/// The governing rule, repeated everywhere below: <b>a pack is rejected whole, and says why.</b> One
-/// malformed file never partially loads - the whole directory it lives in is set aside - and one
-/// rejected pack never stops any other pack in <paramref name="packsPath"/> from loading normally.
+/// The governing rule for a pack's own manifest: <b>a pack is rejected whole, and says why.</b> A
+/// malformed <c>pack.json</c> throws the whole directory out - there is no identity to address its
+/// contents by otherwise. A malformed entry file, in contrast, marks only that one entry: see
+/// <see cref="ResolveEntries"/>.
 /// </para>
 /// <para>
 /// Section 13 of the content architecture doc reduces this layer's entire security model to
@@ -27,15 +29,16 @@ namespace DungeonApp.Core.Content;
 /// is.
 /// </para>
 /// </summary>
-public sealed class ContentPackLoader(string packsPath)
+public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog types)
 {
     private const int CurrentFormatVersion = 1;
     private const int MaxFileBytes = 1024 * 1024;
     private const int MaxItemsPerPack = 10_000;
 
     private const string PackFileName = "pack.json";
-    private const string TemplatesDirectoryName = "templates";
     private const string EntriesDirectoryName = "entries";
+
+    private static readonly JsonElement EmptyValues = JsonDocument.Parse("{}").RootElement.Clone();
 
     private readonly JsonSerializerOptions _options = new()
     {
@@ -49,7 +52,7 @@ public sealed class ContentPackLoader(string packsPath)
         {
             // The directory name never carries meaning (identity lives in pack.json), so a missing
             // directory is not "no packs are named yet" - it is simply nothing to scan.
-            return new ContentRegistry([], [], [], []);
+            return new ContentRegistry([], [], []);
         }
 
         string[] directories;
@@ -66,26 +69,21 @@ public sealed class ContentPackLoader(string packsPath)
             // blame - the whole scan is reported as a single rejection naming packsPath, rather than
             // silently returning an empty registry (which would look identical to "no packs installed")
             // or letting the exception reach the caller and crash the app it is starting up for.
-            return new ContentRegistry([], [], [], [new RejectedPack(packsPath, $"could not be scanned: {ex.Message}")]);
+            return new ContentRegistry([], [], [new RejectedPack(packsPath, $"could not be scanned: {ex.Message}")]);
         }
 
-        var systemPacks = new List<(string Location, SystemPack Pack)>();
-        var contentPacks = new List<(string Location, ContentPack Pack)>();
+        var packs = new List<(string Location, Pack Pack)>();
         var rejected = new List<RejectedPack>();
 
         foreach (var directory in directories)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var (system, content, rejectedPack) = await LoadCandidateAsync(directory, cancellationToken);
+            var (pack, rejectedPack) = await LoadCandidateAsync(directory, cancellationToken);
 
-            if (system is not null)
+            if (pack is not null)
             {
-                systemPacks.Add((directory, system));
-            }
-            else if (content is not null)
-            {
-                contentPacks.Add((directory, content));
+                packs.Add((directory, pack));
             }
             else if (rejectedPack is not null)
             {
@@ -93,10 +91,10 @@ public sealed class ContentPackLoader(string packsPath)
             }
         }
 
-        // Rule 7: two installed packs sharing an id are both rejected. A collision is invisible until
-        // every candidate directory has been read, so it can only be checked here, after the scan.
-        var collidingIds = systemPacks.Select(entry => entry.Pack.Id)
-            .Concat(contentPacks.Select(entry => entry.Pack.Id))
+        // Two installed packs sharing an id are both rejected. A collision is invisible until every
+        // candidate directory has been read, so it can only be checked here, after the scan.
+        var collidingIds = packs
+            .Select(entry => entry.Pack.Id)
             .GroupBy(id => id)
             .Where(group => group.Count() > 1)
             .Select(group => group.Key)
@@ -104,56 +102,38 @@ public sealed class ContentPackLoader(string packsPath)
 
         if (collidingIds.Count > 0)
         {
-            foreach (var (location, pack) in systemPacks.Where(entry => collidingIds.Contains(entry.Pack.Id)))
+            foreach (var (location, pack) in packs.Where(entry => collidingIds.Contains(entry.Pack.Id)))
             {
                 rejected.Add(new RejectedPack(location, $"id '{pack.Id}' is used by more than one installed pack."));
             }
 
-            foreach (var (location, pack) in contentPacks.Where(entry => collidingIds.Contains(entry.Pack.Id)))
-            {
-                rejected.Add(new RejectedPack(location, $"id '{pack.Id}' is used by more than one installed pack."));
-            }
-
-            systemPacks.RemoveAll(entry => collidingIds.Contains(entry.Pack.Id));
-            contentPacks.RemoveAll(entry => collidingIds.Contains(entry.Pack.Id));
+            packs.RemoveAll(entry => collidingIds.Contains(entry.Pack.Id));
         }
 
-        // Cross-pack resolution (entries against templates in another pack) can only happen now that
-        // every surviving pack is known - a template a content pack names might live in a system pack
-        // that has not been read yet at the point the content pack itself was parsed.
-        var systemPacksById = systemPacks.ToDictionary(entry => entry.Pack.Id, entry => entry.Pack);
-        var contentPackIds = contentPacks.Select(entry => entry.Pack.Id).ToHashSet();
-
-        var finalContentPacks = new List<ContentPack>();
         var registeredEntries = new List<RegisteredEntry>();
 
-        foreach (var (location, pack) in contentPacks)
+        foreach (var (_, pack) in packs)
         {
-            if (TryResolveContentPack(pack, systemPacksById, contentPackIds, out var entries, out var rejectionReason))
-            {
-                finalContentPacks.Add(pack);
-                registeredEntries.AddRange(entries);
-            }
-            else
-            {
-                rejected.Add(new RejectedPack(location, rejectionReason!));
-            }
+            registeredEntries.AddRange(ResolveEntries(pack.Id, pack.Entries, types));
         }
 
-        var registry = new ContentRegistry(
-            [.. systemPacks.Select(entry => entry.Pack)],
-            [.. finalContentPacks],
+        return new ContentRegistry(
+            [.. packs.Select(entry => entry.Pack)],
             [.. registeredEntries],
             [.. rejected]);
-
-        return registry;
     }
 
     /// <summary>
-    /// Loads and fully validates one candidate directory in isolation. Every failure anywhere inside
-    /// - a missing file, a syntax error, a stray key, a dangling reference - funnels through
-    /// <see cref="PackRejectedException"/> so this method has exactly one exit for "this directory is
-    /// not installable", instead of a validation step for every rule above.
+    /// Loads and fully validates one candidate directory's manifest and entries, in isolation. Every
+    /// failure anywhere inside - a missing file, a syntax error, a stray key, a duplicated id - funnels
+    /// through <see cref="PackRejectedException"/> so this method has exactly one exit for "this
+    /// directory is not installable".
+    /// <para>
+    /// A <c>templates</c> directory, if present, is silently ignored rather than inspected or rejected
+    /// for - content types no longer come from packs, so a leftover or forgotten one is inert, not an
+    /// error. Rejecting a whole pack for a directory nobody reads from would contradict the very rule
+    /// (section 13) that one defect must never hide every entry beside it.
+    /// </para>
     /// <para>
     /// An <see cref="IOException"/> or <see cref="UnauthorizedAccessException"/> reaching here - a file
     /// vanishing between enumeration and read, a locked file, a directory this process cannot list -
@@ -161,7 +141,7 @@ public sealed class ContentPackLoader(string packsPath)
     /// that could not be read, and every sibling pack keeps loading normally.
     /// </para>
     /// </summary>
-    private async Task<(SystemPack? System, ContentPack? Content, RejectedPack? Rejected)> LoadCandidateAsync(
+    private async Task<(Pack? Pack, RejectedPack? Rejected)> LoadCandidateAsync(
         string directory, CancellationToken cancellationToken)
     {
         try
@@ -173,129 +153,55 @@ public sealed class ContentPackLoader(string packsPath)
                 throw new PackRejectedException($"'{PackFileName}' is missing.");
             }
 
-            var pack = await ParseStrictAsync<PackFileDto>(packPath, PackFileName, cancellationToken);
+            var packDto = await ParseStrictAsync<PackFileDto>(packPath, PackFileName, cancellationToken);
 
-            if (pack.FormatVersion is null || pack.FormatVersion != CurrentFormatVersion)
+            if (packDto.FormatVersion is null || packDto.FormatVersion != CurrentFormatVersion)
             {
-                throw new PackRejectedException($"'{PackFileName}' declares unknown formatVersion '{pack.FormatVersion}'.");
+                throw new PackRejectedException($"'{PackFileName}' declares unknown formatVersion '{packDto.FormatVersion}'.");
             }
 
-            if (!ContentId.TryCreate(pack.Id, out var packId))
+            if (!ContentId.TryCreate(packDto.Id, out var packId))
             {
-                throw new PackRejectedException($"'{PackFileName}' has an invalid id '{pack.Id}'.");
+                throw new PackRejectedException($"'{PackFileName}' has an invalid id '{packDto.Id}'.");
             }
 
-            if (string.IsNullOrWhiteSpace(pack.Name))
+            if (string.IsNullOrWhiteSpace(packDto.Name))
             {
                 throw new PackRejectedException($"'{PackFileName}' is missing a name.");
             }
 
-            if (pack.Version?.Major is not { } major || major < 0
-                || pack.Version.Minor is not { } minor || minor < 0)
+            if (packDto.Version?.Major is not { } major || major < 0
+                || packDto.Version.Minor is not { } minor || minor < 0)
             {
                 throw new PackRejectedException($"'{PackFileName}' has an invalid version.");
             }
 
             var version = new PackVersion(major, minor);
-            var templatesDirectory = Path.Combine(directory, TemplatesDirectoryName);
             var entriesDirectory = Path.Combine(directory, EntriesDirectoryName);
-            var hasTemplates = Directory.Exists(templatesDirectory);
-            var hasEntries = Directory.Exists(entriesDirectory);
+            var entries = await LoadEntriesAsync(entriesDirectory, packId, cancellationToken);
 
-            switch (pack.Kind)
-            {
-                case "system":
-                    // A system pack brings shape, never content - see section 11's ban on anything but
-                    // the 3-to-2 dependency edge.
-                    if (hasEntries)
-                    {
-                        throw new PackRejectedException(
-                            $"system pack '{packId}' must not contain an '{EntriesDirectoryName}' directory.");
-                    }
-
-                    return (
-                        await LoadTemplatesAsync(templatesDirectory, hasTemplates, packId, pack.Name.Trim(), version, cancellationToken),
-                        null,
-                        null);
-
-                case "content":
-                    if (hasTemplates)
-                    {
-                        throw new PackRejectedException(
-                            $"content pack '{packId}' must not contain a '{TemplatesDirectoryName}' directory.");
-                    }
-
-                    return (
-                        null,
-                        await LoadEntriesAsync(entriesDirectory, hasEntries, packId, pack.Name.Trim(), version, cancellationToken),
-                        null);
-
-                default:
-                    throw new PackRejectedException($"'{PackFileName}' declares an unknown kind '{pack.Kind}'.");
-            }
+            return (new Pack(packId, packDto.Name.Trim(), version, entries), null);
         }
         catch (PackRejectedException ex)
         {
-            return (null, null, new RejectedPack(directory, ex.Message));
+            return (null, new RejectedPack(directory, ex.Message));
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            // Catches what no inner try/catch already turned into a PackRejectedException: directory
-            // enumeration below (templates/entries) failing outright, or any other IO surprise. The
-            // BCL's own exception messages already name the offending path, so no extra bookkeeping
-            // is needed to satisfy "the reason names the file or directory".
-            return (null, null, new RejectedPack(directory, $"could not be read: {ex.Message}"));
+            // Catches what no inner try/catch already turned into a PackRejectedException: entries
+            // directory enumeration below failing outright, or any other IO surprise. The BCL's own
+            // exception messages already name the offending path, so no extra bookkeeping is needed to
+            // satisfy "the reason names the file or directory".
+            return (null, new RejectedPack(directory, $"could not be read: {ex.Message}"));
         }
     }
 
-    private async Task<SystemPack> LoadTemplatesAsync(
-        string templatesDirectory, bool hasTemplates, ContentId packId, string name, PackVersion version,
-        CancellationToken cancellationToken)
+    private async Task<IReadOnlyList<Entry>> LoadEntriesAsync(
+        string entriesDirectory, ContentId packId, CancellationToken cancellationToken)
     {
-        if (!hasTemplates)
+        if (!Directory.Exists(entriesDirectory))
         {
-            return new SystemPack(packId, name, version, []);
-        }
-
-        var files = Directory.EnumerateFiles(templatesDirectory, "*.json")
-            .OrderBy(file => file, StringComparer.Ordinal)
-            .ToArray();
-
-        if (files.Length > MaxItemsPerPack)
-        {
-            throw new PackRejectedException($"system pack '{packId}' declares more than {MaxItemsPerPack} templates.");
-        }
-
-        var templates = new List<Template>();
-        var seenIds = new HashSet<ContentId>();
-
-        foreach (var file in files)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var label = RelativeLabel(TemplatesDirectoryName, file);
-            var dto = await ParseStrictAsync<TemplateFileDto>(file, label, cancellationToken);
-            var template = ParseTemplate(dto, label);
-
-            if (!seenIds.Add(template.Id))
-            {
-                throw new PackRejectedException(
-                    $"system pack '{packId}' declares template id '{template.Id}' more than once (in '{label}').");
-            }
-
-            templates.Add(template);
-        }
-
-        return new SystemPack(packId, name, version, [.. templates]);
-    }
-
-    private async Task<ContentPack> LoadEntriesAsync(
-        string entriesDirectory, bool hasEntries, ContentId packId, string name, PackVersion version,
-        CancellationToken cancellationToken)
-    {
-        if (!hasEntries)
-        {
-            return new ContentPack(packId, name, version, []);
+            return [];
         }
 
         var files = Directory.EnumerateFiles(entriesDirectory, "*.json")
@@ -304,7 +210,7 @@ public sealed class ContentPackLoader(string packsPath)
 
         if (files.Length > MaxItemsPerPack)
         {
-            throw new PackRejectedException($"content pack '{packId}' declares more than {MaxItemsPerPack} entries.");
+            throw new PackRejectedException($"pack '{packId}' declares more than {MaxItemsPerPack} entries.");
         }
 
         var entries = new List<Entry>();
@@ -321,178 +227,13 @@ public sealed class ContentPackLoader(string packsPath)
             if (!seenIds.Add(entry.Id))
             {
                 throw new PackRejectedException(
-                    $"content pack '{packId}' declares entry id '{entry.Id}' more than once (in '{label}').");
+                    $"pack '{packId}' declares entry id '{entry.Id}' more than once (in '{label}').");
             }
 
             entries.Add(entry);
         }
 
-        return new ContentPack(packId, name, version, [.. entries]);
-    }
-
-    private Template ParseTemplate(TemplateFileDto dto, string label)
-    {
-        if (!ContentId.TryCreate(dto.Id, out var id))
-        {
-            throw new PackRejectedException($"'{label}' has an invalid id '{dto.Id}'.");
-        }
-
-        if (string.IsNullOrWhiteSpace(dto.Name))
-        {
-            throw new PackRejectedException($"'{label}' is missing a name.");
-        }
-
-        if (dto.Version is not { } version || version < 1)
-        {
-            throw new PackRejectedException($"'{label}' has an invalid version.");
-        }
-
-        if (dto.CatalogVersion is not { } catalogVersion || catalogVersion < 1)
-        {
-            throw new PackRejectedException($"'{label}' has an invalid catalogVersion.");
-        }
-
-        var fields = new List<FieldDeclaration>();
-        var fieldsByName = new Dictionary<FieldName, FieldDeclaration>();
-
-        foreach (var fieldDto in dto.Fields ?? [])
-        {
-            if (!FieldName.TryCreate(fieldDto.Id, out var fieldId))
-            {
-                throw new PackRejectedException($"'{label}' has a field with an invalid id '{fieldDto.Id}'.");
-            }
-
-            if (string.IsNullOrWhiteSpace(fieldDto.Label))
-            {
-                throw new PackRejectedException($"'{label}' field '{fieldId}' is missing a label.");
-            }
-
-            var type = fieldDto.Type switch
-            {
-                "text" => FieldType.Text,
-                "integer" => FieldType.Integer,
-                _ => throw new PackRejectedException($"'{label}' field '{fieldId}' has an unknown type '{fieldDto.Type}'.")
-            };
-
-            var declaration = new FieldDeclaration(fieldId, fieldDto.Label.Trim(), type, fieldDto.Required ?? true);
-
-            if (!fieldsByName.TryAdd(fieldId, declaration))
-            {
-                throw new PackRejectedException($"'{label}' declares field id '{fieldId}' more than once.");
-            }
-
-            fields.Add(declaration);
-        }
-
-        var card = new List<CardElement>();
-        var cardDtos = dto.Card ?? [];
-
-        for (var index = 0; index < cardDtos.Count; index++)
-        {
-            card.Add(ParseCardElement(cardDtos[index], index, label, fieldsByName));
-        }
-
-        return new Template(id, dto.Name.Trim(), version, catalogVersion, [.. fields], [.. card]);
-    }
-
-    private CardElement ParseCardElement(
-        JsonElement raw, int index, string label, IReadOnlyDictionary<FieldName, FieldDeclaration> fields)
-    {
-        if (!raw.TryGetProperty("element", out var elementProperty) || elementProperty.ValueKind != JsonValueKind.String)
-        {
-            throw new PackRejectedException($"'{label}' card element #{index} is missing 'element'.");
-        }
-
-        var elementName = elementProperty.GetString();
-
-        return elementName switch
-        {
-            "statblock" => ParseStatblockElement(raw, index, label, fields),
-            "prose" => ParseProseElement(raw, index, label, fields),
-            _ => throw new PackRejectedException($"'{label}' card element #{index} has an unknown element type '{elementName}'.")
-        };
-    }
-
-    private StatblockElement ParseStatblockElement(
-        JsonElement raw, int index, string label, IReadOnlyDictionary<FieldName, FieldDeclaration> fields)
-    {
-        var dto = DeserializeCardElement<StatblockElementDto>(raw, index, label);
-        var traits = new List<StatblockTrait>();
-
-        foreach (var traitDto in dto.Traits ?? [])
-        {
-            if (!FieldName.TryCreate(traitDto.Field, out var field))
-            {
-                throw new PackRejectedException(
-                    $"'{label}' card element #{index} has a trait with an invalid field '{traitDto.Field}'.");
-            }
-
-            if (!fields.ContainsKey(field))
-            {
-                throw new PackRejectedException(
-                    $"'{label}' card element #{index} references undeclared field '{field}'.");
-            }
-
-            FieldName? secondary = null;
-
-            if (traitDto.Secondary is not null)
-            {
-                if (!FieldName.TryCreate(traitDto.Secondary, out var secondaryField))
-                {
-                    throw new PackRejectedException(
-                        $"'{label}' card element #{index} has a trait with an invalid secondary field '{traitDto.Secondary}'.");
-                }
-
-                if (!fields.ContainsKey(secondaryField))
-                {
-                    throw new PackRejectedException(
-                        $"'{label}' card element #{index} references undeclared secondary field '{secondaryField}'.");
-                }
-
-                secondary = secondaryField;
-            }
-
-            traits.Add(new StatblockTrait(field, secondary));
-        }
-
-        return new StatblockElement(dto.Title, [.. traits], dto.Compact ?? false);
-    }
-
-    private ProseElement ParseProseElement(
-        JsonElement raw, int index, string label, IReadOnlyDictionary<FieldName, FieldDeclaration> fields)
-    {
-        var dto = DeserializeCardElement<ProseElementDto>(raw, index, label);
-
-        if (!FieldName.TryCreate(dto.Field, out var field))
-        {
-            throw new PackRejectedException($"'{label}' card element #{index} has an invalid field '{dto.Field}'.");
-        }
-
-        if (!fields.ContainsKey(field))
-        {
-            throw new PackRejectedException($"'{label}' card element #{index} references undeclared field '{field}'.");
-        }
-
-        return new ProseElement(dto.Title, field);
-    }
-
-    /// <summary>
-    /// Re-deserializes one card element's raw JSON into its variant-specific DTO, so an unknown key
-    /// on (say) a "prose" element - like a stray "traits" copied from a statblock - is caught by the
-    /// same strict, unmapped-member check every other file goes through, rather than silently
-    /// accepted because the union of every variant's keys would have covered it.
-    /// </summary>
-    private TDto DeserializeCardElement<TDto>(JsonElement raw, int index, string label)
-    {
-        try
-        {
-            return JsonSerializer.Deserialize<TDto>(raw.GetRawText(), _options)
-                ?? throw new PackRejectedException($"'{label}' card element #{index} is empty.");
-        }
-        catch (JsonException ex)
-        {
-            throw new PackRejectedException($"'{label}' card element #{index}: {ex.Message}");
-        }
+        return entries;
     }
 
     private Entry ParseEntry(EntryFileDto dto, string label)
@@ -507,154 +248,57 @@ public sealed class ContentPackLoader(string packsPath)
             throw new PackRejectedException($"'{label}' is missing a name.");
         }
 
-        if (!TemplateReference.TryParse(dto.Template, out var templateReference))
+        if (!ContentTypeReference.TryParse(dto.Template, out var typeReference))
         {
             throw new PackRejectedException($"'{label}' has an invalid template reference '{dto.Template}'.");
         }
 
-        if (dto.TemplateVersion is not { } templateVersion)
+        if (dto.TemplateVersion is not { } typeVersion)
         {
             throw new PackRejectedException($"'{label}' is missing templateVersion.");
         }
 
-        var values = new Dictionary<FieldName, FieldValue>();
+        var valuesElement = dto.Values.ValueKind == JsonValueKind.Undefined ? EmptyValues : dto.Values;
 
-        foreach (var (key, element) in dto.Values ?? [])
-        {
-            if (!FieldName.TryCreate(key, out var fieldName))
-            {
-                throw new PackRejectedException($"'{label}' has an invalid field name '{key}' in values.");
-            }
-
-            FieldValue value = element.ValueKind switch
-            {
-                JsonValueKind.String => new TextValue(element.GetString() ?? string.Empty),
-                JsonValueKind.Number when element.TryGetInt64(out var integer) => new IntegerValue(integer),
-                JsonValueKind.Number => throw new PackRejectedException(
-                    $"'{label}' field '{fieldName}' is not a whole number."),
-                _ => throw new PackRejectedException($"'{label}' field '{fieldName}' has an unsupported value type.")
-            };
-
-            if (!values.TryAdd(fieldName, value))
-            {
-                throw new PackRejectedException($"'{label}' declares field '{fieldName}' more than once in values.");
-            }
-        }
-
-        return new Entry(id, dto.Name.Trim(), templateReference, templateVersion, values.ToImmutableDictionary());
+        return new Entry(id, dto.Name.Trim(), typeReference, typeVersion, new ContentValues(valuesElement));
     }
 
     /// <summary>
-    /// Resolves every entry in one content pack against the system packs installed alongside it.
-    /// Returns <c>false</c> when the pack itself must be rejected - either it names a template that
-    /// lives in another content pack (the forbidden 3-to-2 edge, section 11) or one of its entries
-    /// contradicts the template it did resolve against. Everything else (a missing pack, a missing
-    /// template, a version bump) leaves the pack installed with that one entry marked unresolved
-    /// instead.
+    /// Resolves every entry in one pack against <paramref name="types"/>, in the single pass section 3
+    /// of the brief describes: <see cref="IContentTypeCatalog.TryGet"/>, then the version, then
+    /// <see cref="IContentTypeCatalog.TryValidate"/>. Every one of the four ways an entry can fail to
+    /// resolve marks only that entry (<see cref="EntryUnresolvedReason"/>) - none of them reject the
+    /// pack itself, which is exactly the "Odrzucanie całej paczki za jeden wadliwy wpis" reversal
+    /// docs/decisions.md records: a content set that rejects one entry's values says nothing about any
+    /// other entry beside it.
     /// </summary>
-    private static bool TryResolveContentPack(
-        ContentPack pack,
-        IReadOnlyDictionary<ContentId, SystemPack> systemPacksById,
-        IReadOnlySet<ContentId> contentPackIds,
-        out List<RegisteredEntry> entries,
-        out string? rejectionReason)
+    private static IEnumerable<RegisteredEntry> ResolveEntries(
+        ContentId packId, IReadOnlyList<Entry> entries, IContentTypeCatalog types)
     {
-        entries = new List<RegisteredEntry>();
-
-        foreach (var entry in pack.Entries)
+        foreach (var entry in entries)
         {
-            var address = new EntryAddress(pack.Id, entry.Id);
-            var templatePackId = entry.Template.Pack;
+            var address = new EntryAddress(packId, entry.Id);
 
-            if (systemPacksById.TryGetValue(templatePackId, out var systemPack))
+            if (!types.TryGet(entry.Type, out var descriptor))
             {
-                var template = systemPack.Templates.FirstOrDefault(candidate => candidate.Id == entry.Template.Template);
-
-                if (template is null)
-                {
-                    entries.Add(RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.MissingTemplate));
-                    continue;
-                }
-
-                if (template.Version != entry.TemplateVersion)
-                {
-                    entries.Add(RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.TemplateVersionMismatch));
-                    continue;
-                }
-
-                if (!TryValidateValues(entry, template, out var valueError))
-                {
-                    rejectionReason = $"entry '{entry.Id}': {valueError}";
-                    entries = [];
-                    return false;
-                }
-
-                entries.Add(RegisteredEntry.CreateResolved(address, entry, template));
+                yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.MissingSet);
                 continue;
             }
 
-            if (contentPackIds.Contains(templatePackId))
+            if (descriptor.Version != entry.TypeVersion)
             {
-                rejectionReason =
-                    $"entry '{entry.Id}' names template '{entry.Template}', which lives in a content pack, not a system pack.";
-                entries = [];
-                return false;
-            }
-
-            entries.Add(RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.MissingPack));
-        }
-
-        rejectionReason = null;
-        return true;
-    }
-
-    /// <summary>
-    /// Checks one resolved entry against the template it is now bound to: every required field
-    /// present, every present value's runtime kind matching what the field declares, and no value
-    /// left over for a field the template never declared.
-    /// </summary>
-    private static bool TryValidateValues(Entry entry, Template template, out string? error)
-    {
-        foreach (var field in template.Fields)
-        {
-            if (!entry.Values.TryGetValue(field.Id, out var value))
-            {
-                if (field.Required)
-                {
-                    error = $"missing required field '{field.Id}'.";
-                    return false;
-                }
-
+                yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.TypeVersionMismatch);
                 continue;
             }
 
-            var typeMatches = field.Type switch
+            if (!types.TryValidate(entry.Type, entry.Values, out var error))
             {
-                FieldType.Text => value is TextValue,
-                FieldType.Integer => value is IntegerValue,
-                _ => false
-            };
-
-            if (!typeMatches)
-            {
-                error = $"field '{field.Id}' has a value that does not match its declared type.";
-                return false;
+                yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.ValuesRejected, error);
+                continue;
             }
+
+            yield return RegisteredEntry.CreateResolved(address, entry, descriptor);
         }
-
-        var declaredFieldIds = template.Fields.Select(field => field.Id).ToHashSet();
-
-        foreach (var fieldName in entry.Values.Keys)
-        {
-            if (!declaredFieldIds.Contains(fieldName))
-            {
-                error = $"field '{fieldName}' is not declared by template '{template.Id}'.";
-                return false;
-            }
-        }
-
-        error = null;
-        return true;
     }
 
     private async Task<TDto> ParseStrictAsync<TDto>(string path, string label, CancellationToken cancellationToken)
@@ -696,37 +340,19 @@ public sealed class ContentPackLoader(string packsPath)
         $"{subDirectoryName}/{Path.GetFileName(filePath)}";
 
     /// <summary>
-    /// Internal control flow only: every validation failure below throws one of these, and
-    /// <see cref="LoadCandidateAsync"/> is the only place that catches it. It never crosses that
-    /// boundary, so callers of <see cref="LoadAsync"/> never see an exception for a malformed pack -
-    /// they see it show up in <see cref="ContentRegistry.RejectedPacks"/> instead.
+    /// Internal control flow only: every manifest or entry-file validation failure below throws one of
+    /// these, and <see cref="LoadCandidateAsync"/> is the only place that catches it. It never crosses
+    /// that boundary, so callers of <see cref="LoadAsync"/> never see an exception for a malformed pack
+    /// - they see it show up in <see cref="ContentRegistry.RejectedPacks"/> instead.
     /// </summary>
     private sealed class PackRejectedException(string reason) : Exception(reason);
 
-    private sealed record PackFileDto(int? FormatVersion, string? Id, string? Kind, string? Name, PackVersionDto? Version);
+    private sealed record PackFileDto(int? FormatVersion, string? Id, string? Name, PackVersionDto? Version);
 
     private sealed record PackVersionDto(int? Major, int? Minor);
 
-    private sealed record TemplateFileDto(
-        string? Id,
-        string? Name,
-        int? Version,
-        int? CatalogVersion,
-        List<FieldDeclarationDto>? Fields,
-        List<JsonElement>? Card);
-
-    private sealed record FieldDeclarationDto(string? Id, string? Label, string? Type, bool? Required);
-
-    private sealed record StatblockElementDto(string? Element, string? Title, List<StatblockTraitDto>? Traits, bool? Compact);
-
-    private sealed record StatblockTraitDto(string? Field, string? Secondary);
-
-    private sealed record ProseElementDto(string? Element, string? Title, string? Field);
-
-    private sealed record EntryFileDto(
-        string? Id,
-        string? Name,
-        string? Template,
-        int? TemplateVersion,
-        Dictionary<string, JsonElement>? Values);
+    // "Template"/"TemplateVersion" on the wire, unchanged, matching the entry file format
+    // docs/architecture.md's "Deklaracja treści" section already shows - only the in-memory record
+    // (Entry.Type / Entry.TypeVersion) took the new name.
+    private sealed record EntryFileDto(string? Id, string? Name, string? Template, int? TemplateVersion, JsonElement Values);
 }

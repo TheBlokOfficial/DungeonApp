@@ -1,17 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:elements="using:DungeonApp.Desktop.Features.Registry.Elements"
-             x:Class="DungeonApp.Desktop.Features.Registry.Elements.StatblockElementView"
-             x:DataType="elements:StatblockElementViewModel">
+             xmlns:content="using:DungeonApp.Desktop.Controls.Content"
+             x:Class="DungeonApp.Desktop.Controls.Content.TraitListView"
+             x:DataType="content:TraitListView">
 
     <!-- The row template is shared by both layouts below (non-compact and compact) so the two
          never drift apart - same label/value/secondary rendering either way, only the panel that
          arranges the rows differs. -->
     <UserControl.Resources>
-        <DataTemplate x:Key="StatblockRowTemplate" x:DataType="elements:StatblockRowViewModel">
+        <DataTemplate x:Key="TraitRowTemplate" x:DataType="content:TraitRow">
             <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="StatblockLabel" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="TraitLabel" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Classes="muted" Text="{Binding Label}" />
@@ -28,22 +28,21 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
-         them out (RegistryView), not to the element itself. See docs/architecture.md, "Deklaracja
-         treści". -->
-    <!-- The shared size scope starts here, at one element, and deliberately not higher: the label
-         column is shared by the rows of THIS statblock, so a long label widens its own block and
+    <!-- No Margin on this root, ever: spacing between card controls belongs to the card view that
+         lays them out, not to the control itself. See docs/architecture.md, "Deklaracja treści". -->
+    <!-- The shared size scope starts here, at one control, and deliberately not higher: the label
+         column is shared by the rows of THIS trait list, so a long label widens its own block and
          leaves the neighbouring one alone. Without a scope every row measures its own Auto column
          and the values come out ragged - six three-letter labels only look like a column by
-         accident. Both layouts below sit inside this one scope, so a template that switches
-         between them keeps a single shared label column either way. -->
+         accident. Both layouts below sit inside this one scope, so switching between them keeps a
+         single shared label column either way. -->
     <StackPanel Grid.IsSharedSizeScope="True" Spacing="{DynamicResource DungeonSpacingXs}">
         <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
 
-        <!-- Non-compact: one pair per row, unchanged. -->
+        <!-- Non-compact: one pair per row. -->
         <ItemsControl ItemsSource="{Binding Rows}"
-                      IsVisible="{Binding !IsCompact}"
-                      ItemTemplate="{StaticResource StatblockRowTemplate}">
+                      IsVisible="{Binding !Compact}"
+                      ItemTemplate="{StaticResource TraitRowTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
@@ -51,13 +50,12 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <!-- Compact: the engine's own layout decision (three columns, filled row-major in
-             template order) - not something a pack can ask for. "compact" only claims the values
-             are short and scannable; this is one way to honor that claim today, free to change in
-             a later release without touching any pack. -->
+        <!-- Compact: three columns, filled row-major in list order - the card designer's own
+             layout choice for rows whose values are short and meant to be scanned, set once here,
+             never something a pack asks for. -->
         <ItemsControl ItemsSource="{Binding Rows}"
-                      IsVisible="{Binding IsCompact}"
-                      ItemTemplate="{StaticResource StatblockRowTemplate}">
+                      IsVisible="{Binding Compact}"
+                      ItemTemplate="{StaticResource TraitRowTemplate}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="3"

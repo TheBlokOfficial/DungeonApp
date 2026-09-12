@@ -3,8 +3,9 @@ using System;
 namespace DungeonApp.Core.Content;
 
 /// <summary>
-/// An entry's pointer to the template that gives it its shape, written in a pack file as
-/// <c>"pack:template"</c> (for example <c>"dnd5e:humanoid"</c>).
+/// An entry's pointer to the content type that gives it its shape, written in a pack file as
+/// <c>"set:type"</c> - the id of the content set that declares the type, then the id of the type
+/// itself within that set.
 /// <para>
 /// Parsing is deliberately strict about the punctuation: exactly one colon, and both halves must
 /// themselves be valid <see cref="ContentId"/> values. Because <see cref="ContentId"/>'s charset
@@ -12,9 +13,9 @@ namespace DungeonApp.Core.Content;
 /// a slightly odd id" - it is simply rejected.
 /// </para>
 /// </summary>
-public readonly record struct TemplateReference(ContentId Pack, ContentId Template)
+public readonly record struct ContentTypeReference(ContentId Set, ContentId Type)
 {
-    public static bool TryParse(string? candidate, out TemplateReference reference)
+    public static bool TryParse(string? candidate, out ContentTypeReference reference)
     {
         reference = default;
 
@@ -30,23 +31,23 @@ public readonly record struct TemplateReference(ContentId Pack, ContentId Templa
             return false;
         }
 
-        var packPart = candidate[..separator];
-        var templatePart = candidate[(separator + 1)..];
+        var setPart = candidate[..separator];
+        var typePart = candidate[(separator + 1)..];
 
-        if (!ContentId.TryCreate(packPart, out var pack) || !ContentId.TryCreate(templatePart, out var template))
+        if (!ContentId.TryCreate(setPart, out var set) || !ContentId.TryCreate(typePart, out var type))
         {
             return false;
         }
 
-        reference = new TemplateReference(pack, template);
+        reference = new ContentTypeReference(set, type);
 
         return true;
     }
 
-    public static TemplateReference Parse(string? candidate) =>
+    public static ContentTypeReference Parse(string? candidate) =>
         TryParse(candidate, out var reference)
             ? reference
-            : throw new ArgumentException($"Invalid template reference: '{candidate}'.", nameof(candidate));
+            : throw new ArgumentException($"Invalid content type reference: '{candidate}'.", nameof(candidate));
 
-    public override string ToString() => $"{Pack}:{Template}";
+    public override string ToString() => $"{Set}:{Type}";
 }

@@ -1,136 +1,94 @@
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Features.Registry;
-using DungeonApp.Desktop.Features.Registry.Elements;
 
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// Exercises <see cref="RegistryViewModel"/> and <see cref="CardViewModel"/> against a registry built
-/// by actually loading pack files from disk with <see cref="ContentPackLoader"/> - never against a
-/// hand-constructed <see cref="ContentRegistry"/> - the same discipline
-/// <c>LoadContentPacksStepTests</c> follows, sharing its <see cref="TestPacks"/> helper.
+/// Exercises <see cref="RegistryViewModel"/> against a registry built by actually loading pack files
+/// from disk with <see cref="ContentPackLoader"/> - never against a hand-constructed
+/// <see cref="ContentRegistry"/> - the same discipline <c>LoadContentPacksStepTests</c> follows,
+/// sharing its <see cref="TestPacks"/> helper.
+/// <para>
+/// Unlike before the content-registry pivot, a card is now a finished <see cref="Avalonia.Controls.Control"/>
+/// built by whatever <see cref="Content.IContentPresentation"/> the view model is given
+/// (<see cref="FakeContentSet"/> here) - this view model has no way to inspect what is inside it, so
+/// these tests only assert that a resolved entry produces one and an unresolved entry does not.
+/// </para>
 /// </summary>
 public sealed class RegistryViewModelTests : IDisposable
 {
     private readonly TestPacks _packs = new();
 
-    private const string SystemPackJson = """
-        {
-          "formatVersion": 1,
-          "id": "dnd5e",
-          "kind": "system",
-          "name": "Piąta edycja",
-          "version": { "major": 1, "minor": 0 }
-        }
-        """;
+    private static readonly ContentTypeReference IstotaV1 =
+        new(ContentId.Create("dnd5e"), ContentId.Create("istota"));
 
-    // Deliberately close to the "potwor" fixture the task points at: four statblocks, then prose -
-    // trimmed to one required field per statblock plus the optional fields these tests need to
-    // leave blank, rather than a full monster sheet.
-    private const string TemplateJson = """
-        {
-          "id": "istota",
-          "name": "Istota",
-          "version": 1,
-          "catalogVersion": 1,
-          "fields": [
-            { "id": "typ",             "label": "Typ",              "type": "text" },
-            { "id": "kp",              "label": "KP",               "type": "integer" },
-            { "id": "kpZrodlo",        "label": "Źródło KP",        "type": "text",    "required": false },
-            { "id": "pz",              "label": "PZ",               "type": "integer" },
-            { "id": "umiejetnosci",    "label": "Umiejętności",     "type": "text",    "required": false },
-            { "id": "cechySzczegolne", "label": "Cechy szczególne", "type": "text",    "required": false },
-            { "id": "opis",            "label": "Opis",             "type": "text",    "required": false }
-          ],
-          "card": [
-            { "element": "statblock", "traits": [ { "field": "typ" } ] },
+    private static FakeContentSet BuildContentSet() =>
+        new(
+            ContentId.Create("dnd5e"),
+            [new ContentTypeDescriptor(IstotaV1, "Istota", 1)],
+            validate: values =>
             {
-              "element": "statblock",
-              "title": "Obrona",
-              "compact": true,
-              "traits": [ { "field": "kp", "secondary": "kpZrodlo" }, { "field": "pz" } ]
-            },
-            { "element": "statblock", "title": "Biegłości", "traits": [ { "field": "umiejetnosci" } ] },
-            { "element": "prose", "title": "Cechy szczególne", "field": "cechySzczegolne" },
-            { "element": "prose", "title": "Opis", "field": "opis" }
-          ]
-        }
-        """;
+                var raw = values.Read<System.Collections.Generic.Dictionary<string, JsonElement>>();
 
-    private const string ContentPackJson = """
+                return raw.TryGetValue("odrzuc", out var flag) && flag.ValueKind == JsonValueKind.True
+                    ? "Wartości odrzucone przez testowy zestaw."
+                    : null;
+            });
+
+    private const string PackJson = """
         {
           "formatVersion": 1,
           "id": "bestiariusz",
-          "kind": "content",
           "name": "Bestiariusz testowy",
           "version": { "major": 1, "minor": 0 }
         }
         """;
 
-    // Fully filled: exercises every element, including a trait with a secondary value.
     private const string GoblinJson = """
         {
           "id": "goblin",
           "name": "Goblin",
           "template": "dnd5e:istota",
           "templateVersion": 1,
-          "values": {
-            "typ": "humanoid",
-            "kp": 15,
-            "kpZrodlo": "zbroja skórzana, tarcza",
-            "pz": 7,
-            "umiejetnosci": "Skradanie się +6",
-            "cechySzczegolne": "Zwinna ucieczka.",
-            "opis": "Mały rabuś."
-          }
+          "values": { "opis": "Mały rabuś." }
         }
         """;
 
-    // Leaves every optional field blank: kpZrodlo (secondary), umiejetnosci (the whole third
-    // statblock's only trait) and opis (the whole second prose block).
-    private const string SzczurJson = """
-        {
-          "id": "szczur",
-          "name": "Szczur",
-          "template": "dnd5e:istota",
-          "templateVersion": 1,
-          "values": {
-            "typ": "zwierzę",
-            "kp": 10,
-            "pz": 2,
-            "cechySzczegolne": "Wyczulony węch."
-          }
-        }
-        """;
-
+    // Points at a set this build has never heard of.
     private const string DuchJson = """
         {
           "id": "duch",
           "name": "Duch",
           "template": "widmowa:cos",
-          "templateVersion": 1
+          "templateVersion": 1,
+          "values": { }
         }
         """;
 
-    private const string SmokJson = """
-        {
-          "id": "smok",
-          "name": "Smok",
-          "template": "dnd5e:smok",
-          "templateVersion": 1
-        }
-        """;
-
+    // Known type, wrong version.
     private const string ChimeraJson = """
         {
           "id": "chimera",
           "name": "Chimera",
           "template": "dnd5e:istota",
-          "templateVersion": 2
+          "templateVersion": 2,
+          "values": { }
+        }
+        """;
+
+    // Known type and version, but the fake content set's validate delegate refuses these values.
+    private const string ZepsutyJson = """
+        {
+          "id": "zepsuty",
+          "name": "Zepsuty",
+          "template": "dnd5e:istota",
+          "templateVersion": 1,
+          "values": { "odrzuc": true }
         }
         """;
 
@@ -138,19 +96,17 @@ public sealed class RegistryViewModelTests : IDisposable
 
     private async Task<RegistryViewModel> BuildViewModelAsync()
     {
-        _packs.WriteFile("dnd5e", "pack.json", SystemPackJson);
-        _packs.WriteFile("dnd5e", "templates/istota.json", TemplateJson);
-        _packs.WriteFile("bestiariusz", "pack.json", ContentPackJson);
+        _packs.WriteFile("bestiariusz", "pack.json", PackJson);
         _packs.WriteFile("bestiariusz", "entries/goblin.json", GoblinJson);
-        _packs.WriteFile("bestiariusz", "entries/szczur.json", SzczurJson);
         _packs.WriteFile("bestiariusz", "entries/duch.json", DuchJson);
-        _packs.WriteFile("bestiariusz", "entries/smok.json", SmokJson);
         _packs.WriteFile("bestiariusz", "entries/chimera.json", ChimeraJson);
+        _packs.WriteFile("bestiariusz", "entries/zepsuty.json", ZepsutyJson);
 
-        var registry = await new ContentPackLoader(_packs.Path).LoadAsync(CancellationToken.None);
+        var contentSet = BuildContentSet();
+        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
         Assert.Empty(registry.RejectedPacks);
 
-        return new RegistryViewModel(registry);
+        return new RegistryViewModel(registry, contentSet);
     }
 
     [Fact]
@@ -159,12 +115,12 @@ public sealed class RegistryViewModelTests : IDisposable
         var viewModel = await BuildViewModelAsync();
 
         Assert.Equal(
-            ["Chimera", "Duch", "Goblin", "Smok", "Szczur"],
+            ["Chimera", "Duch", "Goblin", "Zepsuty"],
             viewModel.Entries.Select(row => row.Name));
     }
 
     [Fact]
-    public async Task Resolved_row_exposes_pack_and_template_display_names()
+    public async Task Resolved_row_exposes_pack_and_content_type_display_names()
     {
         var viewModel = await BuildViewModelAsync();
 
@@ -172,140 +128,72 @@ public sealed class RegistryViewModelTests : IDisposable
 
         Assert.Equal("bestiariusz:goblin", goblin.Address);
         Assert.Equal("Bestiariusz testowy", goblin.PackName);
-        Assert.Equal("Istota", goblin.TemplateName);
+        Assert.Equal("Istota", goblin.TypeName);
         Assert.False(goblin.IsUnresolved);
     }
 
     [Fact]
-    public async Task Selecting_a_fully_populated_entry_returns_every_element_in_template_order()
+    public async Task Selecting_a_resolved_entry_produces_a_non_empty_card()
     {
         var viewModel = await BuildViewModelAsync();
 
         viewModel.SelectedEntry = viewModel.Entries.Single(row => row.Name == "Goblin");
 
         Assert.Null(viewModel.UnresolvedMessage);
-        Assert.Equal(5, viewModel.Card.Count);
-
-        var typBlock = Assert.IsType<StatblockElementViewModel>(viewModel.Card[0]);
-        var defenseBlock = Assert.IsType<StatblockElementViewModel>(viewModel.Card[1]);
-        var skillsBlock = Assert.IsType<StatblockElementViewModel>(viewModel.Card[2]);
-        var featuresProse = Assert.IsType<ProseElementViewModel>(viewModel.Card[3]);
-        var descriptionProse = Assert.IsType<ProseElementViewModel>(viewModel.Card[4]);
-
-        var typRow = Assert.Single(typBlock.Rows);
-        Assert.Equal("Typ", typRow.Label);
-        Assert.Equal("humanoid", typRow.Value);
-
-        Assert.Equal("Obrona", defenseBlock.Title);
-        Assert.Equal(2, defenseBlock.Rows.Count);
-
-        // The template marks "Obrona" compact; IsCompact carries that straight through from the
-        // card element to the view model. The other two blocks left "compact" undeclared, which
-        // parses as false.
-        Assert.False(typBlock.IsCompact);
-        Assert.True(defenseBlock.IsCompact);
-        Assert.False(skillsBlock.IsCompact);
-
-        var kpRow = defenseBlock.Rows[0];
-        Assert.Equal("KP", kpRow.Label);
-        Assert.Equal("15", kpRow.Value);
-        Assert.True(kpRow.HasSecondary);
-        Assert.Equal("zbroja skórzana, tarcza", kpRow.Secondary);
-        // Bracketed for display: without a delimiter "15 zbroja skórzana, tarcza" runs together.
-        Assert.Equal("(zbroja skórzana, tarcza)", kpRow.SecondaryDisplay);
-
-        var pzRow = defenseBlock.Rows[1];
-        Assert.Equal("7", pzRow.Value);
-        Assert.False(pzRow.HasSecondary);
-
-        Assert.Equal("Skradanie się +6", Assert.Single(skillsBlock.Rows).Value);
-
-        Assert.Equal("Cechy szczególne", featuresProse.Title);
-        Assert.Equal("Zwinna ucieczka.", featuresProse.Text);
-        Assert.Equal("Opis", descriptionProse.Title);
-        Assert.Equal("Mały rabuś.", descriptionProse.Text);
+        Assert.True(viewModel.HasCard);
+        Assert.NotNull(viewModel.Card);
     }
 
     [Fact]
-    public async Task Optional_field_without_a_value_drops_its_row_and_an_all_optional_element_disappears_entirely()
-    {
-        var viewModel = await BuildViewModelAsync();
-
-        viewModel.SelectedEntry = viewModel.Entries.Single(row => row.Name == "Szczur");
-
-        // Only three elements reach the host: the "Biegłości" statblock (its one trait,
-        // umiejetnosci, has no value) and the "Opis" prose block (no value either) never appear at
-        // all - not as empty elements.
-        Assert.Equal(3, viewModel.Card.Count);
-        Assert.All(viewModel.Card, element => Assert.True(
-            element is StatblockElementViewModel or ProseElementViewModel));
-
-        var defenseBlock = Assert.IsType<StatblockElementViewModel>(viewModel.Card[1]);
-        Assert.Equal(2, defenseBlock.Rows.Count);
-
-        // kpZrodlo (kp's secondary) was left blank: the row still renders (kp itself is present),
-        // just without a secondary value - it is not skipped outright.
-        var kpRow = defenseBlock.Rows[0];
-        Assert.Equal("10", kpRow.Value);
-        Assert.False(kpRow.HasSecondary);
-        Assert.Null(kpRow.Secondary);
-        Assert.Null(kpRow.SecondaryDisplay);
-
-        Assert.DoesNotContain(viewModel.Card, element =>
-            element is StatblockElementViewModel statblock && statblock.Title == "Biegłości");
-        Assert.DoesNotContain(viewModel.Card, element =>
-            element is ProseElementViewModel prose && prose.Title == "Opis");
-    }
-
-    [Fact]
-    public async Task Unresolved_entries_show_an_empty_card_and_a_reason_specific_polish_message()
+    public async Task Unresolved_entries_show_no_card_and_a_reason_specific_polish_message()
     {
         var viewModel = await BuildViewModelAsync();
 
         var duch = viewModel.Entries.Single(row => row.Name == "Duch");
-        var smok = viewModel.Entries.Single(row => row.Name == "Smok");
         var chimera = viewModel.Entries.Single(row => row.Name == "Chimera");
+        var zepsuty = viewModel.Entries.Single(row => row.Name == "Zepsuty");
 
         Assert.True(duch.IsUnresolved);
-        Assert.True(smok.IsUnresolved);
         Assert.True(chimera.IsUnresolved);
-        Assert.Equal(string.Empty, duch.TemplateName);
+        Assert.True(zepsuty.IsUnresolved);
+        Assert.Equal(string.Empty, duch.TypeName);
 
         viewModel.SelectedEntry = duch;
-        var missingPackMessage = viewModel.UnresolvedMessage;
-        Assert.Empty(viewModel.Card);
-        Assert.False(string.IsNullOrWhiteSpace(missingPackMessage));
-        Assert.Contains("widmowa", missingPackMessage);
-
-        viewModel.SelectedEntry = smok;
-        var missingTemplateMessage = viewModel.UnresolvedMessage;
-        Assert.Empty(viewModel.Card);
-        Assert.False(string.IsNullOrWhiteSpace(missingTemplateMessage));
-        Assert.Contains("smok", missingTemplateMessage);
+        var missingSetMessage = viewModel.UnresolvedMessage;
+        Assert.False(viewModel.HasCard);
+        Assert.Null(viewModel.Card);
+        Assert.False(string.IsNullOrWhiteSpace(missingSetMessage));
+        Assert.Contains("widmowa", missingSetMessage);
 
         viewModel.SelectedEntry = chimera;
         var versionMismatchMessage = viewModel.UnresolvedMessage;
-        Assert.Empty(viewModel.Card);
+        Assert.False(viewModel.HasCard);
         Assert.False(string.IsNullOrWhiteSpace(versionMismatchMessage));
         Assert.Contains("istota", versionMismatchMessage);
 
-        // Each of the three EntryUnresolvedReason values gets its own wording, never a shared
-        // generic fallback text.
-        Assert.NotEqual(missingPackMessage, missingTemplateMessage);
-        Assert.NotEqual(missingTemplateMessage, versionMismatchMessage);
-        Assert.NotEqual(missingPackMessage, versionMismatchMessage);
+        viewModel.SelectedEntry = zepsuty;
+        var valuesRejectedMessage = viewModel.UnresolvedMessage;
+        Assert.False(viewModel.HasCard);
+        Assert.False(string.IsNullOrWhiteSpace(valuesRejectedMessage));
+        Assert.Contains("Wartości odrzucone przez testowy zestaw.", valuesRejectedMessage);
+
+        // Each reason gets its own wording, never a shared generic fallback text.
+        Assert.NotEqual(missingSetMessage, versionMismatchMessage);
+        Assert.NotEqual(versionMismatchMessage, valuesRejectedMessage);
+        Assert.NotEqual(missingSetMessage, valuesRejectedMessage);
     }
 
     [Fact]
     public async Task Empty_registry_reports_IsEmpty_without_throwing()
     {
-        var registry = await new ContentPackLoader(_packs.Path).LoadAsync(CancellationToken.None);
-        var viewModel = new RegistryViewModel(registry);
+        var contentSet = BuildContentSet();
+        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        var viewModel = new RegistryViewModel(registry, contentSet);
 
         Assert.True(viewModel.IsEmpty);
         Assert.Empty(viewModel.Entries);
         Assert.Null(viewModel.SelectedEntry);
-        Assert.Empty(viewModel.Card);
+        Assert.Null(viewModel.Card);
         Assert.Null(viewModel.UnresolvedMessage);
     }
 
@@ -316,9 +204,10 @@ public sealed class RegistryViewModelTests : IDisposable
     [Fact]
     public async Task Empty_registry_does_not_invite_a_selection()
     {
-        var registry = await new ContentPackLoader(_packs.Path).LoadAsync(CancellationToken.None);
+        var contentSet = BuildContentSet();
+        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
 
-        Assert.False(new RegistryViewModel(registry).ShowSelectionPrompt);
+        Assert.False(new RegistryViewModel(registry, contentSet).ShowSelectionPrompt);
     }
 
     [Fact]

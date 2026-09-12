@@ -1,18 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:registry="using:DungeonApp.Desktop.Features.Registry"
-             xmlns:elements="using:DungeonApp.Desktop.Features.Registry.Elements"
              x:Class="DungeonApp.Desktop.Features.Registry.RegistryView"
              x:DataType="registry:RegistryViewModel">
-
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="elements:StatblockElementViewModel">
-            <elements:StatblockElementView />
-        </DataTemplate>
-        <DataTemplate DataType="elements:ProseElementViewModel">
-            <elements:ProseElementView />
-        </DataTemplate>
-    </UserControl.DataTemplates>
 
     <UserControl.Styles>
         <!-- One entry, one row. Mirrors CampaignLibraryView's campaign-row: a flat, bordered record
@@ -77,7 +67,7 @@
                                 <TextBlock Classes="muted" Text="{Binding Address}" />
                                 <TextBlock Classes="muted"
                                            IsVisible="{Binding !IsUnresolved}"
-                                           Text="{Binding TemplateName}" />
+                                           Text="{Binding TypeName}" />
                                 <TextBlock Classes="muted"
                                            Foreground="{DynamicResource DungeonWarningBrush}"
                                            IsVisible="{Binding IsUnresolved}"
@@ -121,13 +111,7 @@
                 <ScrollViewer Grid.Row="1"
                               HorizontalScrollBarVisibility="Disabled"
                               IsVisible="{Binding HasCard}">
-                    <ItemsControl ItemsSource="{Binding Card}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Spacing="{DynamicResource DungeonSpacingLg}" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                    <ContentControl Content="{Binding Card}" />
                 </ScrollViewer>
             </Grid>
         </Grid>

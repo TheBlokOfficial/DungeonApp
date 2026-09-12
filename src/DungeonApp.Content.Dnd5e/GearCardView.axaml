@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls.Content"
+             x:Class="DungeonApp.Content.Dnd5e.GearCardView">
+
+    <!-- The designed gear card: rarity and weight untitled, then a description block. Spacing
+         between them belongs to this host, never to a control (see docs/architecture.md,
+         "Deklaracja treści"). -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <controls:TraitListView x:Name="Properties" />
+        <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
+    </StackPanel>
+</UserControl>

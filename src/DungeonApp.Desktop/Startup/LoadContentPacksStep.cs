@@ -17,7 +17,7 @@ namespace DungeonApp.Desktop.Startup;
 /// </summary>
 public sealed class LoadContentPacksStep(ContentPackLoader packLoader) : IStartupStep
 {
-    private ContentRegistry _registry = new([], [], [], []);
+    private ContentRegistry _registry = new([], [], []);
 
     public ContentRegistry Registry => _registry;
 

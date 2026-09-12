@@ -17,8 +17,8 @@ public sealed class RegistryEntryRowViewModel(RegisteredEntry registeredEntry, s
 
     public string PackName { get; } = packName;
 
-    /// <summary>Empty for an unresolved entry - there is no template to name.</summary>
-    public string TemplateName => RegisteredEntry.Template?.Name ?? string.Empty;
+    /// <summary>Empty for an unresolved entry - there is no content type to name.</summary>
+    public string TypeName => RegisteredEntry.Type?.Name ?? string.Empty;
 
     public bool IsUnresolved => RegisteredEntry.Unresolved is not null;
 }

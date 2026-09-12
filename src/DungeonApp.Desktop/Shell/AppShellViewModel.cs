@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -35,6 +36,7 @@ public sealed class AppShellViewModel : ObservableObject
     private readonly CampaignWorkspacePreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
     private readonly Func<ContentRegistry> _contentRegistry;
+    private readonly IContentPresentation _contentPresentation;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
@@ -63,7 +65,8 @@ public sealed class AppShellViewModel : ObservableObject
         CampaignLibraryViewModel campaignLibrary,
         CampaignWorkspacePreparationCache preparations,
         IStartupStep[] startupSteps,
-        Func<ContentRegistry> contentRegistry)
+        Func<ContentRegistry> contentRegistry,
+        IContentPresentation contentPresentation)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
@@ -71,6 +74,7 @@ public sealed class AppShellViewModel : ObservableObject
         _campaignLibrary = campaignLibrary;
         _startupSteps = startupSteps;
         _contentRegistry = contentRegistry;
+        _contentPresentation = contentPresentation;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
@@ -227,7 +231,7 @@ public sealed class AppShellViewModel : ObservableObject
         if (section.Id == RegistrySectionId)
         {
             TopBar.ContextTitle = RegistrySectionLabel;
-            CurrentWorkspaceContent = _registry ??= new RegistryViewModel(_contentRegistry());
+            CurrentWorkspaceContent = _registry ??= new RegistryViewModel(_contentRegistry(), _contentPresentation);
             return;
         }
 
