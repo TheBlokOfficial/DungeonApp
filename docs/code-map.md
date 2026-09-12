@@ -55,12 +55,13 @@ Zakres przejrzany w całości: `src/DungeonApp.Core`, `src/DungeonApp.Desktop`,
 > poza deklaracją, oraz wszystko, czego kod sam nie tłumaczy komentarzem (tam, gdzie brakowało
 > uzasadnienia „dlaczego", opisano samo „co").
 >
-> **Co jeszcze ruszy tę sekcję.** Krok „odrzucanie per plik wpisu" (`docs/tasks.md`) nie został
-> zrobiony: dziś błąd w pojedynczym pliku wpisu (JSON niepoprawny, brakujące pole adresowe, zduplikowany
-> id) nadal odrzuca całą paczkę, tak jak błąd w `pack.json` — dopiero błąd *rozwiązania* wpisu wobec
-> zestawu treści (brak zestawu, brak typu, niezgodna wersja, odrzucone wartości) jest dziś
-> per-wpisowy. Gdy ten krok się wydarzy, opis `ContentPackLoader` w sekcji 4b trzeba będzie napisać
-> jeszcze raz.
+> **Aktualizacja z tego samego dnia: krok „odrzucanie per plik wpisu" został zrobiony.** Poprzednia
+> wersja tej ramki zapowiadała, że gdy to się wydarzy, opis `ContentPackLoader` w sekcji 4b trzeba
+> będzie napisać jeszcze raz — i tak się stało. Sekcja 4b opisuje teraz trzy zakresy odrzucenia
+> (paczka / plik / wpis), a opis ekranu rejestru — wiersze plików niewczytanych. Jedyne, co z tabeli
+> „Co się dzieje, gdy treść jest zepsuta" nadal nie dociera do użytkownika, to odrzucone **paczki**:
+> loader je odnotowuje, ekran ich nie pokazuje, i jest to świadoma decyzja autora, nie luka
+> w wykonaniu.
 
 ---
 
@@ -173,7 +174,7 @@ mechanicznie — patrz sekcja 9.
 | `Content/IContentSet.cs`, `IContentPresentation.cs` | Kontrakt zestawu treści widziany od strony powłoki — patrz sekcja 4b. |
 | `Content/ContentTypeCatalogAggregate.cs`, `ContentPresentationAggregate.cs` | Agregują listę zestawów treści do pojedynczego `IContentTypeCatalog`/`IContentPresentation`, jakiego oczekują `ContentPackLoader` i `RegistryViewModel` — bez tego jedna paczka treści musiałaby znać wszystkie zestawy z osobna. |
 | `Controls/Content/TraitListView`, `ProseBlockView`, `TraitRow` | Współdzielone kontrolki karty — jedyne miejsce, z którego zestaw treści komponuje wygląd wpisu. Patrz sekcja 4b. |
-| `Features/Registry/*` | Ekran rejestru: `RegistryViewModel` (lista wpisów posortowana po nazwie i adresie, karta wybranego wpisu jako gotowy `Control` z `IContentPresentation.CreateCard`), `RegistryEntryRowViewModel`, `RegistryView`. Patrz sekcja 4b. |
+| `Features/Registry/*` | Ekran rejestru: `RegistryViewModel` (wpisy posortowane po nazwie i adresie, za nimi pliki niewczytane; karta wybranego wpisu jako gotowy `Control` z `IContentPresentation.CreateCard`), `RegistryEntryRowViewModel`, `RegistryView`. Patrz sekcja 4b. |
 | `Shell/AppShellViewModel.cs` | Właściciel „gdzie jest GM": biblioteka kampanii vs rejestr treści vs otwarte biurko, sekwencja startowa, przełączanie sekcji bocznych. |
 | `Shell/CampaignSession.cs` | Jedyna droga zmiany otwartej kampanii: `ExecuteAsync(operation)` — wykonaj operację, zapisz, ogłoś `Committed`. |
 | `Shell/Sidebars/*` | Globalny pasek boczny nawigacji (kolapsowalny), dziś z dwiema realnymi sekcjami („Kampanie", „Rejestr") — cokolwiek nierozpoznanego ląduje na placeholderze. |
@@ -288,20 +289,40 @@ JSON-em, zawijanym w `ContentValues` bez interpretacji.
 **Wczytywanie jest dziś jednoprzebiegowe** (nie dwuprzebiegowe, jak w poprzedniej wersji tego
 dokumentu) — bo nie ma już kolizji między szablonem a wpisem do wykrywania: paczka niesie tylko
 wpisy. `ContentPackLoader.LoadAsync` skanuje katalogi alfabetycznie, dla każdego wczytuje i
-waliduje `pack.json` oraz każdy plik w `entries/`, po czym odrzuca w całości każdą paczkę, której id
-koliduje z inną zainstalowaną paczką. Rządząca zasada: **paczka jest odrzucana w całości i mówi
-dlaczego** — błąd w `pack.json`, brakujący plik, niepoprawny JSON, zduplikowany id wpisu w paczce,
-niepoprawny adres/wersja odrzucają cały katalog (`RejectedPack(Location, Reason)`, tekst
-diagnostyczny nazywający plik i defekt). Dopiero gdy plik wpisu sam w sobie jest poprawny,
-`ResolveEntries` sprawdza go wobec katalogu typów w jednym przebiegu czterech kroków —
-`IContentTypeCatalog.HasSet` → `TryGet` → zgodność wersji → `TryValidate` — i tylko *ten* wpis, nie
-cała paczka, ląduje jako `RegisteredEntry` nierozwiązany z jednym z czterech powodów
-(`EntryUnresolvedReason.MissingSet/MissingType/TypeVersionMismatch/ValuesRejected`), z opcjonalnym
-`UnresolvedDetail` niosącym wyjaśnienie zestawu treści dla ostatniego przypadku. Żaden z tych
-czterech powodów nie odrzuca paczki, w której wpis się znalazł — to jest odwrócenie „odrzucania
-całej paczki za jeden wadliwy wpis" zapisane w `docs/decisions.md`. (Rozdzielenie tego jeszcze dalej
-— błąd samego pliku wpisu też per-wpisowy, nie per-paczka — to następny krok, patrz ramka na
-początku dokumentu.)
+waliduje `pack.json`, potem każdy plik w `entries/` osobno.
+
+**Trzy zakresy odrzucenia — i to jest dziś najważniejsza rzecz w tej klasie.** Odpowiadają
+dokładnie tabeli z `architecture.md`, sekcja „Co się dzieje, gdy treść jest zepsuta":
+
+| Zakres | Co go wywołuje | Gdzie ląduje |
+|---|---|---|
+| **cała paczka** | `pack.json`: brak pliku, niepoprawny JSON, nieznany `formatVersion` lub klucz, zły id/nazwa/wersja, przekroczony rozmiar. Poza manifestem: katalog `entries/` niedający się wylistować, więcej niż `MaxItemsPerPack` plików, kolizja id z inną zainstalowaną paczką | `RejectedPacks` |
+| **jeden plik** | niepoprawny JSON, nieznany klucz, brak lub zły `id`, brak nazwy, złe odwołanie do typu, brak `templateVersion`, przekroczony rozmiar, plik nie do odczytu | `RejectedEntries` |
+| **jeden wpis** | plik sam w sobie poprawny, ale nie daje się związać z typem treści | `Entries`, jako `RegisteredEntry` nierozwiązany |
+
+Pierwszy zakres pilnuje własności paczki **jako całości** — bez tożsamości z manifestu nie ma czym
+adresować zawartości, a limit liczby plików nie jest defektem żadnego z nich z osobna. Drugi to
+`RejectedEntry(Pack, Location, Reason)`: to samo pojęcie co `RejectedPack`, piętro niżej, z tekstem
+diagnostycznym nazywającym plik i defekt. Trzeci to cztery powody z `EntryUnresolvedReason`
+(`MissingSet/MissingType/TypeVersionMismatch/ValuesRejected`), z opcjonalnym `UnresolvedDetail`
+niosącym wyjaśnienie zestawu treści dla ostatniego przypadku.
+
+**Zduplikowany id wpisu w obrębie paczki odrzuca wszystkie kolidujące pliki**, nie tylko drugi
+z kolei, i żaden z nich nie zostaje zarejestrowany. Powód nie jest kosmetyczny: `RegisteredEntry`
+nie niesie nazwy pliku, więc przepuszczenie któregokolwiek zabrałoby jedyną informację, po której
+da się to naprawić — a przepuszczenie obu wstawiłoby do rejestru dwa wpisy pod jednym
+`EntryAddress`, czyli adres przestałby adresować. Kolizja jest widoczna dopiero po sparsowaniu
+wszystkich plików, więc wykrywa ją drugi przebieg po wynikach — dokładnie tak, jak kolizję id
+**między** paczkami wykrywa przebieg po wszystkich katalogach.
+
+Jeden przypadek graniczny jest domknięty jawnie: paczka odrzucona dopiero przez kolizję id między
+paczkami została wcześniej wczytana w całości, więc jej `RejectedEntry` **też** nie trafiają do
+rejestru. Cały katalog jest poza grą, razem z zawartością.
+
+Dopiero gdy plik wpisu sam w sobie jest poprawny, `ResolveEntries` sprawdza go wobec katalogu typów
+w jednym przebiegu czterech kroków — `IContentTypeCatalog.HasSet` → `TryGet` → zgodność wersji →
+`TryValidate`. Żaden z czterech powodów nie odrzuca paczki, w której wpis się znalazł — to jest
+odwrócenie „odrzucania całej paczki za jeden wadliwy wpis" zapisane w `docs/decisions.md` (poz. 30).
 
 **`IContentTypeCatalog`** to jedyne okno silnika na typy treści: `HasSet` (czy jakikolwiek
 zainstalowany zestaw odpowiada na ten identyfikator), `TryGet` (metadane typu — referencja, nazwa,
@@ -310,10 +331,13 @@ zmaterializowanego rekordu silnikowi, bo silnik nie ma typu, żeby go przyjąć)
 deserializuje dwa razy w skrajnym przypadku (raz do walidacji, raz do rysowania karty) — zaakceptowany
 koszt przy skali setek wpisów.
 
-**Rejestr** (`ContentRegistry`) niesie trzy listy: `Packs` (te, które przeszły), `Entries` (wszystkie
-z każdej paczki, rozwiązane i nierozwiązane razem), `RejectedPacks`. Budowany raz na start, bez
-sposobu dopisania paczki do istniejącego rejestru — nowy skan oznacza nowy rejestr, tak samo jak
-`DataBlockRegistry`.
+**Rejestr** (`ContentRegistry`) niesie cztery listy: `Packs` (te, które przeszły), `Entries`
+(wszystkie z każdej paczki, rozwiązane i nierozwiązane razem), `RejectedEntries` (pliki, które nie
+stały się wpisem) i `RejectedPacks`. Podział między drugą a trzecią jest tą samą granicą co wyżej:
+w `Entries` leży plik, który sparsował się poprawnie, ale nie dał się związać z typem treści;
+w `RejectedEntries` — plik, którego w ogóle nie dało się przeczytać jako wpis. Budowany raz na
+start, bez sposobu dopisania paczki do istniejącego rejestru — nowy skan oznacza nowy rejestr, tak
+samo jak `DataBlockRegistry`.
 
 **Po stronie Desktop:** `IContentSet : IContentTypeCatalog, IContentPresentation` to widok
 kompozycji na jeden zainstalowany zestaw — zna siebie (`Id`) i potrafi zarówno odpowiadać na pytania
@@ -343,12 +367,35 @@ biurku. `MonsterCardView` i `GearCardView` w `DungeonApp.Content.Dnd5e` to jedyn
 który je komponuje: siedem bloków dla potwora (rozmiar/typ/charakter bez tytułu, obrona i ruch,
 cechy w siatce kompaktowej, biegłości i zmysły, trzy bloki prozy), dwa dla przedmiotu.
 
-**Ekran rejestru** (`RegistryViewModel`) buduje listę wierszy z `ContentRegistry.Entries`
-posortowaną deterministycznie (nazwa, potem pełny adres) niezależnie od kolejności skanu loadera,
-i dla wybranego wiersza albo woła `IContentPresentation.CreateCard` (wpis rozwiązany), albo składa
-komunikat po polsku, osobny dla każdego z czterech powodów nierozwiązania (`DescribeUnresolved`).
+**Ekran rejestru** (`RegistryViewModel`) buduje **jedną** listę wierszy z dwóch źródeł: najpierw
+`ContentRegistry.Entries`, posortowane deterministycznie (nazwa, potem pełny adres) niezależnie od
+kolejności skanu loadera, potem `RejectedEntries`, posortowane po id paczki i lokalizacji pliku.
+`RegistryEntryRowViewModel` niesie więc dwa rodzaje wiersza i pilnuje tego dwiema fabrykami nad
+prywatnym konstruktorem — dokładnie tą samą dyscypliną, którą `RegisteredEntry` wymusza „albo typ,
+albo powód, nigdy oboje".
+
+Wiersz pliku niewczytanego pokazuje w miejscu nazwy lokalizację pliku, a w miejscu adresu **samo id
+paczki** — nie ma id wpisu, z którego dałoby się zbudować `EntryAddress`, więc to pole odpowiada na
+to samo pytanie („gdzie to leży") jedyną częścią, która istnieje. Adresopodobny ciąg sklejony ze
+ścieżki byłby rzeczą, która nie jest adresem, wstawioną w pole znaczące adres.
+
+Grupę otwiera nagłówek `NIE WCZYTANE`, niesiony przez **pierwszy** wiersz niewczytany
+(`ShowsNotLoadedHeader`) — lista zostaje jedną listą z jednym `DataTemplate`, bez grupowania
+i bez drugiego `ListBox`-a, kosztem tego, że ten jeden wiersz jest wyższy od pozostałych.
+
+Dla wybranego wiersza ekran albo woła `IContentPresentation.CreateCard` (wpis rozwiązany), albo
+składa komunikat po polsku: osobny dla każdego z czterech powodów nierozwiązania
+(`DescribeUnresolved`), jeden wspólny dla pliku niewczytanego (`DescribeNotLoaded`), oprawiający
+diagnostykę loadera zamiast ją tłumaczyć. Oba idą tym samym kanałem (`UnresolvedMessage`).
+
 `ShowSelectionPrompt` gasi zaproszenie „wybierz coś z listy" na pustym rejestrze, żeby nie stać
-obok zdania tłumaczącego, czemu lista jest pusta.
+obok zdania tłumaczącego, czemu lista jest pusta. Rejestr złożony wyłącznie z zepsutych plików
+**nie** jest pusty — lista ma co pokazać, więc komunikat „nie ma jeszcze żadnej paczki" się nie
+pojawia.
+
+**`RejectedPacks` nie są dziś wyświetlane nigdzie.** To świadoma decyzja autora przy tym kroku,
+nie przeoczenie — ale zostaje jako jedyna pozycja z tabeli „Co się dzieje, gdy treść jest zepsuta",
+o której Mistrz Gry nie dowiaduje się z aplikacji.
 
 ---
 
@@ -555,12 +602,14 @@ Start aplikacji, krok 0 (`LoadContentPacksStep`) → `ContentPackLoader.LoadAsyn
 `Documents\DungeonApp\Packs`, dla każdej paczki wczytuje `pack.json` i `entries/*.json`, rozwiązuje
 każdy wpis wobec `ContentTypeCatalogAggregate` → `ContentRegistry` trzymany przez krok. Wejście GM-a
 w sekcję „Rejestr" → `AppShellViewModel.OnSectionSelected` buduje leniwie
-`new RegistryViewModel(registry, presentation)` → lista wierszy posortowana po nazwie i adresie.
+`new RegistryViewModel(registry, presentation)` → lista wierszy: wpisy posortowane po nazwie
+i adresie, za nimi pliki niewczytane pod nagłówkiem `NIE WCZYTANE`.
 Kliknięcie wiersza → `SelectedEntry` → `RecomputeCard`: wpis rozwiązany woła
 `IContentPresentation.CreateCard(entry)` (agregat znajduje `Dnd5eContentSet`, ten deserializuje
 `ContentValues` do `Monster`/`Gear` i buduje `MonsterCardView`/`GearCardView` z kontrolek
-`TraitListView`/`ProseBlockView`); wpis nierozwiązany zamiast karty pokazuje jeden z czterech
-komunikatów po polsku, bez żadnej karty.
+`TraitListView`/`ProseBlockView`); wpis nierozwiązany pokazuje jeden z czterech komunikatów po
+polsku, a plik niewczytany — komunikat oprawiający diagnostykę loadera. W obu przypadkach bez
+żadnej karty.
 
 ### (e) Przesunięcie/zadokowanie panelu i zapamiętanie układu
 Naciśnięcie paska tytułu `PanelWindow` → `OnGesturePartPointerPressed` przechwytuje wskaźnik,
@@ -652,7 +701,7 @@ mechanizm, ale dziś nic ich nie czyta.
 | Domena — treść | `ContentPackLoaderTests` (25: 22 `[Fact]` + 3 przypadki `[Theory]`), `ContentIdTests` (16: 3 `[Fact]` + 13 przypadków `[Theory]`) | Wczytywanie i walidacja na prawdziwym systemie plików (`Fakes/TemporaryPacks`), manifest paczki, wszystkie cztery powody nierozwiązania wpisu, kolizja id paczki, limity rozmiaru pliku i liczby wpisów, akceptacja paczek-fixture'ów `tests/DungeonApp.Core.Tests/Packs/{dnd5e,goblinoids}` jako test wykonywalnej specyfikacji formatu. |
 | Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12) | Zapis/odczyt na prawdziwym systemie plików (`Fakes/TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków, zarezerwowane pola `ruleset`/`contentPacks` w zapisanym JSON-ie. |
 | Architektura | `CoreIndependenceTests` (1), `ContentAssemblyReferenceTests` (2), `ContentAssemblyIsolationTests` (1), `CoreEntryKindIndependenceTests` (2), `VocabularyWordBoundaryTests` (7 przypadków `[Theory]`) — razem 13 | Cztery granice na raz: `Core` bez Avalonii; `Core`/`Desktop` bez referencji do żadnego zestawu treści; zestawy treści nigdy nie referencjonują się nawzajem; `Core`/`Desktop` (`.cs` i `.axaml`) nie nazywają żadnego rodzaju wpisu — słownik zakazanych słów budowany częściowo z refleksji po publicznych typach zainstalowanych zestawów, więc poszerza się sam wraz z przybywającą treścią. Piąty plik (`VocabularyWordBoundary`) to sama logika granicy CamelCase, nie test. Projekt istnieje osobno od `Core.Tests`/`Desktop.Tests` z jednego powodu wypisanego w jego `.csproj`: test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą częściowo ogranicza. |
-| Desktop — rejestr | `RegistryViewModelTests` (7), `LoadContentPacksStepTests` (5) | Sortowanie wierszy, nazwy pakietu/typu na wierszu, karta jako nieprzejrzysty `Control` budowany przez fałszywy `IContentPresentation` (`FakeContentSet`), cztery osobne komunikaty nierozwiązania, pusty rejestr, zaproszenie do wyboru gaszone na pustej liście, krok startowy wobec paczki wadliwej obok poprawnej. |
+| Desktop — rejestr | `RegistryViewModelTests` (13), `LoadContentPacksStepTests` (5) | Sortowanie wierszy, nazwy pakietu/typu na wierszu, karta jako nieprzejrzysty `Control` budowany przez fałszywy `IContentPresentation` (`FakeContentSet`), cztery osobne komunikaty nierozwiązania, pusty rejestr, zaproszenie do wyboru gaszone na pustej liście, pliki niewczytane na końcu listy w deterministycznej kolejności, nagłówek na dokładnie jednym wierszu, rejestr złożony z samych zepsutych plików jako niepusty, krok startowy wobec paczki wadliwej obok poprawnej. |
 | Desktop — panel licznika | `CounterPanelViewModelTests` (9) | Stan początkowy, odświeżenie po zdarzeniu zewnętrznym, przepełnienie, błąd zapisu na dysk, nieodczytywalny blok, wyścig zapisów, dispose. |
 | Desktop — geometria | `PanelGeometryTests` (2) | Tylko `FitInto` (dopasowanie do min/max) — **`ClampMove`, `SnapMove`, `SnapResize`, `ConstrainResize`, `Maximize` nie mają dedykowanych testów jednostkowych**, mimo że to najbardziej złożona czysta logika w warstwie Desktop. |
 | Desktop — układ | `WorkspaceLayoutStoreTests` (1) | Tylko happy-path zapis→odczyt. Brak testów na: uszkodzony plik, nieznaną wersję, `MaxPanels`, sanityzację id. |
@@ -728,11 +777,11 @@ granic byłaby tylko deklaracją w dokumentacji, nie czymś wymuszonym przez bui
   przyszłość, nieużyte.
 
 ### Dług i luki
-- **Odrzucanie per plik wpisu nie jest jeszcze zrobione.** Błąd samego pliku wpisu (JSON
-  niepoprawny, brakujący `id`/`name`/`template`, zduplikowany `id` w paczce) nadal odrzuca **całą
-  paczkę**, tak jak błąd `pack.json` — tylko błąd *rozwiązania* wpisu wobec zestawu treści jest dziś
-  per-wpisowy. `docs/tasks.md` wymienia to jako pierwszy krok po domknięciu obecnego przejścia; gdy
-  się wydarzy, opis `ContentPackLoader` w sekcji 4b tego dokumentu trzeba będzie napisać jeszcze raz.
+- **Odrzucone paczki nie docierają do użytkownika.** Loader je odnotowuje (`RejectedPacks`), ekran
+  rejestru ich nie pokazuje — jedyna pozycja z tabeli „Co się dzieje, gdy treść jest zepsuta",
+  o której Mistrz Gry nie dowie się z aplikacji. Świadoma decyzja autora przy kroku „odrzucanie per
+  plik wpisu", nie przeoczenie, ale dług zostaje długiem: paczka odrzucona za literówkę w manifeście
+  znika dziś po cichu, a to jest dokładnie to, czego tamta sekcja zakazuje.
 - **Pokrycie testami warstwy Desktop jest bardzo nierówne.** `CounterPanelViewModel` ma 9 testów;
   `AppShellViewModel`, `CampaignWorkspaceViewModel`, `WorkspaceLayoutSession`, cztery z pięciu kroków
   startowych i cała logika gestów w `PanelWindow` — zero. To oznacza, że najbardziej złożona

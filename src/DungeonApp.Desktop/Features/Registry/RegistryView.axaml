@@ -61,12 +61,16 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="registry:RegistryEntryRowViewModel">
                             <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Classes="eyebrow"
+                                           Margin="{DynamicResource DungeonPaddingSm}"
+                                           IsVisible="{Binding ShowsNotLoadedHeader}"
+                                           Text="NIE WCZYTANE" />
                                 <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                            Text="{Binding Name}"
                                            TextTrimming="CharacterEllipsis" />
                                 <TextBlock Classes="muted" Text="{Binding Address}" />
                                 <TextBlock Classes="muted"
-                                           IsVisible="{Binding !IsUnresolved}"
+                                           IsVisible="{Binding ShowsTypeName}"
                                            Text="{Binding TypeName}" />
                                 <TextBlock Classes="muted"
                                            Foreground="{DynamicResource DungeonWarningBrush}"

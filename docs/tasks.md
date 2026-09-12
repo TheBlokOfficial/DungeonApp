@@ -7,7 +7,7 @@ Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź robocza: `feat/content-registry`, niescalona do `master`. Build i 217 testów zielone.
+Gałąź: `master` — `feat/content-registry` została scalona. Build i 232 testy zielone.
 
 ---
 
@@ -26,6 +26,17 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 * `TreatWarningsAsErrors` — kompilator jest walidatorem treści, więc jego ostrzeżenia są
   ostrzeżeniami o treści.
 
+**Domknięte 2026-09-12 (trzecia sesja):**
+
+* **Odrzucanie per plik wpisu.** Defekt jednego pliku oznacza od teraz ten jeden plik; reszta paczki
+  wczytuje się normalnie. Na poziomie paczki zostaje tylko to, co jest własnością paczki jako
+  całości: manifest, niedający się wylistować katalog wpisów, limit liczby plików, kolizja id
+  z inną paczką. Zduplikowany id wewnątrz paczki odrzuca **wszystkie** kolidujące pliki — żaden nie
+  wygrywa po cichu, a rejestr nie dostaje dwóch wpisów pod jednym adresem.
+* **Pliki niewczytane widoczne w rejestrze.** Lądują na końcu tej samej listy co wpisy, pod
+  nagłówkiem `NIE WCZYTANE`, z komunikatem oprawiającym diagnostykę loadera zamiast karty.
+  Rejestr złożony wyłącznie z zepsutych plików nie jest już „pusty".
+
 **Domknięte 2026-09-12 (druga sesja):**
 
 * **Zero zestawów treści jest awarią głośną.** Strażnik w `App.Initialize()` sprawdza sam warunek
@@ -42,25 +53,22 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 
 ## Następne — wg dokumentu architektury
 
-Przejście na skompilowane typy treści jest domknięte, więc kolejka wraca do kroków 5–9
-z sekcji „Kolejność prac". Kolejność poniżej jest wiążąca:
+Krok 5 z sekcji „Kolejność prac" ([architecture.md](architecture.md)) jest domknięty, więc kolejka
+wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 
-1. **Odrzucanie per plik wpisu** — dziś wadliwy manifest odrzuca paczkę, ale pozycje
-   nierozwiązane nie są jeszcze widoczne w rejestrze tak, jak wymaga sekcja
-   „Co się dzieje, gdy treść jest zepsuta".
-2. **Jeden prymityw zapisu atomowego** — trzy własne implementacje tego samego. Wydzielić
+1. **Jeden prymityw zapisu atomowego** — trzy własne implementacje tego samego. Wydzielić
    **przed** magazynem instancji, nie po.
-3. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii.
-4. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
+2. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii.
+3. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
    celowym rusztowaniem, oraz weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
-5. **Formuły, sloty, dokument** — kolejność do ustalenia osobno.
+4. **Formuły, sloty, dokument** — kolejność do ustalenia osobno.
 
 ---
 
 ## Odłożone, poza kolejnością
 
-Dwie pozycje z sesji 2026-09-05, świadomie odłożone i niezależne od przejścia powyżej.
-Nie mają wyzwalacza — można je wziąć, kiedy pasują.
+Trzy pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
+2026-09-05 i nie mają wyzwalacza — można je wziąć, kiedy pasują.
 
 1. **Testy dla `Startup/*`.** Sekwencja startowa ma pięć kroków; pokrycie ma tylko
    `LoadContentPacksStep`. Warte zamrożenia: kolejność kroków, degradacja przy błędzie
@@ -73,9 +81,15 @@ Nie mają wyzwalacza — można je wziąć, kiedy pasują.
    bierze odstępy ze skali, sześć ma nadal liczby wpisane wprost. Mechaniczny diff,
    dlatego osobno.
 
-Trzecia pozycja z tamtej sesji — usunięcie domknięcia nad `_shell` w `App.Initialize()` —
-jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma
-decyzja z uzasadnieniem.
+3. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
+   wyświetla — decyzja autora z 2026-09-12, podjęta świadomie przy poprzednim kroku. Zostaje tu
+   jako jedyna pozycja z tabeli „Co się dzieje, gdy treść jest zepsuta", o której Mistrz Gry nie
+   dowiaduje się z aplikacji: paczka odrzucona za literówkę w manifeście znika dziś po cichu.
+   Wyzwalacz: moment, w którym autor zechce zaprojektować dla nich miejsce na ekranie.
+
+Była też z tamtej sesji trzecia pozycja — usunięcie domknięcia nad `_shell` w `App.Initialize()`.
+Jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma decyzja
+z uzasadnieniem.
 
 ---
 

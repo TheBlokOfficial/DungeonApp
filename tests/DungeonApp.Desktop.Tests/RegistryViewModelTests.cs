@@ -92,6 +92,10 @@ public sealed class RegistryViewModelTests : IDisposable
         }
         """;
 
+    // Not valid JSON at all - the loader never gets far enough to see an id, so this never becomes
+    // a RegisteredEntry, only a RejectedEntry.
+    private const string BrokenJson = "{ this is not json";
+
     public void Dispose() => _packs.Dispose();
 
     private async Task<RegistryViewModel> BuildViewModelAsync()
@@ -105,6 +109,26 @@ public sealed class RegistryViewModelTests : IDisposable
         var contentSet = BuildContentSet();
         var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
         Assert.Empty(registry.RejectedPacks);
+
+        return new RegistryViewModel(registry, contentSet);
+    }
+
+    /// <summary>
+    /// One healthy entry alongside two files the loader could never read as an entry at all - named
+    /// so their <c>entries/</c> labels sort "aaa-..." before "zzz-...", which is what the
+    /// not-loaded-row ordering tests below rely on.
+    /// </summary>
+    private async Task<RegistryViewModel> BuildViewModelWithNotLoadedFilesAsync()
+    {
+        _packs.WriteFile("bestiariusz", "pack.json", PackJson);
+        _packs.WriteFile("bestiariusz", "entries/goblin.json", GoblinJson);
+        _packs.WriteFile("bestiariusz", "entries/zzz-uszkodzony.json", BrokenJson);
+        _packs.WriteFile("bestiariusz", "entries/aaa-uszkodzony.json", BrokenJson);
+
+        var contentSet = BuildContentSet();
+        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Equal(2, registry.RejectedEntries.Count);
 
         return new RegistryViewModel(registry, contentSet);
     }
@@ -220,5 +244,81 @@ public sealed class RegistryViewModelTests : IDisposable
         viewModel.SelectedEntry = viewModel.Entries[0];
 
         Assert.False(viewModel.ShowSelectionPrompt);
+    }
+
+    [Fact]
+    public async Task Not_loaded_rows_come_after_every_entry_in_deterministic_order()
+    {
+        var viewModel = await BuildViewModelWithNotLoadedFilesAsync();
+
+        Assert.Equal(
+            ["Goblin", "entries/aaa-uszkodzony.json", "entries/zzz-uszkodzony.json"],
+            viewModel.Entries.Select(row => row.Name));
+    }
+
+    [Fact]
+    public async Task Exactly_one_row_shows_the_not_loaded_header_and_it_is_the_first_not_loaded_row()
+    {
+        var viewModel = await BuildViewModelWithNotLoadedFilesAsync();
+
+        var headerRows = viewModel.Entries.Where(row => row.ShowsNotLoadedHeader).ToArray();
+        var firstNotLoaded = viewModel.Entries.First(row => row.IsNotLoaded);
+
+        Assert.Single(headerRows);
+        Assert.Same(firstNotLoaded, headerRows[0]);
+        Assert.Equal("entries/aaa-uszkodzony.json", firstNotLoaded.Name);
+    }
+
+    [Fact]
+    public async Task No_row_shows_the_not_loaded_header_when_nothing_is_broken()
+    {
+        var viewModel = await BuildViewModelAsync();
+
+        Assert.DoesNotContain(viewModel.Entries, row => row.ShowsNotLoadedHeader);
+    }
+
+    [Fact]
+    public async Task Not_loaded_row_exposes_the_file_location_pack_and_an_empty_type_name()
+    {
+        var viewModel = await BuildViewModelWithNotLoadedFilesAsync();
+
+        var notLoaded = viewModel.Entries.First(row => row.Name == "entries/aaa-uszkodzony.json");
+
+        Assert.Equal("bestiariusz", notLoaded.Address);
+        Assert.Equal("Bestiariusz testowy", notLoaded.PackName);
+        Assert.Equal(string.Empty, notLoaded.TypeName);
+        Assert.False(notLoaded.IsUnresolved);
+        Assert.True(notLoaded.IsNotLoaded);
+    }
+
+    [Fact]
+    public async Task Selecting_a_not_loaded_row_shows_no_card_and_a_polish_message_naming_the_file()
+    {
+        var viewModel = await BuildViewModelWithNotLoadedFilesAsync();
+
+        viewModel.SelectedEntry = viewModel.Entries.First(row => row.Name == "entries/aaa-uszkodzony.json");
+
+        Assert.False(viewModel.HasCard);
+        Assert.Null(viewModel.Card);
+        Assert.False(string.IsNullOrWhiteSpace(viewModel.UnresolvedMessage));
+        Assert.Contains("aaa-uszkodzony.json", viewModel.UnresolvedMessage);
+    }
+
+    [Fact]
+    public async Task A_registry_whose_only_content_is_broken_files_is_not_empty_and_invites_a_selection()
+    {
+        _packs.WriteFile("bestiariusz", "pack.json", PackJson);
+        _packs.WriteFile("bestiariusz", "entries/uszkodzony.json", BrokenJson);
+
+        var contentSet = BuildContentSet();
+        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Empty(registry.Entries);
+        Assert.Single(registry.RejectedEntries);
+
+        var viewModel = new RegistryViewModel(registry, contentSet);
+
+        Assert.False(viewModel.IsEmpty);
+        Assert.True(viewModel.ShowSelectionPrompt);
     }
 }

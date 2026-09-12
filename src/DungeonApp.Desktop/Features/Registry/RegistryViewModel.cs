@@ -31,19 +31,25 @@ public sealed class RegistryViewModel : ObservableObject
 
         var packNamesById = registry.Packs.ToDictionary(pack => pack.Id, pack => pack.Name);
 
+        string PackNameFor(ContentId packId) =>
+            packNamesById.TryGetValue(packId, out var packName) ? packName : packId.ToString();
+
         // Deterministic regardless of the loader's own directory-scan order: name first, then the
         // full address, so two entries sharing a name still land in a stable order.
-        Entries =
-        [
-            .. registry.Entries
-                .Select(entry => new RegistryEntryRowViewModel(
-                    entry,
-                    packNamesById.TryGetValue(entry.Address.Pack, out var packName)
-                        ? packName
-                        : entry.Address.Pack.ToString()))
-                .OrderBy(row => row.Name, StringComparer.Ordinal)
-                .ThenBy(row => row.Address, StringComparer.Ordinal)
-        ];
+        var entryRows = registry.Entries
+            .Select(entry => RegistryEntryRowViewModel.ForEntry(entry, PackNameFor(entry.Address.Pack)))
+            .OrderBy(row => row.Name, StringComparer.Ordinal)
+            .ThenBy(row => row.Address, StringComparer.Ordinal);
+
+        // Same idea, one level down: files that never became an entry at all, after every entry,
+        // ordered by pack id then file location so the group is just as deterministic.
+        var notLoadedRows = registry.RejectedEntries
+            .OrderBy(rejected => rejected.Pack.ToString(), StringComparer.Ordinal)
+            .ThenBy(rejected => rejected.Location, StringComparer.Ordinal)
+            .Select((rejected, index) => RegistryEntryRowViewModel.ForNotLoadedFile(
+                rejected, PackNameFor(rejected.Pack), showsNotLoadedHeader: index == 0));
+
+        Entries = [.. entryRows, .. notLoadedRows];
     }
 
     public IReadOnlyList<RegistryEntryRowViewModel> Entries { get; }
@@ -93,7 +99,11 @@ public sealed class RegistryViewModel : ObservableObject
 
     public bool HasCard => Card is not null;
 
-    /// <summary>A Polish, reason-specific explanation for the selected entry, or null when it resolved.</summary>
+    /// <summary>
+    /// A Polish, reason-specific explanation for the selected row - either why an entry is
+    /// unresolved or why a file never became an entry at all - or null when the selected entry
+    /// resolved cleanly.
+    /// </summary>
     public string? UnresolvedMessage
     {
         get => _unresolvedMessage;
@@ -110,14 +120,23 @@ public sealed class RegistryViewModel : ObservableObject
 
     private void RecomputeCard()
     {
-        var selected = SelectedEntry?.RegisteredEntry;
+        var row = SelectedEntry;
 
-        if (selected is null)
+        if (row is null)
         {
             Card = null;
             UnresolvedMessage = null;
             return;
         }
+
+        if (row.IsNotLoaded)
+        {
+            Card = null;
+            UnresolvedMessage = DescribeNotLoaded(row.NotLoadedReason!);
+            return;
+        }
+
+        var selected = row.RegisteredEntry!;
 
         if (selected.Unresolved is { } reason)
         {
@@ -129,6 +148,13 @@ public sealed class RegistryViewModel : ObservableObject
         UnresolvedMessage = null;
         Card = _presentation.CreateCard(selected.Entry);
     }
+
+    /// <summary>
+    /// Frames the loader's own English diagnostic text in one Polish sentence, the same way
+    /// <see cref="DescribeUnresolved"/> frames a content set's rejection detail - never translating
+    /// or rewording the diagnostic itself.
+    /// </summary>
+    private static string DescribeNotLoaded(string reason) => $"Nie udało się wczytać tego pliku: {reason}";
 
     private static string DescribeUnresolved(EntryUnresolvedReason reason, RegisteredEntry entry)
     {
