@@ -25,7 +25,7 @@ Pełne wyjaśnienie — czym to jest, jak działa i dlaczego tak — jest w czę
 ## Uruchomienie
 
 ```bash
-dotnet run --project src/DungeonApp.Desktop
+dotnet run --project src/DungeonApp.App
 ```
 
 ## Build i testy
@@ -46,8 +46,10 @@ dotnet test tests/DungeonApp.Desktop.Tests/DungeonApp.Desktop.Tests.csproj
 
 ```text
 src/
-  DungeonApp.Core/      # Kampanie, stan, zdarzenia, zapis, treść. Bez Avalonii.
-  DungeonApp.Desktop/   # Avalonia — powłoka, biurko, panele, motyw.
+  DungeonApp.Core/            # Kampanie, stan, zdarzenia, zapis, treść. Bez Avalonii.
+  DungeonApp.Desktop/         # Avalonia — powłoka, biurko, panele, motyw.
+  DungeonApp.Content.Dnd5e/   # Zestaw treści D&D 5e — typy treści, karty, narzędzia biurka.
+  DungeonApp.App/             # Korzeń kompozycji i plik wykonywalny.
 tests/
   DungeonApp.Core.Tests/
   DungeonApp.Desktop.Tests/
@@ -58,8 +60,11 @@ Podział na dwa projekty produkcyjne jest zabiegiem higienicznym: logika ma być
 okna. Granicy pilnuje test architektoniczny, który odrzuca każdą referencję do Avalonii w `Core` —
 bez niego separacja byłaby deklaracją w dokumentacji, a nie czymś wymuszonym przez build.
 
-Docelowo dochodzi trzeci projekt produkcyjny — **zestaw treści** — niosący typy treści, ich widoki
-i narzędzia biurka. To jedyne miejsce w aplikacji, w którym wolno wiedzieć, czym jest potwór.
+Trzeci projekt produkcyjny — **zestaw treści**, `DungeonApp.Content.Dnd5e` — już istnieje i niesie
+typy treści, ich widoki i narzędzia biurka. To jedyne miejsce w aplikacji, w którym wolno wiedzieć,
+czym jest potwór. Ponieważ powłoce nie wolno znać żadnego zestawu po imieniu, korzeń kompozycji
+przeniósł się do osobnego projektu wykonywalnego, `DungeonApp.App` — to on jako jedyny wymienia
+zestawy z nazwy.
 
 Od czego zacząć czytanie kodu — [docs/code-map.md](docs/code-map.md).
 

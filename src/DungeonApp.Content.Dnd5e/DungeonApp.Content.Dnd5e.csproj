@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
+    <ProjectReference Include="..\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+  </ItemGroup>
+
+</Project>
