@@ -3,9 +3,10 @@ using System.Collections.Generic;
 namespace DungeonApp.Core.Content;
 
 /// <summary>
-/// One piece of content from a content pack: the essence the content architecture doc's section 8
-/// calls a "wpis" - a fixed set of values, never a specific in-campaign occurrence of them (that is
-/// an instance, which does not exist in this layer at all).
+/// One piece of content from a content pack: the essence docs/architecture.md's "Wpis, dokument,
+/// instancja, nakładka" section calls a "wpis" - a fixed set of values, never a specific
+/// in-campaign occurrence of them (that is an instance, which does not exist in this layer at
+/// all).
 /// <para>
 /// <see cref="TemplateVersion"/> is the version of <see cref="Template"/> this entry was written
 /// against, captured at file-write time rather than re-read from the template on every load - it is

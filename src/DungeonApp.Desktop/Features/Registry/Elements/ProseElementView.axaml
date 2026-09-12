@@ -5,7 +5,8 @@
              x:DataType="elements:ProseElementViewModel">
 
     <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
-         them out (RegistryView), not to the element itself. See the content architecture doc. -->
+         them out (RegistryView), not to the element itself. See docs/architecture.md, "Deklaracja
+         treści". -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
         <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
         <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />

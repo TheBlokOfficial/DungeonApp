@@ -2,7 +2,7 @@ namespace DungeonApp.Core.Content;
 
 /// <summary>
 /// A pack's own version, declared in <c>pack.json</c> and later echoed in a campaign manifest's
-/// <c>{ id, major }</c> content pack declaration (see section 12 of the content architecture doc).
+/// <c>{ id, major }</c> content pack declaration (see docs/architecture.md, "Wersjonowanie").
 /// <para>
 /// Deliberately not compared or ordered here: what a minor bump versus a major bump means is a
 /// decision for whoever resolves a campaign's declared packs against what is installed, not for

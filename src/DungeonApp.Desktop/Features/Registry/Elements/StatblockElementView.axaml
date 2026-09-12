@@ -29,7 +29,8 @@
     </UserControl.Resources>
 
     <!-- No Margin on this root, ever: spacing between card elements belongs to the host that lays
-         them out (RegistryView), not to the element itself. See the content architecture doc. -->
+         them out (RegistryView), not to the element itself. See docs/architecture.md, "Deklaracja
+         treści". -->
     <!-- The shared size scope starts here, at one element, and deliberately not higher: the label
          column is shared by the rows of THIS statblock, so a long label widens its own block and
          leaves the neighbouring one alone. Without a scope every row measures its own Auto column
