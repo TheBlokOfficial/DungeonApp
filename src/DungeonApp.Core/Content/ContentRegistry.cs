@@ -16,8 +16,15 @@ namespace DungeonApp.Core.Content;
 /// <see cref="RegisteredEntry.Type"/> being non-null; a caller building a "what needs attention"
 /// view wants the unresolved ones just as much.
 /// </param>
+/// <param name="RejectedEntries">
+/// Every file in an accepted pack's <c>entries</c> directory that could not be read as an entry at
+/// all - not valid JSON, an unknown key, an invalid id, a duplicated id. Distinct from
+/// <see cref="Entries"/> carrying an unresolved <see cref="RegisteredEntry"/>, which is a file that
+/// parsed fine but could not be bound to a content type.
+/// </param>
 /// <param name="RejectedPacks">Every pack directory the loader refused, and why.</param>
 public sealed record ContentRegistry(
     IReadOnlyList<Pack> Packs,
     IReadOnlyList<RegisteredEntry> Entries,
+    IReadOnlyList<RejectedEntry> RejectedEntries,
     IReadOnlyList<RejectedPack> RejectedPacks);

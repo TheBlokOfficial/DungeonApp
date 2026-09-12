@@ -53,6 +53,7 @@ public sealed class ContentPackLoaderTests : IDisposable
         var registry = await new ContentPackLoader(RepositoryRoot.PackFixtures, types).LoadAsync();
 
         Assert.Empty(registry.RejectedPacks);
+        Assert.Empty(registry.RejectedEntries);
         Assert.Equal(2, registry.Packs.Count);
         Assert.Equal(3, registry.Entries.Count);
         Assert.All(registry.Entries, entry => Assert.Null(entry.Unresolved));
@@ -195,7 +196,8 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
-    // A duplicated entry id inside one pack.
+    // A duplicated entry id inside one pack: both colliding files are rejected, the pack still
+    // loads, and neither file becomes a RegisteredEntry.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -207,12 +209,25 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var registry = await Loader().LoadAsync();
 
-        var rejected = Assert.Single(registry.RejectedPacks);
-        Assert.Contains("e1", rejected.Reason);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        Assert.Equal(2, registry.RejectedEntries.Count);
+        Assert.All(registry.RejectedEntries, rejected =>
+        {
+            Assert.Equal("cnt", rejected.Pack.Value);
+            Assert.Contains("e1", rejected.Reason);
+        });
+        Assert.Equal(
+            new[] { "entries/a.json", "entries/b.json" },
+            registry.RejectedEntries.Select(rejected => rejected.Location).OrderBy(location => location, StringComparer.Ordinal));
     }
 
     // ---------------------------------------------------------------------
-    // Entry file validation: unknown key, invalid content type reference.
+    // Entry file validation: unknown key, invalid content type reference, not valid JSON, invalid or
+    // missing required fields, over the size limit. Every one of these marks only the one file - the
+    // pack itself loads regardless.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -233,7 +248,12 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var registry = await Loader().LoadAsync();
 
-        var rejected = Assert.Single(registry.RejectedPacks);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Equal("entries/e.json", rejected.Location);
         Assert.Contains("e.json", rejected.Reason);
     }
 
@@ -257,8 +277,118 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var registry = await Loader().LoadAsync();
 
-        var rejected = Assert.Single(registry.RejectedPacks);
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
         Assert.Contains(reference, rejected.Reason);
+    }
+
+    [Fact]
+    public async Task Rejects_an_entry_file_that_is_not_valid_json()
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", "{ this is not json");
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Contains("e.json", rejected.Reason);
+    }
+
+    [Theory]
+    [InlineData("""{ "id": "Not Valid!", "name": "N", "template": "sys:thing", "templateVersion": 1, "values": {} }""", "id")]
+    [InlineData("""{ "name": "N", "template": "sys:thing", "templateVersion": 1, "values": {} }""", "id")]
+    [InlineData("""{ "id": "e1", "template": "sys:thing", "templateVersion": 1, "values": {} }""", "name")]
+    [InlineData("""{ "id": "e1", "name": "N", "template": "sys:thing", "values": {} }""", "templateVersion")]
+    public async Task Rejects_an_entry_file_with_an_invalid_or_missing_required_field(string json, string expectedInReason)
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", json);
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Contains(expectedInReason, rejected.Reason);
+    }
+
+    [Fact]
+    public async Task Rejects_an_entry_file_over_the_size_limit()
+    {
+        var oversizedName = new string('a', 1024 * 1024);
+        var json = $$"""
+            {
+              "id": "e1",
+              "name": "{{oversizedName}}",
+              "template": "sys:thing",
+              "templateVersion": 1,
+              "values": { }
+            }
+            """;
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", json);
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Single(registry.Packs);
+        Assert.Empty(registry.Entries);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Contains("size limit", rejected.Reason);
+    }
+
+    // ---------------------------------------------------------------------
+    // The heart of the change: a broken entry file beside a healthy one in the same pack marks only
+    // the broken file. The healthy entry registers normally and the pack is not rejected.
+    // ---------------------------------------------------------------------
+
+    [Fact]
+    public async Task A_malformed_entry_file_beside_a_healthy_one_only_rejects_the_broken_file()
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/good.json", ValidEntryJson);
+        _packs.WriteFile("cnt", "entries/bad.json", "{ this is not json");
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        var pack = Assert.Single(registry.Packs);
+        Assert.Equal("cnt", pack.Id.Value);
+
+        var registered = Assert.Single(registry.Entries);
+        Assert.Equal("e1", registered.Address.Entry.Value);
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Equal("cnt", rejected.Pack.Value);
+        Assert.Equal("entries/bad.json", rejected.Location);
+    }
+
+    // ---------------------------------------------------------------------
+    // A broken manifest still rejects the whole pack, and never surfaces a RejectedEntry - the pack
+    // never got far enough to read its entries directory at all.
+    // ---------------------------------------------------------------------
+
+    [Fact]
+    public async Task A_broken_manifest_still_rejects_the_whole_pack_with_no_rejected_entries()
+    {
+        _packs.WriteFile("bad", "pack.json", "{ this is not json");
+        _packs.WriteFile("bad", "entries/e.json", ValidEntryJson);
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.Packs);
+        Assert.Single(registry.RejectedPacks);
+        Assert.Empty(registry.RejectedEntries);
     }
 
     // ---------------------------------------------------------------------
@@ -276,6 +406,22 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Empty(registry.Packs);
         Assert.Equal(2, registry.RejectedPacks.Count);
         Assert.All(registry.RejectedPacks, rejected => Assert.Contains("dup", rejected.Reason));
+    }
+
+    // A colliding pack's own entry problems must not leak into the registry either - the whole
+    // directory is out, entries included, the moment the collision drops the pack.
+    [Fact]
+    public async Task A_pack_id_collision_hides_a_broken_entry_file_in_the_colliding_pack()
+    {
+        _packs.WritePack("first", PackJson("dup"));
+        _packs.WriteFile("second", "pack.json", PackJson("dup"));
+        _packs.WriteFile("second", "entries/bad.json", "{ this is not json");
+
+        var registry = await Loader().LoadAsync();
+
+        Assert.Empty(registry.Packs);
+        Assert.Equal(2, registry.RejectedPacks.Count);
+        Assert.Empty(registry.RejectedEntries);
     }
 
     // ---------------------------------------------------------------------
@@ -334,7 +480,7 @@ public sealed class ContentPackLoaderTests : IDisposable
     // ---------------------------------------------------------------------
 
     [Fact]
-    public async Task A_locked_entry_file_rejects_only_its_own_pack_and_names_the_file()
+    public async Task A_locked_entry_file_rejects_only_that_entry_and_names_the_file()
     {
         _packs.WriteFile("locked", "pack.json", PackJson("locked-cnt"));
         _packs.WriteFile("locked", "entries/e.json", ValidEntryJson);
@@ -349,13 +495,18 @@ public sealed class ContentPackLoaderTests : IDisposable
         {
             var registry = await Loader().LoadAsync();
 
-            var rejected = Assert.Single(registry.RejectedPacks);
+            // A locked entry file is now scoped to that one file, not the whole pack it lives in.
+            Assert.Empty(registry.RejectedPacks);
+
+            var rejected = Assert.Single(registry.RejectedEntries);
+            Assert.Equal("locked-cnt", rejected.Pack.Value);
             Assert.Contains("e.json", rejected.Reason);
 
-            // This is the assertion that matters most: one unreadable pack must never stop its
-            // healthy sibling from loading normally.
-            var goodPack = Assert.Single(registry.Packs);
-            Assert.Equal("good-cnt", goodPack.Id.Value);
+            // Both packs load - this is the assertion that matters most: one unreadable file must
+            // never stop even its own pack, let alone a healthy sibling, from loading normally.
+            Assert.Equal(2, registry.Packs.Count);
+            Assert.Contains(registry.Packs, pack => pack.Id.Value == "locked-cnt");
+            Assert.Contains(registry.Packs, pack => pack.Id.Value == "good-cnt");
         }
     }
 
@@ -372,6 +523,7 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         Assert.Empty(registry.Packs);
         Assert.Empty(registry.Entries);
+        Assert.Empty(registry.RejectedEntries);
         Assert.Empty(registry.RejectedPacks);
     }
 
