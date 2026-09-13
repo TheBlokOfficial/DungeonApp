@@ -903,6 +903,9 @@ kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o tre�
    gałęzi, ale poszerza język.
 7. **Jakie jeszcze pola trafiają do nakładki poza stanem i slotami.** Reguła rozstrzygająca jest
    zapisana; brakuje przejścia przez realny system.
+8. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
+   jakąkolwiek kartę zastępczą, czy zostaje bez niej. **Wyzwalacz:** pierwszy taki rodzaj treści.
+   Dziś oba istniejące mają karty zaprojektowane, więc pytanie jest puste.
 
 **Nawyk przerwany — i to jest wynik, nie postanowienie.** Sekcja ta wyliczała kiedyś sześć rzeczy
 zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta), `Category` /

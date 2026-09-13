@@ -5,7 +5,13 @@ Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie
 [architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
 
-Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
+Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano.
+
+**Zakres tego dokumentu: wyłącznie to, co trzeba zrobić przed zamknięciem bieżącego etapu.** Nie jest
+spisem funkcji aplikacji i nie zapisuje się tu pracy koncepcyjnej na zapas — całość docelowa mieszka
+w [architecture.md](architecture.md), a pytania niezamknięte wraz z warunkami powrotu tam oraz
+w [decisions.md](decisions.md). Pozycja wpisana tu przed swoim czasem starzeje się po cichu: nic nie
+zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna uchodzić za uzasadnienie.
 
 Gałąź: `master`. Build i 280 testów zielonych.
 
@@ -165,24 +171,6 @@ Cztery pozycje, które stały tu wcześniej, zostały **zamknięte** 2026-09-13 
 — testy sekwencji startowej, skala odstępów, domknięcie nad powłoką przy starcie i podwójna nazwa
 pliku w komunikacie o odrzuceniu. Uzasadnienia zamknięcia żyją w `decisions.md` i `architecture.md`;
 tutaj nie wracają, bo kolejka ma mówić, co dalej, a nie prowadzić archiwum.
-
----
-
-## Pytania otwarte z wyzwalaczami
-
-Pełne uzasadnienia są w [architecture.md](architecture.md), sekcja „Pytania otwarte", oraz
-w [decisions.md](decisions.md). Tu jest tylko lista z warunkiem powrotu — **nie ruszać
-wcześniej**, bo wtedy decyzja jest zgadywaniem, nie rozstrzygnięciem.
-
-| Pytanie | Wyzwalacz |
-|---|---|
-| Zagnieżdżenie wartości **razem z plikiem wpisu** | jawnie niezamknięte; `decisions.md` poz. 7, trzecia runda — tam spis argumentów, które padły ze starym formatem i których nie wolno już przytaczać |
-| `ArmorClass(Value, Source)`, `HitPoints(Value, Formula)` jako pojęcia domenowe | magazyn instancji i nakładki — jedyny konsument, który rozstrzygnie to na dowodach |
-| Format pliku wpisu (front-matter plus treść) | po wejściu slotów, nie przed |
-| Czy `DataBlockShape` nadal zarabia na siebie | pierwsze prawdziwe narzędzie biurka |
-| Widok domyślny karty | pierwszy rodzaj treści, którego nie chce się zaprojektować |
-| Filtrowanie narzędzi per kampania | drugi zestaw treści |
-| Autorstwo treści w aplikacji | otwarte dla wpisów; obejście przez wpisy lokalne dla kampanii pozostaje odrzucone |
 
 ---
 
