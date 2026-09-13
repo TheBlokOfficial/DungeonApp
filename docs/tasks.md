@@ -103,18 +103,20 @@ Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pie
    dowiaduje się z aplikacji: paczka odrzucona za literówkę w manifeście znika dziś po cichu.
    Wyzwalacz: moment, w którym autor zechce zaprojektować dla nich miejsce na ekranie.
 
-4. **Ekran rejestru — trzy rzeczy do oceny autora.** Wyszły dopiero wtedy, gdy pliki niewczytane
-   trafiły na ekran, i żadna nie jest błędem; wszystkie trzy są decyzjami, których nikt jeszcze nie
-   podjął.
-   * **Diagnostyka loadera jest po angielsku.** Do tej pory czytał ją wyłącznie programista, więc
-     nie miało to znaczenia. Teraz ekran opakowuje ją polskim zdaniem i czyta ją Mistrz Gry:
-     „Nie udało się wczytać tego pliku: `'entries/goblin.json' is not valid: ...`". Pytanie jest
-     o produkt, nie o kod — czy te teksty mają być tłumaczone, czy zostają technicznym śladem.
-     To samo dotyczy wyjaśnienia zestawu treści przy odrzuconych wartościach.
-   * **Nazwa pliku pojawia się dwa razy** — raz jako tytuł wiersza, raz wewnątrz komunikatu, bo
-     tekst diagnostyczny sam nazywa plik. Nieszkodliwe, ale widoczne.
-   * **Nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo niesie go
-     ten wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon".
+4. **Ekran rejestru — jedna rzecz została.** Dwie z trzech rozstrzygnięte 2026-09-13.
+   * **Diagnostyka loadera zostaje po angielsku** — decyzja autora. Polskie zdanie ramowe mówi
+     Mistrzowi Gry, co się stało i którego pliku dotyczy; angielski szczegół zostaje śladem
+     technicznym dla tego, kto pisał paczkę. Powód odrzucenia: tłumaczenie oznacza katalog
+     komunikatów utrzymywany przy każdym nowym rodzaju błędu, dla tekstu widocznego wyłącznie
+     wtedy, gdy treść jest zepsuta. To samo dotyczy wyjaśnienia zestawu treści przy odrzuconych
+     wartościach.
+   * **Nazwa pliku nie pojawia się już dwa razy** — naprawione u źródła, a nie przy wyświetlaniu.
+     Diagnostyka wpisu mówi, co jest nie tak; który to plik, niesie `Location`, z którego ekran
+     bierze tytuł wiersza. Odrzucenie paczki nadal nazywa plik samo, bo tam żaden tytuł wiersza
+     tej roli nie przejmuje.
+   * **Zostaje: nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo
+     niesie go ten wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon".
+     Autor zostawił to świadomie 2026-09-13.
 
 Była też z tamtej sesji trzecia pozycja — usunięcie domknięcia nad `_shell` w `App.Initialize()`.
 Jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma decyzja

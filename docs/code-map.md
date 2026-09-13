@@ -303,8 +303,11 @@ dokładnie tabeli z `architecture.md`, sekcja „Co się dzieje, gdy treść jes
 
 Pierwszy zakres pilnuje własności paczki **jako całości** — bez tożsamości z manifestu nie ma czym
 adresować zawartości, a limit liczby plików nie jest defektem żadnego z nich z osobna. Drugi to
-`RejectedEntry(Pack, Location, Reason)`: to samo pojęcie co `RejectedPack`, piętro niżej, z tekstem
-diagnostycznym nazywającym plik i defekt. Trzeci to cztery powody z `EntryUnresolvedReason`
+`RejectedEntry(Pack, Location, Reason)`: to samo pojęcie co `RejectedPack`, piętro niżej, z podziałem
+ról między polami — `Location` mówi **który** plik, `Reason` mówi **co** jest nie tak i nazwy pliku
+już nie powtarza (wyjątek: gdy defektem jest kolizja id, `Reason` wymienia pliki kolidujące, ale nie
+ten własny). Komunikat odrzucenia **paczki** nadal nazywa plik sam, bo `RejectedPack.Location` niesie
+katalog, a nie plik. Trzeci to cztery powody z `EntryUnresolvedReason`
 (`MissingSet/MissingType/TypeVersionMismatch/ValuesRejected`), z opcjonalnym `UnresolvedDetail`
 niosącym wyjaśnienie zestawu treści dla ostatniego przypadku.
 
@@ -701,7 +704,7 @@ mechanizm, ale dziś nic ich nie czyta.
 | Domena — bloki danych | `CampaignDataBlocksTests` (32: 22 `[Fact]` + 10 przypadków `[Theory]`), `DataBlockIdTests`, `DataBlockRegistryTests`, `DataBlockShapeTests` (24: 12 `[Fact]` + 12 przypadków `[Theory]`) | Cykl `Apply`/`Read`/`Hydrate`, zamrażanie i normalizacja wartości, `unreadable`, walidacja kształtów, znakowe ograniczenia ID. |
 | Domena — zdarzenia | `CampaignEventsTests` (12) | Kolejność subskrypcji, kaskada, limit `MaxEventsPerCommand`. |
 | Domena — narzędzie | `CounterToolTests` (7: 5 `[Fact]` + 2 przypadki `[Theory]`) | Increment/decrement, przepełnienie. |
-| Domena — treść | `ContentPackLoaderTests` (25: 22 `[Fact]` + 3 przypadki `[Theory]`), `ContentIdTests` (16: 3 `[Fact]` + 13 przypadków `[Theory]`) | Wczytywanie i walidacja na prawdziwym systemie plików (`Fakes/TemporaryPacks`), manifest paczki, wszystkie cztery powody nierozwiązania wpisu, kolizja id paczki, limity rozmiaru pliku i liczby wpisów, akceptacja paczek-fixture'ów `tests/DungeonApp.Core.Tests/Packs/{dnd5e,goblinoids}` jako test wykonywalnej specyfikacji formatu. |
+| Domena — treść | `ContentPackLoaderTests` (26: 23 `[Fact]` + 3 przypadki `[Theory]`), `ContentIdTests` (16: 3 `[Fact]` + 13 przypadków `[Theory]`) | Wczytywanie i walidacja na prawdziwym systemie plików (`Fakes/TemporaryPacks`), manifest paczki, wszystkie cztery powody nierozwiązania wpisu, kolizja id paczki, limity rozmiaru pliku i liczby wpisów, akceptacja paczek-fixture'ów `tests/DungeonApp.Core.Tests/Packs/{dnd5e,goblinoids}` jako test wykonywalnej specyfikacji formatu. |
 | Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12), `AtomicWriteTests` (8) | Zapis/odczyt na prawdziwym systemie plików (`Fakes/TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków, zarezerwowane pola `ruleset`/`contentPacks` w zapisanym JSON-ie. |
 | Architektura | `CoreIndependenceTests` (1), `ContentAssemblyReferenceTests` (2), `ContentAssemblyIsolationTests` (1), `CoreEntryKindIndependenceTests` (2), `VocabularyWordBoundaryTests` (7 przypadków `[Theory]`) — razem 13 | Cztery granice na raz: `Core` bez Avalonii; `Core`/`Desktop` bez referencji do żadnego zestawu treści; zestawy treści nigdy nie referencjonują się nawzajem; `Core`/`Desktop` (`.cs` i `.axaml`) nie nazywają żadnego rodzaju wpisu — słownik zakazanych słów budowany częściowo z refleksji po publicznych typach zainstalowanych zestawów, więc poszerza się sam wraz z przybywającą treścią. Piąty plik (`VocabularyWordBoundary`) to sama logika granicy CamelCase, nie test. Projekt istnieje osobno od `Core.Tests`/`Desktop.Tests` z jednego powodu wypisanego w jego `.csproj`: test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą częściowo ogranicza. |
 | Desktop — rejestr | `RegistryViewModelTests` (13), `LoadContentPacksStepTests` (5) | Sortowanie wierszy, nazwy pakietu/typu na wierszu, karta jako nieprzejrzysty `Control` budowany przez fałszywy `IContentPresentation` (`FakeContentSet`), cztery osobne komunikaty nierozwiązania, pusty rejestr, zaproszenie do wyboru gaszone na pustej liście, pliki niewczytane na końcu listy w deterministycznej kolejności, nagłówek na dokładnie jednym wierszu, rejestr złożony z samych zepsutych plików jako niepusty, krok startowy wobec paczki wadliwej obok poprawnej. |

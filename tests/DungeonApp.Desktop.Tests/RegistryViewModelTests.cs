@@ -292,16 +292,21 @@ public sealed class RegistryViewModelTests : IDisposable
     }
 
     [Fact]
-    public async Task Selecting_a_not_loaded_row_shows_no_card_and_a_polish_message_naming_the_file()
+    public async Task Selecting_a_not_loaded_row_shows_no_card_and_a_polish_message_naming_the_defect_not_the_file()
     {
         var viewModel = await BuildViewModelWithNotLoadedFilesAsync();
 
-        viewModel.SelectedEntry = viewModel.Entries.First(row => row.Name == "entries/aaa-uszkodzony.json");
+        var row = viewModel.Entries.First(row => row.Name == "entries/aaa-uszkodzony.json");
+        viewModel.SelectedEntry = row;
 
         Assert.False(viewModel.HasCard);
         Assert.Null(viewModel.Card);
         Assert.False(string.IsNullOrWhiteSpace(viewModel.UnresolvedMessage));
-        Assert.Contains("aaa-uszkodzony.json", viewModel.UnresolvedMessage);
+
+        // The row title already names the file (asserted via the lookup above); the message below it
+        // says what is wrong with that file's content, not which file it is a second time.
+        Assert.Contains("is not valid", viewModel.UnresolvedMessage);
+        Assert.DoesNotContain("aaa-uszkodzony.json", viewModel.UnresolvedMessage);
     }
 
     [Fact]

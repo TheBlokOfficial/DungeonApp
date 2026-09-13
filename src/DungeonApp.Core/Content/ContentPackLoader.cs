@@ -165,7 +165,20 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
                 throw new PackRejectedException($"'{PackFileName}' is missing.");
             }
 
-            var packDto = await ParseStrictAsync<PackFileDto>(packPath, PackFileName, cancellationToken);
+            PackFileDto packDto;
+
+            try
+            {
+                packDto = await ParseStrictAsync<PackFileDto>(packPath, cancellationToken);
+            }
+            catch (PackRejectedException ex)
+            {
+                // The only call site that still prefixes ParseStrictAsync's reason with the file it
+                // names: a rejected pack has no per-row title anywhere in the registry screen to carry
+                // "pack.json" instead (unlike a rejected entry, whose row title is its own Location), so
+                // the manifest's reason has to keep naming the file itself, exactly as it always did.
+                throw new PackRejectedException($"'{PackFileName}' {ex.Message}");
+            }
 
             if (packDto.FormatVersion is null || packDto.FormatVersion != CurrentFormatVersion)
             {
@@ -265,8 +278,8 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
 
             try
             {
-                var dto = await ParseStrictAsync<EntryFileDto>(file, label, cancellationToken);
-                var entry = ParseEntry(dto, label);
+                var dto = await ParseStrictAsync<EntryFileDto>(file, cancellationToken);
+                var entry = ParseEntry(dto);
                 outcomes.Add(new EntryFileOutcome(label, entry, null));
             }
             catch (PackRejectedException ex)
@@ -275,16 +288,15 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
             }
         }
 
-        // Keyed by the colliding id, valued with every file declaring it: the reason has to name all
-        // of them, not just the file it is attached to. "declared more than once" on one file alone
-        // reads as an accusation against that file, when the defect is the pair.
-        var duplicates = outcomes
+        // Keyed by the colliding id, valued with every file declaring it - so every file declaring the
+        // id is rejected, not just the second one to appear. Each rejected file's own reason below
+        // names its collision partners (the other files) but never itself: its own name is the row's
+        // Location already, and repeating it there is exactly the duplication this whole change removes.
+        var duplicateFilesById = outcomes
             .Where(outcome => outcome.Entry is not null)
             .GroupBy(outcome => outcome.Entry!.Id)
             .Where(group => group.Count() > 1)
-            .ToDictionary(
-                group => group.Key,
-                group => string.Join(", ", group.Select(outcome => $"'{outcome.Label}'")));
+            .ToDictionary(group => group.Key, group => group.Select(outcome => outcome.Label).ToArray());
 
         var entries = new List<Entry>();
         var rejectedEntries = new List<RejectedEntry>();
@@ -295,10 +307,13 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
             {
                 rejectedEntries.Add(new RejectedEntry(packId, outcome.Label, reason));
             }
-            else if (duplicates.TryGetValue(outcome.Entry!.Id, out var collidingFiles))
+            else if (duplicateFilesById.TryGetValue(outcome.Entry!.Id, out var declaringFiles))
             {
+                var otherFiles = string.Join(", ",
+                    declaringFiles.Where(label => label != outcome.Label).Select(label => $"'{label}'"));
+
                 rejectedEntries.Add(new RejectedEntry(packId, outcome.Label,
-                    $"pack '{packId}' declares entry id '{outcome.Entry.Id}' in more than one file: {collidingFiles}."));
+                    $"pack '{packId}' declares entry id '{outcome.Entry.Id}' in more than one file - also declared in {otherFiles}."));
             }
             else
             {
@@ -312,26 +327,26 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
     /// <summary>One entry file's parse attempt: either an <see cref="Entry"/>, or the reason it failed.</summary>
     private readonly record struct EntryFileOutcome(string Label, Entry? Entry, string? FailureReason);
 
-    private Entry ParseEntry(EntryFileDto dto, string label)
+    private Entry ParseEntry(EntryFileDto dto)
     {
         if (!ContentId.TryCreate(dto.Id, out var id))
         {
-            throw new PackRejectedException($"'{label}' has an invalid id '{dto.Id}'.");
+            throw new PackRejectedException($"has an invalid id '{dto.Id}'.");
         }
 
         if (string.IsNullOrWhiteSpace(dto.Name))
         {
-            throw new PackRejectedException($"'{label}' is missing a name.");
+            throw new PackRejectedException("is missing a name.");
         }
 
         if (!ContentTypeReference.TryParse(dto.Template, out var typeReference))
         {
-            throw new PackRejectedException($"'{label}' has an invalid template reference '{dto.Template}'.");
+            throw new PackRejectedException($"has an invalid template reference '{dto.Template}'.");
         }
 
         if (dto.TemplateVersion is not { } typeVersion)
         {
-            throw new PackRejectedException($"'{label}' is missing templateVersion.");
+            throw new PackRejectedException("is missing templateVersion.");
         }
 
         var valuesElement = dto.Values.ValueKind == JsonValueKind.Undefined ? EmptyValues : dto.Values;
@@ -383,7 +398,11 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
         }
     }
 
-    private async Task<TDto> ParseStrictAsync<TDto>(string path, string label, CancellationToken cancellationToken)
+    // The reason below never names the file it is about: the manifest and entry-file call sites each
+    // already have their own place to carry that - a RejectedPack wraps this method's reason with
+    // "pack.json" right where it is called (see LoadCandidateAsync), and a RejectedEntry's Location is
+    // the file's label already. Only the defect belongs here.
+    private async Task<TDto> ParseStrictAsync<TDto>(string path, CancellationToken cancellationToken)
     {
         string text;
 
@@ -395,7 +414,7 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
             // rather than crash the whole scan (see the class-level remarks).
             if (new FileInfo(path).Length > MaxFileBytes)
             {
-                throw new PackRejectedException($"'{label}' exceeds the {MaxFileBytes}-byte size limit.");
+                throw new PackRejectedException($"exceeds the {MaxFileBytes}-byte size limit.");
             }
 
             text = await File.ReadAllTextAsync(path, cancellationToken);
@@ -405,17 +424,17 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
             // UnauthorizedAccessException does not derive from IOException, so it needs its own arm
             // here - a directory or file this process cannot read is exactly as "rejected, not fatal"
             // as a missing or malformed one.
-            throw new PackRejectedException($"'{label}' could not be read: {ex.Message}");
+            throw new PackRejectedException($"could not be read: {ex.Message}");
         }
 
         try
         {
             return JsonSerializer.Deserialize<TDto>(text, _options)
-                ?? throw new PackRejectedException($"'{label}' is empty.");
+                ?? throw new PackRejectedException("is empty.");
         }
         catch (JsonException ex)
         {
-            throw new PackRejectedException($"'{label}' is not valid: {ex.Message}");
+            throw new PackRejectedException($"is not valid: {ex.Message}");
         }
     }
 

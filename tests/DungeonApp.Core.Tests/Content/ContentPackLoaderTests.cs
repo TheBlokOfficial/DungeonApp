@@ -224,6 +224,27 @@ public sealed class ContentPackLoaderTests : IDisposable
             registry.RejectedEntries.Select(rejected => rejected.Location).OrderBy(location => location, StringComparer.Ordinal));
     }
 
+    // A rejected file's own reason names its collision partner - the other file declaring the same
+    // id - but never repeats its own name, which its row's Location already carries.
+    [Fact]
+    public async Task A_duplicate_entry_ids_reason_names_the_other_file_but_not_its_own()
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/a.json", ValidEntryJson);
+        _packs.WriteFile("cnt", "entries/b.json", ValidEntryJson);
+
+        var registry = await Loader().LoadAsync();
+
+        var a = registry.RejectedEntries.Single(rejected => rejected.Location == "entries/a.json");
+        var b = registry.RejectedEntries.Single(rejected => rejected.Location == "entries/b.json");
+
+        Assert.Contains("entries/b.json", a.Reason);
+        Assert.DoesNotContain("entries/a.json", a.Reason);
+
+        Assert.Contains("entries/a.json", b.Reason);
+        Assert.DoesNotContain("entries/b.json", b.Reason);
+    }
+
     // ---------------------------------------------------------------------
     // Entry file validation: unknown key, invalid content type reference, not valid JSON, invalid or
     // missing required fields, over the size limit. Every one of these marks only the one file - the
@@ -254,7 +275,9 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var rejected = Assert.Single(registry.RejectedEntries);
         Assert.Equal("entries/e.json", rejected.Location);
-        Assert.Contains("e.json", rejected.Reason);
+        Assert.Contains("is not valid", rejected.Reason);
+        Assert.Contains("extra", rejected.Reason);
+        Assert.DoesNotContain("e.json", rejected.Reason);
     }
 
     [Theory]
@@ -298,7 +321,12 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Empty(registry.Entries);
 
         var rejected = Assert.Single(registry.RejectedEntries);
-        Assert.Contains("e.json", rejected.Reason);
+        Assert.Equal("entries/e.json", rejected.Location);
+
+        // The heart of the reversal: the reason names the defect (the file is not valid JSON), and,
+        // unlike before, never repeats the file name the row title (Location) already carries.
+        Assert.Contains("is not valid", rejected.Reason);
+        Assert.DoesNotContain("e.json", rejected.Reason);
     }
 
     [Theory]
@@ -500,7 +528,8 @@ public sealed class ContentPackLoaderTests : IDisposable
 
             var rejected = Assert.Single(registry.RejectedEntries);
             Assert.Equal("locked-cnt", rejected.Pack.Value);
-            Assert.Contains("e.json", rejected.Reason);
+            Assert.Equal("entries/e.json", rejected.Location);
+            Assert.Contains("could not be read", rejected.Reason);
 
             // Both packs load - this is the assertion that matters most: one unreadable file must
             // never stop even its own pack, let alone a healthy sibling, from loading normally.
