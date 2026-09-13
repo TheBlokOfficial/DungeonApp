@@ -70,7 +70,7 @@
               Margin="28,20,28,24">
             <Grid RowDefinitions="Auto,Auto,Auto,Auto">
 
-            <StackPanel Spacing="6">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                 <TextBlock Classes="muted" Text="Kampanie" />
                 <TextBlock Classes="workspace-title" Text="Biblioteka kampanii" />
                 <TextBlock Classes="muted"
@@ -85,9 +85,9 @@
                     CornerRadius="{DynamicResource DungeonCardCornerRadius}"
                     ClipToBounds="True"
                     Padding="14,12">
-                <StackPanel Spacing="8">
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                     <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                         <Grid>
                             <TextBox Padding="36,0,12,0"
                                      PlaceholderText="Nazwa nowej kampanii"
@@ -141,7 +141,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Border Classes="campaign-row">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="8">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
                                              click-through, so only the delete control intercepts it. -->
@@ -150,7 +150,7 @@
                                                 Command="{Binding OpenCommand}" />
                                         <Grid Grid.ColumnSpan="3"
                                               ColumnDefinitions="Auto,*,Auto"
-                                              ColumnSpacing="8"
+                                              ColumnSpacing="{DynamicResource DungeonSpacingSm}"
                                               IsHitTestVisible="False">
                                             <Border Width="28"
                                                     Height="28"

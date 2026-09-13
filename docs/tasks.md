@@ -92,10 +92,22 @@ Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pie
    Mechanizm jest jawny, więc łatwy do przetestowania — i łatwy do zepsucia niezauważenie
    przy dołożeniu kolejnego kroku.
 
-2. **Dokończenie przepięcia widoków na skalę odstępów.** Klucze `DungeonSpacingXs..Xxxl`
-   i `DungeonPaddingXs..Xxxl` istnieją od 2026-09-05. Stan na 2026-09-12: siedem widoków
-   bierze odstępy ze skali, sześć ma nadal liczby wpisane wprost. Mechaniczny diff,
-   dlatego osobno.
+2. **Skala odstępów — zrobione, ile się dało; reszta czeka na decyzję o samej skali.**
+   2026-09-13 przepięto osiem miejsc w trzech widokach: wszystkie, w których liczba była
+   pojedyncza i trafiała dokładnie w krok skali. Wygląd nie zmienił się o piksel.
+
+   Przegląd pozostałych trzydziestu kilku liczb dał wynik, który zmienia charakter tej pozycji:
+   **nie da się ich przepiąć istniejącymi tokenami, i nie jest to kwestia staranności.** Skala ma
+   wyłącznie grubości **jednorodne** (ta sama wartość na czterech krawędziach), a praktycznie każdy
+   odstęp w tych widokach jest niesymetryczny — `12,0`, `28,20,28,24`, `0,0,8,0`, `14,12`. Dochodzą
+   do tego wartości, których w skali po prostu nie ma: `0`, `2`, `3`, `10`, `14`, `36`, `64`
+   i ujemne `-8`. Zero jest tu przypadkiem najczęstszym i najbardziej znaczącym — skala zaczyna się
+   od 6, więc „brak odstępu" nie ma dziś swojego tokenu.
+
+   Pozycja **nie jest już mechaniczna** i nie da się jej domknąć bez decyzji autora o tym, czy
+   i jak skala ma się rozszerzyć — o grubości niesymetryczne, o zero, albo wcale. Dopóki ta decyzja
+   nie zapadnie, liczby wpisane wprost w tych widokach są stanem docelowym, a nie długiem.
+   Pełny spis pominięć z powodami jest w commicie, który tę pozycję domknął.
 
 3. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
    wyświetla — decyzja autora z 2026-09-12, podjęta świadomie przy poprzednim kroku. Zostaje tu

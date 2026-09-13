@@ -57,7 +57,7 @@
                 <ColumnDefinition Width="{DynamicResource DungeonTopBarHeight}" />
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="{DynamicResource DungeonBorderStrongBrush}" BorderThickness="0,0,1,0">
-                <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="8">
+                <Grid Margin="12,0" ColumnDefinitions="32,*" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                     <Border Width="24"
                             Height="24"
                             HorizontalAlignment="Center"

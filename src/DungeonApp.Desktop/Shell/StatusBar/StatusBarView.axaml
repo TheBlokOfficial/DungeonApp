@@ -11,7 +11,7 @@
     <Border Background="{DynamicResource DungeonFrameBrush}"
             BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
             BorderThickness="0,1,0,0">
-        <Grid Margin="12,0" ColumnSpacing="12">
+        <Grid Margin="12,0" ColumnSpacing="{DynamicResource DungeonSpacingMd}">
             <!-- Column 0 must stay bound to DungeonSidebarWidth (same resource AppShellView's
                  sidebar column and TopBarView use) so this leading cell lines up with the
                  sidebar above, including when its variant (full/compact) changes. -->
@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" VerticalAlignment="Center">
                 <Image Width="12" Height="12" Source="{StaticResource DungeonIconDatabase}" />
                 <TextBlock FontSize="{DynamicResource DungeonStatusFontSize}" Foreground="{DynamicResource DungeonTextMutedBrush}" Text="Dane lokalne" />
             </StackPanel>
