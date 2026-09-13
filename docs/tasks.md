@@ -7,7 +7,7 @@ Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź: `master` — `feat/content-registry` została scalona. Build i 240 testów zielonych.
+Gałąź: `master`. Build i 262 testy zielone.
 
 ---
 
@@ -38,6 +38,15 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 * **Kolejność zatwierdzania jest zamrożona testem.** Na niej stoi „manifest ląduje ostatni", czyli
   wykrywalność rozdartego zapisu — a nie sprawdzał jej dotąd żaden test, bo wzorzec był powtarzany
   trzy razy i weryfikowany wyłącznie pośrednio.
+* **Magazyn układu biurka trzymany za słowo.** Obiecuje, że odczyt nigdy nie rzuca, a czego nie
+  da się zrozumieć, zamienia w układ domyślny — i tej obietnicy nie sprawdzał żaden test. Teraz
+  sprawdza ją dwadzieścia jeden, każdy po obu ścieżkach odczytu, bo mapowanie jest w magazynie
+  napisane dwa razy i obie kopie muszą się zgadzać. Kod produkcyjny nietknięty.
+* **Powód odrzucenia mówi co, nie który plik.** Ekran rejestru pokazywał nazwę zepsutego pliku dwa
+  razy — jako tytuł wiersza i ponownie w treści komunikatu. Naprawione u źródła: `Location` mówi
+  który plik, `Reason` mówi co jest nie tak. Odrzucenie paczki nadal nazywa plik samo, bo tam
+  żaden tytuł wiersza tej roli nie przejmuje. Wyjątkiem pozostaje kolizja id, gdzie komunikat
+  wymienia pliki kolidujące — ale już nie ten własny.
 * **Nazwa pliku roboczego ujednolicona** na `.writing.tmp` w obu magazynach. Układ biurka używał
   wcześniej nazwy z `Guid`, która po awarii aplikacji zostawiała śmieć na zawsze; nazwa
   deterministyczna jest nadpisywana przy następnym zapisie. To jedyna zmiana zachowania
@@ -86,11 +95,21 @@ wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
 2026-09-05 i nie mają wyzwalacza — można je wziąć, kiedy pasują.
 
-1. **Testy dla `Startup/*`.** Sekwencja startowa ma pięć kroków; pokrycie ma tylko
-   `LoadContentPacksStep`. Warte zamrożenia: kolejność kroków, degradacja przy błędzie
-   (awaria kroku nie blokuje wejścia) i zgodność `TotalSteps` z długością tablicy.
-   Mechanizm jest jawny, więc łatwy do przetestowania — i łatwy do zepsucia niezauważenie
-   przy dołożeniu kolejnego kroku.
+1. **Testy dla `Startup/*` — zablokowane, czekają na jedną decyzję.** Sprawdzone w kodzie
+   2026-09-13. Z trzech rzeczy, które ta pozycja chciała zamrozić, jedna okazała się niepotrzebna,
+   a dwie nieosiągalne:
+
+   * **Zgodność `TotalSteps` z długością tablicy** — nie ma czego zamrażać. `TotalSteps` jest
+     wyliczane z długości tablicy, więc rozjechać się nie może. Pozycja wpisywała regułę, której
+     złamanie nie jest dziś możliwe.
+   * **Kolejność kroków** żyje w korzeniu kompozycji, a **degradacja przy błędzie** w pętli, która
+     potrzebuje żywego dyspozytora Avalonii i kontrolki-gospodarza. Projekt testowy nigdy Avalonii
+     nie stawiał i nie ma do tego pakietu.
+
+   **Decyzja do podjęcia:** czy dołożyć do `tests/DungeonApp.Desktop.Tests` pakiet
+   `Avalonia.Headless.XUnit` (w wersji zgodnej z resztą, 12.0.5). To standardowe narzędzie do
+   testowania kodu Avalonii bez okna. Bez niego ta pozycja jest niewykonalna i lepiej ją zamknąć
+   jako nierealizowalną niż zostawić jako dług, którego nikt nie może spłacić.
 
 2. **Skala odstępów — zrobione, ile się dało; reszta czeka na decyzję o samej skali.**
    2026-09-13 przepięto osiem miejsc w trzech widokach: wszystkie, w których liczba była
