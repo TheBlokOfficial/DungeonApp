@@ -33,6 +33,7 @@ public partial class App : Avalonia.Application
     private CampaignLibraryViewModel? _campaignLibrary;
     private LoadContentPacksStep? _contentPacksStep;
     private ContentPresentationAggregate? _presentation;
+    private CampaignToolProvider? _toolProvider;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
@@ -111,6 +112,12 @@ public partial class App : Avalonia.Application
 
         _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, contentTypes));
 
+        // Built once, here, alongside the other aggregates over _contentSets - never per campaign
+        // open. The registry Func mirrors the one handed to the shell below: packs are not loaded
+        // yet at this point in Initialize, so reading _contentPacksStep.Registry has to wait for
+        // ToolsFor, called only once a campaign actually opens.
+        _toolProvider = new CampaignToolProvider(_contentSets, () => _contentPacksStep!.Registry, contentTypes);
+
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
         _preparations = new CampaignWorkspacePreparationCache(_campaigns, _layoutStore);
@@ -135,7 +142,7 @@ public partial class App : Avalonia.Application
             _contentPacksStep,
             libraryStep,
             dataStep,
-            new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns),
+            new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns, _toolProvider),
             new WarmWorkspacePlaceholderStep()
         ];
     }
@@ -151,7 +158,8 @@ public partial class App : Avalonia.Application
                 _preparations!,
                 _startupSteps!,
                 () => _contentPacksStep!.Registry,
-                _presentation!);
+                _presentation!,
+                _toolProvider!);
 
             desktop.MainWindow = new MainWindow
             {

@@ -37,6 +37,7 @@ public sealed class AppShellViewModel : ObservableObject
     private readonly IStartupStep[] _startupSteps;
     private readonly Func<ContentRegistry> _contentRegistry;
     private readonly IContentPresentation _contentPresentation;
+    private readonly CampaignToolProvider _toolProvider;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
@@ -66,7 +67,8 @@ public sealed class AppShellViewModel : ObservableObject
         CampaignWorkspacePreparationCache preparations,
         IStartupStep[] startupSteps,
         Func<ContentRegistry> contentRegistry,
-        IContentPresentation contentPresentation)
+        IContentPresentation contentPresentation,
+        CampaignToolProvider toolProvider)
     {
         _layoutStore = layoutStore;
         _campaigns = campaigns;
@@ -75,6 +77,7 @@ public sealed class AppShellViewModel : ObservableObject
         _startupSteps = startupSteps;
         _contentRegistry = contentRegistry;
         _contentPresentation = contentPresentation;
+        _toolProvider = toolProvider;
 
         TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
         Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
@@ -193,7 +196,8 @@ public sealed class AppShellViewModel : ObservableObject
         _campaignWorkspace = new CampaignWorkspaceViewModel(
             _layoutStore,
             _openCampaign,
-            preparation);
+            preparation,
+            _toolProvider);
 
         TopBar.ContextTitle = campaign.Name.Value;
         TopBar.IsCampaignOpen = true;

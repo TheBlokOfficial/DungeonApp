@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Shell;
@@ -24,7 +25,8 @@ public sealed class WarmCampaignWorkspaceVisualStep(
     CampaignWorkspacePreparationCache preparations,
     WarmCampaignDataStep dataStep,
     WorkspaceLayoutStore layoutStore,
-    ICampaignRepository campaigns) : IStartupStep
+    ICampaignRepository campaigns,
+    CampaignToolProvider toolProvider) : IStartupStep
 {
     private CampaignWorkspaceViewModel? _warmupViewModel;
 
@@ -40,7 +42,7 @@ public sealed class WarmCampaignWorkspaceVisualStep(
         }
 
         var session = new CampaignSession(preparation.Campaign, campaigns);
-        _warmupViewModel = new CampaignWorkspaceViewModel(layoutStore, session, preparation);
+        _warmupViewModel = new CampaignWorkspaceViewModel(layoutStore, session, preparation, toolProvider);
     }
 
     public async Task ApplyAsync(StartupUiContext ui, CancellationToken cancellationToken)

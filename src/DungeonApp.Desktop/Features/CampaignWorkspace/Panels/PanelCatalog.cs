@@ -18,7 +18,12 @@ public sealed class PanelCatalog
 
     public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
 
-    public static PanelCatalog For(CampaignSession session)
+    /// <summary>
+    /// <paramref name="extraTools"/> is what the campaign's installed content sets bring
+    /// (<see cref="Content.CampaignToolProvider.ToolsFor"/>) - appended after the built-in counter, so
+    /// a zestaw can only ever add to the desk, never displace what the shell itself always offers.
+    /// </summary>
+    public static PanelCatalog For(CampaignSession session, IReadOnlyList<WorkspacePanelDescriptor> extraTools)
     {
         var minimum = WorkspaceMetrics.Fallback;
         var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.CounterPanelMinWidth);
@@ -42,6 +47,7 @@ public sealed class PanelCatalog
                     WorkspaceGridSettings.CounterPanelMaxWidth,
                     WorkspaceGridSettings.CounterPanelMaxHeight),
                 () => new CounterPanelViewModel(session)),
+            .. extraTools,
         ]);
     }
 

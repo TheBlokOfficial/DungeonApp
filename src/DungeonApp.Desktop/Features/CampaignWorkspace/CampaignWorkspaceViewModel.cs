@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
@@ -35,9 +36,10 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
     public CampaignWorkspaceViewModel(
         WorkspaceLayoutStore store,
         CampaignSession campaign,
-        CampaignWorkspacePreparation preparation)
+        CampaignWorkspacePreparation preparation,
+        CampaignToolProvider toolProvider)
     {
-        _catalog = PanelCatalog.For(campaign);
+        _catalog = PanelCatalog.For(campaign, toolProvider.ToolsFor(campaign));
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
         // one campaign has no business following them into another.

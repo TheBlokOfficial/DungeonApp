@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
 namespace DungeonApp.Desktop.Tests;
 
@@ -17,11 +18,18 @@ namespace DungeonApp.Desktop.Tests;
 /// without this fake ever knowing what a real content type's values look like: return an error
 /// message to reject, or <see langword="null"/> to accept. Defaults to always accepting.
 /// </para>
+/// <para>
+/// <paramref name="tools"/> lets a <see cref="CampaignToolProvider"/> test simulate a content set
+/// that brings a tool belt, without this fake needing to know what a real tool looks like: a factory
+/// receives the <see cref="CampaignToolContext"/> the provider built and returns whatever descriptors
+/// a test wants to see stitched onto <see cref="Panels.PanelCatalog"/>. Defaults to bringing none.
+/// </para>
 /// </summary>
 internal sealed class FakeContentSet(
     ContentId id,
     IReadOnlyList<ContentTypeDescriptor> descriptors,
-    Func<ContentValues, string?>? validate = null) : IContentSet
+    Func<ContentValues, string?>? validate = null,
+    Func<CampaignToolContext, IReadOnlyList<WorkspacePanelDescriptor>>? tools = null) : IContentSet
 {
     public ContentId Id { get; } = id;
 
@@ -55,4 +63,7 @@ internal sealed class FakeContentSet(
     }
 
     public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+
+    public IReadOnlyList<WorkspacePanelDescriptor> CreateTools(CampaignToolContext context) =>
+        tools?.Invoke(context) ?? [];
 }

@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dnd="using:DungeonApp.Content.Dnd5e"
+             x:Class="DungeonApp.Content.Dnd5e.CampaignInstancesToolView"
+             x:DataType="dnd:CampaignInstancesToolViewModel">
+
+    <!-- Local to this view only, per the interface ban on theme edits: every setter below still
+         resolves an existing theme token, this only fixes how a row in this one list is framed. -->
+    <UserControl.Styles>
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
+                </ItemsPanelTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingSm}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="{DynamicResource DungeonPaddingMd}"
+          RowDefinitions="*,Auto"
+          RowSpacing="{DynamicResource DungeonSpacingMd}">
+
+        <Grid RowDefinitions="Auto,*"
+              RowSpacing="{DynamicResource DungeonSpacingXs}"
+              MinHeight="0">
+            <TextBlock Classes="eyebrow" Text="INSTANCJE W TEJ KAMPANII" />
+
+            <ScrollViewer Grid.Row="1"
+                          HorizontalScrollBarVisibility="Disabled"
+                          IsVisible="{Binding HasInstances}">
+                <ListBox ItemsSource="{Binding Instances}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="dnd:InstanceRowViewModel">
+                            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                           Text="{Binding DisplayName}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Foreground="{DynamicResource DungeonWarningBrush}"
+                                           IsVisible="{Binding HasMessage}"
+                                           Text="{Binding Message}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+
+            <TextBlock Grid.Row="1"
+                       VerticalAlignment="Top"
+                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                       IsVisible="{Binding !HasInstances}"
+                       Text="Ta kampania nie ma jeszcze żadnych instancji."
+                       TextWrapping="Wrap" />
+        </Grid>
+
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto,Auto,Auto"
+              RowSpacing="{DynamicResource DungeonSpacingXs}">
+            <TextBlock Classes="eyebrow" Text="DODAJ DO ŚWIATA" />
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="*,Auto"
+                  ColumnSpacing="{DynamicResource DungeonSpacingXs}">
+                <ComboBox HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding AddableEntries}"
+                          PlaceholderText="Wybierz wpis…"
+                          SelectedItem="{Binding SelectedToAdd, Mode=TwoWay}" />
+                <Button Grid.Column="1"
+                        Command="{Binding AddCommand}"
+                        Content="Dodaj" />
+            </Grid>
+            <TextBlock Grid.Row="2"
+                       Foreground="{DynamicResource DungeonWarningBrush}"
+                       IsVisible="{Binding HasMessage}"
+                       Text="{Binding Message}"
+                       TextWrapping="Wrap" />
+        </Grid>
+    </Grid>
+</UserControl>

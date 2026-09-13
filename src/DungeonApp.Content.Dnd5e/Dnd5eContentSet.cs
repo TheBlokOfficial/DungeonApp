@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Controls.Workspace;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -112,4 +115,43 @@ public sealed class Dnd5eContentSet : IContentSet
 
         throw new InvalidOperationException($"'{Id}' cannot draw a card for content type reference '{entry.Type}'.");
     }
+
+    /// <summary>
+    /// This content set's tool belt: one window, "Świat kampanii", listing this campaign's instances and
+    /// offering this content set's own resolved entries to bring in as new ones. Sized the same way
+    /// <c>PanelCatalog</c> sizes the built-in counter - existing shell tokens, no numbers invented
+    /// here.
+    /// </summary>
+    public IReadOnlyList<WorkspacePanelDescriptor> CreateTools(CampaignToolContext context)
+    {
+        var minimum = WorkspaceMetrics.Fallback;
+        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.CounterPanelMinWidth);
+        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.CounterPanelMinHeight);
+
+        return
+        [
+            new WorkspacePanelDescriptor(
+                "dnd5e.instances",
+                "Świat kampanii",
+                "DungeonIconUsers",
+                WorkspacePanelGroup.World,
+                new PanelPlacement(
+                    WorkspaceGridSettings.CellSize,
+                    WorkspaceGridSettings.CellSize,
+                    minWidth,
+                    minHeight),
+                new PanelConstraints(
+                    minWidth,
+                    minHeight,
+                    WorkspaceGridSettings.CounterPanelMaxWidth,
+                    WorkspaceGridSettings.CounterPanelMaxHeight),
+                () => BuildToolView(context)),
+        ];
+    }
+
+    private Control BuildToolView(CampaignToolContext context) =>
+        new CampaignInstancesToolView
+        {
+            DataContext = new CampaignInstancesToolViewModel(context, Id),
+        };
 }
