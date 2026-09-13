@@ -100,7 +100,8 @@ public partial class App : Avalonia.Application
 
         _campaigns = new JsonCampaignRepository(libraryPath, _dataBlocks);
 
-        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (sekcja 12) - obok, nie pod
+        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
+        // mieszka stan") - obok, nie pod
         // danymi aplikacji.
         var packsPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -137,7 +138,7 @@ public partial class App : Avalonia.Application
 
         _startupSteps =
         [
-            // Paczki treści przed półką kampanii (sekcja 15a): rejestr musi istnieć zanim
+            // Paczki treści przed półką kampanii (architecture.md, "Przepływy"): rejestr musi istnieć zanim
             // cokolwiek próbuje rozwiązywać wobec niego referencje.
             _contentPacksStep,
             libraryStep,

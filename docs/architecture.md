@@ -819,32 +819,7 @@ zapisuje się jako klucz łatki tą samą ścieżką co zmiana stanu.
 
 # CZĘŚĆ III — WYKONANIE
 
-## 22. Delta wobec dzisiejszego kodu
-
-Stan faktyczny opisuje [code-map.md](code-map.md); tu jest wyłącznie różnica do pokonania.
-
-**Ginie z `Core/Content`:** `Template`, `CardElement`, `TraitListElement`, `ProseElement`, `Trait`,
-`FieldDeclaration`, `FieldName`, `FieldType`, `FieldValue`, `ContractFill`, `SummaryContract`,
-`SummaryContractResolution`. Z `ContentPackLoader` — dwuprzebiegowe rozwiązywanie szablonów, reguła
-kolizji id, walidacja wartości wobec deklaracji pól. Z 54 testów `ContentPackLoaderTests` zostaje
-mniej więcej połowa.
-
-**Przeżywa z `Core/Content`:** `ContentId`, `EntryAddress`, `TemplateReference`, `PackVersion`,
-`Pack`, `Entry`, `RegisteredEntry`, `RejectedPack`, `ContentRegistry`, `EntryUnresolvedReason`,
-`ContentPackLoader` — w wersji istotnie prostszej.
-
-**Przeżywa z `Desktop`:** `TraitListElementView`, `TraitRowViewModel`, `ProseElementView` — jako
-kontrolki, nie jako katalog. `RegistryViewModel` i `RegistryEntryRowViewModel` w większości. Cały
-framework okien bez zmian. `CardViewModel` zostaje przepisany na dispatch po typie treści.
-
-**Nowe:** projekt `DungeonApp.Content.<x>`, renderer dokumentu, magazyn instancji, prymityw zapisu
-atomowego, test granicy słownictwa rozszerzony na `Desktop`.
-
-**Bez zmian:** `Campaign`, `CampaignDataBlocks`, `CampaignEvents`, `CampaignSession`,
-`JsonCampaignRepository`, `DataBlockRegistry`, `ITool`, `PanelGeometry`, `WorkspaceSurface`,
-`WorkspaceLayoutStore`, `CoreIndependenceTests`, format pliku wpisu, pięć zakazów.
-
-## 23. Granice mechaniczne
+## 22. Granice mechaniczne
 
 | Granica | Jak egzekwowana | Status |
 |---|---|---|
@@ -888,7 +863,7 @@ już trzy. Warstwa treści nie przeżyła żadnej i nie zasługuje dziś na gęs
 **`TreatWarningsAsErrors`** przestaje być higieną i staje się częścią historii walidacji: skoro
 kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o treści.
 
-## 24. Pytania otwarte
+## 23. Pytania otwarte
 
 1. **Format pliku wpisu.** JSON zawodzi dokładnie w jednym miejscu — długi tekst. Po wejściu slotów
    potwór traci dwa z trzech bloków prozy (akcje i cechy szczególne stają się dołączonymi wpisami),
@@ -934,7 +909,7 @@ układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To je
 jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je czyta, istnieje
 i działa.
 
-## 25. Kolejność prac
+## 24. Kolejność prac
 
 | # | Krok | Dlaczego tu |
 |---|---|---|
