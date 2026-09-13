@@ -16,10 +16,20 @@ internal sealed class FakeContentTypeCatalog(
     IReadOnlyList<ContentTypeDescriptor> descriptors,
     IReadOnlySet<ContentTypeReference>? valuesToReject = null) : IContentTypeCatalog
 {
+    private readonly List<(ContentTypeReference Reference, ContentValues Values)> _validateCalls = [];
+
     // A "known set" is derived from the descriptors this fake was given, not tracked separately -
     // every descriptor already names the set it belongs to, so a test that wants "set installed,
     // type unknown" just registers a descriptor for a sibling type in the same set.
     public bool HasSet(ContentId set) => descriptors.Any(candidate => candidate.Reference.Set == set);
+
+    /// <summary>
+    /// Every envelope this fake was actually asked to validate, in call order - opt-in evidence for
+    /// a test that needs to prove which envelope a caller sent, not just what this fake answered.
+    /// Recording never changes the accept/reject behaviour below, so it leaves every existing user
+    /// of this fake untouched.
+    /// </summary>
+    public IReadOnlyList<(ContentTypeReference Reference, ContentValues Values)> ValidateCalls => _validateCalls;
 
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
@@ -38,6 +48,8 @@ internal sealed class FakeContentTypeCatalog(
 
     public bool TryValidate(ContentTypeReference reference, ContentValues values, out string? error)
     {
+        _validateCalls.Add((reference, values));
+
         if (!TryGet(reference, out _))
         {
             error = "no such content type is known to this fake.";
