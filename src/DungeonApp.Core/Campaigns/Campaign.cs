@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DungeonApp.Core.Content;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Events;
 
@@ -20,12 +21,14 @@ public sealed class Campaign
         CampaignName name,
         DateTimeOffset createdAt,
         CampaignDataBlocks dataBlocks,
+        CampaignInstances instances,
         CampaignEvents events)
     {
         Id = id;
         Name = name;
         CreatedAt = createdAt;
         DataBlocks = dataBlocks;
+        Instances = instances;
         Events = events;
     }
 
@@ -40,6 +43,9 @@ public sealed class Campaign
     public DateTimeOffset CreatedAt { get; }
 
     public CampaignDataBlocks DataBlocks { get; }
+
+    /// <summary>This campaign's world: every entry brought in as a living instance.</summary>
+    public CampaignInstances Instances { get; }
 
     /// <summary>
     /// This campaign's announcement channel. Exposed because the shell hosting the campaign has no
@@ -64,12 +70,18 @@ public sealed class Campaign
             name,
             timeProvider.GetUtcNow(),
             CampaignDataBlocks.Create(registry, events),
+            CampaignInstances.Create(events),
             events);
     }
 
     /// <summary>
     /// Rebuilds a campaign that already exists on disk. Separate from <see cref="Create"/> because
     /// restoring must not mint a new identity or a new creation date - a load is not a creation.
+    /// <para>
+    /// <paramref name="instances"/> is optional and trails every existing parameter so that no
+    /// caller written before instances existed has to change: a campaign restored without it simply
+    /// comes back with an empty world.
+    /// </para>
     /// </summary>
     public static Campaign Restore(
         CampaignId id,
@@ -77,7 +89,8 @@ public sealed class Campaign
         DateTimeOffset createdAt,
         DataBlockRegistry registry,
         IReadOnlyDictionary<DataBlockId, object> values,
-        IReadOnlyDictionary<DataBlockId, DataBlockUnreadableReason>? unreadable = null)
+        IReadOnlyDictionary<DataBlockId, DataBlockUnreadableReason>? unreadable = null,
+        IReadOnlyCollection<CampaignInstance>? instances = null)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(registry);
@@ -90,6 +103,7 @@ public sealed class Campaign
             name,
             createdAt,
             CampaignDataBlocks.Hydrate(registry, events, values, unreadable),
+            CampaignInstances.Hydrate(events, instances ?? []),
             events);
     }
 }
