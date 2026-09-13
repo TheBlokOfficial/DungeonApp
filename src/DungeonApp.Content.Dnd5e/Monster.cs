@@ -29,6 +29,13 @@ public sealed record Monster
 
     public string? HpDice { get; init; }
 
+    /// <summary>
+    /// Current hit points for one specimen of this monster. An entry only ever declares the
+    /// maximum in <see cref="Hp"/>; this is filled in by an instance's overlay, so it stays null
+    /// until something GM-specific happens to a particular goblin.
+    /// </summary>
+    public int? CurrentHp { get; init; }
+
     public required string Speed { get; init; }
 
     public required int Str { get; init; }

@@ -23,7 +23,10 @@ namespace DungeonApp.Content.Dnd5e;
 /// </summary>
 public sealed class Dnd5eContentSet : IContentSet
 {
-    private const string MonsterTypeId = "monster";
+    // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
+    // whether a row is a monster, and docs/decisions.md permits branching on this id only inside
+    // this content set - duplicating the literal there instead would let the two silently drift.
+    internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
     private readonly ContentTypeDescriptor _monster;

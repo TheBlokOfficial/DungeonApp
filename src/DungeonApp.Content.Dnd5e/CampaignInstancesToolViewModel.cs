@@ -21,6 +21,7 @@ namespace DungeonApp.Content.Dnd5e;
 public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposable
 {
     private readonly CampaignToolContext _context;
+    private readonly ContentId _ownerSet;
     private readonly IDisposable[] _subscriptions;
 
     private IReadOnlyList<InstanceRowViewModel> _instances = [];
@@ -33,6 +34,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         ArgumentNullException.ThrowIfNull(context);
 
         _context = context;
+        _ownerSet = ownerSet;
 
         // Every entry this content set owns and that resolved cleanly - never one belonging to
         // another content set, and never one the registry already marked broken. The registry itself does
@@ -160,8 +162,9 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
     {
         var resolved = _context.Resolver.Resolve(instance);
         var name = instance.Label ?? resolved.Source?.Entry.Name ?? instance.Source.ToString();
+        var message = resolved.Unresolved is { } reason ? Describe(reason, instance, resolved) : null;
 
-        return new InstanceRowViewModel(name, resolved.Unresolved is { } reason ? Describe(reason, instance, resolved) : null);
+        return new InstanceRowViewModel(_context, instance.Id, name, message, resolved, _ownerSet);
     }
 
     /// <summary>

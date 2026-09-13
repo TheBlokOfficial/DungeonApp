@@ -48,6 +48,28 @@
                                            IsVisible="{Binding HasMessage}"
                                            Text="{Binding Message}"
                                            TextWrapping="Wrap" />
+
+                                <!-- Deliberately plain: existing tokens, no new control, no hardcoded
+                                     numbers - the author redesigns this row later and should not have
+                                     to undo anything invented along the way. -->
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{DynamicResource DungeonSpacingXs}"
+                                            IsVisible="{Binding CanEditHitPoints}">
+                                    <TextBlock VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                               Text="PZ:" />
+                                    <NumericUpDown Minimum="0"
+                                                   Value="{Binding CurrentHp}" />
+                                    <TextBlock VerticalAlignment="Center"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                               Text="{Binding MaxHp, StringFormat='z {0}'}" />
+                                    <Button Command="{Binding SaveHitPointsCommand}"
+                                            Content="Zapisz" />
+                                </StackPanel>
+
+                                <Button HorizontalAlignment="Left"
+                                        Command="{Binding RemoveCommand}"
+                                        Content="Usuń" />
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
