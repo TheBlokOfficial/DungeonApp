@@ -7,7 +7,7 @@ Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź: `master`. Build i 263 testy zielone.
+Gałąź: `master`. Build i 280 testów zielonych.
 
 ---
 
@@ -40,6 +40,19 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
   z notatką, że czas przeszły w tamtym dokumencie nie jest dowodem stanu repozytorium. Przy okazji
   zweryfikowano akapit „Nawyk do przerwania" w `architecture.md`: z sześciu wyliczonych tam rzeczy
   zbudowanych bez konsumenta **nie istnieje już żadna**, a przewidywał śmierć dwóch.
+
+* **Koperta wartości treści umie już arytmetykę nakładki.** Doszły trzy operacje: nałożenie łatki
+  na wartości wpisu, wyliczenie łatki jako różnicy wobec wpisu i zapieczętowanie rekordu zestawu
+  treści z powrotem w kopertę. Wszystkie przesuwają całe właściwości po nazwach, które koperta już
+  niesie — **żadna nie zapisuje nazwy pola, nie pyta, co ta nazwa znaczy, ani nie czyta wartości**,
+  więc stoją na tym samym uzasadnieniu co istniejący generyczny odczyt. Doszły też `InstanceId`
+  i rekord `CampaignInstance`.
+
+  Dwie decyzje są nośne i opisane przy kodzie: **zapis pomija `null`** (inaczej każda niewypełniona
+  właściwość rekordu nadpisałaby wartość wpisu nullem — a przy okazji daje to pożądane cofanie
+  odchylenia przez wyzerowanie właściwości) i **scalanie jest płytkie** (scalanie w głąb wymagałoby
+  osądu, czy dwa obiekty pod jedną nazwą to ta sama rzecz — a ten osąd należy do zestawu treści).
+  Porównanie wartości idzie przez `JsonElement.DeepEquals`, nie przez surowy tekst.
 
 **Domknięte 2026-09-13 (czwarta sesja):**
 
@@ -92,104 +105,66 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 
 ---
 
-## Następne — wg dokumentu architektury
+## Następne — jedna pozycja, i jest pilna
 
-Krok 5 z sekcji „Kolejność prac" ([architecture.md](architecture.md)) jest domknięty, więc kolejka
-wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
+**Magazyn instancji stoi w połowie i nie ma konsumenta.** Fundament wszedł 2026-09-13: koperta umie
+arytmetykę nakładki, istnieją identyfikator instancji i jej rekord. **Nie istnieje** kolekcja
+instancji w kampanii, ich zapis na dysk, rozwiązywanie wskazania na wpis wobec rejestru ani żadne
+miejsce w interfejsie, z którego dałoby się instancję zobaczyć albo zmienić.
 
-1. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii. Zapis ma iść przez
-   `AtomicWrite`, a nie przez czwartą własną kopię wzorca.
-2. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
-   celowym rusztowaniem, oraz weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
-3. **Formuły, sloty, dokument** — kolejność do ustalenia osobno.
+To jest **nazwany dług, nie stan pośredni**. `architecture.md` w sekcji „Pytania otwarte" wylicza
+sześć rzeczy zbudowanych bez konsumenta; wszystkie sześć umarło nieużytych, i z tego wzięła się
+reguła **nic nie wchodzi bez konsumenta w tym samym wycinku**. To, co leży dziś w repozytorium, jest
+siódmym przypadkiem — z tą jedyną różnicą, że jest zapisany tutaj, zanim zdążył się zestarzeć po
+cichu. Sesja skończyła się na budżecie, nie na rozstrzygnięciu.
 
----
+Wycinek domyka się w tej kolejności, i **ma być domknięty w jednym podejściu**:
 
-## Odłożone, poza kolejnością
+1. **Kolekcja instancji w kampanii** — dodanie, usunięcie, podmiana łatki, zmiana nazwy własnej,
+   każde ze zdarzeniem niosącym sam identyfikator. Wzór: `CampaignDataBlocks`, łącznie z rozdziałem
+   na `Create` i `Hydrate`. **Magazyn nie wie nic o rejestrze treści** — rozstrzygnięte 2026-09-13:
+   rozwiązanie wskazania jest sprawą odczytu, nie zapisanego stanu, bo zainstalowanie brakującej
+   paczki ma naprawiać instancję bez przepisywania kampanii.
+2. **Zapis** — plik na instancję w podkatalogu kampanii, w tej samej transakcji i generacji co bloki
+   danych, przez istniejący `AtomicWrite`, z manifestem lądującym ostatnim. Uwaga na jedyne miejsce,
+   gdzie może zostać śmieć: `AtomicWrite` przenosi pliki, ale nie kasuje pliku po usuniętej
+   instancji.
+3. **Rozwiązywanie wskazania wobec rejestru** — osobna warstwa odczytu. Instancja bez paczki, bez
+   wpisu albo taka, której scalone wartości zestaw treści odrzuci, ma zostać **oznaczona**: łatka
+   nietknięta, kampania otwiera się dalej.
+4. **Konsument** — okno biurka z instancjami tej kampanii i jednym polem do zmiany. Pierwszym
+   edytowalnym polem są **bieżące punkty życia**, zatwierdzone przez autora 2026-09-13, a razem
+   z nimi odpowiedź na pytanie z tabeli niżej: punkty życia i pancerz **nie** są parami
+   wartość-plus-źródło. Typ treści deklaruje dwa zwykłe pola — wpis wypełnia maksimum, nakładka
+   niesie bieżące — a mechanizm scalania zostaje głupi.
 
-Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
-2026-09-05 i nie mają wyzwalacza — można je wziąć, kiedy pasują.
+Poza wycinkiem: sloty, zagnieżdżanie, deklaracja paczek przez kampanię, formuły, dokument.
 
-1. **Testy dla `Startup/*` — zamknięte jako niepotrzebne na tym etapie.** Sprawdzone w kodzie
-   2026-09-13, po zakwestionowaniu przesłanki przez autora. Pozycja stała w kolejce od 2026-09-05
-   bez wyzwalacza i nikt jej przez ten czas nie przeliczył.
-
-   Z trzech rzeczy, które chciała zamrozić, żadna się nie obroniła. **Zgodność `TotalSteps`
-   z długością tablicy** nie ma czego pilnować — jest wyliczana z tej tablicy, więc rozjechać się
-   nie może. **Kolejność kroków** i **degradacja przy awarii kroku** są nieosiągalne bez postawienia
-   Avalonii w testach, ale to nie jest główny powód odrzucenia. Główny jest taki: z pięciu kroków
-   startowych dwa wczytują realne dane, a **trzy są wyłącznie rozgrzewką wydajnościową** i nie mają
-   żadnego efektu poza szybkością. Jeden z nich rozgrzewa widok sekcji bocznych, które są dziś
-   puste; drugi biurko kampanii, którego jedynym panelem jest licznik — oznaczony w tych samych
-   dokumentach jako rusztowanie do usunięcia. Do tego nawigacja jest do przeprojektowania w osobnej
-   sesji. Testy zamroziłyby kolejność, w której większość kroków przygotowuje rzeczy zaplanowane do
-   wymiany.
-
-   **Wraca**, gdy sekwencja startowa zacznie przygotowywać coś trwałego — najwcześniej po pierwszym
-   prawdziwym narzędziu biurka i po przeprojektowaniu nawigacji.
-
-2. **Skala odstępów — zamknięte. Skala dotyczy przerw między elementami i tylko ich.**
-   2026-09-13 przepięto osiem miejsc, w których liczba była pojedyncza i trafiała dokładnie w krok
-   skali. Wygląd nie zmienił się o piksel. Reszta zostaje liczbami wpisanymi wprost — i **nie jest
-   to dług**.
-
-   Przesłanka pozycji („sześć widoków ma nadal liczby wpisane wprost") była fałszywa: te liczby nie
-   były nieprzepięte, tylko nieprzepinalne, i to już w dniu, w którym pozycję zapisano. Policzone
-   2026-09-13: najczęstszą wartością odstępu w całym interfejsie jest **zero**, z trzydziestoma
-   pięcioma wystąpieniami — ponad dwa razy częstszą niż cokolwiek innego. Skala zaczyna się od 6.
-
-   Rozstrzygnięcie autora, po sprawdzeniu obu połówek skali osobno:
-
-   * **Przerwy między elementami** — skala się broni i zostaje. Używana 36 razy, wszystkie siedem
-     stopni w użyciu, dwa najmniejsze odpowiadają za dwie trzecie. To jest realny, powtarzalny rytm
-     interfejsu.
-   * **Wcięcia i marginesy** — **poza skalą, świadomie**. Tokeny grubości opisują wcięcie jednakowe
-     z czterech stron, a ten interfejs prawie zawsze robi je niesymetrycznie, bo wiersz jest szerszy
-     niż wyższy. To są decyzje graficzne per miejsce, a nie powtarzalny rytm, więc liczba wpisana
-     wprost jest tam zapisem uczciwszym niż naciągnięta nazwa.
-
-   **Nie wracać** z propozycją rozszerzenia skali o grubości niesymetryczne ani o stopień zerowy —
-   to jest dokładnie ten kierunek, który tu odrzucono, wraz z powodem.
-
-3. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
-   wyświetla — decyzja autora z 2026-09-12, podjęta świadomie przy poprzednim kroku. Zostaje tu
-   jako jedyna pozycja z tabeli „Co się dzieje, gdy treść jest zepsuta", o której Mistrz Gry nie
-   dowiaduje się z aplikacji: paczka odrzucona za literówkę w manifeście znika dziś po cichu.
-   Wyzwalacz: moment, w którym autor zechce zaprojektować dla nich miejsce na ekranie.
-
-4. **Ekran rejestru — jedna rzecz została.** Dwie z trzech rozstrzygnięte 2026-09-13.
-   * **Diagnostyka loadera zostaje po angielsku** — decyzja autora. Polskie zdanie ramowe mówi
-     Mistrzowi Gry, co się stało i którego pliku dotyczy; angielski szczegół zostaje śladem
-     technicznym dla tego, kto pisał paczkę. Powód odrzucenia: tłumaczenie oznacza katalog
-     komunikatów utrzymywany przy każdym nowym rodzaju błędu, dla tekstu widocznego wyłącznie
-     wtedy, gdy treść jest zepsuta. To samo dotyczy wyjaśnienia zestawu treści przy odrzuconych
-     wartościach.
-   * **Nazwa pliku nie pojawia się już dwa razy** — naprawione u źródła, a nie przy wyświetlaniu.
-     Diagnostyka wpisu mówi, co jest nie tak; który to plik, niesie `Location`, z którego ekran
-     bierze tytuł wiersza. Odrzucenie paczki nadal nazywa plik samo, bo tam żaden tytuł wiersza
-     tej roli nie przejmuje.
-   * **Zostaje: nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo
-     niesie go ten wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon".
-     Autor zostawił to świadomie 2026-09-13.
-
-Była też z tamtej sesji trzecia pozycja — usunięcie domknięcia nad `_shell` w `App.Initialize()`.
-Jest **zamknięta jako nie-dług**: stoi nadal, ale w kodzie jest opisana jako świadoma decyzja
-z uzasadnieniem.
+**Dopiero po nim:** usunięcie licznika i weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
+Licznik zostaje do tego czasu świadomie — jest dziś jedyną rzeczą używającą bloków danych, więc jego
+usunięcie należy do narzędzia trzymającego własny stan, a nie do tego wycinka. Policzone przy
+okazji: mechanizm kształtu **nie umie dziś opisać listy**, a każde narzędzie z kolejką, drużyną albo
+składem potyczki zażąda jej jako pierwszej rzeczy. To jest realne świadectwo w tamtym pytaniu.
 
 ---
 
-## Znane problemy
+## Odłożone — dwie pozycje, obie o interfejsie
 
-**Blokada katalogu `bin` projektu wykonywalnego.** `dotnet build src/DungeonApp.App` pada czasem na
-`MSB3021`/`MSB3027` — „plik jest zablokowany przez .NET Host". Rozpoznane 2026-09-12: to
-`Avalonia.Designer.HostApp` (podglądacz XAML), którego uruchamia Rider, gdy otwarta jest zakładka
-z podglądem `.axaml`; rodzicem procesu jest `rider64.exe`. **To nie jest błąd kodu.** Rozwiązanie:
-zamknąć w IDE zakładkę z podglądem.
+Obie czekają na to, aż autor zechce zaprojektować dla nich miejsce na ekranie. Żadna nie blokuje
+wycinka powyżej.
 
-Weryfikacja mimo blokady jest pełna: cztery projekty testowe nie zależą od `DungeonApp.App`, więc
-build i testy na nich dają potwierdzenie kompilatora dla silnika, powłoki i zestawu treści.
-Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się linkuje — a to zostało
-potwierdzone osobno 2026-09-12, przy zwolnionym katalogu.
+1. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
+   wyświetla — świadoma decyzja autora z 2026-09-12. Jedyna pozycja z tabeli „Co się dzieje, gdy
+   treść jest zepsuta", o której Mistrz Gry nie dowiaduje się z aplikacji: paczka odrzucona za
+   literówkę w manifeście znika dziś po cichu.
+2. **Nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo niesie go ten
+   wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon", zostawiona
+   świadomie 2026-09-13.
+
+Cztery pozycje, które stały tu wcześniej, zostały **zamknięte** 2026-09-13 po sprawdzeniu przesłanek
+— testy sekwencji startowej, skala odstępów, domknięcie nad powłoką przy starcie i podwójna nazwa
+pliku w komunikacie o odrzuceniu. Uzasadnienia zamknięcia żyją w `decisions.md` i `architecture.md`;
+tutaj nie wracają, bo kolejka ma mówić, co dalej, a nie prowadzić archiwum.
 
 ---
 
