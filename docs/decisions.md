@@ -580,6 +580,26 @@ kampanii polega na wyborze z listy, a okna i modele danych są przypisane do sys
 - **Homebrew staje się możliwy wyłącznie przez fork.** Nowe okno, zakładka czy logika
   wymagają duplikacji cudzego systemu.
 
+**Częściowo uchylone 2026-09-13.** Autor przyjął, że **kampania zaznacza przy zakładaniu, które
+zestawy w niej działają**, a biurko pokazuje okna wyłącznie zaznaczonych. Co odróżnia to od
+wariantu odrzuconego powyżej i dlaczego tamte argumenty nie trafiają:
+
+* **Nie ma bytu „system" ani rodzaju zestawu.** Wszystko jest zestawem, bez wyróżnionego zestawu
+  bazowego; zestaw może zadeklarować, że **wymaga** innego. „System" i „rozszerzenie" to odczyty
+  z grafu zależności, nie zadeklarowane role. Taksonomia, której dotyczył drugi argument, nie
+  wraca — nie powstaje pole z rodzajem, po którym dałoby się rozgałęzić.
+* **Nic nie rozgałęzia się po nazwie.** Biurko pyta „czy zestaw tego okna jest na liście kampanii",
+  nigdy „czy to jest D&D". Żadna linijka w silniku ani w powłoce nadal nie wymienia zestawu
+  z nazwy, a pilnuje tego ten sam test co dotąd.
+* **Homebrew nie wymaga forka**, bo lista zestawów nie jest zamknięta, a większość tego, co bywa
+  rozszerzeniem, jest u nas **paczką** — wpisy są danymi i nie potrzebują zestawu w ogóle.
+* Pierwszy argument dotyczył problemu („szablony nie powinny być plikami danych"), który został
+  od tamtej pory rozwiązany inaczej, więc nie ma już czego rozstrzygać.
+
+**Co zostaje otwarte:** co rozszerzeniu wolno zobaczyć u zestawu, od którego zależy. Zestawy nadal
+nie mogą się nawzajem referencjonować — rozstrzygnie to pierwszy prawdziwy drugi zestaw, nie
+rozmowa przed nim. Szczegóły i stan prac: `tasks.md`.
+
 ### 25. Moduły deklarujące wsparcie systemów, z rozgałęzieniem po systemie w środku
 
 **Co proponowano.** Moduły odłączone od instancji systemu; jeden moduł wspiera kilka

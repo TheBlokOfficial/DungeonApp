@@ -13,7 +13,7 @@ w [architecture.md](architecture.md), a pytania niezamknięte wraz z warunkami p
 w [decisions.md](decisions.md). Pozycja wpisana tu przed swoim czasem starzeje się po cichu: nic nie
 zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna uchodzić za uzasadnienie.
 
-Gałąź: `master`. Build i 280 testów zielonych.
+Gałąź: `master`. Build i 343 testy zielone.
 
 ---
 
@@ -31,6 +31,33 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
   `IContentPresentation`, pierwsze zaprojektowane `MonsterCardView` i `GearCardView`.
 * `TreatWarningsAsErrors` — kompilator jest walidatorem treści, więc jego ostrzeżenia są
   ostrzeżeniami o treści.
+
+**Domknięte 2026-09-13 (szósta sesja) — magazyn instancji ma konsumenta:**
+
+* **Kolekcja instancji w kampanii.** Dodanie, usunięcie, zmiana nazwy własnej i podmiana łatki,
+  każde ze swoim zdarzeniem niosącym sam identyfikator. Odtwarzanie zapisu idzie osobnymi drzwiami
+  i nie ogłasza niczego, wzorem bloków danych. Magazyn **nie wie nic o rejestrze treści**.
+* **Zapis na dysk.** Plik na instancję w podkatalogu kampanii, wyliczony w manifeście, w tej samej
+  transakcji i generacji co bloki danych, z manifestem lądującym ostatnim. Plik po usuniętej
+  instancji kasowany **po** zatwierdzeniu, nigdy przed — a że manifest jest indeksem, przerwane
+  kasowanie zostawia śmieć, nie zmartwychwstałą instancję. Wersja formatu została przy `1`.
+* **Rozwiązywanie wskazania wobec rejestru** jako osobna warstwa odczytu, z czterema powodami
+  nierozwiązania. Pytana od nowa przy każdym odczycie, więc zainstalowanie brakującej paczki
+  naprawia instancję bez przepisywania kampanii. Łatka nierozwiązanej instancji wychodzi nietknięta.
+  Sprawdzanie idzie na wartościach **scalonych**, nie na wartościach wpisu — osobny test pilnuje
+  tego, bo napisane odwrotnie wygląda identycznie.
+* **Zestaw treści wnosi własne okna biurka** — mechanizm „tool belt". Powłoka daje ramę i wąskie
+  okno na otwartą kampanię: instancje, rejestr, rozwiązywanie i te same drzwi zapisu, z których
+  korzysta każdy panel. Zestaw oddaje gotową kontrolkę, więc żaden szablon w powłoce nie zna typu
+  z zestawu. Rejestr podawany jako obietnica, nie wartość, bo przy budowie korzenia kompozycji
+  paczki nie są jeszcze wczytane.
+* **Okno „Świat kampanii"** z zestawu D&D: lista instancji kampanii, dodawanie z wpisów tego
+  zestawu, **edycja bieżących punktów życia** i usuwanie. Instancja nierozwiązana zostaje na liście
+  z wyjaśnieniem. Punkty życia to **dwa zwykłe pola** — wpis niesie maksimum, nakładka bieżące —
+  a zapis różnicuje edytowany rekord **wobec wartości wpisu**, nie wobec scalonych.
+
+  To jest zarazem **pierwsze prawdziwe narzędzie biurka**, czyli wyzwalacz dwóch rzeczy z sekcji
+  niżej, który właśnie się odpalił.
 
 **Domknięte 2026-09-13 (piąta sesja):**
 
@@ -111,48 +138,52 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 
 ---
 
-## Następne — jedna pozycja, i jest pilna
+## Następne
 
-**Magazyn instancji stoi w połowie i nie ma konsumenta.** Fundament wszedł 2026-09-13: koperta umie
-arytmetykę nakładki, istnieją identyfikator instancji i jej rekord. **Nie istnieje** kolekcja
-instancji w kampanii, ich zapis na dysk, rozwiązywanie wskazania na wpis wobec rejestru ani żadne
-miejsce w interfejsie, z którego dałoby się instancję zobaczyć albo zmienić.
+Kolejność **nie** jest wiążąca — obie pozycje są niezależne.
 
-To jest **nazwany dług, nie stan pośredni**. `architecture.md` w sekcji „Pytania otwarte" wylicza
-sześć rzeczy zbudowanych bez konsumenta; wszystkie sześć umarło nieużytych, i z tego wzięła się
-reguła **nic nie wchodzi bez konsumenta w tym samym wycinku**. To, co leży dziś w repozytorium, jest
-siódmym przypadkiem — z tą jedyną różnicą, że jest zapisany tutaj, zanim zdążył się zestarzeć po
-cichu. Sesja skończyła się na budżecie, nie na rozstrzygnięciu.
+### 1. Kampania wybiera zestawy przy zakładaniu
 
-Wycinek domyka się w tej kolejności, i **ma być domknięty w jednym podejściu**:
+Rozstrzygnięte przez autora 2026-09-13, po tym jak wyszło, że biurko pokazujące okna wszystkich
+wkompilowanych zestawów zrobi się bałaganem przy kilku systemach naraz.
 
-1. **Kolekcja instancji w kampanii** — dodanie, usunięcie, podmiana łatki, zmiana nazwy własnej,
-   każde ze zdarzeniem niosącym sam identyfikator. Wzór: `CampaignDataBlocks`, łącznie z rozdziałem
-   na `Create` i `Hydrate`. **Magazyn nie wie nic o rejestrze treści** — rozstrzygnięte 2026-09-13:
-   rozwiązanie wskazania jest sprawą odczytu, nie zapisanego stanu, bo zainstalowanie brakującej
-   paczki ma naprawiać instancję bez przepisywania kampanii.
-2. **Zapis** — plik na instancję w podkatalogu kampanii, w tej samej transakcji i generacji co bloki
-   danych, przez istniejący `AtomicWrite`, z manifestem lądującym ostatnim. Uwaga na jedyne miejsce,
-   gdzie może zostać śmieć: `AtomicWrite` przenosi pliki, ale nie kasuje pliku po usuniętej
-   instancji.
-3. **Rozwiązywanie wskazania wobec rejestru** — osobna warstwa odczytu. Instancja bez paczki, bez
-   wpisu albo taka, której scalone wartości zestaw treści odrzuci, ma zostać **oznaczona**: łatka
-   nietknięta, kampania otwiera się dalej.
-4. **Konsument** — okno biurka z instancjami tej kampanii i jednym polem do zmiany. Pierwszym
-   edytowalnym polem są **bieżące punkty życia**, zatwierdzone przez autora 2026-09-13, a razem
-   z nimi odpowiedź na pytanie z tabeli niżej: punkty życia i pancerz **nie** są parami
-   wartość-plus-źródło. Typ treści deklaruje dwa zwykłe pola — wpis wypełnia maksimum, nakładka
-   niesie bieżące — a mechanizm scalania zostaje głupi.
+Model: **wszystko jest zestawem, nie ma zestawu bazowego ani wyróżnionego rodzaju.** Zestaw może
+zadeklarować, że wymaga innego zestawu — i wtedy „system" to zestaw, który nie wymaga niczego,
+a „rozszerzenie" to zestaw, który wymaga jednego. Role czyta się z grafu zależności; **nie ma pola
+z rodzajem zestawu**, bo pole z rodzajem jest tym, po czym zaczyna się rozgałęziać (ten sam kształt
+został już raz usunięty z paczek — patrz `decisions.md`, „Rozdział na paczkę systemową i paczkę
+treści"). Kampania zaznacza zestawy przy zakładaniu, wybór pilnuje zależności, a biurko pokazuje
+okna wyłącznie zaznaczonych zestawów.
 
-Poza wycinkiem: sloty, zagnieżdżanie, deklaracja paczek przez kampanię, formuły, dokument.
+To uchyla część wcześniejszego rozstrzygnięcia „kampania wybiera system" — czym się różni i co
+z tamtych argumentów nadal obowiązuje, jest w `decisions.md`.
 
-**Dopiero po nim:** usunięcie licznika i weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
-Licznik zostaje do tego czasu świadomie — jest dziś jedyną rzeczą używającą bloków danych, więc jego
-usunięcie należy do narzędzia trzymającego własny stan, a nie do tego wycinka. Policzone przy
-okazji: mechanizm kształtu **nie umie dziś opisać listy**, a każde narzędzie z kolejką, drużyną albo
-składem potyczki zażąda jej jako pierwszej rzeczy. To jest realne świadectwo w tamtym pytaniu.
+**Pytanie otwarte, świadomie niezamknięte:** co rozszerzeniu wolno zobaczyć u zestawu, od którego
+zależy. Dziś zestawy nie mogą się nawzajem referencjonować i pilnuje tego test, więc rozszerzenie
+nie odczyta pól cudzego typu treści — może wnieść własne typy, własne okna i narzędzia czytające
+neutralne kontrakty. Czy to wystarczy, rozstrzygnie **pierwszy prawdziwy drugi zestaw**, nie
+rozmowa przed nim.
 
----
+**Warto wiedzieć przed wyceną:** większość tego, co u innych bywa „rozszerzeniem", jest tutaj
+**paczką, nie zestawem** — bestiariusz, nowe przedmioty, treść z dodatku to wpisy, czyli dane, i
+działają dziś bez żadnej nowej maszynerii. Zestaw jest potrzebny dopiero na nowy kształt albo nowe
+narzędzie.
+
+**Sprawdź przed wykonaniem:** czy przy jednym wkompilowanym zestawie pole w kampanii i filtr na
+biurku mają co robić. Filtr nie ma dziś czego odsiać, a dwa pola zostały z manifestu kampanii
+usunięte właśnie za to, że nie miały konsumenta.
+
+### 2. Usunięcie licznika i weryfikacja, czy `DataBlockShape` zarabia na siebie
+
+**Wyzwalacz odpalił się 2026-09-13:** pierwsze prawdziwe narzędzie biurka istnieje. Licznik był
+jawnym rusztowaniem i jedyną rzeczą używającą bloków danych.
+
+Policzone przy okazji i nadal aktualne: mechanizm kształtu **nie umie opisać listy**, a każde
+narzędzie z kolejką, drużyną albo składem potyczki zażąda jej jako pierwszej rzeczy. To jest realne
+świadectwo w tamtym pytaniu.
+
+Uwaga: usunięcie licznika zabiera ostatniego użytkownika bloków danych. Zanim to zrobisz,
+rozstrzygnij, czy blok danych zostaje bez konsumenta — czy odchodzi razem z nim.
 
 ## Odłożone — dwie pozycje, obie o interfejsie
 

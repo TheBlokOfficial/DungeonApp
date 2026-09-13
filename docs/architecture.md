@@ -728,8 +728,16 @@ Zmienia się jedno: **`PanelCatalog` przestaje być listą wpisaną w powłoce, 
 wnoszą zestawy.** Korzeń kompozycji bierze listę zestawów; każdy wnosi swoje narzędzia. Nic w `Core`
 ani `Desktop` nie nazywa żadnego zestawu po imieniu.
 
-Filtrowania narzędzi per kampania **nie budujemy.** Biurko pokazuje to, co build ma; MG otwiera, co
-chce. **Wyzwalacz do powrotu:** drugi zestaw.
+**Zestaw wnosi okno jako gotową kontrolkę**, a powłoka podaje mu wąskie okno na otwartą kampanię:
+instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy panel. Nie
+sesję i nie samą kampanię — narzędzie dostaje to, czego potrzebuje, i nic więcej osiągalnego stamtąd.
+Dzięki oddaniu gotowej kontrolki żaden szablon w powłoce nie zna typu z zestawu.
+
+**Filtrowanie narzędzi per kampania: przyjęte 2026-09-13, niezbudowane.** Kampania zaznacza przy
+zakładaniu, które zestawy w niej działają, a biurko pokazuje okna wyłącznie zaznaczonych — inaczej
+przy kilku systemach naraz lista narzędzi staje się bałaganem. Wszystko jest zestawem, bez zestawu
+bazowego i bez zadeklarowanego rodzaju; zestaw może **wymagać** innego, a „system" i „rozszerzenie"
+czyta się z grafu zależności. Stan prac i warunki: [tasks.md](tasks.md).
 
 ## 20. Wersjonowanie
 
