@@ -158,6 +158,7 @@ referencjonuje `Core` i `Content.Dnd5e` wprost (nie `Desktop` — dostaje go tra
 | `Tools/Counter/CounterTool.cs` | Jedyna dziś implementacja `ITool`. Definiuje kształt bloku `counter` (pole `count`: Integer) i dwie transformacje: `Increment`/`Decrement` (z `checked` — przepełnienie rzuca `OverflowException`). |
 | `Content/*` | Silnik treści: `Pack` (jeden typ, tylko lista wpisów — następca dawnego podziału paczka-systemowa/paczka-treściowa), `Entry`, `ContentValues` (opieczętowana koperta nad surowym JSON-em wpisu), `ContentId`, `ContentTypeReference` (`"zestaw:typ"`), `ContentTypeDescriptor`, `IContentTypeCatalog` (jedyne okno silnika na typy treści), `ContentRegistry`, `RegisteredEntry`, `EntryAddress` (`"paczka:wpis"`), `EntryUnresolvedReason`, `RejectedPack`, `PackVersion`, `ContentPackLoader`. Patrz sekcja 4b — to dziś najbogatsza część `Core`. |
 | `Persistence/JsonCampaignRepository.cs` | Jedyna implementacja `ICampaignRepository`. Format zapisu na dysku, transakcyjność, obsługa błędów — patrz sekcja 5. |
+| `Persistence/AtomicWrite.cs` | Zapis „obok, potem podmiana" jako jeden prymityw: `Stage`/`StageAsync` serializują do `*.writing.tmp`, `Commit` przenosi wszystko atomowo **w kolejności dodania**, `Dispose` sprząta to, czego nie zatwierdzono. Jedyne miejsce, w którym ten wzorzec jest napisany — używają go `JsonCampaignRepository` i `WorkspaceLayoutStore`. |
 | `Persistence/DataBlockValueSerializer.cs` | Konwersja wartość ↔ `JsonNode`, zawsze prowadzona przez `DataBlockShape` (nigdy „co się da z JSON-a wyczytać"). |
 | `Persistence/CampaignStoreException.cs` | Typowany błąd repozytorium: `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`, `UnknownModule` (ten ostatni: zdefiniowany, ale nieużywany — nie ma dziś modułów, które można by nie znać). |
 | `CampaignRuleException.cs` | Wyjątek „reguła kampanii odmówiła" — komunikat czytany wprost przez GM-a (po polsku, gdy dotyczy licznika). |
@@ -428,10 +429,12 @@ zserializowany przez `DataBlockValueSerializer` **zgodnie z zarejestrowanym kszt
 wyszło z parsera" — to jest to, co gwarantuje, że liczba całkowita nie wróci jako `double` po
 przejściu przez JSON.
 
-**Zapis (`SaveAsync`)** jest transakcyjny na poziomie plikowym: każdy plik (bloki + manifest) jest
-najpierw zapisywany jako `*.writing.tmp`, dopiero po pomyślnej serializacji wszystkich plików
-następuje seria atomowych `File.Move(..., overwrite: true)`, a manifest ląduje **ostatni** — to on
-oznacza całą generację jako zatwierdzoną. Bloki, których build nie mógł odczytać (`unreadable`),
+**Zapis (`SaveAsync`)** jest transakcyjny na poziomie plikowym i idzie w całości przez
+`AtomicWrite`: każdy plik (bloki + manifest) jest najpierw zapisywany jako `*.writing.tmp`, dopiero
+po pomyślnej serializacji wszystkich plików następuje seria atomowych `File.Move(..., overwrite: true)`.
+Manifest jest dodawany **ostatni** i dzięki kolejności zatwierdzania ląduje ostatni — to on oznacza
+całą generację jako zatwierdzoną. (Ta kolejność jest własnością `AtomicWrite.Commit` i jest tam
+zamrożona testem — gdyby przestała obowiązywać, przerwany zapis przestałby być wykrywalny.) Bloki, których build nie mógł odczytać (`unreadable`),
 są przenoszone bez dotykania — ich wpis w manifeście i plik zostają dokładnie takie, jakie były.
 
 **Odczyt (`GetAsync`)** dla każdego wpisu w manifeście: jeśli rejestr nie zna id →
@@ -459,9 +462,9 @@ odczyt, nie zapis) — jego bezpieczeństwem jest walidacja przy starcie, limity
 
 ### Układ biurka — `WorkspaceLayoutStore`
 
-JSON per biurko (`%LocalAppData%\DungeonApp\layouts\<sanitized-id>.json`), własny zapis atomowy
-(temp + move), wersjonowany dokument. Odczyt nigdy nie rzuca — nieznana wersja/uszkodzony plik =
-`WorkspaceLayout.Empty` (użyj domyślnych). Zapisy są debounce'owane (`WorkspaceLayoutSession`,
+JSON per biurko (`%LocalAppData%\DungeonApp\layouts\<sanitized-id>.json`), zapis atomowy przez
+wspólny `AtomicWrite` (nie własna kopia wzorca), wersjonowany dokument. Odczyt nigdy nie rzuca —
+nieznana wersja/uszkodzony plik = `WorkspaceLayout.Empty` (użyj domyślnych). Zapisy są debounce'owane (`WorkspaceLayoutSession`,
 750 ms) i odpalane na wątku UI (uzasadnione w komentarzu: plik jest mały, snapshot musi czytać stan
 ViewModelu bezpośrednio).
 
@@ -699,7 +702,7 @@ mechanizm, ale dziś nic ich nie czyta.
 | Domena — zdarzenia | `CampaignEventsTests` (12) | Kolejność subskrypcji, kaskada, limit `MaxEventsPerCommand`. |
 | Domena — narzędzie | `CounterToolTests` (7: 5 `[Fact]` + 2 przypadki `[Theory]`) | Increment/decrement, przepełnienie. |
 | Domena — treść | `ContentPackLoaderTests` (25: 22 `[Fact]` + 3 przypadki `[Theory]`), `ContentIdTests` (16: 3 `[Fact]` + 13 przypadków `[Theory]`) | Wczytywanie i walidacja na prawdziwym systemie plików (`Fakes/TemporaryPacks`), manifest paczki, wszystkie cztery powody nierozwiązania wpisu, kolizja id paczki, limity rozmiaru pliku i liczby wpisów, akceptacja paczek-fixture'ów `tests/DungeonApp.Core.Tests/Packs/{dnd5e,goblinoids}` jako test wykonywalnej specyfikacji formatu. |
-| Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12) | Zapis/odczyt na prawdziwym systemie plików (`Fakes/TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków, zarezerwowane pola `ruleset`/`contentPacks` w zapisanym JSON-ie. |
+| Persystencja | `JsonCampaignRepositoryTests` (12), `DataBlockPersistenceTests` (12), `AtomicWriteTests` (8) | Zapis/odczyt na prawdziwym systemie plików (`Fakes/TemporaryLibrary` — świadomie nie mockuje FS), torn save, nieznane/nieaktualne wersje bloków, zarezerwowane pola `ruleset`/`contentPacks` w zapisanym JSON-ie. |
 | Architektura | `CoreIndependenceTests` (1), `ContentAssemblyReferenceTests` (2), `ContentAssemblyIsolationTests` (1), `CoreEntryKindIndependenceTests` (2), `VocabularyWordBoundaryTests` (7 przypadków `[Theory]`) — razem 13 | Cztery granice na raz: `Core` bez Avalonii; `Core`/`Desktop` bez referencji do żadnego zestawu treści; zestawy treści nigdy nie referencjonują się nawzajem; `Core`/`Desktop` (`.cs` i `.axaml`) nie nazywają żadnego rodzaju wpisu — słownik zakazanych słów budowany częściowo z refleksji po publicznych typach zainstalowanych zestawów, więc poszerza się sam wraz z przybywającą treścią. Piąty plik (`VocabularyWordBoundary`) to sama logika granicy CamelCase, nie test. Projekt istnieje osobno od `Core.Tests`/`Desktop.Tests` z jednego powodu wypisanego w jego `.csproj`: test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą częściowo ogranicza. |
 | Desktop — rejestr | `RegistryViewModelTests` (13), `LoadContentPacksStepTests` (5) | Sortowanie wierszy, nazwy pakietu/typu na wierszu, karta jako nieprzejrzysty `Control` budowany przez fałszywy `IContentPresentation` (`FakeContentSet`), cztery osobne komunikaty nierozwiązania, pusty rejestr, zaproszenie do wyboru gaszone na pustej liście, pliki niewczytane na końcu listy w deterministycznej kolejności, nagłówek na dokładnie jednym wierszu, rejestr złożony z samych zepsutych plików jako niepusty, krok startowy wobec paczki wadliwej obok poprawnej. |
 | Desktop — panel licznika | `CounterPanelViewModelTests` (9) | Stan początkowy, odświeżenie po zdarzeniu zewnętrznym, przepełnienie, błąd zapisu na dysk, nieodczytywalny blok, wyścig zapisów, dispose. |
@@ -746,7 +749,8 @@ granic byłaby tylko deklaracją w dokumentacji, nie czymś wymuszonym przez bui
   `System.Text.Json` jako jedyny walidator (`required` + strict unmapped-member handling) usunął całą
   klasę ręcznie pisanej walidacji, którą trzeba by inaczej utrzymywać przy każdym nowym typie treści.
 - **Persystencja** (`JsonCampaignRepository`, `WorkspaceLayoutStore`) — oba magazyny mają realną
-  transakcyjność przez zapis do pliku tymczasowego + atomowy `File.Move`, wykrywanie przerwanego
+  transakcyjność przez jeden wspólny `AtomicWrite` (zapis do pliku tymczasowego + atomowy
+  `File.Move`, w jednym miejscu zamiast trzech), wykrywanie przerwanego
   zapisu przez licznik generacji, i celowo łagodną degradację (uszkodzony układ biurka → puste
   domyślne, nie crash; jedna zepsuta kampania nie chowa reszty półki).
 - **Geometria paneli** (`PanelGeometry`) — czysta, bezstanowa, wolna od typów Avalonii, z

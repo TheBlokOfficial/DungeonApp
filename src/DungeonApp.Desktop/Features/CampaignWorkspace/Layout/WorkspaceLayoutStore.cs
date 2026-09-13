@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Controls.Workspace;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
@@ -134,24 +135,9 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
                     panel.Width,
                     panel.Height))]);
 
-        var temporaryPath = $"{destinationPath}.{Guid.NewGuid():N}.tmp";
-
-        try
-        {
-            using (var stream = File.Create(temporaryPath))
-            {
-                JsonSerializer.Serialize(stream, document, _serializerOptions);
-            }
-
-            File.Move(temporaryPath, destinationPath, overwrite: true);
-        }
-        finally
-        {
-            if (File.Exists(temporaryPath))
-            {
-                File.Delete(temporaryPath);
-            }
-        }
+        using var atomic = new AtomicWrite();
+        atomic.Stage(destinationPath, stream => JsonSerializer.Serialize(stream, document, _serializerOptions));
+        atomic.Commit();
     }
 
     private string GetPath(string workspaceId) =>

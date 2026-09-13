@@ -1,13 +1,13 @@
 # DungeonApp — kolejka pracy
 
-**Status: stan na 2026-09-12.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
+**Status: stan na 2026-09-13.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź: `master` — `feat/content-registry` została scalona. Build i 232 testy zielone.
+Gałąź: `master` — `feat/content-registry` została scalona. Build i 240 testów zielonych.
 
 ---
 
@@ -25,6 +25,23 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
   `IContentPresentation`, pierwsze zaprojektowane `MonsterCardView` i `GearCardView`.
 * `TreatWarningsAsErrors` — kompilator jest walidatorem treści, więc jego ostrzeżenia są
   ostrzeżeniami o treści.
+
+**Domknięte 2026-09-13 (czwarta sesja):**
+
+* **Jeden prymityw zapisu atomowego.** `AtomicWrite` w silniku zbiera pliki obok ich miejsc
+  docelowych i przenosi je dopiero wtedy, gdy wszystkie zserializowały się czysto; przerwanie
+  w połowie zostawia każde miejsce docelowe nietknięte, a po sobie nie zostawia pliku roboczego.
+  Obsługuje oba potrzebne przypadki — jeden plik i całą generację naraz — bo `Commit` przenosi
+  w kolejności dodania. Trzy ręcznie pisane ścieżki (`JsonCampaignRepository` ×2 plus
+  `WorkspaceLayoutStore`) korzystają teraz z niego. Wydzielone **przed** magazynem instancji
+  właśnie po to, żeby nie dołożył czwartej.
+* **Kolejność zatwierdzania jest zamrożona testem.** Na niej stoi „manifest ląduje ostatni", czyli
+  wykrywalność rozdartego zapisu — a nie sprawdzał jej dotąd żaden test, bo wzorzec był powtarzany
+  trzy razy i weryfikowany wyłącznie pośrednio.
+* **Nazwa pliku roboczego ujednolicona** na `.writing.tmp` w obu magazynach. Układ biurka używał
+  wcześniej nazwy z `Guid`, która po awarii aplikacji zostawiała śmieć na zawsze; nazwa
+  deterministyczna jest nadpisywana przy następnym zapisie. To jedyna zmiana zachowania
+  w całym kroku.
 
 **Domknięte 2026-09-12 (trzecia sesja):**
 
@@ -56,16 +73,11 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
 Krok 5 z sekcji „Kolejność prac" ([architecture.md](architecture.md)) jest domknięty, więc kolejka
 wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 
-1. **Jeden prymityw zapisu atomowego** — wzorzec „zapisz do pliku tymczasowego, potem podmień"
-   jest napisany trzy razy w dwóch miejscach: dwie ścieżki w `JsonCampaignRepository` (bloki
-   danych i manifest) plus `WorkspaceLayoutStore`. Sprawdzone w kodzie 2026-09-12, nie przepisane
-   z poprzedniej wersji tego dokumentu. Wydzielić **przed** magazynem instancji, nie po — inaczej
-   dołoży czwartą. Zadanie mechaniczne, w pełni sprawdzalne testami, bez decyzji projektowych po
-   drodze.
-2. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii.
-3. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
+1. **Magazyn instancji i nakładki** — pierwszy realny stan kampanii. Zapis ma iść przez
+   `AtomicWrite`, a nie przez czwartą własną kopię wzorca.
+2. **Pierwsze prawdziwe narzędzie biurka** — i razem z nim usunięcie licznika, który jest
    celowym rusztowaniem, oraz weryfikacja, czy `DataBlockShape` nadal zarabia na siebie.
-4. **Formuły, sloty, dokument** — kolejność do ustalenia osobno.
+3. **Formuły, sloty, dokument** — kolejność do ustalenia osobno.
 
 ---
 

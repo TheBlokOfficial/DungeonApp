@@ -57,70 +57,52 @@ public sealed class JsonCampaignRepository(
         var generation = (previous?.Generation ?? 0) + 1;
 
         var entries = new List<DataBlockEntry>();
-        var temporaryPaths = new List<string>();
-        string? temporaryManifestPath = null;
 
-        try
+        using var atomic = new AtomicWrite();
+
+        foreach (var id in campaign.DataBlocks.WrittenBlocks)
         {
-            foreach (var id in campaign.DataBlocks.WrittenBlocks)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
-                var registration = registry.Describe(id);
-                var value = campaign.DataBlocks.Read(id)
-                    ?? throw new InvalidOperationException($"Data block '{id}' is listed as written but reads back null.");
+            var registration = registry.Describe(id);
+            var value = campaign.DataBlocks.Read(id)
+                ?? throw new InvalidOperationException($"Data block '{id}' is listed as written but reads back null.");
 
-                var document = new DataBlockDocument(
-                    BlockId: id.Value,
-                    Version: registration.Version,
-                    Generation: generation,
-                    Value: DataBlockValueSerializer.ToNode(value, registration.Shape));
-
-                temporaryPaths.Add(await WriteDataBlockAsync(directory, id, document, cancellationToken));
-                entries.Add(new DataBlockEntry(id.Value, registration.Version, generation));
-            }
-
-            // A data block this session could not read - unknown id, or an unsupported stored version
-            // - keeps its recorded entry and its file exactly as they were, at the generation they
-            // were last written at. That is the whole point of never loading it into memory: nothing
-            // here has anything new to write for it.
-            entries.AddRange(RetainedEntries(previous, campaign.DataBlocks));
-
-            var manifestDocument = new CampaignManifest(
-                CurrentFormatVersion,
-                campaign.Id.Value,
-                campaign.Name.Value,
-                campaign.CreatedAt,
-                // Reserved so the first ruleset and content pack do not force a format migration.
-                Ruleset: null,
-                ContentPacks: [],
+            var document = new DataBlockDocument(
+                BlockId: id.Value,
+                Version: registration.Version,
                 Generation: generation,
-                DataBlocks: entries);
+                Value: DataBlockValueSerializer.ToNode(value, registration.Shape));
 
-            temporaryManifestPath = await WriteTemporaryAsync(manifestPath, manifestDocument, cancellationToken);
-
-            foreach (var temporaryPath in temporaryPaths)
-            {
-                File.Move(temporaryPath, StripTemporarySuffix(temporaryPath), overwrite: true);
-            }
-
-            // The manifest lands last. Its arrival is what marks the whole generation as committed,
-            // and what a torn save is measured against.
-            File.Move(temporaryManifestPath, manifestPath, overwrite: true);
+            await WriteDataBlockAsync(atomic, directory, id, document, cancellationToken);
+            entries.Add(new DataBlockEntry(id.Value, registration.Version, generation));
         }
-        finally
-        {
-            // The manifest's own temporary belongs here too: a move that fails partway through the
-            // data block files would otherwise leave it behind for the next save to trip over.
-            IEnumerable<string> leftovers = temporaryManifestPath is null
-                ? temporaryPaths
-                : [.. temporaryPaths, temporaryManifestPath];
 
-            foreach (var temporaryPath in leftovers.Where(File.Exists))
-            {
-                File.Delete(temporaryPath);
-            }
-        }
+        // A data block this session could not read - unknown id, or an unsupported stored version
+        // - keeps its recorded entry and its file exactly as they were, at the generation they
+        // were last written at. That is the whole point of never loading it into memory: nothing
+        // here has anything new to write for it.
+        entries.AddRange(RetainedEntries(previous, campaign.DataBlocks));
+
+        var manifestDocument = new CampaignManifest(
+            CurrentFormatVersion,
+            campaign.Id.Value,
+            campaign.Name.Value,
+            campaign.CreatedAt,
+            // Reserved so the first ruleset and content pack do not force a format migration.
+            Ruleset: null,
+            ContentPacks: [],
+            Generation: generation,
+            DataBlocks: entries);
+
+        // Staged last, so Commit moves it last: its arrival is what marks the whole generation as
+        // committed, and what a torn save is measured against.
+        await atomic.StageAsync(
+            manifestPath,
+            (stream, token) => JsonSerializer.SerializeAsync(stream, manifestDocument, _serializerOptions, token),
+            cancellationToken);
+
+        atomic.Commit();
     }
 
     public async Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default)
@@ -333,7 +315,8 @@ public sealed class JsonCampaignRepository(
             .Where(entry => !DataBlockId.TryCreate(entry.Id, out var id) || !written.Contains(id));
     }
 
-    private async Task<string> WriteDataBlockAsync(
+    private async Task WriteDataBlockAsync(
+        AtomicWrite atomic,
         string directory,
         DataBlockId id,
         DataBlockDocument document,
@@ -341,24 +324,10 @@ public sealed class JsonCampaignRepository(
     {
         Directory.CreateDirectory(Path.Combine(directory, DataBlockDirectoryName));
 
-        return await WriteTemporaryAsync(GetDataBlockPath(directory, id), document, cancellationToken);
-    }
-
-    /// <summary>
-    /// Serializes beside the destination and returns the temporary path. Nothing is replaced until
-    /// every file in the generation has serialized cleanly.
-    /// </summary>
-    private async Task<string> WriteTemporaryAsync<TDocument>(
-        string destinationPath,
-        TDocument document,
-        CancellationToken cancellationToken)
-    {
-        var temporaryPath = destinationPath + TemporarySuffix;
-
-        await using var stream = File.Create(temporaryPath);
-        await JsonSerializer.SerializeAsync(stream, document, _serializerOptions, cancellationToken);
-
-        return temporaryPath;
+        await atomic.StageAsync(
+            GetDataBlockPath(directory, id),
+            (stream, token) => JsonSerializer.SerializeAsync(stream, document, _serializerOptions, token),
+            cancellationToken);
     }
 
     private async Task<CampaignManifest?> TryReadManifestAsync(string path, CancellationToken cancellationToken)
@@ -399,11 +368,6 @@ public sealed class JsonCampaignRepository(
                 CampaignStoreFailure.Unreadable, $"Could not read the campaign document at {path}.", ex);
         }
     }
-
-    private const string TemporarySuffix = ".writing.tmp";
-
-    private static string StripTemporarySuffix(string temporaryPath) =>
-        temporaryPath[..^TemporarySuffix.Length];
 
     private string GetCampaignDirectory(CampaignId id) => Path.Combine(libraryPath, id.Value.ToString("D"));
 
