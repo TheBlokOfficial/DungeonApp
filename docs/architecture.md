@@ -904,13 +904,24 @@ kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o tre�
 7. **Jakie jeszcze pola trafiają do nakładki poza stanem i slotami.** Reguła rozstrzygająca jest
    zapisana; brakuje przejścia przez realny system.
 
-**Nawyk do przerwania.** Sześć rzeczy w repozytorium jest zbudowanych i nieużywanych: grupowanie
-rejestru (z testami, bez konsumenta), `Category` / `Descriptor` rozwiązywane i niepokazywane,
-`SelfDescribing` parsowane i nieczytane, `WarmPanelVisualStep`, `UnknownModule`, `Packs`
-w manifeście. Dwie z nich po tej zmianie **umrą, zamiast doczekać konsumenta**. Zasada przeciw temu
-jest już zapisana, ale wąsko, dla pól: *wożenie pola, dla którego świadomie nie przewidujemy
-zastosowania, jest gorsze niż jego brak.* Rozszerzyć z pól na mechanizmy: **nic nie wchodzi bez
-konsumenta w tym samym wycinku.**
+**Nawyk przerwany — i to jest wynik, nie postanowienie.** Sekcja ta wyliczała kiedyś sześć rzeczy
+zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta), `Category` /
+`Descriptor` rozwiązywane i niepokazywane, `SelfDescribing` parsowane i nieczytane,
+`WarmPanelVisualStep`, `UnknownModule` oraz dwa zarezerwowane pola w manifeście kampanii.
+Przewidywała, że **dwie z nich umrą, zamiast doczekać konsumenta**. Umarły wszystkie sześć —
+ostatnie dwa 2026-09-13. Żadna nie doczekała konsumenta; ani jeden raz rezerwacja się nie opłaciła.
+
+Zasada, która z tego została, obowiązuje dalej i jest szersza niż ta lista. Była zapisana wąsko,
+dla pól: *wożenie pola, dla którego świadomie nie przewidujemy zastosowania, jest gorsze niż jego
+brak.* Rozszerzona z pól na mechanizmy brzmi: **nic nie wchodzi bez konsumenta w tym samym
+wycinku.** Sześć na sześć jest wystarczającym dowodem, żeby traktować ją jako regułę, a nie
+preferencję — a zarazem powodem, żeby nie odkładać kroku *magazyn instancji* przed krokiem
+*pierwsze narzędzie*, bo to byłby siódmy przypadek tego samego.
+
+Jedyny dzisiejszy przypadek graniczny to `AllowsMultipleInstances`: ma konsumenta (odtwarzanie
+układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To jest rusztowanie opisane
+jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je czyta, istnieje
+i działa.
 
 ## 25. Kolejność prac
 

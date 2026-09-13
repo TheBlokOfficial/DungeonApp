@@ -89,9 +89,6 @@ public sealed class JsonCampaignRepository(
             campaign.Id.Value,
             campaign.Name.Value,
             campaign.CreatedAt,
-            // Reserved so the first ruleset and content pack do not force a format migration.
-            Ruleset: null,
-            ContentPacks: [],
             Generation: generation,
             DataBlocks: entries);
 
@@ -379,8 +376,6 @@ public sealed class JsonCampaignRepository(
         Guid Id,
         string? Name,
         DateTimeOffset CreatedAt,
-        string? Ruleset,
-        IReadOnlyList<string>? ContentPacks,
         long Generation,
         IReadOnlyList<DataBlockEntry>? DataBlocks);
 

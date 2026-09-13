@@ -62,6 +62,14 @@ Zakres przejrzany w całości: `src/DungeonApp.Core`, `src/DungeonApp.Desktop`,
 > „Co się dzieje, gdy treść jest zepsuta" nadal nie dociera do użytkownika, to odrzucone **paczki**:
 > loader je odnotowuje, ekran ich nie pokazuje, i jest to świadoma decyzja autora, nie luka
 > w wykonaniu.
+>
+> **Aktualizacja 2026-09-13: dwa zarezerwowane pola manifestu kampanii zniknęły.** Zdanie wyżej
+> o tym, że pole `Ruleset` „nie zniknęło", było prawdziwe w dniu, w którym je zapisano, i jest
+> nieprawdziwe od tej zmiany — razem z nim usunięto `ContentPacks`. Powód nie jest kosmetyczny:
+> `decisions.md` opisywał tę decyzję jako **już wykonaną**, podczas gdy w kodzie stały oba pola
+> i test, który je zamrażał. Rozjazd wyszedł przy sprawdzaniu przesłanek kolejki i wtedy decyzję
+> wykonano naprawdę. Wersja formatu została na `1`, bo odczyt manifestu jest pobłażliwy; pilnują
+> tego dwa testy.
 
 ---
 
@@ -160,7 +168,7 @@ referencjonuje `Core` i `Content.Dnd5e` wprost (nie `Desktop` — dostaje go tra
 | `Persistence/JsonCampaignRepository.cs` | Jedyna implementacja `ICampaignRepository`. Format zapisu na dysku, transakcyjność, obsługa błędów — patrz sekcja 5. |
 | `Persistence/AtomicWrite.cs` | Zapis „obok, potem podmiana" jako jeden prymityw: `Stage`/`StageAsync` serializują do `*.writing.tmp`, `Commit` przenosi wszystko atomowo **w kolejności dodania**, `Dispose` sprząta to, czego nie zatwierdzono. Jedyne miejsce, w którym ten wzorzec jest napisany — używają go `JsonCampaignRepository` i `WorkspaceLayoutStore`. |
 | `Persistence/DataBlockValueSerializer.cs` | Konwersja wartość ↔ `JsonNode`, zawsze prowadzona przez `DataBlockShape` (nigdy „co się da z JSON-a wyczytać"). |
-| `Persistence/CampaignStoreException.cs` | Typowany błąd repozytorium: `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`, `UnknownModule` (ten ostatni: zdefiniowany, ale nieużywany — nie ma dziś modułów, które można by nie znać). |
+| `Persistence/CampaignStoreException.cs` | Typowany błąd repozytorium: `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`. |
 | `CampaignRuleException.cs` | Wyjątek „reguła kampanii odmówiła" — komunikat czytany wprost przez GM-a (po polsku, gdy dotyczy licznika). |
 
 **Granica:** cztery pliki w `DungeonApp.Architecture.Tests/Architecture/` pilnują tego wszystkiego
@@ -415,17 +423,18 @@ datablocks/<blockId>.json    # jedna wartość na plik
 ```
 
 **Manifest** (`CampaignManifest`, rekord wewnętrzny) niesie: `FormatVersion` (dziś zawsze `1`),
-`Id`, `Name`, `CreatedAt`, `Ruleset` (`string?`, zarezerwowane, zawsze `null` — pole **istnieje w
-kodzie i nie zostało z niego usunięte**), `ContentPacks` (`IReadOnlyList<string>?`, zarezerwowane,
-zawsze zapisywane jako pusta lista — zwykła lista identyfikatorów, **nie** rekord z osobną wersją
-major; taki rekord nie istnieje nigdzie w repozytorium), `Generation` (licznik generacji zapisu) i
-listę `DataBlockEntry(Id, Version, Generation)`. Test `Reserves_room_for_the_ruleset_and_content_packs`
-w `JsonCampaignRepositoryTests` sprawdza wprost, że oba klucze lądują w zapisanym JSON-ie —
-`ruleset` jako `null`, `contentPacks` jako pusta tablica. Te dwa zarezerwowane pola nie mają dziś
-żadnego związku z silnikiem treści opisanym w sekcji 4b: `Pack`/`PackVersion` tam i `ContentPacks`
-tutaj to dwa oddzielne pojęcia o zbieżnej nazwie, które jeszcze się nie spotkały. Odczyt manifestu
-jest wyrozumiały (nie ustawia `JsonUnmappedMemberHandling.Disallow`, w przeciwieństwie do
-`ContentPackLoader`).
+`Id`, `Name`, `CreatedAt`, `Generation` (licznik generacji zapisu) i listę
+`DataBlockEntry(Id, Version, Generation)`. **Nic ponadto** — manifest niesie dokładnie to, co ten
+build zapisuje, i ani jednego pola trzymanego otworem dla przyszłego.
+
+Dwa pola zarezerwowane, `Ruleset` i `ContentPacks`, zostały usunięte 2026-09-13; opis tego, po co
+istniały i w jakim kształcie ma wrócić deklaracja paczek kampanii, jest w `decisions.md`, pozycja
+o zarezerwowanych polach manifestu. Odczyt manifestu jest wyrozumiały (nie ustawia
+`JsonUnmappedMemberHandling.Disallow`, w przeciwieństwie do `ContentPackLoader`), więc starszy plik
+niosący tamte klucze wczytuje się dalej — pilnują tego dwa testy
+w `JsonCampaignRepositoryTests`: jeden sprawdza, że nowy zapis tych kluczy nie niesie, drugi że
+plik w starym kształcie nadal się otwiera. Wersja formatu została przy `1`, bo usunięcie pola
+z pobłażliwego odczytu nie jest zmianą łamiącą.
 
 **Wartość bloku** (`DataBlockDocument`) niesie `BlockId`, `Version`, `Generation` i sam `JsonNode`
 zserializowany przez `DataBlockValueSerializer` **zgodnie z zarejestrowanym kształtem**, nigdy „jak
@@ -692,9 +701,11 @@ stosują bez kroków 1–2.
 
 Uwaga: katalog paneli jest dziś budowany **per otwarta sesja kampanii**
 (`PanelCatalog.For(session)`), więc każdy nowy panel domyślnie trafia na biurko każdej kampanii —
-nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per zestaw paczek. Pola
-`Ruleset`/`ContentPacks` w manifeście kampanii (sekcja 5) są zarezerwowane właśnie pod taki
-mechanizm, ale dziś nic ich nie czyta.
+nie ma dziś mechanizmu włączania/wyłączania paneli per kampania czy per zestaw paczek. Manifest
+kampanii nie ma dziś żadnego pola, które by go obsługiwało — dwa zarezerwowane pod to pola zostały
+usunięte, bo przez cztery sesje nie doczekały konsumenta. Filtrowanie narzędzi per kampania jest
+zresztą świadomie odłożone do drugiego zestawu treści (`architecture.md`, „Narzędzia biurka
+i system okien").
 
 ---
 
@@ -777,10 +788,8 @@ granic byłaby tylko deklaracją w dokumentacji, nie czymś wymuszonym przez bui
   the real context router exists".
 - **Rejestr rysuje encyklopedię, nie kampanię.** Ekran „Rejestr" pokazuje wszystko, co wczytały
   wszystkie zainstalowane paczki, niezależnie od otwartej kampanii — bo nic dziś nie osadza wpisu w
-  konkretnej kampanii (zarezerwowane pole `ContentPacks` w manifeście, sekcja 5, na to czeka, ale
-  nic go dziś nie czyta ani nie zapisuje niepusto). To zgodne z tym, co silnik dziś umie, nie błąd.
-- **`CampaignStoreFailure.UnknownModule`** zdefiniowany, ale nic go dziś nie rzuca — nie ma
-  koncepcji „modułu" w obecnym kodzie (jest tylko `ITool`/blok danych).
+  konkretnej kampanii. To zgodne z tym, co silnik dziś umie, nie błąd — a pole, które kiedyś na to
+  czekało, zostało usunięte, żeby wróciło razem ze swoim konsumentem.
 - **`WorkspacePanelDescriptor.AllowsMultipleInstances`** istnieje i jest reprezentowalne w zapisanym
   układzie (przez klucz instancji), ale żaden dzisiejszy panel go nie ustawia — zaprojektowane pod
   przyszłość, nieużyte.

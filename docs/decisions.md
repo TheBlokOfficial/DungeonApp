@@ -467,20 +467,40 @@ rozróżnienie wpis / instancja / nakładka. Ta potrzeba ma zostać policzona ja
 porządnym rozwiązaniem autorstwa treści w aplikacji, a nie przemycona bocznymi drzwiami.
 Pytanie, jak i gdzie autorsko pisze się treść dla aplikacji, pozostaje otwarte.
 
-### 20. Pole `Ruleset` w manifeście kampanii
+### 20. Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście kampanii
 
-**Co proponowano.** Zarezerwowane pole `Ruleset` w manifeście kampanii.
+**Co proponowano.** Trzymanie w manifeście kampanii dwóch pustych pól — `Ruleset`
+(zawsze `null`) i `ContentPacks` (zawsze pusta lista) — zarezerwowanych na przyszłość,
+żeby pierwszy system reguł i pierwsza paczka kampanii nie wymusiły przekształcenia
+manifestu.
 
-**Dlaczego odrzucone.** Pole zostało usunięte, nie odłożone. Wcześniejsza decyzja
-brzmiała „nie ożywiamy go i nie wymyślamy dla niego znaczenia”; wożenie pola, dla którego
-świadomie nie przewiduje się zastosowania, jest gorsze niż jego brak.
+**Dlaczego odrzucone.** Oba pola zostały usunięte, nie odłożone: wożenie pola, dla
+którego świadomie nie przewiduje się zastosowania **w tym samym wycinku pracy**, jest
+gorsze niż jego brak. Pusty klucz w zapisanym pliku zaprasza przyszły build, żeby uznał
+go za znaczący, a przez cztery sesje nie zbliżył się do niego żaden konsument.
 
-Usunięcie tego pola — tak jak przekształcenie dawnej listy `ContentPacks` w jedną listę
-`packs` o kształcie `{ id, major }` — nie podniosło wersji formatu i nie wymagało
-migracji, bo deserializacja manifestu kampanii jest celowo pobłażliwa: w odróżnieniu od
-wczytywania paczek nie wymusza ścisłego mapowania każdego klucza, więc starszy plik
-kampanii niosący `ruleset` po prostu ma ten klucz zignorowany. Pilnuje tego test
-wczytujący manifest w starym kształcie.
+Usunięcie nie podniosło wersji formatu i nie wymagało migracji, bo deserializacja
+manifestu kampanii jest celowo pobłażliwa: w odróżnieniu od wczytywania paczek nie
+wymusza ścisłego mapowania każdego klucza, więc starszy plik kampanii niosący `ruleset`
+i `contentPacks` po prostu ma te klucze zignorowane. Pilnują tego dwa testy — jeden
+wczytuje manifest w starym kształcie, drugi sprawdza, że nowy zapis tych kluczy już nie
+niesie.
+
+**Czym to zastąpiono.** Niczym — i to jest sedno. Gdy kampania faktycznie zacznie
+deklarować swoje paczki, pole wraca **razem ze swoim konsumentem**, w kształcie listy
+`packs` o pozycjach `{ id, major }` (`major`, bo wersja major zostawia referencję
+nierozwiązaną, dopóki kampania świadomie nie zaktualizuje deklaracji — patrz
+*Wersjonowanie* w `architecture.md`). Ten kształt jest tu zapisany właśnie po to, żeby go
+wtedy nie wymyślać od nowa. Pojęcie systemu reguł nie wraca w ogóle: zestaw treści jest
+skompilowany, a kampania nie wybiera go z pliku (patrz pozycja 24).
+
+*Uwaga historyczna:* ta pozycja przez jedną sesję opisywała obie zmiany jako **już
+wykonane**, łącznie z testem, który nie istniał — podczas gdy w kodzie stały oba pola
+i test, który je zamrażał, nazywając je „kontraktem, nie dekoracją”. Rozjazd wyszedł
+2026-09-13 przy sprawdzaniu przesłanek kolejki i wtedy decyzję wykonano naprawdę.
+Wniosek ogólniejszy niż ta pozycja: **dokument odrzuconych kierunków opisuje
+rozstrzygnięcia, nie stan repozytorium**, i czas przeszły w nim nie jest dowodem, że coś
+jest w kodzie zrobione.
 
 ### 21. Rozgałęzianie po rodzaju wpisu w silniku i powłoce
 

@@ -7,7 +7,7 @@ Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie
 
 Kolejność w sekcji „Następne" jest wiążąca tam, gdzie to zapisano. Reszta jest listą, nie planem.
 
-Gałąź: `master`. Build i 262 testy zielone.
+Gałąź: `master`. Build i 263 testy zielone.
 
 ---
 
@@ -25,6 +25,21 @@ z szablonów jako plików danych na skompilowane typy treści. **Zrobione:**
   `IContentPresentation`, pierwsze zaprojektowane `MonsterCardView` i `GearCardView`.
 * `TreatWarningsAsErrors` — kompilator jest walidatorem treści, więc jego ostrzeżenia są
   ostrzeżeniami o treści.
+
+**Domknięte 2026-09-13 (piąta sesja):**
+
+* **Manifest kampanii nie wozi już pustych pól.** `Ruleset` i `ContentPacks` — oba zawsze puste,
+  oba bez konsumenta od czterech sesji — zniknęły z kodu razem z testem, który je zamrażał jako
+  „kontrakt, nie dekorację". Wersja formatu została przy `1`: odczyt manifestu jest celowo
+  pobłażliwy, więc starszy plik niosący te klucze otwiera się dalej. Pilnują tego dwa nowe testy
+  (nowy zapis ich nie niesie; stary plik nadal się wczytuje).
+
+  Powód, dla którego to weszło przed magazynem instancji, jest ostrzejszy niż samo sprzątanie:
+  **`decisions.md` opisywał tę decyzję jako już wykonaną**, łącznie z testem, który nie istniał,
+  podczas gdy kod robił dokładnie odwrotnie. Pozycja została przepisana na to, co jest prawdą,
+  z notatką, że czas przeszły w tamtym dokumencie nie jest dowodem stanu repozytorium. Przy okazji
+  zweryfikowano akapit „Nawyk do przerwania" w `architecture.md`: z sześciu wyliczonych tam rzeczy
+  zbudowanych bez konsumenta **nie istnieje już żadna**, a przewidywał śmierć dwóch.
 
 **Domknięte 2026-09-13 (czwarta sesja):**
 

@@ -144,11 +144,11 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// The reserved fields are a contract, not decoration: they exist so the first ruleset and content
-    /// pack become entries rather than a reshaping of the manifest.
+    /// A field nobody reads is not free: it invites a future build to treat it as meaningful. The
+    /// manifest carries what this build actually writes and nothing held open for a later one.
     /// </summary>
     [Fact]
-    public async Task Reserves_room_for_the_ruleset_and_content_packs()
+    public async Task Writes_no_manifest_field_that_nothing_reads()
     {
         var campaign = NewCampaign();
         await _repository.SaveAsync(campaign);
@@ -156,9 +156,35 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         var root = ReadManifest(campaign);
 
         Assert.Equal(JsonCampaignRepository.CurrentFormatVersion, root.GetProperty("formatVersion").GetInt32());
-        Assert.Equal(JsonValueKind.Null, root.GetProperty("ruleset").ValueKind);
-        Assert.Empty(root.GetProperty("contentPacks").EnumerateArray());
-        Assert.Empty(root.GetProperty("dataBlocks").EnumerateArray());
+        Assert.False(root.TryGetProperty("ruleset", out _));
+        Assert.False(root.TryGetProperty("contentPacks", out _));
+    }
+
+    /// <summary>
+    /// Dropping those fields is a change to what gets written, not to what can be read. A save made
+    /// before they went away still opens, which is why their removal needed no format migration.
+    /// </summary>
+    [Fact]
+    public async Task Reads_a_document_that_still_carries_the_dropped_fields()
+    {
+        var id = Guid.NewGuid();
+        _library.WriteDocument(id, $$"""
+            {
+              "formatVersion": 1,
+              "id": "{{id}}",
+              "name": "Kroniki Doliny",
+              "createdAt": "2026-08-27T18:30:00+00:00",
+              "ruleset": "dnd5e",
+              "contentPacks": ["goblinoids"],
+              "generation": 1,
+              "dataBlocks": []
+            }
+            """);
+
+        var restored = await _repository.GetAsync(new CampaignId(id));
+
+        Assert.NotNull(restored);
+        Assert.Equal("Kroniki Doliny", restored.Name.Value);
     }
 
     /// <summary>
