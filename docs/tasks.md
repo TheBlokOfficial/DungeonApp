@@ -95,38 +95,46 @@ wchodzi w kroki 6–9. Kolejność poniżej jest wiążąca:
 Cztery pozycje świadomie odłożone i niezależne od kolejki powyżej. Dwie pierwsze pochodzą z sesji
 2026-09-05 i nie mają wyzwalacza — można je wziąć, kiedy pasują.
 
-1. **Testy dla `Startup/*` — zablokowane, czekają na jedną decyzję.** Sprawdzone w kodzie
-   2026-09-13. Z trzech rzeczy, które ta pozycja chciała zamrozić, jedna okazała się niepotrzebna,
-   a dwie nieosiągalne:
+1. **Testy dla `Startup/*` — zamknięte jako niepotrzebne na tym etapie.** Sprawdzone w kodzie
+   2026-09-13, po zakwestionowaniu przesłanki przez autora. Pozycja stała w kolejce od 2026-09-05
+   bez wyzwalacza i nikt jej przez ten czas nie przeliczył.
 
-   * **Zgodność `TotalSteps` z długością tablicy** — nie ma czego zamrażać. `TotalSteps` jest
-     wyliczane z długości tablicy, więc rozjechać się nie może. Pozycja wpisywała regułę, której
-     złamanie nie jest dziś możliwe.
-   * **Kolejność kroków** żyje w korzeniu kompozycji, a **degradacja przy błędzie** w pętli, która
-     potrzebuje żywego dyspozytora Avalonii i kontrolki-gospodarza. Projekt testowy nigdy Avalonii
-     nie stawiał i nie ma do tego pakietu.
+   Z trzech rzeczy, które chciała zamrozić, żadna się nie obroniła. **Zgodność `TotalSteps`
+   z długością tablicy** nie ma czego pilnować — jest wyliczana z tej tablicy, więc rozjechać się
+   nie może. **Kolejność kroków** i **degradacja przy awarii kroku** są nieosiągalne bez postawienia
+   Avalonii w testach, ale to nie jest główny powód odrzucenia. Główny jest taki: z pięciu kroków
+   startowych dwa wczytują realne dane, a **trzy są wyłącznie rozgrzewką wydajnościową** i nie mają
+   żadnego efektu poza szybkością. Jeden z nich rozgrzewa widok sekcji bocznych, które są dziś
+   puste; drugi biurko kampanii, którego jedynym panelem jest licznik — oznaczony w tych samych
+   dokumentach jako rusztowanie do usunięcia. Do tego nawigacja jest do przeprojektowania w osobnej
+   sesji. Testy zamroziłyby kolejność, w której większość kroków przygotowuje rzeczy zaplanowane do
+   wymiany.
 
-   **Decyzja do podjęcia:** czy dołożyć do `tests/DungeonApp.Desktop.Tests` pakiet
-   `Avalonia.Headless.XUnit` (w wersji zgodnej z resztą, 12.0.5). To standardowe narzędzie do
-   testowania kodu Avalonii bez okna. Bez niego ta pozycja jest niewykonalna i lepiej ją zamknąć
-   jako nierealizowalną niż zostawić jako dług, którego nikt nie może spłacić.
+   **Wraca**, gdy sekwencja startowa zacznie przygotowywać coś trwałego — najwcześniej po pierwszym
+   prawdziwym narzędziu biurka i po przeprojektowaniu nawigacji.
 
-2. **Skala odstępów — zrobione, ile się dało; reszta czeka na decyzję o samej skali.**
-   2026-09-13 przepięto osiem miejsc w trzech widokach: wszystkie, w których liczba była
-   pojedyncza i trafiała dokładnie w krok skali. Wygląd nie zmienił się o piksel.
+2. **Skala odstępów — zamknięte. Skala dotyczy przerw między elementami i tylko ich.**
+   2026-09-13 przepięto osiem miejsc, w których liczba była pojedyncza i trafiała dokładnie w krok
+   skali. Wygląd nie zmienił się o piksel. Reszta zostaje liczbami wpisanymi wprost — i **nie jest
+   to dług**.
 
-   Przegląd pozostałych trzydziestu kilku liczb dał wynik, który zmienia charakter tej pozycji:
-   **nie da się ich przepiąć istniejącymi tokenami, i nie jest to kwestia staranności.** Skala ma
-   wyłącznie grubości **jednorodne** (ta sama wartość na czterech krawędziach), a praktycznie każdy
-   odstęp w tych widokach jest niesymetryczny — `12,0`, `28,20,28,24`, `0,0,8,0`, `14,12`. Dochodzą
-   do tego wartości, których w skali po prostu nie ma: `0`, `2`, `3`, `10`, `14`, `36`, `64`
-   i ujemne `-8`. Zero jest tu przypadkiem najczęstszym i najbardziej znaczącym — skala zaczyna się
-   od 6, więc „brak odstępu" nie ma dziś swojego tokenu.
+   Przesłanka pozycji („sześć widoków ma nadal liczby wpisane wprost") była fałszywa: te liczby nie
+   były nieprzepięte, tylko nieprzepinalne, i to już w dniu, w którym pozycję zapisano. Policzone
+   2026-09-13: najczęstszą wartością odstępu w całym interfejsie jest **zero**, z trzydziestoma
+   pięcioma wystąpieniami — ponad dwa razy częstszą niż cokolwiek innego. Skala zaczyna się od 6.
 
-   Pozycja **nie jest już mechaniczna** i nie da się jej domknąć bez decyzji autora o tym, czy
-   i jak skala ma się rozszerzyć — o grubości niesymetryczne, o zero, albo wcale. Dopóki ta decyzja
-   nie zapadnie, liczby wpisane wprost w tych widokach są stanem docelowym, a nie długiem.
-   Pełny spis pominięć z powodami jest w commicie, który tę pozycję domknął.
+   Rozstrzygnięcie autora, po sprawdzeniu obu połówek skali osobno:
+
+   * **Przerwy między elementami** — skala się broni i zostaje. Używana 36 razy, wszystkie siedem
+     stopni w użyciu, dwa najmniejsze odpowiadają za dwie trzecie. To jest realny, powtarzalny rytm
+     interfejsu.
+   * **Wcięcia i marginesy** — **poza skalą, świadomie**. Tokeny grubości opisują wcięcie jednakowe
+     z czterech stron, a ten interfejs prawie zawsze robi je niesymetrycznie, bo wiersz jest szerszy
+     niż wyższy. To są decyzje graficzne per miejsce, a nie powtarzalny rytm, więc liczba wpisana
+     wprost jest tam zapisem uczciwszym niż naciągnięta nazwa.
+
+   **Nie wracać** z propozycją rozszerzenia skali o grubości niesymetryczne ani o stopień zerowy —
+   to jest dokładnie ten kierunek, który tu odrzucono, wraz z powodem.
 
 3. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
    wyświetla — decyzja autora z 2026-09-12, podjęta świadomie przy poprzednim kroku. Zostaje tu

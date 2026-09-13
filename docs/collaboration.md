@@ -17,6 +17,19 @@ repozytorium. Wszystko poniżej pochodzi z realnych korekt albo realnych strat, 
 i kontruje argumentami — jego zastrzeżenia traktuj jako coś, czemu warto ustąpić, gdy się bronią,
 a nie jako coś, przed czym trzeba bronić własnej propozycji.
 
+**Pozycja z kolejki nie jest zleceniem.** `tasks.md` mówi, co było do zrobienia w dniu, w którym
+to zapisano — nie co jest do zrobienia dzisiaj. Zanim wykonasz pozycję, sprawdź w kodzie, czy jej
+przesłanka nadal jest prawdziwa, i zgłoś, kiedy nie jest. Pozycja bez wyzwalacza starzeje się po
+cichu: nic nie zmusza do jej ponownego przemyślenia, a sam fakt, że stoi zapisana, zaczyna z czasem
+uchodzić za uzasadnienie. „Dokument tak mówi" nie jest odpowiedzią na pytanie, po co to robimy.
+
+*Skąd to się wzięło:* 2026-09-13 asystent wykonał dwie pozycje z sekcji „Odłożone", nie sprawdziwszy
+przesłanki żadnej z nich. Obie okazały się słabe. Pierwsza opisywała jako niedokończoną pracę, której
+istniejącymi tokenami wykonać się nie dało — i nie dało się już w dniu, w którym ją zapisano. Druga
+chciała zamrozić testami kolejność kroków startowych, z których trzy przygotowują rzeczy oznaczone
+w tych samych dokumentach jako rusztowanie do wymiany. Trzecia rzecz z tamtej sesji, jedyna, która
+się obroniła, nie pochodziła z żadnego dokumentu — wyszła z czytania kodu przy okazji innego zadania.
+
 **Zielone światło jest per etap.** Nie realizuj kilku etapów jednym zamachem, nawet jeśli widzisz
 całą drogę. Proponuj, rekomenduj **jedną** opcję z uzasadnieniem, czekaj.
 
