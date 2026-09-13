@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -42,29 +42,7 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
             using var stream = File.OpenRead(path);
             var document = JsonSerializer.Deserialize<LayoutDocument>(stream, _serializerOptions);
 
-            // An unknown version is not something to guess at - fall back to the defaults instead.
-            if (document is null || document.Version != WorkspaceLayout.CurrentVersion)
-            {
-                return WorkspaceLayout.Empty;
-            }
-
-            var panels = (document.Panels ?? [])
-                .Where(panel => !string.IsNullOrWhiteSpace(panel.DescriptorId))
-                .Take(WorkspaceLayout.MaxPanels)
-                .Select(panel => new WorkspacePanelLayout(
-                    panel.DescriptorId,
-                    string.IsNullOrWhiteSpace(panel.InstanceKey) ? panel.DescriptorId : panel.InstanceKey,
-                    panel.IsOpen,
-                    // A hand-edited or newer file can carry a state this build does not know.
-                    Enum.IsDefined(panel.State) ? panel.State : PanelDisplayState.Normal,
-                    panel.ZOrder,
-                    panel.X,
-                    panel.Y,
-                    panel.Width,
-                    panel.Height))
-                .ToList();
-
-            return new WorkspaceLayout(document.Version, document.SurfaceWidth, document.SurfaceHeight, panels);
+            return ToLayout(document);
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
@@ -143,8 +121,15 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
     private string GetPath(string workspaceId) =>
         Path.Combine(directoryPath, "layouts", $"{Sanitize(workspaceId)}.json");
 
+    /// <summary>
+    /// The one mapping from stored document to layout, shared by both read paths. It used to exist
+    /// twice - inlined in <see cref="Load"/> and called from <see cref="LoadAsync"/> - so the two
+    /// could drift apart silently. The tests exercise every case against both paths, which is what
+    /// made collapsing them safe.
+    /// </summary>
     private static WorkspaceLayout ToLayout(LayoutDocument? document)
     {
+        // An unknown version is not something to guess at - fall back to the defaults instead.
         if (document is null || document.Version != WorkspaceLayout.CurrentVersion)
         {
             return WorkspaceLayout.Empty;
@@ -157,6 +142,7 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
                 panel.DescriptorId,
                 string.IsNullOrWhiteSpace(panel.InstanceKey) ? panel.DescriptorId : panel.InstanceKey,
                 panel.IsOpen,
+                // A hand-edited or newer file can carry a state this build does not know.
                 Enum.IsDefined(panel.State) ? panel.State : PanelDisplayState.Normal,
                 panel.ZOrder,
                 panel.X,

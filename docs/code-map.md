@@ -466,7 +466,9 @@ odczyt, nie zapis) — jego bezpieczeństwem jest walidacja przy starcie, limity
 ### Układ biurka — `WorkspaceLayoutStore`
 
 JSON per biurko (`%LocalAppData%\DungeonApp\layouts\<sanitized-id>.json`), zapis atomowy przez
-wspólny `AtomicWrite` (nie własna kopia wzorca), wersjonowany dokument. Odczyt nigdy nie rzuca —
+wspólny `AtomicWrite` (nie własna kopia wzorca), wersjonowany dokument. Obie ścieżki odczytu
+(`Load` i `LoadAsync`) różnią się wyłącznie sposobem sięgnięcia po plik — mapowanie dokumentu na
+układ jest jedno, wspólne. Odczyt nigdy nie rzuca —
 nieznana wersja/uszkodzony plik = `WorkspaceLayout.Empty` (użyj domyślnych). Zapisy są debounce'owane (`WorkspaceLayoutSession`,
 750 ms) i odpalane na wątku UI (uzasadnione w komentarzu: plik jest mały, snapshot musi czytać stan
 ViewModelu bezpośrednio).
@@ -710,7 +712,7 @@ mechanizm, ale dziś nic ich nie czyta.
 | Desktop — rejestr | `RegistryViewModelTests` (13), `LoadContentPacksStepTests` (5) | Sortowanie wierszy, nazwy pakietu/typu na wierszu, karta jako nieprzejrzysty `Control` budowany przez fałszywy `IContentPresentation` (`FakeContentSet`), cztery osobne komunikaty nierozwiązania, pusty rejestr, zaproszenie do wyboru gaszone na pustej liście, pliki niewczytane na końcu listy w deterministycznej kolejności, nagłówek na dokładnie jednym wierszu, rejestr złożony z samych zepsutych plików jako niepusty, krok startowy wobec paczki wadliwej obok poprawnej. |
 | Desktop — panel licznika | `CounterPanelViewModelTests` (9) | Stan początkowy, odświeżenie po zdarzeniu zewnętrznym, przepełnienie, błąd zapisu na dysk, nieodczytywalny blok, wyścig zapisów, dispose. |
 | Desktop — geometria | `PanelGeometryTests` (2) | Tylko `FitInto` (dopasowanie do min/max) — **`ClampMove`, `SnapMove`, `SnapResize`, `ConstrainResize`, `Maximize` nie mają dedykowanych testów jednostkowych**, mimo że to najbardziej złożona czysta logika w warstwie Desktop. |
-| Desktop — układ | `WorkspaceLayoutStoreTests` (22) | Zapis→odczyt, a dalej cała łagodna degradacja: brak pliku, uszkodzony JSON, nieznana wersja dokumentu, `MaxPanels` przy odczycie i przy zapisie, panel bez `descriptorId`, pusty `instanceKey`, stan panelu spoza enuma, sanityzacja id. Każdy przypadek po obu ścieżkach odczytu (`Load` i `LoadAsync`), bo mapowanie jest w magazynie napisane dwa razy i musi się zgadzać. |
+| Desktop — układ | `WorkspaceLayoutStoreTests` (22) | Zapis→odczyt, a dalej cała łagodna degradacja: brak pliku, uszkodzony JSON, nieznana wersja dokumentu, `MaxPanels` przy odczycie i przy zapisie, panel bez `descriptorId`, pusty `instanceKey`, stan panelu spoza enuma, sanityzacja id. Każdy przypadek po obu ścieżkach odczytu (`Load` i `LoadAsync`) — to te testy pozwoliły scalić mapowanie, które było w magazynie napisane dwa razy. |
 | Desktop — cache przygotowania | `CampaignWorkspacePreparationCacheTests` (2) | Rozgrzewka trafia w pierwsze `Take`, kampania usunięta z półki nie blokuje startu. |
 | Desktop — korzeń kompozycji | `AppTests` (1) | `App.Initialize()` rzuca głośno i nazywa `DungeonApp.App/Program.cs`, gdy zestaw treści jest pusty poza trybem projektowania. |
 | Content.Dnd5e | `Dnd5eContentSetTests` (4) | Deserializacja realnych wpisów fixture'owych do `Monster`/`Gear` z poprawnymi wartościami; odrzucenie nieznanego klucza i brakującej wartości wymaganej — obie ścieżki wyłącznie przez `System.Text.Json`, zero ręcznej walidacji w `Dnd5eContentSet`. |
