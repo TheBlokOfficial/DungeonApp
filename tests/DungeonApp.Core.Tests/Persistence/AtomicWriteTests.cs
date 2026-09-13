@@ -141,27 +141,40 @@ public sealed class AtomicWriteTests : IDisposable
     /// not undo the moves that already succeeded. This is what lets a manifest staged last in
     /// <c>JsonCampaignRepository</c> mark a whole save as committed: if Commit ever moved files out
     /// of staging order, a torn save would stop being detectable.
+    /// <para>
+    /// Staged in the same order a real campaign save uses - a data block file, then an instance
+    /// file, then the manifest - so this test freezes the three-stage order itself, not just the
+    /// two-file case. The middle stage is the one made to fail, which is what proves the manifest
+    /// never lands when anything before it does not: a two-file version of this test could not tell
+    /// "manifest staged last" apart from "manifest staged second".
+    /// </para>
     /// </summary>
     [Fact]
     public void A_failed_move_partway_through_Commit_leaves_the_earlier_moves_in_place()
     {
-        var first = Destination("a.txt");
-        var second = Destination("b.txt");
-        // Occupies the second destination with a directory, so File.Move onto it fails.
-        Directory.CreateDirectory(second);
+        var dataBlock = Destination("a.txt");
+        var instance = Destination("b.txt");
+        var manifest = Destination("c.txt");
+        // Occupies the instance destination with a directory, so File.Move onto it fails.
+        Directory.CreateDirectory(instance);
 
         var atomic = new AtomicWrite();
-        atomic.Stage(first, stream => WriteText(stream, "first"));
-        atomic.Stage(second, stream => WriteText(stream, "second"));
+        atomic.Stage(dataBlock, stream => WriteText(stream, "data block"));
+        atomic.Stage(instance, stream => WriteText(stream, "instance"));
+        atomic.Stage(manifest, stream => WriteText(stream, "manifest"));
 
         // On this platform, moving onto a path occupied by a directory surfaces as
         // UnauthorizedAccessException rather than IOException - both are the "the move failed"
         // family this test cares about.
         Assert.Throws<UnauthorizedAccessException>(() => atomic.Commit());
 
-        // The first file was already moved, in staging order, before the second move failed - and
-        // that move is not rolled back.
-        Assert.Equal("first", File.ReadAllText(first));
+        // The data block file was already moved, in staging order, before the instance move failed
+        // - and that move is not rolled back.
+        Assert.Equal("data block", File.ReadAllText(dataBlock));
+
+        // The manifest, staged last, is never even attempted: Commit moves files strictly in
+        // staging order, so a failure on the instance file never lets a later move run.
+        Assert.False(File.Exists(manifest));
 
         atomic.Dispose();
 
