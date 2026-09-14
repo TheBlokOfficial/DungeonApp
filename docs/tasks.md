@@ -24,7 +24,7 @@ Gałąź: `master`. Build bez ostrzeżeń, 343 testy zielone.
 
 Kroki 1–7 z sekcji „Kolejność prac" [architecture.md](architecture.md) są **zrobione**; krok 8 jest
 w połowie — pierwsze prawdziwe narzędzie biurka istnieje, ale usunięcie licznika i weryfikacja
-pytania o kształt bloku danych stoją niżej jako pozycja 2. Było to przejście z szablonów jako plików
+pytania o kształt bloku danych stoją niżej jako jedyna pozycja w „Następne". Było to przejście z szablonów jako plików
 danych na skompilowane typy treści, a następnie osadzenie treści w konkretnej kampanii. Stan, do
 którego to doprowadziło:
 
@@ -44,33 +44,7 @@ Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
 ## Następne
 
-Kolejność **nie** jest wiążąca — obie pozycje są niezależne.
-
-### 1. Kampania wybiera zestawy przy zakładaniu
-
-Rozstrzygnięte przez autora 2026-09-13, po tym jak wyszło, że biurko pokazujące okna wszystkich
-wkompilowanych zestawów zrobi się bałaganem przy kilku systemach naraz.
-
-Model stoi w `architecture.md`, „Narzędzia biurka i system okien". Czym różni się od odrzuconego
-wcześniej wariantu „kampania wybiera system" i co z tamtych argumentów nadal obowiązuje — w
-`decisions.md`, „Kompilator zna listę systemów RPG, kampania wybiera jeden".
-
-**Pytanie otwarte, świadomie niezamknięte:** co rozszerzeniu wolno zobaczyć u zestawu, od którego
-zależy. Dziś zestawy nie mogą się nawzajem referencjonować i pilnuje tego test, więc rozszerzenie
-nie odczyta pól cudzego typu treści — może wnieść własne typy, własne okna i narzędzia czytające
-neutralne kontrakty. Czy to wystarczy, rozstrzygnie **pierwszy prawdziwy drugi zestaw**, nie
-rozmowa przed nim.
-
-**Warto wiedzieć przed wyceną:** większość tego, co u innych bywa „rozszerzeniem", jest tutaj
-**paczką, nie zestawem** — bestiariusz, nowe przedmioty, treść z dodatku to wpisy, czyli dane, i
-działają dziś bez żadnej nowej maszynerii. Zestaw jest potrzebny dopiero na nowy kształt albo nowe
-narzędzie.
-
-**Sprawdź przed wykonaniem:** czy przy jednym wkompilowanym zestawie pole w kampanii i filtr na
-biurku mają co robić. Filtr nie ma dziś czego odsiać, a dwa pola zostały z manifestu kampanii
-usunięte właśnie za to, że nie miały konsumenta.
-
-### 2. Usunięcie licznika i weryfikacja, czy `DataBlockShape` zarabia na siebie
+### 1. Usunięcie licznika i weryfikacja, czy `DataBlockShape` zarabia na siebie
 
 **Wyzwalacz odpalił się 2026-09-13:** pierwsze prawdziwe narzędzie biurka istnieje. Licznik był
 jawnym rusztowaniem i jedyną rzeczą używającą bloków danych.
@@ -88,7 +62,48 @@ poza licznikiem — po jego usunięciu nie będzie miał żadnej.
 
 ---
 
-## Odłożone — trzy pozycje o interfejsie
+## Odłożone
+
+### Czeka na drugi zestaw: kampania wybiera zestawy przy zakładaniu
+
+Rozstrzygnięte przez autora 2026-09-13, po tym jak wyszło, że biurko pokazujące okna wszystkich
+wkompilowanych zestawów zrobi się bałaganem przy kilku systemach naraz. **Rozstrzygnięcie zostaje
+w mocy; 2026-09-14 przesunął się wyłącznie moment.**
+
+Model stoi w `architecture.md`, „Narzędzia biurka i system okien". Czym różni się od odrzuconego
+wcześniej wariantu „kampania wybiera system" i co z tamtych argumentów nadal obowiązuje — w
+`decisions.md`, „Kompilator zna listę systemów RPG, kampania wybiera jeden".
+
+**Dlaczego nie teraz — przesłanka sprawdzona w kodzie 2026-09-14 i nie trzyma.** Jest jeden zestaw
+i wnosi jedno okno; drugie okno biurka to licznik, który stoi wyżej do usunięcia. Kampania mogłaby
+więc być w dwóch stanach: zestaw zaznaczony — biurko jak dziś, zestaw odznaczony — biurko puste.
+Ten drugi stan jest jedyną nową rzeczą, jaką mechanizm potrafiłby dziś pokazać, i nikt go nie chce.
+To ten sam kształt, za który z manifestu kampanii wyleciały dwa pola — patrz `decisions.md`,
+„Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście kampanii".
+
+**Czekanie nie kosztuje nic, i to jest własność repozytorium, nie prognoza.** Deserializacja
+manifestu kampanii jest celowo pobłażliwa, więc dołożenie pola później nie podnosi wersji formatu
+i nie wymaga migracji; pilnują tego dwa testy opisane w tamtej samej pozycji `decisions.md`.
+Kampanie założone wcześniej wchodzą wtedy z domyślnym „wszystkie zestawy", czyli z zachowaniem,
+które mają dzisiaj.
+
+**Wyzwalacz powrotu:** pierwszy prawdziwy drugi zestaw — ten sam, który zamyka pytanie otwarte
+niżej. Wyzwalaczem osobnym i wcześniejszym byłoby rozstrzygnięcie autora, że wartością jest
+ukrywanie pojedynczego okna w konkretnej kampanii; to jednak inna przesłanka i decyzja
+o interfejsie, nie ta pozycja.
+
+**Pytanie otwarte, świadomie niezamknięte:** co rozszerzeniu wolno zobaczyć u zestawu, od którego
+zależy. Dziś zestawy nie mogą się nawzajem referencjonować i pilnuje tego test, więc rozszerzenie
+nie odczyta pól cudzego typu treści — może wnieść własne typy, własne okna i narzędzia czytające
+neutralne kontrakty. Czy to wystarczy, rozstrzygnie **pierwszy prawdziwy drugi zestaw**, nie
+rozmowa przed nim.
+
+**Warto wiedzieć przed wyceną:** większość tego, co u innych bywa „rozszerzeniem", jest tutaj
+**paczką, nie zestawem** — bestiariusz, nowe przedmioty, treść z dodatku to wpisy, czyli dane, i
+działają dziś bez żadnej nowej maszynerii. Zestaw jest potrzebny dopiero na nowy kształt albo nowe
+narzędzie.
+
+### Czekają na miejsce na ekranie — trzy pozycje o interfejsie
 
 Wszystkie czekają, aż autor zechce zaprojektować dla nich miejsce na ekranie. Żadna nie blokuje
 wycinka powyżej.
