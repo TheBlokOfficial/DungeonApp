@@ -684,3 +684,42 @@ kodu introspekcja stała się tania, więc zakaz musiał zostać zapisany, a nie
 w rejestrze rozstrzygnięć — nie dlatego, że ktokolwiek to zaproponował.
 
 **Czym to zastąpiono.** Narzędzie deklaruje interfejs i dostaje obiekty.
+
+### 32. Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta
+
+**Co proponowano.** Zostawić rejestr bloków, hierarchię `DataBlockShape`, magazyn w kampanii
+i jego połowę zapisu na dysk po usunięciu licznika — jako gotowe miejsce na stan przyszłych
+narzędzi domenowych, w którym zapisze się zegar świata czy kolejka tur.
+
+**Dlaczego odrzucone 2026-09-14.**
+- **Pierwsze prawdziwe narzędzie biurka nie użyło bloku w ogóle.** Wyzwalacz z pytania otwartego
+  „czy `DataBlockShape` zarabia na siebie" odpalił się odwrotnie, niż zakładano: nie przyniósł
+  drugiego użytkownika mechanizmu, tylko dowód, że pierwszy prawdziwy konsument poszedł obok.
+- **Mechanizm nie opisuje rzeczy, dla której go zaprojektowano.** Kształt umie pojedynczą wartość
+  i płaski rekord o stałym zestawie pól. Kolejka tur, drużyna i skład potyczki są listami —
+  każda z nich zażądałaby nowego rodzaju kształtu, zanim w ogóle by z niego skorzystała.
+- **Ten sam problem rozwiązano w tym repozytorium drugi raz i lepiej.** Warstwa treści nie ma
+  własnej hierarchii kształtów: jest rekord z `required` i deserializator jako jedyny walidator.
+  Trzymanie słabszego wariantu obok lepszego oznacza, że następne narzędzie skopiuje ten bliższy
+  ręki.
+- **Sześć na sześć.** Wcześniejsze rzeczy utrzymywane bez konsumenta („Pytania otwarte"
+  w `architecture.md`) umarły co do jednej. To siódmy przypadek tego samego.
+
+**Rozważone i odrzucone w trakcie: zegar świata.** Jest realnym kontrargumentem, bo nie wiąże się
+z żadnym wpisem — instancje go nie obsłużą — a usuwany kształt obsłużyłby go bez rozbudowy.
+Rozstrzygnęło to, że zegar nie stoi w kolejce, oraz to, że wraca mu ułamek tego, co odchodzi.
+
+**Czym to zastąpiono — i w jakim kształcie wróci.** Dziś: niczym; jedynym magazynem stanu kampanii
+są instancje. Gdy pierwsze narzędzie zażąda stanu **niezwiązanego z żadnym wpisem** — zegar świata
+jest najbliższym kandydatem — wraca **prostsza rzecz niż to, co usunięto**, i ten kształt jest tu
+zapisany po to, żeby go wtedy nie wymyślać od nowa:
+
+* **rekord z `required`, deserializator jako jedyny walidator** — wzorem `Monster` i `Gear`,
+  bez ani jednej linijki ręcznej walidacji;
+* **z mechanizmu zostaje wyłącznie to, co naprawdę było potrzebne:** identyfikator, numer wersji
+  (żeby „ten build tego nie rozumie" nadal dawało się powiedzieć) i ten sam `AtomicWrite`;
+* **nie wraca:** hierarchia kształtów, `Matches`, rejestr kształtów ani kontrakt `ITool`
+  deklarujący używane bloki.
+
+Wraca **razem ze swoim konsumentem**, nigdy przed nim — i nie przez przywrócenie usuniętego kodu
+z historii, tylko jako to, czego ten konsument faktycznie potrzebuje.

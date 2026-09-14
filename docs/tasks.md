@@ -16,15 +16,14 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 343 testy zielone.
+Gałąź: `master`. Build bez ostrzeżeń, 239 testów zielonych.
 
 ---
 
 ## Gdzie jesteśmy
 
-Kroki 1–7 z sekcji „Kolejność prac" [architecture.md](architecture.md) są **zrobione**; krok 8 jest
-w połowie — pierwsze prawdziwe narzędzie biurka istnieje, ale usunięcie licznika i weryfikacja
-pytania o kształt bloku danych stoją niżej jako jedyna pozycja w „Następne". Było to przejście z szablonów jako plików
+Kroki 1–8 z sekcji „Kolejność prac" [architecture.md](architecture.md) są **zrobione** — krok 8
+domknięty 2026-09-14 usunięciem licznika i całej warstwy bloków danych. Było to przejście z szablonów jako plików
 danych na skompilowane typy treści, a następnie osadzenie treści w konkretnej kampanii. Stan, do
 którego to doprowadziło:
 
@@ -44,21 +43,26 @@ Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
 ## Następne
 
-### 1. Usunięcie licznika i weryfikacja, czy `DataBlockShape` zarabia na siebie
+### 1. Dokumenty po rozbiórce bloków danych
 
-**Wyzwalacz odpalił się 2026-09-13:** pierwsze prawdziwe narzędzie biurka istnieje. Licznik był
-jawnym rusztowaniem i jedyną rzeczą używającą bloków danych.
+**To jedyna praca, jaka została z kroku 8.** Kod jest zrobiony i zielony; dokumenty opisują jeszcze
+świat sprzed rozbiórki. Rozpoznanie jest zrobione — nie rób go drugi raz:
 
-Policzone przy okazji i nadal aktualne: mechanizm kształtu **nie umie opisać listy**, a każde
-narzędzie z kolejką, drużyną albo składem potyczki zażąda jej jako pierwszej rzeczy. To jest realne
-świadectwo w tamtym pytaniu.
+* **`architecture.md`, trzynaście miejsc.** Najważniejsze: „Gdzie mieszka stan" ma tabelę *dwóch*
+  magazynów, a został jeden; „Pytania otwarte" niosą pytanie 2 („czy `DataBlockShape` zarabia na
+  siebie") jako otwarte, a zostało rozstrzygnięte; „Kolejność prac" pokazuje krok 8 jako niedomknięty;
+  słownik niesie hasła **narzędzie (`ITool`)** i **blok danych**. Uwaga: „licznik generacji" przy
+  zapisie na dysk to **inny mechanizm** i zostaje.
+* **`code-map.md`, dwadzieścia osiem miejsc.** Ścieżka pionowa nr 1 przez licznik, wiersze tabeli
+  `Core/DataBlocks`, punkt rozszerzenia „Nowe narzędzie domenowe + blok danych", liczby testów
+  (239: Core 159, Desktop 49, Content 18, Architecture 13) i ocena stanu.
+* **`decisions.md` — zrobione.** Uzasadnienie odejścia i **kształt, w jakim mechanizm wróci**, stoją
+  w pozycji „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta". Nie streszczaj
+  go w pozostałych dokumentach — odeślij po nazwie.
 
-Uwaga: usunięcie licznika zabiera ostatniego użytkownika bloków danych. Zanim to zrobisz,
-rozstrzygnij, czy blok danych zostaje bez konsumenta — czy odchodzi razem z nim.
-
-**Druga przesłanka, świeższa:** okno „Świat kampanii" **nie jest** narzędziem domenowym i nie używa
-żadnego bloku danych. Kontrakt narzędzia domenowego nie dostał więc dotąd ani jednej weryfikacji
-poza licznikiem — po jego usunięciu nie będzie miał żadnej.
+Czego z samego kodu nie widać, a jest ustalone: mechanizm wraca **razem ze swoim konsumentem**
+i w prostszym kształcie niż usunięty; najbliższym kandydatem jest **zegar świata**, bo to stan
+niezwiązany z żadnym wpisem, którego instancje nie obsłużą. Zegar nie ma dziś terminu.
 
 ---
 
