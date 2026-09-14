@@ -68,6 +68,12 @@ public sealed class RegistryEntryRowViewModel
     /// <summary>
     /// True on exactly one row: the first not-loaded row in the list, where the "NIE WCZYTANE"
     /// header belongs. False on every other row, and false on every row when nothing is broken.
+    /// <para>
+    /// The header rides on a row rather than standing between two lists, so the screen stays one
+    /// list with one item template - no second items control, no grouping, and nothing that has to
+    /// be kept in step with the ordering the view model already fixed. The whole price is that this
+    /// one row is taller than its neighbours, and that is the trade being taken deliberately.
+    /// </para>
     /// </summary>
     public bool ShowsNotLoadedHeader { get; }
 

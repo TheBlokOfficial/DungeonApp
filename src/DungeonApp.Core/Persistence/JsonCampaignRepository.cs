@@ -387,6 +387,18 @@ public sealed class JsonCampaignRepository(
             cancellationToken);
     }
 
+    /// <summary>
+    /// Reads one instance back, and is deliberately stricter than
+    /// <see cref="ReadDataBlockValueAsync"/>. An instance has no equivalent of
+    /// <see cref="CampaignDataBlocks.UnreadableBlocks"/> - no shelf to leave something on, unread,
+    /// until a build that understands it comes along - so nothing here may be carried through
+    /// unopened. Every defect is a store failure instead, sorted into the three kinds the shell
+    /// knows how to degrade on: <see cref="CampaignStoreFailure.TornSave"/> when the file and the
+    /// manifest disagree about which generation this is,
+    /// <see cref="CampaignStoreFailure.Unreadable"/> when no bytes or no JSON come back at all, and
+    /// <see cref="CampaignStoreFailure.Invalid"/> when the file parsed but says something an
+    /// instance cannot mean.
+    /// </summary>
     private async Task<CampaignInstance> ReadInstanceAsync(
         string directory, InstanceEntry entry, CancellationToken cancellationToken)
     {

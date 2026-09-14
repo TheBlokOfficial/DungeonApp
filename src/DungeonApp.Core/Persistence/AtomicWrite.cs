@@ -14,6 +14,14 @@ namespace DungeonApp.Core.Persistence;
 /// </summary>
 public sealed class AtomicWrite : IDisposable
 {
+    /// <summary>
+    /// Deterministic on purpose, never a fresh <see cref="Guid"/> per write. A staged file is
+    /// normally cleaned up, but a process killed between staging and committing cannot clean up
+    /// after itself - and a unique name would leave that orphan on disk forever, one per crash.
+    /// Deriving the name from the destination means the next write to the same destination
+    /// overwrites the orphan, so the worst case is one stale file per destination rather than an
+    /// unbounded pile.
+    /// </summary>
     private const string TemporarySuffix = ".writing.tmp";
 
     private readonly List<(string Temporary, string Destination)> _pending = [];

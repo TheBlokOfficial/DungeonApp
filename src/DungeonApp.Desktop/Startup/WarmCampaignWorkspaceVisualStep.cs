@@ -57,6 +57,12 @@ public sealed class WarmCampaignWorkspaceVisualStep(
         }
         finally
         {
+            // Mandatory, and the only reason the warmed-up view model is held as a field at all.
+            // The warmup binds the *same* campaign object the first real open will reuse (see the
+            // shared preparation cache in App.axaml.cs), so its panels subscribe to the events of a
+            // campaign the GM has not opened. Skip this and an invisible desk keeps reacting to
+            // that campaign for the rest of the process, its layout session still armed to write a
+            // desk arrangement nobody arranged.
             _warmupViewModel?.Dispose();
         }
     }

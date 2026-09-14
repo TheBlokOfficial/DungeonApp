@@ -54,6 +54,12 @@ public sealed class RegistryViewModel : ObservableObject
 
     public IReadOnlyList<RegistryEntryRowViewModel> Entries { get; }
 
+    /// <summary>
+    /// Counts the not-loaded rows too, so a registry holding nothing but broken files is
+    /// <em>not</em> empty - it has rows to show and a reason to give for each of them. Only a
+    /// registry with no entries and no rejected files at all is empty, which is the one case
+    /// <see cref="ShowSelectionPrompt"/> falls silent for.
+    /// </summary>
     public bool IsEmpty => Entries.Count == 0;
 
     public RegistryEntryRowViewModel? SelectedEntry
