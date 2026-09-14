@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Events;
 
 namespace DungeonApp.Core.Campaigns;
@@ -9,10 +8,6 @@ namespace DungeonApp.Core.Campaigns;
 /// <summary>
 /// The root of everything the GM owns. State lives inside a campaign; shared definitions live
 /// outside it in the registries and are only referenced from here.
-/// <para>
-/// The campaign hosts data blocks but does not interpret them: it knows which ones this build
-/// registers and what is currently stored in each, and nothing about what any of it means.
-/// </para>
 /// </summary>
 public sealed class Campaign
 {
@@ -20,14 +15,12 @@ public sealed class Campaign
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
-        CampaignDataBlocks dataBlocks,
         CampaignInstances instances,
         CampaignEvents events)
     {
         Id = id;
         Name = name;
         CreatedAt = createdAt;
-        DataBlocks = dataBlocks;
         Instances = instances;
         Events = events;
     }
@@ -42,25 +35,20 @@ public sealed class Campaign
     /// </summary>
     public DateTimeOffset CreatedAt { get; }
 
-    public CampaignDataBlocks DataBlocks { get; }
-
     /// <summary>This campaign's world: every entry brought in as a living instance.</summary>
     public CampaignInstances Instances { get; }
 
     /// <summary>
     /// This campaign's announcement channel. Exposed because the shell hosting the campaign has no
-    /// other way to hear what changes inside it - a data block being written is news the GM wants,
-    /// not only news for other listeners.
+    /// other way to hear what changes inside it.
     /// </summary>
     public CampaignEvents Events { get; }
 
     public static Campaign Create(
         CampaignName name,
-        DataBlockRegistry registry,
         TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(registry);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
         var events = new CampaignEvents();
@@ -69,7 +57,6 @@ public sealed class Campaign
             CampaignId.New(),
             name,
             timeProvider.GetUtcNow(),
-            CampaignDataBlocks.Create(registry, events),
             CampaignInstances.Create(events),
             events);
     }
@@ -78,23 +65,17 @@ public sealed class Campaign
     /// Rebuilds a campaign that already exists on disk. Separate from <see cref="Create"/> because
     /// restoring must not mint a new identity or a new creation date - a load is not a creation.
     /// <para>
-    /// <paramref name="instances"/> is optional and trails every existing parameter so that no
-    /// caller written before instances existed has to change: a campaign restored without it simply
-    /// comes back with an empty world.
+    /// <paramref name="instances"/> is optional because a campaign with not a single instance in it
+    /// is a normal state, not a sign that something failed to load.
     /// </para>
     /// </summary>
     public static Campaign Restore(
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
-        DataBlockRegistry registry,
-        IReadOnlyDictionary<DataBlockId, object> values,
-        IReadOnlyDictionary<DataBlockId, DataBlockUnreadableReason>? unreadable = null,
         IReadOnlyCollection<CampaignInstance>? instances = null)
     {
         ArgumentNullException.ThrowIfNull(name);
-        ArgumentNullException.ThrowIfNull(registry);
-        ArgumentNullException.ThrowIfNull(values);
 
         var events = new CampaignEvents();
 
@@ -102,7 +83,6 @@ public sealed class Campaign
             id,
             name,
             createdAt,
-            CampaignDataBlocks.Hydrate(registry, events, values, unreadable),
             CampaignInstances.Hydrate(events, instances ?? []),
             events);
     }

@@ -5,16 +5,14 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Persistence;
 
 /// <summary>
-/// Kept apart from <see cref="DataBlockPersistenceTests"/> the same way that file is kept apart from
-/// <see cref="JsonCampaignRepositoryTests"/>: one file per magazine the store persists, rather than one
-/// growing file per store.
+/// Kept apart from <see cref="JsonCampaignRepositoryTests"/>: one file per magazine the store
+/// persists, rather than one growing file per store.
 /// </summary>
 public sealed class InstancePersistenceTests : IDisposable
 {
@@ -23,17 +21,14 @@ public sealed class InstancePersistenceTests : IDisposable
     private static readonly EntryAddress Sword = new(ContentId.Create("gear"), ContentId.Create("iron-sword"));
 
     private readonly TemporaryLibrary _library = new();
-    private readonly DataBlockRegistry _registry = new();
     private readonly JsonCampaignRepository _repository;
 
-    public InstancePersistenceTests() => _repository = new JsonCampaignRepository(_library.Path, _registry);
+    public InstancePersistenceTests() => _repository = new JsonCampaignRepository(_library.Path);
 
     public void Dispose() => _library.Dispose();
 
-    private static Campaign NewCampaign(DataBlockRegistry registry) =>
-        Campaign.Create(CampaignName.Create("Kroniki Doliny"), registry, new FixedTimeProvider(Moment));
-
-    private Campaign NewCampaign() => NewCampaign(_registry);
+    private static Campaign NewCampaign() =>
+        Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment));
 
     private string InstancesDirectory(Campaign campaign) =>
         Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "instances");
@@ -209,9 +204,9 @@ public sealed class InstancePersistenceTests : IDisposable
         Assert.Equal(CampaignStoreFailure.Unreadable, exception.Failure);
     }
 
-    /// <summary>A pack or entry id that no longer fits <see cref="ContentId"/> is reported the same way
-    /// an unusable data block id is - as <see cref="CampaignStoreFailure.Invalid"/> - rather than
-    /// surfacing as a raw deserialization failure that cannot say which instance is at fault.</summary>
+    /// <summary>A pack or entry id that no longer fits <see cref="ContentId"/> is reported as
+    /// <see cref="CampaignStoreFailure.Invalid"/> rather than surfacing as a raw deserialization
+    /// failure that cannot say which instance is at fault.</summary>
     [Fact]
     public async Task An_instance_file_naming_an_unusable_pack_id_throws_Invalid()
     {

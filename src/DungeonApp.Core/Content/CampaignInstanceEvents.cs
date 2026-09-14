@@ -9,8 +9,7 @@ namespace DungeonApp.Core.Content;
 /// A listener that wants to know what changed calls back into <see cref="CampaignInstances.Find"/>
 /// for the current state; the event exists to say "look again", not to carry the look itself. That
 /// keeps the announcement cheap regardless of how large an instance's patch is, and keeps these
-/// event types stable as instances grow new things to carry - the same reasoning
-/// <see cref="DataBlocks.DataBlockChanged"/> already applies to data blocks.
+/// event types stable as instances grow new things to carry.
 /// </para>
 /// </summary>
 public sealed record InstanceAdded(InstanceId Id) : ICampaignEvent;

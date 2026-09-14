@@ -6,7 +6,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
@@ -25,7 +24,6 @@ public partial class App : Avalonia.Application
     private readonly IReadOnlyList<IContentSet> _contentSets;
 
     private WorkspaceLayoutStore? _layoutStore;
-    private DataBlockRegistry? _dataBlocks;
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
@@ -72,11 +70,6 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // Ten build nie rejestruje dziś żadnego bloku danych, bo nie ma narzędzia domenowego, które
-        // by go używało. Rejestr zostaje jako punkt zgłoszeniowy - to on, nie coś obok niego, jest
-        // miejscem, w którym przyszłe narzędzie zgłosi swój blok.
-        _dataBlocks = new DataBlockRegistry();
-
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
         var libraryPath = Path.Combine(
@@ -84,7 +77,7 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Campaigns");
 
-        _campaigns = new JsonCampaignRepository(libraryPath, _dataBlocks);
+        _campaigns = new JsonCampaignRepository(libraryPath);
 
         // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
         // mieszka stan") - obok, nie pod
@@ -115,7 +108,7 @@ public partial class App : Avalonia.Application
         // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
         _campaignLibrary = new CampaignLibraryViewModel(
             _campaigns,
-            new CreateCampaign(_campaigns, _dataBlocks, TimeProvider.System),
+            new CreateCampaign(_campaigns, TimeProvider.System),
             id => _shell!.OpenCampaignAsync(id));
 
         // Jawna tablica - kolejność w niej JEST kolejnością wykonania.

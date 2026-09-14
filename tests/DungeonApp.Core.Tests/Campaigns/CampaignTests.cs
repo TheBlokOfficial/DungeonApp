@@ -1,6 +1,5 @@
 using System;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Campaigns;
@@ -18,10 +17,9 @@ public sealed class CampaignTests
     {
         var clock = new FixedTimeProvider(Moment);
         var name = CampaignName.Create("Kroniki Doliny");
-        var registry = new DataBlockRegistry();
 
-        var first = Campaign.Create(name, registry, clock);
-        var second = Campaign.Create(name, registry, clock);
+        var first = Campaign.Create(name, clock);
+        var second = Campaign.Create(name, clock);
 
         Assert.NotEqual(first.Id, second.Id);
         Assert.NotEqual(default, first.Id);
@@ -31,7 +29,7 @@ public sealed class CampaignTests
     public void Records_the_moment_from_the_injected_clock()
     {
         var campaign = Campaign.Create(
-            CampaignName.Create("Kroniki Doliny"), new DataBlockRegistry(), new FixedTimeProvider(Moment));
+            CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment));
 
         Assert.Equal(Moment, campaign.CreatedAt);
     }

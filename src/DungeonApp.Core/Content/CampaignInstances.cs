@@ -12,7 +12,7 @@ namespace DungeonApp.Core.Content;
 /// exactly the operations a GM performs on the world - there is no setter, no indexer, and no
 /// constructor a caller outside this class can reach once an instance exists. Every operation that
 /// changes state publishes exactly one event on <see cref="CampaignEvents"/>, after the state
-/// change, mirroring <see cref="DataBlocks.CampaignDataBlocks"/>.
+/// change.
 /// </para>
 /// </summary>
 public sealed class CampaignInstances

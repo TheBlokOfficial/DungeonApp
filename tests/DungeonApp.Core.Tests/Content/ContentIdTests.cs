@@ -13,9 +13,9 @@ public sealed class ContentIdTests
         => Assert.True(ContentId.TryCreate(candidate, out _));
 
     /// <summary>
-    /// Same rules as <see cref="DataBlocks.DataBlockId"/>, and for the same reason: an id must never
-    /// be able to escape a path, collide on a case-insensitive filesystem, or be misread as part of a
-    /// <c>"pack:id"</c> reference - which is exactly why a colon is refused here too.
+    /// An id must never be able to escape a path, collide on a case-insensitive filesystem, or be
+    /// misread as part of a <c>"pack:id"</c> reference - which is exactly why a colon is refused
+    /// here too.
     /// </summary>
     [Theory]
     [InlineData(null)]

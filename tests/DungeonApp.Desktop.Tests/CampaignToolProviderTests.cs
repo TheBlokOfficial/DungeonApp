@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
@@ -104,7 +103,7 @@ public sealed class CampaignToolProviderTests
 
     private static CampaignSession BuildSession()
     {
-        var campaign = Campaign.Create(CampaignName.Create("Testowa"), new DataBlockRegistry(), TimeProvider.System);
+        var campaign = Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
         return new CampaignSession(campaign, new NullRepository());
     }
 

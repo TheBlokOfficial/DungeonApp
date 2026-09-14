@@ -7,12 +7,11 @@ namespace DungeonApp.Core.Content;
 /// The permanent identifier of a pack, a content set, a content type, or an entry, such as
 /// <c>dnd5e</c> or <c>fifth-edition</c>.
 /// <para>
-/// The character set mirrors <see cref="DataBlocks.DataBlockId"/> exactly, and for the same two
-/// reasons. First, an id is a document's declared identity, not the name of the directory it
-/// happens to sit in - the loader never trusts a folder name - so the same narrow,
-/// filesystem-safe charset keeps that identity safe to use as a key everywhere an id-derived path
-/// might still show up later (a registry cache, an exported bundle). Second, and just as load
-/// bearing here: a colon is not in this charset, which is exactly what lets
+/// The character set is deliberately narrow, for two reasons. First, an id is a document's declared
+/// identity, not the name of the directory it happens to sit in - the loader never trusts a folder
+/// name - so a narrow, filesystem-safe charset keeps that identity safe to use as a key everywhere
+/// an id-derived path might still show up later (a registry cache, an exported bundle). Second, and
+/// just as load bearing here: a colon is not in this charset, which is exactly what lets
 /// <see cref="ContentTypeReference"/> and <see cref="EntryAddress"/> split <c>"pack:id"</c> on the
 /// first colon without ambiguity.
 /// </para>

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 
 namespace DungeonApp.Core.Persistence;
 
@@ -16,26 +14,23 @@ namespace DungeonApp.Core.Persistence;
 /// Stores each campaign as its own directory, in the shape of a game save: a manifest beside smaller
 /// files owned by whoever the data belongs to.
 /// <para>
-/// The split follows consistency boundaries rather than subject matter. The manifest and the data
-/// block value files commit together and share a generation counter, so a save interrupted between
-/// them is detectable instead of silently half loaded.
+/// The split follows consistency boundaries rather than subject matter. The manifest and the instance
+/// files commit together and share a generation counter, so a save interrupted between them is
+/// detectable instead of silently half loaded.
 /// </para>
 /// <para>
-/// A data block this build cannot read - because its id is not registered, or its stored value is at
-/// a shape version this build has no migration for - is carried through untouched: its value file is
-/// never rewritten and its manifest entry is copied forward exactly as it was. See
-/// <see cref="CampaignDataBlocks.UnreadableBlocks"/> for how the campaign itself represents that.
+/// A campaign directory from a build that still wrote a <c>datablocks/</c> subdirectory keeps that
+/// subdirectory on disk exactly as it was: this build neither writes nor reads it, the manifest no
+/// longer names it, and nothing here cleans it up. Deleting data this build no longer understands is
+/// worse than leaving an inert folder behind.
 /// </para>
 /// </summary>
-public sealed class JsonCampaignRepository(
-    string libraryPath,
-    DataBlockRegistry registry) : ICampaignRepository
+public sealed class JsonCampaignRepository(string libraryPath) : ICampaignRepository
 {
     /// <summary>Independent of the application version: it only ever tracks the shape of these files.</summary>
     public const int CurrentFormatVersion = 1;
 
     private const string DocumentFileName = "campaign.json";
-    private const string DataBlockDirectoryName = "datablocks";
     private const string InstanceDirectoryName = "instances";
 
     private readonly JsonSerializerOptions _serializerOptions = new()
@@ -58,38 +53,11 @@ public sealed class JsonCampaignRepository(
         var previous = await TryReadManifestAsync(manifestPath, cancellationToken);
         var generation = (previous?.Generation ?? 0) + 1;
 
-        var entries = new List<DataBlockEntry>();
-
         using var atomic = new AtomicWrite();
 
-        foreach (var id in campaign.DataBlocks.WrittenBlocks)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var registration = registry.Describe(id);
-            var value = campaign.DataBlocks.Read(id)
-                ?? throw new InvalidOperationException($"Data block '{id}' is listed as written but reads back null.");
-
-            var document = new DataBlockDocument(
-                BlockId: id.Value,
-                Version: registration.Version,
-                Generation: generation,
-                Value: DataBlockValueSerializer.ToNode(value, registration.Shape));
-
-            await WriteDataBlockAsync(atomic, directory, id, document, cancellationToken);
-            entries.Add(new DataBlockEntry(id.Value, registration.Version, generation));
-        }
-
-        // A data block this session could not read - unknown id, or an unsupported stored version
-        // - keeps its recorded entry and its file exactly as they were, at the generation they
-        // were last written at. That is the whole point of never loading it into memory: nothing
-        // here has anything new to write for it.
-        entries.AddRange(RetainedEntries(previous, campaign.DataBlocks));
-
-        // Unlike data blocks, an instance has no "this session could not read it" carve-out: the
-        // whole world lives in memory, so every instance is rewritten every save, at this
-        // generation, and the manifest ends up listing exactly what campaign.Instances holds right
-        // now - nothing retained from a prior save.
+        // Every instance is rewritten every save, at this generation, and the manifest ends up
+        // listing exactly what campaign.Instances holds right now - nothing retained from a prior
+        // save.
         var instanceEntries = new List<InstanceEntry>();
 
         foreach (var instance in campaign.Instances.All)
@@ -114,7 +82,6 @@ public sealed class JsonCampaignRepository(
             campaign.Name.Value,
             campaign.CreatedAt,
             Generation: generation,
-            DataBlocks: entries,
             Instances: instanceEntries);
 
         // Staged last, so Commit moves it last: its arrival is what marks the whole generation as
@@ -149,40 +116,6 @@ public sealed class JsonCampaignRepository(
         var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
         var name = ValidateManifest(manifest, manifestPath);
 
-        var values = new Dictionary<DataBlockId, object>();
-        var unreadable = new Dictionary<DataBlockId, DataBlockUnreadableReason>();
-
-        foreach (var entry in manifest.DataBlocks ?? [])
-        {
-            if (!DataBlockId.TryCreate(entry.Id, out var blockId))
-            {
-                throw new CampaignStoreException(
-                    CampaignStoreFailure.Invalid, $"The campaign at {manifestPath} names an unusable data block '{entry.Id}'.");
-            }
-
-            if (!registry.Knows(blockId))
-            {
-                // Not an error: a build older or newer than the one that wrote this save may simply
-                // not have this data block. It stays on the shelf, unread, rather than blocking the
-                // whole campaign from opening.
-                unreadable[blockId] = DataBlockUnreadableReason.UnknownToRegistry;
-                continue;
-            }
-
-            var registration = registry.Describe(blockId);
-
-            if (entry.Version != registration.Version)
-            {
-                // No migration path exists yet (deliberately deferred) - a version this build does not
-                // recognize is left untouched rather than guessed at.
-                unreadable[blockId] = DataBlockUnreadableReason.UnsupportedVersion;
-                continue;
-            }
-
-            values[blockId] = await ReadDataBlockValueAsync(
-                directory, blockId, entry, registration, manifestPath, cancellationToken);
-        }
-
         var instances = new List<CampaignInstance>();
 
         foreach (var entry in manifest.Instances ?? [])
@@ -190,25 +123,12 @@ public sealed class JsonCampaignRepository(
             instances.Add(await ReadInstanceAsync(directory, entry, cancellationToken));
         }
 
-        try
-        {
-            // Built, then hydrated in one call - unlike the old module path, there is no activation
-            // step: data blocks are data, not behaviour, so there is nothing to instantiate first.
-            return Campaign.Restore(
-                new CampaignId(manifest.Id), name, manifest.CreatedAt, registry, values, unreadable, instances);
-        }
-        catch (DataBlockShapeMismatchException ex)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.Invalid,
-                $"The campaign at {manifestPath} has a data block value that does not fit its declared shape.",
-                ex);
-        }
+        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, instances);
     }
 
     /// <summary>
-    /// Reads manifests only. Drawing the shelf must not cost the value of every data block in every
-    /// campaign, and a campaign whose data block values are torn still deserves to be listed.
+    /// Reads manifests only. Drawing the shelf must not cost the value of every instance in every
+    /// campaign, and a campaign whose instance files are torn still deserves to be listed.
     /// </summary>
     public async Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
     {
@@ -289,86 +209,6 @@ public sealed class JsonCampaignRepository(
         return name;
     }
 
-    private async Task<object> ReadDataBlockValueAsync(
-        string directory,
-        DataBlockId id,
-        DataBlockEntry entry,
-        DataBlockRegistration registration,
-        string manifestPath,
-        CancellationToken cancellationToken)
-    {
-        var valuePath = GetDataBlockPath(directory, id);
-
-        if (!File.Exists(valuePath))
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.TornSave, $"The value file for data block '{id}' is missing.");
-        }
-
-        DataBlockDocument? document;
-
-        try
-        {
-            await using var stream = File.OpenRead(valuePath);
-            document = await JsonSerializer.DeserializeAsync<DataBlockDocument>(
-                stream, _serializerOptions, cancellationToken);
-        }
-        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.Unreadable, $"Could not read the value of data block '{id}'.", ex);
-        }
-
-        if (document is null)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.Unreadable, $"The value file for data block '{id}' is empty.");
-        }
-
-        // The whole point of the counter: a file left behind by an interrupted save disagrees with
-        // the manifest, and says so instead of loading as if it were current.
-        if (document.Generation != entry.Generation)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.TornSave,
-                $"Data block '{id}' is stored at generation {document.Generation} but the manifest "
-                + $"expects {entry.Generation}. The save was interrupted.");
-        }
-
-        try
-        {
-            return DataBlockValueSerializer.FromNode(document.Value, registration.Shape);
-        }
-        catch (Exception ex) when (ex is FormatException or InvalidOperationException or JsonException)
-        {
-            throw new CampaignStoreException(
-                CampaignStoreFailure.Invalid, $"The stored value of data block '{id}' does not fit its shape.", ex);
-        }
-    }
-
-    private static IEnumerable<DataBlockEntry> RetainedEntries(CampaignManifest? previous, CampaignDataBlocks dataBlocks)
-    {
-        var written = new HashSet<DataBlockId>(dataBlocks.WrittenBlocks);
-
-        return (previous?.DataBlocks ?? [])
-            .Where(entry => !DataBlockId.TryCreate(entry.Id, out var id) || !written.Contains(id));
-    }
-
-    private async Task WriteDataBlockAsync(
-        AtomicWrite atomic,
-        string directory,
-        DataBlockId id,
-        DataBlockDocument document,
-        CancellationToken cancellationToken)
-    {
-        Directory.CreateDirectory(Path.Combine(directory, DataBlockDirectoryName));
-
-        await atomic.StageAsync(
-            GetDataBlockPath(directory, id),
-            (stream, token) => JsonSerializer.SerializeAsync(stream, document, _serializerOptions, token),
-            cancellationToken);
-    }
-
     private async Task WriteInstanceAsync(
         AtomicWrite atomic,
         string directory,
@@ -376,9 +216,8 @@ public sealed class JsonCampaignRepository(
         InstanceDocument document,
         CancellationToken cancellationToken)
     {
-        // Created here, inside the per-instance loop, for the same reason WriteDataBlockAsync
-        // creates its own sibling directory: a campaign with no instance ever calls this method, so
-        // the directory never comes into being for one - there is nothing to leave empty.
+        // Created here, inside the per-instance loop: a campaign with no instance ever calls this
+        // method, so the directory never comes into being for one - there is nothing to leave empty.
         Directory.CreateDirectory(Path.Combine(directory, InstanceDirectoryName));
 
         await atomic.StageAsync(
@@ -388,16 +227,13 @@ public sealed class JsonCampaignRepository(
     }
 
     /// <summary>
-    /// Reads one instance back, and is deliberately stricter than
-    /// <see cref="ReadDataBlockValueAsync"/>. An instance has no equivalent of
-    /// <see cref="CampaignDataBlocks.UnreadableBlocks"/> - no shelf to leave something on, unread,
-    /// until a build that understands it comes along - so nothing here may be carried through
-    /// unopened. Every defect is a store failure instead, sorted into the three kinds the shell
-    /// knows how to degrade on: <see cref="CampaignStoreFailure.TornSave"/> when the file and the
-    /// manifest disagree about which generation this is,
-    /// <see cref="CampaignStoreFailure.Unreadable"/> when no bytes or no JSON come back at all, and
-    /// <see cref="CampaignStoreFailure.Invalid"/> when the file parsed but says something an
-    /// instance cannot mean.
+    /// Reads one instance back. An instance has no shelf to leave something on, unread, until a build
+    /// that understands it comes along - so nothing here may be carried through unopened. Every
+    /// defect is a store failure instead, sorted into the three kinds the shell knows how to degrade
+    /// on: <see cref="CampaignStoreFailure.TornSave"/> when the file and the manifest disagree about
+    /// which generation this is, <see cref="CampaignStoreFailure.Unreadable"/> when no bytes or no
+    /// JSON come back at all, and <see cref="CampaignStoreFailure.Invalid"/> when the file parsed but
+    /// says something an instance cannot mean.
     /// </summary>
     private async Task<CampaignInstance> ReadInstanceAsync(
         string directory, InstanceEntry entry, CancellationToken cancellationToken)
@@ -430,8 +266,8 @@ public sealed class JsonCampaignRepository(
                 CampaignStoreFailure.Unreadable, $"The value file for instance '{entry.Id:D}' is empty.");
         }
 
-        // Same reasoning as the data block's generation check: a file left behind by an interrupted
-        // save disagrees with the manifest, and says so instead of loading as if it were current.
+        // A file left behind by an interrupted save disagrees with the manifest, and says so instead
+        // of loading as if it were current.
         if (document.Generation != entry.Generation)
         {
             throw new CampaignStoreException(
@@ -524,9 +360,8 @@ public sealed class JsonCampaignRepository(
         catch (CampaignStoreException)
         {
             // An unreadable manifest is about to be replaced. It cannot be trusted to say which
-            // generation the data block files are at, so the counter restarts and every written block
-            // is rewritten at the new one; anything retained keeps whatever the unreadable manifest
-            // would have said, which is nothing.
+            // generation the instance files are at, so the counter restarts and every instance is
+            // rewritten at the new one.
             return null;
         }
     }
@@ -551,9 +386,6 @@ public sealed class JsonCampaignRepository(
 
     private string GetCampaignDirectory(CampaignId id) => Path.Combine(libraryPath, id.Value.ToString("D"));
 
-    private static string GetDataBlockPath(string campaignDirectory, DataBlockId id) =>
-        Path.Combine(campaignDirectory, DataBlockDirectoryName, $"{id.Value}.json");
-
     private static string GetInstancePath(string campaignDirectory, Guid instanceId) =>
         Path.Combine(campaignDirectory, InstanceDirectoryName, $"{instanceId:D}.json");
 
@@ -563,30 +395,13 @@ public sealed class JsonCampaignRepository(
         string? Name,
         DateTimeOffset CreatedAt,
         long Generation,
-        IReadOnlyList<DataBlockEntry>? DataBlocks,
         // Nullable and defaulted nowhere near strictly, on purpose: a manifest written before
         // instances existed simply has no such key, and that has to keep opening as a campaign
         // with an empty world rather than refusing the file or forcing a format bump.
         IReadOnlyList<InstanceEntry>? Instances = null);
 
-    /// <summary>
-    /// What the manifest remembers about one data block's value file: which shape version it is in,
-    /// and which generation it was last written at. The second half is what makes a torn save
-    /// detectable.
-    /// </summary>
-    private sealed record DataBlockEntry(string Id, int Version, long Generation);
-
-    /// <summary>
-    /// The envelope around one data block's value. The value itself stays an opaque JSON node until
-    /// the block's registered shape is known, so the store never guesses at a type before checking.
-    /// </summary>
-    private sealed record DataBlockDocument(string BlockId, int Version, long Generation, JsonNode? Value);
-
-    /// <summary>
-    /// What the manifest remembers about one instance's value file. Mirrors
-    /// <see cref="DataBlockEntry"/> exactly, minus the shape version an instance has no equivalent
-    /// of: the entry it points at is resolved from the pack registry, not from anything this store
-    /// tracks a version number for.
+    /// <summary>What the manifest remembers about one instance's value file: its id and which
+    /// generation it was last written at. The second half is what makes a torn save detectable.
     /// </summary>
     private sealed record InstanceEntry(Guid Id, long Generation);
 
@@ -598,9 +413,8 @@ public sealed class JsonCampaignRepository(
     /// <see cref="ReadInstanceAsync"/>, rather than by the deserializer throwing before this type
     /// even has a chance to say which instance is at fault.
     /// <para>
-    /// <see cref="Patch"/> stays an opaque <see cref="JsonElement"/>, the same way
-    /// <see cref="DataBlockDocument.Value"/> stays an opaque <see cref="JsonNode"/>: this store never
-    /// opens a patch, it only carries the sealed <see cref="ContentValues"/> envelope through
+    /// <see cref="Patch"/> stays an opaque <see cref="JsonElement"/>: this store never opens a patch,
+    /// it only carries the sealed <see cref="ContentValues"/> envelope through
     /// <see cref="ContentValues.Read{T}"/> and <see cref="ContentValues.From{T}"/> unchanged.
     /// </para>
     /// </summary>

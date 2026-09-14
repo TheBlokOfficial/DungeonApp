@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Events;
 
 namespace DungeonApp.Core.Tests.Content;
@@ -209,7 +208,6 @@ public sealed class CampaignInstancesTests
     {
         var campaign = Campaign.Create(
             CampaignName.Create("Test"),
-            new DataBlockRegistry(),
             TimeProvider.System);
 
         Assert.Empty(campaign.Instances.All);

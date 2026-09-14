@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Tests.Fakes;
 
@@ -15,17 +14,14 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     private static readonly DateTimeOffset Moment = new(2026, 8, 27, 18, 30, 0, TimeSpan.Zero);
 
     private readonly TemporaryLibrary _library = new();
-    private readonly DataBlockRegistry _registry = new();
     private readonly JsonCampaignRepository _repository;
 
-    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path, _registry);
+    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path);
 
     public void Dispose() => _library.Dispose();
 
-    private static Campaign NewCampaign(string name, DataBlockRegistry registry) =>
-        Campaign.Create(CampaignName.Create(name), registry, new FixedTimeProvider(Moment));
-
-    private Campaign NewCampaign(string name = "Kroniki Doliny") => NewCampaign(name, _registry);
+    private static Campaign NewCampaign(string name = "Kroniki Doliny") =>
+        Campaign.Create(CampaignName.Create(name), new FixedTimeProvider(Moment));
 
     [Fact]
     public async Task Reads_back_everything_it_wrote()
@@ -63,8 +59,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     public async Task Reports_an_empty_shelf_before_the_library_exists()
     {
         var repository = new JsonCampaignRepository(
-            Path.Combine(_library.Path, "not-created-yet"),
-            _registry);
+            Path.Combine(_library.Path, "not-created-yet"));
 
         Assert.Empty(await repository.ListAsync());
     }

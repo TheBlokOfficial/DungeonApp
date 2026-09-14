@@ -1,18 +1,15 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using DungeonApp.Core.DataBlocks;
 
 namespace DungeonApp.Core.Campaigns;
 
 /// <summary>
 /// Creates a campaign and hands it to the store. A use case with injected collaborators rather than
-/// a static helper, because the registry, the clock and the repository are exactly what a test needs
-/// to replace.
+/// a static helper, because the clock and the repository are exactly what a test needs to replace.
 /// </summary>
 public sealed class CreateCampaign(
     ICampaignRepository repository,
-    DataBlockRegistry registry,
     TimeProvider timeProvider)
 {
     /// <summary>
@@ -25,7 +22,7 @@ public sealed class CreateCampaign(
         CancellationToken cancellationToken = default)
     {
         var campaignName = CampaignName.Create(name);
-        var campaign = Campaign.Create(campaignName, registry, timeProvider);
+        var campaign = Campaign.Create(campaignName, timeProvider);
 
         await repository.SaveAsync(campaign, cancellationToken);
 

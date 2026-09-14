@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.DataBlocks;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Shell;
 
@@ -320,7 +319,7 @@ public sealed class CampaignInstancesToolViewModelTests
             Registry = new ContentRegistry(packs, entries, [], []);
             Repository = new InMemoryCampaignRepository();
 
-            var campaign = Campaign.Create(CampaignName.Create("Testowa"), new DataBlockRegistry(), TimeProvider.System);
+            var campaign = Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
             var session = new CampaignSession(campaign, Repository);
 
             Context = new CampaignToolContext(session, Registry, Dnd5e);
