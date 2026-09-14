@@ -15,7 +15,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// nothing in the engine or the shell reads either of them yet.
 /// <para>
 /// Kept in its own file, free of any Avalonia control reference, so it can be exercised without a
-/// window - the same discipline <c>CounterPanelViewModel</c> follows.
+/// window.
 /// </para>
 /// </summary>
 public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposable

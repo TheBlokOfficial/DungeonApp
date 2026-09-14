@@ -44,20 +44,20 @@ public static class WorkspaceGridSettings
     public const double PanelGap = PreciseSnapStep;
 
     /// <summary>
-    /// Minimalny rozmiar panelu licznika, przy którym karta wartości, przyciski i komunikat nie
-    /// ściskają się wzajemnie.
+    /// Minimalny rozmiar okna narzędzia biurka, przy którym jego zawartość nie ściska się sama w
+    /// sobie.
     /// </summary>
-    public const double CounterPanelMinWidth = CellSize * 8;
+    public const double ToolPanelMinWidth = CellSize * 8;
 
-    public const double CounterPanelMinHeight = CellSize * 6;
+    public const double ToolPanelMinHeight = CellSize * 6;
 
     /// <summary>
-    /// Maksymalny rozmiar panelu licznika, wyrażony w widocznych komórkach siatki, żeby okno
+    /// Maksymalny rozmiar okna narzędzia biurka, wyrażony w widocznych komórkach siatki, żeby okno
     /// pozostawało wyrównane do blatu zamiast rozrastać się w pustą powierzchnię.
     /// </summary>
-    public const double CounterPanelMaxWidth = CellSize * 12;
+    public const double ToolPanelMaxWidth = CellSize * 12;
 
-    public const double CounterPanelMaxHeight = CellSize * 8;
+    public const double ToolPanelMaxHeight = CellSize * 8;
 
     /// <summary>
     /// Panels may touch the surface boundary. Clamping still prevents them from leaving it.

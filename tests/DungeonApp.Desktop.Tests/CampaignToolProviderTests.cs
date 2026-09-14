@@ -15,38 +15,34 @@ namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
 /// Covers the new consumer wiring this pass adds: a content set's own desk tools reach
-/// <see cref="PanelCatalog"/> alongside the built-in counter, and <see cref="CampaignToolProvider"/>
-/// only reads the registry once a campaign is actually opened - never at composition-root time, when
-/// no pack has loaded yet.
+/// <see cref="PanelCatalog"/>, and <see cref="CampaignToolProvider"/> only reads the registry once a
+/// campaign is actually opened - never at composition-root time, when no pack has loaded yet.
 /// </summary>
 public sealed class CampaignToolProviderTests
 {
     private static readonly ContentId SetId = ContentId.Create("fake-set");
 
     [Fact]
-    public void PanelCatalog_still_offers_the_built_in_counter_alongside_no_extra_tools()
+    public void PanelCatalog_built_from_no_content_set_is_empty()
     {
-        var session = BuildSession();
+        var catalog = PanelCatalog.For([]);
 
-        var catalog = PanelCatalog.For(session, []);
-
-        Assert.Contains(catalog.All, descriptor => descriptor.Id == "counter");
-        Assert.Single(catalog.All);
+        Assert.Empty(catalog.All);
     }
 
     [Fact]
-    public void A_content_sets_tools_reach_the_panel_catalog_alongside_the_counter()
+    public void A_content_sets_tools_reach_the_panel_catalog_and_are_findable()
     {
         var session = BuildSession();
         var fakeDescriptor = BuildDescriptor("fake.tool");
         var contentSet = new FakeContentSet(SetId, [], tools: _ => [fakeDescriptor]);
         var provider = new CampaignToolProvider([contentSet], () => EmptyRegistry(), new FakeContentTypeCatalog());
 
-        var catalog = PanelCatalog.For(session, provider.ToolsFor(session));
+        var catalog = PanelCatalog.For(provider.ToolsFor(session));
 
-        Assert.Contains(catalog.All, descriptor => descriptor.Id == "counter");
         Assert.Contains(catalog.All, descriptor => descriptor.Id == "fake.tool");
-        Assert.Equal(2, catalog.All.Count);
+        Assert.Single(catalog.All);
+        Assert.NotNull(catalog.Find("fake.tool"));
     }
 
     [Fact]
@@ -96,12 +92,12 @@ public sealed class CampaignToolProviderTests
             id,
             "DungeonIconUsers",
             WorkspacePanelGroup.World,
-            new PanelPlacement(0, 0, WorkspaceGridSettings.CounterPanelMinWidth, WorkspaceGridSettings.CounterPanelMinHeight),
+            new PanelPlacement(0, 0, WorkspaceGridSettings.ToolPanelMinWidth, WorkspaceGridSettings.ToolPanelMinHeight),
             new PanelConstraints(
-                WorkspaceGridSettings.CounterPanelMinWidth,
-                WorkspaceGridSettings.CounterPanelMinHeight,
-                WorkspaceGridSettings.CounterPanelMaxWidth,
-                WorkspaceGridSettings.CounterPanelMaxHeight),
+                WorkspaceGridSettings.ToolPanelMinWidth,
+                WorkspaceGridSettings.ToolPanelMinHeight,
+                WorkspaceGridSettings.ToolPanelMaxWidth,
+                WorkspaceGridSettings.ToolPanelMaxHeight),
             () => new object());
 
     private static ContentRegistry EmptyRegistry() => new([], [], [], []);

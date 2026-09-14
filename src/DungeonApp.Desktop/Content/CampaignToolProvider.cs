@@ -10,7 +10,7 @@ namespace DungeonApp.Desktop.Content;
 /// <summary>
 /// Built once in the composition root: the single place that turns every installed content set's
 /// tool belt into the panels one open campaign's <see cref="Features.CampaignWorkspace.Panels.PanelCatalog"/>
-/// offers alongside the built-in counter.
+/// offers.
 /// <para>
 /// <paramref name="registry"/> is a <see cref="Func{TResult}"/>, not a <see cref="ContentRegistry"/>
 /// value, and that is load-bearing: at composition-root time (<c>App.axaml.cs</c>'s

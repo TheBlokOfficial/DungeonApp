@@ -1,15 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using DungeonApp.Desktop.Controls.Workspace;
-using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
 /// <summary>
-/// The only place panel identifiers are spelled out, built for one open campaign.
+/// Which panels one open campaign's desk offers, and the only place to ask for one by id.
 /// <para>
-/// Powstaje dla jednej kampanii, bo blat oferuje okna należące do jej bieżącej sesji.
+/// Powstaje dla jednej kampanii, bo blat oferuje okna należące do jej bieżącej sesji. Żaden
+/// identyfikator panelu nie jest już tutaj wypisany: wszystkie przychodzą z pasów narzędzi
+/// zestawów treści, a powłoka nie wnosi dziś własnego panelu.
 /// </para>
 /// </summary>
 public sealed class PanelCatalog
@@ -19,37 +18,14 @@ public sealed class PanelCatalog
     public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
 
     /// <summary>
-    /// <paramref name="extraTools"/> is what the campaign's installed content sets bring
-    /// (<see cref="Content.CampaignToolProvider.ToolsFor"/>) - appended after the built-in counter, so
-    /// a zestaw can only ever add to the desk, never displace what the shell itself always offers.
+    /// <paramref name="tools"/> is what the campaign's installed content sets bring
+    /// (<see cref="Content.CampaignToolProvider.ToolsFor"/>) - today the catalog's only source, since
+    /// the shell itself contributes no panel of its own. Kept as a dedicated step, rather than handing
+    /// the list straight through, so that "shell panels first, then zestaw tools" stays the shape of
+    /// this code even while the first list is empty - the property that a zestaw can only ever add to
+    /// the desk, never displace what the shell offers, still reads off the layout, not off a comment.
     /// </summary>
-    public static PanelCatalog For(CampaignSession session, IReadOnlyList<WorkspacePanelDescriptor> extraTools)
-    {
-        var minimum = WorkspaceMetrics.Fallback;
-        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.CounterPanelMinWidth);
-        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.CounterPanelMinHeight);
-
-        return new(
-        [
-            new WorkspacePanelDescriptor(
-                "counter",
-                "Licznik",
-                "DungeonIconDatabase",
-                WorkspacePanelGroup.Session,
-                new PanelPlacement(
-                    WorkspaceGridSettings.CellSize,
-                    WorkspaceGridSettings.CellSize,
-                    minWidth,
-                    minHeight),
-                new PanelConstraints(
-                    minWidth,
-                    minHeight,
-                    WorkspaceGridSettings.CounterPanelMaxWidth,
-                    WorkspaceGridSettings.CounterPanelMaxHeight),
-                () => new CounterPanelViewModel(session)),
-            .. extraTools,
-        ]);
-    }
+    public static PanelCatalog For(IReadOnlyList<WorkspacePanelDescriptor> tools) => new([.. tools]);
 
     /// <summary>
     /// Zwraca null dla identyfikatora, którego ta kampania nie oferuje. Odtworzenie zapisu pomija

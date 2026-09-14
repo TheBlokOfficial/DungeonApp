@@ -8,7 +8,6 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.DataBlocks;
 using DungeonApp.Core.Persistence;
-using DungeonApp.Core.Tools.Counter;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -27,7 +26,6 @@ public partial class App : Avalonia.Application
 
     private WorkspaceLayoutStore? _layoutStore;
     private DataBlockRegistry? _dataBlocks;
-    private CounterTool? _counterTool;
     private JsonCampaignRepository? _campaigns;
     private CampaignWorkspacePreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
@@ -74,22 +72,10 @@ public partial class App : Avalonia.Application
         // Plain constructor injection: no container, and deliberately no service locator.
         _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // Jedyne miejsce, w którym jawnie zgłaszają się wbudowane bloki danych i narzędzia.
-        _counterTool = new CounterTool();
-        _dataBlocks = new DataBlockRegistry()
-            .Register(
-                CounterTool.DataBlockId,
-                CounterTool.DataBlockVersion,
-                CounterTool.DataBlockShape);
-
-        foreach (var usedDataBlock in _counterTool.Uses)
-        {
-            if (!_dataBlocks.Knows(usedDataBlock))
-            {
-                throw new InvalidOperationException(
-                    $"Narzędzie licznika używa niezarejestrowanego bloku danych '{usedDataBlock}'.");
-            }
-        }
+        // Ten build nie rejestruje dziś żadnego bloku danych, bo nie ma narzędzia domenowego, które
+        // by go używało. Rejestr zostaje jako punkt zgłoszeniowy - to on, nie coś obok niego, jest
+        // miejscem, w którym przyszłe narzędzie zgłosi swój blok.
+        _dataBlocks = new DataBlockRegistry();
 
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.

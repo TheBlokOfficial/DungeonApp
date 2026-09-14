@@ -121,15 +121,15 @@ public sealed class Dnd5eContentSet : IContentSet
 
     /// <summary>
     /// This content set's tool belt: one window, "Świat kampanii", listing this campaign's instances and
-    /// offering this content set's own resolved entries to bring in as new ones. Sized the same way
-    /// <c>PanelCatalog</c> sizes the built-in counter - existing shell tokens, no numbers invented
-    /// here.
+    /// offering this content set's own resolved entries to bring in as new ones. Sized from the
+    /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
+    /// invented here.
     /// </summary>
     public IReadOnlyList<WorkspacePanelDescriptor> CreateTools(CampaignToolContext context)
     {
         var minimum = WorkspaceMetrics.Fallback;
-        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.CounterPanelMinWidth);
-        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.CounterPanelMinHeight);
+        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.ToolPanelMinWidth);
+        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.ToolPanelMinHeight);
 
         return
         [
@@ -146,8 +146,8 @@ public sealed class Dnd5eContentSet : IContentSet
                 new PanelConstraints(
                     minWidth,
                     minHeight,
-                    WorkspaceGridSettings.CounterPanelMaxWidth,
-                    WorkspaceGridSettings.CounterPanelMaxHeight),
+                    WorkspaceGridSettings.ToolPanelMaxWidth,
+                    WorkspaceGridSettings.ToolPanelMaxHeight),
                 () => BuildToolView(context)),
         ];
     }
