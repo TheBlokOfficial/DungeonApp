@@ -21,9 +21,9 @@ public static class WorkspaceGridSettings
     /// Normal panel placement follows the visible cell grid. Holding the precision modifier during
     /// a gesture temporarily selects the half-cell rhythm instead.
     /// </summary>
-    public const WorkspaceGridSnapMode DefaultSnapMode = WorkspaceGridSnapMode.FullCell;
+    public const WorkspaceGridSnapMode DefaultSnapMode = WorkspaceGridSnapMode.HalfCell;
 
-    public const WorkspaceGridSnapMode PreciseSnapMode = WorkspaceGridSnapMode.HalfCell;
+    public const WorkspaceGridSnapMode PreciseSnapMode = WorkspaceGridSnapMode.QuarterCell;
 
     /// <summary>Normal snap step: one 32-DIP cell.</summary>
     public const double DefaultSnapStep = CellSize / (int)DefaultSnapMode;
