@@ -136,10 +136,10 @@ odwrotnie.
   jej dać hobgoblinowi. Jako osobny wpis ma wszystkie te trzy cechy, a atak bułatem
   powtarza się w połowie bestiariusza.
 
-**Czym to zastąpiono.** To samo rozwiązanie slotowe, co przy osadzaniu (kierunek 4
-powyżej). Czego jednak slot nie załatwia: opis (`description`) nadal jest jednym długim
-tekstem w polu formularza — ten problem, długiego tekstu a nie liczby pól, zostaje
-otwarty.
+**Czym to zastąpiono.** To samo rozwiązanie slotowe, co przy osadzaniu (kierunek „Osadzanie
+szablonu w szablonie" powyżej). Czego jednak slot nie załatwia: opis (`description`) nadal
+jest jednym długim tekstem w polu formularza — ten problem, długiego tekstu a nie liczby
+pól, zostaje otwarty.
 
 ### 6. Rozdział na paczkę systemową i paczkę treści
 
@@ -288,10 +288,8 @@ kampanii (Biurko, Świat, Fabuła, Kronika) należy do kampanii, nie do globalne
 elementów nawigacji mogła pochodzić z paczek treści.
 
 **Dlaczego odrzucone.** Odrzucona jest szyna nawigacji o zawartości z danych, a nie
-grupowanie treści wewnątrz skompilowanego ekranu — granica jest wąska i konkretna.
-Różnica jest sprawdzalna po skutku awarii: literówka w paczce ma psuć najwyżej etykietę
-zakładki wewnątrz ekranu, a nie samą nawigację. Nie da się nią zgubić drogi powrotnej, bo
-szyna stoi obok i nie zależy od treści.
+grupowanie treści wewnątrz skompilowanego ekranu — granica jest wąska i konkretna. Jej
+kryterium, sprawdzalne po skutku awarii, stoi w [architecture.md](architecture.md), *Rejestr*.
 
 **Czym to zastąpiono.** Grupowanie z danych jest legalne **wewnątrz** skompilowanego
 ekranu — np. rejestr wolno pogrupować i ofiltrować po polu kategorii z kontraktu
@@ -360,10 +358,8 @@ sam element „akcja skryptowa” — wypada razem z poziomem 3. Po tej decyzji 
 bezpieczeństwa redukuje się do walidacji przy wczytaniu i limitów rozmiarowych.
 
 Zakaz gałęzi w formule pełni tu drugą rolę, ważniejszą niż bezpieczeństwo: uniemożliwia
-warstwie szablonów napisanie własnego silnika reguł. Autor paczki nie może zapisać
-„jeśli ciężki pancerz, to zeruj zręczność” — nie ma czym. Może napisać funkcję w rodzaju
-`min(zręczność, pancerz.limit)`, ale to arytmetyka nad tym, co DM sam założył, deklarowana
-przez konkretny przedmiot o sobie samym, a nie wiedza aplikacji o kategoriach przedmiotów.
+warstwie treści napisanie własnego silnika reguł. Rozwinięcie tego argumentu wraz z przykładem
+jest w [architecture.md](architecture.md), *Poziomy logiki i formuły*.
 
 Eksplodujące kości — w dokumencie źródłowym uzasadnienie dla wprowadzenia Lui — są tu
 potraktowane jako własność notacji kości z twardym limitem eskalacji, a nie jako pętla
@@ -374,25 +370,21 @@ zero logiki) i deklaratywna formuła (jeden silnik formuł bez pętli i bez gał
 dla obu katalogów treści).
 
 **Wyzwalacz powrotu.** Jeśli okaże się, że poziom drugi nie pokrywa większości mechanik
-docelowej klasy systemów („trad” — D&D, Pathfinder, większość OSR, Call of Cthulhu, Savage
-Worlds), błędne jest założenie o zakresie produktu — wtedy trzeba wrócić do dyskusji o
-zakresie aplikacji, a nie dopisywać skrypty.
+docelowej klasy systemów („trad” — zakres zdefiniowany w [architecture.md](architecture.md),
+*Czym to jest*), błędne jest założenie o zakresie produktu — wtedy trzeba wrócić do dyskusji
+o zakresie aplikacji, a nie dopisywać skrypty.
 
 ### 15. Osobny „system efektów”
 
 **Co proponowano.** Modelowanie efektów (magicznych, statusowych) jako odrębnego
 mechanizmu w silniku, innego niż zwykłe wkłady przedmiotów do pola.
 
-**Dlaczego odrzucone.** Efekt to zwykły wpis — ma szablon, kartę, może mieć prozę. Leży
-na instancji jako pozycja slotu, dokładnie tak samo jak przedmiot w plecaku, a jego
-szablon wypełnia kontrakt wkładu (nazwa pola plus wartość). Stąd wniosek, który usuwa całą
-klasę projektowania: **pancerz i efekt są dla aplikacji tym samym** — oba to pozycje
-deklarujące wkład do pola (np. KP). Formuła KP brzmi „baza plus suma wkładów do KP” i nie
-wie, skąd te wkłady przyszły ani czym są.
+**Dlaczego odrzucone.** Efekt to zwykły wpis leżący na instancji jako pozycja slotu, dokładnie
+tak samo jak przedmiot w plecaku, i wypełniający kontrakt wkładu. Osobny mechanizm nie jest mu
+do niczego potrzebny.
 
-**Czym to zastąpiono.** Mechanizm wkładów: jednolita lista pozycji wnoszących wartość do
-pola, sumowana bezwarunkowo, bez rozróżniania źródła czy kategorii — nie ma „systemu
-efektów”, są wkłady.
+**Czym to zastąpiono.** Mechanizm wkładów, opisany wraz z wnioskiem, który usuwa całą klasę
+projektowania, w [architecture.md](architecture.md), *Efekt jest wkładem, nie mechanizmem*.
 
 ### 16. Efekty obejmujące wiele bytów, kaskady zmian i cofanie jako wymóg silnika
 
@@ -492,7 +484,8 @@ deklarować swoje paczki, pole wraca **razem ze swoim konsumentem**, w kształci
 nierozwiązaną, dopóki kampania świadomie nie zaktualizuje deklaracji — patrz
 *Wersjonowanie* w `architecture.md`). Ten kształt jest tu zapisany właśnie po to, żeby go
 wtedy nie wymyślać od nowa. Pojęcie systemu reguł nie wraca w ogóle: zestaw treści jest
-skompilowany, a kampania nie wybiera go z pliku (patrz pozycja 24).
+skompilowany, a kampania nie wybiera go z pliku (patrz „Kompilator zna listę systemów RPG,
+kampania wybiera jeden").
 
 *Uwaga historyczna:* ta pozycja przez jedną sesję opisywała obie zmiany jako **już
 wykonane**, łącznie z testem, który nie istniał — podczas gdy w kodzie stały oba pola
@@ -515,7 +508,7 @@ odwołań do biblioteki interfejsu wewnątrz silnika.
 **Zakres zakazu — uwaga, zmieniony.** Zakaz dotyczy wyłącznie `Core` i `Desktop`. **Nie
 dotyczy zestawu treści**, który istnieje właśnie po to, żeby wiedzieć, czym jest potwór,
 i którego widoki dispatchują po typie treści zupełnie legalnie. Wcześniejsze brzmienie
-zakazywało tej wiedzy *wszędzie* — patrz pozycja 23.
+zakazywało tej wiedzy *wszędzie* — patrz „Karta składana z listy elementów podanej przez dane".
 
 **Czym to zastąpiono.** Wiedza nie jest zakazana, tylko umiejscowiona: mieszka w zestawie
 i nigdzie indziej. Granicy pilnuje skan słownictwa treści po źródłach `Core` i `Desktop`,
@@ -652,7 +645,8 @@ szablonu wobec narzędzia, które go konsumuje — a przede wszystkim nie rozwi�
 że homebrew to głównie nowa logika i nowe okna, nie nowe pliki tekstowe. Broniłby granicy
 przed autorem zewnętrznym, którym jest autor repozytorium.
 
-**Pozostaje wariantem zapasowym**, gdyby cena z pozycji 23 okazała się nie do przyjęcia.
+**Pozostaje wariantem zapasowym**, gdyby cena przyjęta w „Karta składana z listy elementów
+podanej przez dane" okazała się nie do przyjęcia.
 
 ### 29. Materializacja wpisu w instancji
 
@@ -682,12 +676,11 @@ plik pozycji oznacza tę pozycję, kolizja id oznacza obie kolidujące.
 
 ### 31. Introspekcja typu treści przez narzędzie
 
-**Co proponowano.** Nic — to zagrożenie, nie propozycja. Skompilowany typ leży w tym samym
-procesie, więc „znajdź wszystkie typy mające pole `initiative`" jest jedną linijką.
+**Co proponowano.** Nic — to zagrożenie, nie propozycja: po przeniesieniu typów treści do
+kodu introspekcja stała się tania, więc zakaz musiał zostać zapisany, a nie dorozumiany.
 
-**Dlaczego zakazane.** Narzędzie odkrywające swój kształt w czasie wykonania przez
-chodzenie po cudzych deklaracjach jest dokładnie tą wiotkością, przed którą broni cała ta
-architektura. Gdy typy były plikami danych, introspekcja wymagała parsowania i pokusa
-praktycznie nie istniała; po zmianie zakaz musi być zapisany, a nie dorozumiany.
+**Dlaczego zakazane.** Zakaz i jego uzasadnienie stoją w [architecture.md](architecture.md),
+*Kontrakty są interfejsami*. Pozycja jest tutaj wyłącznie po to, żeby temat dał się znaleźć
+w rejestrze rozstrzygnięć — nie dlatego, że ktokolwiek to zaproponował.
 
 **Czym to zastąpiono.** Narzędzie deklaruje interfejs i dostaje obiekty.

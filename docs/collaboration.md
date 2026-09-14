@@ -48,11 +48,23 @@ w plikach motywu; style lokalne dla widoku; żadnych animacji, kontrolek własny
 wpisanych wprost. Cel jest taki, żeby wszystko, co będzie chciał przesunąć, leżało w jednym
 oczywistym miejscu, i żeby nie trzeba było najpierw rozbierać czegoś wymyślonego po drodze.
 
+**Koniec kawałka pracy = commit. Bez pytania i bez czekania na polecenie.** Decyzja autora
+z 2026-09-14. Domknięty etap ma wylądować w historii od razu — **także wtedy, gdy autorowi wynik się
+nie podoba**. Od tego jest git, żeby dało się cofnąć, poprawić albo porzucić rzecz zapisaną; trzymanie
+niezatwierdzonej pracy w drzewie roboczym nie jest formą recenzji, tylko sposobem na jej zgubienie.
+Niezadowolenie z wyniku rozstrzyga się następnym commitem albo cofnięciem tego, nie wstrzymaniem
+zapisu.
+
 **Sprawdź `git status` przed commitem.** Jego zmiany w toku potrafią leżeć w drzewie roboczym obok
-Twojej pracy i nie wolno ich zagarnąć do Twojego commita.
+Twojej pracy i nie wolno ich zagarnąć do Twojego commita. Ta reguła jest starsza od powyższej i ma
+przed nią pierwszeństwo: „commituj zawsze" znaczy „commituj **swoje** zawsze".
 
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
+
+**Subagentów nie uruchamiaj na najdroższym modelu.** Decyzja autora z 2026-09-14. Zadania, które im
+się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny właśnie po to, żeby myślenie
+zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
 
 ---
 
@@ -93,6 +105,21 @@ warstwy.
    zerwało linki, i to cicho: wskaźnik na „§13" o nawigacji po jakimś czasie wskazywał na paczki
    i bezpieczeństwo, a nic tego nie zgłosiło.
 
+   *Że to nie jest przesada:* przegląd 2026-09-14 znalazł w mapie kodu odsyłacz do „§13" po
+   warstwy i granice, które stoją w architekturze osiem sekcji wcześniej. Dokładnie ten sam błąd,
+   ten sam numer, cicho przez kilka sesji.
+
+4. **Każdy fakt ma jeden dom — nie streszczaj cudzego.** Zanim wpiszesz uzasadnienie, sprawdź, czy
+   nie stoi już tam, gdzie należy: „dlaczego tak" w `architecture.md`, „dlaczego nie tamto"
+   w `decisions.md`, „jak jest dziś" w `code-map.md`, „co dalej" w `tasks.md`. Odeślij po nazwie
+   sekcji, zamiast powtórzyć. Tabela własności jest w `README.md`.
+
+   *Skąd to się wzięło:* przegląd 2026-09-14 znalazł ten sam argument w pięciu dokumentach naraz
+   (dwie flagi jako dowód, że stary format przeciekał układem) i w czterech (zmiana wpisu
+   traktowana jak patchnote). Powtórzenia brały się z dobrej intencji — każdy dokument miał się
+   czytać samodzielnie. Cena była taka, że **żadnego nie dało się bezpiecznie pominąć**, więc
+   koszt wejścia w sesję był sumą wszystkich sześciu.
+
 ---
 
 ## 4. Briefy dla subagentów
@@ -101,7 +128,7 @@ Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą
 
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
    aplikacji autora, żeby odblokować `dotnet clean`. Poprawne zachowanie to zgłosić blokadę, nie
-   sprzątnąć cudzy proces — patrz sekcja 6.
+   sprzątnąć cudzy proces — patrz „Środowisko".
 2. **Nie przeszukuj `bin/` ani `obj/`.** Subagent zaczął grepować pliki `.dll` w poszukiwaniu
    referencji do typów. Skanuj tylko źródła; katalogi wyjściowe zawierają kopie i pochodne, więc
    odpowiedź jest i zaszumiona, i kosztowna.
@@ -176,4 +203,4 @@ Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się link
 
 **Mimo wszystko nie zabijaj tego procesu z własnej inicjatywy.** Po nazwie procesu nie widać
 różnicy między podglądaczem a działającą instancją `DungeonApp.App` — widać ją dopiero po linii
-poleceń. Zgoda udzielona raz nie znosi reguły z sekcji 4.
+poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".

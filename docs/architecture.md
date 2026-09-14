@@ -202,9 +202,9 @@ automatyzacji*.
 - **Zestawy nigdy nie referencują się nawzajem.** Byłaby to krawędź wewnątrz jednej warstwy, z całym
   bagażem, którego unikamy gdzie indziej: problem diamentu, kolejność wczytywania, wersjonowanie
   kaskadowe.
-- **Ładowanie zestawów jest statyczne — referencją projektu, nigdy `Assembly.LoadFrom`.** Ładowanie
-  wtyczek w czasie wykonania przywróciłoby cały model piaskownicy, który wycofanie skryptów usunęło,
-  i kupiłoby zero: instalującym jest autor repozytorium.
+- **Ładowanie zestawów jest statyczne — referencją projektu, nigdy `Assembly.LoadFrom`.** Dlaczego
+  wtyczki ładowane z katalogu nic tu nie kupują — [decisions.md](decisions.md), *Ładowanie zestawów
+  treści w czasie wykonania*.
 
 **Dziś zestaw jest jeden.** Liczba mnoga jest zdolnością, nie planem. Drugi powstaje w dniu,
 w którym naprawdę zmienia się system, i jest wtedy równoległy, nie zależny.
@@ -260,10 +260,8 @@ Lista cech, blok prozy, lista pozycji, pasek zasobu, akcja rzutu, znacznik binar
 jako **kontrolki wielokrotnego użytku**, komponowane przez projektanta karty, a nie jako pozycje
 katalogu wybierane przez dane. Ginie wyłącznie **wybór kontrolki przez dane**, nie kontrolka.
 
-Konsekwencją jest, że zniknęły parametry w rodzaju `compact` czy `selfDescribing`. Były deklarowane
-jako „stwierdzenia o treści, nie o układzie", a istniały wyłącznie po to, żeby wymusić konkretny
-układ w rendererze, który układu nie znał. Zaprojektowany widok nie potrzebuje ich mówić — on je po
-prostu ma.
+Konsekwencją jest, że zniknęły parametry w rodzaju `compact` czy `selfDescribing`: zaprojektowany
+widok nie potrzebuje mówić o swoim układzie — on go po prostu ma.
 
 ### 10.3 Droga treści: z dysku na ekran
 
@@ -324,8 +322,8 @@ waży tyle samo — to esencja), **ilość jest w nakładce** (to własność st
 
 **Czego nakładce nie wolno — reguła projektowa, nie blokada techniczna:** modelować *wariantu
 rzeczy*. Miecz +1 to osobny wpis, nie miecz z nadpisanym polem. Kryterium operacyjne brzmi: **czy
-chcesz tego użyć ponownie.** Goblin łucznik, który ma być pod ręką w każdej przyszłej potyczce, jest
-wpisem. Ten jeden goblin, któremu MG dał dziś procę, jest instancją.
+chcesz tego użyć ponownie.** Przykłady i pełny argument — [decisions.md](decisions.md), *Nakładka
+jako miejsce na warianty rzeczy*.
 
 ### 11.1 Nakładka jest rzadką łatką nad wartościami wpisu
 
@@ -482,10 +480,9 @@ Zasada nadrzędna: **wadliwa treść zostaje widoczna i oznaczona. Nigdy nie zni
 | dwie pozycje o tym samym id | **obie oznaczone** — żadna nie wygrywa po cichu |
 | brakuje paczki, do której odwołuje się kampania | instancje oznaczone, notatki nietknięte, kampania otwiera się dalej |
 
-Odrzucanie **całej** paczki za jeden wadliwy wpis obowiązywało wcześniej i odpada razem
-z uzasadnieniem, które je trzymało: chodziło o to, żeby rejestr nie zawierał wpisu rozwiązanego
-wobec szablonu z nieobecnej paczki. Typy treści nie pochodzą już z paczek, więc wadliwy plik nie
-zagraża żadnemu innemu. Zostawało już tylko ukrywanie dwustu poprawnych potworów za jedną literówką.
+Odrzucanie **całej** paczki za jeden wadliwy wpis obowiązywało wcześniej i zostało uchylone razem
+z uzasadnieniem, które je trzymało — [decisions.md](decisions.md), *Odrzucanie całej paczki za jeden
+wadliwy wpis*.
 
 Rejestr jest jedynym kanałem, którym Mistrz Gry się o tym dowiaduje — więc projekt tego ekranu,
 który nie przewiduje miejsca na rzeczy zepsute, jest niekompletny **funkcjonalnie**, a nie
@@ -623,9 +620,8 @@ inwalidacji zależności.
 **Eksplodujące kości** są własnością notacji kości z twardym limitem eskalacji, a nie pętlą pisaną
 przez autora treści.
 
-**Kryterium powrotu do dyskusji:** jeśli okaże się, że poziom 2 nie pokrywa większości mechanik klasy
-„trad", błędne jest założenie o klasie z sekcji *Czym to jest* — wtedy wracamy do zakresu produktu,
-a nie dopisujemy skryptów.
+**Kryterium powrotu do dyskusji** stoi przy odrzuceniu skryptów — [decisions.md](decisions.md),
+*Poziom 3 logiki / skrypty Lua*.
 
 ## 17. Gdzie mieszka stan
 

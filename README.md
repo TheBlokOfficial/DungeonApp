@@ -81,6 +81,21 @@ nigdy więc nie rozjeżdża się z kodem.
 | [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
 | [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
 
+**Każdy fakt ma jeden dom.** Tabela wyżej mówi, kto wygrywa przy rozbieżności. Ta reguła mówi coś
+innego: kto w ogóle ma prawo rzecz zapisać. Uzasadnienie stoi w jednym dokumencie, a pozostałe
+odsyłają do niego po nazwie sekcji — nigdy go nie streszczają „żeby czytało się samodzielnie".
+
+| Rodzaj faktu | Dom |
+|---|---|
+| dlaczego **tak** — rozstrzygnięcie obowiązujące i jego uzasadnienie | `architecture.md` |
+| dlaczego **nie tamto** — kierunek odrzucony, jego argumenty i wyzwalacz powrotu | `decisions.md` |
+| **jak jest dziś** — stan kodu | `code-map.md` |
+| **co dalej** | `tasks.md` |
+
+Powód jest praktyczny, nie porządkowy: dopóki każdy dokument powtarzał kawałek sąsiada, żadnego nie
+dało się bezpiecznie pominąć, a kolumna „kiedy po niego sięgnąć" była fikcją. Po tej regule
+pominięcie dokumentu, którego dziś nie potrzebujesz, jest bezpieczne — i o to w niej chodzi.
+
 Dwie rzeczy, które oszczędzają najwięcej czasu:
 
 * **`decisions.md` czyta się przed propozycją, nie po.** Sporo naturalnych pomysłów zostało już raz
