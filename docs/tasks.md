@@ -1,6 +1,6 @@
 # DungeonApp — kolejka pracy
 
-**Status: stan na 2026-09-14.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
+**Status: stan na 2026-09-15.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
@@ -23,19 +23,22 @@ Gałąź: `master`. Build bez ostrzeżeń, 239 testów zielonych.
 ## Gdzie jesteśmy
 
 Kroki 1–8 z sekcji „Kolejność prac" [architecture.md](architecture.md) są **zrobione** — krok 8
-domknięty 2026-09-14 usunięciem licznika i całej warstwy bloków danych. Było to przejście z szablonów jako plików
-danych na skompilowane typy treści, a następnie osadzenie treści w konkretnej kampanii. Stan, do
-którego to doprowadziło:
+domknięty 2026-09-14 usunięciem licznika i całej warstwy bloków danych, a 2026-09-15 dogonieniem
+go przez dokumenty. Było to przejście z szablonów jako plików danych na skompilowane typy treści,
+a następnie osadzenie treści w konkretnej kampanii. Stan, do którego to doprowadziło:
 
 * **Typy treści są kodem.** Zestaw `DungeonApp.Content.Dnd5e` niesie `Monster` i `Gear`, ich
   zaprojektowane karty i jedno okno biurka. Deserializator jest jedynym walidatorem.
 * **Granice są pilnowane mechanicznie**, nie deklarowane — cztery testy architektoniczne, w tym skan
   słownictwa, który poszerza się sam wraz z przybywającymi typami treści.
-* **Kampania ma własny świat.** Instancje z rzadką łatką, zapis na dysk w jednej transakcji
-  z blokami danych, rozwiązywanie wskazania wobec rejestru jako osobna warstwa odczytu.
+* **Kampania ma własny świat.** Instancje z rzadką łatką, zapis całej generacji na dysk w jednej
+  transakcji, rozwiązywanie wskazania wobec rejestru jako osobna warstwa odczytu.
 * **Zestaw treści wnosi własne okno biurka** — mechanizm pasa narzędzi. Okno „Świat kampanii" jest
   pierwszym prawdziwym narzędziem biurka i pierwszym konsumentem magazynu instancji.
 * **Jeden prymityw zapisu atomowego** zamiast trzech ręcznie pisanych kopii.
+* **Instancje są jedynym magazynem stanu kampanii.** Warstwa bloków danych odeszła bez następcy;
+  kształt, w jakim wróci razem ze swoim konsumentem, stoi w [decisions.md](decisions.md), pozycja
+  „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".
 
 Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
@@ -43,26 +46,13 @@ Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
 ## Następne
 
-### 1. Dokumenty po rozbiórce bloków danych
+**Ten wycinek jest zamknięty i nic z niego nie zostało.** Kroki 1–8 są wykonane, a dokumenty
+opisują ten sam świat co kod.
 
-**To jedyna praca, jaka została z kroku 8.** Kod jest zrobiony i zielony; dokumenty opisują jeszcze
-świat sprzed rozbiórki. Rozpoznanie jest zrobione — nie rób go drugi raz:
-
-* **`architecture.md`, trzynaście miejsc.** Najważniejsze: „Gdzie mieszka stan" ma tabelę *dwóch*
-  magazynów, a został jeden; „Pytania otwarte" niosą pytanie 2 („czy `DataBlockShape` zarabia na
-  siebie") jako otwarte, a zostało rozstrzygnięte; „Kolejność prac" pokazuje krok 8 jako niedomknięty;
-  słownik niesie hasła **narzędzie (`ITool`)** i **blok danych**. Uwaga: „licznik generacji" przy
-  zapisie na dysk to **inny mechanizm** i zostaje.
-* **`code-map.md`, dwadzieścia osiem miejsc.** Ścieżka pionowa nr 1 przez licznik, wiersze tabeli
-  `Core/DataBlocks`, punkt rozszerzenia „Nowe narzędzie domenowe + blok danych", liczby testów
-  (239: Core 159, Desktop 49, Content 18, Architecture 13) i ocena stanu.
-* **`decisions.md` — zrobione.** Uzasadnienie odejścia i **kształt, w jakim mechanizm wróci**, stoją
-  w pozycji „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta". Nie streszczaj
-  go w pozostałych dokumentach — odeślij po nazwie.
-
-Czego z samego kodu nie widać, a jest ustalone: mechanizm wraca **razem ze swoim konsumentem**
-i w prostszym kształcie niż usunięty; najbliższym kandydatem jest **zegar świata**, bo to stan
-niezwiązany z żadnym wpisem, którego instancje nie obsłużą. Zegar nie ma dziś terminu.
+Następny w projekcie jest krok 9 z „Kolejność prac" [architecture.md](architecture.md) — formuły,
+sloty, dokument — ale jego kolejność wewnętrzna jest tam wprost zostawiona **do ustalenia
+osobno**. To rozstrzygnięcie autora, nie pozycja, którą da się stąd wziąć do wykonania, więc
+dopóki nie zapadnie, ta sekcja celowo stoi pusta.
 
 ---
 
@@ -79,7 +69,7 @@ wcześniej wariantu „kampania wybiera system" i co z tamtych argumentów nadal
 `decisions.md`, „Kompilator zna listę systemów RPG, kampania wybiera jeden".
 
 **Dlaczego nie teraz — przesłanka sprawdzona w kodzie 2026-09-14 i nie trzyma.** Jest jeden zestaw
-i wnosi jedno okno; drugie okno biurka to licznik, który stoi wyżej do usunięcia. Kampania mogłaby
+i wnosi jedno okno, a po odejściu licznika jest to jedyne okno na całym biurku. Kampania mogłaby
 więc być w dwóch stanach: zestaw zaznaczony — biurko jak dziś, zestaw odznaczony — biurko puste.
 Ten drugi stan jest jedyną nową rzeczą, jaką mechanizm potrafiłby dziś pokazać, i nikt go nie chce.
 To ten sam kształt, za który z manifestu kampanii wyleciały dwa pola — patrz `decisions.md`,

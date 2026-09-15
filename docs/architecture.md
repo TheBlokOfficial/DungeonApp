@@ -159,9 +159,8 @@ automatyzacji*.
 | **karta** | Zaprojektowany widok jednego typu treści. Nie jest składana z danych. |
 | **kontrakt** | Interfejs publikowany przez konsumenta. Typ treści go implementuje albo nie. |
 | **slot** | Pole, którego wartością jest lista referencji (we wpisie) lub lista instancji (w kampanii). |
-| **narzędzie** (`ITool`) | Backend okna na biurku. Deklaruje, z jakich bloków danych korzysta. |
+| **narzędzie** | Backend okna na biurku, wnoszony przez zestaw treści. |
 | **panel / okno** | Pływające okno na biurku. Kontener; hostuje narzędzie. |
-| **blok danych** | Stan narzędzia biurka o kształcie znanym w czasie kompilacji. |
 | **paczka** | Katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów treści. |
 | **rejestr** | Co silnik wie o zainstalowanych paczkach po wczytaniu i zwalidowaniu. Wspólny, tylko do odczytu. |
 | **powierzchnia** | Jeden ze skompilowanych widoków otwartej kampanii. |
@@ -170,11 +169,11 @@ automatyzacji*.
 
 | Warstwa | Projekt | Charakter | Co wolno wiedzieć |
 |---|---|---|---|
-| **Silnik** | `DungeonApp.Core` | kompilowana | kampania, bloki danych, zdarzenia, zapis, wczytywanie paczek, rejestr, magazyn instancji, silnik formuł. **Zna `Entry`. Nie zna `Monster`.** |
+| **Silnik** | `DungeonApp.Core` | kompilowana | kampania, zdarzenia, zapis, wczytywanie paczek, rejestr, magazyn instancji, silnik formuł. **Zna `Entry`. Nie zna `Monster`.** |
 | **Powłoka** | `DungeonApp.Desktop` | kompilowana | szyna, powierzchnie, framework okien, kontrolki wielokrotnego użytku. **Też nie zna `Monster`.** |
 | **Zestaw** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, narzędzia biurka. **Jedyne miejsce, gdzie wolno być konkretnym.** |
 | **Paczka** | `Dokumenty\DungeonApp\Packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
-| **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | instancje, nakładki, stan narzędzi. |
+| **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | instancje, nakładki. |
 
 ```
         ┌──────────────────────────────────────────────┐
@@ -300,7 +299,8 @@ każdego zestawu i istnieją w jednym miejscu.
 jednej klasy. Patrz *Pytania otwarte*, pytanie o format.
 
 **Konwencja nazewnicza:** identyfikatory po angielsku, etykiety i treść po polsku. Ta sama linia
-obowiązuje w kodzie: `DataBlockId` ma wartość `counter`, a komunikaty dla Mistrza Gry są po polsku.
+obowiązuje w kodzie: identyfikator typu treści ma wartość `monster`, a etykiety i komunikaty dla
+Mistrza Gry są po polsku.
 
 ## 11. Wpis, dokument, instancja, nakładka
 
@@ -630,26 +630,18 @@ Podział przebiega wzdłuż jednej linii: **co jest statyczne i wspólne, a co z
 | Co | Gdzie | Charakter |
 |---|---|---|
 | Paczki | `Dokumenty\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — ma być widoczny i kopiowalny. |
-| Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Instancje, nakładki, stan narzędzi, manifest. |
+| Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Instancje, nakładki, manifest. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Stan aplikacji, nie dokument. |
 
 **Kampania jest dokumentem, układ okien jest ustawieniem programu.** Dlatego kampania leży
 w Dokumentach — widoczna, kopiowalna, przenoszalna na pendrivie — a układ biurka w danych aplikacji.
 
-**Dwa magazyny stanu, każdy z własnym źródłem kształtu:**
+**Jeden magazyn stanu.** Magazyn instancji trzyma nakładki instancji, wraz z zagnieżdżonymi.
+Źródłem kształtu nie jest silnik — jest nim typ treści z zestawu.
 
-| Magazyn | Co trzyma | Kto waliduje kształt |
-|---|---|---|
-| bloki danych | stan narzędzi biurka: kolejka tur, zegar świata | `DataBlockShape`, znany w czasie kompilacji |
-| magazyn instancji | nakładki instancji, wraz z zagnieżdżonymi | typ treści z zestawu |
-
-Dzięki rozdzieleniu walidacji `DataBlockRegistry` zostaje szczery: **„nieznany blok" nadal znaczy
-„inny build aplikacji", a nie „brak zainstalowanej paczki".** To dwa różne problemy i mają dwa różne
-komunikaty.
-
-Wszystkie magazyny zapisują tak samo: plik tymczasowy, atomowe przeniesienie, licznik generacji
-wykrywający zapis przerwany w połowie. Dziś są to **trzy osobne implementacje tego samego** — patrz
-*Pytania otwarte*.
+Magazyn kampanii i magazyn układu biurka zapisują tak samo: plik tymczasowy, atomowe przeniesienie,
+licznik generacji wykrywający zapis przerwany w połowie — jeden prymityw zapisu atomowego, z którego
+korzystają oba.
 
 ## 18. Powłoka, nawigacja, powierzchnie
 
@@ -749,8 +741,8 @@ Dwie niezależne osie.
 Wcześniejsza trzecia oś — wersja katalogu elementów i kontraktów — **znika**: katalog nie jest już
 bytem, z którego wybierają dane, a kontrolki i interfejsy kompilują się razem z tym, co ich używa.
 
-**Migracji nie budujemy**, dopóki jakaś wersja nie zostanie faktycznie podniesiona — spójnie
-z decyzją, którą projekt już podjął dla bloków danych.
+**Migracji nie budujemy**, dopóki jakaś wersja nie zostanie faktycznie podniesiona — projekt już tak
+robi na obu osiach powyżej: niezgodna wersja **oznacza** pozycję, a nie uruchamia migrację.
 
 ## 21. Przepływy
 
@@ -789,8 +781,8 @@ ostrzeżenie na pasku.
 
 * **Jest dokładnie jedno wejście** do zmiany otwartej kampanii. Nie ma drugiej drogi.
 * **Zdarzenia powiadamiają, nigdy nie zapisują.**
-* **Ta ścieżka już działa i jest przetestowana od początku do końca.** Udowadnia ją licznik —
-  narzędzie celowo bez sensu, które po to właśnie powstało.
+* **Ta ścieżka już działa i jest przetestowana od początku do końca.** Przechodzi nią każda zmiana
+  okazu w kampanii.
 
 ### 21.3 Pozostałe
 
@@ -798,7 +790,7 @@ ostrzeżenie na pasku.
 kampanii.
 
 **Otwarcie kampanii.** Manifest → zadeklarowane paczki → rozwiązanie referencji → wczytanie
-instancji (wartości wpisu scalone z łatką) i stanu narzędzi → biurko z zapisanego układu.
+instancji (wartości wpisu scalone z łatką) → biurko z zapisanego układu.
 
 **Wprowadzenie wpisu do świata.** Wybór z rejestru filtrowanego do paczek kampanii → nowa instancja:
 nowe id, referencja, pusta łatka, zawartość slotów z wpisu.
@@ -820,10 +812,10 @@ zapisuje się jako klucz łatki tą samą ścieżką co zmiana stanu.
 | Granica | Jak egzekwowana | Status |
 |---|---|---|
 | `Core` bez Avalonii | test po referencjach zestawu | istnieje |
-| `Core` i `Desktop` bez **nazw rodzajów** treści | skan źródeł po słowniku z zestawu | **do napisania — przed rozbiórką starego, nie po** |
+| `Core` i `Desktop` bez **nazw rodzajów** treści | skan źródeł po słowniku z zestawu | istnieje |
 | `Core` i `Desktop` bez **nazw pól** treści | koperta: nie ma API przyjmującego nazwę pola | wchodzi z kopertą, nie testem |
-| `Core` i `Desktop` nie referencują zestawu | test po referencjach | do napisania |
-| Zestaw nie referencuje innego zestawu | test po referencjach | do napisania |
+| `Core` i `Desktop` nie referencują zestawu | test po referencjach | istnieje |
+| Zestaw nie referencuje innego zestawu | test po referencjach | istnieje |
 | Narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
 | Brak kaskad zmian stanu | `MaxEventsPerCommand` jako tripwire | istnieje, uzasadnienie do przepisania |
 
@@ -866,23 +858,17 @@ kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o tre�
    więc zostaje jeden długi tekst na plik — a wtedy naturalnym kształtem jest **front-matter plus
    treść**, ten sam, który przyjęto dla dokumentu. **Rozstrzygnąć po slotach, nie przed.** Nie robić
    w międzyczasie: tablicy napisów udającej akapity, prozy we front-matterze, własnego DSL-a.
-2. **Czy `DataBlockShape` nadal zarabia na siebie.** Istnieje, żeby sprawdzać kształt i serializować
-   zgodnie z nim. Rekord daje pierwsze od kompilatora, deserializator drugie od typu. Zostaje
-   potrzebne wyłącznie „ten build nie zna tego bloku / tej wersji", co nie wymaga kształtu.
-   **Wyzwalacz:** pierwsze prawdziwe narzędzie biurka. Nie ruszać wcześniej.
-3. **Trzy własne implementacje zapisu atomowego.** Wydzielić jeden prymityw **zanim** powstanie
-   trzeci użytkownik.
-4. **Autorstwo treści w aplikacji.** Rejestr jest tylko do odczytu. Pytanie zmniejszyło się o połowę
+2. **Autorstwo treści w aplikacji.** Rejestr jest tylko do odczytu. Pytanie zmniejszyło się o połowę
    (typy treści pisze się w IDE, kompilator daje komunikaty), ale zostaje dla wpisów. Najmocniejszy
    motywator: MG ubiera goblina i nie ma jak zapisać tego jako czegoś wielokrotnego użytku.
    Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone.
-5. **Katalog pól formularza dokumentu i kształt markera.**
-6. **Czy silnik formuł potrzebuje tablicy przeglądowej.** Modyfikator cechy to czysta arytmetyka, ale
+3. **Katalog pól formularza dokumentu i kształt markera.**
+4. **Czy silnik formuł potrzebuje tablicy przeglądowej.** Modyfikator cechy to czysta arytmetyka, ale
    premia z biegłości i stopnie kości w Savage Worlds są tabelami. Tablica stała nie łamie zakazu
    gałęzi, ale poszerza język.
-7. **Jakie jeszcze pola trafiają do nakładki poza stanem i slotami.** Reguła rozstrzygająca jest
+5. **Jakie jeszcze pola trafiają do nakładki poza stanem i slotami.** Reguła rozstrzygająca jest
    zapisana; brakuje przejścia przez realny system.
-8. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
+6. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
    jakąkolwiek kartę zastępczą, czy zostaje bez niej. **Wyzwalacz:** pierwszy taki rodzaj treści.
    Dziś oba istniejące mają karty zaprojektowane, więc pytanie jest puste.
 
@@ -893,12 +879,15 @@ zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta), `C
 Przewidywała, że **dwie z nich umrą, zamiast doczekać konsumenta**. Umarły wszystkie sześć —
 ostatnie dwa 2026-09-13. Żadna nie doczekała konsumenta; ani jeden raz rezerwacja się nie opłaciła.
 
+Siódma: **warstwa bloków danych.** Przypadek mocniejszy niż poprzednie sześć — padł cały mechanizm,
+nie pole. Rozstrzygnięcie i kształt, w jakim wróci — [decisions.md](decisions.md), *Utrzymanie
+warstwy bloków danych po odejściu jej jedynego konsumenta*.
+
 Zasada, która z tego została, obowiązuje dalej i jest szersza niż ta lista. Była zapisana wąsko,
 dla pól: *wożenie pola, dla którego świadomie nie przewidujemy zastosowania, jest gorsze niż jego
 brak.* Rozszerzona z pól na mechanizmy brzmi: **nic nie wchodzi bez konsumenta w tym samym
-wycinku.** Sześć na sześć jest wystarczającym dowodem, żeby traktować ją jako regułę, a nie
-preferencję — a zarazem powodem, żeby nie odkładać kroku *magazyn instancji* przed krokiem
-*pierwsze narzędzie*, bo to byłby siódmy przypadek tego samego.
+wycinku.** Siedem na siedem jest wystarczającym dowodem, żeby traktować ją jako regułę, a nie
+preferencję.
 
 Jedyny dzisiejszy przypadek graniczny to `AllowsMultipleInstances`: ma konsumenta (odtwarzanie
 układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To jest rusztowanie opisane
@@ -906,6 +895,9 @@ jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je
 i działa.
 
 ## 24. Kolejność prac
+
+Kroki 1–8 są zrobione (krok 8 domknięty 2026-09-14), otwarty zostaje krok 9; co dokładnie zostało do
+zrobienia, mówi [tasks.md](tasks.md).
 
 | # | Krok | Dlaczego tu |
 |---|---|---|
@@ -916,8 +908,5 @@ i działa.
 | 5 | Odrzucanie per plik wpisu; pozycje nierozwiązane widoczne w rejestrze | zamyka sekcję o paczkach |
 | 6 | Jeden prymityw zapisu atomowego | **przed** magazynem instancji |
 | 7 | Magazyn instancji + nakładki | pierwszy realny stan kampanii |
-| 8 | Pierwsze prawdziwe narzędzie biurka; weryfikacja pytania 2 i usunięcie licznika | |
+| 8 | Pierwsze prawdziwe narzędzie biurka i rozstrzygnięcie losu warstwy bloków danych | |
 | 9 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
-
-**Kroki 1–5 są jednym spójnym przejściem i nie powinny być przerywane w środku** — między 3 a 4
-aplikacja nie ma czym renderować karty.

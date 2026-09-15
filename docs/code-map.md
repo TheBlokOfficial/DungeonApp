@@ -17,9 +17,8 @@ niż jakiekolwiek ich streszczenie tutaj.
 > w chwili edytowania pliku. Kiedy dopisujesz tu akapit, sprawdź, po której stronie tej linii stoi —
 > jeśli po drugiej, jego miejsce jest w komentarzu przy kodzie.
 
-> **Aktualność: 2026-09-14.** Przepisany pod powyższą regułę z wersji, która opisywała także
-> szczegóły implementacyjne. Uzasadnienia, które stąd wypadły, zostały przeniesione do komentarzy
-> w kodzie — nie skasowane.
+> **Aktualność: 2026-09-15.** Zaktualizowany po rozbiórce licznika i całej warstwy bloków danych —
+> oba mechanizmy zniknęły z kodu, jedynym magazynem stanu kampanii są dziś instancje.
 
 ---
 
@@ -27,26 +26,20 @@ niż jakiekolwiek ich streszczenie tutaj.
 
 1. `src/DungeonApp.App/Program.cs` — korzeń kompozycji i jedyne miejsce wymieniające zestaw treści
    z nazwy.
-2. `src/DungeonApp.Desktop/App.axaml.cs` — dalszy ciąg kompozycji: rejestr bloków danych,
-   repozytoria, loader treści, tablica kroków startowych. Zestawy treści przyjmuje przez konstruktor,
-   nigdy ich nie odkrywa.
+2. `src/DungeonApp.Desktop/App.axaml.cs` — dalszy ciąg kompozycji: repozytoria, loader treści,
+   agregaty nad zestawami, cache przygotowania, tablica kroków startowych. Zestawy treści przyjmuje
+   przez konstruktor, nigdy ich nie odkrywa.
 3. `Shell/AppShellViewModel.cs` — przełącza między biblioteką kampanii, rejestrem treści i biurkiem.
-4. `DungeonApp.Core`: `Campaign`, `CampaignDataBlocks`, `JsonCampaignRepository` — stan, jego zmiana
+4. `DungeonApp.Core`: `Campaign`, `CampaignInstances`, `JsonCampaignRepository` — stan, jego zmiana
    i trwały zapis.
 
-Dalej są **trzy kompletne ścieżki pionowe**, każda od gestu do dysku. Warto przejść je w tej
+Dalej są **dwie kompletne ścieżki pionowe**, każda od gestu do dysku. Warto przejść je w tej
 kolejności, bo każda kolejna zakłada poprzednią:
 
 | # | Ścieżka | Od czego do czego | Po co ją czytać |
 |---|---|---|---|
-| 1 | licznik | `CounterTool` → `CounterPanelViewModel` → `CampaignSession` → `JsonCampaignRepository` | najprostszy pełny przekrój; rusztowanie, patrz niżej |
-| 2 | treść | `Core/Content/*` → `Desktop/Content/*` → `Content.Dnd5e/*` | niesie dziś największą część architektury |
-| 3 | instancje | `CampaignInstances` → `InstanceResolver` → `CampaignToolContext` → `CampaignInstancesToolViewModel` | odpowiada na pytanie, co z tego widzi MG przy stole |
-
-**Licznik jest rusztowaniem, nie funkcją.** Powstał, żeby udowodnić, że ścieżka od gestu do zapisu
-działa i daje się przetestować. Z samego kodu — dopracowanego i dobrze pokrytego — łatwo wyciągnąć
-przeciwny wniosek, więc to zdanie jest tu celowo. **Warunek jego odejścia już się spełnił:** pierwsze
-prawdziwe narzędzie biurka istnieje od 2026-09-13, a usunięcie licznika stoi w [tasks.md](tasks.md).
+| 1 | treść | `Core/Content/*` → `Desktop/Content/*` → `Content.Dnd5e/*` | niesie dziś największą część architektury |
+| 2 | instancje | `CampaignInstances` → `InstanceResolver` → `CampaignToolContext` → `CampaignInstancesToolViewModel` | jedyny dziś pełny przekrój od gestu do dysku; odpowiada zarazem na pytanie, co z tego widzi MG przy stole |
 
 Testy w `tests/` są zarazem wykonywalną specyfikacją opisanych tu zachowań.
 
@@ -94,25 +87,16 @@ dwa pola z manifestu bez podbicia wersji formatu.
 
 | Ścieżka | Odpowiedzialność |
 |---|---|
-| `Campaigns/Campaign.cs` | Korzeń agregatu: tożsamość, nazwa, data, bloki danych, **instancje**, magistrala zdarzeń. `Create` vs `Restore` — jawne rozróżnienie „nowa" od „odtworzona z dysku". |
+| `Campaigns/Campaign.cs` | Korzeń agregatu: tożsamość, nazwa, data, **instancje**, magistrala zdarzeń. `Create` vs `Restore` — jawne rozróżnienie „nowa" od „odtworzona z dysku". |
 | `Campaigns/CampaignId.cs`, `CampaignName.cs`, `CampaignSummary.cs` | Typy wartości: trwałe ID, zwalidowana nazwa (≤100 znaków), lekki DTO do listowania. |
 | `Campaigns/CreateCampaign.cs` | Jedyny use case tworzenia kampanii. |
 | `Campaigns/ICampaignRepository.cs` | Port. Jedyna implementacja: `JsonCampaignRepository`. |
-| `DataBlocks/CampaignDataBlocks.cs` | Jedyne miejsce trzymające i mutujące wartości bloków. Cała mutacja przez `Apply(id, transform)`. |
-| `DataBlocks/DataBlockRegistry.cs`, `DataBlockRegistration.cs` | Co ten build „zna": id, wersja kształtu, kształt. Budowany raz. |
-| `DataBlocks/DataBlockShape.cs` | Zamknięta hierarchia kształtów. Kształt tylko *sprawdza* wartość, nigdy jej nie przechowuje. |
-| `DataBlocks/DataBlockId.cs` | Identyfikator bloku — ograniczony znakowo, bo staje się nazwą pliku. |
-| `DataBlocks/DataBlockChanged.cs` | Zdarzenie zmiany — niesie tylko id, nigdy wartość. |
-| `DataBlocks/UnreadableDataBlock.cs`, `DataBlockUnreadableException.cs`, `DataBlockShapeMismatchException.cs` | „Ten build nie umie tego odczytać" i „wynik transformu nie pasuje do kształtu". |
 | `Events/CampaignEvents.cs` | Synchroniczna magistrala **per kampania** (nigdy statyczna), z limitem kaskady. |
 | `Events/ICampaignEvent.cs`, `EventCascadeException.cs` | Kontrakt zdarzenia i wyjątek pętli. |
-| `Tools/ITool.cs` | Kontrakt narzędzia: deklaruje wyłącznie, jakich bloków używa. |
-| `Tools/Counter/CounterTool.cs` | Jedyna implementacja `ITool`. Rusztowanie. |
 | `Content/*` — wpisy | `Pack`, `Entry`, `ContentValues` (koperta + arytmetyka nakładki), `ContentId`, `ContentTypeReference`, `ContentTypeDescriptor`, `IContentTypeCatalog`, `ContentRegistry`, `RegisteredEntry`, `EntryAddress`, `EntryUnresolvedReason`, `RejectedPack`, `RejectedEntry`, `PackVersion`, `ContentPackLoader`. |
 | `Content/*` — instancje | `CampaignInstance`, `InstanceId`, `CampaignInstances`, `CampaignInstanceEvents`, `InstanceResolver`, `ResolvedInstance`, `InstanceUnresolvedReason`. |
 | `Persistence/JsonCampaignRepository.cs` | Format na dysku, transakcyjność, błędy. |
 | `Persistence/AtomicWrite.cs` | Zapis „obok, potem podmiana" jako **jeden** prymityw. Używają go `JsonCampaignRepository` i `WorkspaceLayoutStore`. |
-| `Persistence/DataBlockValueSerializer.cs` | Konwersja wartość ↔ JSON, zawsze przez `DataBlockShape`. |
 | `Persistence/CampaignStoreException.cs` | `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`. |
 | `CampaignRuleException.cs` | „Reguła kampanii odmówiła" — komunikat czytany wprost przez MG. |
 
@@ -120,7 +104,7 @@ dwa pola z manifestu bez podbicia wersji formatu.
 
 | Ścieżka | Odpowiedzialność |
 |---|---|
-| `App.axaml.cs` | Kompozycja: rejestr bloków, repozytoria, loader, agregaty treści, cache przygotowania, kroki startowe, `AppShellViewModel`. |
+| `App.axaml.cs` | Kompozycja: repozytoria, loader, agregaty treści, cache przygotowania, kroki startowe, `AppShellViewModel`. |
 | `Content/IContentSet.cs`, `IContentPresentation.cs` | Kontrakt zestawu widziany od strony powłoki: typy, karty, **pas narzędzi**. |
 | `Content/CampaignToolContext.cs`, `CampaignToolProvider.cs` | Wąskie okno, jakie narzędzie zestawu dostaje na otwartą kampanię, i miejsce zszywające narzędzia wszystkich zestawów. |
 | `Content/ContentTypeCatalogAggregate.cs`, `ContentPresentationAggregate.cs` | Agregują listę zestawów do pojedynczego katalogu/prezentacji. |
@@ -157,8 +141,8 @@ działania.
 
 | Projekt | Zakres |
 |---|---|
-| `DungeonApp.Core.Tests` | Kampanie, bloki, zdarzenia, licznik, persystencja, silnik treści, instancje. |
-| `DungeonApp.Desktop.Tests` | Cache przygotowania, panel licznika, rejestr, krok wczytania paczek, pas narzędzi, fragment geometrii, magazyn układu, guard na pusty katalog treści. |
+| `DungeonApp.Core.Tests` | Kampanie, zdarzenia, persystencja, silnik treści, instancje. |
+| `DungeonApp.Desktop.Tests` | Cache przygotowania, rejestr, krok wczytania paczek, pas narzędzi, fragment geometrii, magazyn układu, guard na pusty katalog treści. |
 | `DungeonApp.Architecture.Tests` | Granice między warstwami. Osobny projekt, bo test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą ogranicza. |
 | `DungeonApp.Content.Dnd5e.Tests` | Zestaw na prawdziwych plikach paczki; okno „Świat kampanii" na prawdziwej kampanii. |
 
@@ -166,15 +150,10 @@ działania.
 
 ## 3. Model domenowy
 
-### Kampania, bloki danych, zdarzenia
+### Kampania, zdarzenia
 
-`Campaign` trzyma `Id`, `Name`, `CreatedAt` (ze wstrzykniętego `TimeProvider`), `DataBlocks`,
-`Instances` i `Events` (jedna magistrala na kampanię, dzielona przez oba magazyny).
-
-`CampaignDataBlocks` ma celowo wąski kontrakt — `Read(id)` i `Apply(id, transform)`. `Apply`
-waliduje wynik transformu wobec zarejestrowanego kształtu i dopiero potem zapisuje wartość
-zamrożoną i znormalizowaną, po czym publikuje zdarzenie. **Odtwarzanie z dysku idzie osobnymi
-drzwiami (`Hydrate`) i nie ogłasza niczego** — wczytanie zapisu nie jest zmianą, którą ktoś wykonał.
+`Campaign` trzyma `Id`, `Name`, `CreatedAt` (ze wstrzykniętego `TimeProvider`), `Instances`
+i `Events` (jedna magistrala na kampanię, z której korzysta `CampaignInstances`).
 
 **Cykl zmiany stanu, jedyny w aplikacji:** gest → `CampaignSession.ExecuteAsync` → mutacja
 w agregacie → zapis przez repozytorium → zdarzenie `Committed` → widoki odczytują stan na nowo.
@@ -219,9 +198,10 @@ konwencjonalna strona zakazu introspekcji.
 własną MG i rzadką łatkę. Instancja jest **łączem do wpisu, nie kopią jego wartości** — dlatego
 poprawka wydana w paczce dociera do kampanii, które już jej używają.
 
-`CampaignInstances` jest zbudowane dokładnie jak `CampaignDataBlocks`: prywatny słownik, brak
-settera i indeksera, cztery operacje, każda publikująca dokładnie jedno zdarzenie, plus osobne
-drzwi do odtwarzania zapisu.
+`CampaignInstances` trzyma stan w prywatnym słowniku, bez settera i indeksera. Ma cztery operacje
+— `Add`, `Remove`, `Relabel`, `ReplacePatch` — z których każda publikuje dokładnie jedno
+zdarzenie, po zmianie stanu. **Odtwarzanie z dysku idzie osobnymi drzwiami (`Hydrate`) i nie ogłasza niczego** — wczytanie
+zapisu nie jest zmianą, którą ktoś wykonał.
 
 **Arytmetyka nakładki żyje w `ContentValues`** — nałożenie łatki, wyliczenie różnicy, zapieczętowanie
 rekordu z powrotem w kopertę. Żadna z tych operacji nie zapisuje nazwy pola, nie pyta, co ta nazwa
@@ -236,22 +216,23 @@ Ma cztery powody nierozwiązania, świadomie inne niż powody dla wpisu.
 
 ## 4. Persystencja
 
-**Kampania** to własny katalog: manifest, `datablocks/<blockId>.json`,
-`instances/<instanceId>.json`. Manifest niesie wersję formatu, tożsamość, licznik generacji i listy
-bloków oraz instancji — **i ani jednego pola trzymanego otworem dla przyszłego**.
+**Kampania** to własny katalog: manifest (`campaign.json`) i `instances/<instanceId>.json`.
+Manifest niesie wersję formatu, tożsamość, datę utworzenia, licznik generacji i listę instancji —
+**i ani jednego pola trzymanego otworem dla przyszłego**.
 
 Zapis jest transakcyjny na poziomie plikowym i w całości idzie przez `AtomicWrite`: wszystko
 najpierw obok, potem seria atomowych podmian, **manifest ostatni** — to on oznacza generację jako
 zatwierdzoną i to na tym stoi wykrywalność rozdartego zapisu.
 
-Trzy własności warte znajomości przy planowaniu:
+**Katalog `datablocks/` z kampanii założonej starszym buildem zostaje na dysku nietknięty** — ten
+build go nie czyta, nie pisze i nie sprząta, bo kasowanie danych, których się już nie rozumie,
+byłoby gorsze niż bezwładny katalog.
 
-* **Bloki nieodczytywalne przez ten build są przenoszone bez dotykania.** Instancje takiej furtki
-  nie mają — cały świat siedzi w pamięci, więc każda jest przepisywana przy każdym zapisie.
-* **Odczyt instancji jest ostrzejszy niż bloków**: nie istnieje pojęcie „nieodczytywalnej
-  instancji", więc każdy defekt jest błędem magazynu.
-* **Migracji nie ma.** Niezgodna wersja bloku znaczy „nieodczytywalny", nie „zmigrowany"; to samo
-  dotyczy typów treści.
+Dwie własności warte znajomości przy planowaniu:
+
+* **Instancja nie ma trybu „nieodczytywalna"** — każdy defekt w jej pliku jest błędem magazynu.
+* **Migracji nie ma.** Zbyt nowa wersja formatu manifestu jest odmową odczytu, a niezgodna wersja
+  typu treści oznacza wpis jako nierozwiązany. Nic i nigdzie się nie migruje.
 
 **Gdzie co leży:** kampanie i paczki w `Dokumenty\DungeonApp\` (dokument użytkownika — widoczny,
 kopiowalny, przenośny), układy biurka w `%LocalAppData%\DungeonApp\` (stan aplikacji). Ścieżki
@@ -277,10 +258,16 @@ blokuje wejścia** — degraduje do leniwego wczytywania z ostrzeżeniem na pask
 arytmetyka jako czyste funkcje bez typów Avalonii. `CampaignWorkspaceViewModel` trzyma rozdział
 „desired" (jedyne persystowane) i „effective" (po dopasowaniu do rozmiaru).
 
+**Siatka blatu.** `WorkspaceGridSettings` jest jedynym źródłem prawdy o siatce — z niej korzystają
+i rysowane tło (`WorkspaceGridBackground`), i arytmetyka geometrii, więc zmiana widocznej komórki
+nie może po cichu rozjechać się ze snapowaniem. Jest też modyfikator precyzji, zagęszczający krok
+snapowania.
+
 **Pas narzędzi zestawu treści** — mechanizm, którym zestaw wnosi własne okno, nie zmuszając powłoki
 do poznania ani jednego swojego typu:
 
-* `PanelCatalog` buduje się per otwarta sesja: najpierw panele powłoki, za nimi narzędzia zestawów.
+* `PanelCatalog` buduje się per otwarta sesja z dwustopniowym szwem: najpierw panele powłoki, za
+  nimi narzędzia zestawów — kod ten kształt zachowuje, mimo że lista paneli powłoki jest dziś pusta.
   Zestaw może **tylko dołożyć**, nigdy nie wyprzeć tego, co powłoka oferuje sama.
 * `CampaignToolContext` to **wąskie okno**, nie sesja i nie kampania: instancje, rejestr, resolver,
   magistrala zdarzeń i jedne drzwi zapisu — i nic poza tym stąd osiągalnego.
@@ -304,17 +291,6 @@ Wzorzec: `Dnd5eContentSet` / `Monster` / `MonsterCardView`.
 5. **Granica słownictwa poszerza się sama** — zakazane słowa są czerpane z publicznych nazw typów
    każdego załadowanego zestawu, więc nowy typ dopisuje swoją nazwę bez żadnej rejestracji.
 
-### Nowe narzędzie domenowe + blok danych
-
-Wzorzec: `CounterTool` → `CounterPanelViewModel` → biurko.
-
-1. Klasa implementująca `ITool` w `Core/Tools/`, z własnym id, wersją, kształtem i transformami.
-2. Rejestracja bloku w korzeniu kompozycji, ze sprawdzeniem `Uses` przeciw rejestrowi.
-3. ViewModel panelu subskrybujący zdarzenie zmiany bloku, każda zmiana przez `ExecuteAsync`.
-4. Widok, deskryptor w katalogu paneli i **wpis w `DataTemplates`** biurka.
-5. Testy wzorem `CounterToolTests` i `CounterPanelViewModelTests` — te drugie warto traktować jako
-   wzorzec kompletności (przepełnienie, błąd zapisu, nieodczytywalny blok, wyścig, dispose).
-
 ### Narzędzie biurka wnoszone przez zestaw treści
 
 Wzorzec: `Dnd5eContentSet.CreateTools` → `CampaignInstancesToolView(Model)`. To ścieżka dla
@@ -330,7 +306,9 @@ narzędzia, które **czyta pola własnej treści po nazwie** — i dlatego nie m
 5. **Żadnego wpisu w szablonach biurka** — zestaw zwraca kontrolkę, więc powłoka nie ma czego
    rozwiązywać.
 
-Jeśli panel nie potrzebuje własnego bloku danych, kroki domenowe odpadają.
+Narzędzie potrzebujące stanu niezwiązanego z żadnym wpisem nie ma dziś gdzie go trzymać. Kształt,
+w jakim taki magazyn wróci, jest zapisany w [decisions.md](decisions.md), pozycja *Utrzymanie
+warstwy bloków danych po odejściu jej jedynego konsumenta*.
 
 **Uwaga o zakresie:** katalog paneli buduje się per sesja, ale jego zawartość **nie zależy od
 kampanii** — każde narzędzie każdego wkompilowanego zestawu trafia na biurko każdej kampanii. Nie ma
@@ -341,7 +319,7 @@ przesłanka pozycji „kampania wybiera zestawy przy zakładaniu" z [tasks.md](t
 
 ## 7. Testy
 
-**343 testy, wszystkie zielone** — Core 254, Desktop 58, Content.Dnd5e 18, Architecture 13.
+**239 testów, wszystkie zielone** — Core 159, Desktop 49, Content.Dnd5e 18, Architecture 13.
 
 > Liczby per plik **nie są tu wypisywane celowo.** Poprzednia wersja tego dokumentu prowadziła taką
 > tabelę; rozjechała się po cichu i kosztowała sesję na odtworzenie. Runner podaje je w sekundę,
@@ -389,13 +367,16 @@ czysta logika w warstwie Desktop.
 
 ### Rusztowanie / celowo tymczasowe
 
-* **Licznik** — jawnie testowe rusztowanie. Warunek odejścia spełniony, pozycja stoi w kolejce.
 * **Nawigacja boczna** — dwie realne sekcje, reszta to dosłowny placeholder. Metoda przełączająca
   sekcje nadal nosi komentarz o tymczasowym rusztowaniu; **ma tak zostać** do przeprojektowania
   nawigacji przez autora.
 * **`AllowsMultipleInstances`** — reprezentowalne w zapisanym układzie i czytane przy odtwarzaniu,
   ale żaden panel go nie ustawia. Rusztowanie opisane jako rusztowanie, nie rezerwacja: kod, który je
   czyta, istnieje i działa.
+* **Katalog paneli składa się dziś w całości z narzędzi wnoszonych przez zestawy treści** — powłoka
+  nie wnosi własnego. Dwustopniowy szew `PanelCatalog` (najpierw panele powłoki, potem narzędzia
+  zestawów) zostaje mimo pustej pierwszej listy. Rusztowanie opisane jako rusztowanie, nie
+  rezerwacja: kod, który je czyta, istnieje i działa.
 
 ### Dług i luki
 
@@ -404,13 +385,7 @@ czysta logika w warstwie Desktop.
   dowie. Świadoma decyzja autora, ale dług zostaje długiem.
 * **Pokrycie warstwy Desktop jest bardzo nierówne** — patrz sekcja wyżej. Najbardziej złożona logika
   stanu UI jest dziś weryfikowana wyłącznie ręcznie.
-* **Brak migracji** wersji bloków, formatu manifestu i typów treści. Strukturalnie przygotowane,
-  ścieżki nie ma.
-* **Nadal jedno narzędzie domenowe — i to nie to, które przybyło.** Okno „Świat kampanii" **nie jest**
-  `ITool` i nie używa żadnego bloku danych. Przybyła więc weryfikacja katalogu paneli i pasa
-  narzędzi, ale żadna dla kontraktu narzędzia domenowego: wciąż nie wiadomo z kodu, jak zniesie on
-  drugie, wieloblokowe narzędzie. Warto o tym pamiętać przy pytaniu, czy kształt bloku zarabia na
-  siebie.
+* **Brak migracji** formatu manifestu i typów treści. Strukturalnie przygotowane, ścieżki nie ma.
 * **Operacja silnika bez konsumenta: zmiana nazwy własnej instancji.** Istnieje, jest przetestowana
   i **nikt jej nie woła** — okno „Świat kampanii" umie dodać, zmienić punkty życia i usunąć, ale nie
   umie nazwać okazu, mimo że lista pokazuje właśnie nazwę własną, gdy jest. Ten sam kształt, którego
