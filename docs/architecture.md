@@ -1,15 +1,17 @@
 # DungeonApp — architektura
 
-**Status: projekt docelowy.** Ten dokument rozstrzyga, **jak ma być**. Przy rozbieżności z kodem
-prawdą o zamiarze jest ten dokument, a prawdą o kodzie jest [code-map.md](code-map.md). Nad jednym
-i drugim stoi [CLAUDE.md](../CLAUDE.md).
+**Status: projekt docelowy.** Ten dokument deklaruje, **jak ma być** — w czasie teraźniejszym,
+z konsekwencjami, bez argumentów. Przy rozbieżności z kodem prawdą o zamiarze jest ten dokument,
+a prawdą o kodzie jest [code-map.md](code-map.md). Nad jednym i drugim stoi [CLAUDE.md](../CLAUDE.md).
 
-Kierunki, które rozważono i odrzucono, wraz z uzasadnieniami, są w [decisions.md](decisions.md).
-**Czyta się je przed zaproponowaniem zmiany, nie po.**
+**Dlaczego tak, co odrzucono i co obowiązywało wcześniej** — [decisions.md](decisions.md),
+w sekcjach o tych samych nazwach co tutaj. Czyta się je **przed** zaproponowaniem zmiany, nie po.
+Do rozeznania się w projekcie nie są potrzebne.
 
-**Jak czytać.** Część I tłumaczy, czym aplikacja jest i jak działa, bez żargonu — to wystarczy,
-żeby się w projekcie rozeznać, i na jej końcu można przestać. Część II jest projektem: rozstrzyga
-i uzasadnia. Część III mówi, co z tego jest zbudowane i w jakiej kolejności powstaje reszta.
+**Jak czytać.** Część I tłumaczy bez żargonu, czym aplikacja jest i jak działa — to wystarczy,
+żeby się w projekcie rozeznać, i na jej końcu można przestać. Część II deklaruje projekt: co
+obowiązuje i co z tego wynika. Część III mówi, jak pilnuje się granic, co jest otwarte i w jakiej
+kolejności powstaje reszta.
 
 Odwołania między sekcjami są **po nazwie, nie po numerze** — numery się przesuwają, nazwy nie.
 
@@ -51,7 +53,7 @@ zakresem — świadomie, jako decyzja o produkcie, nie o technice.
 Program nigdy nie podejmuje decyzji, której ty nie podjąłeś. Jeśli twój wojownik ma pancerz,
 a pancerz mówi o sobie „daję trzy", to program doda trójkę — bo to ty założyłeś ten pancerz,
 a dodawanie jest arytmetyką. Ale program nigdy nie stwierdzi, że zaklęcie właśnie wygasło, że dwa
-efekty się nie kumulują albo że ognista kula trafiła tych czterech gobliów, a tamtego nie.
+efekty się nie kumulują albo że ognista kula trafiła tych czterech goblinów, a tamtego nie.
 
 To nie jest brak funkcji. To jest granica, po której drugiej stronie zaczyna się gra komputerowa —
 a gra komputerowa gra sama, i wtedy człowiek przy stole przestaje być potrzebny.
@@ -89,8 +91,7 @@ Program **wie, czym jest potwór i jak go pokazać**. Jego karta jest zaprojekto
 — linia nad cechami jest tam, gdzie ma być, sześć atrybutów stoi w rzędzie, akcje są oddzielone.
 Bo to jest kwestia projektu graficznego i ktoś musi ją podjąć świadomie.
 
-Program **nie wie, czym jest D&D**. Nie zna klasy pancerza, nie zna pojęcia poziomu, nie ma w sobie
-listy systemów do wyboru.
+Program **nie wie, czym jest D&D**. Nie zna klasy pancerza, nie zna pojęcia poziomu.
 
 Jak to możliwe naraz? Bo wiedza o potworze mieszka w **jednym, wyraźnie odgrodzonym pudełku**
 z napisem „to jest do D&D". Reszta programu tego pudełka nigdy nie otwiera. Za pół roku grupa mówi
@@ -98,14 +99,7 @@ z napisem „to jest do D&D". Reszta programu tego pudełka nigdy nie otwiera. Z
 wiedział, że to pierwsze dotyczyło D&D. Pudełka stoją obok siebie, a ty przy starcie wybierasz,
 z którego dziś grasz.
 
-**Wcześniej projekt szedł inną drogą i warto wiedzieć jaką**, bo ślady tamtej zostały w kodzie.
-Zabraniał tej wiedzy *wszędzie* i pilnował tego w ten sposób, że karta była budowana z klocków
-opisanych w pliku tekstowym. Cel był słuszny. Ale budowanie kart z plików było tylko *jednym ze
-sposobów* dojścia do celu, a z czasem zaczęło się mylić z samym celem. Cena okazała się wysoka:
-nikt nie mógł zaprojektować karty, a format zaczął przeciekać — pojawiały się w nim flagi, które
-udawały, że mówią o treści, a naprawdę wymuszały układ.
-
-Teraz cel jest ten sam, a sposób inny: wiedza nie jest zakazana, tylko **umiejscowiona**.
+Wiedza o systemie nie jest zakazana, tylko **umiejscowiona**.
 
 ## 5. Jak się z tego korzysta
 
@@ -149,13 +143,12 @@ wszystkich naraz. Program nie wie, czy handel był uczciwy ani kto stał w obsza
 zaksięgować to, co postanowiłeś.
 
 **Kanoniczne brzmienie tych pięciu zakazów jest w [CLAUDE.md](../CLAUDE.md)** i to ono obowiązuje.
-Uzasadnienie, konsekwencje i test do stosowania przy nowych funkcjach są w sekcji *Granica
-automatyzacji*.
+Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica automatyzacji*.
 
 ---
 
 > **Tu można przestać**, jeśli chodziło o rozeznanie się w projekcie. Dalej zaczyna się projekt
-> techniczny: te same rzeczy, ale rozstrzygnięte i uzasadnione.
+> techniczny: te same rzeczy, zadeklarowane precyzyjnie.
 
 ---
 ---
@@ -168,7 +161,7 @@ automatyzacji*.
 |---|---|
 | **rama** | Szkielet aplikacji: okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie — tworzenie, wczytanie, usuwanie, zapis — i jedyna droga zmiany ich stanu. Nie wie, czym jest wpis. |
 | **biblioteka** | Wspólny, neutralny kod, z którego system korzysta albo nie: biurko i system okien, kontrolki kart, paczki, wpisy, instancje. Sama niczego nie robi; rama nie wie o jej istnieniu. |
-| **system** | Skompilowany projekt wybierany przy starcie aplikacji: typy treści, ich widoki, zakładki, narzędzia biurka, dodatki. Jedyne miejsce w aplikacji, w którym wolno wiedzieć, czym jest potwór. Do 2026-09-22 — „zestaw". |
+| **system** | Skompilowany projekt wybierany przy starcie aplikacji: typy treści, ich widoki, zakładki, narzędzia biurka, dodatki. Jedyne miejsce w aplikacji, w którym wolno wiedzieć, czym jest potwór. |
 | **dodatek** | Wariant zasad wbudowany w system, włączany przy zakładaniu kampanii. Może dokładać i zastępować. |
 | **zakładka** | Pozycja paska bocznego. Należy do jednej z trzech kategorii: Kampania, System, Aplikacja. |
 | **typ treści** | Para: rekord opisujący wartości + zaprojektowany widok karty. Adresowany `system:id`. |
@@ -220,54 +213,35 @@ automatyzacji*.
 
 - **Strzałki idą tylko w dół.** Rama nie wie, że istnieje biblioteka ani jakikolwiek system;
   biblioteka nie wie, że istnieje jakikolwiek system.
-- **Systemy nigdy nie referencują się nawzajem.** Byłaby to krawędź wewnątrz jednej warstwy, z całym
-  bagażem, którego unikamy gdzie indziej: problem diamentu, kolejność wczytywania, wersjonowanie
-  kaskadowe.
-- **Ładowanie systemów jest statyczne — referencją projektu, nigdy `Assembly.LoadFrom`.** Dlaczego
-  wtyczki ładowane z katalogu nic tu nie kupują — [decisions.md](decisions.md), *Ładowanie zestawów
-  treści w czasie wykonania*.
+- **Systemy nigdy nie referencują się nawzajem.**
+- **Ładowanie systemów jest statyczne** — referencją projektu, nigdy `Assembly.LoadFrom`.
 - **Rama zachowuje drzwi zapisu.** System przejmuje wygląd i zawartość aplikacji, nigdy jedynej drogi
-  zmiany stanu — dlaczego, w sekcji *Gdzie mieszka stan*.
+  zmiany stanu — sekcja *Gdzie mieszka stan*.
+- **Dziś system jest jeden**, a ekran wyboru systemu istnieje mimo to. Drugi system powstaje
+  w dniu, w którym naprawdę zmienia się gra, i jest wtedy równoległy, nie zależny.
+- **Granica jest sprawdzalna mechanicznie**: rama i biblioteka nie referencują żadnego systemu, rama
+  nie referencuje biblioteki, a źródła ramy i biblioteki nie zawierają słownictwa treści — sekcja
+  *Granice mechaniczne*.
 
-**Dziś system jest jeden.** Ekran wyboru systemu mimo to istnieje od razu: jest wejściem do
-aplikacji, nie mechanizmem czekającym na drugi system — [decisions.md](decisions.md), *Ekran wyboru
-systemu odłożony do drugiego systemu*. Drugi system powstaje w dniu, w którym naprawdę zmienia się
-gra, i jest wtedy równoległy, nie zależny.
-
-**Granica jest sprawdzalna mechanicznie**, tak samo jak dzisiejszy zakaz Avalonii w `Core`: rama
-i biblioteka nie referencują żadnego systemu, rama nie referencuje biblioteki, a źródła ramy
-i biblioteki nie zawierają słownictwa treści — skan po słowniku wyprowadzonym z systemu, więc zakaz
-poszerza się sam wraz z treścią. Szczegóły w sekcji *Granice mechaniczne*.
+**Dlaczego →** [decisions.md](decisions.md), *Rama, biblioteka, system*.
 
 ### 8.1 Biblioteka, nie warstwa
 
-Biblioteka jest wspólnym kodem, **nie piętrem, przez które wszystko przechodzi.** Sama niczego nie
-robi: nie rejestruje się w ramie, nie wnosi zakładki, nie ma własnego cyklu życia. Biurko pojawia
-się na pasku bocznym wyłącznie wtedy, gdy system je tam postawi. System bierze z biblioteki, co
-chce — i może nie wziąć nic.
+- **Biblioteka jest wspólnym kodem, nie piętrem, przez które wszystko przechodzi.** Sama niczego nie
+  robi: nie rejestruje się w ramie, nie wnosi zakładki, nie ma własnego cyklu życia.
+- **Biurko pojawia się na pasku bocznym wyłącznie wtedy, gdy system je tam postawi.**
+- **System bierze z biblioteki, co chce** — i może nie wziąć nic.
+- **Generyczny wpis mieszka w bibliotece, nie w ramie**: wpis, paczka, rejestr, instancja i nakładka
+  są jednym wspólnym mechanizmem dla wszystkich systemów.
+- **Silnik formuł biblioteki jest drogą domyślną.** System, który z niego nie korzysta, liczy po
+  swojemu — pod tymi samymi pięcioma zakazami, pilnowanymi wtedy wyłącznie przeglądem.
 
-Osobno, a nie w ramie ani w pierwszym systemie, bo w ramie biurko znów byłoby istotą kampanii,
-a rama wiedziałaby, czym jest wpis; w pierwszym systemie drugi system musiałby wspólny kod stamtąd
-wydłubywać. Biblioteka jest tym, co sekcja *Kontrakty są interfejsami* nazywała „zestawem
-neutralnym" — poszerzonym o biurko i kontrolki.
-
-**Generyczny wpis mieszka w bibliotece, nie w ramie.** Wpis, paczka, rejestr, instancja i nakładka
-zostają jednym wspólnym mechanizmem, bo dają trzy rzeczy, których chce każdy system: zepsuta treść
-jest widoczna tak samo wszędzie; łatka na okazie działa bez znajomości nazw pól; paczka ma
-tożsamość i wersję. Ramie nie jest potrzebna żadna z nich.
-
-**Cena opcjonalności.** System, który nie skorzysta z silnika formuł biblioteki, liczy po swojemu,
-a pięciu zakazów pilnuje wtedy wyłącznie przegląd. To stan przyjęty już przy przejściu na typy
-treści w kodzie ([decisions.md](decisions.md), *Karta składana z listy elementów podanej przez
-dane*); biblioteka sprawia tylko, że droga zgodna z zakazami jest zarazem najkrótsza.
+**Dlaczego →** [decisions.md](decisions.md), *Biblioteka, nie warstwa*.
 
 ### 8.2 Dodatki
 
 Dodatek to wariant zasad wbudowany w system i włączany przy zakładaniu kampanii — złoto
-w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu. Zastąpił model rozszerzeń
-jako zestawów zależnych od innych zestawów ([decisions.md](decisions.md), *Rozszerzenia jako zestawy
-zależne od innego zestawu*). Homebrew przy stole nie dokłada treści obok nietkniętego rdzenia — on
-rdzeń modyfikuje.
+w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu.
 
 1. **Dodatek może dokładać i zastępować** — pola, okna, zakładki, typy treści, formuły.
 2. **System dowiaduje się o włączonych dodatkach w jednym miejscu: przy składaniu kampanii.**
@@ -276,39 +250,24 @@ rdzeń modyfikuje.
 3. **Dodatki zastępujące tę samą rzecz system oznacza jako wykluczające się**; zakładanie kampanii
    nie pozwala włączyć obu. To walidacja ustawień kampanii, nie reguła gry.
 4. **Wyłączenie dodatku ukrywa jego dane, nigdy ich nie kasuje.**
-5. **Kod dodatku podlega pięciu zakazom** jak każdy inny — dodatek „zmęczenie narasta co osiem
-   godzin" nie przejdzie, bo niesie czas.
-
-**Dlaczego jedno miejsce.** W grze komputerowej przełącznik siedzi w środku logiki, bo logika sama
-wykonuje reguły w każdej turze. Tu nie ma czego wykonywać: dodatek może zmienić wyłącznie **kształt
-księgowości**, a ten jest stały od otwarcia kampanii. Przełączniki rozsiane po kodzie to kształt
-odrzucony już dla systemów — piętro niżej i z kombinacjami dodatków mnożącymi gałęzie — a zarazem
-„wartość strzeżona flagą" z pierwszego zakazu. Jedno miejsce jest sprawdzalne z samego diffu:
-każde inne pytanie o dodatek jest błędem widocznym w przeglądzie. Pełny argument —
-[decisions.md](decisions.md), *Dodatek jako przełącznik sprawdzany w logice*.
+5. **Kod dodatku podlega pięciu zakazom** jak każdy inny.
 
 **Kryterium:** jeśli dodatek potrzebuje przełącznika w środku logiki, to zwykle znak, że ta logika
 wykonuje regułę, którą powinien wykonać Mistrz Gry.
 
-**Mechanizm powstaje z pierwszym prawdziwym dodatkiem**, nie wcześniej — reguła „nic nie wchodzi bez
-konsumenta" z sekcji *Pytania otwarte*.
+**Mechanizm powstaje z pierwszym prawdziwym dodatkiem**, nie wcześniej.
+
+**Dlaczego →** [decisions.md](decisions.md), *Dodatki*.
 
 ## 9. Gdzie biegnie linia między kodem a danymi
 
-Cztery powody, dla których cokolwiek robi się danymi. Trzy z nich są tu martwe:
+**Kształt jest kodem, wartości są danymi.**
 
-| Powód | Czy obowiązuje |
-|---|---|
-| Zmienia się często | **tak** — dla wpisów. Nowy przedmiot potrafi powstać w środku sesji |
-| Zmienia to ktoś, kto nie ma kompilatora | nie — autor treści i autor programu to ta sama osoba |
-| Zmiana nie może wymagać przebudowy | nie — przebudowa trwa sekundy, na tej samej maszynie |
-| Wadliwa dana nie może wywrócić builda | nie — kod ma wersję mocniejszą: kompilator odrzuci to, zanim cokolwiek wystartuje |
+- **Literówka w nazwie pola jest błędem kompilacji**, z podaną linią i podpowiedzią — nie odrzuconą
+  paczką przy starcie.
+- **Kompilator jest walidatorem treści.**
 
-Stąd linia: **kształt jest kodem, wartości są danymi.**
-
-Skutek uboczny, który dużo załatwia: **literówka w nazwie pola przestaje być odrzuconą paczką przy
-starcie, a staje się błędem kompilacji** — z podaną linią i podpowiedzią. Kompilator jest
-walidatorem treści.
+**Dlaczego →** [decisions.md](decisions.md), *Gdzie biegnie linia między kodem a danymi*.
 
 ## 10. Deklaracja treści
 
@@ -322,25 +281,18 @@ MonsterCardView    zaprojektowany XAML — układ statbloku
 Rekord deklaruje pola: nazwy, typy, opcjonalność. Widok deklaruje układ. **Żadne z dwojga nie
 pochodzi z danych.**
 
-Konsekwencje przyjęte świadomie:
-
-* **Nowy rodzaj treści = nowy kod.** Rekord i widok. Cena jest zamierzona: nowa deklaracja modelu
-  i tak zwykle zbiega się z potrzebą nowej logiki albo nowego okna.
-* **Aplikacja wie, jak wyświetlić potwora.** Statblok jest zaprojektowany, nie składany.
+* **Nowy rodzaj treści = nowy kod:** rekord i widok.
+* **Statblok jest zaprojektowany, nie składany.**
 * **Liczba widoków rośnie liniowo** z liczbą rodzajów razy liczbę systemów — realistycznie 6–8 na
-  system. To praca projektowa, przyjęta świadomie.
-
-**Wyzwalacz do widoku domyślnego:** pierwszy rodzaj treści, którego nie chce się zaprojektować.
-Wcześniej widok domyślny jest zaproszeniem, żeby przestać projektować karty, i nie powstaje.
+  system.
+* **Widok domyślny nie powstaje** przed pierwszym rodzajem treści, którego nie chce się
+  zaprojektować.
 
 ### 10.2 Kontrolki, nie katalog
 
-Lista cech, blok prozy, lista pozycji, pasek zasobu, akcja rzutu, znacznik binarny **zostają** — ale
-jako **kontrolki wielokrotnego użytku**, komponowane przez projektanta karty, a nie jako pozycje
-katalogu wybierane przez dane. Ginie wyłącznie **wybór kontrolki przez dane**, nie kontrolka.
-
-Konsekwencją jest, że zniknęły parametry w rodzaju `compact` czy `selfDescribing`: zaprojektowany
-widok nie potrzebuje mówić o swoim układzie — on go po prostu ma.
+Lista cech, blok prozy, lista pozycji, pasek zasobu, akcja rzutu, znacznik binarny są
+**kontrolkami wielokrotnego użytku**, komponowanymi przez projektanta karty. Dane nie wybierają
+kontrolki i nie niosą parametrów układu — zaprojektowany widok swój układ po prostu ma.
 
 ### 10.3 Droga treści: z dysku na ekran
 
@@ -367,29 +319,26 @@ Plik wpisu:
 { "id": "goblin", "name": "Goblin", "template": "dnd5e:monster", "values": { "ac": 15, … } }
 ```
 
-`values` deserializuje się **wprost w rekord**, ze ścisłym traktowaniem nieznanych kluczy. Znika
-własny walidator wartości wobec deklaracji pól — robi to deserializator.
+* **`values` deserializuje się wprost w rekord**, ze ścisłym traktowaniem nieznanych kluczy. Nie ma
+  własnego walidatora wartości — robi to deserializator.
+* **Biblioteka niesie kopertę, system otwiera list.** Biblioteka wie, że coś przyszło, skąd, pod
+  jakim adresem i do jakiego typu się odwołuje — i nic więcej. Odrzucanie treści, rejestr
+  i oznaczanie tego, co się nie rozwiązało, istnieją w jednym miejscu i działają tak samo dla
+  każdego systemu.
+* **Format pliku jest wyborem serializatora**, nie decyzją architektoniczną — podmiana dotyka jednej
+  klasy. Sekcja *Pytania otwarte*, pytanie o format.
+* **Konwencja nazewnicza:** identyfikatory po angielsku, etykiety i treść po polsku. Identyfikator
+  typu treści ma wartość `monster`, a etykiety i komunikaty dla Mistrza Gry są po polsku.
 
-Kluczowy podział: **biblioteka niesie kopertę, system otwiera list.** Biblioteka wie, że coś
-przyszło, skąd, pod jakim adresem i do jakiego typu się odwołuje — i na tym kończy się jej wiedza.
-Dzięki temu odrzucanie treści, rejestr i oznaczanie tego, co się nie rozwiązało, działają tak samo
-dla każdego systemu i istnieją w jednym miejscu.
-
-**Format pliku jest odtąd wyborem serializatora, nie decyzją architektoniczną.** Podmiana dotyka
-jednej klasy. Patrz *Pytania otwarte*, pytanie o format.
-
-**Konwencja nazewnicza:** identyfikatory po angielsku, etykiety i treść po polsku. Ta sama linia
-obowiązuje w kodzie: identyfikator typu treści ma wartość `monster`, a etykiety i komunikaty dla
-Mistrza Gry są po polsku.
+**Dlaczego →** [decisions.md](decisions.md), *Deklaracja treści*.
 
 ## 11. Wpis, dokument, instancja, nakładka
 
 > **Typ treści deklaruje kształt. Wpis deklaruje wartości. Instancja deklaruje odchylenia.**
 
-Rozróżnienie jest tym samym, co **item** i **item stack**: wpis jest esencją, instancja egzemplarzem
-istniejącym w świecie. Dotyczy każdego wpisu, nie tylko przedmiotów — potwór jest instancjonowany
-z tego samego powodu, dla którego stos jest instancją przedmiotu: jego obrażenia są własnością
-egzemplarza, nie gatunku.
+Wpis jest esencją, instancja egzemplarzem istniejącym w świecie — jak **item** i **item stack**.
+Dotyczy każdego wpisu, nie tylko przedmiotów: obrażenia potwora są własnością egzemplarza, nie
+gatunku.
 
 | Pytanie | Odpowiada | Przykład |
 |---|---|---|
@@ -397,18 +346,14 @@ egzemplarza, nie gatunku.
 | Jakie *wartości* ma konkretna rzecz? | wpis | „diamentowy miecz waży 3"; „goblin nosi tasak" |
 | Co *odbiega* w tym egzemplarzu? | instancja | „ten ma Ostrość V i nazywa się Zgubą" |
 
-Waga i ilość rozchodzą się dokładnie po tej linii: **waga jest we wpisie** (każdy diamentowy miecz
-waży tyle samo — to esencja), **ilość jest w nakładce** (to własność stosu, nie przedmiotu).
+**Waga jest we wpisie, ilość jest w nakładce.**
 
-**Czego nakładce nie wolno — reguła projektowa, nie blokada techniczna:** modelować *wariantu
-rzeczy*. Miecz +1 to osobny wpis, nie miecz z nadpisanym polem. Kryterium operacyjne brzmi: **czy
-chcesz tego użyć ponownie.** Przykłady i pełny argument — [decisions.md](decisions.md), *Nakładka
-jako miejsce na warianty rzeczy*.
+**Nakładka nie modeluje wariantu rzeczy.** Miecz +1 to osobny wpis, nie miecz z nadpisanym polem.
+Kryterium: **czy chcesz tego użyć ponownie.** To reguła projektowa, nie blokada techniczna.
 
 ### 11.1 Nakładka jest rzadką łatką nad wartościami wpisu
 
-**Instancja nie materializuje wpisu.** Aktualizacja paczki działa jak patchnote balansujący grę,
-a nie jak zdarzenie psujące istniejące kampanie.
+**Instancja nie materializuje wpisu.**
 
 ```
  wartości wpisu     { ac: 15,  hp: 7,  speed: "30 stóp",  … }
@@ -425,37 +370,35 @@ wpisu** i zapisuje samą różnicę.
 
 * **Nazwa pola nie pojawia się w kodzie** ani przy odczycie, ani przy zapisie. Dodajesz pole do
   rekordu — i nic więcej nie musisz zmieniać.
-* **Poprawka w bibliotece przechodzi do istniejących kampanii.** Klucza, którego nie ma w łatce, po
-  prostu nie ma — więc bierze się z aktualnej treści. Cena: wartość może zmienić się pod Mistrzem
-  Gry przy aktualizacji w obrębie wersji major. To jest ta forma propagacji, której chcemy.
-* **Twoje notatki nigdy nie są po cichu nadpisane.** Klucz łatki, który zniknął z rekordu, oznacza
+* **Poprawka w paczce przechodzi do istniejących kampanii.** Klucza, którego nie ma w łatce, bierze
+  się z aktualnej treści — więc wartość może zmienić się pod Mistrzem Gry przy aktualizacji
+  w obrębie wersji major.
+* **Notatki MG nigdy nie są po cichu nadpisane.** Klucz łatki, który zniknął z rekordu, oznacza
   instancję jako wymagającą uwagi — nigdy nie odrzuca kampanii i nigdy nie kasuje łatki.
 
 ### 11.2 Sloty i zagnieżdżanie
 
-**Slot jest polem, nie pojemnikiem instancji.** Wyróżnia się wyłącznie tym, że jego wartością jest
-lista referencji, a nie liczba. We wpisie jest listą **referencji**, w kampanii listą **instancji** —
-to różne typy, więc slot nie przechodzi przez scalanie opisane wyżej i ma własną ścieżkę. Nie jest
-to wyjątek, tylko drugi rodzaj pola.
+**Slot jest polem, nie pojemnikiem instancji.** We wpisie jest listą **referencji**, w kampanii
+listą **instancji** — to różne typy, więc slot nie przechodzi przez scalanie opisane wyżej i ma
+własną ścieżkę. To drugi rodzaj pola, nie wyjątek.
 
-Zaklinanie rozkłada się przez to bez nowego mechanizmu: biblioteka publikuje kontrakt wkładu, typ
-treści deklaruje slot (czyli decyduje, że miecz da się zaklinać), a paczka dostarcza Ostrość V jako
-zwykły wpis z własną kartą. Miecz jest pojemnikiem na zaklęcia tak samo, jak plecak na miecze.
+Zaklinanie nie wymaga nowego mechanizmu: biblioteka publikuje kontrakt wkładu, typ treści deklaruje
+slot (czyli decyduje, że miecz da się zaklinać), a paczka dostarcza Ostrość V jako zwykły wpis
+z własną kartą. Miecz jest pojemnikiem na zaklęcia tak samo, jak plecak na miecze.
 
-* **Biblioteka nie ma zdania o tym, co wpis powinien mieć w slocie.** Co należy do esencji, decyduje
-  autor treści.
-* **Zawartość początkowa slotu może wskazywać wyłącznie wpisy z tej samej paczki.** Instancji to nie
-  dotyczy — ona rozwiązuje referencje wobec wszystkich paczek kampanii.
+* **Biblioteka nie ma zdania o tym, co wpis powinien mieć w slocie.** Decyduje autor treści.
+* **Zawartość początkowa slotu wskazuje wyłącznie wpisy z tej samej paczki.** Instancja rozwiązuje
+  referencje wobec wszystkich paczek kampanii.
 * **Gdy instancja zmieni zawartość slotu, przejmuje całą listę**, nie różnicę.
 * **Pozycje slotu same są instancjami** — stąd zagnieżdżenie: kampania → bohater → stos → zaklęcie.
 * **Trwałość idzie za własnością.** Instancja kampanii dostaje własny plik; zagnieżdżona jest
   zapisywana wewnątrz właściciela.
-* **Cykl w grafie jest dozwolony** (torba w torbie); chroni nas twardy limit głębokości zagnieżdżenia.
+* **Cykl w grafie jest dozwolony** (torba w torbie); chroni twardy limit głębokości zagnieżdżenia.
 
-**Referencja nierozwiązana.** Paczki może zabraknąć, może zniknąć w niej wpis, może zmienić się
-niekompatybilnie. Wtedy referencja jest **nierozwiązana, a nie martwa**: instancja zostaje, jest
-jawnie oznaczona, jej nakładka nigdy nie jest po cichu nadpisana ani skasowana, a kampania otwiera
-się dalej w trybie ograniczonym. Zainstalowanie brakującej paczki przywraca wszystko bez utraty stanu.
+**Referencja nierozwiązana, nie martwa.** Gdy brakuje paczki, wpisu albo wpis zmienił się
+niekompatybilnie, instancja zostaje, jest jawnie oznaczona, jej nakładka nigdy nie jest po cichu
+nadpisana ani skasowana, a kampania otwiera się dalej w trybie ograniczonym. Zainstalowanie
+brakującej paczki przywraca wszystko bez utraty stanu.
 
 ### 11.3 Dokument
 
@@ -468,31 +411,28 @@ Dokument jest drugim kształtem treści, ale **nie drugim magazynem instancji**.
 | jak się renderuje | zaprojektowana karta | renderer dokumentu |
 | instancja | rzadka łatka | **rzadka łatka, identyczna w kształcie** |
 
-Wiele grup grających tę samą przygodę to wiele instancji jednego dokumentu, tak samo jak trzy
-gobliny. Poprawka literówki w tekście nie kasuje odhaczeń, bo klucz nieobecny w łatce bierze się
-z aktualnej treści.
+Wiele grup grających tę samą przygodę to wiele instancji jednego dokumentu. Poprawka literówki
+w tekście nie kasuje odhaczeń.
 
 Cztery warunki wiążące:
 
 1. **Podzbiór markdowna jest zamknięty i nie zawiera układu.** Nagłówki, akapity, listy, cytaty,
    wyróżnienia, tabele — tak; surowy HTML, szerokości, kolumny, kolory, wymiarowanie obrazków — nie.
-   Passthrough HTML jest wyłączony, bo to jedna furtka, przez którą wchodzi wszystko naraz.
+   Passthrough HTML jest wyłączony.
 2. **Marker jest walidowalny przy wczytaniu** — jednoznacznie ogranicznikowany, z własnym id.
-   Dokument z markerem zniekształconym albo z id powtórzonym jest odrzucany. Bez tego literówka
-   w markerze nie jest błędem, tylko zwykłym tekstem.
-3. **Markery znajduje się w drzewie, nie regeksem po pliku** — regeks trafi marker w bloku kodu,
-   w linku i w komórce tabeli.
-4. **Pola zadeklarowane przez dokument są prywatne dla dokumentu.** W chwili, gdy formuła albo inne
-   okno ma przeczytać „czy brama została otwarta", to pole musi być zadeklarowane w typie treści.
+   Dokument z markerem zniekształconym albo z id powtórzonym jest odrzucany.
+3. **Markery znajduje się w drzewie, nie regeksem po pliku.**
+4. **Pola zadeklarowane przez dokument są prywatne dla dokumentu.** Pole, które ma przeczytać
+   formuła albo inne okno, musi być zadeklarowane w typie treści.
 
-Dokument nie ma karty — ma własny renderer. To jest różnica, która trzyma *Niezmiennik interfejsu*
-w mocy: **karta jest układem, dokument jest sekwencją.**
+**Dokument nie ma karty — ma własny renderer. Karta jest układem, dokument jest sekwencją.**
+
+**Dlaczego →** [decisions.md](decisions.md), *Wpis, dokument, instancja, nakładka*.
 
 ## 12. Kontrakty są interfejsami
 
-**Wpis nie ma jednej reprezentacji.** Ten sam żelazny miecz pojawia się co najmniej w trzech: jako
-karta, jako wiersz w ekwipunku (nazwa, waga, skrót obrażeń — bo miejsca jest na jedną linię), jako
-uczestnik kolejki tur.
+**Wpis nie ma jednej reprezentacji.** Ten sam żelazny miecz pojawia się jako karta, jako wiersz
+w ekwipunku (nazwa, waga, skrót obrażeń) i jako uczestnik kolejki tur.
 
 **Kształt skrótowej reprezentacji definiuje konsument, nie treść.** Konsument publikuje interfejs.
 Typ treści go implementuje albo nie.
@@ -510,13 +450,11 @@ Typ treści go implementuje albo nie.
    Gear      ─── nie ────────►  ✗  nigdy się na niej nie pojawi
 ```
 
-* **Kwalifikacja jest systemem typów.** Przedmiotu nie da się zarejestrować w kolejce tur nie
-  dlatego, że narzędzie odrzuca go przy próbie, tylko dlatego, że **nigdy nie pojawia się na liście
-  do wyboru**. Odrzucenie jest fizyczne, nie proceduralne, i kompilator pilnuje go za darmo.
+* **Kwalifikacja jest systemem typów.** Przedmiot nigdy nie pojawia się na liście do wyboru
+  w kolejce tur — odrzucenie jest fizyczne, nie proceduralne.
 * **Pola kontraktu są typowane per pole.** `KluczSortowania` jest liczbą, bo tak jest zadeklarowany.
-  Znika ryzyko, że kontrakt zamieni się w worek napisów wymagających parsowania u konsumenta.
-* **Projektowanie nowego narzędzia nie wymaga projektowania danych.** Narzędzie przychodzi z gotowym
-  wyglądem i publikuje interfejs; treść tylko go implementuje.
+* **Projektowanie nowego narzędzia nie wymaga projektowania danych.** Narzędzie przychodzi
+  z gotowym wyglądem i publikuje interfejs; treść tylko go implementuje.
 
 **Reguła umiejscowienia narzędzia:**
 
@@ -524,30 +462,24 @@ Typ treści go implementuje albo nie.
 > Narzędzie czytające interfejs jest neutralne i mieszka w bibliotece.
 
 Wybór między jednym a drugim jest wyborem katalogu, w którym leży plik — **nigdy gałęzią w kodzie**.
-Nie ma nigdzie rozgałęzienia „jeśli system to D&D".
-
-**Zakaz zabezpieczający:**
+Nigdzie nie ma rozgałęzienia „jeśli system to D&D".
 
 > **Narzędzie nigdy nie introspekcjonuje typu treści.** Deklaruje interfejs i dostaje obiekty.
 
-Skompilowany typ leży w tym samym procesie, więc „znajdź wszystkie typy mające pole `initiative`"
-jest jedną linijką. Gdy typy były plikami danych, ta pokusa praktycznie nie istniała. Zakaz musi
-więc być zapisany, a nie dorozumiany.
+**Dlaczego →** [decisions.md](decisions.md), *Kontrakty są interfejsami*.
 
 ## 13. Paczki, wczytywanie, bezpieczeństwo
 
 Paczka to katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów treści.
 
-Co paczka kupuje: przestrzeń nazw dla id, jednostkę instalacji i deinstalacji, wersję, którą
-kampania deklaruje. Ostatnie daje istotną własność: **zainstalowanie nowej paczki nie może po cichu
-zmienić otwartej kampanii**, bo kampania rozwiązuje referencje wyłącznie wobec paczek, które sama
-deklaruje.
-
-**Wszystko, co paczka wnosi, jest homebrew z definicji**, niezależnie od tego, czy stoi w oficjalnym
-podręczniku. Aplikacja nie zna pojęcia autorytetu i nie musi go znać.
-
-**Jedna przestrzeń nazw na paczkę.** Id wpisu i id dokumentu nie mogą kolidować w obrębie jednej
-paczki — kolizja czyniłaby adres niejednoznacznym, a nie tylko powtórzonym.
+* **Paczka daje** przestrzeń nazw dla id, jednostkę instalacji i deinstalacji oraz wersję, którą
+  kampania deklaruje.
+* **Zainstalowanie nowej paczki nie zmienia po cichu otwartej kampanii** — kampania rozwiązuje
+  referencje wyłącznie wobec paczek, które sama deklaruje.
+* **Wszystko, co paczka wnosi, jest homebrew z definicji**, niezależnie od tego, czy stoi
+  w oficjalnym podręczniku. Aplikacja nie zna pojęcia autorytetu.
+* **Jedna przestrzeń nazw na paczkę.** Id wpisu i id dokumentu nie mogą kolidować w obrębie jednej
+  paczki.
 
 ### 13.1 Co się dzieje, gdy treść jest zepsuta
 
@@ -560,82 +492,62 @@ Zasada nadrzędna: **wadliwa treść zostaje widoczna i oznaczona. Nigdy nie zni
 | dwie pozycje o tym samym id | **obie oznaczone** — żadna nie wygrywa po cichu |
 | brakuje paczki, do której odwołuje się kampania | instancje oznaczone, notatki nietknięte, kampania otwiera się dalej |
 
-Odrzucanie **całej** paczki za jeden wadliwy wpis obowiązywało wcześniej i zostało uchylone razem
-z uzasadnieniem, które je trzymało — [decisions.md](decisions.md), *Odrzucanie całej paczki za jeden
-wadliwy wpis*.
-
-Zakładki treści systemu są jedynym kanałem, którym Mistrz Gry się o tym dowiaduje — więc ich
-projekt, jeśli nie przewiduje miejsca na rzeczy zepsute, jest niekompletny **funkcjonalnie**, a nie
-kosmetycznie. Gdzie pokazuje się paczka odrzucona, której systemu nie da się poznać — sekcja
-*Pytania otwarte*.
+**Zakładki treści systemu są jedynym kanałem, którym Mistrz Gry się o tym dowiaduje** — ich projekt
+bez miejsca na rzeczy zepsute jest niekompletny **funkcjonalnie**, nie kosmetycznie. Gdzie pokazuje
+się paczka odrzucona, której systemu nie da się poznać — sekcja *Pytania otwarte*.
 
 ### 13.2 Model bezpieczeństwa
 
-Paczka to **czyste dane**. Nie ma czego uruchamiać, więc nie ma czego izolować. Cały model to
-walidacja przy wczytaniu plus limity rozmiarowe:
+Paczka to **czyste dane**. Cały model bezpieczeństwa to walidacja przy wczytaniu plus limity
+rozmiarowe:
 
 * Wadliwa treść jest wykrywana **przy starcie**, nigdy przy pierwszym kliknięciu w środku sesji.
 * Formuła jest walidowana nie tylko składniowo, ale i wobec pól, które realnie istnieją.
 * Identyfikatory podlegają ograniczeniom znakowym. Żadna ścieżka na dysku nie jest budowana
   z danych — tożsamość paczki mieszka w jej manifeście, nie w nazwie katalogu.
 * **Limity:** rozmiar paczki, głębokość zagnieżdżenia wyrażenia, głębokość zagnieżdżenia instancji,
-  liczba i rozmiar kości w jednym rzucie, limit eskalacji eksplozji. Bez pętli w języku to
-  wystarcza, żeby czas ewaluacji był ograniczony z góry.
+  liczba i rozmiar kości w jednym rzucie, limit eskalacji eksplozji.
+
+**Dlaczego →** [decisions.md](decisions.md), *Paczki, wczytywanie, bezpieczeństwo*.
 
 ## 14. Granica automatyzacji
 
-Pytanie „co jest policzalne" nie wystarcza, bo kruszy się przy pierwszym efekcie modyfikującym
-klasę pancerza. Wystarcza dopiero pytanie **kto podjął decyzję**:
-
 > **Aplikacja sumuje. MG decyduje o składnikach.**
+>
+> **Aplikacja księguje decyzje MG — także jednym kliknięciem i na kilku rzeczach naraz. Nie
+> podejmuje ich za niego.**
 
 KP z pancerza: MG założył ten pancerz, pancerz sam o sobie mówi, ile daje, aplikacja dodała liczby.
 Efekt „+2 do KP": MG dopisał go do listy, aplikacja go zsumowała. Oba są księgowością — **pod
 warunkiem**, że aplikacja nie wie, czym jest Tarcza Wiary, kiedy się zaczyna, kiedy wygasa, czy się
 kumuluje i na kogo działa.
 
-Ta sama zasada, zastosowana do akcji zamiast do sum:
-
-> **Aplikacja księguje decyzje MG — także jednym kliknięciem i na kilku rzeczach naraz. Nie
-> podejmuje ich za niego.**
-
-**Pięć zakazów — kanoniczne brzmienie w [CLAUDE.md](../CLAUDE.md).** To nie jest przypadkowa lista:
-to **kanoniczny zestaw funkcji silnika cRPG, zanegowany**. Baldur's Gate adaptuje ten sam podręcznik
-co my i musi mieć wszystkie pięć, bo gra bez MG. Ten sam system, inny wykonawca, inna architektura.
-Praktyczny test: **jeśli zapragniemy którejkolwiek z tych pięciu rzeczy, nie zbliżamy się do granicy
-— przekraczamy ją.**
+**Pięć zakazów — kanoniczne brzmienie w [CLAUDE.md](../CLAUDE.md).** Jeśli zapragniemy którejkolwiek
+z tych pięciu rzeczy, nie zbliżamy się do granicy — przekraczamy ją.
 
 Zakazy nie mówią, że logiki nie ma. Formuły, sumowanie wkładów i wartości pochodne są logiką.
 Niepotrzebne jest **wykonywanie reguł**.
 
-### 14.1 Dwie granice do narysowania, zanim ktoś je przekroczy
-
-Obie dotyczą funkcji, które są w planie, i obie padłyby niezauważenie.
-
-**Runda i zegar świata.** Tracker tur i zegar świata trzymają liczby wyglądające jak czas.
+### 14.1 Runda, zegar świata i kronika
 
 > Narzędziu wolno trzymać numer rundy i czas świata. **Nic poza widokiem nie ma prawa ich
 > odczytać.** Licznik jest wyświetlany i przesuwany przez MG; nie jest wejściem żadnej formuły ani
 > warunkiem żadnego wygaśnięcia.
 
-**Kronika.** Dziennik jako subskrybent zdarzeń byłby dosłowną sprzecznością z zakazem piątym.
-
 > Wpis do kroniki jest **częścią operacji**, nie reakcją na nią. `CampaignSession.ExecuteAsync`
 > zapisuje stan i wpis kroniki w jednym zatwierdzeniu.
 
-**Przy okazji:** `MaxEventsPerCommand` jest dziś opisany jako zabezpieczenie przed pętlą. Skoro nic
-nie ma prawa pisać w reakcji na zdarzenie, kaskada jest niemożliwa — więc ten limit jest **jedynym
-mechanicznym egzekwowaniem zakazu piątego, jakie istnieje**. Zostaje; jego uzasadnienie wymaga
-przepisania.
+**`MaxEventsPerCommand` jest jedynym mechanicznym egzekwowaniem zakazu piątego**, jakie istnieje.
+Zostaje; jego uzasadnienie w kodzie jest do przepisania.
 
 ### 14.2 Efekt jest wkładem, nie mechanizmem
 
 Efekt to zwykły wpis: ma typ treści, kartę, może mieć prozę. Leży na instancji jako pozycja slotu —
 tak samo jak przedmiot w plecaku. Implementuje **kontrakt wkładu**: nazwa pola plus wartość.
 
-Stąd wniosek usuwający całą klasę projektowania: **pancerz i efekt są dla aplikacji tym samym.** Oba
-deklarują wkład do pola `kp`. Nie ma „systemu efektów" — są wkłady. Formuła KP brzmi „baza plus suma
-wkładów do `kp`" i nie wie, skąd te wkłady przyszły ani czym są.
+**Pancerz i efekt są dla aplikacji tym samym.** Oba deklarują wkład do pola `kp`. Nie ma „systemu
+efektów" — są wkłady. Formuła KP brzmi „baza plus suma wkładów do `kp`" i nie wie, skąd te wkłady
+przyszły ani czym są.
 
 ### 14.3 Test asystenta
 
@@ -656,14 +568,11 @@ Dwa rodzaje wyniku rozchodzą się po jednej linii: **kto go wywołał.**
   **propozycją**. Narzędzie liczy i pokazuje; MG decyduje, czy i gdzie to nanieść. Dane kampanii są
   formularzem: każde pole instancji jest edytowalne, łącznie z wartością pochodną.
 * **Akcja wywołana przez MG** — „sprzedaj", „zadaj obrażenia", „przełóż do skrzyni" — **zapisuje od
-  razu i nie pyta o potwierdzenie**: wywołanie akcji samo w sobie jest intencją. Warunek: wszystko,
-  co akcja zmieni, MG widzi i ustawia przed kliknięciem.
+  razu i nie pyta o potwierdzenie**. Warunek: wszystko, co akcja zmieni, MG widzi i ustawia przed
+  kliknięciem.
 
-Zasada ta usuwa z projektu kaskady automatycznych zmian stanu, dialogi potwierdzeń i cofanie zmian
+W projekcie nie ma kaskad automatycznych zmian stanu, dialogów potwierdzeń ani cofania zmian
 wywołanych regułą.
-
-Do 2026-09-22 bezpośredni zapis był tu opisany jako „rzadki wyjątek". Przestał nim być razem
-z nowym brzmieniem czwartego zakazu — sekcja niżej.
 
 ### 14.5 Księgowanie decyzji na kilku rzeczach naraz
 
@@ -675,14 +584,8 @@ Jedna akcja MG może zmienić kilka rzeczy, jeśli każdą z nich MG wskazał.
 * **Kula ognia.** MG zaznacza cztery gobliny, wpisuje obrażenia, tym, którzy się obronili, ustawia
   połowę — i klika raz.
 
-To jest księgowość, nie wykonywanie reguł: o tym, że transakcja zaszła i na jakich warunkach, i o
-tym, kogo trafiła kula, zdecydował MG. Aplikacja zapisuje wszystkie strony tej decyzji. To nie jest
-też kaskada: jedna operacja ma kilka skutków, tak jak wpis do kroniki jest częścią operacji, a nie
-reakcją na nią.
-
-**Warunek, bez którego to staje się furtką:** wszystko, co operacja zmieni, MG widzi przed
-kliknięciem. Sprzedaż, która przy okazji po cichu podnosi reputację u kupca, jest reakcją przebraną
-za część operacji.
+**Wszystko, co operacja zmieni, MG widzi przed kliknięciem.** Ukryty skutek — sprzedaż, która przy
+okazji po cichu podnosi reputację u kupca — jest zabroniony.
 
 **Gdzie granica nadal obowiązuje — w tym samym sklepie:**
 
@@ -690,25 +593,23 @@ za część operacji.
 |---|---|---|
 | kupiec uzupełnia towar po tygodniu | czas | MG dopisuje towar |
 | cena zależy od testu Charyzmy | warunek | aplikacja proponuje cenę z danych przedmiotu — także „połowa wartości", bo to arytmetyka — a MG poprawia ją przed kliknięciem |
-| transakcja odrzucona, bo gracz nie ma dość złota | egzekwowanie reguły | aplikacja pokazuje brak, nie blokuje — może MG pozwala na dług |
+| transakcja odrzucona, bo gracz nie ma dość złota | egzekwowanie reguły | aplikacja pokazuje brak, nie blokuje |
 | złoto trafia do „najbliższej sakiewki" | cel wybrany regułą | MG wskazuje sakiewkę |
 | aplikacja rozstrzyga, kto stał w obszarze kuli | cel wybrany regułą | MG zaznacza trafionych |
 
-Czwarty zakaz brzmiał wcześniej „operacja zmienia to, na czym ją wywołano" i zabraniał przez to
-nawet przełożenia miecza z plecaka do skrzyni. Dlaczego to brzmienie odrzucono —
-[decisions.md](decisions.md), *Czwarty zakaz w brzmieniu „operacja zmienia to, na czym ją
-wywołano"*.
+**Dlaczego →** [decisions.md](decisions.md), *Granica automatyzacji*.
 
 ## 15. Niezmiennik interfejsu
 
 > **Widok zna pełny kształt tego, co wyświetla — w czasie kompilacji. Z danych przychodzą wyłącznie
 > wartości.**
 
-Żaden widok nie odkrywa swojego kształtu w czasie wykonania. Widok, który czyta skądkolwiek, jakie
-ma pola, jest naruszeniem — i jest to sprawdzalne z samego diffu.
+Widok, który czyta skądkolwiek, jakie ma pola, jest naruszeniem — sprawdzalnym z samego diffu.
 
-Jedyne miejsce, w którym sekwencja pochodzi z treści, to **dokument** — i tam jest to poprawne, bo
-dokument *jest* sekwencją. Karta jest układem.
+Jedyne miejsce, w którym sekwencja pochodzi z treści, to **dokument** — bo dokument *jest*
+sekwencją. Karta jest układem.
+
+**Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 
 ## 16. Poziomy logiki i formuły
 
@@ -719,14 +620,8 @@ Dwa poziomy, nie trzy:
    obliczanym. Bez pętli, bez gałęzi, bez efektów ubocznych: bezpieczna z definicji, wymaga
    walidacji, nie piaskownicy. **Domyślna i jedyna ścieżka.**
 
-Poziom skryptowy jest wycofany; co to usunęło i dlaczego — patrz [decisions.md](decisions.md).
-
-**Zakaz gałęzi pełni ważniejszą rolę niż bezpieczeństwo: uniemożliwia treści napisanie silnika
-reguł.** Autor nie może zapisać „jeśli ciężki pancerz, to zeruj zręczność", bo nie ma czym. Może
-napisać `min(zręczność, pancerz.limit)` — ale to arytmetyka nad tym, co MG sam założył, a limit
-deklaruje ten konkretny pancerz o sobie samym. `min` i `max` przenoszą trochę reguł, ale przenoszą
-je **do danych konkretnego przedmiotu**, a nie do wiedzy aplikacji o kategoriach — i to jest różnica
-między tabelą a silnikiem.
+Poziomu skryptowego nie ma. `min` i `max` są arytmetyką i są dozwolone; limit, którego pilnują,
+deklaruje konkretny przedmiot o sobie samym.
 
 **Dwa konteksty ewaluacji:**
 
@@ -735,47 +630,37 @@ między tabelą a silnikiem.
 * **Rzut** — wykonywany na żądanie; wynik jest zdarzeniem pokazywanym MG, nie wartością odczytywalną
   z danych. Kości dozwolone.
 
-Bez tego rozdziału wartość pochodna zmieniałaby się przy każdym renderze, a kolejka tur
-przetasowywałaby się sama.
-
 **Zasięg: jeden skok, nieprzechodni.** Formuła czyta własną instancję oraz pola tego, do czego ta
 instancja odwołuje się bezpośrednio — pozycje slotów — i nie idzie dalej. Odczytane przez skok pole
-nie może samo być wynikiem skoku. Pokrywa to KP z pancerza i efektów oraz obrażenia z broni, a cykle
-stają się niemożliwe strukturalnie: bez wykrywania cykli, bez kolejności przeliczania, bez
-inwalidacji zależności.
+nie może samo być wynikiem skoku. Pokrywa to KP z pancerza i efektów oraz obrażenia z broni; cykle są
+niemożliwe strukturalnie — bez wykrywania cykli, bez kolejności przeliczania, bez inwalidacji
+zależności.
 
 **Eksplodujące kości** są własnością notacji kości z twardym limitem eskalacji, a nie pętlą pisaną
 przez autora treści.
 
-**Kryterium powrotu do dyskusji** stoi przy odrzuceniu skryptów — [decisions.md](decisions.md),
-*Poziom 3 logiki / skrypty Lua*.
+**Dlaczego →** [decisions.md](decisions.md), *Poziomy logiki i formuły*.
 
 ## 17. Gdzie mieszka stan
 
-Podział przebiega wzdłuż jednej linii: **co jest statyczne i wspólne, a co zmienne i własne.**
-
 | Co | Gdzie | Charakter |
 |---|---|---|
-| Paczki | `Dokumenty\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — ma być widoczny i kopiowalny. |
+| Paczki | `Dokumenty\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — widoczny i kopiowalny. |
 | Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Manifest — w nim system kampanii i włączone dodatki — oraz modele stanu zadeklarowane przez system. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Stan aplikacji, nie dokument. |
 
-**Kampania jest dokumentem, układ okien jest ustawieniem programu.** Dlatego kampania leży
-w Dokumentach — widoczna, kopiowalna, przenoszalna na pendrivie — a układ biurka w danych aplikacji.
+**Kampania jest dokumentem, układ okien jest ustawieniem programu.** Kampania leży w Dokumentach —
+widoczna, kopiowalna, przenoszalna na pendrivie — a układ biurka w danych aplikacji.
 
 **Rama zapisuje, system deklaruje.** System — albo biblioteka, z której korzysta — deklaruje modele
 stanu, które kampania trzyma; rama zapisuje je wszystkie w jednym zatwierdzeniu i jest jedyną drogą
-ich zmiany. Kształt modelu jest tym, który zapisano na powrót magazynu stanu niezwiązanego z wpisem
-([decisions.md](decisions.md), *Utrzymanie warstwy bloków danych po odejściu jej jedynego
-konsumenta*): rekord z `required`, deserializator jako jedyny walidator, identyfikator, numer
-wersji, ten sam zapis atomowy. Niezgodna wersja modelu oznacza, nie migruje. Instancje z nakładkami
-są pierwszym takim modelem — dostarcza go biblioteka — więc mechanizm ma konsumenta od pierwszego
-dnia.
+ich zmiany. Model to rekord z `required`, deserializator jako jedyny walidator, identyfikator, numer
+wersji. Niezgodna wersja modelu oznacza, nie migruje. Instancje z nakładkami są pierwszym takim
+modelem — dostarcza go biblioteka.
 
-**Tu stoją dwa zakazy.** Rama jest właścicielem jedynej drogi zmiany stanu i powiadomień o zmianie,
-więc czwarty i piąty zakaz da się w niej uczynić **niewykonalnymi**, a nie tylko zabronionymi —
-kształt tej drogi trzeba zaprojektować, nie założyć. Dlatego system przejmuje wygląd i zawartość
-aplikacji, ale nigdy drzwi zapisu.
+**Rama jest właścicielem jedynej drogi zmiany stanu i powiadomień o zmianie. System nigdy nie
+dostaje drzwi zapisu.** Kształt tej drogi ma czynić czwarty i piąty zakaz **niewykonalnymi**,
+a nie tylko zabronionymi.
 
 **Kampania należy do jednego systemu.** Kampania, której systemu nie ma w programie, jest widoczna
 jako niedostępna — nie znika.
@@ -784,22 +669,18 @@ Magazyn kampanii i magazyn układu biurka zapisują tak samo: plik tymczasowy, a
 licznik generacji wykrywający zapis przerwany w połowie — jeden prymityw zapisu atomowego, z którego
 korzystają oba.
 
+**Dlaczego →** [decisions.md](decisions.md), *Gdzie mieszka stan*.
+
 ## 18. Nawigacja: ekran wyboru systemu i pasek boczny
 
 **Aplikacja startuje na ekranie wyboru systemu** — pełnoekranowym, z systemami wkompilowanymi
-w program. Istnieje od razu, także przy jednym systemie: jest wejściem do aplikacji, miejscem,
-w którym system w ogóle zostaje wybrany. **Wybór systemu poprzedza kampanię, a nie z niej wynika**,
-bo zakładki treści systemu mają działać, zanim otworzysz jakąkolwiek kampanię.
+w program. Istnieje także przy jednym systemie. **Wybór systemu poprzedza kampanię**, a nie z niej
+wynika.
 
 **Powrót do wyboru** — przycisk w górnym pasku, należący do ramy — działa bez restartu. Rama umie
-więc w całości rozebrać aktywny system: zamknąć kampanię, zwolnić jego zakładki i biurko. Nic się
-przy tym nie traci, bo każda zmiana stanu trafia na dysk od razu. Cykl życia systemu — od wyboru do
-powrotu — czyni jawnym obowiązek sprzątania po zakładkach i oknach, który inaczej stałby wyłącznie
-w implementacji pojedynczych narzędzi.
-
-Do 2026-09-22 obowiązywały tu dwa niezależne poziomy nawigacji — globalna szyna o trzech stałych
-pozycjach i osobny przełącznik powierzchni kampanii — oraz zakaz, żeby zestaw wnosił powierzchnię
-albo pozycję szyny. Dlaczego uchylone — [decisions.md](decisions.md), *Kontekstowy sidebar*.
+w całości rozebrać aktywny system: zamknąć kampanię, zwolnić jego zakładki i biurko. Nic się przy tym
+nie traci, bo każda zmiana stanu trafia na dysk od razu. **Sprzątanie po sobie przy powrocie jest
+częścią kontraktu zakładki i okna.**
 
 ### 18.1 Pasek boczny: trzy kategorie
 
@@ -811,32 +692,23 @@ albo pozycję szyny. Dlaczego uchylone — [decisions.md](decisions.md), *Kontek
 
 Nazwy kategorii są słownikiem dokumentów; etykiety na ekranie ustala projekt interfejsu.
 
-**Kategoria wyznacza nie tylko miejsce zakładki, ale to, co zakładka dostaje.** Najważniejsza jest
-reguła dla środkowej: zakładka kategorii System nie widzi otwartej kampanii — tylko wtedy działa
-sensownie bez niej. Co potrzebuje stanu kampanii, należy z definicji do kategorii Kampania.
-Rozróżnienie jest sprawdzalne z samego diffu.
-
-**System wypełnia pasek wedle zasad ramy, nie rysuje go.** Deklaruje zakładki kategorii Kampania —
-pod półką kampanii — i kategorii System; rama je wyświetla. Półka kampanii i kategoria Aplikacja
-należą do ramy i istnieją przez cały czas działania aplikacji.
-
-**Zakładki są kompilowane i policzalne w czasie budowania** — deklaruje je skompilowany system,
-nigdy paczka. Literówka w pliku treści nie ma jak zepsuć paska. Ile zakładek wnosi system i jak je
-grupuje, jest decyzją jego projektanta, nie architektury.
+* **Kategoria wyznacza nie tylko miejsce zakładki, ale to, co zakładka dostaje.** Zakładka kategorii
+  System nie widzi otwartej kampanii. Co potrzebuje stanu kampanii, należy do kategorii Kampania.
+* **System wypełnia pasek wedle zasad ramy, nie rysuje go.** Deklaruje zakładki kategorii Kampania —
+  pod półką kampanii — i kategorii System; rama je wyświetla. Półka kampanii i kategoria Aplikacja
+  należą do ramy i istnieją przez cały czas działania aplikacji.
+* **Zakładki są kompilowane i policzalne w czasie budowania** — deklaruje je skompilowany system,
+  nigdy paczka. Literówka w pliku treści nie ma jak zepsuć paska.
+* **Ile zakładek wnosi system i jak je grupuje, jest decyzją jego projektanta**, nie architektury.
 
 ### 18.2 Okno czy zakładka — kryterium
-
-Zasięg danych nie wystarcza, bo biurko i pozostałe zakładki kampanii mają ten sam zasięg.
-Rozstrzyga **tryb obcowania**:
 
 > Czy patrzy się na to kątem oka obok innych rzeczy, czy się w tym przebywa?
 
 **Peryferyjne i równoczesne → okno biurka.** Kolejka tur, drużyna, zegar świata, kostki, notatka,
 ekwipunek.
 
-**Centralne i wyłączne → zakładka.** Długi tekst, w którym się czyta i scrolluje. Maksymalizacja
-okna daje rozmiar, ale nie daje wyłączności — nadal jest ramką z paskiem tytułu i resztą biurka pod
-spodem.
+**Centralne i wyłączne → zakładka.** Długi tekst, w którym się czyta i scrolluje.
 
 Kryterium stosuje projektant systemu. Typowe zakładki kampanii:
 
@@ -844,7 +716,7 @@ Kryterium stosuje projektant systemu. Typowe zakładki kampanii:
 * **Świat** — przegląd instancji tej kampanii, lista plus karta.
 * **Fabuła** — dokumenty przygody.
 * **Kronika** — pełna historia zmian. Jednocześnie okno (ogon ostatnich zdarzeń) i zakładka
-  (całość). To nie jest niespójność, tylko dwie długości tego samego.
+  (całość) — dwie długości tego samego.
 
 Biblioteka dostarcza do nich klocki; które z nich są, decyduje system.
 
@@ -855,40 +727,33 @@ kliknięciu pozycji i który narzędzie może pokazać.
 
 Treść systemu przegląda się w zakładkach kategorii System — np. osobno przedmioty, potwory,
 zaklęcia — zaprojektowanych przez system. Biblioteka daje do nich wspólny widok listy z kartą i trzy
-filtry: **po kategorii** (właściwość typu treści), **po paczce** (uczciwy wymiar, bo tam treść
-faktycznie mieszka) i **po typie treści** (narzędziowo). Źródłem wszystkich jest rejestr.
+filtry: **po kategorii** (właściwość typu treści), **po paczce** i **po typie treści**. Źródłem
+wszystkich jest rejestr.
 
-**Grupowanie z danych jest legalne wewnątrz skompilowanego ekranu, nielegalne w nawigacji.**
-Zakładka jest skompilowana, jej układ nie pochodzi z treści, a z treści pochodzi wyłącznie
-zawartość jednego wymiaru. Różnica jest sprawdzalna po skutku awarii: literówka psuje **etykietę
-filtra**, a nie nawigację. Nie da się nią zgubić drogi powrotnej.
+* **Grupowanie z danych jest legalne wewnątrz skompilowanego ekranu, nielegalne w nawigacji.**
+  Sprawdzian po skutku awarii: literówka psuje **etykietę filtra**, a nie nawigację.
+* **Zakładka treści nie jest miejscem wewnątrz kampanii.** Wybór wpisu w kampanii jest **momentem,
+  nie miejscem**: przywoływanym z narzędzia, filtrowanym do paczek kampanii, znikającym po wyborze.
+* **Tworzenie, edycja i usuwanie treści w zakładkach treści są poza pierwszą wersją.**
 
-**Zakładka treści nie jest miejscem wewnątrz kampanii.** Wybór wpisu w kampanii jest **momentem,
-nie miejscem**: przywoływanym z narzędzia, filtrowanym do paczek kampanii, znikającym po wyborze.
-
-**Tworzenie, edycja i usuwanie treści w zakładkach treści są poza pierwszą wersją.**
+**Dlaczego →** [decisions.md](decisions.md), *Nawigacja: ekran wyboru systemu i pasek boczny*.
 
 ## 19. Narzędzia biurka i system okien
 
 `PanelGeometry`, `WorkspaceSurface`, `WorkspaceLayoutStore`, `PanelWindow`, `PanelDeck`, rozdział
-„desired" / „effective", debounce zapisu układu — **wszystko zostaje bez zmian wizualnych i bez
-zmian w geometrii.** Okno hostuje **narzędzie biurka**, nie kartę.
+„desired" / „effective", debounce zapisu układu — **bez zmian wizualnych i bez zmian w geometrii.**
+Okno hostuje **narzędzie biurka**, nie kartę.
 
-Zmienia się adres: **system okien przechodzi z ramy do biblioteki.** Biurko przestaje być istotą
-otwartej kampanii i staje się jedną z zakładek, które system może postawić w kategorii Kampania —
-bez pisania od nowa okien, ich przesuwania i zamykania.
+* **System okien mieszka w bibliotece.** Biurko jest jedną z zakładek, które system może postawić
+  w kategorii Kampania — bez pisania od nowa okien, ich przesuwania i zamykania.
+* **Katalog okien biurka jest tym, co deklaruje system** wraz z włączonymi dodatkami, składanym przy
+  otwarciu kampanii. Nic w ramie ani w bibliotece nie nazywa żadnego systemu po imieniu.
+* **System wnosi okno jako gotową kontrolkę**, a biblioteka podaje mu wąskie okno na otwartą
+  kampanię: instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy
+  panel. Nie sesję i nie samą kampanię — nic więcej osiągalnego stamtąd. Żaden szablon w bibliotece
+  nie zna typu z systemu.
 
-**Katalog okien biurka jest tym, co deklaruje system** wraz z włączonymi dodatkami, składanym przy
-otwarciu kampanii. Nic w ramie ani w bibliotece nie nazywa żadnego systemu po imieniu.
-
-**System wnosi okno jako gotową kontrolkę**, a biblioteka podaje mu wąskie okno na otwartą
-kampanię: instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy
-panel. Nie sesję i nie samą kampanię — narzędzie dostaje to, czego potrzebuje, i nic więcej
-osiągalnego stamtąd. Dzięki oddaniu gotowej kontrolki żaden szablon w bibliotece nie zna typu
-z systemu.
-
-Wcześniejszy model — kampania zaznacza zestawy, zestaw może wymagać innego — zastąpiły dodatki
-(sekcja *Dodatki*).
+**Dlaczego →** [decisions.md](decisions.md), *Narzędzia biurka i system okien*.
 
 ## 20. Wersjonowanie
 
@@ -901,11 +766,10 @@ Dwie niezależne osie.
    zostawia referencję nierozwiązaną, dopóki kampania świadomie nie zaktualizuje deklaracji.
    **Nigdy cicha podmiana treści pod otwartą kampanią.**
 
-Wcześniejsza trzecia oś — wersja katalogu elementów i kontraktów — **znika**: katalog nie jest już
-bytem, z którego wybierają dane, a kontrolki i interfejsy kompilują się razem z tym, co ich używa.
+**Migracji nie budujemy**, dopóki jakaś wersja nie zostanie faktycznie podniesiona — niezgodna wersja
+**oznacza** pozycję, a nie uruchamia migrację.
 
-**Migracji nie budujemy**, dopóki jakaś wersja nie zostanie faktycznie podniesiona — projekt już tak
-robi na obu osiach powyżej: niezgodna wersja **oznacza** pozycję, a nie uruchamia migrację.
+**Dlaczego →** [decisions.md](decisions.md), *Wersjonowanie*.
 
 ## 21. Przepływy
 
@@ -919,10 +783,8 @@ robi na obu osiach powyżej: niezgodna wersja **oznacza** pozycję, a nie urucha
  5.  po wyborze       półka kampanii tego systemu, rozgrzewka jego zakładek
 ```
 
-Kolejność nie jest przypadkowa: **treść jest sprawdzana przed kampaniami.** Jeśli czegoś brakuje,
-dowiadujesz się przy starcie, a nie przy pierwszym kliknięciu w środku sesji. Żaden krok nie ma
-prawa zatrzymać wejścia do programu — awaria dowolnego degraduje do leniwego wczytywania i zostawia
-ostrzeżenie na pasku.
+**Treść jest sprawdzana przed kampaniami.** Żaden krok nie ma prawa zatrzymać wejścia do programu —
+awaria dowolnego degraduje do leniwego wczytywania i zostawia ostrzeżenie na pasku.
 
 ### 21.2 Zmiana stanu: z kliknięcia na dysk
 
@@ -943,11 +805,9 @@ ostrzeżenie na pasku.
 ```
 
 * **Jest dokładnie jedno wejście** do zmiany otwartej kampanii. Nie ma drugiej drogi.
-* **Jedna operacja może mieć kilka skutków** — sekcja *Księgowanie decyzji na kilku rzeczach
-  naraz* — i wszystkie idą jednym zatwierdzeniem.
+* **Jedna operacja może mieć kilka skutków** — sekcja *Granica automatyzacji* — i wszystkie idą
+  jednym zatwierdzeniem.
 * **Zdarzenia powiadamiają, nigdy nie zapisują.**
-* **Ta ścieżka już działa i jest przetestowana od początku do końca.** Przechodzi nią każda zmiana
-  okazu w kampanii.
 
 ### 21.3 Pozostałe
 
@@ -969,8 +829,10 @@ nowe id, referencja, pusta łatka, zawartość slotów z wpisu.
 konsument dostaje obiekt. Tracker tur, wiersz ekwipunku i sumowanie wkładów to trzy zastosowania
 jednego mechanizmu.
 
-**Prowadzenie przygody.** Zakładka fabuły → renderer dokumentu nad instancją → odhaczenie
-zapisuje się jako klucz łatki tą samą ścieżką co zmiana stanu.
+**Prowadzenie przygody.** Zakładka fabuły → renderer dokumentu nad instancją → odhaczenie zapisuje
+się jako klucz łatki tą samą ścieżką co zmiana stanu.
+
+**Dlaczego →** [decisions.md](decisions.md), *Przepływy*.
 
 ---
 ---
@@ -993,103 +855,54 @@ zapisuje się jako klucz łatki tą samą ścieżką co zmiana stanu.
 | narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
 | brak kaskad zmian stanu | `MaxEventsPerCommand` jako tripwire | istnieje, uzasadnienie do przepisania |
 
-Skan słownictwa jest wart uwagi: **słownik zakazanych słów nie jest wpisany ręcznie — jest wyciągany
-z systemu.** Dodajesz typ „Zaklęcie" i zakaz sam się o to słowo poszerza. Nikt nie musi pamiętać,
-żeby dopisać je do listy.
+* **Słownik zakazanych słów jest wyciągany z systemu, nie wpisany ręcznie** — dodajesz typ
+  „Zaklęcie" i zakaz sam się o to słowo poszerza.
+* **Skan obejmuje nazwy rodzajów, nie nazwy pól.** Nazw pól pilnuje **kształt kodu**: wartości wpisu
+  przechodzą do systemu jako koperta, a w ramie ani w bibliotece nie istnieje API przyjmujące nazwę
+  pola. **Kryterium powrotu do dyskusji:** pierwszy interfejs w ramie albo w bibliotece przyjmujący
+  nazwę pola jako napis.
+* **Dopasowanie w skanie respektuje granicę CamelCase**, nie tylko granicę słowa, i czyta pliki
+  `.axaml`.
+* **Mechanizm zastępczy powstaje przed usunięciem mechanizmu, który zastępuje.**
+* **Testy inwestuje się w to, co przeżyje kolejną wersję architektury** — framework okien tak,
+  warstwa treści dziś nie zasługuje na gęste pokrycie.
+* **`TreatWarningsAsErrors`** jest częścią walidacji treści: ostrzeżenia kompilatora są
+  ostrzeżeniami o treści.
 
-**Skan obejmuje nazwy rodzajów, nie nazwy pól — i to jest wzmocnienie granicy, nie ustępstwo.**
-Rozszerzenie słownika na pola sprawdzono na realnym kodzie i odpada: nazwy pól to „nazwa", „typ",
-„rozmiar", „opis", „akcje", a te same słowa stoją w zwykłym kodzie instalacyjnym, który o świecie gry
-nie wie nic. Skan zakazujący ich sypie fałszywymi trafieniami od pierwszego uruchomienia — dziś
-łapałby dwa komentarze ze zwrotem „spelled out" — a **test, który sypie alarmami, zostaje wyłączony
-i wtedy nie pilnuje niczego.** Ręczna lista wyjątków jest gorszym lekarstwem niż choroba: starzeje
-się cicho, a każde kolejne fałszywe trafienie jest zaproszeniem, żeby dopisać do niej słowo, aż
-zostanie sito.
+**Dlaczego →** [decisions.md](decisions.md), *Granice mechaniczne*.
 
-Nazw pól pilnuje więc **kształt kodu**: wartości wpisu przechodzą do systemu jako koperta
-(*Deklaracja treści*), a w ramie ani w bibliotece nie istnieje API przyjmujące nazwę pola — nie ma
-czym zapytać. Zakaz przenosi się ze skanu tekstu do systemu typów, który nie zna fałszywych trafień
-i nie da się wyciszyć. **Kryterium powrotu do dyskusji:** pierwszy interfejs w ramie albo
-w bibliotece przyjmujący nazwę pola jako napis. Wtedy koperta przestała być granicą i trzeba czegoś innego.
+## 23. Pytania otwarte i reguła „nic bez konsumenta"
 
-Dopasowanie w skanie respektuje granicę CamelCase, nie tylko granicę słowa: bez tego
-`MonsterCardView` w powłoce przechodzi niezauważony (jeden ciąg znaków), a niewinne „spelled"
-zapala alarm. Skan czyta też pliki `.axaml` — widok jest tam, nie w `.cs`.
-
-**Kolejność wobec rozbiórki jest wiążąca:** mechanizm zastępczy powstaje **przed** usunięciem
-mechanizmu, który zastępuje. Inaczej istnieje okno, w którym granicy nie pilnuje nic.
-
-**Gdzie inwestować w testy:** w to, co przeżyje kolejną wersję architektury. Framework okien przeżył
-już trzy. Warstwa treści nie przeżyła żadnej i nie zasługuje dziś na gęste pokrycie.
-
-**`TreatWarningsAsErrors`** przestaje być higieną i staje się częścią historii walidacji: skoro
-kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o treści.
-
-## 23. Pytania otwarte
-
-1. **Format pliku wpisu.** JSON zawodzi dokładnie w jednym miejscu — długi tekst. Po wejściu slotów
-   potwór traci dwa z trzech bloków prozy (akcje i cechy szczególne stają się dołączonymi wpisami),
-   więc zostaje jeden długi tekst na plik — a wtedy naturalnym kształtem jest **front-matter plus
-   treść**, ten sam, który przyjęto dla dokumentu. **Rozstrzygnąć po slotach, nie przed.** Nie robić
-   w międzyczasie: tablicy napisów udającej akapity, prozy we front-matterze, własnego DSL-a.
-2. **Autorstwo treści w aplikacji.** Rejestr jest tylko do odczytu. Pytanie zmniejszyło się o połowę
-   (typy treści pisze się w IDE, kompilator daje komunikaty), ale zostaje dla wpisów. Najmocniejszy
-   motywator: MG ubiera goblina i nie ma jak zapisać tego jako czegoś wielokrotnego użytku.
-   Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone.
+1. **Format pliku wpisu.** Kandydat: front-matter plus treść, ten sam, który przyjęto dla dokumentu.
+   **Rozstrzygnąć po slotach, nie przed.** W międzyczasie nie robić: tablicy napisów udającej
+   akapity, prozy we front-matterze, własnego DSL-a.
+2. **Autorstwo treści w aplikacji.** Zakładki treści są tylko do odczytu; pytanie zostaje otwarte dla
+   wpisów. Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone.
 3. **Katalog pól formularza dokumentu i kształt markera.**
-4. **Czy silnik formuł potrzebuje tablicy przeglądowej.** Modyfikator cechy to czysta arytmetyka, ale
-   premia z biegłości i stopnie kości w Savage Worlds są tabelami. Tablica stała nie łamie zakazu
-   gałęzi, ale poszerza język.
+4. **Czy silnik formuł potrzebuje tablicy przeglądowej** — premia z biegłości, stopnie kości
+   w Savage Worlds. Tablica stała nie łamie zakazu gałęzi, ale poszerza język.
 5. **Jakie jeszcze pola trafiają do nakładki poza stanem i slotami.** Reguła rozstrzygająca jest
    zapisana; brakuje przejścia przez realny system.
 6. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
-   jakąkolwiek kartę zastępczą, czy zostaje bez niej. **Wyzwalacz:** pierwszy taki rodzaj treści.
-   Dziś oba istniejące mają karty zaprojektowane, więc pytanie jest puste.
-7. **Paczka a system.** Paczka nie deklaruje systemu — jej wpisy wskazują typy treści, a te należą
-   do systemów. Otwarte: czy paczka ma deklarować swój system, i gdzie pokazuje się paczka
-   odrzucona za zepsuty manifest, której systemu nie da się poznać. Wadliwa treść nie może zniknąć
-   po cichu, więc „nigdzie" nie jest odpowiedzią. **Wyzwalacz:** pierwsze miejsce na ekranie dla
-   odrzuconych paczek — dziś nie pokazują się nigdzie, z decyzji autora ([tasks.md](tasks.md),
+   jakąkolwiek kartę zastępczą. **Wyzwalacz:** pierwszy taki rodzaj treści.
+7. **Paczka a system.** Czy paczka ma deklarować swój system, i gdzie pokazuje się paczka odrzucona
+   za zepsuty manifest, której systemu nie da się poznać. „Nigdzie" nie jest odpowiedzią.
+   **Wyzwalacz:** pierwsze miejsce na ekranie dla odrzuconych paczek ([tasks.md](tasks.md),
    „Czekają na miejsce na ekranie").
 
-**Nawyk przerwany — i to jest wynik, nie postanowienie.** Sekcja ta wyliczała kiedyś sześć rzeczy
-zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta), `Category` /
-`Descriptor` rozwiązywane i niepokazywane, `SelfDescribing` parsowane i nieczytane,
-`WarmPanelVisualStep`, `UnknownModule` oraz dwa zarezerwowane pola w manifeście kampanii.
-Przewidywała, że **dwie z nich umrą, zamiast doczekać konsumenta**. Umarły wszystkie sześć —
-ostatnie dwa 2026-09-13. Żadna nie doczekała konsumenta; ani jeden raz rezerwacja się nie opłaciła.
+**Reguła: nic nie wchodzi bez konsumenta w tym samym wycinku** — ani pole, ani mechanizm.
+Rusztowanie, którego kod czytający istnieje i działa (dziś: `AllowsMultipleInstances`), nie jest
+rezerwacją.
 
-Siódma: **warstwa bloków danych.** Przypadek mocniejszy niż poprzednie sześć — padł cały mechanizm,
-nie pole. Rozstrzygnięcie i kształt, w jakim wróci — [decisions.md](decisions.md), *Utrzymanie
-warstwy bloków danych po odejściu jej jedynego konsumenta*.
-
-Zasada, która z tego została, obowiązuje dalej i jest szersza niż ta lista. Była zapisana wąsko,
-dla pól: *wożenie pola, dla którego świadomie nie przewidujemy zastosowania, jest gorsze niż jego
-brak.* Rozszerzona z pól na mechanizmy brzmi: **nic nie wchodzi bez konsumenta w tym samym
-wycinku.** Siedem na siedem jest wystarczającym dowodem, żeby traktować ją jako regułę, a nie
-preferencję.
-
-Jedyny dzisiejszy przypadek graniczny to `AllowsMultipleInstances`: ma konsumenta (odtwarzanie
-układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To jest rusztowanie opisane
-jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je czyta, istnieje
-i działa.
+**Dlaczego →** [decisions.md](decisions.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
 
 ## 24. Kolejność prac
 
-Kroki 1–8 są zrobione (krok 8 domknięty 2026-09-14). 2026-09-22 zapadła przebudowa na ramę,
-bibliotekę i system i weszła jako krok 9 — **przed** formułami, slotami i dokumentem, żeby te
-powstały od razu w bibliotece, zamiast być do niej przenoszone. Co dokładnie zostało do zrobienia,
-mówi [tasks.md](tasks.md).
+Kroki 1–8 są zrobione. Otwarte:
 
-| # | Krok | Dlaczego tu |
+| # | Krok | Uwagi |
 |---|---|---|
-| 1 | Projekt `DungeonApp.Content.<x>`; `monster` i `gear` przeniesione do rekordów; `Core` dostaje typy przez wąski interfejs; rejestr wygląda identycznie | najmniejszy wycinek dowodzący tezy |
-| 2 | Test granicy słownictwa rozszerzony na `Desktop`, słownik z zestawu | **mechanizm przed rozbiórką**, nigdy odwrotnie |
-| 3 | Rozbiórka: `Template`, `CardElement`, `FieldValue`, dwuprzebiegowe rozwiązywanie, martwe testy | dopiero gdy 2 stoi |
-| 4 | Zaprojektowana `MonsterCardView` — pierwsza prawdziwa karta | to jest cel całej operacji |
-| 5 | Odrzucanie per plik wpisu; pozycje nierozwiązane widoczne w rejestrze | zamyka sekcję o paczkach |
-| 6 | Jeden prymityw zapisu atomowego | **przed** magazynem instancji |
-| 7 | Magazyn instancji + nakładki | pierwszy realny stan kampanii |
-| 8 | Pierwsze prawdziwe narzędzie biurka i rozstrzygnięcie losu warstwy bloków danych | |
 | 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | przed 10, bo 10 powstaje w bibliotece; etapy w [tasks.md](tasks.md) |
 | 10 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
+
+**Dlaczego →** [decisions.md](decisions.md), *Kolejność prac*.

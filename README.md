@@ -19,8 +19,9 @@ nie wie, czym jest D&D — bo wiedza o systemie mieszka w wymienialnej warstwie.
 Nie jest stołem wirtualnym do grania online, aplikacją dla graczy, generatorem treści ani silnikiem
 reguł konkretnego systemu.
 
-Pełne wyjaśnienie — czym to jest, jak działa i dlaczego tak — jest w części I
-[dokumentu architektury](docs/architecture.md).
+Czym to jest i jak działa — część I [dokumentu architektury](docs/architecture.md). Dlaczego
+właśnie tak — [docs/decisions.md](docs/decisions.md), ale do rozeznania się w projekcie nie jest
+potrzebne.
 
 ## Uruchomienie
 
@@ -75,9 +76,9 @@ nigdy więc nie rozjeżdża się z kodem.
 | Dokument | Odpowiada na pytanie | Kiedy po niego sięgnąć |
 |---|---|---|
 | [CLAUDE.md](CLAUDE.md) | Czego nigdy nie wolno złamać? | zawsze; wygrywa nawet z kodem |
-| [docs/architecture.md](docs/architecture.md) | Czym to jest, jak jest zbudowane i dlaczego tak? | żeby się rozeznać (część I) albo coś zmienić (część II–III) |
+| [docs/architecture.md](docs/architecture.md) | Czym to jest i jak jest zbudowane? | żeby się wdrożyć (część I) albo sprawdzić, co obowiązuje (część II–III) |
 | [docs/code-map.md](docs/code-map.md) | Co jest w kodzie dzisiaj i gdzie co leży? | gdy szukasz konkretnego miejsca |
-| [docs/decisions.md](docs/decisions.md) | Co już odrzuciliśmy i dlaczego? | **zanim** zaproponujesz zmianę architektury |
+| [docs/decisions.md](docs/decisions.md) | Dlaczego tak, co odrzuciliśmy i co obowiązywało wcześniej? | **zanim** zaproponujesz zmianę; do wdrożenia się niepotrzebny |
 | [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
 | [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
 
@@ -87,8 +88,8 @@ odsyłają do niego po nazwie sekcji — nigdy go nie streszczają „żeby czyt
 
 | Rodzaj faktu | Dom |
 |---|---|
-| dlaczego **tak** — rozstrzygnięcie obowiązujące i jego uzasadnienie | `architecture.md` |
-| dlaczego **nie tamto** — kierunek odrzucony, jego argumenty i wyzwalacz powrotu | `decisions.md` |
+| **co obowiązuje** — deklaracje i ich konsekwencje, w czasie teraźniejszym | `architecture.md` |
+| **dlaczego** — argumenty za przyjętym, kierunki odrzucone z wyzwalaczem powrotu, co obowiązywało wcześniej i kiedy się zmieniło | `decisions.md` |
 | **jak jest dziś** — stan kodu | `code-map.md` |
 | **co dalej** | `tasks.md` |
 

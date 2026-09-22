@@ -1,12 +1,17 @@
-# DungeonApp — kierunki odrzucone
+# DungeonApp — rozstrzygnięcia
 
 **Status: rejestr rozstrzygnięć, nie projekt.** Ten dokument nie mówi, jak aplikacja ma
-działać — mówi, czego już próbowaliśmy i dlaczego tego nie robimy. Istnieje po to, żeby
-odrzucony pomysł nie wracał co kilka miesięcy jako nowy.
+działać — to mówi [architecture.md](architecture.md). Mówi, **dlaczego** jest tak, a nie inaczej:
 
-Projekt docelowy: [architecture.md](architecture.md).
+* **Część A — dlaczego tak.** Argumenty za tym, co obowiązuje, i co obowiązywało wcześniej.
+  Sekcje noszą nazwy sekcji architektury, które uzasadniają.
+* **Część B — kierunki odrzucone.** Czego już próbowaliśmy i dlaczego tego nie robimy — po to, żeby
+  odrzucony pomysł nie wracał co kilka miesięcy jako nowy.
 
-**Uwaga o słowniku.** Pozycje 1–22 zapisano w słowniku obowiązującym, gdy zapadały.
+Do wdrożenia się w projekt ten dokument nie jest potrzebny. Czyta się go **przed** zaproponowaniem
+zmiany, nie po.
+
+**Uwaga o słowniku (część B).** Pozycje 1–22 zapisano w słowniku obowiązującym, gdy zapadały.
 Dwa pojęcia zmieniły od tego czasu nazwę i postać: **„szablon"** to dziś **typ treści**
 (rekord plus zaprojektowany widok, nie plik danych), a **„element karty"** to dziś
 **kontrolka** komponowana przez projektanta, nie pozycja katalogu wybierana przez dane.
@@ -17,6 +22,438 @@ treści".
 Od 2026-09-22 **„zestaw"** to **system** — wybierany przy starcie aplikacji — a mechanizmy
 dawnego silnika i powłoki dzielą się między **ramę** i **bibliotekę**. Pozycje do 32 włącznie
 zapisano jeszcze w słowniku zestawów; rozstrzygnięcia samej przebudowy są w grupie ostatniej.
+
+# Część A — dlaczego tak
+
+Argumenty za tym, co obowiązuje, i historia tego, co obowiązywało wcześniej. Sekcje noszą te same
+nazwy co sekcje [architecture.md](architecture.md), które uzasadniają; tekst przeniesiono stamtąd
+2026-09-22 bez przeredagowania. Każda sekcja kończy się listą kierunków odrzuconych w tym temacie
+— pełne pozycje są w części B.
+
+## Co program wie, a czego wiedzieć nie może
+
+**Wcześniej projekt szedł inną drogą i warto wiedzieć jaką**, bo ślady tamtej zostały w kodzie.
+Zabraniał tej wiedzy *wszędzie* i pilnował tego w ten sposób, że karta była budowana z klocków
+opisanych w pliku tekstowym. Cel był słuszny. Ale budowanie kart z plików było tylko *jednym ze
+sposobów* dojścia do celu, a z czasem zaczęło się mylić z samym celem. Cena okazała się wysoka:
+nikt nie mógł zaprojektować karty, a format zaczął przeciekać — pojawiały się w nim flagi, które
+udawały, że mówią o treści, a naprawdę wymuszały układ.
+
+Teraz cel jest ten sam, a sposób inny: wiedza nie jest zakazana, tylko **umiejscowiona**.
+
+**Odrzucone w tym temacie:** „Rozgałęzianie po rodzaju wpisu w silniku i powłoce", „Karta składana
+z listy elementów podanej przez dane".
+
+## Rama, biblioteka, system
+
+**System do 2026-09-22 nazywał się „zestawem".**
+
+**Systemy nigdy nie referencują się nawzajem**, bo byłaby to krawędź wewnątrz jednej warstwy,
+z całym bagażem, którego unikamy gdzie indziej: problem diamentu, kolejność wczytywania,
+wersjonowanie kaskadowe.
+
+**Ładowanie jest statyczne**, bo wtyczki ładowane z katalogu nic tu nie kupują — pozycja
+„Ładowanie zestawów treści w czasie wykonania".
+
+**Ekran wyboru systemu istnieje przy jednym systemie**, bo jest wejściem do aplikacji, nie
+mechanizmem czekającym na drugi system — pozycja „Ekran wyboru systemu odłożony do drugiego
+systemu".
+
+### Biblioteka, nie warstwa
+
+Osobno, a nie w ramie ani w pierwszym systemie, bo w ramie biurko znów byłoby istotą kampanii,
+a rama wiedziałaby, czym jest wpis; w pierwszym systemie drugi system musiałby wspólny kod stamtąd
+wydłubywać. Biblioteka jest tym, co sekcja [architecture.md](architecture.md), *Kontrakty są
+interfejsami* nazywała „zestawem neutralnym" — poszerzonym o biurko i kontrolki.
+
+**Generyczny wpis mieszka w bibliotece, nie w ramie.** Wpis, paczka, rejestr, instancja i nakładka
+zostają jednym wspólnym mechanizmem, bo dają trzy rzeczy, których chce każdy system: zepsuta treść
+jest widoczna tak samo wszędzie; łatka na okazie działa bez znajomości nazw pól; paczka ma
+tożsamość i wersję. Ramie nie jest potrzebna żadna z nich.
+
+**Cena opcjonalności.** System, który nie skorzysta z silnika formuł biblioteki, liczy po swojemu,
+a pięciu zakazów pilnuje wtedy wyłącznie przegląd. To stan przyjęty już przy przejściu na typy
+treści w kodzie (pozycja „Karta składana z listy elementów podanej przez dane"); biblioteka sprawia
+tylko, że droga zgodna z zakazami jest zarazem najkrótsza.
+
+**Odrzucone w tym temacie:** „Biblioteka wspólna jako warstwa pośrednia".
+
+### Dodatki
+
+Dodatek zastąpił model rozszerzeń jako zestawów zależnych od innych zestawów (pozycja
+„Rozszerzenia jako zestawy zależne od innego zestawu"). Homebrew przy stole nie dokłada treści obok
+nietkniętego rdzenia — on rdzeń modyfikuje.
+
+Przykład do reguły o pięciu zakazach: dodatek „zmęczenie narasta co osiem godzin" nie przejdzie,
+bo niesie czas.
+
+**Dlaczego jedno miejsce.** W grze komputerowej przełącznik siedzi w środku logiki, bo logika sama
+wykonuje reguły w każdej turze. Tu nie ma czego wykonywać: dodatek może zmienić wyłącznie **kształt
+księgowości**, a ten jest stały od otwarcia kampanii. Przełączniki rozsiane po kodzie to kształt
+odrzucony już dla systemów — piętro niżej i z kombinacjami dodatków mnożącymi gałęzie — a zarazem
+„wartość strzeżona flagą" z pierwszego zakazu. Jedno miejsce jest sprawdzalne z samego diffu:
+każde inne pytanie o dodatek jest błędem widocznym w przeglądzie. Pełny argument — pozycja
+„Dodatek jako przełącznik sprawdzany w logice".
+
+**Mechanizm powstaje z pierwszym prawdziwym dodatkiem**, nie wcześniej — reguła „nic nie wchodzi bez
+konsumenta" z [architecture.md](architecture.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
+
+**Odrzucone w tym temacie:** „Moduły deklarujące wsparcie systemów, z rozgałęzieniem po systemie
+w środku", „Rozszerzenia jako zestawy zależne od innego zestawu", „Dodatek jako przełącznik
+sprawdzany w logice".
+
+**Odrzucone w temacie całej sekcji:** „Rozgałęzianie po rodzaju wpisu w silniku i powłoce",
+„Kompilator zna listę systemów RPG, kampania wybiera jeden", „Jeden system bez żadnej
+rozłączności", „Ładowanie zestawów treści w czasie wykonania".
+
+## Gdzie biegnie linia między kodem a danymi
+
+Cztery powody, dla których cokolwiek robi się danymi. Trzy z nich są tu martwe:
+
+| Powód | Czy obowiązuje |
+|---|---|
+| Zmienia się często | **tak** — dla wpisów. Nowy przedmiot potrafi powstać w środku sesji |
+| Zmienia to ktoś, kto nie ma kompilatora | nie — autor treści i autor programu to ta sama osoba |
+| Zmiana nie może wymagać przebudowy | nie — przebudowa trwa sekundy, na tej samej maszynie |
+| Wadliwa dana nie może wywrócić builda | nie — kod ma wersję mocniejszą: kompilator odrzuci to, zanim cokolwiek wystartuje |
+
+Stąd linia: **kształt jest kodem, wartości są danymi.**
+
+**Odrzucone w tym temacie:** „Karta składana z listy elementów podanej przez dane", „Szablony jako
+plik danych wbudowany w aplikację".
+
+## Deklaracja treści
+
+### Typ treści to para: rekord + widok
+
+* **Nowy rodzaj treści = nowy kod.** Cena jest zamierzona: nowa deklaracja modelu i tak zwykle
+  zbiega się z potrzebą nowej logiki albo nowego okna.
+* **Liczba widoków rośnie liniowo.** To praca projektowa, przyjęta świadomie.
+* **Widok domyślny** przed pierwszym rodzajem treści, którego nie chce się zaprojektować, jest
+  zaproszeniem, żeby przestać projektować karty, i nie powstaje.
+
+### Kontrolki, nie katalog
+
+Lista cech, blok prozy, lista pozycji, pasek zasobu, akcja rzutu, znacznik binarny **zostają** — ale
+jako **kontrolki wielokrotnego użytku**, komponowane przez projektanta karty, a nie jako pozycje
+katalogu wybierane przez dane. Ginie wyłącznie **wybór kontrolki przez dane**, nie kontrolka.
+
+Konsekwencją jest, że zniknęły parametry w rodzaju `compact` czy `selfDescribing`: zaprojektowany
+widok nie potrzebuje mówić o swoim układzie — on go po prostu ma.
+
+**Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
+pośrednia", „Dziedziczenie szablonów", „Osadzanie szablonu w szablonie", „Poziomy szablonów jako
+ratunek przed cyklem", „Zagnieżdżanie wartości w polu wpisu — odrzucone trzykrotnie", „Kosmetyczne
+grupowanie w pliku wpisu, spłaszczane przy wczytaniu".
+
+## Wpis, dokument, instancja, nakładka
+
+Waga i ilość rozchodzą się dokładnie po tej linii: **waga jest we wpisie** (każdy diamentowy miecz
+waży tyle samo — to esencja), **ilość jest w nakładce** (to własność stosu, nie przedmiotu).
+
+### Nakładka jest rzadką łatką nad wartościami wpisu
+
+**Instancja nie materializuje wpisu**, bo aktualizacja paczki działa jak patchnote balansujący grę,
+a nie jak zdarzenie psujące istniejące kampanie.
+
+Wartość, która zmienia się pod Mistrzem Gry przy aktualizacji w obrębie wersji major, to ta forma
+propagacji, której chcemy.
+
+### Dokument
+
+Poprawka literówki w tekście nie kasuje odhaczeń, bo klucz nieobecny w łatce bierze się z aktualnej
+treści.
+
+1. Passthrough HTML jest wyłączony, bo to jedna furtka, przez którą wchodzi wszystko naraz.
+2. Bez walidacji markera przy wczytaniu literówka w markerze nie jest błędem, tylko zwykłym tekstem.
+3. Markery znajduje się w drzewie, bo regeks trafi marker w bloku kodu, w linku i w komórce tabeli.
+
+Różnica „karta ma układ, dokument ma renderer" jest tym, co trzyma *Niezmiennik interfejsu* w mocy.
+
+**Odrzucone w tym temacie:** „Warstwa scen jako byt", „Nakładka jako miejsce na warianty rzeczy",
+„Wpisy lokalne dla kampanii", „Materializacja wpisu w instancji".
+
+## Kontrakty są interfejsami
+
+Wiersz w ekwipunku jest skrótem, bo miejsca jest na jedną linię.
+
+**Kwalifikacja jest systemem typów.** Przedmiotu nie da się zarejestrować w kolejce tur nie dlatego,
+że narzędzie odrzuca go przy próbie, tylko dlatego, że **nigdy nie pojawia się na liście do
+wyboru**. Odrzucenie jest fizyczne, nie proceduralne, i kompilator pilnuje go za darmo.
+
+**Pola kontraktu są typowane per pole**, bo inaczej kontrakt zamieniłby się w worek napisów
+wymagających parsowania u konsumenta.
+
+**Zakaz introspekcji musi być zapisany.** Skompilowany typ leży w tym samym procesie, więc „znajdź
+wszystkie typy mające pole `initiative`" jest jedną linijką. Gdy typy były plikami danych, ta
+pokusa praktycznie nie istniała. Zakaz musi więc być zapisany, a nie dorozumiany.
+
+**Odrzucone w tym temacie:** „Wywodzenie kategorii z szablonu", „Moduły deklarujące wsparcie
+systemów, z rozgałęzieniem po systemie w środku", „Introspekcja typu treści przez narzędzie".
+
+## Paczki, wczytywanie, bezpieczeństwo
+
+**Jedna przestrzeń nazw na paczkę**, bo kolizja id czyniłaby adres niejednoznacznym, a nie tylko
+powtórzonym.
+
+Odrzucanie **całej** paczki za jeden wadliwy wpis obowiązywało wcześniej i zostało uchylone razem
+z uzasadnieniem, które je trzymało — pozycja „Odrzucanie całej paczki za jeden wadliwy wpis".
+
+**Model bezpieczeństwa.** Paczka to czyste dane — nie ma czego uruchamiać, więc nie ma czego
+izolować. Bez pętli w języku limity wystarczają, żeby czas ewaluacji był ograniczony z góry.
+
+**Odrzucone w tym temacie:** „Rozdział na paczkę systemową i paczkę treści", „Odrzucanie całej
+paczki za jeden wadliwy wpis".
+
+## Granica automatyzacji
+
+Pytanie „co jest policzalne" nie wystarcza, bo kruszy się przy pierwszym efekcie modyfikującym klasę
+pancerza. Wystarcza dopiero pytanie **kto podjął decyzję**.
+
+Pięć zakazów to nie jest przypadkowa lista: to **kanoniczny zestaw funkcji silnika cRPG,
+zanegowany**. Baldur's Gate adaptuje ten sam podręcznik co my i musi mieć wszystkie pięć, bo gra bez
+MG. Ten sam system, inny wykonawca, inna architektura.
+
+### Runda, zegar świata i kronika
+
+Obie granice dotyczą funkcji, które są w planie, i obie padłyby niezauważenie. Tracker tur i zegar
+świata trzymają liczby wyglądające jak czas. Dziennik jako subskrybent zdarzeń byłby dosłowną
+sprzecznością z zakazem piątym.
+
+`MaxEventsPerCommand` jest dziś opisany jako zabezpieczenie przed pętlą. Skoro nic nie ma prawa pisać
+w reakcji na zdarzenie, kaskada jest niemożliwa — więc ten limit jest jedynym mechanicznym
+egzekwowaniem zakazu piątego, jakie istnieje.
+
+### Wyliczenie jest propozycją, akcja jest zapisem
+
+Akcja MG nie pyta o potwierdzenie, bo wywołanie akcji samo w sobie jest intencją.
+
+Do 2026-09-22 bezpośredni zapis był opisany jako „rzadki wyjątek". Przestał nim być razem z nowym
+brzmieniem czwartego zakazu.
+
+### Księgowanie decyzji na kilku rzeczach naraz
+
+To jest księgowość, nie wykonywanie reguł: o tym, że transakcja zaszła i na jakich warunkach, i o
+tym, kogo trafiła kula, zdecydował MG. Aplikacja zapisuje wszystkie strony tej decyzji. To nie jest
+też kaskada: jedna operacja ma kilka skutków, tak jak wpis do kroniki jest częścią operacji, a nie
+reakcją na nią.
+
+Warunek „wszystko, co operacja zmieni, MG widzi przed kliknięciem" jest tym, bez czego operacja na
+kilku rzeczach staje się furtką: sprzedaż, która przy okazji po cichu podnosi reputację u kupca,
+jest reakcją przebraną za część operacji.
+
+Aplikacja nie blokuje transakcji przy braku złota, bo może MG pozwala na dług.
+
+Czwarty zakaz brzmiał wcześniej „operacja zmienia to, na czym ją wywołano" i zabraniał przez to
+nawet przełożenia miecza z plecaka do skrzyni — pozycja „Czwarty zakaz w brzmieniu «operacja
+zmienia to, na czym ją wywołano»".
+
+**Odrzucone w tym temacie:** „Osobny „system efektów"", „Efekty obejmujące wiele bytów, kaskady
+zmian i cofanie jako wymóg silnika", „Czwarty zakaz w brzmieniu „operacja zmienia to, na czym ją
+wywołano"".
+
+## Niezmiennik interfejsu
+
+*Brak argumentów poza deklaracją w architekturze.*
+
+**Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
+pośrednia", „Karta składana z listy elementów podanej przez dane".
+
+## Poziomy logiki i formuły
+
+**Zakaz gałęzi pełni ważniejszą rolę niż bezpieczeństwo: uniemożliwia treści napisanie silnika
+reguł.** Autor nie może zapisać „jeśli ciężki pancerz, to zeruj zręczność", bo nie ma czym. Może
+napisać `min(zręczność, pancerz.limit)` — ale to arytmetyka nad tym, co MG sam założył, a limit
+deklaruje ten konkretny pancerz o sobie samym. `min` i `max` przenoszą trochę reguł, ale przenoszą
+je **do danych konkretnego przedmiotu**, a nie do wiedzy aplikacji o kategoriach — i to jest różnica
+między tabelą a silnikiem.
+
+**Dwa konteksty ewaluacji**, bo bez tego rozdziału wartość pochodna zmieniałaby się przy każdym
+renderze, a kolejka tur przetasowywałaby się sama.
+
+**Kryterium powrotu do dyskusji** o poziomie skryptowym stoi przy jego odrzuceniu — pozycja „Poziom
+3 logiki / skrypty Lua".
+
+**Odrzucone w tym temacie:** „Poziom 3 logiki / skrypty Lua".
+
+## Gdzie mieszka stan
+
+Podział przebiega wzdłuż jednej linii: **co jest statyczne i wspólne, a co zmienne i własne.**
+
+**Kształt modelu stanu** jest tym, który zapisano na powrót magazynu stanu niezwiązanego z wpisem —
+pozycja „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta". Instancje są
+pierwszym takim modelem, więc mechanizm ma konsumenta od pierwszego dnia.
+
+**Tu stoją dwa zakazy.** Rama jest właścicielem jedynej drogi zmiany stanu i powiadomień o zmianie,
+więc czwarty i piąty zakaz da się w niej uczynić **niewykonalnymi**, a nie tylko zabronionymi —
+kształt tej drogi trzeba zaprojektować, nie założyć. Dlatego system przejmuje wygląd i zawartość
+aplikacji, ale nigdy drzwi zapisu.
+
+**Odrzucone w tym temacie:** „Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście
+kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".
+
+## Nawigacja: ekran wyboru systemu i pasek boczny
+
+**Ekran wyboru istnieje także przy jednym systemie**, bo jest wejściem do aplikacji, miejscem,
+w którym system w ogóle zostaje wybrany. **Wybór systemu poprzedza kampanię, a nie z niej wynika**,
+bo zakładki treści systemu mają działać, zanim otworzysz jakąkolwiek kampanię.
+
+**Powrót bez restartu.** Cykl życia systemu — od wyboru do powrotu — czyni jawnym obowiązek
+sprzątania po zakładkach i oknach, który inaczej stałby wyłącznie w implementacji pojedynczych
+narzędzi.
+
+Do 2026-09-22 obowiązywały tu dwa niezależne poziomy nawigacji — globalna szyna o trzech stałych
+pozycjach i osobny przełącznik powierzchni kampanii — oraz zakaz, żeby zestaw wnosił powierzchnię
+albo pozycję szyny. Dlaczego uchylone — pozycja „Kontekstowy sidebar".
+
+### Pasek boczny: trzy kategorie
+
+Zakładka kategorii System nie widzi otwartej kampanii, bo tylko wtedy działa sensownie bez niej.
+Rozróżnienie jest sprawdzalne z samego diffu.
+
+### Okno czy zakładka — kryterium
+
+Zasięg danych nie wystarcza, bo biurko i pozostałe zakładki kampanii mają ten sam zasięg.
+Rozstrzyga **tryb obcowania**.
+
+Maksymalizacja okna daje rozmiar, ale nie daje wyłączności — nadal jest ramką z paskiem tytułu
+i resztą biurka pod spodem.
+
+### Zakładki treści
+
+Filtr po paczce jest uczciwym wymiarem, bo tam treść faktycznie mieszka; filtr po typie treści jest
+narzędziowy.
+
+Grupowanie z danych jest legalne wewnątrz zakładki, bo zakładka jest skompilowana, jej układ nie
+pochodzi z treści, a z treści pochodzi wyłącznie zawartość jednego wymiaru. Literówką nie da się
+zgubić drogi powrotnej.
+
+**Odrzucone w tym temacie:** „Kontekstowy sidebar", „Nawigacja o zawartości pochodzącej z danych",
+„Rejestr jako miejsce wewnątrz kampanii", „Ekran wyboru systemu odłożony do drugiego systemu".
+
+## Narzędzia biurka i system okien
+
+Zmienia się adres: **system okien przechodzi z ramy do biblioteki.** Biurko przestaje być istotą
+otwartej kampanii i staje się jedną z zakładek.
+
+Wcześniejszy model — kampania zaznacza zestawy, zestaw może wymagać innego — zastąpiły dodatki
+([architecture.md](architecture.md), *Dodatki*).
+
+**Odrzucone w tym temacie:** „Tracker tur jako element karty", „Utrzymanie warstwy bloków danych po
+odejściu jej jedynego konsumenta".
+
+## Wersjonowanie
+
+Wcześniejsza trzecia oś — wersja katalogu elementów i kontraktów — **znika**: katalog nie jest już
+bytem, z którego wybierają dane, a kontrolki i interfejsy kompilują się razem z tym, co ich używa.
+
+**Odrzucone w tym temacie:** „Migracja formatu budowana z wyprzedzeniem".
+
+## Przepływy
+
+Kolejność startu nie jest przypadkowa: **treść jest sprawdzana przed kampaniami.** Jeśli czegoś
+brakuje, dowiadujesz się przy starcie, a nie przy pierwszym kliknięciu w środku sesji.
+
+## Granice mechaniczne
+
+**Skan obejmuje nazwy rodzajów, nie nazwy pól — i to jest wzmocnienie granicy, nie ustępstwo.**
+Rozszerzenie słownika na pola sprawdzono na realnym kodzie i odpada: nazwy pól to „nazwa", „typ",
+„rozmiar", „opis", „akcje", a te same słowa stoją w zwykłym kodzie instalacyjnym, który o świecie gry
+nie wie nic. Skan zakazujący ich sypie fałszywymi trafieniami od pierwszego uruchomienia — dziś
+łapałby dwa komentarze ze zwrotem „spelled out" — a **test, który sypie alarmami, zostaje wyłączony
+i wtedy nie pilnuje niczego.** Ręczna lista wyjątków jest gorszym lekarstwem niż choroba: starzeje
+się cicho, a każde kolejne fałszywe trafienie jest zaproszeniem, żeby dopisać do niej słowo, aż
+zostanie sito.
+
+Nazw pól pilnuje więc kształt kodu. Zakaz przenosi się ze skanu tekstu do systemu typów, który nie
+zna fałszywych trafień i nie da się wyciszyć.
+
+Dopasowanie respektuje granicę CamelCase, bo bez tego `MonsterCardView` w powłoce przechodzi
+niezauważony (jeden ciąg znaków), a niewinne „spelled" zapala alarm. Skan czyta pliki `.axaml`, bo
+widok jest tam, nie w `.cs`.
+
+**Mechanizm zastępczy powstaje przed usunięciem mechanizmu, który zastępuje**, bo inaczej istnieje
+okno, w którym granicy nie pilnuje nic.
+
+**Gdzie inwestować w testy:** framework okien przeżył już trzy wersje architektury. Warstwa treści
+nie przeżyła żadnej i nie zasługuje dziś na gęste pokrycie.
+
+**`TreatWarningsAsErrors`** przestaje być higieną i staje się częścią historii walidacji: skoro
+kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o treści.
+
+**Odrzucone w tym temacie:** „Rozgałęzianie po rodzaju wpisu w silniku i powłoce", „Introspekcja
+typu treści przez narzędzie".
+
+## Pytania otwarte i reguła „nic bez konsumenta"
+
+**Format pliku wpisu.** JSON zawodzi dokładnie w jednym miejscu — długi tekst. Po wejściu slotów
+potwór traci dwa z trzech bloków prozy (akcje i cechy szczególne stają się dołączonymi wpisami),
+więc zostaje jeden długi tekst na plik — a wtedy naturalnym kształtem jest front-matter plus treść,
+ten sam, który przyjęto dla dokumentu.
+
+**Autorstwo treści w aplikacji.** Pytanie zmniejszyło się o połowę (typy treści pisze się w IDE,
+kompilator daje komunikaty), ale zostaje dla wpisów. Najmocniejszy motywator: MG ubiera goblina
+i nie ma jak zapisać tego jako czegoś wielokrotnego użytku.
+
+**Tablica przeglądowa.** Modyfikator cechy to czysta arytmetyka, ale premia z biegłości i stopnie
+kości w Savage Worlds są tabelami.
+
+**Widok domyślny karty.** Dziś oba istniejące rodzaje treści mają karty zaprojektowane, więc
+pytanie jest puste.
+
+**Paczka a system.** Paczka nie deklaruje systemu — jej wpisy wskazują typy treści, a te należą do
+systemów.
+
+### Nawyk przerwany — skąd reguła „nic bez konsumenta"
+
+**Nawyk przerwany — i to jest wynik, nie postanowienie.** Sekcja „Pytania otwarte" wyliczała kiedyś
+sześć rzeczy zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta),
+`Category` / `Descriptor` rozwiązywane i niepokazywane, `SelfDescribing` parsowane i nieczytane,
+`WarmPanelVisualStep`, `UnknownModule` oraz dwa zarezerwowane pola w manifeście kampanii.
+Przewidywała, że **dwie z nich umrą, zamiast doczekać konsumenta**. Umarły wszystkie sześć —
+ostatnie dwa 2026-09-13. Żadna nie doczekała konsumenta; ani jeden raz rezerwacja się nie opłaciła.
+
+Siódma: **warstwa bloków danych.** Przypadek mocniejszy niż poprzednie sześć — padł cały mechanizm,
+nie pole. Rozstrzygnięcie i kształt, w jakim wróci — pozycja „Utrzymanie warstwy bloków danych po
+odejściu jej jedynego konsumenta".
+
+Zasada, która z tego została, obowiązuje dalej i jest szersza niż ta lista. Była zapisana wąsko,
+dla pól: *wożenie pola, dla którego świadomie nie przewidujemy zastosowania, jest gorsze niż jego
+brak.* Rozszerzona z pól na mechanizmy brzmi: **nic nie wchodzi bez konsumenta w tym samym
+wycinku.** Siedem na siedem jest wystarczającym dowodem, żeby traktować ją jako regułę, a nie
+preferencję.
+
+Jedyny dzisiejszy przypadek graniczny to `AllowsMultipleInstances`: ma konsumenta (odtwarzanie
+układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To jest rusztowanie opisane
+jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je czyta, istnieje
+i działa.
+
+**Odrzucone w tym temacie:** „Wpisy lokalne dla kampanii", „Zarezerwowane pola `Ruleset`
+i `ContentPacks` w manifeście kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego
+konsumenta".
+
+## Kolejność prac
+
+Przebudowa na ramę, bibliotekę i system zapadła 2026-09-22 i weszła jako krok 9 — **przed**
+formułami, slotami i dokumentem, żeby te powstały od razu w bibliotece, zamiast być do niej
+przenoszone.
+
+Kroki zrobione (krok 8 domknięty 2026-09-14):
+
+| # | Krok | Dlaczego tu |
+|---|---|---|
+| 1 | Projekt `DungeonApp.Content.<x>`; `monster` i `gear` przeniesione do rekordów; `Core` dostaje typy przez wąski interfejs; rejestr wygląda identycznie | najmniejszy wycinek dowodzący tezy |
+| 2 | Test granicy słownictwa rozszerzony na `Desktop`, słownik z zestawu | **mechanizm przed rozbiórką**, nigdy odwrotnie |
+| 3 | Rozbiórka: `Template`, `CardElement`, `FieldValue`, dwuprzebiegowe rozwiązywanie, martwe testy | dopiero gdy 2 stoi |
+| 4 | Zaprojektowana `MonsterCardView` — pierwsza prawdziwa karta | to jest cel całej operacji |
+| 5 | Odrzucanie per plik wpisu; pozycje nierozwiązane widoczne w rejestrze | zamyka sekcję o paczkach |
+| 6 | Jeden prymityw zapisu atomowego | **przed** magazynem instancji |
+| 7 | Magazyn instancji + nakładki | pierwszy realny stan kampanii |
+| 8 | Pierwsze prawdziwe narzędzie biurka i rozstrzygnięcie losu warstwy bloków danych | |
+
+---
+
+# Część B — kierunki odrzucone
 
 ## Treść i szablony
 
@@ -783,7 +1220,7 @@ stan*). Pierwszym konsumentem są instancje, więc reguła „razem z konsumente
 
 ---
 
-## Rama, biblioteka, system
+## Przebudowa 2026-09-22
 
 Rozstrzygnięcia z sesji 2026-09-22, która zdegradowała dawny silnik i powłokę do ramy, wydzieliła
 wspólny kod do biblioteki i oddała systemowi wygląd i zawartość aplikacji. Model —

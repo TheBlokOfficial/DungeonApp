@@ -153,15 +153,28 @@ warstwy.
    ten sam numer, cicho przez kilka sesji.
 
 4. **Każdy fakt ma jeden dom — nie streszczaj cudzego.** Zanim wpiszesz uzasadnienie, sprawdź, czy
-   nie stoi już tam, gdzie należy: „dlaczego tak" w `architecture.md`, „dlaczego nie tamto"
-   w `decisions.md`, „jak jest dziś" w `code-map.md`, „co dalej" w `tasks.md`. Odeślij po nazwie
-   sekcji, zamiast powtórzyć. Tabela własności jest w `README.md`.
+   nie stoi już tam, gdzie należy: „co obowiązuje" w `architecture.md`, „dlaczego" — za przyjętym,
+   przeciw odrzuconemu, co było wcześniej — w `decisions.md`, „jak jest dziś" w `code-map.md`, „co
+   dalej" w `tasks.md`. Odeślij po nazwie sekcji, zamiast powtórzyć. Tabela własności jest
+   w `README.md`.
 
    *Skąd to się wzięło:* przegląd 2026-09-14 znalazł ten sam argument w pięciu dokumentach naraz
    (dwie flagi jako dowód, że stary format przeciekał układem) i w czterech (zmiana wpisu
    traktowana jak patchnote). Powtórzenia brały się z dobrej intencji — każdy dokument miał się
    czytać samodzielnie. Cena była taka, że **żadnego nie dało się bezpiecznie pominąć**, więc
    koszt wejścia w sesję był sumą wszystkich sześciu.
+
+5. **Architektura deklaruje, rejestr uzasadnia.** Decyzja autora z 2026-09-22. `architecture.md`
+   zawiera deklaracje i ich konsekwencje, w czasie teraźniejszym. Argumenty, odrzucone warianty
+   i historia („wcześniej…", „do dnia…", „obowiązywało…") idą do `decisions.md`, do sekcji o tej
+   samej nazwie co sekcja architektury; w architekturze zostaje odsyłacz. Sprawdzian na każdym
+   zdaniu: konsekwencja („poprawka w paczce dociera do istniejących kampanii") zostaje, argument
+   („bo zmianę wpisu traktujemy jak patch balansujący grę") idzie do rejestru.
+
+   *Skąd to się wzięło:* autor — wdrożenie się albo nadrobienie zaległości wymagało przeczytania
+   dziesięciu punktów „dlaczego" przy każdej deklaracji. Do tego każda sesja dokładała do
+   architektury zdania „do dnia X obowiązywało…"; sesja, która tę regułę ustanowiła, dołożyła
+   ich pięć, zanim ją ustanowiła.
 
 ---
 
@@ -202,8 +215,7 @@ pominąć zakaz, który wydaje się oczywisty.
 ## 5. Rozstrzygnięcia, które wracają
 
 Rzeczy raz rozstrzygnięte, które mimo to wracają jako „nowe pomysły". Pełne argumenty są
-w `decisions.md` i `architecture.md`; tu jest tylko tyle, żeby rozpoznać temat i nie zaczynać go
-od zera.
+w `decisions.md`; tu jest tylko tyle, żeby rozpoznać temat i nie zaczynać go od zera.
 
 ### Nawigacja
 
