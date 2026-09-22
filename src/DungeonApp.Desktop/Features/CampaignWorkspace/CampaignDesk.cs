@@ -32,7 +32,12 @@ public static class CampaignDesk
         ArgumentNullException.ThrowIfNull(tools);
 
         var workspaceId = campaign.CampaignId.ToString();
-        var layout = await layoutStore.LoadAsync(workspaceId, cancellationToken).ConfigureAwait(false);
+
+        // No ConfigureAwait(false) here: everything past this point builds an Avalonia control and
+        // its view model, which must happen on the UI thread. layoutStore.LoadAsync's own read runs
+        // off-thread regardless (see its doc comment) - this await only decides where the *rest of
+        // this method* resumes, and that rest is UI-bound.
+        var layout = await layoutStore.LoadAsync(workspaceId, cancellationToken);
         var viewModel = new CampaignWorkspaceViewModel(layoutStore, workspaceId, layout, tools);
 
         return new CampaignWorkspaceTabContent(viewModel);
