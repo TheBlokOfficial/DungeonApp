@@ -211,16 +211,20 @@ public sealed class AppShellViewModel : ObservableObject
 
     /// <summary>
     /// Applies the GM's choice of system: builds its <see cref="ActiveSystemSession"/> and sidebar,
-    /// shows the shelf, then loads it and warms the first campaign's tabs the same way startup used
-    /// to warm the desk - hidden, then released (docs/tasks.md's "rama buduje zakładki kampanii dla
-    /// pierwszej kampanii z półki ukryte i je zwalnia"). A failure anywhere in here is a status-bar
-    /// warning, never a crash - the GM still lands on a usable, if emptier, shelf.
+    /// warms every screen the GM could land on right after this - the shelf, every System-category tab,
+    /// and the first campaign's page and tabs - hidden, the same way startup used to warm the desk
+    /// (docs/tasks.md's "rama buduje zakładki kampanii dla pierwszej kampanii z półki ukryte i je
+    /// zwalnia") - and only then shows the sidebar and the shelf. Before this, the shelf appeared the
+    /// instant a system was chosen, unwarmed, which is what made the first real frame visibly jump
+    /// (docs/tasks.md). The selection screen simply stays up longer instead. A failure anywhere in here
+    /// is a status-bar warning, never a crash - the <c>finally</c> below still lands the GM on a usable,
+    /// if emptier, shelf.
     /// </summary>
     private async Task ChooseSystemAsync(IGameSystem system)
     {
         _session = new ActiveSystemSession(system, _contentRegistry, _campaigns);
 
-        Sidebar = new GlobalSidebarViewModel(
+        var sidebar = new GlobalSidebarViewModel(
             system.SystemTabs,
             system.CampaignTabs,
             ShowCampaignPositionAsync,
@@ -228,22 +232,28 @@ public sealed class AppShellViewModel : ObservableObject
             ShowSystemTab,
             ReturnToSelectionAsync);
 
-        CurrentWorkspaceContent = _campaignLibrary;
-        IsSystemChosen = true;
-
         try
         {
             var summaries = await _campaignLibrary.LoadAsync();
             await _preparations.WarmAsync(summaries);
 
+            await WarmShelfAsync();
+            await WarmSystemTabsAsync(system);
+
             if (summaries.Count > 0)
             {
-                await WarmFirstCampaignTabsAsync(system, summaries[0].Id);
+                await WarmFirstCampaignAsync(system, summaries[0].Id);
             }
         }
         catch (Exception ex)
         {
             StatusBar.Message = $"Nie udało się w pełni przygotować systemu „{system.DisplayName}”: {ex.Message}";
+        }
+        finally
+        {
+            Sidebar = sidebar;
+            CurrentWorkspaceContent = _campaignLibrary;
+            IsSystemChosen = true;
         }
     }
 
@@ -296,15 +306,84 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Builds and immediately releases every campaign tab this system declares, against a throwaway
-    /// session for <paramref name="warmupCampaignId"/> - never against <see cref="_session"/>, so
-    /// nothing built here can leak into the GM's later, real open of the same campaign.
+    /// Warms the shelf itself - <see cref="_campaignLibrary"/>'s view, already loaded by the time this
+    /// runs. A throwaway <see cref="CampaignLibraryView"/> instance, same as every other warmup step:
+    /// the real one the GM lands on is the DataTemplate-built view AppShellView.axaml already declares
+    /// for <see cref="CampaignLibraryViewModel"/>, this one only exercises styling and layout once.
     /// </summary>
-    private async Task WarmFirstCampaignTabsAsync(IGameSystem system, CampaignId warmupCampaignId)
+    private async Task WarmShelfAsync()
+    {
+        if (_startupUi is not { } ui)
+        {
+            return;
+        }
+
+        try
+        {
+            await VisualWarmupHost.AttachAndWaitAsync(
+                ui.WarmupHost, new CampaignLibraryView { DataContext = _campaignLibrary }, CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            // Warmup is an optimization - the real shelf still gets a full chance to build once shown.
+        }
+    }
+
+    /// <summary>
+    /// Warms every System-category tab this system declares, through <see cref="_session"/> itself
+    /// rather than a throwaway one: unlike a Campaign-category tab, <see cref="ActiveSystemSession"/>
+    /// already builds a System-category tab's content once and keeps it for the rest of the session
+    /// (<see cref="ActiveSystemSession.GetOrCreateSystemTab"/>), so warming through the real session
+    /// simply makes that one build happen now instead of on first click - there is no separate
+    /// build-then-discard step to add, and <see cref="ActiveSystemSession.ReleaseAll"/> already disposes
+    /// it exactly when it always did (docs/tasks.md: chosen over a throwaway build because it is the
+    /// simpler fit for the lifecycle <see cref="ActiveSystemSession"/> already has).
+    /// </summary>
+    private async Task WarmSystemTabsAsync(IGameSystem system)
+    {
+        if (_startupUi is not { } ui)
+        {
+            return;
+        }
+
+        foreach (var declaration in system.SystemTabs)
+        {
+            try
+            {
+                var content = _session!.GetOrCreateSystemTab(declaration);
+                await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, content.Content, CancellationToken.None);
+            }
+            catch (Exception)
+            {
+                // Warmup is an optimization. A tab that fails to warm still gets a real chance to
+                // build when the GM actually clicks it - see ShowSystemTab's own try/catch.
+            }
+        }
+    }
+
+    /// <summary>
+    /// Warms the first campaign's page, then builds and immediately releases every campaign tab this
+    /// system declares, against a throwaway session for <paramref name="warmupCampaignId"/> - never
+    /// against <see cref="_session"/>, so nothing built here can leak into the GM's later, real open of
+    /// the same campaign. The page uses a throwaway <see cref="CampaignPageViewModel"/> for the same
+    /// reason: the real one <see cref="OpenCampaignAsync"/> builds later is what the GM actually acts on.
+    /// </summary>
+    private async Task WarmFirstCampaignAsync(IGameSystem system, CampaignId warmupCampaignId)
     {
         if (_startupUi is not { } ui || await _preparations.PeekAsync(warmupCampaignId) is not { } campaign)
         {
             return;
+        }
+
+        try
+        {
+            var pageViewModel = new CampaignPageViewModel(campaign, closeCampaign: () => Task.CompletedTask);
+            await VisualWarmupHost.AttachAndWaitAsync(
+                ui.WarmupHost, new CampaignPageView { DataContext = pageViewModel }, CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            // Warmup is an optimization - the real page still gets a full chance to build once opened.
         }
 
         var warmupSession = new CampaignSession(campaign, _campaigns);

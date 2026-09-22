@@ -131,7 +131,7 @@ public sealed class ActiveSystemSessionTests
     }
 
     /// <summary>
-    /// Mimics <c>AppShellViewModel.WarmFirstCampaignTabsAsync</c>: warmup builds and disposes its own
+    /// Mimics <c>AppShellViewModel.WarmFirstCampaignAsync</c>: warmup builds and disposes its own
     /// content against a throwaway session, entirely outside <see cref="ActiveSystemSession"/>'s
     /// cache. A later real open of the same campaign must still build fresh content - "zawartość
     /// zakładki... zwalniana... po rozgrzewce" (docs/tasks.md) means warmup's instance never leaks
