@@ -72,6 +72,40 @@ a kod pisze i czyta subagent w wąsko zakrojonym zadaniu — wynik asystent wery
 Konkret z kodu, potrzebny do decyzji, przynosi `code-map.md` albo subagent. **Deleguj kod, nie
 decyzje:** dokumenty tego repozytorium niosą decyzje, więc pisze je asystent sam.
 
+### Obieg jednego etapu
+
+Ustalony z autorem 2026-09-22.
+
+```
+ AUTOR                  ARCHITEKT                       SUBAGENT (Sonnet)
+ │                         │                                │
+ │◄── propozycja etapu ────┤  cel, co autor zobaczy,        │
+ │    zielone światło ────►│  co rozstrzygam sam, pytania   │
+ │                         ├── brief ──────────────────────►│  osobna kopia repozytorium,
+ │    rozmowa o kolejnej ◄─┤   (w tle)                      │  build, testy, raport
+ │    decyzji              │◄── raport ─────────────────────┤
+ │                         ├ weryfikacja → commit, scalenie │
+ │◄── raport + co kliknąć ─┤                                │
+ │    uwagi / weto ───────►│  → poprawka kolejnym commitem  │
+```
+
+* **Autor** — kierunek, interfejs, zielone światło na każdy etap, sprawdzenie w działającej
+  aplikacji, weto na rzeczy rozstrzygnięte samodzielnie.
+* **Architekt** — asystent prowadzący sesję. Proponuje etap, projektuje styki między ramą, biblioteką
+  i systemem (to one są decyzjami), pisze briefy, weryfikuje, commituje, dogania dokumenty.
+* **Subagent implementacyjny** — wykonuje wąski brief. Gdy brief czegoś nie przesądza, zatrzymuje się
+  i zgłasza, zamiast decydować.
+
+**Weryfikacja bez czytania implementacji linijka po linijce.** Build bez ostrzeżeń; liczba testów nie
+niższa niż baseline; testy granic zielone; lista rzeczy, które subagent rozstrzygnął sam; diff
+**styków** — tego, co rama wystawia systemowi, co zakładka dostaje, referencji między projektami —
+bo styki są architekturą. W środek implementacji architekt zagląda tylko wtedy, gdy raport albo
+testy każą. Przy większym etapie drugi subagent porównuje wynik z briefem i z pięcioma zakazami
+i zgłasza wyłącznie odstępstwa.
+
+**Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
+Dokumenty dogania architekt na końcu etapu: `code-map.md` (jak jest), `tasks.md` (co dalej).
+
 ---
 
 ## 2. Jak raportować
@@ -85,6 +119,9 @@ i tak w briefach dla subagentów oraz w historii gita. Podaj konkret, gdy autor 
 **Pytania wymagające jego decyzji formułuj w prostym języku.** Nazwa techniczna zostaje tylko
 wtedy, gdy bez niej pytanie przestaje być zrozumiałe — nigdy jako dowód, że naprawdę zajrzałeś
 do kodu.
+
+**Raport z etapu implementacyjnego kończy się listą dwóch–czterech rzeczy do sprawdzenia
+w aplikacji.** Asystent nie widzi okna, a to, jak się z aplikacji korzysta, należy do autora.
 
 **Dlaczego:** gęstość referencji nie jest dowodem rzetelności. Jego słowa: „kilkadziesiąt różnych
 linków, definicji kluczy etc potrafi zdezorientować". Raport ma się czytać bez zaglądania do drugiej
@@ -142,9 +179,14 @@ Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą
    włączone celowo — kompilator jest tu walidatorem treści. Ostrzeżenie się naprawia u źródła albo
    zgłasza, nigdy nie wycisza.
 
+**Subagent implementacyjny pracuje w osobnej kopii repozytorium** (worktree), a do głównej gałęzi
+trafia wynik zweryfikowany. Decyzja z 2026-09-22. Nie potknie się wtedy o niezatwierdzone zmiany
+autora w drzewie roboczym ani o blokadę katalogu wynikowego przez podgląd Ridera (sekcja
+*Środowisko*).
+
 Co jeszcze się sprawdziło:
 
-* **Podawaj baseline liczby testów.** Bez niej subagent nie wie, czy spadek jest regresją.
+* **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`. Bez niej subagent nie wie, czy spadek jest regresją.
 * **Każ osobno wypisać rzeczy rozstrzygnięte samodzielnie.** Tak wyszły dwa realne błędy
   w briefach.
 * **Podawaj warunek zatrzymania jako informację, nie jako przeszkodę.** Gdy brief mówi „jeśli

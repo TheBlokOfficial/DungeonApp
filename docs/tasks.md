@@ -54,8 +54,31 @@ aplikacji. Model — [architecture.md](architecture.md), *Rama, biblioteka, syst
 i system.** Docelowy kształt stoi w architekturze — sekcje *Rama, biblioteka, system*, *Nawigacja:
 ekran wyboru systemu i pasek boczny*, *Gdzie mieszka stan*, *Narzędzia biurka i system okien*.
 
-Następna czynność to **plan etapów przebudowy** — proponuje asystent, zatwierdza autor, zielone
-światło etap po etapie. Dopóki plan nie zapadnie, ta sekcja celowo nie wylicza etapów.
+**Plan etapów — zatwierdzony przez autora 2026-09-22.** Każdy etap dostaje osobne zielone światło;
+jak przebiega jeden etap — [collaboration.md](collaboration.md), *Obieg jednego etapu*. Po każdym
+etapie aplikacja działa, a testy przechodzą.
+
+| # | Etap | Co widzi autor | Dlaczego w tym miejscu |
+|---|---|---|---|
+| 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; powrót do wyboru w górnym pasku; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji i trzy kategorie na pasku | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
+| 2 | **Wyniesienie wspólnego kodu interfejsu do biblioteki:** biurko i system okien, kontrolki kart, widok listy z kartą. Najpierw testy granic, potem przeprowadzka. | nic — zachowanie jak po etapie 1 | mechanizm pilnujący granicy powstaje przed rozbiórką |
+| 3 | **Rama zapisuje modele stanu systemu.** Instancje pierwszym takim modelem; kampania pamięta swój system; półka pokazuje kampanie aktywnego systemu. | kampanie w obrębie swojego systemu | rdzeń trzyma dziś instancje wewnątrz kampanii i musi przestać, zanim da się je wynieść |
+| 4 | **Wyniesienie wspólnej logiki do biblioteki:** paczki, wpisy, rejestr, instancje, nakładki. Wczytywanie paczek staje się krokiem startowym, który rama uruchamia, nie wiedząc, co robi. | nic | wymaga etapu 3 |
+
+**Ustalenia do etapów** — zapisane, żeby nie trzeba ich było tłumaczyć od nowa:
+
+* **Etap 1 — interfejs bez fajerwerków.** Decyzja autora: ekran wyboru i pasek boczny powstają jako
+  technicznie poprawny interfejs w wąskim rozumieniu z [collaboration.md](collaboration.md), *Jak
+  zapadają decyzje* — wyłącznie istniejące tokeny, zero zmian w plikach motywu, style lokalne dla
+  widoku, bez animacji, kontrolek własnych i liczb wpisanych wprost. Wygląd autor przeprojektuje
+  później. Ten etap zastępuje rusztowanie przełączania sekcji w powłoce.
+* **Etap 3 — kształt drogi zapisu najpierw do autora.** Na tej drodze stoją czwarty i piąty zakaz,
+  więc przed briefem asystent przynosi autorowi jej kształt opisany prostym językiem.
+* **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają
+  się niedostępne — widoczne, nie znikają ([architecture.md](architecture.md), *Gdzie mieszka
+  stan*) — i zakłada się je od nowa. Żadnego kodu przypisującego im system.
+* **Między etapami nic nie wchodzi na zapas.** Dodatki powstają z pierwszym prawdziwym dodatkiem
+  (niżej, „Odłożone"), formuły, sloty i dokument — po etapie 4.
 
 Formuły, sloty i dokument są odtąd krokiem 10 i czekają na przebudowę, żeby powstać od razu
 w bibliotece.

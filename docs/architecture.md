@@ -1048,8 +1048,9 @@ kompilator jest walidatorem treści, jego ostrzeżenia są ostrzeżeniami o tre�
 7. **Paczka a system.** Paczka nie deklaruje systemu — jej wpisy wskazują typy treści, a te należą
    do systemów. Otwarte: czy paczka ma deklarować swój system, i gdzie pokazuje się paczka
    odrzucona za zepsuty manifest, której systemu nie da się poznać. Wadliwa treść nie może zniknąć
-   po cichu, więc „nigdzie" nie jest odpowiedzią. **Wyzwalacz:** etap przebudowy, który przenosi
-   rejestr do zakładek treści.
+   po cichu, więc „nigdzie" nie jest odpowiedzią. **Wyzwalacz:** pierwsze miejsce na ekranie dla
+   odrzuconych paczek — dziś nie pokazują się nigdzie, z decyzji autora ([tasks.md](tasks.md),
+   „Czekają na miejsce na ekranie").
 
 **Nawyk przerwany — i to jest wynik, nie postanowienie.** Sekcja ta wyliczała kiedyś sześć rzeczy
 zbudowanych i nieużywanych: grupowanie rejestru (z testami, bez konsumenta), `Category` /
@@ -1090,5 +1091,5 @@ mówi [tasks.md](tasks.md).
 | 6 | Jeden prymityw zapisu atomowego | **przed** magazynem instancji |
 | 7 | Magazyn instancji + nakładki | pierwszy realny stan kampanii |
 | 8 | Pierwsze prawdziwe narzędzie biurka i rozstrzygnięcie losu warstwy bloków danych | |
-| 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | etapy do ustalenia osobno; przed 10, bo 10 powstaje w bibliotece |
+| 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | przed 10, bo 10 powstaje w bibliotece; etapy w [tasks.md](tasks.md) |
 | 10 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
