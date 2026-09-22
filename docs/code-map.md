@@ -21,17 +21,17 @@ niż jakiekolwiek ich streszczenie tutaj.
 > oba mechanizmy zniknęły z kodu, jedynym magazynem stanu kampanii są dziś instancje.
 >
 > **2026-09-22** architektura przyjęła przebudowę na ramę, bibliotekę i system. Kod jej jeszcze nie
-> dogonił, więc ten dokument opisuje stan sprzed niej — łącznie ze słowem „zestaw" tam, gdzie
-> architektura mówi już „system".
+> dogonił, więc ten dokument opisuje stan sprzed niej. Dogonił ją tylko słownik: dawny „zestaw
+> treści" nazywa się w kodzie „systemem" (`IGameSystem`, `Dnd5eSystem`).
 
 ---
 
 ## Od czego zacząć czytanie kodu
 
-1. `src/DungeonApp.App/Program.cs` — korzeń kompozycji i jedyne miejsce wymieniające zestaw treści
+1. `src/DungeonApp.App/Program.cs` — korzeń kompozycji i jedyne miejsce wymieniające system
    z nazwy.
 2. `src/DungeonApp.Desktop/App.axaml.cs` — dalszy ciąg kompozycji: repozytoria, loader treści,
-   agregaty nad zestawami, cache przygotowania, tablica kroków startowych. Zestawy treści przyjmuje
+   agregaty nad systemami, cache przygotowania, tablica kroków startowych. Systemy przyjmuje
    przez konstruktor, nigdy ich nie odkrywa.
 3. `Shell/AppShellViewModel.cs` — przełącza między biblioteką kampanii, rejestrem treści i biurkiem.
 4. `DungeonApp.Core`: `Campaign`, `CampaignInstances`, `JsonCampaignRepository` — stan, jego zmiana
@@ -62,9 +62,9 @@ DungeonApp.Content.Dnd5e   — referencuje Core i Desktop
 DungeonApp.App             — referencuje Desktop i Content.Dnd5e
 ```
 
-**Ta odwrotność jest sednem, nie szczegółem.** Zestaw treści zależy od powłoki, a nie odwrotnie —
-i dlatego powłoka nigdy nie widzi żadnego zestawu po nazwie. Gdyby `Desktop` referencjonował
-`Content.Dnd5e`, granica „powłoka nie zna zestawów" byłaby konwencją, nie faktem. `Desktop` nie jest
+**Ta odwrotność jest sednem, nie szczegółem.** System zależy od powłoki, a nie odwrotnie —
+i dlatego powłoka nigdy nie widzi żadnego systemu po nazwie. Gdyby `Desktop` referencjonował
+`Content.Dnd5e`, granica „powłoka nie zna systemów" byłaby konwencją, nie faktem. `Desktop` nie jest
 plikiem wykonywalnym (brak `OutputType`); jedynym `WinExe` jest `DungeonApp.App`.
 
 | Element | Wartość |
@@ -109,10 +109,10 @@ dwa pola z manifestu bez podbicia wersji formatu.
 | Ścieżka | Odpowiedzialność |
 |---|---|
 | `App.axaml.cs` | Kompozycja: repozytoria, loader, agregaty treści, cache przygotowania, kroki startowe, `AppShellViewModel`. |
-| `Content/IContentSet.cs`, `IContentPresentation.cs` | Kontrakt zestawu widziany od strony powłoki: typy, karty, **pas narzędzi**. |
-| `Content/CampaignToolContext.cs`, `CampaignToolProvider.cs` | Wąskie okno, jakie narzędzie zestawu dostaje na otwartą kampanię, i miejsce zszywające narzędzia wszystkich zestawów. |
-| `Content/ContentTypeCatalogAggregate.cs`, `ContentPresentationAggregate.cs` | Agregują listę zestawów do pojedynczego katalogu/prezentacji. |
-| `Controls/Content/TraitListView`, `ProseBlockView`, `TraitRow` | Współdzielone kontrolki karty — jedyne, z czego zestaw komponuje wygląd wpisu. |
+| `Content/IGameSystem.cs`, `IContentPresentation.cs` | Kontrakt systemu widziany od strony powłoki: typy, karty, **pas narzędzi**. |
+| `Content/CampaignToolContext.cs`, `CampaignToolProvider.cs` | Wąskie okno, jakie narzędzie systemu dostaje na otwartą kampanię, i miejsce zszywające narzędzia wszystkich systemów. |
+| `Content/ContentTypeCatalogAggregate.cs`, `ContentPresentationAggregate.cs` | Agregują listę systemów do pojedynczego katalogu/prezentacji. |
+| `Controls/Content/TraitListView`, `ProseBlockView`, `TraitRow` | Współdzielone kontrolki karty — jedyne, z czego system komponuje wygląd wpisu. |
 | `Features/Registry/*` | Ekran rejestru: lista wierszy, karta wybranego wpisu jako gotowy `Control`. |
 | `Shell/AppShellViewModel.cs` | Właściciel „gdzie jest MG": biblioteka / rejestr / biurko, sekwencja startowa. |
 | `Shell/CampaignSession.cs` | **Jedyna droga zmiany otwartej kampanii.** |
@@ -128,15 +128,15 @@ dwa pola z manifestu bez podbicia wersji formatu.
 
 ### `src/DungeonApp.App` — korzeń kompozycji
 
-`Program.cs` — `Main` + `BuildAvaloniaApp`. **Jedyne miejsce w aplikacji wymieniające zestaw treści
-z nazwy** (`new Dnd5eContentSet()`), przez referencję projektu, nigdy przez odkrywanie w czasie
+`Program.cs` — `Main` + `BuildAvaloniaApp`. **Jedyne miejsce w aplikacji wymieniające system
+z nazwy** (`new Dnd5eSystem()`), przez referencję projektu, nigdy przez odkrywanie w czasie
 działania.
 
-### `src/DungeonApp.Content.Dnd5e` — zestaw treści D&D 5e
+### `src/DungeonApp.Content.Dnd5e` — system D&D 5e
 
 | Ścieżka | Odpowiedzialność |
 |---|---|
-| `Dnd5eContentSet.cs` | **Jedyne miejsce, któremu wolno wiedzieć, czym jest potwór.** Deklaruje `monster` i `gear` (oba w wersji 1), rysuje ich karty, wnosi jedno okno biurka. |
+| `Dnd5eSystem.cs` | **Jedyne miejsce, któremu wolno wiedzieć, czym jest potwór.** Deklaruje `monster` i `gear` (oba w wersji 1), rysuje ich karty, wnosi jedno okno biurka. |
 | `Monster.cs`, `Gear.cs` | Rekordy z właściwościami nazwanymi i `required` — deserializator jest **jedynym** walidatorem, zero ręcznej walidacji. `Monster.CurrentHp` wypełnia wyłącznie nakładka instancji. |
 | `MonsterCardView`, `GearCardView` | Zaprojektowane karty z współdzielonych kontrolek powłoki. |
 | `CampaignInstancesToolView(Model)`, `InstanceRowViewModel`, `AddableEntryOption` | Okno „Świat kampanii". Pierwszy konsument instancji i resolvera w repozytorium. |
@@ -148,7 +148,7 @@ działania.
 | `DungeonApp.Core.Tests` | Kampanie, zdarzenia, persystencja, silnik treści, instancje. |
 | `DungeonApp.Desktop.Tests` | Cache przygotowania, rejestr, krok wczytania paczek, pas narzędzi, fragment geometrii, magazyn układu, guard na pusty katalog treści. |
 | `DungeonApp.Architecture.Tests` | Granice między warstwami. Osobny projekt, bo test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą ogranicza. |
-| `DungeonApp.Content.Dnd5e.Tests` | Zestaw na prawdziwych plikach paczki; okno „Świat kampanii" na prawdziwej kampanii. |
+| `DungeonApp.Content.Dnd5e.Tests` | System na prawdziwych plikach paczki; okno „Świat kampanii" na prawdziwej kampanii. |
 
 ---
 
@@ -167,12 +167,12 @@ w pamięci i ostrzega MG, że nie trafiła na dysk.
 ### Silnik treści
 
 Rzecz do zrozumienia przed wszystkim innym: **silnik nie wie, czym jest potwór.** Wpis niesie
-nieprzejrzaną kopertę wartości; jedynym kodem, który tę kopertę otwiera, jest zestaw nazwany
+nieprzejrzaną kopertę wartości; jedynym kodem, który tę kopertę otwiera, jest system nazwany
 w referencji typu.
 
 ```
 Core/Content            — nosi kopertę, nigdy jej nie otwiera
-Desktop/Content         — agreguje wiele zestawów, nadal nie otwiera
+Desktop/Content         — agreguje wiele systemów, nadal nie otwiera
 Content.Dnd5e           — jedyny kod, któremu wolno ją otworzyć
 ```
 
@@ -188,7 +188,7 @@ gdy treść jest zepsuta*:
 | jeden plik | plik nie daje się przeczytać jako wpis | `RejectedEntries` |
 | jeden wpis | plik poprawny, ale nie wiąże się z typem treści (cztery powody) | `Entries`, jako nierozwiązany |
 
-`IContentTypeCatalog` jest **jedynym oknem silnika na typy treści**: pyta, czy zestaw istnieje, po
+`IContentTypeCatalog` jest **jedynym oknem silnika na typy treści**: pyta, czy system istnieje, po
 metadane typu i o werdykt walidacji — nigdy o kształt i nigdy o zmaterializowany rekord, bo silnik
 nie ma typu, żeby go przyjąć.
 
@@ -250,7 +250,7 @@ rzuca** — czego nie da się zrozumieć, staje się układem domyślnym.
 ## 5. Warstwa desktopowa
 
 Kompozycja biegnie przez dwa pliki i **nie ma kontenera DI** — wszystko ręcznie, constructor
-injection. Zero zestawów treści jest awarią głośną: `App.Initialize()` rzuca, nazywając korzeń
+injection. Zero systemów jest awarią głośną: `App.Initialize()` rzuca, nazywając korzeń
 kompozycji jako miejsce naprawy.
 
 **Sekwencja startowa** to pięć kroków, w jawnej tablicy, gdzie kolejność w tablicy jest kolejnością
@@ -267,16 +267,16 @@ i rysowane tło (`WorkspaceGridBackground`), i arytmetyka geometrii, więc zmian
 nie może po cichu rozjechać się ze snapowaniem. Jest też modyfikator precyzji, zagęszczający krok
 snapowania.
 
-**Pas narzędzi zestawu treści** — mechanizm, którym zestaw wnosi własne okno, nie zmuszając powłoki
+**Pas narzędzi systemu** — mechanizm, którym system wnosi własne okno, nie zmuszając powłoki
 do poznania ani jednego swojego typu:
 
 * `PanelCatalog` buduje się per otwarta sesja z dwustopniowym szwem: najpierw panele powłoki, za
-  nimi narzędzia zestawów — kod ten kształt zachowuje, mimo że lista paneli powłoki jest dziś pusta.
-  Zestaw może **tylko dołożyć**, nigdy nie wyprzeć tego, co powłoka oferuje sama.
+  nimi narzędzia systemów — kod ten kształt zachowuje, mimo że lista paneli powłoki jest dziś pusta.
+  System może **tylko dołożyć**, nigdy nie wyprzeć tego, co powłoka oferuje sama.
 * `CampaignToolContext` to **wąskie okno**, nie sesja i nie kampania: instancje, rejestr, resolver,
   magistrala zdarzeń i jedne drzwi zapisu — i nic poza tym stąd osiągalnego.
 * **Narzędzie oddaje gotową kontrolkę, nie ViewModel.** Dzięki temu w powłoce nie ma i nie musi być
-  żadnego szablonu znającego typ z zestawu — ta sama sztuczka, co karta zwracana jako `Control`.
+  żadnego szablonu znającego typ z systemu — ta sama sztuczka, co karta zwracana jako `Control`.
 
 ---
 
@@ -284,30 +284,30 @@ do poznania ani jednego swojego typu:
 
 ### Nowy typ treści (bez zmiany silnika)
 
-Wzorzec: `Dnd5eContentSet` / `Monster` / `MonsterCardView`.
+Wzorzec: `Dnd5eSystem` / `Monster` / `MonsterCardView`.
 
-1. **Rekord wartości** w projekcie zestawu: właściwości nazwane, `required` na obowiązkowych —
+1. **Rekord wartości** w projekcie systemu: właściwości nazwane, `required` na obowiązkowych —
    deserializator jest walidatorem.
-2. **Deklaracja typu** w trzech metodach zestawu. To **jedyne legalne miejsce** rozgałęziania po
+2. **Deklaracja typu** w trzech metodach systemu. To **jedyne legalne miejsce** rozgałęziania po
    identyfikatorze typu treści w całej aplikacji.
 3. **Widok karty** z współdzielonych kontrolek powłoki; odstęp ustawia host.
-4. **Testy** wzorem `Dnd5eContentSetTests` — bez linijki ręcznej walidacji w kodzie produkcyjnym.
+4. **Testy** wzorem `Dnd5eSystemTests` — bez linijki ręcznej walidacji w kodzie produkcyjnym.
 5. **Granica słownictwa poszerza się sama** — zakazane słowa są czerpane z publicznych nazw typów
-   każdego załadowanego zestawu, więc nowy typ dopisuje swoją nazwę bez żadnej rejestracji.
+   każdego załadowanego systemu, więc nowy typ dopisuje swoją nazwę bez żadnej rejestracji.
 
-### Narzędzie biurka wnoszone przez zestaw treści
+### Narzędzie biurka wnoszone przez system
 
-Wzorzec: `Dnd5eContentSet.CreateTools` → `CampaignInstancesToolView(Model)`. To ścieżka dla
+Wzorzec: `Dnd5eSystem.CreateTools` → `CampaignInstancesToolView(Model)`. To ścieżka dla
 narzędzia, które **czyta pola własnej treści po nazwie** — i dlatego nie może mieszkać w powłoce.
 
-1. ViewModel w projekcie zestawu, bez ani jednej referencji do kontrolki Avalonii, przyjmujący
+1. ViewModel w projekcie systemu, bez ani jednej referencji do kontrolki Avalonii, przyjmujący
    kontekst narzędzia. Każdy zapis przez kontekst, nigdy przez repozytorium wprost.
 2. Subskrypcja zdarzeń instancji i `IDisposable`, który je zwalnia.
 3. **Widok też musi implementować `IDisposable`** i dispose'ować swój ViewModel — biurko sprząta
    ciało panelu tylko wtedy, gdy jest ono `IDisposable`, a goły `Control` nim nie jest.
-4. Deskryptor z id prefiksowanym nazwą zestawu, ikoną **z istniejącego motywu** i rozmiarem liczonym
+4. Deskryptor z id prefiksowanym nazwą systemu, ikoną **z istniejącego motywu** i rozmiarem liczonym
    z tych samych tokenów co panele powłoki.
-5. **Żadnego wpisu w szablonach biurka** — zestaw zwraca kontrolkę, więc powłoka nie ma czego
+5. **Żadnego wpisu w szablonach biurka** — system zwraca kontrolkę, więc powłoka nie ma czego
    rozwiązywać.
 
 Narzędzie potrzebujące stanu niezwiązanego z żadnym wpisem nie ma dziś gdzie go trzymać. Kształt,
@@ -315,7 +315,7 @@ w jakim taki magazyn wróci, jest zapisany w [decisions.md](decisions.md), pozyc
 warstwy bloków danych po odejściu jej jedynego konsumenta*.
 
 **Uwaga o zakresie:** katalog paneli buduje się per sesja, ale jego zawartość **nie zależy od
-kampanii** — każde narzędzie każdego wkompilowanego zestawu trafia na biurko każdej kampanii. Nie ma
+kampanii** — każde narzędzie każdego wkompilowanego systemu trafia na biurko każdej kampanii. Nie ma
 mechanizmu włączania per kampania i manifest nie ma pola, które by go obsługiwało. Docelowo katalog
 okien składa się z tego, co deklaruje wybrany system wraz z dodatkami — [architecture.md](architecture.md),
 *Narzędzia biurka i system okien*.
@@ -334,10 +334,10 @@ okien składa się z tego, co deklaruje wybrany system wraz z dodatkami — [arc
 w `DungeonApp.Architecture.Tests/Architecture/`):
 
 1. `Core` bez Avalonii.
-2. `Core` i `Desktop` bez referencji do jakiegokolwiek zestawu treści.
-3. Zestawy treści nigdy nie referencjonują się nawzajem.
+2. `Core` i `Desktop` bez referencji do jakiegokolwiek systemu.
+3. Systemy nigdy nie referencjonują się nawzajem.
 4. `Core` i `Desktop` (`.cs` **i** `.axaml`) nie nazywają żadnego rodzaju wpisu — słownik zakazanych
-   słów budowany z refleksji po publicznych typach zainstalowanych zestawów, więc **poszerza się sam**
+   słów budowany z refleksji po publicznych typach zainstalowanych systemów, więc **poszerza się sam**
    wraz z przybywającą treścią.
 
 To nie są testy funkcjonalności, tylko testy granic. Bez nich każda z czterech byłaby deklaracją
@@ -347,7 +347,7 @@ w dokumentacji, a nie czymś wymuszonym przez build.
 `CampaignWorkspaceViewModel` (restauracja układu, fitowanie, maksymalizacja, z/order),
 `WorkspaceLayoutSession` (debounce, flush), `PanelWindow` (cała logika gestów — wymagałaby testów
 headless, których nie ma), sidebary i paski, cztery z pięciu kroków startowych, oba agregaty nad
-zestawami. Z geometrii paneli pokryte jest **tylko** dopasowanie do min/max — snapowanie,
+systemami. Z geometrii paneli pokryte jest **tylko** dopasowanie do min/max — snapowanie,
 ograniczanie ruchu i maksymalizacja nie mają dedykowanych testów, mimo że to najbardziej złożona
 czysta logika w warstwie Desktop.
 
@@ -379,9 +379,9 @@ czysta logika w warstwie Desktop.
 * **`AllowsMultipleInstances`** — reprezentowalne w zapisanym układzie i czytane przy odtwarzaniu,
   ale żaden panel go nie ustawia. Rusztowanie opisane jako rusztowanie, nie rezerwacja: kod, który je
   czyta, istnieje i działa.
-* **Katalog paneli składa się dziś w całości z narzędzi wnoszonych przez zestawy treści** — powłoka
+* **Katalog paneli składa się dziś w całości z narzędzi wnoszonych przez systemy** — powłoka
   nie wnosi własnego. Dwustopniowy szew `PanelCatalog` (najpierw panele powłoki, potem narzędzia
-  zestawów) zostaje mimo pustej pierwszej listy. Rusztowanie opisane jako rusztowanie, nie
+  systemów) zostaje mimo pustej pierwszej listy. Rusztowanie opisane jako rusztowanie, nie
   rezerwacja: kod, który je czyta, istnieje i działa.
 
 ### Dług i luki
@@ -400,4 +400,4 @@ czysta logika w warstwie Desktop.
   komentarzem w kodzie, nie zaadresowany.
 * **Kontrakt „widok narzędzia musi sprzątać po sobie" nie jest zapisany w punkcie styku.** Fabryka
   treści panelu oddaje `object`, a wymóg `IDisposable` dla widoku trzymającego subskrypcje stoi dziś
-  wyłącznie w implementacji jednego zestawu — drugi zestaw pozna go dopiero przez wyciek.
+  wyłącznie w implementacji jednego systemu — drugi system pozna go dopiero przez wyciek.

@@ -27,13 +27,13 @@ domknięty 2026-09-14 usunięciem licznika i całej warstwy bloków danych, a 20
 go przez dokumenty. Było to przejście z szablonów jako plików danych na skompilowane typy treści,
 a następnie osadzenie treści w konkretnej kampanii. Stan, do którego to doprowadziło:
 
-* **Typy treści są kodem.** Zestaw `DungeonApp.Content.Dnd5e` niesie `Monster` i `Gear`, ich
+* **Typy treści są kodem.** System `DungeonApp.Content.Dnd5e` niesie `Monster` i `Gear`, ich
   zaprojektowane karty i jedno okno biurka. Deserializator jest jedynym walidatorem.
 * **Granice są pilnowane mechanicznie**, nie deklarowane — cztery testy architektoniczne, w tym skan
   słownictwa, który poszerza się sam wraz z przybywającymi typami treści.
 * **Kampania ma własny świat.** Instancje z rzadką łatką, zapis całej generacji na dysk w jednej
   transakcji, rozwiązywanie wskazania wobec rejestru jako osobna warstwa odczytu.
-* **Zestaw treści wnosi własne okno biurka** — mechanizm pasa narzędzi. Okno „Świat kampanii" jest
+* **System wnosi własne okno biurka** — mechanizm pasa narzędzi. Okno „Świat kampanii" jest
   pierwszym prawdziwym narzędziem biurka i pierwszym konsumentem magazynu instancji.
 * **Jeden prymityw zapisu atomowego** zamiast trzech ręcznie pisanych kopii.
 * **Instancje są jedynym magazynem stanu kampanii.** Warstwa bloków danych odeszła bez następcy;
@@ -60,7 +60,7 @@ etapie aplikacja działa, a testy przechodzą.
 
 | # | Etap | Co widzi autor | Dlaczego w tym miejscu |
 |---|---|---|---|
-| 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; powrót do wyboru w górnym pasku; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji i trzy kategorie na pasku | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
+| 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; pozycja kampanii — półka albo strona kampanii; zakładki kampanii zamknięte bez otwartej kampanii; powrót do wyboru w górnym pasku; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji, pasek z grupami Kampania i System, strona kampanii, kłódki | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
 | 2 | **Wyniesienie wspólnego kodu interfejsu do biblioteki:** biurko i system okien, kontrolki kart, widok listy z kartą. Najpierw testy granic, potem przeprowadzka. | nic — zachowanie jak po etapie 1 | mechanizm pilnujący granicy powstaje przed rozbiórką |
 | 3 | **Rama zapisuje modele stanu systemu.** Instancje pierwszym takim modelem; kampania pamięta swój system; półka pokazuje kampanie aktywnego systemu. | kampanie w obrębie swojego systemu | rdzeń trzyma dziś instancje wewnątrz kampanii i musi przestać, zanim da się je wynieść |
 | 4 | **Wyniesienie wspólnej logiki do biblioteki:** paczki, wpisy, rejestr, instancje, nakładki. Wczytywanie paczek staje się krokiem startowym, który rama uruchamia, nie wiedząc, co robi. | nic | wymaga etapu 3 |
@@ -71,7 +71,53 @@ etapie aplikacja działa, a testy przechodzą.
   technicznie poprawny interfejs w wąskim rozumieniu z [collaboration.md](collaboration.md), *Jak
   zapadają decyzje* — wyłącznie istniejące tokeny, zero zmian w plikach motywu, style lokalne dla
   widoku, bez animacji, kontrolek własnych i liczb wpisanych wprost. Wygląd autor przeprojektuje
-  później. Ten etap zastępuje rusztowanie przełączania sekcji w powłoce.
+  później. Ten etap zastępuje rusztowanie przełączania sekcji w powłoce. **Jeden wyjątek, zgoda
+  autora 2026-09-22:** nowa ikona kłódki w motywie, w formacie i kresce istniejących ikon.
+* **Etap 1 — projekt styku, gotowy do briefu (2026-09-22).** Zależności biurka, rejestru i rozgrzewki
+  spisał tego dnia subagent; brief pisze się z tego punktu bez ponownego czytania kodu. Zmiana nazw
+  „zestaw" → „system" w kodzie jest już zrobiona osobnym commitem (`IGameSystem`, `Dnd5eSystem`).
+  - **Styk rama → system.** `IGameSystem` dostaje `DisplayName`, `SystemTabs` i `CampaignTabs` —
+    stałe deklaracje `(Id, Title, IconResourceKey, fabryka)`, czytane raz przy wyborze systemu, id
+    z prefiksem systemu. Fabryka zakładki systemu dostaje `SystemTabContext` (dziś wyłącznie rejestr —
+    przejściowo, do etapu 4); fabryka zakładki kampanii jest asynchroniczna i dostaje
+    `CampaignTabContext` (id kampanii, instancje, magistrala zdarzeń, drzwi zapisu, rejestr). Obie
+    zwracają `ITabContent : IDisposable` z gotową kontrolką — zakładka, która nie umie sprzątać, się
+    nie kompiluje. `CreateTools` znika z interfejsu.
+  - **Biurko** wystawia systemowi jedno publiczne wejście: zakładka z kontekstu kampanii, magazynu
+    układów i listy narzędzi. Samo wczytuje swój układ; zwolnienie zapisuje oczekujący układ.
+    Magazyn układów tworzy korzeń kompozycji i podaje systemowi w konstruktorze — ścieżka na dysku
+    bez zmian. `CampaignToolContext` powstaje z kontekstu kampanii; narzędzia podaje wyłącznie wybrany
+    system. `CampaignToolProvider` znika.
+  - **Rejestr** to zakładka systemu D&D z dzisiejszym ekranem, rysowana prezentacją tego systemu.
+  - **Rama.** Ekran wyboru bez paska bocznego i górnego; pasek stanu zostaje, bo niesie ostrzeżenia
+    startu. Po wyborze grupy Kampania (pozycja kampanii + zakładki kampanii) i System, rozdzielone
+    separatorem, bez nagłówków; kategoria Aplikacja nie pokazuje się, dopóki nie ma pozycji. Otwarcie
+    kampanii: zakładki otwarte, pozycja kampanii → strona kampanii (nazwa, data utworzenia) z nazwą
+    kampanii jako etykietą. Zawartość zakładki powstaje przy pierwszym pokazaniu i żyje do zamknięcia
+    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. „Zmień
+    system" w górnym pasku obok „Zamknij kampanię". Błąd utworzenia zakładki — komunikat na pasku
+    stanu, nie awaria.
+  - **Start.** Przed ekranem wyboru tylko wczytanie paczek. Po wyborze: półka, wczytanie kampanii
+    z półki z wyprzedzeniem (pamięć podręczna już tylko kampanii — część z układem odchodzi do biurka)
+    i rozgrzewka: rama buduje zakładki kampanii dla pierwszej kampanii z półki ukryte i je zwalnia.
+    Placeholder i jego rozgrzewka znikają.
+  - **Znikają** też łańcuch przełączania sekcji, sztywne pozycje paska z podmianą na „Biblioteka
+    kampanii" i agregat prezentacji, jeśli nie zostanie mu konsument.
+  - **Miara „rama nie stawia biurka".** Powłoka, start, półka i kompozycja w `Desktop` nie odwołują się
+    do biurka, systemu okien ani ekranu rejestru — grep w raporcie; test granic przychodzi w etapie 2.
+  - **Testy.** Cykl życia zakładek na podstawionym systemie: zamknięte bez kampanii, otwarte po
+    otwarciu, zawartość tworzona raz i zwalniana przy zamknięciu, powrocie, wyjściu i po rozgrzewce.
+    Biurko utworzone i zwolnione bez gestu nie zapisuje układu. Test architektoniczny: kontekst
+    zakładki systemu nie wystawia niczego z kampanii. Liczba testów nie niższa niż baseline.
+  - **Rozstrzygnięte przez architekta**, do weta autora: nazwa `IGameSystem`; kłódka zamiast ikony
+    zakładki; separator zamiast nagłówków grup; kategoria Aplikacja ukryta bez pozycji; bez
+    rozgrzewki biurka, gdy półka jest pusta (dziś rozgrzewa się sam szkielet).
+  - **Znane ograniczenie.** Zakładka rejestru rysuje karty prezentacją swojego systemu, więc przy
+    drugim systemie wpis cudzego systemu nie dostanie karty — wraca z pytaniem „Paczka a system"
+    w architekturze.
+  - **Obieg.** Jeden przebieg subagenta w kopii zrównanej z lokalnym `master`, z dziennikiem postępu
+    w tej kopii (przerwanie w połowie nie gubi stanu); drugi subagent porównuje wynik z tym punktem
+    i z pięcioma zakazami.
 * **Etap 3 — kształt drogi zapisu najpierw do autora.** Na tej drodze stoją czwarty i piąty zakaz,
   więc przed briefem asystent przynosi autorowi jej kształt opisany prostym językiem.
 * **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają
@@ -89,7 +135,8 @@ w bibliotece.
 
 ### Czeka na pierwszy prawdziwy dodatek: mechanizm dodatków
 
-Model i reguły — [architecture.md](architecture.md), *Dodatki*. Mechanizm powstaje razem
+Model i reguły — [architecture.md](architecture.md), *Dodatki*; od 2026-09-22 forma dodatku należy
+do ramy, a jednostką włączania jest wariant pod nagłówkiem dodatku. Mechanizm powstaje razem
 z pierwszym prawdziwym dodatkiem, nie wcześniej: dziś nie ma ani jednego. Przykład, na którym
 rozmawiano — złoto w sakiewkach zamiast na postaci — wymaga licznika złota, którego też jeszcze nie
 ma.
