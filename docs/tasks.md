@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 239 testów zielonych.
+Gałąź: `master`. Build bez ostrzeżeń, 247 testów zielonych.
 
 ---
 
@@ -42,7 +42,7 @@ a następnie osadzenie treści w konkretnej kampanii. Stan, do którego to dopro
 
 Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
-**2026-09-22 zapadła przebudowa, której kod jeszcze nie dogonił:** dawny silnik i powłoka stają się
+**2026-09-22 zapadła przebudowa, którą kod dogania etapami (niżej):** dawny silnik i powłoka stają się
 ramą, wspólny kod wychodzi do biblioteki, a system — dawniej zestaw — przejmuje wygląd i zawartość
 aplikacji. Model — [architecture.md](architecture.md), *Rama, biblioteka, system*.
 
@@ -67,82 +67,27 @@ etapie aplikacja działa, a testy przechodzą.
 
 **Ustalenia do etapów** — zapisane, żeby nie trzeba ich było tłumaczyć od nowa:
 
-* **Etap 1 — interfejs bez fajerwerków.** Decyzja autora: ekran wyboru i pasek boczny powstają jako
-  technicznie poprawny interfejs w wąskim rozumieniu z [collaboration.md](collaboration.md), *Jak
-  zapadają decyzje* — wyłącznie istniejące tokeny, zero zmian w plikach motywu, style lokalne dla
-  widoku, bez animacji, kontrolek własnych i liczb wpisanych wprost. Wygląd autor przeprojektuje
-  później. Ten etap zastępuje rusztowanie przełączania sekcji w powłoce. **Jeden wyjątek, zgoda
-  autora 2026-09-22:** nowa ikona kłódki w motywie, w formacie i kresce istniejących ikon.
-* **Etap 1 — projekt styku, gotowy do briefu (2026-09-22).** Zależności biurka, rejestru i rozgrzewki
-  spisał tego dnia subagent; brief pisze się z tego punktu bez ponownego czytania kodu. Zmiana nazw
-  „zestaw" → „system" w kodzie jest już zrobiona osobnym commitem (`IGameSystem`, `Dnd5eSystem`).
-  - **Styk rama → system.** `IGameSystem` dostaje `DisplayName`, `SystemTabs` i `CampaignTabs` —
-    stałe deklaracje `(Id, Title, IconResourceKey, fabryka)`, czytane raz przy wyborze systemu, id
-    z prefiksem systemu. Fabryka zakładki systemu dostaje `SystemTabContext` (dziś wyłącznie rejestr —
-    przejściowo, do etapu 4); fabryka zakładki kampanii jest asynchroniczna i dostaje
-    `CampaignTabContext` (id kampanii, instancje, magistrala zdarzeń, drzwi zapisu, rejestr). Obie
-    zwracają `ITabContent : IDisposable` z gotową kontrolką — zakładka, która nie umie sprzątać, się
-    nie kompiluje. `CreateTools` znika z interfejsu.
-  - **Biurko** wystawia systemowi jedno publiczne wejście: zakładka z kontekstu kampanii, magazynu
-    układów i listy narzędzi. Samo wczytuje swój układ; zwolnienie zapisuje oczekujący układ.
-    Magazyn układów tworzy korzeń kompozycji i podaje systemowi w konstruktorze — ścieżka na dysku
-    bez zmian. `CampaignToolContext` powstaje z kontekstu kampanii; narzędzia podaje wyłącznie wybrany
-    system. `CampaignToolProvider` znika.
-  - **Rejestr** to zakładka systemu D&D z dzisiejszym ekranem, rysowana prezentacją tego systemu.
-  - **Rama.** Ekran wyboru bez paska bocznego i górnego; pasek stanu zostaje, bo niesie ostrzeżenia
-    startu. Po wyborze grupy Kampania (pozycja kampanii + zakładki kampanii) i System, rozdzielone
-    separatorem, bez nagłówków; kategoria Aplikacja z jedną pozycją „Zmień system". Otwarcie
-    kampanii: zakładki otwarte, pozycja kampanii → strona kampanii (nazwa, data utworzenia) z nazwą
-    kampanii jako etykietą. Zawartość zakładki powstaje przy pierwszym pokazaniu i żyje do zamknięcia
-    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. „Zamknij
-    kampanię" stoi na stronie kampanii. Błąd utworzenia zakładki —
-    komunikat na pasku stanu, nie awaria.
-  - **Start.** Przed ekranem wyboru tylko wczytanie paczek. Po wyborze: półka, wczytanie kampanii
-    z półki z wyprzedzeniem (pamięć podręczna już tylko kampanii — część z układem odchodzi do biurka)
-    i rozgrzewka: rama buduje zakładki kampanii dla pierwszej kampanii z półki ukryte i je zwalnia.
-    Placeholder i jego rozgrzewka znikają.
-  - **Znikają** też łańcuch przełączania sekcji, sztywne pozycje paska z podmianą na „Biblioteka
-    kampanii" i agregat prezentacji, jeśli nie zostanie mu konsument.
-  - **Miara „rama nie stawia biurka".** Powłoka, start, półka i kompozycja w `Desktop` nie odwołują się
-    do biurka, systemu okien ani ekranu rejestru — grep w raporcie; test granic przychodzi w etapie 2.
-  - **Testy.** Cykl życia zakładek na podstawionym systemie: zamknięte bez kampanii, otwarte po
-    otwarciu, zawartość tworzona raz i zwalniana przy zamknięciu, powrocie, wyjściu i po rozgrzewce.
-    Biurko utworzone i zwolnione bez gestu nie zapisuje układu. Test architektoniczny: kontekst
-    zakładki systemu nie wystawia niczego z kampanii. Liczba testów nie niższa niż baseline.
-  - **Rozstrzygnięte przez architekta**, do weta autora: nazwa `IGameSystem`; kłódka zamiast ikony
-    zakładki; separator zamiast nagłówków grup; „Zmień system" w kategorii Aplikacja; bez
-    rozgrzewki biurka, gdy półka jest pusta (dziś rozgrzewa się sam szkielet).
+* **Etap 1 — zrobiony 2026-09-22.** Aplikacja startuje na ekranie wyboru systemu; pasek boczny ma
+  grupy Kampania i System, kategorię Aplikacja z „Zmień system"; biurko i rejestr są zakładkami D&D;
+  strona kampanii zastąpiła półkę po otwarciu i niesie „Zamknij kampanię". Interfejs jest technicznie
+  poprawny, bez fajerwerków — wygląd autor przeprojektuje sam.
+  - **Do weta autora** — rozstrzygnięte przez architekta przed etapem: nazwa `IGameSystem`; kłódka
+    zamiast ikony zakładki; separator zamiast nagłówków grup; „Zmień system" w kategorii Aplikacja;
+    bez rozgrzewki biurka przy pustej półce. W trakcie, przez wykonawcę: logika cyklu życia zakładek
+    wydzielona do osobnej, testowalnej klasy (powłoka dalej bez testów); rozgrzewka i wczytanie półki
+    przeszły z kroków startowych do wyboru systemu, bo od niego zależą; ikona zakładki „Biurko" —
+    istniejąca ikona paska zminimalizowanych; test „biurko bez gestu nie zapisuje" sprawdza model
+    biurka, nie samą zakładkę, bo projekt testowy nie ma harnessu Avalonii.
   - **Znane ograniczenie.** Zakładka rejestru rysuje karty prezentacją swojego systemu, więc przy
     drugim systemie wpis cudzego systemu nie dostanie karty — wraca z pytaniem „Paczka a system"
     w architekturze.
-  - **Przegląd przed startem (2026-09-22, subagent, tylko odczyt).** Projekt zderzony z kodem:
-    - **Górnego paska nie ma na ekranie** — widok istnieje w kodzie, ale nic go nie wyświetla;
-      zamknięcie kampanii żyje dziś w pasku bocznym jako podmiana na „Biblioteka kampanii", którą ten
-      etap usuwa. **Rozstrzygnięte:** „Zamknij kampanię" stoi wewnątrz strony kampanii — decyzja
-      autora 2026-09-22 (zamykanie z paska bocznego było błędem dawnej implementacji). „Zmień system"
-      to pierwsza pozycja kategorii Aplikacja — rozstrzygnięcie architekta, do weta; kategoria
-      Aplikacja przestaje więc być pusta. Górnego paska ten etap nie włącza.
-    - **Zapis układu jest już bezpieczny**: odtworzenie i dopasowanie układu nie oznaczają go do
-      zapisu, robią to wyłącznie gesty. Wymóg „utworzone i zwolnione bez gestu nic nie zapisuje" ma
-      tylko przetrwać przebudowę — test go pilnuje.
-    - **Rozstrzygnięte po przeglądzie:** kontekst zakładki kampanii nie niesie resolvera —
-      `CampaignToolContext` buduje go sam z rejestru i katalogu systemu, jak dziś; system dostaje
-      w konstruktorze gołe `WorkspaceLayoutStore`, a wyliczenie katalogu danych aplikacji przenosi się
-      w całości do `Program.cs`; zamknięta zakładka: etykieta pędzlem `DungeonTextMutedBrush`, kłódka
-      piórem `DungeonIconPen` (format jak `DungeonIconUsers`); ikona pozycji paska staje się stanem
-      pochodnym (dziś jest stała); ekran wyboru zastępuje wiersz treści okna (pasek boczny + obszar
-      treści), wiersz paska stanu zostaje.
-    - **Półka nie ma blokady usunięcia otwartej kampanii** — chroni ją wyłącznie to, że przy otwartej
-      kampanii jej nie widać. Strona kampanii w miejscu półki musi tę niewidoczność zachować.
-    - **Jedna zmiana, bez punktów pośrednich:** interfejs systemu, biurko, przygotowanie kampanii
-      i rozgrzewka przechodzą w jednym kroku — nie da się ich rozłożyć na kompilujące się etapy.
-      Rozsypią się testy: pas narzędzi (cztery, do usunięcia z mechanizmem), podstawiony system,
-      wszystkie miejsca tworzące system D&D bez argumentu, pamięć przygotowania (pole układu).
-      Pomocnicze do nowych testów: katalogi tymczasowe jak w testach magazynu układów, repozytorium
-      w pamięci z testów D&D, podstawiony system po aktualizacji.
-  - **Obieg.** Jeden przebieg subagenta w kopii zrównanej z lokalnym `master`, z dziennikiem postępu
-    w tej kopii (przerwanie w połowie nie gubi stanu); drugi subagent porównuje wynik z tym punktem
-    i z pięcioma zakazami.
+* **Etap 2 — w toku (2026-09-22).** Nowy projekt `DungeonApp.Library.Desktop`; etap 4 dołoży obok
+  `DungeonApp.Library` bez Avalonii. Biblioteka referencuje ramę (`Core`, `Desktop`), rama nigdy
+  biblioteki — ani projektem, ani w `.axaml`. Najpierw testy granic na pustym projekcie, potem
+  przeprowadzka biurka, systemu okien, kontrolek kart, widoku listy z kartą i okna narzędzia na
+  kampanię, bez zmiany nazw typów i wyglądu. Style typów biblioteki wychodzą z motywu ramy dosłownie
+  i włącza je sama biblioteka; tokeny i ikony zostają w ramie. Kontrakty zakładek i `IGameSystem`
+  zostają w ramie. Rozstrzygnięcia architekta, do weta.
 * **Etap 3 — kształt drogi zapisu najpierw do autora.** Na tej drodze stoją czwarty i piąty zakaz,
   więc przed briefem asystent przynosi autorowi jej kształt opisany prostym językiem.
 * **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają

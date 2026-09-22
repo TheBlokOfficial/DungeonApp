@@ -105,8 +105,10 @@ Ustalony z autorem 2026-09-22.
 niższa niż baseline; testy granic zielone; lista rzeczy, które subagent rozstrzygnął sam; diff
 **styków** — tego, co rama wystawia systemowi, co zakładka dostaje, referencji między projektami —
 bo styki są architekturą. W środek implementacji architekt zagląda tylko wtedy, gdy raport albo
-testy każą. Przy większym etapie drugi subagent porównuje wynik z briefem i z pięcioma zakazami
-i zgłasza wyłącznie odstępstwa.
+testy każą. Drugi subagent, porównujący wynik z briefem i z pięcioma zakazami, idzie wyłącznie do etapów
+dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-22: przy pozostałych
+kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
+zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
 **Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
 Dokumenty dogania architekt na końcu etapu: `code-map.md` (jak jest), `tasks.md` (co dalej).
