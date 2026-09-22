@@ -396,6 +396,9 @@ czysta logika w warstwie Desktop.
   i **nikt jej nie woła** — okno „Świat kampanii" umie dodać, zmienić punkty życia i usunąć, ale nie
   umie nazwać okazu, mimo że lista pokazuje właśnie nazwę własną, gdy jest. Ten sam kształt, którego
   zwyczaj tego repozytorium każe pilnować, tyle że konsument jest jednym polem tekstowym stąd.
+* **Górny pasek jest w kodzie, ale nie na ekranie.** Jego model powstaje i jest podpięty do powłoki,
+  widok istnieje, ale nic go nie wyświetla — okno ma tylko pasek boczny, obszar treści i pasek stanu.
+  Zamknięcie kampanii żyje dziś w pasku bocznym, jako podmiana pozycji na „Biblioteka kampanii".
 * **Brak obsługi błędu we/wy przy operacjach na kampanii** poza cichym połknięciem — znany, nazwany
   komentarzem w kodzie, nie zaadresowany.
 * **Kontrakt „widok narzędzia musi sprzątać po sobie" nie jest zapisany w punkcie styku.** Fabryka

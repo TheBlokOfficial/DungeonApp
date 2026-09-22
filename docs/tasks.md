@@ -94,9 +94,9 @@ etapie aplikacja działa, a testy przechodzą.
     separatorem, bez nagłówków; kategoria Aplikacja nie pokazuje się, dopóki nie ma pozycji. Otwarcie
     kampanii: zakładki otwarte, pozycja kampanii → strona kampanii (nazwa, data utworzenia) z nazwą
     kampanii jako etykietą. Zawartość zakładki powstaje przy pierwszym pokazaniu i żyje do zamknięcia
-    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. „Zmień
-    system" w górnym pasku obok „Zamknij kampanię". Błąd utworzenia zakładki — komunikat na pasku
-    stanu, nie awaria.
+    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. Gdzie stoją
+    „Zmień system" i „Zamknij kampanię" — pytanie do autora niżej. Błąd utworzenia zakładki —
+    komunikat na pasku stanu, nie awaria.
   - **Start.** Przed ekranem wyboru tylko wczytanie paczek. Po wyborze: półka, wczytanie kampanii
     z półki z wyprzedzeniem (pamięć podręczna już tylko kampanii — część z układem odchodzi do biurka)
     i rozgrzewka: rama buduje zakładki kampanii dla pierwszej kampanii z półki ukryte i je zwalnia.
@@ -115,6 +115,31 @@ etapie aplikacja działa, a testy przechodzą.
   - **Znane ograniczenie.** Zakładka rejestru rysuje karty prezentacją swojego systemu, więc przy
     drugim systemie wpis cudzego systemu nie dostanie karty — wraca z pytaniem „Paczka a system"
     w architekturze.
+  - **Przegląd przed startem (2026-09-22, subagent, tylko odczyt).** Projekt zderzony z kodem:
+    - **Górnego paska nie ma na ekranie** — widok istnieje w kodzie, ale nic go nie wyświetla;
+      zamknięcie kampanii żyje dziś w pasku bocznym jako podmiana na „Biblioteka kampanii", którą ten
+      etap usuwa. **Pytanie do autora na start sesji**, rekomendacja architekta: „Zamknij kampanię"
+      na stronie kampanii, „Zmień system" jako pierwsza pozycja kategorii Aplikacja — obie rzeczy
+      należą do ramy, a górnego paska ten etap nie włącza. Bez odpowiedzi brief nie rusza: inaczej po
+      etapie nie da się zamknąć kampanii.
+    - **Zapis układu jest już bezpieczny**: odtworzenie i dopasowanie układu nie oznaczają go do
+      zapisu, robią to wyłącznie gesty. Wymóg „utworzone i zwolnione bez gestu nic nie zapisuje" ma
+      tylko przetrwać przebudowę — test go pilnuje.
+    - **Rozstrzygnięte po przeglądzie:** kontekst zakładki kampanii nie niesie resolvera —
+      `CampaignToolContext` buduje go sam z rejestru i katalogu systemu, jak dziś; system dostaje
+      w konstruktorze gołe `WorkspaceLayoutStore`, a wyliczenie katalogu danych aplikacji przenosi się
+      w całości do `Program.cs`; zamknięta zakładka: etykieta pędzlem `DungeonTextMutedBrush`, kłódka
+      piórem `DungeonIconPen` (format jak `DungeonIconUsers`); ikona pozycji paska staje się stanem
+      pochodnym (dziś jest stała); ekran wyboru zastępuje wiersz treści okna (pasek boczny + obszar
+      treści), wiersz paska stanu zostaje.
+    - **Półka nie ma blokady usunięcia otwartej kampanii** — chroni ją wyłącznie to, że przy otwartej
+      kampanii jej nie widać. Strona kampanii w miejscu półki musi tę niewidoczność zachować.
+    - **Jedna zmiana, bez punktów pośrednich:** interfejs systemu, biurko, przygotowanie kampanii
+      i rozgrzewka przechodzą w jednym kroku — nie da się ich rozłożyć na kompilujące się etapy.
+      Rozsypią się testy: pas narzędzi (cztery, do usunięcia z mechanizmem), podstawiony system,
+      wszystkie miejsca tworzące system D&D bez argumentu, pamięć przygotowania (pole układu).
+      Pomocnicze do nowych testów: katalogi tymczasowe jak w testach magazynu układów, repozytorium
+      w pamięci z testów D&D, podstawiony system po aktualizacji.
   - **Obieg.** Jeden przebieg subagenta w kopii zrównanej z lokalnym `master`, z dziennikiem postępu
     w tej kopii (przerwanie w połowie nie gubi stanu); drugi subagent porównuje wynik z tym punktem
     i z pięcioma zakazami.

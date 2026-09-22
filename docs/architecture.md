@@ -691,7 +691,7 @@ korzystają oba.
 w program. Istnieje także przy jednym systemie. **Wybór systemu poprzedza kampanię**, a nie z niej
 wynika.
 
-**Powrót do wyboru** — przycisk w górnym pasku, należący do ramy — działa bez restartu. Rama umie
+**Powrót do wyboru** — przycisk należący do ramy — działa bez restartu. Rama umie
 w całości rozebrać aktywny system: zamknąć kampanię, zwolnić jego zakładki i biurko. Nic się przy tym
 nie traci, bo każda zmiana stanu trafia na dysk od razu. **Sprzątanie po sobie przy powrocie jest
 częścią kontraktu zakładki i okna.**
