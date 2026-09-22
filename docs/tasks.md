@@ -106,8 +106,10 @@ etapie aplikacja działa, a testy przechodzą.
   działa dobrze — i sam zauważył, że dowodu nie ma: animacja rozwijania paska, która dawniej czyniła
   zacięcie widocznym, już nie gra przy wejściu. Następnym razem: czas rozgrzewki i czas od kliknięcia
   systemu do pierwszej narysowanej klatki jako logowane liczby.
-* **Mapa kodu nie uwzględnia etapów 1–2** — dogonienie jej jest pierwszą pracą następnej sesji.
-* **Etap 3 — kształt drogi zapisu zatwierdzony przez autora 2026-09-22.** Deklaracja —
+* **Odchudzić mapę kodu do części oceniającej.** Spis plików wypada, zostają granice, punkty styku
+  i ocena stanu; zasada i powód — [collaboration.md](collaboration.md), *Jak pisać dokumenty tego
+  repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
+  ta praca jest już tylko skracaniem.
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
   - **Stan dziś:** zakładka i narzędzie systemu dostają żywy magazyn instancji z metodami

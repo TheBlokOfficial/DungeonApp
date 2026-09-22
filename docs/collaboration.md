@@ -190,6 +190,19 @@ warstwy.
 
 ---
 
+6. **Mapa kodu ma nieść sądy, nie spis plików.** Obserwacja autora z 2026-09-22, po tym jak
+   aktualizacja `code-map.md` zjadła dziesiątą część budżetu sesji. Dokument dzieli się na dwie
+   części o różnej wartości. Tabele „który plik za co odpowiada" odtwarza się ze struktury katalogów
+   i jednego przeszukania w sekundę — i to one rozjeżdżają się po każdej zmianie. Ocena stanu
+   (co dojrzałe, co rusztowanie, gdzie dług, czego nie pokrywa żaden test), granice i punkty styku
+   są sądami, których z kodu wyczytać się nie da w rozsądnym czasie — i to dla nich ten dokument
+   istnieje.
+
+   *Co z tego wynika:* spis plików wypada, zostaje część oceniająca; mapę aktualizuje się **po etapie
+   zmieniającym strukturę**, nie po każdej sesji; konkret o kodzie, potrzebny do jednej decyzji,
+   bierze się doraźnie od subagenta tylko do odczytu — pytanie o dzisiejszą drogę zapisu kosztowało
+   ułamek tego, co aktualizacja całej mapy.
+
 ## 4. Briefy dla subagentów
 
 Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą z incydentów.
