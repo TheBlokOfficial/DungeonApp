@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace DungeonApp.Core.Content;
@@ -16,22 +17,19 @@ namespace DungeonApp.Core.Content;
 /// <see cref="ContentTypeReference"/> and <see cref="EntryAddress"/> split <c>"pack:id"</c> on the
 /// first colon without ambiguity.
 /// </para>
+/// <para>
+/// <see cref="ContentIdJsonConverter"/> is what lets a state record such as <c>CampaignInstance</c>
+/// carry a <see cref="ContentId"/> (inside an <c>EntryAddress</c>) and still round-trip as a plain
+/// JSON string - <c>"dnd5e"</c>, not <c>{"value":"dnd5e"}</c> - with no hand-written DTO standing in
+/// for it. It is the only validator that read ever gets: a value the charset rejects fails as a
+/// <see cref="JsonException"/>, the same shape every other invalid record already fails as.
+/// </para>
 /// </summary>
+[JsonConverter(typeof(ContentIdJsonConverter))]
 public readonly record struct ContentId
 {
     public const int MaxLength = 64;
 
-    /// <summary>
-    /// <see cref="JsonConstructorAttribute"/> lets <c>System.Text.Json</c> bind this constructor
-    /// directly even though it stays private - the only reason a state record such as
-    /// <c>CampaignInstance</c> can carry a <see cref="ContentId"/> (inside an
-    /// <c>EntryAddress</c>) and still be deserialized whole, with no hand-written DTO standing in
-    /// for it. Validates exactly the way <see cref="Create"/> does rather than bypassing it: the
-    /// charset is this type's own invariant, not a field-level rule some caller might skip, so
-    /// "the deserializer is the only validator" means the constructor the deserializer calls has to
-    /// enforce it - not that it gets to let it through.
-    /// </summary>
-    [JsonConstructor]
     private ContentId(string value)
     {
         if (!IsValid(value))
@@ -69,4 +67,20 @@ public readonly record struct ContentId
         character is >= 'a' and <= 'z'
         || character is >= '0' and <= '9'
         || character is '.' or '-';
+}
+
+/// <summary>Reads and writes a <see cref="ContentId"/> as the plain string it wraps, never as an object.</summary>
+public sealed class ContentIdJsonConverter : JsonConverter<ContentId>
+{
+    public override ContentId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var candidate = reader.GetString();
+
+        return ContentId.TryCreate(candidate, out var id)
+            ? id
+            : throw new JsonException($"Invalid content id: '{candidate}'.");
+    }
+
+    public override void Write(Utf8JsonWriter writer, ContentId value, JsonSerializerOptions options) =>
+        writer.WriteStringValue(value.Value);
 }
