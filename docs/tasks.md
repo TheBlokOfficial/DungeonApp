@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 250 testów zielonych.
+Gałąź: `master`. Build bez ostrzeżeń, 263 testy zielone (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -92,6 +92,17 @@ etapie aplikacja działa, a testy przechodzą.
   nowe testy granic. Style okien biurka wyszły z motywu ramy dosłownie i włącza je sama biblioteka.
   Rozstrzygnięcia, do weta: nazwa projektu; pomocnicze kontrolki i konwerter ikon zostały w ramie,
   bo używa ich też rama; pomocnicze klasy testowe skopiowane do nowego projektu testowego.
+* **Po etapach 1–2, stan na koniec sesji 2026-09-22 — czeka na uruchomienie przez autora.** Trzy
+  przebiegi poprawek po jego testach: awaria po wyborze systemu (widok poza wątkiem okna), niewidoczne
+  wiersze paska (pozycja kampanii i „Zmień system" rysowane poza mechanizmem list), weto na separator,
+  zwijanie jednym ruchem, odstępy z `555802f`, rozgrzewka przeniesiona do startu. **Niezweryfikowane
+  w aplikacji:** ostatni przebieg (rozgrzewka przy starcie, pasek bez klatki przejściowej) został
+  przerwany na etapie weryfikacji subagenta — build i 263 testy zielone, okna nikt nie widział.
+  **Do sprawdzenia najpierw:** czy zacięcie przy wejściu w system zniknęło, czy pasek pojawia się od
+  razu w docelowym stanie i pamięta zwinięcie po „Zmień system", czy ekran ładowania zasłania
+  rozgrzewkę (w kodzie jest ukryty host rozgrzewki, osobnego ekranu ładowania nie dodano — jeśli
+  okno pokazuje się przed końcem rozgrzewki, to jest pierwsza rzecz do dokończenia).
+* **Mapa kodu nie uwzględnia etapów 1–2** — dogonienie jej jest pierwszą pracą następnej sesji.
 * **Etap 3 — kształt drogi zapisu zatwierdzony przez autora 2026-09-22.** Deklaracja —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:

@@ -20,8 +20,11 @@ niż jakiekolwiek ich streszczenie tutaj.
 > **Aktualność: 2026-09-15.** Zaktualizowany po rozbiórce licznika i całej warstwy bloków danych —
 > oba mechanizmy zniknęły z kodu, jedynym magazynem stanu kampanii są dziś instancje.
 >
-> **2026-09-22** architektura przyjęła przebudowę na ramę, bibliotekę i system. Kod jej jeszcze nie
-> dogonił, więc ten dokument opisuje stan sprzed niej. Dogonił ją tylko słownik: dawny „zestaw
+> **2026-09-22 ten dokument jest nieaktualny o dwa etapy przebudowy i ma pierwszeństwo do poprawy.**
+> Etap 1 (ekran wyboru systemu, pasek z trzema kategoriami, biurko i rejestr jako zakładki systemu,
+> strona kampanii, rozgrzewka przy starcie) i etap 2 (biurko, system okien, kontrolki kart i widok
+> listy z kartą wyniesione do `DungeonApp.Library.Desktop`) są w kodzie; poniższy opis ich nie zna.
+> Co jest zrobione i co dalej — [tasks.md](tasks.md). Dogonił ją tylko słownik: dawny „zestaw
 > treści" nazywa się w kodzie „systemem" (`IGameSystem`, `Dnd5eSystem`).
 
 ---
