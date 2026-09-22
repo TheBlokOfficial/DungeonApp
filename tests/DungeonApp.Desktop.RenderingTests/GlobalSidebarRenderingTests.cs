@@ -31,7 +31,7 @@ public sealed class GlobalSidebarRenderingTests
     [AvaloniaFact]
     public void Every_row_draws_its_label_with_nonzero_bounds_after_a_system_is_chosen()
     {
-        var window = BuildWindow(out _);
+        var window = BuildWindow(startCollapsed: false, out _);
 
         AssertRowDraws(window, "Kampanie");
         AssertRowDraws(window, "Biurko");
@@ -43,25 +43,39 @@ public sealed class GlobalSidebarRenderingTests
     /// docs/architecture.md, "Zwijanie paska jak dawniej": in the collapsed rail, every row across all
     /// three categories is meant to form one continuous column with no gap wider than the spacing
     /// already used between two rows inside a single group - the pre-etap-1 behaviour with one heading.
-    /// Headless has no compositor-driven frame clock tied to wall time, so the transition is forced to
-    /// completion with <see cref="AvaloniaHeadlessPlatform.ForceRenderTimerTick"/> rather than awaited.
+    /// <para>
+    /// Headless has no compositor-driven frame clock tied to wall time:
+    /// <see cref="Avalonia.Headless.AvaloniaHeadlessPlatform.ForceRenderTimerTick"/>, tried first,
+    /// advanced neither the heading Border's Height transition nor <see cref="Control.Bounds"/> even
+    /// after many forced ticks. What headless *does* honour is that a transition only plays across a
+    /// value change on a control that already rendered a prior frame - toggling
+    /// <see cref="GlobalSidebarViewModel.IsCollapsed"/> before the view's first <c>Show()</c> gives it
+    /// no earlier frame to transition from, so the collapsed state is simply what the first layout
+    /// pass produces. That is the brief's "przy wyłączonych przejściach" case.
+    /// </para>
+    /// <para>
+    /// Caveat worth recording: this asserts the *delivered* fix's geometry, not a regression guard
+    /// against the pre-fix implementation. The pre-fix mechanism (a <c>TranslateTransform</c> on the
+    /// item list) moves pixels only at render time and never changes <see cref="Control.Bounds"/> (an
+    /// arrange-time value) at all, collapsed or not - so a Bounds-only assertion cannot fail against
+    /// it either way. Swapping the fix for a Height animation (rather than a bigger translate) is what
+    /// makes the gap observable here in the first place.
+    /// </para>
     /// </summary>
     [AvaloniaFact]
     public void Collapsing_the_sidebar_leaves_no_gap_between_rows_of_different_groups()
     {
-        var window = BuildWindow(out var viewModel);
-        var rowsBefore = GetNavButtons(window);
-        Assert.True(rowsBefore.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rowsBefore.Count}.");
-        var withinGroupGap = rowsBefore[1].Bounds.Y - (rowsBefore[0].Bounds.Y + rowsBefore[0].Bounds.Height);
+        var expandedWindow = BuildWindow(startCollapsed: false, out _);
+        var rowsExpanded = GetNavButtons(expandedWindow);
+        Assert.True(rowsExpanded.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rowsExpanded.Count}.");
+        var withinGroupGap = rowsExpanded[1].Bounds.Y - (rowsExpanded[0].Bounds.Y + rowsExpanded[0].Bounds.Height);
 
-        viewModel.ToggleCollapsedCommand.Execute(null);
-        AvaloniaHeadlessPlatform.ForceRenderTimerTick(20);
-        window.GetLayoutManager()!.ExecuteLayoutPass();
-
-        var rowsAfter = GetNavButtons(window);
-        for (var i = 1; i < rowsAfter.Count; i++)
+        var collapsedWindow = BuildWindow(startCollapsed: true, out _);
+        var rowsCollapsed = GetNavButtons(collapsedWindow);
+        Assert.True(rowsCollapsed.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rowsCollapsed.Count}.");
+        for (var i = 1; i < rowsCollapsed.Count; i++)
         {
-            var gap = rowsAfter[i].Bounds.Y - (rowsAfter[i - 1].Bounds.Y + rowsAfter[i - 1].Bounds.Height);
+            var gap = rowsCollapsed[i].Bounds.Y - (rowsCollapsed[i - 1].Bounds.Y + rowsCollapsed[i - 1].Bounds.Height);
             Assert.True(
                 gap <= withinGroupGap + 0.5,
                 $"Przerwa między wierszem {i - 1} a {i} po zwinięciu wynosi {gap}, " +
@@ -69,7 +83,7 @@ public sealed class GlobalSidebarRenderingTests
         }
     }
 
-    private static Window BuildWindow(out GlobalSidebarViewModel viewModel)
+    private static Window BuildWindow(bool startCollapsed, out GlobalSidebarViewModel viewModel)
     {
         var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
         var campaignTab = new CampaignTabDeclaration(
@@ -82,6 +96,11 @@ public sealed class GlobalSidebarRenderingTests
             _ => Task.CompletedTask,
             _ => { },
             () => Task.CompletedTask);
+
+        if (startCollapsed)
+        {
+            viewModel.ToggleCollapsedCommand.Execute(null);
+        }
 
         var view = new GlobalSidebarView { DataContext = viewModel };
         var window = new Window { Content = view, Width = 224, Height = 728 };

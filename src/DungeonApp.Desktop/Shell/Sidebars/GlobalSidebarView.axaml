@@ -226,137 +226,144 @@
 
             <!-- Three categories, top to bottom: Kampania (campaign position + the chosen system's
                  campaign tabs), System (the chosen system's own tabs), Aplikacja ("Zmień system") -
-                 each with its own eyebrow heading. Restored verbatim from the pre-etap-1 sidebar
-                 (555802f's single "BIBLIOTEKA KAMPANII" heading) for all three: the heading's
-                 collapse fade-and-slide, and the item list's own slide-under-heading transform on
-                 the sidebar rail's collapse. Etap 1 had replaced this with an unheaded separator
-                 (docs/tasks.md); the author vetoed that. -->
+                 each with its own eyebrow heading, in the same fade-and-slide as 555802f's single
+                 "BIBLIOTEKA KAMPANII" heading (CollapsibleTextOpacity/Offset, unchanged).
+                 Etap 1 had replaced this with an unheaded separator (docs/tasks.md); the author
+                 vetoed that. Only one outer bottom margin (0,0,0,8), matching 555802f's single-group
+                 margin verbatim - a per-group copy of it here would double space no 555802f layout
+                 ever needed, since 555802f never had more than one group.
+
+                 Collapsing no longer slides the item list under a still-reserved heading row
+                 (NavigationItemsOffset, the etap-1 restore's approach): a translate by one heading's
+                 height only ever closed the gap within its own group, leaving every later group's
+                 still full-height heading row as a dead gap below it. Instead each heading's own
+                 Border animates its Height between 44 (unchanged literal, the row height this sidebar
+                 already used) and 0, same 0.18s CubicEaseInOut as before; the surrounding Grid's Auto
+                 row then reflows every row beneath it every frame, so all three groups close in one
+                 continuous motion with no reserved space left behind. -->
             <StackPanel Grid.Row="1" Margin="0,0,0,8">
-                <Grid RowDefinitions="44,Auto" Margin="0,0,0,8">
-                    <TextBlock Grid.Row="0"
-                               Margin="16,0,64,3"
-                               Classes="sidebar-section-heading eyebrow"
-                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                               Opacity="{Binding CollapsibleTextOpacity}"
-                               LetterSpacing="0.7"
-                               VerticalAlignment="Bottom"
-                               Text="KAMPANIA">
-                        <TextBlock.Transitions>
+                <Grid RowDefinitions="Auto,Auto">
+                    <Border Grid.Row="0"
+                            Height="{Binding HeadingHeight}"
+                            ClipToBounds="True">
+                        <Border.Transitions>
                             <Transitions>
-                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                <DoubleTransition Property="Height" Duration="0:0:0.18">
+                                    <DoubleTransition.Easing>
+                                        <easings:CubicEaseInOut />
+                                    </DoubleTransition.Easing>
+                                </DoubleTransition>
                             </Transitions>
-                        </TextBlock.Transitions>
-                        <TextBlock.RenderTransform>
-                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </TextBlock.RenderTransform>
-                    </TextBlock>
+                        </Border.Transitions>
+                        <TextBlock Margin="16,0,64,3"
+                                   Classes="sidebar-section-heading eyebrow"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   Opacity="{Binding CollapsibleTextOpacity}"
+                                   LetterSpacing="0.7"
+                                   VerticalAlignment="Bottom"
+                                   Text="KAMPANIA">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </TextBlock.Transitions>
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </Border>
 
                     <StackPanel Grid.Row="1" Margin="0,8,0,0">
-                        <StackPanel.RenderTransform>
-                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
-                                            <DoubleTransition.Easing>
-                                                <easings:CubicEaseInOut />
-                                            </DoubleTransition.Easing>
-                                        </DoubleTransition>
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </StackPanel.RenderTransform>
                         <ItemsControl ItemsSource="{Binding CampaignItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
                     </StackPanel>
                 </Grid>
 
-                <Grid RowDefinitions="44,Auto" Margin="0,0,0,8">
-                    <TextBlock Grid.Row="0"
-                               Margin="16,0,64,3"
-                               Classes="sidebar-section-heading eyebrow"
-                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                               Opacity="{Binding CollapsibleTextOpacity}"
-                               LetterSpacing="0.7"
-                               VerticalAlignment="Bottom"
-                               Text="SYSTEM">
-                        <TextBlock.Transitions>
+                <Grid RowDefinitions="Auto,Auto">
+                    <Border Grid.Row="0"
+                            Height="{Binding HeadingHeight}"
+                            ClipToBounds="True">
+                        <Border.Transitions>
                             <Transitions>
-                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                <DoubleTransition Property="Height" Duration="0:0:0.18">
+                                    <DoubleTransition.Easing>
+                                        <easings:CubicEaseInOut />
+                                    </DoubleTransition.Easing>
+                                </DoubleTransition>
                             </Transitions>
-                        </TextBlock.Transitions>
-                        <TextBlock.RenderTransform>
-                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </TextBlock.RenderTransform>
-                    </TextBlock>
+                        </Border.Transitions>
+                        <TextBlock Margin="16,0,64,3"
+                                   Classes="sidebar-section-heading eyebrow"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   Opacity="{Binding CollapsibleTextOpacity}"
+                                   LetterSpacing="0.7"
+                                   VerticalAlignment="Bottom"
+                                   Text="SYSTEM">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </TextBlock.Transitions>
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </Border>
 
                     <Grid Grid.Row="1" Margin="0,8,0,0">
-                        <Grid.RenderTransform>
-                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
-                                            <DoubleTransition.Easing>
-                                                <easings:CubicEaseInOut />
-                                            </DoubleTransition.Easing>
-                                        </DoubleTransition>
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </Grid.RenderTransform>
                         <ItemsControl ItemsSource="{Binding SystemTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
                     </Grid>
                 </Grid>
 
-                <Grid RowDefinitions="44,Auto">
-                    <TextBlock Grid.Row="0"
-                               Margin="16,0,64,3"
-                               Classes="sidebar-section-heading eyebrow"
-                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                               Opacity="{Binding CollapsibleTextOpacity}"
-                               LetterSpacing="0.7"
-                               VerticalAlignment="Bottom"
-                               Text="APLIKACJA">
-                        <TextBlock.Transitions>
+                <Grid RowDefinitions="Auto,Auto">
+                    <Border Grid.Row="0"
+                            Height="{Binding HeadingHeight}"
+                            ClipToBounds="True">
+                        <Border.Transitions>
                             <Transitions>
-                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                <DoubleTransition Property="Height" Duration="0:0:0.18">
+                                    <DoubleTransition.Easing>
+                                        <easings:CubicEaseInOut />
+                                    </DoubleTransition.Easing>
+                                </DoubleTransition>
                             </Transitions>
-                        </TextBlock.Transitions>
-                        <TextBlock.RenderTransform>
-                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </TextBlock.RenderTransform>
-                    </TextBlock>
+                        </Border.Transitions>
+                        <TextBlock Margin="16,0,64,3"
+                                   Classes="sidebar-section-heading eyebrow"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   Opacity="{Binding CollapsibleTextOpacity}"
+                                   LetterSpacing="0.7"
+                                   VerticalAlignment="Bottom"
+                                   Text="APLIKACJA">
+                            <TextBlock.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                                </Transitions>
+                            </TextBlock.Transitions>
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                    <TranslateTransform.Transitions>
+                                        <Transitions>
+                                            <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                        </Transitions>
+                                    </TranslateTransform.Transitions>
+                                </TranslateTransform>
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                    </Border>
 
                     <Grid Grid.Row="1" Margin="0,8,0,0">
-                        <Grid.RenderTransform>
-                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
-                                <TranslateTransform.Transitions>
-                                    <Transitions>
-                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
-                                            <DoubleTransition.Easing>
-                                                <easings:CubicEaseInOut />
-                                            </DoubleTransition.Easing>
-                                        </DoubleTransition>
-                                    </Transitions>
-                                </TranslateTransform.Transitions>
-                            </TranslateTransform>
-                        </Grid.RenderTransform>
                         <ItemsControl ItemsSource="{Binding ChangeSystemItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
                     </Grid>
                 </Grid>

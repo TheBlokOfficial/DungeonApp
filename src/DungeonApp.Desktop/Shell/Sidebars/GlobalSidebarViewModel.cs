@@ -158,7 +158,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
                 RaisePropertyChanged(nameof(SidebarToggleToolTip));
                 RaisePropertyChanged(nameof(CollapsibleTextOpacity));
                 RaisePropertyChanged(nameof(CollapsibleTextOffset));
-                RaisePropertyChanged(nameof(NavigationItemsOffset));
+                RaisePropertyChanged(nameof(HeadingHeight));
             }
         }
     }
@@ -171,7 +171,15 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
     public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
 
-    public double NavigationItemsOffset => IsCollapsed ? -44 : 0;
+    /// <summary>
+    /// Each of the three group headings' own row height - 44 unchanged from the value this sidebar
+    /// already used for a heading row (docs/decisions.md, "Nawigacja"). Animated to 0 on collapse
+    /// (its Border's Height transition, GlobalSidebarView.axaml) rather than translating the item
+    /// list under a still-reserved row, so a group's own Grid actually shrinks and every row below it
+    /// - including the next group's heading - reflows in the same motion instead of leaving a gap the
+    /// size of that group's own heading behind.
+    /// </summary>
+    public double HeadingHeight => IsCollapsed ? 0 : 44;
 
     /// <summary>
     /// Called by the shell on every campaign open and close. Swaps the campaign position's label and
