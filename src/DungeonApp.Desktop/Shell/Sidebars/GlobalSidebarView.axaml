@@ -127,14 +127,6 @@
             <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <!-- The hairline that separates Kampania from System, and System from Aplikacja - same
-             1px-literal divider as the sidebar's own right-hand edge below, not a token: a rule
-             this thin has no size token of its own in DungeonApp.Desktop/Themes/Tokens.axaml. -->
-        <Style Selector="Border.nav-separator">
-            <Setter Property="Height" Value="1" />
-            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingSm}" />
-            <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />
-        </Style>
     </UserControl.Styles>
 
     <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
@@ -234,17 +226,141 @@
 
             <!-- Three categories, top to bottom: Kampania (campaign position + the chosen system's
                  campaign tabs), System (the chosen system's own tabs), Aplikacja ("Zmień system") -
-                 separated by hairlines, without headings of their own (docs/tasks.md, etap 1:
-                 "rozdzielone separatorem, bez nagłówków"). -->
-            <StackPanel Grid.Row="1" Margin="0,8,0,8">
-                <ContentPresenter Content="{Binding CampaignPositionItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
-                <ItemsControl ItemsSource="{Binding CampaignTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
+                 each with its own eyebrow heading. Restored verbatim from the pre-etap-1 sidebar
+                 (555802f's single "BIBLIOTEKA KAMPANII" heading) for all three: the heading's
+                 collapse fade-and-slide, and the item list's own slide-under-heading transform on
+                 the sidebar rail's collapse. Etap 1 had replaced this with an unheaded separator
+                 (docs/tasks.md); the author vetoed that. -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                <Grid RowDefinitions="44,Auto" Margin="0,0,0,8">
+                    <TextBlock Grid.Row="0"
+                               Margin="16,0,64,3"
+                               Classes="sidebar-section-heading eyebrow"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               Opacity="{Binding CollapsibleTextOpacity}"
+                               LetterSpacing="0.7"
+                               VerticalAlignment="Bottom"
+                               Text="KAMPANIA">
+                        <TextBlock.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </TextBlock.Transitions>
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
 
-                <Border Classes="nav-separator" />
-                <ItemsControl ItemsSource="{Binding SystemTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
+                    <StackPanel Grid.Row="1" Margin="0,8,0,0">
+                        <StackPanel.RenderTransform>
+                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
+                                            <DoubleTransition.Easing>
+                                                <easings:CubicEaseInOut />
+                                            </DoubleTransition.Easing>
+                                        </DoubleTransition>
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </StackPanel.RenderTransform>
+                        <ContentPresenter Content="{Binding CampaignPositionItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
+                        <ItemsControl ItemsSource="{Binding CampaignTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
+                    </StackPanel>
+                </Grid>
 
-                <Border Classes="nav-separator" />
-                <ContentPresenter Content="{Binding ChangeSystemItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
+                <Grid RowDefinitions="44,Auto" Margin="0,0,0,8">
+                    <TextBlock Grid.Row="0"
+                               Margin="16,0,64,3"
+                               Classes="sidebar-section-heading eyebrow"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               Opacity="{Binding CollapsibleTextOpacity}"
+                               LetterSpacing="0.7"
+                               VerticalAlignment="Bottom"
+                               Text="SYSTEM">
+                        <TextBlock.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </TextBlock.Transitions>
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <Grid Grid.Row="1" Margin="0,8,0,0">
+                        <Grid.RenderTransform>
+                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
+                                            <DoubleTransition.Easing>
+                                                <easings:CubicEaseInOut />
+                                            </DoubleTransition.Easing>
+                                        </DoubleTransition>
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </Grid.RenderTransform>
+                        <ItemsControl ItemsSource="{Binding SystemTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
+                    </Grid>
+                </Grid>
+
+                <Grid RowDefinitions="44,Auto">
+                    <TextBlock Grid.Row="0"
+                               Margin="16,0,64,3"
+                               Classes="sidebar-section-heading eyebrow"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               Opacity="{Binding CollapsibleTextOpacity}"
+                               LetterSpacing="0.7"
+                               VerticalAlignment="Bottom"
+                               Text="APLIKACJA">
+                        <TextBlock.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.12" />
+                            </Transitions>
+                        </TextBlock.Transitions>
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="{Binding CollapsibleTextOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="X" Duration="0:0:0.18" />
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <Grid Grid.Row="1" Margin="0,8,0,0">
+                        <Grid.RenderTransform>
+                            <TranslateTransform Y="{Binding NavigationItemsOffset}">
+                                <TranslateTransform.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Y" Duration="0:0:0.18">
+                                            <DoubleTransition.Easing>
+                                                <easings:CubicEaseInOut />
+                                            </DoubleTransition.Easing>
+                                        </DoubleTransition>
+                                    </Transitions>
+                                </TranslateTransform.Transitions>
+                            </TranslateTransform>
+                        </Grid.RenderTransform>
+                        <ContentPresenter Content="{Binding ChangeSystemItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
+                    </Grid>
+                </Grid>
             </StackPanel>
         </Grid>
         <Border Width="1"
