@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Split from DungeonApp.Desktop.Tests deliberately (docs/collaboration.md, raport z tego etapu):
+    Avalonia.Headless.XUnit 12.0.5 (the version this repo pins for Avalonia itself) depends on
+    xunit.v3.core, which collides (CS0433 on FactAttribute) with the xunit 2.9.3 the rest of the
+    Desktop test suite already runs on. Isolating the headless-rendering tests in their own project,
+    on xunit v3, keeps the 2.9.3 baseline suite untouched instead of migrating every existing [Fact]
+    in DungeonApp.Desktop.Tests to v3 for the sake of two rendering tests.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.0.5" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+  </ItemGroup>
+
+</Project>
