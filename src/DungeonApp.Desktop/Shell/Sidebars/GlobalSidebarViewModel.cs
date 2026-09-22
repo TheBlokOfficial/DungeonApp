@@ -65,6 +65,13 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             }),
         ];
 
+        // The Kampania category's row, drawn by one ItemsControl - the campaign position first,
+        // its own row's identity never changes with it, then the system's campaign tabs in
+        // declared order. A bare ContentPresenter for the campaign position, tried first, drew
+        // nothing (docs/tasks.md: the row reserved its height but its DataTemplate resolved
+        // against a null Content) - the fix is the same mechanism every other row already used.
+        CampaignItems = [CampaignPositionItem, .. CampaignTabItems];
+
         SystemTabItems =
         [
             .. systemTabs.Select(declaration =>
@@ -90,6 +97,10 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             "shell.change-system", "DungeonIconSettings", "Zmień system", new AsyncCommand(changeSystem));
         _allItems.Add(ChangeSystemItem);
 
+        // The Aplikacja category's row, as the one-element collection the same ItemsControl
+        // mechanism needs - see CampaignItems above for why a bare ContentPresenter is not used.
+        ChangeSystemItems = [ChangeSystemItem];
+
         ToggleCollapsedCommand = new AsyncCommand(() =>
         {
             IsCollapsed = !IsCollapsed;
@@ -106,11 +117,24 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>The Kampania category's tab rows, one per <see cref="Content.IGameSystem.CampaignTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> CampaignTabItems { get; }
 
+    /// <summary>
+    /// The Kampania category's whole row list - <see cref="CampaignPositionItem"/> followed by
+    /// <see cref="CampaignTabItems"/> - for the one <c>ItemsControl</c> that draws the category
+    /// (docs/architecture.md, "Pasek boczny: trzy kategorie").
+    /// </summary>
+    public IReadOnlyList<NavigationItemViewModel> CampaignItems { get; }
+
     /// <summary>The System category's rows, one per <see cref="Content.IGameSystem.SystemTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> SystemTabItems { get; }
 
     /// <summary>The Aplikacja category's one row today.</summary>
     public NavigationItemViewModel ChangeSystemItem { get; }
+
+    /// <summary>
+    /// <see cref="ChangeSystemItem"/> as the one-element list the Aplikacja category's
+    /// <c>ItemsControl</c> draws - see <see cref="CampaignItems"/> for why.
+    /// </summary>
+    public IReadOnlyList<NavigationItemViewModel> ChangeSystemItems { get; }
 
     public AsyncCommand ToggleCollapsedCommand { get; }
 

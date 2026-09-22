@@ -271,8 +271,7 @@
                                 </TranslateTransform.Transitions>
                             </TranslateTransform>
                         </StackPanel.RenderTransform>
-                        <ContentPresenter Content="{Binding CampaignPositionItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
-                        <ItemsControl ItemsSource="{Binding CampaignTabItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
+                        <ItemsControl ItemsSource="{Binding CampaignItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
                     </StackPanel>
                 </Grid>
 
@@ -358,7 +357,7 @@
                                 </TranslateTransform.Transitions>
                             </TranslateTransform>
                         </Grid.RenderTransform>
-                        <ContentPresenter Content="{Binding ChangeSystemItem}" ContentTemplate="{StaticResource NavigationItemTemplate}" />
+                        <ItemsControl ItemsSource="{Binding ChangeSystemItems}" ItemTemplate="{StaticResource NavigationItemTemplate}" />
                     </Grid>
                 </Grid>
             </StackPanel>
