@@ -112,11 +112,13 @@ system zaprojektował tak, jak ty tę treść widzisz, a nie tak, jak program j�
 treść jest zepsuta, widzisz ją jako zepsutą; nic nie znika po cichu. Dopisanie nowego przedmiotu to
 nowy plik i zero czekania.
 
-**Zakładając kampanię**, wybierasz dodatki systemu — warianty zasad, w które gra twoja grupa:
-złoto trzymane w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu. Dodatek
-zmienia to, jak wygląda księga tej jednej kampanii.
+**Na stronie kampanii** włączasz warianty zasad, w które gra twoja grupa — złoto trzymane
+w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu — każdy osobnym
+przełącznikiem, pogrupowane w dodatki systemu. Wariant zmienia to, jak wygląda księga tej jednej
+kampanii.
 
-**Przy stole** otwierasz kampanię i dostajesz jej zakładki. Jedną z nich zwykle jest biurko
+**Przy stole** otwierasz kampanię: półka zamienia się w stronę tej kampanii, a zakładki kampanii —
+widoczne na pasku od wyboru systemu, ale dotąd zamknięte — stają się dostępne. Jedną z nich zwykle jest biurko
 z pływającymi oknami — kolejka tur, drużyna, notatka, zegar świata, co potrzeba. Patrzysz na nie
 kątem oka, robiąc coś innego. Obok mogą stać zakładki, w których się przebywa: **świat** (co
 w kampanii właściwie żyje), **fabuła** (tekst przygody z odhaczanymi krokami — kilka grup może grać
@@ -162,7 +164,9 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | **rama** | Szkielet aplikacji: okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie — tworzenie, wczytanie, usuwanie, zapis — i jedyna droga zmiany ich stanu. Nie wie, czym jest wpis. |
 | **biblioteka** | Wspólny, neutralny kod, z którego system korzysta albo nie: biurko i system okien, kontrolki kart, paczki, wpisy, instancje. Sama niczego nie robi; rama nie wie o jej istnieniu. |
 | **system** | Skompilowany projekt wybierany przy starcie aplikacji: typy treści, ich widoki, zakładki, narzędzia biurka, dodatki. Jedyne miejsce w aplikacji, w którym wolno wiedzieć, czym jest potwór. |
-| **dodatek** | Wariant zasad wbudowany w system, włączany przy zakładaniu kampanii. Może dokładać i zastępować. |
+| **dodatek** | Nagłówek na stronie kampanii grupujący warianty zasad zadeklarowane przez system. Sam niczego nie włącza. |
+| **wariant** | Pojedyncza zmiana zasad z dodatku — jednej mechaniki albo kilku naraz — włączana osobnym przełącznikiem na stronie kampanii, z parametrami będącymi wartościami. Może dokładać i zastępować. |
+| **strona kampanii** | Ekran ramy, w który zamienia się pozycja półki po otwarciu kampanii: to, co rama o kampanii wie, i przełączniki wariantów. |
 | **zakładka** | Pozycja paska bocznego. Należy do jednej z trzech kategorii: Kampania, System, Aplikacja. |
 | **typ treści** | Para: rekord opisujący wartości + zaprojektowany widok karty. Adresowany `system:id`. |
 | **wpis** | Zarejestrowana treść z paczki: żelazny miecz, goblin, zaklęcie, efekt. Esencja — czym rzecz jest. Niezmienna, tylko do odczytu, adresowana `paczka:id`. |
@@ -185,7 +189,7 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | **Biblioteka** | osobne projekty — podział ustala plan przebudowy | kompilowana | biurko i system okien, kontrolki kart, paczki, rejestr, wpisy, instancje i nakładki, później silnik formuł. **Zna `Entry`. Nie zna `Monster`.** |
 | **System** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, zakładki, narzędzia biurka, dodatki. **Jedyne miejsce, gdzie wolno być konkretnym.** |
 | **Paczka** | `Dokumenty\DungeonApp\Packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
-| **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone dodatki. |
+| **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
 
 ```
         ┌──────────────────────────────────────────────┐
@@ -240,19 +244,29 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 
 ### 8.2 Dodatki
 
-Dodatek to wariant zasad wbudowany w system i włączany przy zakładaniu kampanii — złoto
-w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu.
+Dodatek to nagłówek na stronie kampanii, pod którym stoją warianty zasad wbudowane w system — złoto
+w sakiewkach zamiast zapisanego na postaci, inny sposób liczenia udźwigu. **Jednostką włączania jest
+wariant, nie dodatek:** każdy wariant ma własny przełącznik, a nagłówek nie ma ani stanu, ani
+przełącznika „wszystko".
 
-1. **Dodatek może dokładać i zastępować** — pola, okna, zakładki, typy treści, formuły.
-2. **System dowiaduje się o włączonych dodatkach w jednym miejscu: przy składaniu kampanii.**
-   Później żaden kod nie pyta, czy dodatek jest włączony — karta, okno i formuła są już takie, jakie
-   mają być.
-3. **Dodatki zastępujące tę samą rzecz system oznacza jako wykluczające się**; zakładanie kampanii
-   nie pozwala włączyć obu. To walidacja ustawień kampanii, nie reguła gry.
-4. **Wyłączenie dodatku ukrywa jego dane, nigdy ich nie kasuje.**
-5. **Kod dodatku podlega pięciu zakazom** jak każdy inny.
+**Forma należy do ramy, treść do systemu.** System deklaruje dodatki, ich warianty, wykluczenia
+i parametry oraz dostarcza to, co wariant zmienia. Rama pokazuje przełączniki i parametry na stronie
+kampanii, zapisuje wybór w manifeście, pilnuje wykluczeń i przekazuje wybór systemowi.
 
-**Kryterium:** jeśli dodatek potrzebuje przełącznika w środku logiki, to zwykle znak, że ta logika
+1. **Wariant może dokładać i zastępować** — pola, okna, zakładki, typy treści, formuły.
+2. **System dowiaduje się o włączonych wariantach i ich parametrach w jednym miejscu: przy składaniu
+   kampanii.** Rama przekazuje je wyłącznie tam — żaden kontekst zakładki ani okna ich nie niesie, więc
+   pytanie „czy wariant jest włączony" jest niewykonalne, a nie tylko zabronione. Karta, okno
+   i formuła są już takie, jakie mają być.
+3. **Parametr jest wartością, nie wyborem zachowania.** Liczba wchodząca do rachunku — tak. Wybór
+   między dwoma zachowaniami to dwa wykluczające się warianty.
+4. **Warianty zastępujące tę samą rzecz system oznacza jako wykluczające się**; rama nie pozwala
+   włączyć obu. To walidacja ustawień kampanii, nie reguła gry.
+5. **Zmiana wariantu w otwartej kampanii składa ją od nowa** — rama zamyka ją i otwiera ponownie.
+6. **Wyłączenie wariantu ukrywa jego dane, nigdy ich nie kasuje.**
+7. **Kod wariantu podlega pięciu zakazom** jak każdy inny.
+
+**Kryterium:** jeśli wariant potrzebuje przełącznika w środku logiki, to zwykle znak, że ta logika
 wykonuje regułę, którą powinien wykonać Mistrz Gry.
 
 **Mechanizm powstaje z pierwszym prawdziwym dodatkiem**, nie wcześniej.
@@ -646,7 +660,7 @@ przez autora treści.
 | Co | Gdzie | Charakter |
 |---|---|---|
 | Paczki | `Dokumenty\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — widoczny i kopiowalny. |
-| Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Manifest — w nim system kampanii i włączone dodatki — oraz modele stanu zadeklarowane przez system. |
+| Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Manifest — w nim system kampanii oraz włączone warianty z parametrami — oraz modele stanu zadeklarowane przez system. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Stan aplikacji, nie dokument. |
 
 **Kampania jest dokumentem, układ okien jest ustawieniem programu.** Kampania leży w Dokumentach —
@@ -686,7 +700,7 @@ częścią kontraktu zakładki i okna.**
 
 | Kategoria | Kto ją wypełnia | Kiedy istnieje | Co zakładka dostaje od ramy |
 |---|---|---|---|
-| **Kampania** | rama (półka kampanii: wczytanie, tworzenie, usuwanie) + system | półka zawsze; reszta przy otwartej kampanii | stan kampanii i drogę zapisu |
+| **Kampania** | rama (pozycja kampanii) + system (zakładki kampanii) | od wyboru systemu; zakładki systemu zamknięte, dopóki żadna kampania nie jest otwarta | stan kampanii i drogę zapisu |
 | **System** | system | od wyboru systemu | wyłącznie treść systemu — **kampanii nie widzi wcale** |
 | **Aplikacja** | rama | zawsze | ustawienia i inne rzeczy ramy |
 
@@ -695,8 +709,18 @@ Nazwy kategorii są słownikiem dokumentów; etykiety na ekranie ustala projekt 
 * **Kategoria wyznacza nie tylko miejsce zakładki, ale to, co zakładka dostaje.** Zakładka kategorii
   System nie widzi otwartej kampanii. Co potrzebuje stanu kampanii, należy do kategorii Kampania.
 * **System wypełnia pasek wedle zasad ramy, nie rysuje go.** Deklaruje zakładki kategorii Kampania —
-  pod półką kampanii — i kategorii System; rama je wyświetla. Półka kampanii i kategoria Aplikacja
-  należą do ramy i istnieją przez cały czas działania aplikacji.
+  pod pozycją kampanii — i kategorii System; rama je wyświetla. Pozycja kampanii i kategoria
+  Aplikacja należą do ramy.
+* **Pozycja kampanii zmienia się razem ze stanem.** Bez otwartej kampanii jest półką — wczytanie,
+  tworzenie, usuwanie. Po otwarciu kampanii zamienia się w **stronę kampanii** i nosi jej nazwę: to,
+  co rama o kampanii wie, i przełączniki wariantów. Ani biblioteka, ani system nic na niej nie
+  stawiają. Zamknięcie kampanii przywraca półkę.
+* **Po otwarciu kampanii pokazana jest strona kampanii**, nie którakolwiek zakładka systemu — rama
+  nie wybiera za system jego „pierwszej" zakładki.
+* **Zakładki kampanii są na pasku od wyboru systemu; bez otwartej kampanii są zamknięte** —
+  wyszarzone, z kłódką zamiast ikony, nieklikalne. Blokada należy do ramy. System deklaruje
+  zakładki kampanii raz, przy wyborze systemu; ich zawartość powstaje dla konkretnej otwartej
+  kampanii.
 * **Zakładki są kompilowane i policzalne w czasie budowania** — deklaruje je skompilowany system,
   nigdy paczka. Literówka w pliku treści nie ma jak zepsuć paska.
 * **Ile zakładek wnosi system i jak je grupuje, jest decyzją jego projektanta**, nie architektury.
@@ -746,7 +770,7 @@ Okno hostuje **narzędzie biurka**, nie kartę.
 
 * **System okien mieszka w bibliotece.** Biurko jest jedną z zakładek, które system może postawić
   w kategorii Kampania — bez pisania od nowa okien, ich przesuwania i zamykania.
-* **Katalog okien biurka jest tym, co deklaruje system** wraz z włączonymi dodatkami, składanym przy
+* **Katalog okien biurka jest tym, co deklaruje system** wraz z włączonymi wariantami, składanym przy
   otwarciu kampanii. Nic w ramie ani w bibliotece nie nazywa żadnego systemu po imieniu.
 * **System wnosi okno jako gotową kontrolkę**, a biblioteka podaje mu wąskie okno na otwartą
   kampanię: instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy
@@ -815,9 +839,9 @@ awaria dowolnego degraduje do leniwego wczytywania i zostawia ostrzeżenie na pa
 otwartej kampanii.
 
 **Otwarcie kampanii.** Manifest → system kampanii (nieobecny w programie: kampania niedostępna) →
-włączone dodatki → złożenie zakładek i okien → zadeklarowane paczki → rozwiązanie referencji →
-wczytanie instancji (wartości wpisu scalone z łatką) → zakładki kampanii na pasku, biurko
-z zapisanego układu.
+włączone warianty → złożenie zakładek i okien → zadeklarowane paczki → rozwiązanie referencji →
+wczytanie instancji (wartości wpisu scalone z łatką) → zakładki kampanii otwarte, pozycja półki
+zamieniona w stronę kampanii i pokazana.
 
 **Powrót do wyboru systemu.** Zamknięcie kampanii → zwolnienie zakładek i okien systemu → ekran
 wyboru.
@@ -850,9 +874,8 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
 | rama nie referencuje biblioteki | test po referencjach | powstaje razem z biblioteką |
 | rama i biblioteka nie referencują systemu | test po referencjach | istnieje dla `Core` i `Desktop`; obejmie bibliotekę |
 | system nie referencuje innego systemu | test po referencjach | istnieje |
-| zakładka kategorii System nie widzi kampanii | kształt API ramy: nie dostaje czym | powstaje razem z paskiem bocznym |
-| o dodatkach pyta jedno miejsce | przegląd; kształt API — kandydat na strukturę | powstaje z pierwszym dodatkiem |
-| narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
+| zakładka kategorii System nie widzi kampanii | kształt API ramy: nie dostaje czym; test po refleksji na kontekście zakładki systemu | powstaje razem z paskiem bocznym |
+| o wariantach system dowiaduje się w jednym miejscu | kształt API ramy: konteksty zakładek i okien ich nie niosą | powstaje z pierwszym dodatkiem || narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
 | brak kaskad zmian stanu | `MaxEventsPerCommand` jako tripwire | istnieje, uzasadnienie do przepisania |
 
 * **Słownik zakazanych słów jest wyciągany z systemu, nie wpisany ręcznie** — dodajesz typ
@@ -889,6 +912,12 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    za zepsuty manifest, której systemu nie da się poznać. „Nigdzie" nie jest odpowiedzią.
    **Wyzwalacz:** pierwsze miejsce na ekranie dla odrzuconych paczek ([tasks.md](tasks.md),
    „Czekają na miejsce na ekranie").
+8. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym
+   dodatkiem, czy któryś wariant okaże się sensowny wyłącznie w pakiecie z innymi. **Wyzwalacz:**
+   pierwszy prawdziwy dodatek.
+9. **Wariant zmieniający zakładki kampanii.** Zamknięte zakładki pokazują listę systemu bez
+   wariantów; kampania z wariantem, który dokłada albo podmienia zakładkę, po otwarciu pokaże inną.
+   **Wyzwalacz:** pierwszy taki wariant.
 
 **Reguła: nic nie wchodzi bez konsumenta w tym samym wycinku** — ani pole, ani mechanizm.
 Rusztowanie, którego kod czytający istnieje i działa (dziś: `AllowsMultipleInstances`), nie jest

@@ -195,11 +195,14 @@ Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą
 **Subagent implementacyjny pracuje w osobnej kopii repozytorium** (worktree), a do głównej gałęzi
 trafia wynik zweryfikowany. Decyzja z 2026-09-22. Nie potknie się wtedy o niezatwierdzone zmiany
 autora w drzewie roboczym ani o blokadę katalogu wynikowego przez podgląd Ridera (sekcja
-*Środowisko*).
+*Środowisko*). **Kopia startuje jednak ze zdalnej gałęzi, nie z lokalnej** — brief każe ją najpierw
+zrównać z lokalnym `master`; szczegół i powód w tej samej sekcji.
 
 Co jeszcze się sprawdziło:
 
-* **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`. Bez niej subagent nie wie, czy spadek jest regresją.
+* **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`. Bez niej subagent
+  nie wie, czy spadek jest regresją. 2026-09-22 to niezgodna liczba testów zdradziła, że subagent
+  pracował na kodzie sprzed dwudziestu czterech commitów.
 * **Każ osobno wypisać rzeczy rozstrzygnięte samodzielnie.** Tak wyszły dwa realne błędy
   w briefach.
 * **Podawaj warunek zatrzymania jako informację, nie jako przeszkodę.** Gdy brief mówi „jeśli
@@ -282,6 +285,12 @@ Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się link
 **Mimo wszystko nie zabijaj tego procesu z własnej inicjatywy.** Po nazwie procesu nie widać
 różnicy między podglądaczem a działającą instancją `DungeonApp.App` — widać ją dopiero po linii
 poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".
+
+**Kopia robocza subagenta startuje z `origin/master`, nie z lokalnego `master`.** Autor nie wypycha
+na bieżąco, więc zdalna gałąź bywa daleko w tyle — 2026-09-22 o dwadzieścia cztery commity, i subagent
+zrobił na niej całe zadanie. **Brief implementacyjny zaczyna się od `git reset --hard master`
+w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. Katalog `.claude/`
+w drzewie głównym to kopie robocze subagentów — nie wchodzi do commitów.
 
 **Zadania redakcyjne na długich dokumentach architekt robi sam; subagentom zostaje kod.** Obserwacja
 z 2026-09-22, nie reguła o przyczynie: czterech subagentów z rzędu (Sonnet) na zadaniu

@@ -95,6 +95,26 @@ odrzucony już dla systemów — piętro niżej i z kombinacjami dodatków mnoż
 każde inne pytanie o dodatek jest błędem widocznym w przeglądzie. Pełny argument — pozycja
 „Dodatek jako przełącznik sprawdzany w logice".
 
+**Forma w ramie, treść w systemie** — z propozycji autora, 2026-09-22. Rama i tak jest właścicielem
+manifestu kampanii i strony kampanii, a wykluczanie się wariantów jest walidacją ustawień kampanii,
+nie regułą gry — więc to, jak się coś włącza, należy do tej samej części, co to, gdzie się to
+zapisuje. To ten sam wzór co przy zakładkach: system deklaruje, rama pokazuje. Zysk uboczny: skoro
+wybór przekazuje rama, robi to w jednym miejscu i nigdzie więcej, a „jedno miejsce" przestaje być
+wyłącznie sprawą przeglądu.
+
+**Wariant jako jednostka, dodatek jako nagłówek** — autor, ten sam dzień. Zasady domowe zmieniają
+zwykle jedną mechanikę naraz — sakiewki zamiast złota na postaci; tryb barbarzyńskich klanów
+w Cywilizacji VI też podmienia jedną mechanikę. Dodatek przy stole to podręcznik opcjonalnych zasad,
+z których każda grupa bierze inne. Pakiet wariantów włączanych wyłącznie razem jest rzadkością, więc
+nie jest jednostką. **Cena:** więcej kombinacji i większa pokusa zaprogramowania wariantu jako
+„jeżeli" w logice — dlatego przekazanie w jednym miejscu jest twarde.
+
+**Parametr jest wartością**, bo parametr wybierający zachowanie byłby pozycją „Dodatek jako
+przełącznik sprawdzany w logice" pod inną nazwą. **Zmiana wariantu składa kampanię od nowa**, bo to
+cena za jedno miejsce: system dowiaduje się o wariantach tylko przy składaniu.
+
+Do 2026-09-22 jednostką włączania był cały dodatek, wybierany przy zakładaniu kampanii.
+
 **Mechanizm powstaje z pierwszym prawdziwym dodatkiem**, nie wcześniej — reguła „nic nie wchodzi bez
 konsumenta" z [architecture.md](architecture.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
 
@@ -310,6 +330,24 @@ albo pozycję szyny. Dlaczego uchylone — pozycja „Kontekstowy sidebar".
 
 Zakładka kategorii System nie widzi otwartej kampanii, bo tylko wtedy działa sensownie bez niej.
 Rozróżnienie jest sprawdzalne z samego diffu.
+
+**Pozycja kampanii zamiast stałej półki** — z propozycji autora, 2026-09-22. Półka dostępna także
+przy otwartej kampanii stawiała pytanie, co z operacjami na kampanii właśnie otwartej — usunięciem
+jej, otwarciem drugiej obok — i wymagałaby wyjątków. Pozycja, która przy otwartej kampanii staje się
+jej stroną, usuwa ten przypadek, zamiast go blokować, i daje ramie miejsce na to, co o kampanii wie —
+dotąd go nie miała. Rozważane i porzucone tego samego dnia: półka dostępna zawsze, z zakazem usunięcia
+otwartej kampanii; półka niedostępna przy otwartej kampanii, jak w rusztowaniu sprzed przebudowy.
+
+**Lądowanie na stronie kampanii** — autor. Klikasz „otwórz" i pozycja, na której stoisz, zamienia się
+w kampanię: nic nie skacze, a rama nie potrzebuje reguły wybierającej „pierwszą" zakładkę systemu.
+Cena: jedno kliknięcie w biurko na początku sesji.
+
+**Zakładki kampanii zamknięte, nie schowane** — autor. Zakładki kampanii zależą od systemu, nie od
+kampanii, więc między kampaniami się nie zmieniają; chowanie ich nic nie mówi i tylko sprawia, że
+pasek skacze. Blokada należy do ramy, bo to rama wie, czy kampania jest otwarta.
+
+Wcześniej tego samego dnia obowiązywało: półka zawsze, zakładki kampanii dopiero przy otwartej
+kampanii.
 
 ### Okno czy zakładka — kryterium
 
