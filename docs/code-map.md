@@ -18,10 +18,11 @@ niż jakiekolwiek ich streszczenie tutaj.
 > jeśli po drugiej, jego miejsce jest w komentarzu przy kodzie.
 
 > **Aktualność: 2026-09-22.** Dogoniony do etapu 1 (ekran wyboru systemu, pasek z trzema kategoriami,
-> biurko i rejestr jako zakładki systemu, strona kampanii, rozgrzewka przy starcie) i etapu 2 (biurko,
-> system okien, kontrolki kart i widok listy z kartą wyniesione do `DungeonApp.Library.Desktop`). Co
-> dalej — [tasks.md](tasks.md), sekcja „Następne" (etap 3, zapisujące modele stanu systemu, jeszcze
-> nie w kodzie).
+> biurko i rejestr jako zakładki systemu, strona kampanii, rozgrzewka przy starcie), etapu 2 (biurko,
+> system okien, kontrolki kart i widok listy z kartą wyniesione do `DungeonApp.Library.Desktop`)
+> i etapu 3 (niezmienne modele stanu, jedno wejście zmiany, system w kampanii, półka z kampaniami
+> niedostępnymi) — w części oceniającej i w opisie modelu i persystencji; tabele plików niżej
+> są sprzed etapu 3 i czekają na odchudzenie mapy. Co dalej — [tasks.md](tasks.md).
 
 ---
 
@@ -36,8 +37,8 @@ niż jakiekolwiek ich streszczenie tutaj.
    życia zakładek do `Shell/ActiveSystemSession.cs`.
 4. `Shell/ActiveSystemSession.cs` — jedyna droga, którą zakładka systemu (i kampanii) powstaje,
    zostaje w pamięci i jest zwalniana. Bez Avalonii, testowalna bez okna.
-5. `DungeonApp.Core`: `Campaign`, `CampaignInstances`, `JsonCampaignRepository` — stan, jego zmiana
-   i trwały zapis.
+5. `DungeonApp.Core`: `Campaign`, `State/*`, `JsonCampaignRepository`; `Desktop/Shell/CampaignSession.cs`
+   — stan, jedyne wejście jego zmiany i trwały zapis.
 
 Dalej są **dwie kompletne ścieżki pionowe**, każda od gestu do dysku. Warto przejść je w tej
 kolejności, bo każda kolejna zakłada poprzednią:
@@ -45,7 +46,7 @@ kolejności, bo każda kolejna zakłada poprzednią:
 | # | Ścieżka | Od czego do czego | Po co ją czytać |
 |---|---|---|---|
 | 1 | treść | `Core/Content/*` → `Desktop/Content/*` → `Content.Dnd5e/*` | niesie dziś największą część architektury |
-| 2 | instancje | `CampaignInstances` → `InstanceResolver` → `Library.Desktop/Content/CampaignToolContext.cs` → `CampaignInstancesToolViewModel` | jedyny dziś pełny przekrój od gestu do dysku; odpowiada zarazem na pytanie, co z tego widzi MG przy stole |
+| 2 | instancje | `CampaignInstanceChanges` → `CampaignSession.ChangeAsync` → `InstanceResolver` → `Library.Desktop/Content/CampaignToolContext.cs` → `CampaignInstancesToolViewModel` | jedyny dziś pełny przekrój od gestu do dysku; odpowiada zarazem na pytanie, co z tego widzi MG przy stole |
 
 Testy w `tests/` są zarazem wykonywalną specyfikacją opisanych tu zachowań.
 
@@ -55,7 +56,8 @@ Testy w `tests/` są zarazem wykonywalną specyfikacją opisanych tu zachowań.
 
 Pięć projektów produkcyjnych i sześć testowych; `DungeonApp.sln` nie niesie nic poza nimi.
 `tools/MockupRenderer` i `design/mockups/` nie istnieją. **`docs/images/` jest katalogiem roboczym
-autora na mockupy** — leżą tam luzem, bez odsyłaczy z dokumentów, i tak ma zostać.
+autora na mockupy** — leżą tam luzem; od 2026-09-22 architektura odsyła do mockupu biurka tam, gdzie
+opisuje kierunek, który ten mockup pokazuje.
 
 ```
 DungeonApp.Core              — nie referencuje niczego z repozytorium
@@ -182,11 +184,12 @@ działania.
 
 ### Kampania, zdarzenia
 
-`Campaign` trzyma `Id`, `Name`, `CreatedAt` (ze wstrzykniętego `TimeProvider`), `Instances`
-i `Events` (jedna magistrala na kampanię, z której korzysta `CampaignInstances`).
+`Campaign` trzyma `Id`, `Name`, `CreatedAt` (ze wstrzykniętego `TimeProvider`), `SystemId`
+i niezmienną migawkę stanu (`Snapshot`). Magistrali zdarzeń nie ma.
 
-**Cykl zmiany stanu, jedyny w aplikacji:** gest → `CampaignSession.ExecuteAsync` → mutacja
-w agregacie → zapis przez repozytorium → zdarzenie `Committed` → widoki odczytują stan na nowo.
+**Cykl zmiany stanu, jedyny w aplikacji:** gest → `CampaignChange` (nowe wersje konkretnych rzeczy)
+→ `CampaignSession.ChangeAsync` → nowa migawka → zapis przez repozytorium → `Changed` z migawką →
+widoki odczytują stan na nowo. Odmowy strukturalne: w trakcie innej zmiany i w trakcie powiadomień.
 Odmowa reguły i błąd zapisu na dysk są rozróżnione: pierwsza nic nie zmienia, druga zostawia zmianę
 w pamięci i ostrzega MG, że nie trafiła na dysk.
 
@@ -228,10 +231,11 @@ konwencjonalna strona zakazu introspekcji.
 własną MG i rzadką łatkę. Instancja jest **łączem do wpisu, nie kopią jego wartości** — dlatego
 poprawka wydana w paczce dociera do kampanii, które już jej używają.
 
-`CampaignInstances` trzyma stan w prywatnym słowniku, bez settera i indeksera. Ma cztery operacje
-— `Add`, `Remove`, `Relabel`, `ReplacePatch` — z których każda publikuje dokładnie jedno
-zdarzenie, po zmianie stanu. **Odtwarzanie z dysku idzie osobnymi drzwiami (`Hydrate`) i nie ogłasza niczego** — wczytanie
-zapisu nie jest zmianą, którą ktoś wykonał.
+**Instancje są pierwszym modelem stanu** (`entries.instances`) i mieszkają w wydzielonej przestrzeni
+nazw `Core/Content/Instances` — do etapu 4, który przeniesie je do biblioteki wpisów. Kod zapisu
+i wejścia zmiany ich nie zna; pilnuje tego test granicy. `CampaignInstanceChanges` to czyste
+pomocniki budujące zmianę (`Add`, `Remove`, `Relabel`, `ReplacePatch`) — bez stanu i bez zdarzeń.
+Odczyt z dysku jest generyczną deserializacją ramy i niczego nie ogłasza.
 
 **Arytmetyka nakładki żyje w `ContentValues`** — nałożenie łatki, wyliczenie różnicy, zapieczętowanie
 rekordu z powrotem w kopertę. Żadna z tych operacji nie zapisuje nazwy pola, nie pyta, co ta nazwa
@@ -246,9 +250,13 @@ Ma cztery powody nierozwiązania, świadomie inne niż powody dla wpisu.
 
 ## 4. Persystencja
 
-**Kampania** to własny katalog: manifest (`campaign.json`) i `instances/<instanceId>.json`.
-Manifest niesie wersję formatu, tożsamość, datę utworzenia, licznik generacji i listę instancji —
-**i ani jednego pola trzymanego otworem dla przyszłego**.
+**Kampania** to własny katalog: manifest (`campaign.json`, format 2) i `state/<idModelu>.json` —
+jeden plik na zadeklarowany model, zapisywany w całości przy każdym zatwierdzeniu. Manifest niesie
+wersję formatu, tożsamość, datę utworzenia, system kampanii, licznik generacji i listę modeli —
+**i ani jednego pola trzymanego otworem dla przyszłego**. Plik modelu, którego nikt nie deklaruje,
+zostaje nietknięty. Stary format, nowszy format, brak systemu, nieobecny system i niezgodna wersja
+modelu czynią kampanię niedostępną; półka pokazuje ją z powodem, werdykt daje ta sama ścieżka odczytu
+co otwarcie.
 
 Zapis jest transakcyjny na poziomie plikowym i w całości idzie przez `AtomicWrite`: wszystko
 najpierw obok, potem seria atomowych podmian, **manifest ostatni** — to on oznacza generację jako
@@ -260,7 +268,8 @@ byłoby gorsze niż bezwładny katalog.
 
 Dwie własności warte znajomości przy planowaniu:
 
-* **Instancja nie ma trybu „nieodczytywalna"** — każdy defekt w jej pliku jest błędem magazynu.
+* **Instancja nie ma trybu „nieodczytywalna"** — każdy defekt w pliku modelu jest błędem magazynu
+  i czyni całą kampanię niedostępną.
 * **Migracji nie ma.** Zbyt nowa wersja formatu manifestu jest odmową odczytu, a niezgodna wersja
   typu treści oznacza wpis jako nierozwiązany. Nic i nigdzie się nie migruje.
 
@@ -384,7 +393,7 @@ nigdy ich nie wybiera za niego.
 
 1. **Deklaracja** — `SystemTabDeclaration` (kategoria System, fabryka synchroniczna, dostaje
    `SystemTabContext`: tylko rejestr) albo `CampaignTabDeclaration` (kategoria Kampania, fabryka
-   asynchroniczna, dostaje `CampaignTabContext`: sesja, rejestr, instancje, zdarzenia, zapis) — id,
+   asynchroniczna, dostaje `CampaignTabContext`: rejestr, migawka stanu tylko do odczytu, wejście zmiany, powiadomienia) — id,
    tytuł, klucz ikony **z istniejącego motywu**, fabryka.
 2. **Fabryka oddaje `ITabContent`** — gotowy `Control` plus `IDisposable`. Zawartość bez własnego
    sprzątania idzie przez `DelegateTabContent`; zawartość trzymająca subskrypcje implementuje
@@ -414,9 +423,8 @@ fabryki zakładki „Biurko" (patrz „Nowa zakładka systemu" wyżej).
 5. **Żadnego wpisu w szablonach biurka** — system zwraca kontrolkę, więc biblioteka nie ma czego
    rozwiązywać.
 
-Narzędzie potrzebujące stanu niezwiązanego z żadnym wpisem nie ma dziś gdzie go trzymać. Kształt,
-w jakim taki magazyn wróci, jest zapisany w [decisions.md](decisions.md), pozycja *Utrzymanie
-warstwy bloków danych po odejściu jej jedynego konsumenta*.
+Narzędzie potrzebujące stanu niezwiązanego z żadnym wpisem deklaruje własny model stanu
+(`IGameSystem.StateModels`) — mechanizm istnieje od etapu 3, drugiego modelu jeszcze nie ma.
 
 **Uwaga o zakresie:** katalog paneli buduje się per sesja, ale jego zawartość **nie zależy od
 kampanii** — każde narzędzie każdego wkompilowanego systemu trafia na biurko każdej kampanii. Nie ma

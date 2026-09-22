@@ -557,8 +557,8 @@ Niepotrzebne jest **wykonywanie reguł**.
 > odczytać.** Licznik jest wyświetlany i przesuwany przez MG; nie jest wejściem żadnej formuły ani
 > warunkiem żadnego wygaśnięcia.
 
-> Wpis do kroniki jest **częścią operacji**, nie reakcją na nią. `CampaignSession.ExecuteAsync`
-> zapisuje stan i wpis kroniki w jednym zatwierdzeniu.
+> Wpis do kroniki jest **częścią operacji**, nie reakcją na nią. Jedna zmiana oddana wejściu zmiany
+> niesie stan i wpis kroniki; rama zapisuje je w jednym zatwierdzeniu.
 
 **Zakaz piąty egzekwuje mechanicznie wejście zmiany**: odmawia wywołania w trakcie rozsyłania
 powiadomień — sekcja *Gdzie mieszka stan*. Limitu liczby zdarzeń ani rzeczy w jednej zmianie nie ma.
@@ -854,13 +854,15 @@ typ nie został rozgrzany.
      │
      ▼  widok tworzy nowy rekord:  monster with { Hp = 3 }
      │
-     ▼  CampaignSession.ExecuteAsync — jedyne wejście do zmiany stanu
+     ▼  różnica wobec wpisu → nowa wersja instancji z łatką  { "hp": 3 }
      │
-     ▼  magazyn różnicuje rekord wobec wpisu → na dysk leci  { "hp": 3 }
+     ▼  CampaignSession.ChangeAsync — jedyne wejście do zmiany stanu;
+     │  przyjmuje nowe wersje konkretnych rzeczy, odmawia w trakcie innej
+     │  zmiany i w trakcie powiadomień
      │
      ▼  zapis: plik tymczasowy → atomowe przeniesienie → licznik generacji
      │
-     ▼  zdarzenie „zatwierdzone"
+     ▼  powiadomienie z nową migawką — tylko odczyt
      │
      ▼  widoki odczytują stan na nowo
 ```
@@ -868,7 +870,8 @@ typ nie został rozgrzany.
 * **Jest dokładnie jedno wejście** do zmiany otwartej kampanii. Nie ma drugiej drogi.
 * **Jedna operacja może mieć kilka skutków** — sekcja *Granica automatyzacji* — i wszystkie idą
   jednym zatwierdzeniem.
-* **Zdarzenia powiadamiają, nigdy nie zapisują.**
+* **Powiadomienia informują, nigdy nie zapisują** — wejście zmiany odmawia w trakcie ich rozsyłania.
+  Każdy subskrybent dostaje powiadomienie, nawet gdy inny rzuci wyjątek.
 
 ### 21.3 Pozostałe
 
