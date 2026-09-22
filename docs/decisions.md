@@ -248,9 +248,11 @@ Obie granice dotyczą funkcji, które są w planie, i obie padłyby niezauważen
 świata trzymają liczby wyglądające jak czas. Dziennik jako subskrybent zdarzeń byłby dosłowną
 sprzecznością z zakazem piątym.
 
-`MaxEventsPerCommand` jest dziś opisany jako zabezpieczenie przed pętlą. Skoro nic nie ma prawa pisać
-w reakcji na zdarzenie, kaskada jest niemożliwa — więc ten limit jest jedynym mechanicznym
-egzekwowaniem zakazu piątego, jakie istnieje.
+Do 2026-09-22 jedynym mechanicznym egzekwowaniem zakazu piątego był `MaxEventsPerCommand` — limit
+zdarzeń na jedno polecenie, opisany w kodzie jako zabezpieczenie przed pętlą. Etap 3 przebudowy
+zastąpił go odmową wejścia zmiany w trakcie rozsyłania powiadomień: kaskada stała się niewykonalna,
+a nie tylko policzona. Limit usunięto, zamiast przenieść go na liczbę rzeczy w jednej zmianie — taki
+limit nie egzekwuje żadnego z pięciu zakazów, a mógłby zablokować uprawnioną dużą operację MG.
 
 ### Wyliczenie jest propozycją, akcja jest zapisem
 

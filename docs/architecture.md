@@ -560,8 +560,8 @@ Niepotrzebne jest **wykonywanie reguł**.
 > Wpis do kroniki jest **częścią operacji**, nie reakcją na nią. `CampaignSession.ExecuteAsync`
 > zapisuje stan i wpis kroniki w jednym zatwierdzeniu.
 
-**`MaxEventsPerCommand` jest jedynym mechanicznym egzekwowaniem zakazu piątego**, jakie istnieje.
-Zostaje; jego uzasadnienie w kodzie jest do przepisania.
+**Zakaz piąty egzekwuje mechanicznie wejście zmiany**: odmawia wywołania w trakcie rozsyłania
+powiadomień — sekcja *Gdzie mieszka stan*. Limitu liczby zdarzeń ani rzeczy w jednej zmianie nie ma.
 
 ### 14.2 Efekt jest wkładem, nie mechanizmem
 
