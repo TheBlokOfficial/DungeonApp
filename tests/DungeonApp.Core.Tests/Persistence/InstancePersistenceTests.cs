@@ -87,6 +87,55 @@ public sealed class InstancePersistenceTests : IDisposable
         Assert.Equal(["elite", "boss"], restored.Tags!);
     }
 
+    /// <summary>
+    /// The state file is meant to be human-readable, not an object graph of wrapper types: an id is
+    /// a plain string, and an entry address is a pair of plain strings, never <c>{"value":"…"}</c>.
+    /// <see cref="ContentIdJsonConverter"/> and <see cref="InstanceIdJsonConverter"/> are what make
+    /// that true without a hand-written DTO standing in for either value type.
+    /// </summary>
+    [Fact]
+    public async Task Writes_ids_and_the_entry_address_as_flat_strings_and_round_trips()
+    {
+        var campaign = WithInstance(NewCampaign(), Goblin, "Krzywy", out var created);
+
+        await _repository.SaveAsync(campaign, Declarations);
+
+        var document = JsonDocument.Parse(File.ReadAllText(ModelPath(campaign)));
+        var record = Assert.Single(document.RootElement.GetProperty("records").EnumerateArray());
+
+        Assert.Equal(JsonValueKind.String, record.GetProperty("id").ValueKind);
+        Assert.Equal(created.Id.ToString(), record.GetProperty("id").GetString());
+
+        var source = record.GetProperty("source");
+        Assert.Equal(JsonValueKind.String, source.GetProperty("pack").ValueKind);
+        Assert.Equal("bestiary", source.GetProperty("pack").GetString());
+        Assert.Equal(JsonValueKind.String, source.GetProperty("entry").ValueKind);
+        Assert.Equal("goblin", source.GetProperty("entry").GetString());
+
+        var reopened = await _repository.GetAsync(campaign.Id, Declarations);
+        var found = reopened!.Snapshot.Get(InstancesModel.Declaration)[created.Id.ToString()];
+
+        Assert.Equal(created.Id, found.Id);
+        Assert.Equal(Goblin, found.Source);
+        Assert.Equal("Krzywy", found.Label);
+    }
+
+    /// <summary>An instance id that fails to parse as a GUID is exactly as invalid as a pack id whose charset is wrong - the same named failure, not a raw exception.</summary>
+    [Fact]
+    public async Task A_record_with_an_unparsable_instance_id_throws_Invalid()
+    {
+        var campaign = WithInstance(NewCampaign(), Goblin, null, out var created);
+        await _repository.SaveAsync(campaign, Declarations);
+
+        var path = ModelPath(campaign);
+        File.WriteAllText(path, File.ReadAllText(path).Replace($"\"{created.Id}\"", "\"not-a-guid\""));
+
+        var exception = await Assert.ThrowsAsync<CampaignStoreException>(
+            () => _repository.GetAsync(campaign.Id, Declarations));
+
+        Assert.Equal(CampaignStoreFailure.Invalid, exception.Failure);
+    }
+
     [Fact]
     public async Task An_instance_without_a_label_comes_back_null()
     {
