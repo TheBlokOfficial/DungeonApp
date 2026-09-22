@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using DungeonApp.Core;
 using DungeonApp.Core.Campaigns;
@@ -91,13 +92,37 @@ public sealed class CampaignSession(
         }
 
         _notifying = true;
+        List<Exception>? failures = null;
+
         try
         {
-            Changed?.Invoke(Campaign.Snapshot);
+            // Each subscriber is invoked on its own, never through the multicast delegate's own
+            // Invoke: one throwing must not stop the rest from seeing the snapshot, and the change is
+            // already committed regardless of what a view does with the notification.
+            foreach (var subscriber in Changed?.GetInvocationList() ?? [])
+            {
+                try
+                {
+                    ((Action<CampaignStateSnapshot>)subscriber)(Campaign.Snapshot);
+                }
+                catch (Exception ex)
+                {
+                    (failures ??= []).Add(ex);
+                }
+            }
         }
         finally
         {
             _notifying = false;
+        }
+
+        if (failures is [var only])
+        {
+            ExceptionDispatchInfo.Capture(only).Throw();
+        }
+        else if (failures is { Count: > 1 })
+        {
+            throw new AggregateException(failures);
         }
 
         return result;
