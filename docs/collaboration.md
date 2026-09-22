@@ -110,8 +110,15 @@ dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-
 kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
 zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
-**Etap, który zmienia start albo nawigację, przed scaleniem uruchamia autor.** Testy nie otwierają
-okna. 2026-09-22 etap 1 przeszedł build, 247 testów i przegląd styków, a mimo to aplikacja padała po
+**Autor uruchamia wyłącznie `master`.** Decyzja autora z 2026-09-22: pozostałe gałęzie są robocze
+i nie podaje mu się poleceń uruchamiających aplikację z kopii subagenta. Wynik zweryfikowany przez
+architekta trafia więc do `master` **przed** sprawdzeniem przez autora, a to, co w działającej
+aplikacji okaże się złe, naprawia następny commit albo cofnięcie — zgodnie z regułą „koniec kawałka
+pracy = commit". Tego samego dnia autor uruchomił z przyzwyczajenia `master` zamiast podanej mu
+kopii subagenta i sprawdzał wersję bez połowy etapu.
+
+**Etap, który zmienia start albo nawigację, zanim uzna się go za zamknięty, uruchamia autor** — na
+`master`, po scaleniu. Testy nie otwierają okna. 2026-09-22 etap 1 przeszedł build, 247 testów i przegląd styków, a mimo to aplikacja padała po
 wyborze systemu (widok budowany poza wątkiem okna), na pasku brakowało pozycji kampanii, a treść
 skakała przy wejściu. Wszystko to widać w pierwszej minucie działania programu i w żadnym teście.
 

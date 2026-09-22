@@ -112,7 +112,7 @@ etapie aplikacja działa, a testy przechodzą.
   repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
   ta praca jest już tylko skracaniem.
 * **Etap 3 — w toku od 2026-09-22.** Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
-  stanu i zapis, potem system w kampanii i półka), przed scaleniem uruchamia autor. Docelowy kształt —
+  stanu i zapis, potem system w kampanii i półka), autor sprawdza na `master` po scaleniu. Docelowy kształt —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
   - **Stan dziś:** zakładka i narzędzie systemu dostają żywy magazyn instancji z metodami
