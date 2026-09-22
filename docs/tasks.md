@@ -89,7 +89,32 @@ etapie aplikacja działa, a testy przechodzą.
   i włącza je sama biblioteka; tokeny i ikony zostają w ramie. Kontrakty zakładek i `IGameSystem`
   zostają w ramie. Rozstrzygnięcia architekta, do weta.
 * **Etap 3 — kształt drogi zapisu najpierw do autora.** Na tej drodze stoją czwarty i piąty zakaz,
-  więc przed briefem asystent przynosi autorowi jej kształt opisany prostym językiem.
+  więc przed briefem asystent przynosi autorowi jej kształt opisany prostym językiem. **Propozycja
+  z 2026-09-22 — czeka na autora:**
+  - **Dziś jedyność drogi zapisu jest konwencją, nie kształtem.** Zakładka i narzędzie systemu
+    dostają żywy magazyn instancji z metodami zmieniającymi — mogą zmienić stan z pominięciem drzwi,
+    bez zapisu na dysk i bez powiadomienia. Powiadomienia wychodzą w trakcie operacji, przed zapisem.
+    Drzwi nie mają blokady przed wejściem z wnętrza innej operacji ani z obsługi powiadomienia;
+    limit kaskady łapie tylko pętlę powiadomień w obrębie jednej operacji.
+  - **Czytanie i zmiana rozdzielone typem.** Poza operacją system widzi stan wyłącznie do odczytu.
+    Uchwyt zmieniający istnieje tylko w środku operacji podanej drzwiom i przestaje działać po jej
+    końcu — zapisu z pominięciem drzwi nie da się napisać.
+  - **Piąty zakaz — kształtem.** Powiadomienie wychodzi po zapisie i niesie wyłącznie odczyt; drzwi
+    odmawiają wejścia w trakcie operacji i w trakcie rozsyłania powiadomień. Kaskada przestaje być
+    zakazana — staje się niewykonalna.
+  - **Czwarty zakaz — kształtem.** Operacja deklaruje z góry, co zmieni: listę wskazanych rzeczy
+    (jedna albo kilka, jak przy handlu) plus tworzenie nowych. Uchwyt pozwala zmienić tylko to, co
+    na liście. Przejrzeć wszystko do odczytu wolno; zmienić „wszystkich" albo „najbliższego" się nie
+    da, bo nie ma ich na liście, którą widział MG.
+  - **Modele stanu.** System albo biblioteka deklaruje model: identyfikator, wersja, rekord. Rama
+    zapisuje każdy model do własnego miejsca w katalogu kampanii, wszystkie w jednym zatwierdzeniu
+    z licznikiem generacji jak dziś. Niezgodna wersja modelu oznacza kampanię jako niedostępną, nie
+    migruje. Instancje są pierwszym modelem.
+  - **Kampania pamięta system** — pole w manifeście. Kampania bez niego albo z systemem, którego nie
+    ma w programie: widoczna na półce jako niedostępna.
+  - **Pytanie do autora:** czy deklarowanie celów z góry (czwarty zakaz kształtem) nie jest za
+    sztywne — rekomendacja: tak je zrobić. Rozstrzygnięte przez architekta, do weta: zapis nieudany
+    na dysku zostawia zmianę w pamięci z ostrzeżeniem, jak dziś.
 * **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają
   się niedostępne — widoczne, nie znikają ([architecture.md](architecture.md), *Gdzie mieszka
   stan*) — i zakłada się je od nowa. Żadnego kodu przypisującego im system.
