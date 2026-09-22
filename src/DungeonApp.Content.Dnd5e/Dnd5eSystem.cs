@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
-using DungeonApp.Desktop.Controls.Workspace;
-using DungeonApp.Desktop.Features.CampaignWorkspace;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
-using DungeonApp.Desktop.Features.Registry;
+using DungeonApp.Library.Desktop.Content;
+using DungeonApp.Library.Desktop.Controls.Workspace;
+using DungeonApp.Library.Desktop.Features.CampaignWorkspace;
+using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Layout;
+using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Panels;
+using DungeonApp.Library.Desktop.Features.Registry;
 
 namespace DungeonApp.Content.Dnd5e;
 

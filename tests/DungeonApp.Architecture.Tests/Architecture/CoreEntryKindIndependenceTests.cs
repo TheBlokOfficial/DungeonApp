@@ -7,9 +7,10 @@ namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
 /// The twin of <see cref="CoreIndependenceTests"/>, guarding the second boundary this project
-/// rests on: neither the engine nor the shell knows what kinds of things exist. There is no Monster
-/// and no Spell, no enum of entry kind, and no branch keyed by one. An entry names a content type,
-/// a content type names controls, and that path is identical for every entry there will ever be.
+/// rests on: neither the engine, the shell, nor the shared UI library knows what kinds of things
+/// exist. There is no Monster and no Spell, no enum of entry kind, and no branch keyed by one. An
+/// entry names a content type, a content type names controls, and that path is identical for every
+/// entry there will ever be.
 /// <para>
 /// This is a vocabulary scan, and it is worth being exact about what that buys. It cannot see a
 /// comparison against an id read from a file; nothing mechanical can. What it does catch is the
@@ -97,12 +98,9 @@ public sealed class CoreEntryKindIndependenceTests
         Assert.Contains(
             files,
             file => file.StartsWith(RepositoryRoot.DesktopSources, StringComparison.OrdinalIgnoreCase));
-        // Not yet asserted for DungeonApp.Library.Desktop here: at this point in the rebuild
-        // (docs/tasks.md, "etap 2", commit 1) the project exists but is still empty, so the scan
-        // legitimately finds nothing under it and an Assert.Contains would fail for the right code
-        // and the wrong reason. ScannedSourceFiles() below already walks the directory - the
-        // assertion that it actually finds something there is added back once commit 2 moves real
-        // sources into it.
+        Assert.Contains(
+            files,
+            file => file.StartsWith(RepositoryRoot.LibraryDesktopSources, StringComparison.OrdinalIgnoreCase));
         Assert.Contains(
             files,
             file => file.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase));

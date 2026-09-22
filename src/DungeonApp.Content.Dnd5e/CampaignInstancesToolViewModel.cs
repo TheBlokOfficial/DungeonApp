@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
-using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.ViewModels;
+using DungeonApp.Library.Desktop.Content;
 
 namespace DungeonApp.Content.Dnd5e;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
+using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Layout;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 

@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Library.Desktop.Content;
+using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Layout;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 
