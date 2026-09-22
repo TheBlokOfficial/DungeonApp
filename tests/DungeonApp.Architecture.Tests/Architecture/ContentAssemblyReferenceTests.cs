@@ -25,6 +25,17 @@ public sealed class ContentAssemblyReferenceTests
         AssertReferencesNoContentAssembly(Assembly.Load("DungeonApp.Desktop"));
     }
 
+    /// <summary>
+    /// The library is common UI code, not a system (docs/architecture.md, "Rama, biblioteka,
+    /// system": the library "zna Entry, nie zna Monster") - it must be exactly as ignorant of any
+    /// content assembly as the engine and the shell are.
+    /// </summary>
+    [Fact]
+    public void Library_Desktop_does_not_reference_any_content_assembly()
+    {
+        AssertReferencesNoContentAssembly(Assembly.Load("DungeonApp.Library.Desktop"));
+    }
+
     private static void AssertReferencesNoContentAssembly(Assembly assembly)
     {
         var contentReferences = assembly

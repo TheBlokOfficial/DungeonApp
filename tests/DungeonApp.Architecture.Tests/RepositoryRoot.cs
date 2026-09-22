@@ -34,6 +34,12 @@ internal static class RepositoryRoot
     public static string DesktopSources { get; } =
         System.IO.Path.Combine(Path, "src", "DungeonApp.Desktop");
 
+    /// <summary>The shared UI library's own sources - the desk, its windows, and the card controls
+    /// systems compose. Scanned for the same vocabulary the engine and the shell are (see
+    /// docs/architecture.md, "Rama, biblioteka, system": the library "zna Entry, nie zna Monster").</summary>
+    public static string LibraryDesktopSources { get; } =
+        System.IO.Path.Combine(Path, "src", "DungeonApp.Library.Desktop");
+
     private static string Locate()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

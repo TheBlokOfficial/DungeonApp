@@ -97,6 +97,12 @@ public sealed class CoreEntryKindIndependenceTests
         Assert.Contains(
             files,
             file => file.StartsWith(RepositoryRoot.DesktopSources, StringComparison.OrdinalIgnoreCase));
+        // Not yet asserted for DungeonApp.Library.Desktop here: at this point in the rebuild
+        // (docs/tasks.md, "etap 2", commit 1) the project exists but is still empty, so the scan
+        // legitimately finds nothing under it and an Assert.Contains would fail for the right code
+        // and the wrong reason. ScannedSourceFiles() below already walks the directory - the
+        // assertion that it actually finds something there is added back once commit 2 moves real
+        // sources into it.
         Assert.Contains(
             files,
             file => file.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase));
@@ -106,7 +112,8 @@ public sealed class CoreEntryKindIndependenceTests
     private static IReadOnlyList<string> ScannedSourceFiles() =>
     [
         .. SourceFiles(RepositoryRoot.CoreSources),
-        .. SourceFiles(RepositoryRoot.DesktopSources)
+        .. SourceFiles(RepositoryRoot.DesktopSources),
+        .. SourceFiles(RepositoryRoot.LibraryDesktopSources)
     ];
 
     private static IEnumerable<string> SourceFiles(string root) =>
