@@ -762,14 +762,14 @@ zaklęcia — zaprojektowanych przez system. Biblioteka daje do nich wspólny wi
 filtry: **po kategorii** (właściwość typu treści), **po paczce** i **po typie treści**. Źródłem
 wszystkich jest rejestr.
 
-* **Szkielet zakładki treści należy do biblioteki, system go wypełnia.** Biblioteka jest właścicielem
+* **Szkielet zakładki treści należy do biblioteki wpisów, system go wypełnia.** Biblioteka wpisów — jedna z bibliotek — jest właścicielem
   wpisów i całego ekranu wokół nich: lista, wyszukiwanie po nazwie, sortowanie, filtry, tagi, odznaka
   wiersza, widok szczegółu po wybraniu wpisu. System tworzy z tego szkieletu zakładkę i stawia ją na
-  pasku — sama biblioteka żadnej nie wnosi. Dla każdego swojego typu treści system podaje, **co**
+  pasku — sama biblioteka wpisów żadnej nie wnosi. Dla każdego swojego typu treści system podaje, **co**
   wstawić w te miejsca: które wartości są tagami, po czym się filtruje i sortuje, co stoi w odznace
   wiersza, oraz zaprojektowaną kartę szczegółu. Podaje to skompilowanym kodem czytającym własny
   rekord, nie ścieżką do pola w danych paczki. Miejsca są zamkniętym zestawem zaprojektowanym przez
-  bibliotekę; system je wypełnia, nie dokłada nowych.
+  bibliotekę wpisów; system je wypełnia, nie dokłada nowych.
 * **Grupowanie z danych jest legalne wewnątrz skompilowanego ekranu, nielegalne w nawigacji.**
   Sprawdzian po skutku awarii: literówka psuje **etykietę filtra**, a nie nawigację.
 * **Zakładka treści nie jest miejscem wewnątrz kampanii.** Wybór wpisu w kampanii jest **momentem,
