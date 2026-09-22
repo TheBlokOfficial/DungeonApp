@@ -282,3 +282,9 @@ Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się link
 **Mimo wszystko nie zabijaj tego procesu z własnej inicjatywy.** Po nazwie procesu nie widać
 różnicy między podglądaczem a działającą instancją `DungeonApp.App` — widać ją dopiero po linii
 poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".
+
+**Zadania redakcyjne na długich dokumentach architekt robi sam; subagentom zostaje kod.** Obserwacja
+z 2026-09-22, nie reguła o przyczynie: czterech subagentów z rzędu (Sonnet) na zadaniu
+przeniesienia tekstu między dokumentami stanęło bez postępu — najpierw jeden na całości, potem trzej
+na fragmentach po około 350 linii — i żaden nie zapisał wyniku. Przyczyny nie ustalono. Architekt
+zrobił to samo zadanie sam w kilka minut, bo stary tekst miał już w kontekście.
