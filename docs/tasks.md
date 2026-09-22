@@ -60,7 +60,7 @@ etapie aplikacja działa, a testy przechodzą.
 
 | # | Etap | Co widzi autor | Dlaczego w tym miejscu |
 |---|---|---|---|
-| 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; pozycja kampanii — półka albo strona kampanii; zakładki kampanii zamknięte bez otwartej kampanii; powrót do wyboru w górnym pasku; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji, pasek z grupami Kampania i System, strona kampanii, kłódki | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
+| 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; pozycja kampanii — półka albo strona kampanii; zakładki kampanii zamknięte bez otwartej kampanii; powrót do wyboru i zamknięcie kampanii jako przyciski ramy; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji, pasek z grupami Kampania i System, strona kampanii, kłódki | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
 | 2 | **Wyniesienie wspólnego kodu interfejsu do biblioteki:** biurko i system okien, kontrolki kart, widok listy z kartą. Najpierw testy granic, potem przeprowadzka. | nic — zachowanie jak po etapie 1 | mechanizm pilnujący granicy powstaje przed rozbiórką |
 | 3 | **Rama zapisuje modele stanu systemu.** Instancje pierwszym takim modelem; kampania pamięta swój system; półka pokazuje kampanie aktywnego systemu. | kampanie w obrębie swojego systemu | rdzeń trzyma dziś instancje wewnątrz kampanii i musi przestać, zanim da się je wynieść |
 | 4 | **Wyniesienie wspólnej logiki do biblioteki:** paczki, wpisy, rejestr, instancje, nakładki. Wczytywanie paczek staje się krokiem startowym, który rama uruchamia, nie wiedząc, co robi. | nic | wymaga etapu 3 |
@@ -91,11 +91,11 @@ etapie aplikacja działa, a testy przechodzą.
   - **Rejestr** to zakładka systemu D&D z dzisiejszym ekranem, rysowana prezentacją tego systemu.
   - **Rama.** Ekran wyboru bez paska bocznego i górnego; pasek stanu zostaje, bo niesie ostrzeżenia
     startu. Po wyborze grupy Kampania (pozycja kampanii + zakładki kampanii) i System, rozdzielone
-    separatorem, bez nagłówków; kategoria Aplikacja nie pokazuje się, dopóki nie ma pozycji. Otwarcie
+    separatorem, bez nagłówków; kategoria Aplikacja z jedną pozycją „Zmień system". Otwarcie
     kampanii: zakładki otwarte, pozycja kampanii → strona kampanii (nazwa, data utworzenia) z nazwą
     kampanii jako etykietą. Zawartość zakładki powstaje przy pierwszym pokazaniu i żyje do zamknięcia
-    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. Gdzie stoją
-    „Zmień system" i „Zamknij kampanię" — pytanie do autora niżej. Błąd utworzenia zakładki —
+    kampanii albo powrotu do wyboru; zamknięcie, powrót i wyjście z programu ją zwalniają. „Zamknij
+    kampanię" stoi na stronie kampanii. Błąd utworzenia zakładki —
     komunikat na pasku stanu, nie awaria.
   - **Start.** Przed ekranem wyboru tylko wczytanie paczek. Po wyborze: półka, wczytanie kampanii
     z półki z wyprzedzeniem (pamięć podręczna już tylko kampanii — część z układem odchodzi do biurka)
@@ -110,7 +110,7 @@ etapie aplikacja działa, a testy przechodzą.
     Biurko utworzone i zwolnione bez gestu nie zapisuje układu. Test architektoniczny: kontekst
     zakładki systemu nie wystawia niczego z kampanii. Liczba testów nie niższa niż baseline.
   - **Rozstrzygnięte przez architekta**, do weta autora: nazwa `IGameSystem`; kłódka zamiast ikony
-    zakładki; separator zamiast nagłówków grup; kategoria Aplikacja ukryta bez pozycji; bez
+    zakładki; separator zamiast nagłówków grup; „Zmień system" w kategorii Aplikacja; bez
     rozgrzewki biurka, gdy półka jest pusta (dziś rozgrzewa się sam szkielet).
   - **Znane ograniczenie.** Zakładka rejestru rysuje karty prezentacją swojego systemu, więc przy
     drugim systemie wpis cudzego systemu nie dostanie karty — wraca z pytaniem „Paczka a system"
@@ -118,10 +118,10 @@ etapie aplikacja działa, a testy przechodzą.
   - **Przegląd przed startem (2026-09-22, subagent, tylko odczyt).** Projekt zderzony z kodem:
     - **Górnego paska nie ma na ekranie** — widok istnieje w kodzie, ale nic go nie wyświetla;
       zamknięcie kampanii żyje dziś w pasku bocznym jako podmiana na „Biblioteka kampanii", którą ten
-      etap usuwa. **Pytanie do autora na start sesji**, rekomendacja architekta: „Zamknij kampanię"
-      na stronie kampanii, „Zmień system" jako pierwsza pozycja kategorii Aplikacja — obie rzeczy
-      należą do ramy, a górnego paska ten etap nie włącza. Bez odpowiedzi brief nie rusza: inaczej po
-      etapie nie da się zamknąć kampanii.
+      etap usuwa. **Rozstrzygnięte:** „Zamknij kampanię" stoi wewnątrz strony kampanii — decyzja
+      autora 2026-09-22 (zamykanie z paska bocznego było błędem dawnej implementacji). „Zmień system"
+      to pierwsza pozycja kategorii Aplikacja — rozstrzygnięcie architekta, do weta; kategoria
+      Aplikacja przestaje więc być pusta. Górnego paska ten etap nie włącza.
     - **Zapis układu jest już bezpieczny**: odtworzenie i dopasowanie układu nie oznaczają go do
       zapisu, robią to wyłącznie gesty. Wymóg „utworzone i zwolnione bez gestu nic nie zapisuje" ma
       tylko przetrwać przebudowę — test go pilnuje.

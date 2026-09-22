@@ -346,8 +346,12 @@ Cena: jedno kliknięcie w biurko na początku sesji.
 kampanii, więc między kampaniami się nie zmieniają; chowanie ich nic nie mówi i tylko sprawia, że
 pasek skacze. Blokada należy do ramy, bo to rama wie, czy kampania jest otwarta.
 
+**Zamknięcie kampanii z wnętrza strony kampanii** — autor. Zamykanie z paska bocznego było błędem
+dawnej implementacji: pasek służy do przechodzenia między miejscami, a zamknięcie kampanii jest
+czynnością na kampanii, więc wykonuje się ją tam, gdzie kampania jest pokazana.
+
 Wcześniej tego samego dnia obowiązywało: półka zawsze, zakładki kampanii dopiero przy otwartej
-kampanii.
+kampanii. Do 2026-09-22 kampanię zamykało się z paska bocznego.
 
 ### Okno czy zakładka — kryterium
 

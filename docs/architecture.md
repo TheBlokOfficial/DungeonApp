@@ -714,7 +714,8 @@ Nazwy kategorii są słownikiem dokumentów; etykiety na ekranie ustala projekt 
 * **Pozycja kampanii zmienia się razem ze stanem.** Bez otwartej kampanii jest półką — wczytanie,
   tworzenie, usuwanie. Po otwarciu kampanii zamienia się w **stronę kampanii** i nosi jej nazwę: to,
   co rama o kampanii wie, i przełączniki wariantów. Ani biblioteka, ani system nic na niej nie
-  stawiają. Zamknięcie kampanii przywraca półkę.
+  stawiają. **Kampanię zamyka się z wnętrza strony kampanii**, nie z paska — zamknięcie przywraca
+  półkę.
 * **Po otwarciu kampanii pokazana jest strona kampanii**, nie którakolwiek zakładka systemu — rama
   nie wybiera za system jego „pierwszej" zakładki.
 * **Zakładki kampanii są na pasku od wyboru systemu; bez otwartej kampanii są zamknięte** —
