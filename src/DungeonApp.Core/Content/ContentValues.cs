@@ -30,6 +30,7 @@ namespace DungeonApp.Core.Content;
 /// which is the only reason the engine is allowed to hold a patch at all.
 /// </para>
 /// </summary>
+[JsonConverter(typeof(ContentValues.Converter))]
 public sealed class ContentValues
 {
     private static readonly JsonSerializerOptions Options = new()
@@ -206,5 +207,36 @@ public sealed class ContentValues
 
         using var document = JsonDocument.Parse(buffer.WrittenMemory);
         return new ContentValues(document.RootElement);
+    }
+
+    /// <summary>
+    /// Lets an envelope be embedded directly in a state record, such as <c>CampaignInstance</c>'s
+    /// <c>Patch</c>, and (de)serialized by <c>System.Text.Json</c> without a hand-written DTO -
+    /// exactly the "swap the serializer here" hook this type's own remarks describe, extended to
+    /// cover a record that carries an envelope rather than only a system that opens one.
+    /// </summary>
+    private sealed class Converter : JsonConverter<ContentValues>
+    {
+        public override ContentValues Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            using var document = JsonDocument.ParseValue(ref reader);
+
+            // The same invariant RequireObject enforces everywhere else on this type: an envelope
+            // that is not a JSON object cannot be merged or differenced and should never have been
+            // built. Enforced here too, so a record embedding one - a state record's patch, read
+            // back by the frame's own generic model-file code - fails at deserialization with a
+            // JsonException the caller already knows how to turn into a named store failure,
+            // instead of succeeding now and throwing something unrelated much later.
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                throw new JsonException(
+                    $"A content envelope must be a JSON object, not {document.RootElement.ValueKind}.");
+            }
+
+            return new ContentValues(document.RootElement);
+        }
+
+        public override void Write(Utf8JsonWriter writer, ContentValues value, JsonSerializerOptions options) =>
+            value._raw.WriteTo(writer);
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 
 namespace DungeonApp.Desktop.Shell;
@@ -47,7 +48,7 @@ public sealed class ActiveSystemSession(IGameSystem system, Func<ContentRegistry
 
         CloseCampaign();
 
-        _openCampaign = new CampaignSession(campaign, campaigns);
+        _openCampaign = new CampaignSession(campaign, campaigns, System.StateModels);
         _campaignTabContext = new CampaignTabContext(_openCampaign, registry());
     }
 
@@ -65,15 +66,15 @@ public sealed class ActiveSystemSession(IGameSystem system, Func<ContentRegistry
         _campaignTabContext = null;
     }
 
-    /// <summary>The one door any write goes through, while a campaign is open.</summary>
-    public Task<string?> ExecuteAsync(Action operation)
+    /// <summary>The one door any change goes through, while a campaign is open.</summary>
+    public Task<CampaignChangeResult> ChangeAsync(CampaignChange change)
     {
         if (_openCampaign is null)
         {
             throw new InvalidOperationException("No campaign is open.");
         }
 
-        return _openCampaign.ExecuteAsync(operation);
+        return _openCampaign.ChangeAsync(change);
     }
 
     /// <summary>

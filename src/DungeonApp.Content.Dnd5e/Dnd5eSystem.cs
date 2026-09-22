@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.Content.Instances;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Library.Desktop.Content;
 using DungeonApp.Library.Desktop.Controls.Workspace;
@@ -60,6 +62,8 @@ public sealed class Dnd5eSystem : IGameSystem
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; }
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
+
+    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [InstancesModel.Declaration];
 
     public bool HasSet(ContentId set) => set == Id;
 

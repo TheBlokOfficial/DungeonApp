@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.State;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
@@ -17,8 +18,13 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// half of what this cache used to prepare into the desk itself (its own <c>CampaignDesk</c> entry point),
 /// which now loads its own layout when a desk tab is actually built.
 /// </para>
+/// <para>
+/// <paramref name="declarations"/> is fixed for the life of this cache, built at the composition
+/// root before any system is chosen - see <c>App.axaml.cs</c> for which declarations that actually
+/// is today, and its remarks for the limit that choice carries.
+/// </para>
 /// </summary>
-public sealed class CampaignPreparationCache(ICampaignRepository campaigns)
+public sealed class CampaignPreparationCache(ICampaignRepository campaigns, IReadOnlyList<StateModelDeclaration> declarations)
 {
     private readonly object _gate = new();
     private readonly Dictionary<CampaignId, Task<Campaign>> _preparations = [];
@@ -99,7 +105,7 @@ public sealed class CampaignPreparationCache(ICampaignRepository campaigns)
         // awaits. Starting the complete operation on the pool keeps that CPU and first-use JIT cost
         // out of Avalonia's dispatcher.
         return await Task.Run(
-                () => campaigns.GetAsync(id, cancellationToken),
+                () => campaigns.GetAsync(id, declarations, cancellationToken),
                 cancellationToken)
             .ConfigureAwait(false)
             ?? throw new CampaignUnavailableException(id);

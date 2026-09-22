@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.State;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 
@@ -21,7 +22,8 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
 
     public int SaveCount { get; private set; }
 
-    public Task SaveAsync(Campaign campaign, CancellationToken cancellationToken = default)
+    public Task SaveAsync(
+        Campaign campaign, IReadOnlyList<StateModelDeclaration> declarations, CancellationToken cancellationToken = default)
     {
         _campaigns[campaign.Id] = campaign;
         SaveCount++;
@@ -29,7 +31,8 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
         return Task.CompletedTask;
     }
 
-    public Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default) =>
+    public Task<Campaign?> GetAsync(
+        CampaignId id, IReadOnlyList<StateModelDeclaration> declarations, CancellationToken cancellationToken = default) =>
         Task.FromResult(_campaigns.GetValueOrDefault(id));
 
     public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)

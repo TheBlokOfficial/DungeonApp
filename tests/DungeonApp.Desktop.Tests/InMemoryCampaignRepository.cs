@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.State;
 
 namespace DungeonApp.Desktop.Tests;
 
@@ -16,13 +17,15 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
 {
     private readonly Dictionary<CampaignId, Campaign> _campaigns = [];
 
-    public Task SaveAsync(Campaign campaign, CancellationToken cancellationToken = default)
+    public Task SaveAsync(
+        Campaign campaign, IReadOnlyList<StateModelDeclaration> declarations, CancellationToken cancellationToken = default)
     {
         _campaigns[campaign.Id] = campaign;
         return Task.CompletedTask;
     }
 
-    public Task<Campaign?> GetAsync(CampaignId id, CancellationToken cancellationToken = default) =>
+    public Task<Campaign?> GetAsync(
+        CampaignId id, IReadOnlyList<StateModelDeclaration> declarations, CancellationToken cancellationToken = default) =>
         Task.FromResult(_campaigns.GetValueOrDefault(id));
 
     public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)

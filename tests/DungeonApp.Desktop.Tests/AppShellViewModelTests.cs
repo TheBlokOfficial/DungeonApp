@@ -84,8 +84,8 @@ public sealed class AppShellViewModelTests
     {
         var repository = new InMemoryCampaignRepository();
         var campaignLibrary = new CampaignLibraryViewModel(
-            repository, new CreateCampaign(repository, TimeProvider.System), _ => Task.CompletedTask);
-        var preparations = new CampaignPreparationCache(repository);
+            repository, new CreateCampaign(repository, TimeProvider.System, []), _ => Task.CompletedTask);
+        var preparations = new CampaignPreparationCache(repository, []);
 
         return new AppShellViewModel(
             systems,

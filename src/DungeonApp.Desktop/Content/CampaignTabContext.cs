@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.Events;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Desktop.Content;
@@ -12,12 +12,13 @@ namespace DungeonApp.Desktop.Content;
 /// campaign - built fresh by the shell for every campaign the GM opens, and handed to
 /// <see cref="CampaignTabDeclaration.CreateContentAsync"/>.
 /// <para>
-/// Carries exactly what docs/tasks.md's step 1 brief names: the campaign's id, its instances, its
-/// event bus, the one door any write goes through, and the content registry - and nothing else
-/// reachable from here, in particular never <see cref="Shell.CampaignSession"/> or
-/// <see cref="Core.Campaigns.Campaign"/> themselves. Deliberately no resolver either: a tab that
-/// needs one - today, the desk's own tools - builds its own <see cref="CampaignToolContext"/> from
-/// this context plus its own type catalog, the same way the desk always has.
+/// Carries the campaign's id, a read-only <see cref="Snapshot"/>, the one door any change goes
+/// through, a subscription to what changed, and the content registry - and nothing else reachable
+/// from here, in particular never <see cref="Shell.CampaignSession"/> or
+/// <see cref="Core.Campaigns.Campaign"/> themselves, and no object with a method that mutates state
+/// (docs/architecture.md, "Gdzie mieszka stan"). A tab that needs more than its own model's records
+/// - today, the desk's own tools - builds its own <see cref="Library.Desktop.Content.CampaignToolContext"/>
+/// from this context plus its own type catalog, the same way the desk always has.
 /// </para>
 /// </summary>
 public sealed class CampaignTabContext
@@ -35,12 +36,18 @@ public sealed class CampaignTabContext
 
     public CampaignId CampaignId => _session.Campaign.Id;
 
-    public CampaignInstances Instances => _session.Campaign.Instances;
-
-    public CampaignEvents Events => _session.Campaign.Events;
+    /// <summary>The campaign's whole state, read-only, as of the last change this context has heard about.</summary>
+    public CampaignStateSnapshot Snapshot => _session.Campaign.Snapshot;
 
     public ContentRegistry Registry { get; }
 
-    /// <summary>The one door any write a tab performs goes through - see <see cref="CampaignSession.ExecuteAsync"/>.</summary>
-    public Task<string?> ExecuteAsync(Action operation) => _session.ExecuteAsync(operation);
+    /// <summary>The one door any change a tab makes goes through - see <see cref="CampaignSession.ChangeAsync"/>.</summary>
+    public Task<CampaignChangeResult> ChangeAsync(CampaignChange change) => _session.ChangeAsync(change);
+
+    /// <summary>Raised after a change commits (or fails to save) - see <see cref="CampaignSession.Changed"/>.</summary>
+    public event Action<CampaignStateSnapshot>? Changed
+    {
+        add => _session.Changed += value;
+        remove => _session.Changed -= value;
+    }
 }

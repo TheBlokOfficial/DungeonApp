@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
-using DungeonApp.Core.Events;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 
 namespace DungeonApp.Library.Desktop.Content;
@@ -14,8 +14,8 @@ namespace DungeonApp.Library.Desktop.Content;
 /// Deliberately not <see cref="CampaignTabContext"/> itself: that context carries no resolver, because
 /// resolving an instance needs a type catalog and a Campaign-category tab in general has no reason to
 /// know one. A tool reading its own content by name does, so this type exists specifically to add
-/// <see cref="Resolver"/> on top of what the tab context already carries - registry, instances, event
-/// bus and the one door any write goes through.
+/// <see cref="Resolver"/> on top of what the tab context already carries - registry, a read-only
+/// snapshot, the one door any change goes through, and a subscription to what changed.
 /// </para>
 /// <para>
 /// The constructor stays public rather than internal, the same way
@@ -35,24 +35,24 @@ public sealed class CampaignToolContext
         ArgumentNullException.ThrowIfNull(types);
 
         _context = context;
-        Instances = context.Instances;
         Registry = context.Registry;
         Resolver = new InstanceResolver(context.Registry, types);
-        Events = context.Events;
     }
 
-    public CampaignInstances Instances { get; }
+    /// <summary>The campaign's whole state, read-only, as of the last change this context has heard about.</summary>
+    public CampaignStateSnapshot Snapshot => _context.Snapshot;
 
     public ContentRegistry Registry { get; }
 
     public InstanceResolver Resolver { get; }
 
-    public CampaignEvents Events { get; }
+    /// <summary>The one door any change a tool makes goes through - delegates to <see cref="CampaignTabContext.ChangeAsync"/> so a tool never reaches the repository directly and never forgets to save what it changed.</summary>
+    public Task<CampaignChangeResult> ChangeAsync(CampaignChange change) => _context.ChangeAsync(change);
 
-    /// <summary>
-    /// The one door any write a tool performs goes through. Delegates to
-    /// <see cref="CampaignTabContext.ExecuteAsync"/> so a tool never reaches the repository directly
-    /// and never forgets to save what it changed.
-    /// </summary>
-    public Task<string?> ExecuteAsync(Action operation) => _context.ExecuteAsync(operation);
+    /// <summary>Raised after a change commits (or fails to save) - see <see cref="DungeonApp.Desktop.Shell.CampaignSession.Changed"/>.</summary>
+    public event Action<CampaignStateSnapshot>? Changed
+    {
+        add => _context.Changed += value;
+        remove => _context.Changed -= value;
+    }
 }

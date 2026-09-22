@@ -11,14 +11,26 @@ public enum CampaignStoreFailure
     /// <summary>Written by a newer build. Refused whole rather than read in part.</summary>
     UnsupportedFormatVersion,
 
+    /// <summary>
+    /// Written by an older build, before the campaign document's format last changed shape. Refused
+    /// whole rather than migrated - docs/architecture.md, "Wersjonowanie": "Migracji nie budujemy".
+    /// </summary>
+    LegacyFormatVersion,
+
     /// <summary>Readable JSON that does not describe a campaign - a missing name, an empty id.</summary>
     Invalid,
 
     /// <summary>
-    /// The manifest and the data block value files disagree: a save was interrupted between them. Better
+    /// The manifest and a model's state file disagree: a save was interrupted between them. Better
     /// reported than half loaded in silence.
     /// </summary>
-    TornSave
+    TornSave,
+
+    /// <summary>
+    /// A model's state file was written at a version this build's declaration does not declare -
+    /// docs/architecture.md, "Wersjonowanie": a mismatch is reported, never guessed at.
+    /// </summary>
+    ModelVersionMismatch
 }
 
 /// <summary>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.State;
 
 namespace DungeonApp.Desktop.Content;
 
@@ -37,4 +38,12 @@ public interface IGameSystem : IContentTypeCatalog, IContentPresentation
     /// <see cref="CampaignTabContext"/> built for that one campaign.
     /// </summary>
     IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
+
+    /// <summary>
+    /// The state models this system's campaigns keep - docs/architecture.md, "Gdzie mieszka stan":
+    /// "Rama zapisuje, system deklaruje." Read once, when a campaign is opened or created, and
+    /// handed to the repository so it knows which files to write and read; the frame never names
+    /// any of these models itself.
+    /// </summary>
+    IReadOnlyList<StateModelDeclaration> StateModels { get; }
 }

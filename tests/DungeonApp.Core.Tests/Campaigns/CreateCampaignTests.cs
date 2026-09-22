@@ -13,14 +13,14 @@ public sealed class CreateCampaignTests
     private readonly CreateCampaign _createCampaign;
 
     public CreateCampaignTests()
-        => _createCampaign = new CreateCampaign(_repository, new FixedTimeProvider(Moment));
+        => _createCampaign = new CreateCampaign(_repository, new FixedTimeProvider(Moment), []);
 
     [Fact]
     public async Task Stores_the_campaign_it_created()
     {
         var created = await _createCampaign.ExecuteAsync("Kroniki Doliny");
 
-        var stored = await _repository.GetAsync(created.Id);
+        var stored = await _repository.GetAsync(created.Id, []);
 
         Assert.Same(created, stored);
         Assert.Equal("Kroniki Doliny", created.Name.Value);

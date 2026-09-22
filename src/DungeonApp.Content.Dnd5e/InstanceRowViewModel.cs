@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.Content.Instances;
 using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Library.Desktop.Content;
 
@@ -20,7 +21,7 @@ namespace DungeonApp.Content.Dnd5e;
 public sealed class InstanceRowViewModel : ObservableObject, IDisposable
 {
     private readonly CampaignToolContext _context;
-    private readonly InstanceId _id;
+    private readonly CampaignInstance _instance;
     private readonly ResolvedInstance _resolved;
 
     private int? _currentHp;
@@ -28,7 +29,6 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
 
     public InstanceRowViewModel(
         CampaignToolContext context,
-        InstanceId id,
         string displayName,
         string? message,
         ResolvedInstance resolved,
@@ -38,7 +38,7 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         ArgumentNullException.ThrowIfNull(resolved);
 
         _context = context;
-        _id = id;
+        _instance = resolved.Instance;
         _resolved = resolved;
 
         DisplayName = displayName;
@@ -111,9 +111,9 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         var candidate = ContentValues.From(monster with { CurrentHp = CurrentHp });
         var patch = ContentValues.Difference(baseline: entryValues, candidate: candidate);
 
-        await _context.ExecuteAsync(() => _context.Instances.ReplacePatch(_id, patch));
+        await _context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(_instance, patch));
     }
 
     private async Task RemoveAsync() =>
-        await _context.ExecuteAsync(() => _context.Instances.Remove(_id));
+        await _context.ChangeAsync(CampaignInstanceChanges.Remove(_instance.Id));
 }

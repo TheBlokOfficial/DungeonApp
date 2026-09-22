@@ -1,4 +1,5 @@
 using System;
+using DungeonApp.Core.Content.Instances;
 
 namespace DungeonApp.Core.Content;
 
