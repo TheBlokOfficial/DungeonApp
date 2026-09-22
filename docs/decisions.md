@@ -309,6 +309,24 @@ więc czwarty i piąty zakaz da się w niej uczynić **niewykonalnymi**, a nie t
 kształt tej drogi trzeba zaprojektować, nie założyć. Dlatego system przejmuje wygląd i zawartość
 aplikacji, ale nigdy drzwi zapisu.
 
+**Niezmienne struktury zamiast uchwytu ważnego w czasie operacji** — 2026-09-22, z propozycji
+autora: stan kampanii to wyłącznie struktury zdolne do zapisu. Przegląd kodu z tego dnia pokazał, że
+jedyność drogi zmiany była konwencją — zakładki systemu dostawały żywy magazyn instancji z metodami
+zmieniającymi, powiadomienia wychodziły w trakcie operacji, przed zapisem, a wejście zmiany nie
+odmawiało wywołania z obsługi powiadomienia. Architekt zaproponował uchwyt zmieniający, żywy tylko
+w środku operacji, i listę celów deklarowaną z góry. Niezmienność daje oba skutki bez żadnego z tych
+mechanizmów: zmiany z pominięciem wejścia nie ma czym zrobić, a cele to po prostu to, co oddano.
+**Oznaczenie typu zamiast wspólnego przodka**, bo przodek z logiką zaprasza do wkładania w niego
+zachowania.
+
+**Zapis od razu, nie ręczny ani okresowy** — 2026-09-22. Autor rozważył zapis ręczny oraz autozapis
+co kilkanaście minut z trzema rotującymi kopiami i wybrał zapis od razu. Przy stole najgorszą awarią
+jest utracona sesja, a zapis ręczny dokłada pytanie o niezapisane zmiany przy każdym zamknięciu
+kampanii, powrocie do wyboru i wyjściu. Jedyną prawdziwą zaletę zapisu ręcznego — powrót do
+wcześniejszego stanu — dają rotujące kopie zapasowe, bez tamtego ryzyka. **Wyzwalacz powrotu:** MG
+chce wrócić do wcześniejszego stanu kampanii albo zapis po każdej zmianie staje się odczuwalnie wolny
+— dziś każdy zapis przepisuje wszystkie instancje kampanii.
+
 **Odrzucone w tym temacie:** „Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście
 kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".
 

@@ -676,6 +676,13 @@ modelem — dostarcza go biblioteka.
 dostaje drzwi zapisu.** Kształt tej drogi ma czynić czwarty i piąty zakaz **niewykonalnymi**,
 a nie tylko zabronionymi.
 
+**Stanu nie zmienia się w miejscu.** Model stanu jest niezmienny; zmiana to oddanie ramie nowych
+wersji konkretnych rzeczy — jednej albo kilku, razem z tworzonymi i usuwanymi — przez jedyne wejście
+zmiany. Zmienia się dokładnie to, co oddano, i nic poza tym: czwarty zakaz. Powiadomienie o zmianie
+wychodzi po zapisie i niesie wyłącznie odczyt, a wejście zmiany odmawia w trakcie innej zmiany
+i w trakcie rozsyłania powiadomień: piąty zakaz. Zdolność do zapisu jest oznaczeniem typu, nie
+wspólnym przodkiem z logiką. **Każda zatwierdzona zmiana trafia na dysk od razu.**
+
 **Kampania należy do jednego systemu.** Kampania, której systemu nie ma w programie, jest widoczna
 jako niedostępna — nie znika.
 
