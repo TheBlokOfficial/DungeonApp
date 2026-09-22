@@ -111,7 +111,7 @@ etapie aplikacja działa, a testy przechodzą.
   i ocena stanu; zasada i powód — [collaboration.md](collaboration.md), *Jak pisać dokumenty tego
   repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
   ta praca jest już tylko skracaniem.
-* **Etap 3 — scalony 2026-09-22, czeka na sprawdzenie przez autora na `master`.** Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
+* **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne z powodem — działa. **Do naprawy: wiersz półki po etapie się rozjechał** — układ karty kampanii i kolory (wyszarzenie nazwy, linia powodu, kosz i strzałka przy niedostępnej) wyglądają źle; interfejs to rzemiosło autora, więc przed poprawką zapytać, czy robi ją sam. Do wyjaśnienia: na dysku leżą cztery kampanie bez systemu, półka pokazała trzy. Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
   stanu i zapis, potem system w kampanii i półka), autor sprawdza na `master` po scaleniu. Docelowy kształt —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
