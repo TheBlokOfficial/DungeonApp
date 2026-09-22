@@ -26,7 +26,9 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     private const string LockedIconResourceKey = "DungeonIconLock";
     private const string ShelfIconResourceKey = "DungeonIconBookOpen";
     private const string CampaignPageIconResourceKey = "DungeonIconCampaignRecord";
-    private const string ShelfLabel = "Biblioteka kampanii";
+    // The pre-etap-1 sidebar's shelf row used this exact label (555802f, GlobalSidebarViewModel's
+    // "campaigns" item) - the campaign position keeps it while no campaign is open.
+    private const string ShelfLabel = "Kampanie";
 
     private readonly List<NavigationItemViewModel> _selectableItems = [];
     private readonly List<NavigationItemViewModel> _allItems = [];
