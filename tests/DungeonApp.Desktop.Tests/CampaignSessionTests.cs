@@ -100,6 +100,44 @@ public sealed class CampaignSessionTests
         Assert.Contains("a", session.Campaign.Snapshot.Get(Model).Keys);
     }
 
+    /// <summary>
+    /// A subscriber throwing must not stop the rest from seeing the snapshot - the change is already
+    /// committed by the time notification starts, regardless of what a view does with it. The
+    /// exception still has to reach the caller (nothing here may swallow it), and the notification
+    /// flag has to come back down so the next change is not permanently refused.
+    /// </summary>
+    [Fact]
+    public async Task A_throwing_subscriber_does_not_stop_the_others_or_lose_the_save_and_still_surfaces()
+    {
+        var repository = new RecordingRepository();
+        var session = new CampaignSession(NewCampaign(), repository, [Model]);
+
+        // Throws only on its first call, so the second ChangeAsync below can prove the flag came
+        // back down without itself throwing again and masking that assertion.
+        var throwingSubscriberCalls = 0;
+        string[]? secondSubscriberSeenIds = null;
+        session.Changed += _ =>
+        {
+            if (++throwingSubscriberCalls == 1)
+            {
+                throw new InvalidOperationException("first subscriber blew up");
+            }
+        };
+        session.Changed += snapshot => secondSubscriberSeenIds = [.. snapshot.Get(Model).Keys];
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => session.ChangeAsync(AddChange("a")));
+
+        Assert.Equal("first subscriber blew up", exception.Message);
+        Assert.Equal(["a"], secondSubscriberSeenIds!);
+        Assert.Equal(1, repository.SaveCount);
+        Assert.Contains("a", session.Campaign.Snapshot.Get(Model).Keys);
+
+        // The notification flag must have come back down despite the throw above.
+        var second = await session.ChangeAsync(AddChange("b"));
+        Assert.False(second.WasDenied);
+        Assert.Equal(2, throwingSubscriberCalls);
+    }
+
     [Fact]
     public async Task A_denial_saves_nothing_and_notifies_nothing()
     {

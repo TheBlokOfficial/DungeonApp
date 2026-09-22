@@ -191,14 +191,14 @@ public sealed class AppShellViewModel : ObservableObject
 
     // Internal, nie private: korzeń kompozycji (App.Initialize) domyka na tę metodę wskaźnik
     // zwrotny biblioteki kampanii, zanim ta instancja powłoki w ogóle powstanie.
-    internal async Task OpenCampaignAsync(CampaignId id)
+    internal async Task OpenCampaignAsync(CampaignSummary summary)
     {
         if (_session is null)
         {
             return;
         }
 
-        var campaign = await _preparations.TakeAsync(id);
+        var campaign = await _preparations.TakeAsync(summary);
 
         _session.OpenCampaign(campaign);
         _campaignPage = new CampaignPageViewModel(campaign, CloseCampaignAsync);
@@ -232,10 +232,12 @@ public sealed class AppShellViewModel : ObservableObject
     /// cheap and depends only on which system was picked: the session that will lazily build this
     /// system's *real*, cached tab content on first click, and a sidebar instance carrying this
     /// system's own tab declarations and the collapse state the frame remembers across systems (zadanie
-    /// 3). Synchronous in spirit even though the signature stays <c>async</c> for
-    /// <see cref="SystemSelectionViewModel"/>'s callback shape.
+    /// 3). Also the point where the shelf learns which system is now active
+    /// (<see cref="CampaignLibraryViewModel.SetActiveSystem"/>) and reloads to filter itself to it -
+    /// docs/architecture.md, "Kampania należy do jednego systemu": the load that already ran behind
+    /// the startup curtain, before any system was chosen, showed every campaign unfiltered.
     /// </summary>
-    private Task ChooseSystemAsync(IGameSystem system)
+    private async Task ChooseSystemAsync(IGameSystem system)
     {
         _session = new ActiveSystemSession(system, _contentRegistry, _campaigns);
 
@@ -254,7 +256,8 @@ public sealed class AppShellViewModel : ObservableObject
         CurrentWorkspaceContent = _campaignLibrary;
         IsSystemChosen = true;
 
-        return Task.CompletedTask;
+        _campaignLibrary.SetActiveSystem(system);
+        await _campaignLibrary.LoadAsync();
     }
 
     /// <summary>

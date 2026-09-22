@@ -41,7 +41,7 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
     public Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<CampaignSummary>>(
             _campaigns.Values
-                .Select(campaign => new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt))
+                .Select(campaign => new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt, campaign.SystemId))
                 .OrderBy(summary => summary.Name.Value, StringComparer.CurrentCultureIgnoreCase)
                 .ToArray());
 }

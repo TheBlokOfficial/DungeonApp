@@ -15,7 +15,7 @@ public sealed class WarmCampaignDataStep(
     CampaignPreparationCache preparations,
     LoadCampaignShelfStep shelfStep) : IStartupStep
 {
-    public CampaignId? WarmupCampaignId { get; private set; }
+    public CampaignSummary? WarmupCampaignSummary { get; private set; }
 
     public string Describe() => "Przygotowywanie kampanii…";
 
@@ -24,7 +24,7 @@ public sealed class WarmCampaignDataStep(
         var summaries = shelfStep.Summaries;
         await preparations.WarmAsync(summaries, cancellationToken);
 
-        WarmupCampaignId = summaries.Count > 0 ? summaries[0].Id : null;
+        WarmupCampaignSummary = summaries.Count > 0 ? summaries[0] : null;
     }
 
     public Task ApplyAsync(StartupUiContext ui, CancellationToken cancellationToken) => Task.CompletedTask;

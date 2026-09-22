@@ -37,6 +37,37 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(campaign.CreatedAt, restored.CreatedAt);
     }
 
+    /// <summary>docs/architecture.md, "Kampania należy do jednego systemu": the manifest carries the campaign's system.</summary>
+    [Fact]
+    public async Task Persists_the_campaigns_system()
+    {
+        var systemId = DungeonApp.Core.Content.ContentId.Create("dnd5e");
+        var campaign = Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment), systemId);
+
+        await _repository.SaveAsync(campaign, []);
+        var restored = await _repository.GetAsync(campaign.Id, []);
+
+        Assert.Equal(systemId, restored!.SystemId);
+
+        var root = ReadManifest(campaign);
+        Assert.Equal("dnd5e", root.GetProperty("system").GetString());
+    }
+
+    /// <summary>
+    /// A manifest that never recorded a system - including every one written before this field
+    /// existed - reads back as a campaign without one, never guessed at.
+    /// </summary>
+    [Fact]
+    public async Task Reads_a_manifest_without_a_system_field_as_no_system()
+    {
+        var campaign = NewCampaign();
+
+        await _repository.SaveAsync(campaign, []);
+        var restored = await _repository.GetAsync(campaign.Id, []);
+
+        Assert.Null(restored!.SystemId);
+    }
+
     /// <summary>
     /// The directory is keyed by identity, not by the editable label. This is what will let a rename
     /// stay a rename instead of orphaning the campaign on disk.
@@ -76,16 +107,90 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(["Kroniki Doliny", "Mokradła", "Zamek Nocy"], names);
     }
 
-    /// <summary>One broken document must not hide every healthy campaign beside it.</summary>
     [Fact]
-    public async Task Skips_a_damaged_campaign_when_listing()
+    public async Task Lists_a_campaigns_system()
+    {
+        var systemId = DungeonApp.Core.Content.ContentId.Create("dnd5e");
+        await _repository.SaveAsync(
+            Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment), systemId), []);
+
+        var summary = Assert.Single(await _repository.ListAsync());
+
+        Assert.Equal(systemId, summary.SystemId);
+        Assert.Null(summary.ManifestFailure);
+    }
+
+    /// <summary>
+    /// docs/architecture.md, "Kampania należy do jednego systemu": a pre-system manifest - any format
+    /// version below the current one - is a campaign without a system, not a broken one. It is listed
+    /// like any other, using whatever name it does carry.
+    /// </summary>
+    [Fact]
+    public async Task Lists_a_legacy_manifest_as_a_campaign_with_no_system()
+    {
+        var id = Guid.NewGuid();
+        _library.WriteDocument(id, $$"""
+            {
+              "formatVersion": 1,
+              "id": "{{id}}",
+              "name": "Kroniki Doliny",
+              "createdAt": "2026-08-27T18:30:00+00:00",
+              "generation": 1,
+              "instances": []
+            }
+            """);
+
+        var summary = Assert.Single(await _repository.ListAsync());
+
+        Assert.Equal(new CampaignId(id), summary.Id);
+        Assert.Equal("Kroniki Doliny", summary.Name.Value);
+        Assert.Null(summary.SystemId);
+        Assert.Null(summary.ManifestFailure);
+    }
+
+    /// <summary>A manifest from a future build is listed too, flagged rather than skipped or half-read.</summary>
+    [Fact]
+    public async Task Lists_a_manifest_from_a_newer_build_as_unavailable()
+    {
+        var id = Guid.NewGuid();
+        _library.WriteDocument(id, $$"""
+            {
+              "formatVersion": {{JsonCampaignRepository.CurrentFormatVersion + 1}},
+              "id": "{{id}}",
+              "name": "Z przyszłości",
+              "createdAt": "2026-08-27T18:30:00+00:00"
+            }
+            """);
+
+        var summary = Assert.Single(await _repository.ListAsync());
+
+        Assert.Equal(CampaignStoreFailure.UnsupportedFormatVersion, summary.ManifestFailure);
+    }
+
+    /// <summary>
+    /// One broken document must not hide every healthy campaign beside it - and must not disappear
+    /// either. docs/architecture.md, "Kampania należy do jednego systemu": "Kampania, której systemu
+    /// nie ma w programie, jest widoczna jako niedostępna - nie znika." The same holds for one whose
+    /// manifest cannot be read at all.
+    /// </summary>
+    [Fact]
+    public async Task Lists_a_damaged_campaign_as_unavailable_instead_of_hiding_it()
     {
         await _repository.SaveAsync(NewCampaign("Kroniki Doliny"), []);
-        _library.WriteDocument(Guid.NewGuid(), "{ this is not json");
+        var damagedId = Guid.NewGuid();
+        _library.WriteDocument(damagedId, "{ this is not json");
 
         var summaries = await _repository.ListAsync();
 
-        Assert.Equal("Kroniki Doliny", Assert.Single(summaries).Name.Value);
+        Assert.Equal(2, summaries.Count);
+
+        var healthy = Assert.Single(summaries, summary => summary.Name.Value == "Kroniki Doliny");
+        Assert.Null(healthy.ManifestFailure);
+
+        var damaged = Assert.Single(summaries, summary => summary.Id == new CampaignId(damagedId));
+        Assert.Equal(CampaignStoreFailure.Unreadable, damaged.ManifestFailure);
+        // No name could be read back, so the directory's own name - the campaign's id - stands in.
+        Assert.Equal(damagedId.ToString("D"), damaged.Name.Value);
     }
 
     [Fact]

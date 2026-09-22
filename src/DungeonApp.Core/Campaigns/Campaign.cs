@@ -1,4 +1,5 @@
 using System;
+using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
 
 namespace DungeonApp.Core.Campaigns;
@@ -15,11 +16,13 @@ public sealed class Campaign
     private Campaign(
         CampaignId id,
         CampaignName name,
+        ContentId? systemId,
         DateTimeOffset createdAt,
         CampaignStateSnapshot snapshot)
     {
         Id = id;
         Name = name;
+        SystemId = systemId;
         CreatedAt = createdAt;
         Snapshot = snapshot;
     }
@@ -27,6 +30,14 @@ public sealed class Campaign
     public CampaignId Id { get; }
 
     public CampaignName Name { get; }
+
+    /// <summary>
+    /// The system this campaign belongs to - set once, at <see cref="Create"/>, to whichever system
+    /// was active at the time, and never changed afterwards (docs/architecture.md, "Kampania należy
+    /// do jednego systemu"). Null for a campaign that predates this field, or one whose manifest never
+    /// recorded it - never migrated or guessed at.
+    /// </summary>
+    public ContentId? SystemId { get; }
 
     /// <summary>
     /// Read from an injected <see cref="TimeProvider"/> rather than <c>DateTimeOffset.UtcNow</c>, so
@@ -39,12 +50,13 @@ public sealed class Campaign
 
     public static Campaign Create(
         CampaignName name,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider,
+        ContentId? systemId = null)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        return new Campaign(CampaignId.New(), name, timeProvider.GetUtcNow(), CampaignStateSnapshot.Empty);
+        return new Campaign(CampaignId.New(), name, systemId, timeProvider.GetUtcNow(), CampaignStateSnapshot.Empty);
     }
 
     /// <summary>
@@ -55,12 +67,13 @@ public sealed class Campaign
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
+        ContentId? systemId,
         CampaignStateSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(snapshot);
 
-        return new Campaign(id, name, createdAt, snapshot);
+        return new Campaign(id, name, systemId, createdAt, snapshot);
     }
 
     /// <summary>
@@ -72,6 +85,6 @@ public sealed class Campaign
     {
         ArgumentNullException.ThrowIfNull(snapshot);
 
-        return new Campaign(Id, Name, CreatedAt, snapshot);
+        return new Campaign(Id, Name, SystemId, CreatedAt, snapshot);
     }
 }
