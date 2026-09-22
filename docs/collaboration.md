@@ -110,6 +110,11 @@ dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-
 kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
 zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
+**Etap, który zmienia start albo nawigację, przed scaleniem uruchamia autor.** Testy nie otwierają
+okna. 2026-09-22 etap 1 przeszedł build, 247 testów i przegląd styków, a mimo to aplikacja padała po
+wyborze systemu (widok budowany poza wątkiem okna), na pasku brakowało pozycji kampanii, a treść
+skakała przy wejściu. Wszystko to widać w pierwszej minucie działania programu i w żadnym teście.
+
 **Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
 Dokumenty dogania architekt na końcu etapu: `code-map.md` (jak jest), `tasks.md` (co dalej).
 

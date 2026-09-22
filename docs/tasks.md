@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 247 testów zielonych.
+Gałąź: `master`. Build bez ostrzeżeń, 250 testów zielonych.
 
 ---
 
@@ -72,22 +72,26 @@ etapie aplikacja działa, a testy przechodzą.
   strona kampanii zastąpiła półkę po otwarciu i niesie „Zamknij kampanię". Interfejs jest technicznie
   poprawny, bez fajerwerków — wygląd autor przeprojektuje sam.
   - **Do weta autora** — rozstrzygnięte przez architekta przed etapem: nazwa `IGameSystem`; kłódka
-    zamiast ikony zakładki; separator zamiast nagłówków grup; „Zmień system" w kategorii Aplikacja;
+    zamiast ikony zakładki; „Zmień system" w kategorii Aplikacja;
     bez rozgrzewki biurka przy pustej półce. W trakcie, przez wykonawcę: logika cyklu życia zakładek
     wydzielona do osobnej, testowalnej klasy (powłoka dalej bez testów); rozgrzewka i wczytanie półki
     przeszły z kroków startowych do wyboru systemu, bo od niego zależą; ikona zakładki „Biurko" —
     istniejąca ikona paska zminimalizowanych; test „biurko bez gestu nie zapisuje" sprawdza model
     biurka, nie samą zakładkę, bo projekt testowy nie ma harnessu Avalonii.
+  - **Po uruchomieniu przez autora (2026-09-22):** awaria po wyborze systemu — widok biurka
+    budowany poza wątkiem okna — poprawiona. W toku: brakująca na pasku pozycja kampanii (błąd
+    etapu — nie da się wrócić do półki); **weto autora** na separator zamiast nagłówków grup —
+    nagłówki, zwijanie i ich animacje wracają w dawnym wyglądzie; diagnoza skakania treści po wejściu
+    w system. Rejestr jako zakładka jest przejściowy — do zakładek treści.
   - **Znane ograniczenie.** Zakładka rejestru rysuje karty prezentacją swojego systemu, więc przy
     drugim systemie wpis cudzego systemu nie dostanie karty — wraca z pytaniem „Paczka a system"
     w architekturze.
-* **Etap 2 — w toku (2026-09-22).** Nowy projekt `DungeonApp.Library.Desktop`; etap 4 dołoży obok
-  `DungeonApp.Library` bez Avalonii. Biblioteka referencuje ramę (`Core`, `Desktop`), rama nigdy
-  biblioteki — ani projektem, ani w `.axaml`. Najpierw testy granic na pustym projekcie, potem
-  przeprowadzka biurka, systemu okien, kontrolek kart, widoku listy z kartą i okna narzędzia na
-  kampanię, bez zmiany nazw typów i wyglądu. Style typów biblioteki wychodzą z motywu ramy dosłownie
-  i włącza je sama biblioteka; tokeny i ikony zostają w ramie. Kontrakty zakładek i `IGameSystem`
-  zostają w ramie. Rozstrzygnięcia architekta, do weta.
+* **Etap 2 — zrobiony 2026-09-22.** Nowy projekt `DungeonApp.Library.Desktop` z biurkiem, systemem
+  okien, kontrolkami kart, widokiem listy z kartą i oknem narzędzia na kampanię; etap 4 dołoży obok
+  `DungeonApp.Library` bez Avalonii. Biblioteka referencuje ramę, rama biblioteki nie — pilnują tego
+  nowe testy granic. Style okien biurka wyszły z motywu ramy dosłownie i włącza je sama biblioteka.
+  Rozstrzygnięcia, do weta: nazwa projektu; pomocnicze kontrolki i konwerter ikon zostały w ramie,
+  bo używa ich też rama; pomocnicze klasy testowe skopiowane do nowego projektu testowego.
 * **Etap 3 — kształt drogi zapisu zatwierdzony przez autora 2026-09-22.** Deklaracja —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
