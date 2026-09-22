@@ -11,7 +11,12 @@ Dwa pojęcia zmieniły od tego czasu nazwę i postać: **„szablon"** to dziś 
 (rekord plus zaprojektowany widok, nie plik danych), a **„element karty"** to dziś
 **kontrolka** komponowana przez projektanta, nie pozycja katalogu wybierana przez dane.
 Argumenty pozostają w mocy w brzmieniu, w jakim je zapisano — zmiana nazwy nie unieważnia
-żadnego z nich, a rozstrzygnięcia dotyczące samej tej zmiany są w grupie ostatniej.
+żadnego z nich, a rozstrzygnięcia dotyczące samej tej zmiany są w grupie „Skompilowane typy
+treści".
+
+Od 2026-09-22 **„zestaw"** to **system** — wybierany przy starcie aplikacji — a mechanizmy
+dawnego silnika i powłoki dzielą się między **ramę** i **bibliotekę**. Pozycje do 32 włącznie
+zapisano jeszcze w słowniku zestawów; rozstrzygnięcia samej przebudowy są w grupie ostatniej.
 
 ## Treść i szablony
 
@@ -282,6 +287,23 @@ Rejestr, Ustawienia), z miejscem na co najwyżej dwie kolejne w przyszłości (z
 paczkami, autorstwo treści), gdy na to zasłużą. Przełącznik między powierzchniami
 kampanii (Biurko, Świat, Fabuła, Kronika) należy do kampanii, nie do globalnej szyny.
 
+**Uchylone 2026-09-22**, z propozycji autora. Żaden z trzech powodów już nie stoi:
+- **Pozycje nie pochodzą z danych.** Zakładki deklaruje skompilowany system, więc literówka
+  w pliku treści nie ma jak zepsuć paska, a zbiór zakładek zależy od wybranego systemu, nie od
+  paczek kampanii.
+- **Podział na zakładki nie jest taksonomią silnika.** Projektuje go człowiek — projektant
+  systemu — w miejscu, któremu wolno wiedzieć, czym jest potwór.
+- **Pasek ma własną treść.** Od przyjęcia powierzchni kampanii (świat, fabuła, kronika) biurko
+  przestało być jedyną treścią kampanii; przełącznik tych powierzchni stał po prostu obok
+  szyny, zamiast w niej.
+
+Pierwsze dwa padły razem z przejściem na typy treści w kodzie, trzeci razem z przyjęciem
+powierzchni — obie zmiany wcześniejsze niż ten powrót. Nie jest to więc wskrzeszenie
+odrzuconego pomysłu, tylko pomysł, którego odrzucenie straciło podstawy. W mocy zostaje
+pozycja „Nawigacja o zawartości pochodzącej z danych": zakładek nie wnosi paczka. Model, który
+zastąpił szynę — [architecture.md](architecture.md), *Nawigacja: ekran wyboru systemu i pasek
+boczny*.
+
 ### 10. Nawigacja o zawartości pochodzącej z danych
 
 **Co proponowano.** Zasada ogólna, szersza niż sam kontekstowy sidebar: żeby zawartość
@@ -289,7 +311,8 @@ elementów nawigacji mogła pochodzić z paczek treści.
 
 **Dlaczego odrzucone.** Odrzucona jest szyna nawigacji o zawartości z danych, a nie
 grupowanie treści wewnątrz skompilowanego ekranu — granica jest wąska i konkretna. Jej
-kryterium, sprawdzalne po skutku awarii, stoi w [architecture.md](architecture.md), *Rejestr*.
+kryterium, sprawdzalne po skutku awarii, stoi w [architecture.md](architecture.md), *Zakładki
+treści*.
 
 **Czym to zastąpiono.** Grupowanie z danych jest legalne **wewnątrz** skompilowanego
 ekranu — np. rejestr wolno pogrupować i ofiltrować po polu kategorii z kontraktu
@@ -324,6 +347,10 @@ stałe miejsce docelowe.
 **Czym to zastąpiono.** Rejestr jest osobną, globalną pozycją szyny nawigacyjnej, poza
 kampanią, tylko do odczytu. W kampanii wybór wpisu z rejestru jest przelotnym,
 znikającym po użyciu wyborem wywoływanym z poziomu narzędzia, a nie stałym widokiem.
+
+**Potwierdzone 2026-09-22 w mocniejszej postaci:** rejestr przeszedł do zakładek treści
+kategorii System, a zakładka tej kategorii nie widzi kampanii wcale —
+[architecture.md](architecture.md), *Pasek boczny: trzy kategorie*.
 
 ### 13. Tracker tur jako element karty
 
@@ -407,6 +434,13 @@ efekty obejmujące wiele instancji naraz jako wymaganie silnika.
 **Czym to zastąpiono.** Bezpośredni zapis do pola w następstwie wykonanej operacji jest
 rzadkim wyjątkiem, zadeklarowanym jawnie w kontrakcie akcji, i tam, gdzie występuje, **nie
 pyta o potwierdzenie** — samo wywołanie akcji przez DM-a jest już intencją.
+
+**Częściowo uchylone 2026-09-22.** Operacja na kilku bytach **wskazanych przez MG** jest
+dozwolona — obrażenia kuli ognia na czterech zaznaczonych goblinach, przekazanie przedmiotu
+i złota między graczem a kupcem — a bezpośredni zapis po akcji MG przestaje być „rzadkim
+wyjątkiem". Wykluczone pozostaje to, co było sednem tej pozycji: aplikacja wybierająca cele
+sama (obszar, „wszyscy"), kaskady zmian, dialogi potwierdzeń, cofanie zmian wywołanych regułą.
+Uzasadnienie — pozycja „Czwarty zakaz w brzmieniu «operacja zmienia to, na czym ją wywołano»".
 
 ## Model danych
 
@@ -593,6 +627,22 @@ wariantu odrzuconego powyżej i dlaczego tamte argumenty nie trafiają:
 nie mogą się nawzajem referencjonować — rozstrzygnie to pierwszy prawdziwy drugi zestaw, nie
 rozmowa przed nim. Szczegóły i stan prac: `tasks.md`.
 
+**Uchylone w całości 2026-09-22**, w postaci innej niż odrzucona: system wybiera się przy
+starcie aplikacji, na ekranie wyboru, a kampania należy do jednego systemu. Model z 2026-09-13
+— kampania zaznacza zestawy, zestaw może wymagać innego — nie powstał i nie powstanie;
+zastąpiły go dodatki (pozycja „Rozszerzenia jako zestawy zależne od innego zestawu"). Pytanie
+otwarte o to, co widzi rozszerzenie, znika razem z rozszerzeniami.
+
+Dlaczego pozostałe argumenty nie trafiają:
+- **taksonomia** — rama nie rozgałęzia się po systemie; obsługuje wybrany system przez jego
+  zadeklarowane zakładki i nie pyta, który to jest. Pole, po którym dałoby się rozgałęzić,
+  nie powstaje;
+- **homebrew przez forka** — autorem wszystkich systemów jest autor repozytorium, a warianty
+  zasad wewnątrz systemu dają dodatki.
+
+**Cena przyjęta świadomie:** dwa pokrewne systemy (np. 5e i jego wariant) dzielą kod wyłącznie
+przez bibliotekę; kod specyficzny dla jednego z nich — choćby karta potwora — powtarza się.
+
 ### 25. Moduły deklarujące wsparcie systemów, z rozgałęzieniem po systemie w środku
 
 **Co proponowano.** Moduły odłączone od instancji systemu; jeden moduł wspiera kilka
@@ -609,6 +659,9 @@ systemów i przełącza zachowanie instrukcją `switch` po wybranym systemie.
 **Czym to zastąpiono.** Kontrakty jako interfejsy plus reguła umiejscowienia: narzędzie
 czytające pole po nazwie mieszka w zestawie, który je deklaruje; narzędzie czytające
 interfejs jest neutralne. Wybór jest wyborem katalogu, w którym leży plik, nie gałęzią.
+
+Ten sam argument trzyma od 2026-09-22 regułę, że o włączonych dodatkach system dowiaduje się
+w jednym miejscu — pozycja „Dodatek jako przełącznik sprawdzany w logice".
 
 ### 26. Jeden system bez żadnej rozłączności
 
@@ -723,3 +776,102 @@ zapisany po to, żeby go wtedy nie wymyślać od nowa:
 
 Wraca **razem ze swoim konsumentem**, nigdy przed nim — i nie przez przywrócenie usuniętego kodu
 z historii, tylko jako to, czego ten konsument faktycznie potrzebuje.
+
+**2026-09-22:** kształt wraca szerzej, niż zakładano — jako sposób, w jaki rama zapisuje każdy
+model stanu zadeklarowany przez system ([architecture.md](architecture.md), *Gdzie mieszka
+stan*). Pierwszym konsumentem są instancje, więc reguła „razem z konsumentem" jest spełniona.
+
+---
+
+## Rama, biblioteka, system
+
+Rozstrzygnięcia z sesji 2026-09-22, która zdegradowała dawny silnik i powłokę do ramy, wydzieliła
+wspólny kod do biblioteki i oddała systemowi wygląd i zawartość aplikacji. Model —
+[architecture.md](architecture.md), *Rama, biblioteka, system*.
+
+### 33. Rozszerzenia jako zestawy zależne od innego zestawu
+
+**Co proponowano.** Model przyjęty 2026-09-13: wszystko jest zestawem, zestaw może wymagać
+innego, a „system" i „rozszerzenie" czyta się z grafu zależności. Rozszerzenie dokłada treść do
+fundamentu, nie zmieniając go.
+
+**Dlaczego zastąpione 2026-09-22.**
+- **Homebrew nie dokłada, tylko modyfikuje.** Argument autora, na przykładzie Cywilizacji VI:
+  tryb barbarzyńskich klanów nie dodaje nowej cywilizacji, tylko zastępuje domyślną mechanikę.
+  Warianty zasad przy stole działają tak samo. Model, w którym rozszerzenie nie wpływa na
+  fundament, nie opisuje najczęstszego przypadku.
+- **Graf zależności nigdy nie powstał**, a niósł pytanie, którego nie dało się zamknąć przed
+  pierwszym prawdziwym drugim zestawem: co rozszerzeniu wolno zobaczyć u zestawu, od którego
+  zależy.
+- **Treść z dodatków wydawniczych jest paczką, nie zestawem** — bestiariusz czy nowe przedmioty
+  działały bez tej maszynerii i nadal działają.
+
+**Czym to zastąpiono.** Dodatki — warianty zasad wbudowane w system, włączane przy zakładaniu
+kampanii, zdolne dokładać i zastępować. Reguły — [architecture.md](architecture.md), *Dodatki*.
+
+### 34. Dodatek jako przełącznik sprawdzany w logice
+
+**Co proponowano.** Wzorem konfiguracji modów: w środku logiki warunek „czy dodatek jest
+włączony" — np. przy sprzedaży przedmiotu „jeśli sakiewki, szukaj najbliższej sakiewki gracza,
+inaczej dopisz złoto do karty".
+
+**Dlaczego odrzucone.**
+- **To odrzucony wcześniej kształt, piętro niżej.** Moduły przełączające zachowanie po systemie
+  (pozycja 25) odpadły, bo każdy nowy system wymagał edycji każdego modułu, a gałęzie rozjeżdżały
+  się po cichu. Dodatki sprawdzane w logice robią to samo — z kombinacjami dodatków mnożącymi
+  gałęzie.
+- **Wartość strzeżona flagą** — wprost z pierwszego zakazu.
+- **Nie ma tu czego przełączać w trakcie.** W grze komputerowej przełącznik siedzi w logice, bo
+  logika sama wykonuje reguły w każdej turze. Tu dodatek zmienia wyłącznie kształt księgowości,
+  a ten jest stały od otwarcia kampanii.
+- **Przełącznik z przykładu był objawem, nie potrzebą.** Potrzebowała go aplikacja wybierająca
+  sakiewkę sama. Gdy sakiewkę wskazuje MG, przełącznik znika: okno handlu pyta, dokąd trafia
+  złoto, a dodatek rozstrzygnął przy otwarciu kampanii, co stoi na tej liście.
+
+**Czym to zastąpiono.** System dowiaduje się o włączonych dodatkach w jednym miejscu, przy
+składaniu kampanii; później nic o nie nie pyta.
+
+### 35. Czwarty zakaz w brzmieniu „operacja zmienia to, na czym ją wywołano"
+
+**Co proponowano.** Brzmienie obowiązujące do 2026-09-22: operacja zmienia to, na czym ją
+wywołano; nic nie przechodzi po innych bytach, żeby coś na nich nanieść. W praktyce czytane jako
+zakaz każdej operacji dotykającej więcej niż jednej rzeczy.
+
+**Dlaczego odrzucone.** Autor, na przykładzie handlu: sprzedaż, w której MG sam usuwa przedmiot,
+dopisuje złoto graczowi i przedmiot kupcowi, jest „strasznie męcząca, długa i monotonna" — a nic
+w niej nie wymaga decyzji aplikacji. Asystent pomylił wtedy decyzję z jej zaksięgowaniem:
+o transakcji zdecydował MG, klikając „sprzedaj", a przesunięcie przedmiotu i złota to zapis po
+obu stronach tej decyzji. Sprawdzenie wobec pięciu zakazów wykazało, że handel łamał wyłącznie
+literę czwartego — a litera ta zabraniałaby nawet przełożenia miecza z plecaka do skrzyni,
+czego aplikacja musi umieć tak czy inaczej. Intencja zakazu była węższa: aplikacja nie wybiera
+celów.
+
+**Czym to zastąpiono.** „Nic nie wybiera celów za Mistrza Gry" — brzmienie w
+[CLAUDE.md](../CLAUDE.md); uzasadnienie i granica, która nadal obowiązuje —
+[architecture.md](architecture.md), *Księgowanie decyzji na kilku rzeczach naraz*.
+
+### 36. Biblioteka wspólna jako warstwa pośrednia
+
+**Co proponowano.** Asystent, 2026-09-22: wspólny kod — biurko, kontrolki kart, wpisy — jako
+trzecia warstwa między ramą a systemem.
+
+**Dlaczego odrzucone.** Autor: warstwa to coś, przez co wszystko przechodzi i co działa samo;
+biblioteka nie robi nic, dopóki system jej nie użyje — jak każda biblioteka w programowaniu.
+Nazwa „warstwa" sugerowałaby, że rama woła wspólny kod albo że system musi przez niego przejść.
+
+**Czym to zastąpiono.** Biblioteka: rama o niej nie wie, sama niczego nie rejestruje, system
+bierze z niej, co chce, albo nic — [architecture.md](architecture.md), *Biblioteka, nie warstwa*.
+
+### 37. Ekran wyboru systemu odłożony do drugiego systemu
+
+**Co proponowano.** Asystent, 2026-09-22: przy jednym systemie ekran wyboru pytałby przy każdym
+starcie o jedną odpowiedź — kształt, który reguła „nic nie wchodzi bez konsumenta" dotąd
+eliminowała. Zbudować go razem z drugim systemem.
+
+**Dlaczego odrzucone.** Autor: ekran nie jest opcjonalnym mechanizmem czekającym na
+konsumenta, tylko wejściem do aplikacji — miejscem, w którym system w ogóle zostaje wybrany.
+Przy jednym systemie nadal pełni tę rolę. Reguła „nic bez konsumenta" dotyczy mechanizmów
+utrzymywanych na zapas, nie punktu wejścia.
+
+**Czym to zastąpiono.** Ekran wyboru istnieje od razu — [architecture.md](architecture.md),
+*Nawigacja: ekran wyboru systemu i pasek boczny*.

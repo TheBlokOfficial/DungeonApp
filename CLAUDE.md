@@ -29,9 +29,11 @@ osobno, zamiast jednego zdania o intencji.
    rozstrzygania, reguły „to się nie kumuluje" ani odrzucania duplikatów po
    źródle czy kategorii. Lista wkładów ma dokładnie jedną operację: sumę.
 
-4. **Nic nie sięga do cudzego stanu.** Operacja zmienia to, na czym ją
-   wywołano. Nic nie przechodzi po innych bytach, żeby coś na nich nanieść —
-   brak „zastosuj do wszystkich", obszaru działania i zbioru celów.
+4. **Nic nie wybiera celów za Mistrza Gry.** Operacja zmienia wyłącznie to, co
+   MG jawnie wskazał. Może to być kilka rzeczy naraz — jak przy przekazaniu
+   czegoś między dwiema stronami — ale nigdy zbiór wyznaczony regułą: obszar
+   działania, „wszyscy", „najbliższy". Wszystko, co operacja zmieni, MG widzi
+   przed jej wywołaniem.
 
 5. **Zmiana stanu nie wywołuje kolejnej zmiany stanu.** Nic nie subskrybuje
    zmiany po to, żeby zapisać. Zdarzenia powiadamiają widoki i nigdy nie

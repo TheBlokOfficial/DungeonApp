@@ -1,6 +1,6 @@
 # DungeonApp — kolejka pracy
 
-**Status: stan na 2026-09-15.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
+**Status: stan na 2026-09-22.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
@@ -42,65 +42,47 @@ a następnie osadzenie treści w konkretnej kampanii. Stan, do którego to dopro
 
 Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
 
+**2026-09-22 zapadła przebudowa, której kod jeszcze nie dogonił:** dawny silnik i powłoka stają się
+ramą, wspólny kod wychodzi do biblioteki, a system — dawniej zestaw — przejmuje wygląd i zawartość
+aplikacji. Model — [architecture.md](architecture.md), *Rama, biblioteka, system*.
+
 ---
 
 ## Następne
 
-**Ten wycinek jest zamknięty i nic z niego nie zostało.** Kroki 1–8 są wykonane, a dokumenty
-opisują ten sam świat co kod.
+**Krok 9 z „Kolejność prac" [architecture.md](architecture.md): przebudowa na ramę, bibliotekę
+i system.** Docelowy kształt stoi w architekturze — sekcje *Rama, biblioteka, system*, *Nawigacja:
+ekran wyboru systemu i pasek boczny*, *Gdzie mieszka stan*, *Narzędzia biurka i system okien*.
 
-Następny w projekcie jest krok 9 z „Kolejność prac" [architecture.md](architecture.md) — formuły,
-sloty, dokument — ale jego kolejność wewnętrzna jest tam wprost zostawiona **do ustalenia
-osobno**. To rozstrzygnięcie autora, nie pozycja, którą da się stąd wziąć do wykonania, więc
-dopóki nie zapadnie, ta sekcja celowo stoi pusta.
+Następna czynność to **plan etapów przebudowy** — proponuje asystent, zatwierdza autor, zielone
+światło etap po etapie. Dopóki plan nie zapadnie, ta sekcja celowo nie wylicza etapów.
+
+Formuły, sloty i dokument są odtąd krokiem 10 i czekają na przebudowę, żeby powstać od razu
+w bibliotece.
 
 ---
 
 ## Odłożone
 
-### Czeka na drugi zestaw: kampania wybiera zestawy przy zakładaniu
+### Czeka na pierwszy prawdziwy dodatek: mechanizm dodatków
 
-Rozstrzygnięte przez autora 2026-09-13, po tym jak wyszło, że biurko pokazujące okna wszystkich
-wkompilowanych zestawów zrobi się bałaganem przy kilku systemach naraz. **Rozstrzygnięcie zostaje
-w mocy; 2026-09-14 przesunął się wyłącznie moment.**
-
-Model stoi w `architecture.md`, „Narzędzia biurka i system okien". Czym różni się od odrzuconego
-wcześniej wariantu „kampania wybiera system" i co z tamtych argumentów nadal obowiązuje — w
-`decisions.md`, „Kompilator zna listę systemów RPG, kampania wybiera jeden".
-
-**Dlaczego nie teraz — przesłanka sprawdzona w kodzie 2026-09-14 i nie trzyma.** Jest jeden zestaw
-i wnosi jedno okno, a po odejściu licznika jest to jedyne okno na całym biurku. Kampania mogłaby
-więc być w dwóch stanach: zestaw zaznaczony — biurko jak dziś, zestaw odznaczony — biurko puste.
-Ten drugi stan jest jedyną nową rzeczą, jaką mechanizm potrafiłby dziś pokazać, i nikt go nie chce.
-To ten sam kształt, za który z manifestu kampanii wyleciały dwa pola — patrz `decisions.md`,
-„Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście kampanii".
+Model i reguły — [architecture.md](architecture.md), *Dodatki*. Mechanizm powstaje razem
+z pierwszym prawdziwym dodatkiem, nie wcześniej: dziś nie ma ani jednego. Przykład, na którym
+rozmawiano — złoto w sakiewkach zamiast na postaci — wymaga licznika złota, którego też jeszcze nie
+ma.
 
 **Czekanie nie kosztuje nic, i to jest własność repozytorium, nie prognoza.** Deserializacja
-manifestu kampanii jest celowo pobłażliwa, więc dołożenie pola później nie podnosi wersji formatu
-i nie wymaga migracji; pilnują tego dwa testy opisane w tamtej samej pozycji `decisions.md`.
-Kampanie założone wcześniej wchodzą wtedy z domyślnym „wszystkie zestawy", czyli z zachowaniem,
-które mają dzisiaj.
+manifestu kampanii jest celowo pobłażliwa, więc dołożenie listy włączonych dodatków później nie
+podnosi wersji formatu i nie wymaga migracji — patrz [decisions.md](decisions.md), „Zarezerwowane
+pola `Ruleset` i `ContentPacks` w manifeście kampanii".
 
-**Wyzwalacz powrotu:** pierwszy prawdziwy drugi zestaw — ten sam, który zamyka pytanie otwarte
-niżej. Wyzwalaczem osobnym i wcześniejszym byłoby rozstrzygnięcie autora, że wartością jest
-ukrywanie pojedynczego okna w konkretnej kampanii; to jednak inna przesłanka i decyzja
-o interfejsie, nie ta pozycja.
-
-**Pytanie otwarte, świadomie niezamknięte:** co rozszerzeniu wolno zobaczyć u zestawu, od którego
-zależy. Dziś zestawy nie mogą się nawzajem referencjonować i pilnuje tego test, więc rozszerzenie
-nie odczyta pól cudzego typu treści — może wnieść własne typy, własne okna i narzędzia czytające
-neutralne kontrakty. Czy to wystarczy, rozstrzygnie **pierwszy prawdziwy drugi zestaw**, nie
-rozmowa przed nim.
-
-**Warto wiedzieć przed wyceną:** większość tego, co u innych bywa „rozszerzeniem", jest tutaj
-**paczką, nie zestawem** — bestiariusz, nowe przedmioty, treść z dodatku to wpisy, czyli dane, i
-działają dziś bez żadnej nowej maszynerii. Zestaw jest potrzebny dopiero na nowy kształt albo nowe
-narzędzie.
+**Wyzwalacz:** pierwszy wariant zasad, który autor chce mieć w konkretnej kampanii.
 
 ### Czekają na miejsce na ekranie — trzy pozycje o interfejsie
 
 Wszystkie czekają, aż autor zechce zaprojektować dla nich miejsce na ekranie. Żadna nie blokuje
-wycinka powyżej.
+przebudowy — ale przebudowa zmienia ekran, na którym dwie pierwsze by stanęły: rejestr przechodzi
+do zakładek treści systemu. Warto więc rozważyć je przy projektowaniu tych zakładek, nie osobno.
 
 1. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
    wyświetla — świadoma decyzja autora z 2026-09-12. Jedyna pozycja z tabeli „Co się dzieje, gdy

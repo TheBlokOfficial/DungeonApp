@@ -99,8 +99,9 @@ pominięcie dokumentu, którego dziś nie potrzebujesz, jest bezpieczne — i o 
 Dwie rzeczy, które oszczędzają najwięcej czasu:
 
 * **`decisions.md` czyta się przed propozycją, nie po.** Sporo naturalnych pomysłów zostało już raz
-  rozważonych i odrzuconych z uzasadnieniem — kontekstowy sidebar, dziedziczenie szablonów, skrypty
-  w paczkach, wpisy lokalne dla kampanii. Dokument istnieje po to, żeby nie wracały co kilka
-  miesięcy jako nowe.
+  rozważonych i odrzuconych z uzasadnieniem — dziedziczenie szablonów, skrypty w paczkach, wpisy
+  lokalne dla kampanii, przełączniki dodatków w środku logiki. Dokument istnieje po to, żeby nie
+  wracały co kilka miesięcy jako nowe — a gdy któryś wraca słusznie, zapisuje, dlaczego jego
+  odrzucenie straciło podstawy.
 * **`code-map.md` nigdy nie wygrywa z kodem.** On i `architecture.md` rozjeżdżają się **celowo** —
   jeden opisuje stan, drugi cel.

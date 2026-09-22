@@ -66,6 +66,12 @@ na rozmowie o kolejnych decyzjach.
 się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny właśnie po to, żeby myślenie
 zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
 
+**Sesja architektoniczna czyta dokumenty, nie źródła.** Decyzja autora z 2026-09-22. Okno kontekstu
+asystenta prowadzącego sesję jest jej najcenniejszym zasobem, więc asystent projektuje i przegląda,
+a kod pisze i czyta subagent w wąsko zakrojonym zadaniu — wynik asystent weryfikuje, zanim go przyjmie.
+Konkret z kodu, potrzebny do decyzji, przynosi `code-map.md` albo subagent. **Deleguj kod, nie
+decyzje:** dokumenty tego repozytorium niosą decyzje, więc pisze je asystent sam.
+
 ---
 
 ## 2. Jak raportować
@@ -159,15 +165,33 @@ od zera.
 
 ### Nawigacja
 
-**Autor przeprojektowuje całą nawigację w osobnej sesji.** Do tego czasu nie uogólniaj rusztowania
-w `AppShellViewModel.OnSectionSelected` w router — ma zostać łańcuchem `if`-ów, żeby jego
-przemyślenia nie musiały najpierw rozbierać abstrakcji.
+**Przeprojektowanie nawigacji zapadło 2026-09-22** — ekran wyboru systemu i pasek boczny z trzema
+kategoriami. Rusztowanie w `AppShellViewModel.OnSectionSelected` zostaje łańcuchem `if`-ów do etapu
+przebudowy, który je zastąpi; nie uogólniaj go wcześniej w router.
 
-**Kontekstowy sidebar** — szyna, której zawartość zmienia się po wejściu w kampanię — jest
-odrzucony. Wrócił kiedyś jako propozycja właśnie dlatego, że nigdzie nie był zapisany.
+**Pasek boczny zmieniający zawartość po wyborze systemu i otwarciu kampanii jest przyjęty** — z
+propozycji autora, po tym jak wszystkie trzy powody jego dawnego odrzucenia przestały obowiązywać.
+Odrzucone zostaje to, co z tamtej pozycji przeżyło: **zakładki z danych.** Pasek wypełnia
+skompilowany system, nigdy paczka.
 
-Zanim zaproponujesz cokolwiek o interfejsie, przeczytaj do końca sekcję „Powłoka, nawigacja,
-powierzchnie" w `architecture.md`. Tam są decyzje, nie sugestie.
+Zanim zaproponujesz cokolwiek o interfejsie, przeczytaj do końca sekcję „Nawigacja: ekran wyboru
+systemu i pasek boczny" w `architecture.md`. Tam są decyzje, nie sugestie.
+
+### Granica automatyzacji — jego własne uzasadnienia
+
+* **„Są automatyzacje, które są użyteczne, intuicyjne i oszczędzające czas."** Handel, w którym MG
+  sam usuwa przedmiot, dopisuje złoto graczowi i przedmiot kupcowi, jest „strasznie męczący, długi
+  i monotonny". Wniosek: aplikacja księguje decyzje MG — także jednym kliknięciem i na kilku rzeczach
+  naraz — ale ich nie podejmuje.
+* **Homebrew nie dodaje zawartości — modyfikuje rdzeń.** Jego przykład: tryb barbarzyńskich klanów
+  w Cywilizacji VI zastępuje domyślną mechanikę, zamiast coś do niej dokładać. Stąd dodatki, które
+  mogą zastępować, a nie tylko dokładać.
+
+**Lekcja dla asystenta: zakazy czytaj według intencji zapisanej w `architecture.md`, nie według
+litery.** 2026-09-22 asystent zastosował literę czwartego zakazu do handlu i pomylił decyzję MG z jej
+zaksięgowaniem; autor nazwał to ekstremizmem i miał rację — w jednym zakazie z pięciu. Pozostałe
+cztery okazały się dokładnie tym, co odróżnia aplikację od gry komputerowej. Gdy litera i intencja się
+rozjeżdżają, zgłoś rozjazd — nie egzekwuj litery i nie porzucaj intencji.
 
 ### Warstwa treści — jego własne uzasadnienia
 

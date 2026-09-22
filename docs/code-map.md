@@ -19,6 +19,10 @@ niż jakiekolwiek ich streszczenie tutaj.
 
 > **Aktualność: 2026-09-15.** Zaktualizowany po rozbiórce licznika i całej warstwy bloków danych —
 > oba mechanizmy zniknęły z kodu, jedynym magazynem stanu kampanii są dziś instancje.
+>
+> **2026-09-22** architektura przyjęła przebudowę na ramę, bibliotekę i system. Kod jej jeszcze nie
+> dogonił, więc ten dokument opisuje stan sprzed niej — łącznie ze słowem „zestaw" tam, gdzie
+> architektura mówi już „system".
 
 ---
 
@@ -312,8 +316,9 @@ warstwy bloków danych po odejściu jej jedynego konsumenta*.
 
 **Uwaga o zakresie:** katalog paneli buduje się per sesja, ale jego zawartość **nie zależy od
 kampanii** — każde narzędzie każdego wkompilowanego zestawu trafia na biurko każdej kampanii. Nie ma
-mechanizmu włączania per kampania i manifest nie ma pola, które by go obsługiwało. To jest wprost
-przesłanka pozycji „kampania wybiera zestawy przy zakładaniu" z [tasks.md](tasks.md).
+mechanizmu włączania per kampania i manifest nie ma pola, które by go obsługiwało. Docelowo katalog
+okien składa się z tego, co deklaruje wybrany system wraz z dodatkami — [architecture.md](architecture.md),
+*Narzędzia biurka i system okien*.
 
 ---
 
@@ -368,8 +373,9 @@ czysta logika w warstwie Desktop.
 ### Rusztowanie / celowo tymczasowe
 
 * **Nawigacja boczna** — dwie realne sekcje, reszta to dosłowny placeholder. Metoda przełączająca
-  sekcje nadal nosi komentarz o tymczasowym rusztowaniu; **ma tak zostać** do przeprojektowania
-  nawigacji przez autora.
+  sekcje nadal nosi komentarz o tymczasowym rusztowaniu; **ma tak zostać** do etapu przebudowy,
+  który je zastąpi — projekt nawigacji zapadł 2026-09-22 ([architecture.md](architecture.md),
+  *Nawigacja: ekran wyboru systemu i pasek boczny*).
 * **`AllowsMultipleInstances`** — reprezentowalne w zapisanym układzie i czytane przy odtwarzaniu,
   ale żaden panel go nie ustawia. Rusztowanie opisane jako rusztowanie, nie rezerwacja: kod, który je
   czyta, istnieje i działa.
