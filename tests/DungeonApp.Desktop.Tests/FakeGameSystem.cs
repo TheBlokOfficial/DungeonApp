@@ -3,35 +3,41 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
 /// A minimal <see cref="IGameSystem"/> shared by every Desktop test that needs one:
 /// <see cref="ContentPackLoader"/> tests use it as an <see cref="IContentTypeCatalog"/>, registry
-/// tests use it as an <see cref="IContentPresentation"/> too. It knows exactly the descriptors it is
-/// given and draws a trivial placeholder card for any resolved entry - it exists to exercise the
-/// shell's plumbing, not to stand in for any real content type, so it names none.
+/// tests use it as an <see cref="IContentPresentation"/> too, and the tab-lifecycle tests
+/// (<c>ActiveSystemSessionTests</c>) use its <see cref="SystemTabs"/> and <see cref="CampaignTabs"/>.
+/// It knows exactly the descriptors it is given and draws a trivial placeholder card for any resolved
+/// entry - it exists to exercise the shell's plumbing, not to stand in for any real content type, so
+/// it names none.
 /// <para>
 /// <paramref name="validate"/> lets a test simulate <see cref="EntryUnresolvedReason.ValuesRejected"/>
 /// without this fake ever knowing what a real content type's values look like: return an error
 /// message to reject, or <see langword="null"/> to accept. Defaults to always accepting.
 /// </para>
 /// <para>
-/// <paramref name="tools"/> lets a <see cref="CampaignToolProvider"/> test simulate a system
-/// that brings a tool belt, without this fake needing to know what a real tool looks like: a factory
-/// receives the <see cref="CampaignToolContext"/> the provider built and returns whatever descriptors
-/// a test wants to see stitched onto <see cref="Panels.PanelCatalog"/>. Defaults to bringing none.
+/// <paramref name="systemTabs"/> and <paramref name="campaignTabs"/> default to empty, so a test that
+/// only needs a catalog or a presentation is not forced to think about tabs at all.
 /// </para>
 /// </summary>
 internal sealed class FakeGameSystem(
     ContentId id,
     IReadOnlyList<ContentTypeDescriptor> descriptors,
     Func<ContentValues, string?>? validate = null,
-    Func<CampaignToolContext, IReadOnlyList<WorkspacePanelDescriptor>>? tools = null) : IGameSystem
+    IReadOnlyList<SystemTabDeclaration>? systemTabs = null,
+    IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null) : IGameSystem
 {
     public ContentId Id { get; } = id;
+
+    public string DisplayName { get; } = id.ToString();
+
+    public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; } = systemTabs ?? [];
+
+    public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; } = campaignTabs ?? [];
 
     public bool HasSet(ContentId set) => set == Id;
 
@@ -63,7 +69,4 @@ internal sealed class FakeGameSystem(
     }
 
     public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
-
-    public IReadOnlyList<WorkspacePanelDescriptor> CreateTools(CampaignToolContext context) =>
-        tools?.Invoke(context) ?? [];
 }

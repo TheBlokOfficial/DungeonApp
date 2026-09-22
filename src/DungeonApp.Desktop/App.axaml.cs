@@ -9,8 +9,6 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
-using DungeonApp.Desktop.Features.CampaignWorkspace;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
 
@@ -23,13 +21,11 @@ public partial class App : Avalonia.Application
     // (the two aggregates below) is still plain constructor injection into the pieces that need it.
     private readonly IReadOnlyList<IGameSystem> _systems;
 
-    private WorkspaceLayoutStore? _layoutStore;
     private JsonCampaignRepository? _campaigns;
-    private CampaignWorkspacePreparationCache? _preparations;
+    private CampaignPreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
     private LoadContentPacksStep? _contentPacksStep;
-    private ContentPresentationAggregate? _presentation;
-    private CampaignToolProvider? _toolProvider;
+    private ContentTypeCatalogAggregate? _contentTypes;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
@@ -63,13 +59,6 @@ public partial class App : Avalonia.Application
 
         AvaloniaXamlLoader.Load(this);
 
-        var appDataDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "DungeonApp");
-        // Kept as fields rather than locals, because the shell needs them once the window is built.
-        // Plain constructor injection: no container, and deliberately no service locator.
-        _layoutStore = new WorkspaceLayoutStore(appDataDirectory);
-
         // The campaign library lives with the user's documents, not in application data: a campaign
         // is meant to be a visible, portable, backup-able document rather than hidden app state.
         var libraryPath = Path.Combine(
@@ -87,20 +76,16 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Packs");
 
-        var contentTypes = new ContentTypeCatalogAggregate(_systems);
-        _presentation = new ContentPresentationAggregate(_systems);
+        _contentTypes = new ContentTypeCatalogAggregate(_systems);
 
-        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, contentTypes));
+        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, _contentTypes));
 
-        // Built once, here, alongside the other aggregates over _systems - never per campaign
-        // open. The registry Func mirrors the one handed to the shell below: packs are not loaded
-        // yet at this point in Initialize, so reading _contentPacksStep.Registry has to wait for
-        // ToolsFor, called only once a campaign actually opens.
-        _toolProvider = new CampaignToolProvider(_systems, () => _contentPacksStep!.Registry, contentTypes);
-
-        // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
-        // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.
-        _preparations = new CampaignWorkspacePreparationCache(_campaigns, _layoutStore);
+        // Cache dzielony przez rozgrzewkę pierwszej kampanii po wyborze systemu i przez otwarcie
+        // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
+        // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten dziś wystawia wyłącznie
+        // system, w swoim własnym konstruktorze (DungeonApp.App/Program.cs), bo rama nie stawia
+        // biurka.
+        _preparations = new CampaignPreparationCache(_campaigns);
 
         // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
         // otwierające kampanię prowadzi do metody na powłoce, która jeszcze nie istnieje - domyka się
@@ -111,20 +96,11 @@ public partial class App : Avalonia.Application
             new CreateCampaign(_campaigns, TimeProvider.System),
             id => _shell!.OpenCampaignAsync(id));
 
-        // Jawna tablica - kolejność w niej JEST kolejnością wykonania.
-        var libraryStep = new LoadCampaignLibraryStep(_campaignLibrary);
-        var dataStep = new WarmCampaignDataStep(_preparations, libraryStep);
-
-        _startupSteps =
-        [
-            // Paczki treści przed półką kampanii (architecture.md, "Przepływy"): rejestr musi istnieć zanim
-            // cokolwiek próbuje rozwiązywać wobec niego referencje.
-            _contentPacksStep,
-            libraryStep,
-            dataStep,
-            new WarmCampaignWorkspaceVisualStep(_preparations, dataStep, _layoutStore, _campaigns, _toolProvider),
-            new WarmWorkspacePlaceholderStep()
-        ];
+        // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Przed ekranem wyboru wczytuje
+        // się wyłącznie treść (architecture.md, "Przepływy"): półka, rozgrzewka danych kampanii i
+        // rozgrzewka zakładek kampanii przenoszą się do wyboru systemu (AppShellViewModel), bo
+        // dopiero wtedy wiadomo, którego systemu zakładki rozgrzewać.
+        _startupSteps = [_contentPacksStep];
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -132,22 +108,21 @@ public partial class App : Avalonia.Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _shell = new AppShellViewModel(
-                _layoutStore!,
+                _systems,
                 _campaigns!,
                 _campaignLibrary!,
                 _preparations!,
                 _startupSteps!,
-                () => _contentPacksStep!.Registry,
-                _presentation!,
-                _toolProvider!);
+                () => _contentPacksStep!.Registry);
 
             desktop.MainWindow = new MainWindow
             {
                 DataContext = _shell
             };
 
-            // The last reliable moment to write a pending desk arrangement. Exit does not run on a
-            // hard kill, so this is where the debounced layout writer is flushed.
+            // The last reliable moment to release whatever the active system's tabs are still
+            // holding. Exit does not run on a hard kill, so this is where a desk tab's pending
+            // layout write is flushed.
             desktop.ShutdownRequested += (_, _) => _shell?.FlushPendingState();
             desktop.MainWindow.Closing += (_, _) => _shell?.FlushPendingState();
 

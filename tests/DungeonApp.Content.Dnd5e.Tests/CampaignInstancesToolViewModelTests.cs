@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
@@ -17,7 +19,10 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// </summary>
 public sealed class CampaignInstancesToolViewModelTests
 {
-    private static readonly Dnd5eSystem Dnd5e = new();
+    // Never opens a real desk tab, so nothing here writes to the store - same isolation pattern as
+    // Dnd5eSystemTests.NewSystem.
+    private static readonly Dnd5eSystem Dnd5e = new(new WorkspaceLayoutStore(
+        Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-{Guid.NewGuid():N}")));
 
     [Fact]
     public void The_instance_list_reflects_every_instance_the_campaign_holds()
@@ -321,8 +326,9 @@ public sealed class CampaignInstancesToolViewModelTests
 
             var campaign = Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
             var session = new CampaignSession(campaign, Repository);
+            var tabContext = new CampaignTabContext(session, Registry);
 
-            Context = new CampaignToolContext(session, Registry, Dnd5e);
+            Context = new CampaignToolContext(tabContext, Dnd5e);
         }
 
         public ContentRegistry Registry { get; }

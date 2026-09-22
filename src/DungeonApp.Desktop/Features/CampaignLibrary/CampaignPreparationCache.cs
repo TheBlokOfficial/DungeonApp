@@ -5,21 +5,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
-namespace DungeonApp.Desktop.Features.CampaignWorkspace;
+namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
 /// <summary>
-/// Warms every campaign listed on the shelf and hands the prepared state to the first opener. Tasks
+/// Warms every campaign listed on the shelf and hands the loaded campaign to the first opener. Tasks
 /// themselves are cached, so a click that races a refresh awaits the existing read instead of
 /// starting a duplicate one.
+/// <para>
+/// Caches only the <see cref="Campaign"/> itself - docs/tasks.md's "Etap 1" moved the desk-layout
+/// half of what this cache used to prepare into the desk itself (its own <c>CampaignDesk</c> entry point),
+/// which now loads its own layout when a desk tab is actually built.
+/// </para>
 /// </summary>
-public sealed class CampaignWorkspacePreparationCache(
-    ICampaignRepository campaigns,
-    WorkspaceLayoutStore layouts)
+public sealed class CampaignPreparationCache(ICampaignRepository campaigns)
 {
     private readonly object _gate = new();
-    private readonly Dictionary<CampaignId, Task<CampaignWorkspacePreparation>> _preparations = [];
+    private readonly Dictionary<CampaignId, Task<Campaign>> _preparations = [];
 
     public async Task WarmAsync(
         IEnumerable<CampaignSummary> summaries,
@@ -34,7 +36,7 @@ public sealed class CampaignWorkspacePreparationCache(
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
-    public async Task<CampaignWorkspacePreparation> TakeAsync(
+    public async Task<Campaign> TakeAsync(
         CampaignId id,
         CancellationToken cancellationToken = default)
     {
@@ -51,11 +53,11 @@ public sealed class CampaignWorkspacePreparationCache(
     }
 
     /// <summary>
-    /// Borrows prepared state for startup materialization without consuming the cache entry that
-    /// the user's first open will need. A broken candidate simply declines visual warmup; it has
-    /// already been removed by the shelf-wide warmup observer.
+    /// Borrows a prepared campaign for warmup without consuming the cache entry that the user's
+    /// first open will need. A broken candidate simply declines warmup; it has already been removed
+    /// by the shelf-wide warmup observer.
     /// </summary>
-    public async Task<CampaignWorkspacePreparation?> PeekAsync(
+    public async Task<Campaign?> PeekAsync(
         CampaignId id,
         CancellationToken cancellationToken = default)
     {
@@ -73,20 +75,7 @@ public sealed class CampaignWorkspacePreparationCache(
         }
     }
 
-    public Task RefreshAsync(CampaignId id, CancellationToken cancellationToken = default)
-    {
-        Task<CampaignWorkspacePreparation> task;
-
-        lock (_gate)
-        {
-            task = PrepareAsync(id, cancellationToken);
-            _preparations[id] = task;
-        }
-
-        return ObserveWarmupAsync(id, task);
-    }
-
-    private Task<CampaignWorkspacePreparation> GetOrCreate(
+    private Task<Campaign> GetOrCreate(
         CampaignId id,
         CancellationToken cancellationToken)
     {
@@ -102,22 +91,18 @@ public sealed class CampaignWorkspacePreparationCache(
         }
     }
 
-    private async Task<CampaignWorkspacePreparation> PrepareAsync(
+    private async Task<Campaign> PrepareAsync(
         CampaignId id,
         CancellationToken cancellationToken)
     {
         // JsonCampaignRepository performs asynchronous IO, but also restores module state between
         // awaits. Starting the complete operation on the pool keeps that CPU and first-use JIT cost
         // out of Avalonia's dispatcher.
-        var campaign = await Task.Run(
+        return await Task.Run(
                 () => campaigns.GetAsync(id, cancellationToken),
                 cancellationToken)
             .ConfigureAwait(false)
             ?? throw new CampaignUnavailableException(id);
-
-        var layout = await layouts.LoadAsync(id.ToString(), cancellationToken).ConfigureAwait(false);
-
-        return new CampaignWorkspacePreparation(campaign, layout);
     }
 
     private async Task WarmBoundedAsync(
@@ -139,7 +124,7 @@ public sealed class CampaignWorkspacePreparationCache(
 
     private async Task ObserveWarmupAsync(
         CampaignId id,
-        Task<CampaignWorkspacePreparation> task)
+        Task<Campaign> task)
     {
         try
         {
@@ -154,7 +139,7 @@ public sealed class CampaignWorkspacePreparationCache(
         }
     }
 
-    private void RemoveIfCurrent(CampaignId id, Task<CampaignWorkspacePreparation> task)
+    private void RemoveIfCurrent(CampaignId id, Task<Campaign> task)
     {
         lock (_gate)
         {

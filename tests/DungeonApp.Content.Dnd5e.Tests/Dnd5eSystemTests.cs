@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 
@@ -62,7 +64,7 @@ public sealed class Dnd5eSystemTests
         packs.WriteFile("pack", "pack.json", PackJson);
         packs.WriteFile("pack", "entries/e.json", EntryJsonWithUnknownKey);
 
-        var registry = await new ContentPackLoader(packs.Path, new Dnd5eSystem()).LoadAsync();
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
 
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
@@ -76,7 +78,7 @@ public sealed class Dnd5eSystemTests
         packs.WriteFile("pack", "pack.json", PackJson);
         packs.WriteFile("pack", "entries/e.json", EntryJsonMissingRequiredActions);
 
-        var registry = await new ContentPackLoader(packs.Path, new Dnd5eSystem()).LoadAsync();
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
 
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
@@ -84,7 +86,15 @@ public sealed class Dnd5eSystemTests
     }
 
     private static Task<ContentRegistry> LoadFixturesAsync() =>
-        new ContentPackLoader(RepositoryRoot.PackFixtures, new Dnd5eSystem()).LoadAsync(CancellationToken.None);
+        new ContentPackLoader(RepositoryRoot.PackFixtures, NewSystem()).LoadAsync(CancellationToken.None);
+
+    /// <summary>
+    /// None of these tests ever open a campaign, so nothing here writes to the layout store - a
+    /// fresh temp directory per call is enough, the same isolation pattern
+    /// <c>WorkspaceLayoutStoreTests</c> uses for the real thing.
+    /// </summary>
+    private static Dnd5eSystem NewSystem() => new(new WorkspaceLayoutStore(
+        Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-{Guid.NewGuid():N}")));
 
     private const string PackJson = """
         {

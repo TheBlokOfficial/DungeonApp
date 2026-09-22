@@ -6,8 +6,10 @@ namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
 /// Wczytuje i waliduje paczki treści. Wynik trzyma we własnym polu i udostępnia jako <see
-/// cref="Registry"/> - kolejny etap prac (ekran rejestru) będzie z niego czytał, tak jak <see
-/// cref="WarmCampaignDataStep"/> czyta <see cref="LoadCampaignLibraryStep.Summaries"/>.
+/// cref="Registry"/> - jedyny krok startowy przed ekranem wyboru systemu (architecture.md,
+/// "Przepływy"). Zakładka "Rejestr" systemu D&amp;D czyta z niego przez <see cref="Registry"/> -
+/// domknięte w <c>Func&lt;ContentRegistry&gt;</c> podawanym do <c>AppShellViewModel</c>, tak samo
+/// jak dziś.
 /// <para>
 /// Nie ma tu własnego try/catch: <see cref="ContentPackLoader.LoadAsync"/> nigdy nie rzuca z powodu
 /// wadliwej paczki - odkłada ją do <see cref="ContentRegistry.RejectedPacks"/> i ładuje dalej. Gdyby

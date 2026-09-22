@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:selection="using:DungeonApp.Desktop.Shell.SystemSelection"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.SystemSelection.SystemSelectionView"
+             x:DataType="selection:SystemSelectionViewModel">
+
+    <UserControl.Styles>
+        <!-- A system option reuses the shelf's campaign-row rhythm (docs/tasks.md, "interfejs bez
+             fajerwerków": existing tokens only) - a full-row button rather than a list plus a
+             separate open action, since there is nothing else to do with a system option but choose
+             it. -->
+        <Style Selector="Border.system-option">
+            <Setter Property="Height" Value="{DynamicResource DungeonCampaignRowHeight}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Margin" Value="0,0,0,3" />
+            <Setter Property="Padding" Value="10,0" />
+        </Style>
+        <Style Selector="Border.system-option:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="Button.system-option-open">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Fullscreen, no sidebar and no top bar - the status bar is a sibling row in AppShellView, not
+         part of this view (docs/tasks.md: "Ekran wyboru bez paska bocznego i górnego"). -->
+    <Grid Background="{DynamicResource DungeonBackstageBrush}">
+        <Border Width="3200"
+                HorizontalAlignment="Left"
+                Background="{DynamicResource DungeonBackstageWideBrush}"
+                IsHitTestVisible="False" />
+        <controls:AnchoredContentHost MaxContentWidth="760" MaxContentHeight="614">
+            <Grid Background="Transparent" MinHeight="0" Margin="28,20,28,24">
+                <Grid RowDefinitions="Auto,Auto">
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                        <TextBlock Classes="muted" Text="DungeonApp" />
+                        <TextBlock Classes="workspace-title" Text="Wybierz system" />
+                        <TextBlock Classes="muted" Text="Każda kampania należy do jednego z poniższych systemów." />
+                    </StackPanel>
+
+                    <ItemsControl Grid.Row="1"
+                                  Margin="0,20,0,0"
+                                  ItemsSource="{Binding Systems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="selection:SystemOptionViewModel">
+                                <Border Classes="system-option">
+                                    <Grid ColumnDefinitions="*,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                        <Button Grid.ColumnSpan="2"
+                                                Classes="system-option-open"
+                                                Command="{Binding ChooseCommand}" />
+                                        <TextBlock VerticalAlignment="Center"
+                                                   IsHitTestVisible="False"
+                                                   FontFamily="{DynamicResource DungeonDisplayFont}"
+                                                   FontSize="{DynamicResource DungeonCampaignNameFontSize}"
+                                                   Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                                   Text="{Binding DisplayName}" />
+                                        <Image Grid.Column="1"
+                                               Width="16"
+                                               Height="16"
+                                               VerticalAlignment="Center"
+                                               IsHitTestVisible="False"
+                                               Source="{StaticResource DungeonIconChevronRight}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Grid>
+        </controls:AnchoredContentHost>
+    </Grid>
+</UserControl>

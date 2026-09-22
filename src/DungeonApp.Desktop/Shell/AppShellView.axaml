@@ -3,28 +3,27 @@
              xmlns:shell="using:DungeonApp.Desktop.Shell"
              xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
-             xmlns:workspace="using:DungeonApp.Desktop.Shell.Workspace"
-             xmlns:campaignWorkspace="using:DungeonApp.Desktop.Features.CampaignWorkspace"
+             xmlns:selection="using:DungeonApp.Desktop.Shell.SystemSelection"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
-             xmlns:registry="using:DungeonApp.Desktop.Features.Registry"
              xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
              xmlns:easings="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
              x:Class="DungeonApp.Desktop.Shell.AppShellView"
              x:DataType="shell:AppShellViewModel"
              Loaded="OnLoaded">
     <UserControl.DataTemplates>
-        <DataTemplate DataType="workspace:WorkspacePlaceholderViewModel">
-            <workspace:WorkspacePlaceholderView />
-        </DataTemplate>
-        <DataTemplate DataType="campaignWorkspace:CampaignWorkspaceViewModel">
-            <campaignWorkspace:CampaignWorkspaceView />
+        <DataTemplate DataType="selection:SystemSelectionViewModel">
+            <selection:SystemSelectionView />
         </DataTemplate>
         <DataTemplate DataType="campaignLibrary:CampaignLibraryViewModel">
             <campaignLibrary:CampaignLibraryView />
         </DataTemplate>
-        <DataTemplate DataType="registry:RegistryViewModel">
-            <registry:RegistryView />
+        <DataTemplate DataType="campaignLibrary:CampaignPageViewModel">
+            <campaignLibrary:CampaignPageView />
         </DataTemplate>
+        <!-- A system tab's or a campaign tab's content arrives as an already-finished Control
+             (ITabContent.Content), never a view model - so it needs no template here. Avalonia hosts
+             a Control assigned directly as Content as-is, the same trick a panel's own body already
+             uses (docs/code-map.md, "Narzędzie oddaje gotową kontrolkę, nie ViewModel"). -->
     </UserControl.DataTemplates>
 
     <Grid IsHitTestVisible="{Binding IsReady}">
@@ -32,34 +31,42 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="{DynamicResource DungeonStatusBarHeight}" />
         </Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" LastChildFill="True">
-            <!-- Native transition rather than a timer: the workspace follows the live edge. -->
-            <sidebars:GlobalSidebarView DockPanel.Dock="Left"
-                                        DataContext="{Binding Sidebar}"
-                                        Width="{Binding SidebarWidth}">
-                <sidebars:GlobalSidebarView.Transitions>
-                    <animation:Transitions>
-                        <animation:DoubleTransition Property="Width" Duration="0:0:0.18">
-                            <animation:DoubleTransition.Easing>
-                                <easings:CubicEaseInOut />
-                            </animation:DoubleTransition.Easing>
-                        </animation:DoubleTransition>
-                    </animation:Transitions>
-                </sidebars:GlobalSidebarView.Transitions>
-            </sidebars:GlobalSidebarView>
 
-            <Border Background="{DynamicResource DungeonBackstageBrush}"
-                    BoxShadow="inset 0 0 8 0 #24000000">
-                <Grid>
+        <Grid Grid.Row="0">
+            <!-- Ekran wyboru systemu: pełnoekranowy, bez paska bocznego (docs/tasks.md, etap 1). -->
+            <ContentControl Content="{Binding SystemSelection}" IsVisible="{Binding !IsSystemChosen}" />
+
+            <!-- Pasek boczny + treść, dopiero po wyborze systemu. -->
+            <DockPanel LastChildFill="True" IsVisible="{Binding IsSystemChosen}">
+                <sidebars:GlobalSidebarView DockPanel.Dock="Left"
+                                            DataContext="{Binding Sidebar}"
+                                            Width="{Binding SidebarWidth}">
+                    <sidebars:GlobalSidebarView.Transitions>
+                        <animation:Transitions>
+                            <animation:DoubleTransition Property="Width" Duration="0:0:0.18">
+                                <animation:DoubleTransition.Easing>
+                                    <easings:CubicEaseInOut />
+                                </animation:DoubleTransition.Easing>
+                            </animation:DoubleTransition>
+                        </animation:Transitions>
+                    </sidebars:GlobalSidebarView.Transitions>
+                </sidebars:GlobalSidebarView>
+
+                <Border Background="{DynamicResource DungeonBackstageBrush}"
+                        BoxShadow="inset 0 0 8 0 #24000000">
                     <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
                         <TransitioningContentControl.PageTransition>
                             <CrossFade Duration="0:0:0.14" />
                         </TransitioningContentControl.PageTransition>
                     </TransitioningContentControl>
-                    <ContentControl Name="WarmupHost" ZIndex="99" IsHitTestVisible="False" />
-                </Grid>
-            </Border>
-        </DockPanel>
+                </Border>
+            </DockPanel>
+
+            <!-- Niewidoczny host rozgrzewki - używany zarówno przez wczytanie paczek (przed
+                 ekranem wyboru), jak i przez rozgrzewkę zakładek kampanii pierwszej kampanii z
+                 półki (po wyborze systemu), więc żyje poza obiema gałęziami powyżej. -->
+            <ContentControl Name="WarmupHost" ZIndex="99" IsHitTestVisible="False" />
+        </Grid>
 
         <statusBar:StatusBarView Grid.Row="1" DataContext="{Binding StatusBar}" />
     </Grid>

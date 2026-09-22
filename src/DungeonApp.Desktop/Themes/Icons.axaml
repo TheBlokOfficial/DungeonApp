@@ -107,4 +107,13 @@
             <GeometryDrawing Geometry="M12,7 L12,12 L16,14" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <!-- A closed campaign tab shows this in place of its own icon (docs/tasks.md, etap 1: "kłódka
+         zamiast ikony zakładki") - same 24x24 viewbox and DungeonIconPen as every outline icon above,
+         so a locked tab is visually just another member of this icon set, not a special case. -->
+    <DrawingImage x:Key="DungeonIconLock" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M6,11 L18,11 L18,21 L6,21 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M8,11 L8,7 A4,4 0 0 1 16,7 L16,11" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
 </ResourceDictionary>

@@ -4,11 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Controls.Workspace;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
-using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignWorkspace;
@@ -19,6 +17,12 @@ namespace DungeonApp.Desktop.Features.CampaignWorkspace;
 /// Owns the desired-versus-effective placement split. Gestures write the desired placement (through
 /// <see cref="CommitGesture"/>); every surface resize recomputes the effective one from it. Nothing
 /// here knows about pixels, pointers or <c>Canvas</c> - it works in logical workspace coordinates.
+/// </para>
+/// <para>
+/// Knows nothing of a campaign, a session or a system - see <see cref="CampaignDesk"/> for the one
+/// public entry point that builds one of these for a system's own desk tab. That is what lets this
+/// type stay inside the library-to-be: it takes a bare <paramref name="workspaceId"/> string, an
+/// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
 /// </para>
 /// </summary>
 public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
@@ -35,15 +39,15 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
 
     public CampaignWorkspaceViewModel(
         WorkspaceLayoutStore store,
-        CampaignSession campaign,
-        CampaignWorkspacePreparation preparation,
-        CampaignToolProvider toolProvider)
+        string workspaceId,
+        WorkspaceLayout layout,
+        IReadOnlyList<WorkspacePanelDescriptor> tools)
     {
-        _catalog = PanelCatalog.For(toolProvider.ToolsFor(campaign));
+        _catalog = PanelCatalog.For(tools);
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
         // one campaign has no business following them into another.
-        _session = new WorkspaceLayoutSession(store, campaign.Campaign.Id.ToString(), CreateSnapshot);
+        _session = new WorkspaceLayoutSession(store, workspaceId, CreateSnapshot);
 
         ResetLayoutCommand = new AsyncCommand(() =>
         {
@@ -52,9 +56,9 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
             return Task.CompletedTask;
         });
 
-        // Storage was read by the startup/open preparation pipeline. Construction is now a pure,
-        // bounded UI-model operation, so mounting this view cannot consume its own transition.
-        Restore(preparation.Layout);
+        // Storage was already read by the caller (see CampaignDesk.CreateAsync). Construction is a
+        // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
+        Restore(layout);
     }
 
     public ObservableCollection<WorkspacePanelViewModel> Panels { get; } = [];

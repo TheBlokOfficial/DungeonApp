@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:library="using:DungeonApp.Desktop.Features.CampaignLibrary"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Features.CampaignLibrary.CampaignPageView"
+             x:DataType="library:CampaignPageViewModel">
+
+    <!-- Occupies the same sidebar position the shelf does while no campaign is open - see
+         AppShellView, where the campaign position swaps between CampaignLibraryViewModel and this
+         view model. Same backstage surface and heading rhythm as the shelf, for the same reason the
+         shelf gives: only content changes between static screens. -->
+    <Grid Background="{DynamicResource DungeonBackstageBrush}">
+        <Border Width="3200"
+                HorizontalAlignment="Left"
+                Background="{DynamicResource DungeonBackstageWideBrush}"
+                IsHitTestVisible="False" />
+        <controls:AnchoredContentHost MaxContentWidth="760" MaxContentHeight="614">
+            <Grid Background="Transparent" MinHeight="0" Margin="28,20,28,24">
+                <StackPanel Spacing="{DynamicResource DungeonSpacingXl}" VerticalAlignment="Top">
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                        <TextBlock Classes="muted" Text="Kampania" />
+                        <TextBlock Classes="workspace-title" Text="{Binding Name}" />
+                        <TextBlock Classes="muted">
+                            <Run Text="Założona" />
+                            <Run Text="{Binding CreatedAt}" />
+                        </TextBlock>
+                    </StackPanel>
+
+                    <Button Content="Zamknij kampanię"
+                            Command="{Binding CloseCampaignCommand}"
+                            Height="{DynamicResource DungeonControlHeight}"
+                            Padding="20,0" />
+                </StackPanel>
+            </Grid>
+        </controls:AnchoredContentHost>
+    </Grid>
+</UserControl>

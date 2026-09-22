@@ -1,8 +1,10 @@
 using Avalonia;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 
 namespace DungeonApp.App;
 
@@ -40,5 +42,20 @@ class Program
     // The one place in the app that lists systems by name. Hard-wired by project reference,
     // never discovered at runtime - see docs/architecture.md, "Warstwy i granice", on why loading
     // one from a plugin directory buys nothing here.
-    private static IReadOnlyList<IGameSystem> BuildSystems() => [new Dnd5eSystem()];
+    //
+    // Also the one place that computes the desk layout store's path and hands it to the system in
+    // its constructor (docs/tasks.md, etap 1: "system dostaje w konstruktorze gołe
+    // WorkspaceLayoutStore, a wyliczenie katalogu danych aplikacji przenosi się w całości do
+    // Program.cs") - DungeonApp.Desktop's own composition root (App.axaml.cs) no longer knows this
+    // path, or the store type, at all.
+    private static IReadOnlyList<IGameSystem> BuildSystems()
+    {
+        var appDataDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "DungeonApp");
+
+        var layoutStore = new WorkspaceLayoutStore(appDataDirectory);
+
+        return [new Dnd5eSystem(layoutStore)];
+    }
 }

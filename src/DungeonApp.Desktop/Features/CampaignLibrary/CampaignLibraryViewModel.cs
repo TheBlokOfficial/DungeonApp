@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
-using DungeonApp.Desktop.Features.CampaignWorkspace;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;

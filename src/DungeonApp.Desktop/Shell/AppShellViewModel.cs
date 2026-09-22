@@ -1,106 +1,77 @@
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
-using DungeonApp.Desktop.Features.CampaignWorkspace;
-using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
-using DungeonApp.Desktop.Features.Registry;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
-using DungeonApp.Desktop.Shell.TopBar;
-using DungeonApp.Desktop.Shell.Workspace;
+using DungeonApp.Desktop.Shell.SystemSelection;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell;
 
 /// <summary>
-/// Owns which context the GM is in. The Core deliberately has no notion of a currently open
-/// campaign - that is shell state, and this is where it lives.
+/// The frame's own view model: the startup curtain, the fullscreen system-selection screen, and -
+/// once a system is chosen - the sidebar and whichever content it currently shows. Delegates the
+/// actual tab lifecycle to <see cref="ActiveSystemSession"/>, keeping here only what genuinely needs
+/// Avalonia's dispatcher (the startup sequence, visual warmup) or is pure screen-routing glue -
+/// which is also why, unlike <see cref="ActiveSystemSession"/>, this type has no unit tests of its
+/// own (docs/code-map.md already names this the untested half of the shell, for the same reason).
 /// </summary>
 public sealed class AppShellViewModel : ObservableObject
 {
-    private const string CampaignsSectionId = "campaigns";
-    private const string CampaignsSectionLabel = "Kampanie";
-    private const string RegistrySectionId = "registry";
-    private const string RegistrySectionLabel = "Rejestr";
-
-    private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ICampaignRepository _campaigns;
     private readonly CampaignLibraryViewModel _campaignLibrary;
-    private readonly CampaignWorkspacePreparationCache _preparations;
+    private readonly CampaignPreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
     private readonly Func<ContentRegistry> _contentRegistry;
-    private readonly IContentPresentation _contentPresentation;
-    private readonly CampaignToolProvider _toolProvider;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
-    private string _startupMessage = "Przygotowywanie biblioteki kampanii…";
+    private bool _isSystemChosen;
+    private string _startupMessage = "Wczytywanie paczek treści…";
     private int _completedSteps;
 
-    /// <summary>
-    /// Both null while no campaign is open, and both replaced on every open: a desk belongs to one
-    /// campaign, so carrying one instance across campaigns would carry the wrong arrangement and the
-    /// wrong panels with it.
-    /// </summary>
-    private CampaignSession? _openCampaign;
-    private CampaignWorkspaceViewModel? _campaignWorkspace;
-
-    /// <summary>
-    /// Built lazily on first entry into the registry section, not in this constructor: at the point
-    /// the shell is constructed, startup has not run yet, so the packs behind
-    /// <paramref name="contentRegistry"/> are not loaded. Held afterwards for the shell's lifetime,
-    /// the same shape as <see cref="_campaignWorkspace"/>.
-    /// </summary>
-    private RegistryViewModel? _registry;
+    private StartupUiContext? _startupUi;
+    private ActiveSystemSession? _session;
+    private GlobalSidebarViewModel? _sidebar;
+    private CampaignPageViewModel? _campaignPage;
 
     public AppShellViewModel(
-        WorkspaceLayoutStore layoutStore,
+        IReadOnlyList<IGameSystem> systems,
         ICampaignRepository campaigns,
         CampaignLibraryViewModel campaignLibrary,
-        CampaignWorkspacePreparationCache preparations,
+        CampaignPreparationCache preparations,
         IStartupStep[] startupSteps,
-        Func<ContentRegistry> contentRegistry,
-        IContentPresentation contentPresentation,
-        CampaignToolProvider toolProvider)
+        Func<ContentRegistry> contentRegistry)
     {
-        _layoutStore = layoutStore;
         _campaigns = campaigns;
-        _preparations = preparations;
         _campaignLibrary = campaignLibrary;
+        _preparations = preparations;
         _startupSteps = startupSteps;
         _contentRegistry = contentRegistry;
-        _contentPresentation = contentPresentation;
-        _toolProvider = toolProvider;
 
-        TopBar = new TopBarViewModel(CampaignsSectionLabel, new AsyncCommand(CloseCampaignAsync));
-        Sidebar = new GlobalSidebarViewModel(OnSectionSelected, CloseCampaignAsync);
+        SystemSelection = new SystemSelectionViewModel(systems, ChooseSystemAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
-        StatusBar.SidebarWidth = Sidebar.SidebarWidth;
-        Sidebar.PropertyChanged += OnSidebarPropertyChanged;
 
-        // Backstage first. The desk is uncovered by opening a campaign, never before.
+        // Backstage first. Nothing about a system is shown before one is chosen.
         _currentWorkspaceContent = _campaignLibrary;
     }
 
-    public TopBarViewModel TopBar { get; }
-
-    public GlobalSidebarViewModel Sidebar { get; }
+    public SystemSelectionViewModel SystemSelection { get; }
 
     public StatusBarViewModel StatusBar { get; }
 
-    private void OnSidebarPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    public GlobalSidebarViewModel? Sidebar
     {
-        if (e.PropertyName == nameof(GlobalSidebarViewModel.SidebarWidth))
-        {
-            StatusBar.SidebarWidth = Sidebar.SidebarWidth;
-        }
+        get => _sidebar;
+        private set => SetField(ref _sidebar, value);
     }
 
     public bool IsReady
@@ -116,6 +87,17 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     public bool IsStarting => !IsReady;
+
+    /// <summary>
+    /// The fullscreen system picker versus the sidebar-and-content screen (docs/architecture.md,
+    /// "Aplikacja startuje na ekranie wyboru systemu"). Both live under the same status bar row -
+    /// see AppShellView.axaml.
+    /// </summary>
+    public bool IsSystemChosen
+    {
+        get => _isSystemChosen;
+        private set => SetField(ref _isSystemChosen, value);
+    }
 
     public string StartupMessage
     {
@@ -138,13 +120,15 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Uruchamia jawnie zarejestrowaną sekwencję kroków startowych - dane, potem rozgrzewka
-    /// wizualna, krok po kroku, z oddaniem sterowania dispatcherowi między nimi, żeby pasek postępu
-    /// zdążył się odświeżyć i żaden krok nie zamroził UI dłużej niż to, co sam rozgrzewa. Awaria
-    /// żadnego kroku nie blokuje wejścia do aplikacji - degraduje do zwykłego leniwego wczytywania.
+    /// Runs the sequence that gates the startup curtain - today, loading content packs only. Nothing
+    /// about a campaign or a system is prepared here: docs/tasks.md's "Etap 1" moved that work to
+    /// after the GM actually chooses a system (see <see cref="ChooseSystemAsync"/>), since only then
+    /// is it known which system's campaign tabs even need warming.
     /// </summary>
     public async Task RunStartupAsync(StartupUiContext ui)
     {
+        _startupUi = ui;
+
         try
         {
             foreach (var step in _startupSteps)
@@ -179,76 +163,171 @@ public sealed class AppShellViewModel : ObservableObject
     {
         StartupMessage = string.Empty;
         IsReady = true;
-        StatusBar.Message = "Nie udało się przygotować wszystkich widoków. Zostaną wczytane na żądanie.";
+        StatusBar.Message = "Nie udało się przygotować paczek treści. Zostaną wczytane na żądanie.";
     }
 
-    /// <summary>Writes anything the shell has pending. Called from the application's shutdown hooks.</summary>
-    public void FlushPendingState() => _campaignWorkspace?.FlushLayout();
+    /// <summary>
+    /// Releases every tab this session ever built. Called from the application's shutdown hooks - see
+    /// docs/architecture.md's "wyjście z programu" release trigger. A desk tab's own release flushes
+    /// whatever arrangement is still pending (the desk's own <c>CampaignDesk</c> entry point),
+    /// so this needs no separate layout-flush step of its own the way the previous shell did.
+    /// </summary>
+    public void FlushPendingState() => _session?.ReleaseAll();
 
     // Internal, nie private: korzeń kompozycji (App.Initialize) domyka na tę metodę wskaźnik
     // zwrotny biblioteki kampanii, zanim ta instancja powłoki w ogóle powstanie.
     internal async Task OpenCampaignAsync(CampaignId id)
     {
-        var preparation = await _preparations.TakeAsync(id);
-        var campaign = preparation.Campaign;
+        if (_session is null)
+        {
+            return;
+        }
 
-        _openCampaign = new CampaignSession(campaign, _campaigns);
-        _campaignWorkspace = new CampaignWorkspaceViewModel(
-            _layoutStore,
-            _openCampaign,
-            preparation,
-            _toolProvider);
+        var campaign = await _preparations.TakeAsync(id);
 
-        TopBar.ContextTitle = campaign.Name.Value;
-        TopBar.IsCampaignOpen = true;
-        Sidebar.IsCampaignOpen = true;
+        _session.OpenCampaign(campaign);
+        _campaignPage = new CampaignPageViewModel(campaign, CloseCampaignAsync);
+
+        Sidebar!.SetCampaignOpen(true, campaign.Name.Value);
+        CurrentWorkspaceContent = _campaignPage;
+        Sidebar.ActivateCampaignPosition();
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
-        CurrentWorkspaceContent = _campaignWorkspace;
     }
 
     private async Task CloseCampaignAsync()
     {
-        // The desk arrangement is written on the way out, the same as on shutdown.
-        _campaignWorkspace?.FlushLayout();
-        _campaignWorkspace?.Dispose();
+        _session?.CloseCampaign();
+        _campaignPage = null;
 
-        _openCampaign = null;
-        _campaignWorkspace = null;
-
-        TopBar.ContextTitle = CampaignsSectionLabel;
-        TopBar.IsCampaignOpen = false;
-        Sidebar.IsCampaignOpen = false;
-        StatusBar.Message = "Gotowe";
+        Sidebar!.SetCampaignOpen(false, campaignName: null);
         CurrentWorkspaceContent = _campaignLibrary;
+        Sidebar.ActivateCampaignPosition();
+        StatusBar.Message = "Gotowe";
 
         // Names and the shelf itself may have moved on while the campaign was open.
         var summaries = await _campaignLibrary.LoadAsync();
         await _preparations.WarmAsync(summaries);
     }
 
-    // Temporary scaffolding until the real context router exists: it dispatches on the section id
-    // rather than its label, one branch per section, and anything it does not recognise still lands
-    // on the placeholder. Navigation is being redesigned, so this stays a chain rather than growing
-    // into a router that would have to be dismantled first.
-    private void OnSectionSelected(NavigationItemViewModel section)
+    /// <summary>
+    /// Applies the GM's choice of system: builds its <see cref="ActiveSystemSession"/> and sidebar,
+    /// shows the shelf, then loads it and warms the first campaign's tabs the same way startup used
+    /// to warm the desk - hidden, then released (docs/tasks.md's "rama buduje zakładki kampanii dla
+    /// pierwszej kampanii z półki ukryte i je zwalnia"). A failure anywhere in here is a status-bar
+    /// warning, never a crash - the GM still lands on a usable, if emptier, shelf.
+    /// </summary>
+    private async Task ChooseSystemAsync(IGameSystem system)
     {
-        if (section.Id == RegistrySectionId)
+        _session = new ActiveSystemSession(system, _contentRegistry, _campaigns);
+
+        Sidebar = new GlobalSidebarViewModel(
+            system.SystemTabs,
+            system.CampaignTabs,
+            ShowCampaignPositionAsync,
+            ShowCampaignTabAsync,
+            ShowSystemTab,
+            ReturnToSelectionAsync);
+
+        CurrentWorkspaceContent = _campaignLibrary;
+        IsSystemChosen = true;
+
+        try
         {
-            TopBar.ContextTitle = RegistrySectionLabel;
-            CurrentWorkspaceContent = _registry ??= new RegistryViewModel(_contentRegistry(), _contentPresentation);
+            var summaries = await _campaignLibrary.LoadAsync();
+            await _preparations.WarmAsync(summaries);
+
+            if (summaries.Count > 0)
+            {
+                await WarmFirstCampaignTabsAsync(system, summaries[0].Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusBar.Message = $"Nie udało się w pełni przygotować systemu „{system.DisplayName}”: {ex.Message}";
+        }
+    }
+
+    /// <summary>
+    /// "Zmień system": tears the active system all the way down - closes the open campaign, releases
+    /// every tab it or the system ever built - and returns to the selection screen.
+    /// </summary>
+    private Task ReturnToSelectionAsync()
+    {
+        _session?.ReleaseAll();
+        _session = null;
+        _campaignPage = null;
+        Sidebar = null;
+        IsSystemChosen = false;
+        CurrentWorkspaceContent = _campaignLibrary;
+        StatusBar.Message = "Gotowe";
+
+        return Task.CompletedTask;
+    }
+
+    private Task ShowCampaignPositionAsync()
+    {
+        CurrentWorkspaceContent = _session is { IsCampaignOpen: true } ? _campaignPage! : _campaignLibrary;
+        return Task.CompletedTask;
+    }
+
+    private void ShowSystemTab(SystemTabDeclaration declaration)
+    {
+        try
+        {
+            CurrentWorkspaceContent = _session!.GetOrCreateSystemTab(declaration).Content;
+        }
+        catch (Exception ex)
+        {
+            StatusBar.Message = $"Nie udało się utworzyć zakładki „{declaration.Title}”: {ex.Message}";
+        }
+    }
+
+    private async Task ShowCampaignTabAsync(CampaignTabDeclaration declaration)
+    {
+        try
+        {
+            var content = await _session!.GetOrCreateCampaignTabAsync(declaration);
+            CurrentWorkspaceContent = content.Content;
+        }
+        catch (Exception ex)
+        {
+            StatusBar.Message = $"Nie udało się utworzyć zakładki „{declaration.Title}”: {ex.Message}";
+        }
+    }
+
+    /// <summary>
+    /// Builds and immediately releases every campaign tab this system declares, against a throwaway
+    /// session for <paramref name="warmupCampaignId"/> - never against <see cref="_session"/>, so
+    /// nothing built here can leak into the GM's later, real open of the same campaign.
+    /// </summary>
+    private async Task WarmFirstCampaignTabsAsync(IGameSystem system, CampaignId warmupCampaignId)
+    {
+        if (_startupUi is not { } ui || await _preparations.PeekAsync(warmupCampaignId) is not { } campaign)
+        {
             return;
         }
 
-        if (section.Id != CampaignsSectionId)
-        {
-            TopBar.ContextTitle = section.Label;
-            CurrentWorkspaceContent = new WorkspacePlaceholderViewModel(section.Label);
-            return;
-        }
+        var warmupSession = new CampaignSession(campaign, _campaigns);
+        var warmupContext = new CampaignTabContext(warmupSession, _contentRegistry());
 
-        TopBar.ContextTitle = _openCampaign?.Campaign.Name.Value ?? CampaignsSectionLabel;
-        CurrentWorkspaceContent = _campaignWorkspace is null
-            ? _campaignLibrary
-            : _campaignWorkspace;
+        foreach (var declaration in system.CampaignTabs)
+        {
+            ITabContent? content = null;
+
+            try
+            {
+                content = await declaration.CreateContentAsync(warmupContext);
+                await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, content.Content, CancellationToken.None);
+            }
+            catch (Exception)
+            {
+                // Warmup is an optimization. A tab that fails to warm still gets a real chance to
+                // build when the GM actually clicks it - see ShowCampaignTabAsync's own try/catch.
+            }
+            finally
+            {
+                content?.Dispose();
+            }
+        }
     }
 }

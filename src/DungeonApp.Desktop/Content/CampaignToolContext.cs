@@ -2,45 +2,41 @@ using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.Events;
-using DungeonApp.Desktop.Shell;
 
 namespace DungeonApp.Desktop.Content;
 
 /// <summary>
-/// The narrow window a system's own desk tool gets onto the open campaign - built once per
-/// <see cref="CampaignToolProvider.ToolsFor"/> call and handed to every <see cref="IGameSystem.CreateTools"/>.
+/// The narrow window a system's own desk tool gets onto the open campaign - built by the system's
+/// own Campaign-category tab factory (the desk tab, today the only consumer) from a
+/// <see cref="CampaignTabContext"/> plus the system's own <see cref="IContentTypeCatalog"/>.
 /// <para>
-/// Deliberately not <see cref="CampaignSession"/> and not <see cref="Core.Campaigns.Campaign"/>
-/// themselves: docs/architecture.md's "Warstwy i granice" lets a system know what its own content
-/// looks like, not everything a campaign happens to carry. A tool gets exactly the four things
-/// "narzędzie czytające pole po nazwie mieszka w zestawie" needs - the campaign's instances, the
-/// registry to resolve entries against, the resolver that does the resolving, and the one door any
-/// write goes through - and nothing else reachable from here.
+/// Deliberately not <see cref="CampaignTabContext"/> itself: that context carries no resolver, because
+/// resolving an instance needs a type catalog and a Campaign-category tab in general has no reason to
+/// know one. A tool reading its own content by name does, so this type exists specifically to add
+/// <see cref="Resolver"/> on top of what the tab context already carries - registry, instances, event
+/// bus and the one door any write goes through.
 /// </para>
 /// <para>
-/// In production, only <see cref="CampaignToolProvider"/> ever builds one - a system receives an
-/// instance as a parameter and never constructs its own. The constructor stays public rather than
-/// internal, the same way <see cref="CampaignSession"/>'s does, precisely so a system's own test
-/// project (a separate assembly, with no reason to reference this one's internals) can build a
-/// context directly against a hand-built <see cref="CampaignSession"/> and registry, without running
-/// the whole shell to get one.
+/// The constructor stays public rather than internal, the same way <see cref="Shell.CampaignSession"/>'s
+/// does, precisely so a system's own test project (a separate assembly, with no reason to reference
+/// this one's internals) can build a context directly against a hand-built
+/// <see cref="CampaignTabContext"/>, without running the whole shell to get one.
 /// </para>
 /// </summary>
 public sealed class CampaignToolContext
 {
-    private readonly CampaignSession _session;
+    private readonly CampaignTabContext _context;
 
-    public CampaignToolContext(CampaignSession session, ContentRegistry registry, IContentTypeCatalog types)
+    public CampaignToolContext(CampaignTabContext context, IContentTypeCatalog types)
     {
-        ArgumentNullException.ThrowIfNull(session);
-        ArgumentNullException.ThrowIfNull(registry);
+        ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(types);
 
-        _session = session;
-        Instances = session.Campaign.Instances;
-        Registry = registry;
-        Resolver = new InstanceResolver(registry, types);
-        Events = session.Campaign.Events;
+        _context = context;
+        Instances = context.Instances;
+        Registry = context.Registry;
+        Resolver = new InstanceResolver(context.Registry, types);
+        Events = context.Events;
     }
 
     public CampaignInstances Instances { get; }
@@ -53,8 +49,8 @@ public sealed class CampaignToolContext
 
     /// <summary>
     /// The one door any write a tool performs goes through. Delegates to
-    /// <see cref="CampaignSession.ExecuteAsync"/> so a tool never reaches the repository directly and
-    /// never forgets to save what it changed.
+    /// <see cref="CampaignTabContext.ExecuteAsync"/> so a tool never reaches the repository directly
+    /// and never forgets to save what it changed.
     /// </summary>
-    public Task<string?> ExecuteAsync(Action operation) => _session.ExecuteAsync(operation);
+    public Task<string?> ExecuteAsync(Action operation) => _context.ExecuteAsync(operation);
 }

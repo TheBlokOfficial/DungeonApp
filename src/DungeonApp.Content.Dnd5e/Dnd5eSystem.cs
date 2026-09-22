@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Controls.Workspace;
+using DungeonApp.Desktop.Features.CampaignWorkspace;
+using DungeonApp.Desktop.Features.CampaignWorkspace.Layout;
 using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
+using DungeonApp.Desktop.Features.Registry;
 
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// The one place in the application allowed to know what a monster or a piece of gear is. Declares
 /// two content types - <c>monster</c> ("Potwór", version 1) and <c>gear</c> ("Przedmiot", version 1)
-/// - and builds their cards.
+/// - builds their cards, and declares this system's tabs: "Rejestr" in the System category, "Biurko"
+/// in the Campaign category.
 /// <para>
 /// The dispatch on a content type's id inside <see cref="TryGet"/>, <see cref="TryValidate"/> and
 /// <see cref="CreateCard"/> below is legal and necessary here: docs/architecture.md's "Kontrakty są
@@ -29,17 +34,31 @@ public sealed class Dnd5eSystem : IGameSystem
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
+    private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ContentTypeDescriptor _monster;
     private readonly ContentTypeDescriptor _gear;
 
-    public Dnd5eSystem()
+    public Dnd5eSystem(WorkspaceLayoutStore layoutStore)
     {
+        ArgumentNullException.ThrowIfNull(layoutStore);
+
+        _layoutStore = layoutStore;
+
         Id = ContentId.Create("dnd5e");
         _monster = new ContentTypeDescriptor(new ContentTypeReference(Id, ContentId.Create(MonsterTypeId)), "Potwór", 1);
         _gear = new ContentTypeDescriptor(new ContentTypeReference(Id, ContentId.Create(GearTypeId)), "Przedmiot", 1);
+
+        SystemTabs = [new SystemTabDeclaration("dnd5e.registry", "Rejestr", "DungeonIconDatabase", CreateRegistryTab)];
+        CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
 
     public ContentId Id { get; }
+
+    public string DisplayName => "Dungeons & Dragons 5e";
+
+    public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; }
+
+    public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
 
     public bool HasSet(ContentId set) => set == Id;
 
@@ -119,13 +138,35 @@ public sealed class Dnd5eSystem : IGameSystem
         throw new InvalidOperationException($"'{Id}' cannot draw a card for content type reference '{entry.Type}'.");
     }
 
+    /// <summary>The "Rejestr" System-category tab: today's registry screen, drawn by this system's own presentation.</summary>
+    private ITabContent CreateRegistryTab(SystemTabContext context)
+    {
+        var viewModel = new RegistryViewModel(context.Registry, this);
+        return new DelegateTabContent(new RegistryView { DataContext = viewModel });
+    }
+
+    /// <summary>
+    /// The "Biurko" Campaign-category tab: the shared desk (<see cref="CampaignDesk"/>), stocked with
+    /// this system's own tool belt and nothing else - there is no cross-system tool provider
+    /// stitching several systems' tools together any more, so building the tool list is this
+    /// system's own job now, from a <see cref="CampaignToolContext"/> it builds itself out of the
+    /// tab context plus its own type catalog.
+    /// </summary>
+    private async Task<ITabContent> CreateDeskTabAsync(CampaignTabContext context)
+    {
+        var toolContext = new CampaignToolContext(context, this);
+        var tools = BuildTools(toolContext);
+
+        return await CampaignDesk.CreateAsync(context, _layoutStore, tools);
+    }
+
     /// <summary>
     /// This system's tool belt: one window, "Świat kampanii", listing this campaign's instances and
     /// offering this system's own resolved entries to bring in as new ones. Sized from the
     /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
     /// invented here.
     /// </summary>
-    public IReadOnlyList<WorkspacePanelDescriptor> CreateTools(CampaignToolContext context)
+    private IReadOnlyList<WorkspacePanelDescriptor> BuildTools(CampaignToolContext context)
     {
         var minimum = WorkspaceMetrics.Fallback;
         var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.ToolPanelMinWidth);
