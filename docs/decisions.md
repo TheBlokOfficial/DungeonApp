@@ -414,6 +414,14 @@ bytem, z którego wybierają dane, a kontrolki i interfejsy kompilują się raze
 Kolejność startu nie jest przypadkowa: **treść jest sprawdzana przed kampaniami.** Jeśli czegoś
 brakuje, dowiadujesz się przy starcie, a nie przy pierwszym kliknięciu w środku sesji.
 
+**Rozgrzewka przy starcie, wyczerpująca, kosztem długości ładowania** — decyzja autora z 2026-09-22.
+Etap 1 przeniósł rozgrzewkę do chwili wyboru systemu i rozgrzewał wyłącznie biurko; skutkiem było
+zamrożenie w chwili kliknięcia i niepłynne pierwsze pokazanie paska, półki i rejestru, bo koszt
+pierwszego pokazania widoku (kod kompilowany w locie, skompilowany XAML, style, fonty) wypadał na
+oczach użytkownika. Słowa autora: zacięcie jest problemem, długość ładowania nie — trzy, cztery
+sekundy albo więcej nie mają znaczenia. Stąd ekran ładowania, za którym rozgrzewa się wszystko, a nie
+rozgrzewka „tego, co najpewniej będzie potrzebne".
+
 ## Granice mechaniczne
 
 **Skan obejmuje nazwy rodzajów, nie nazwy pól — i to jest wzmocnienie granicy, nie ustępstwo.**

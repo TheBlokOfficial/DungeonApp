@@ -818,6 +818,12 @@ Dwie niezależne osie.
 **Treść jest sprawdzana przed kampaniami.** Żaden krok nie ma prawa zatrzymać wejścia do programu —
 awaria dowolnego degraduje do leniwego wczytywania i zostawia ostrzeżenie na pasku.
 
+**Po ekranie ładowania nic się nie zacina.** Start rozgrzewa, za ekranem ładowania i zanim cokolwiek
+da się kliknąć, każdy widok, który użytkownik może zobaczyć po raz pierwszy w typowej ścieżce —
+ekrany ramy i zakładki, karty i okna narzędzi każdego wkompilowanego systemu. Długość startu nie jest
+miarą; zacięcie jest. Wybór systemu, otwarcie kampanii i wejście w zakładkę nie budują niczego, czego
+typ nie został rozgrzany.
+
 ### 21.2 Zmiana stanu: z kliknięcia na dysk
 
 ```
