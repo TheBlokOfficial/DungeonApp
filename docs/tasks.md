@@ -100,8 +100,9 @@ etapie aplikacja działa, a testy przechodzą.
   przerwany na etapie weryfikacji subagenta — build i 263 testy zielone, okna nikt nie widział.
   **Do sprawdzenia najpierw:** czy zacięcie przy wejściu w system zniknęło, czy pasek pojawia się od
   razu w docelowym stanie i pamięta zwinięcie po „Zmień system", czy ekran ładowania zasłania
-  rozgrzewkę (w kodzie jest ukryty host rozgrzewki, osobnego ekranu ładowania nie dodano — jeśli
-  okno pokazuje się przed końcem rozgrzewki, to jest pierwsza rzecz do dokończenia).
+  rozgrzewkę — kurtyna startowa jest w kodzie, autor potwierdził 2026-09-22, że po tych poprawkach
+  wejście w system działa płynnie; dowodu na brak zacięcia nie ma, bo pasek nie animuje się już przy
+  wejściu (patrz niżej, pozycja o mierzeniu).
 * **Zacięcia mierzyć, nie oglądać.** 2026-09-22 autor potwierdził, że po poprawkach wejście w system
   działa dobrze — i sam zauważył, że dowodu nie ma: animacja rozwijania paska, która dawniej czyniła
   zacięcie widocznym, już nie gra przy wejściu. Następnym razem: czas rozgrzewki i czas od kliknięcia
