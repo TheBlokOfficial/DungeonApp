@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.Content.Instances;
 using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Content;
@@ -36,7 +37,13 @@ public sealed class InstanceResolverTests
         new([pack], entries, [], []);
 
     private static CampaignInstance MakeInstance(ContentValues patch, EntryAddress? source = null) =>
-        new(InstanceId.New(), source ?? Address, "Goblin 2", patch);
+        new()
+        {
+            Id = InstanceId.New(),
+            Source = source ?? Address,
+            Label = "Goblin 2",
+            Patch = patch,
+        };
 
     // ---------------------------------------------------------------------
     // The resolved path.

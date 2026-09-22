@@ -148,9 +148,9 @@ public sealed class ActiveSystemSessionTests
         });
         var repository = new InMemoryCampaignRepository();
         var campaign = NewCampaign();
-        await repository.SaveAsync(campaign);
+        await repository.SaveAsync(campaign, []);
 
-        var warmupSession = new CampaignSession(campaign, repository);
+        var warmupSession = new CampaignSession(campaign, repository, []);
         var warmupContext = new CampaignTabContext(warmupSession, EmptyRegistry());
         var warmedUp = (FakeTabContent)await declaration.CreateContentAsync(warmupContext);
         warmedUp.Dispose();

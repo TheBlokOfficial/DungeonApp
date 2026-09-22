@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 
 namespace DungeonApp.Desktop.RenderingTests;
@@ -20,6 +21,8 @@ internal sealed class EmptyGameSystem : IGameSystem
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; } = [];
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; } = [];
+
+    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
     public bool HasSet(ContentId set) => set == Id;
 

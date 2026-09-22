@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.Content.Instances;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Library.Desktop.Content;
 
@@ -10,9 +12,9 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// State for the "Świat kampanii" desk tool: every instance this campaign holds, and a picker to
-/// bring a new one in from this system's own resolved entries. The first consumer of
-/// <see cref="Core.Content.CampaignInstances"/> and <see cref="Core.Content.InstanceResolver"/> -
-/// nothing in the engine or the shell reads either of them yet.
+/// bring a new one in from this system's own resolved entries. The first consumer of the
+/// <c>entries.instances</c> state model and <see cref="Core.Content.InstanceResolver"/> anywhere in
+/// the application.
 /// <para>
 /// Kept in its own file, free of any Avalonia control reference, so it can be exercised without a
 /// window.
@@ -22,7 +24,6 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
 {
     private readonly CampaignToolContext _context;
     private readonly ContentId _ownerSet;
-    private readonly IDisposable[] _subscriptions;
 
     private IReadOnlyList<InstanceRowViewModel> _instances = [];
     private AddableEntryOption? _selectedToAdd;
@@ -50,13 +51,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
 
         AddCommand = new AsyncCommand(AddSelectedAsync, () => _selectedToAdd is not null && !_isDisposed);
 
-        _subscriptions =
-        [
-            context.Events.Subscribe<InstanceAdded>(_ => Refresh()),
-            context.Events.Subscribe<InstanceRemoved>(_ => Refresh()),
-            context.Events.Subscribe<InstanceRelabelled>(_ => Refresh()),
-            context.Events.Subscribe<InstancePatchReplaced>(_ => Refresh()),
-        ];
+        _context.Changed += OnChanged;
 
         Refresh();
     }
@@ -117,14 +112,12 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         }
 
         _isDisposed = true;
-
-        foreach (var subscription in _subscriptions)
-        {
-            subscription.Dispose();
-        }
+        _context.Changed -= OnChanged;
 
         AddCommand.RaiseCanExecuteChanged();
     }
+
+    private void OnChanged(CampaignStateSnapshot snapshot) => Refresh();
 
     private async Task AddSelectedAsync()
     {
@@ -133,7 +126,8 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
             return;
         }
 
-        Message = await _context.ExecuteAsync(() => _context.Instances.Add(option.Address, label: null));
+        var result = await _context.ChangeAsync(CampaignInstanceChanges.Add(option.Address, label: null));
+        Message = result.Message;
 
         // Cleared whether or not the write went through: the instance either exists now, or the
         // message above says why it does not, and in both cases leaving the entry selected invites
@@ -150,7 +144,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
 
         Instances =
         [
-            .. _context.Instances.All
+            .. _context.Snapshot.Get(InstancesModel.Declaration).Values
                 .Select(BuildRow)
                 .OrderBy(row => row.DisplayName, StringComparer.CurrentCultureIgnoreCase),
         ];
@@ -164,7 +158,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         var name = instance.Label ?? resolved.Source?.Entry.Name ?? instance.Source.ToString();
         var message = resolved.Unresolved is { } reason ? Describe(reason, instance, resolved) : null;
 
-        return new InstanceRowViewModel(_context, instance.Id, name, message, resolved, _ownerSet);
+        return new InstanceRowViewModel(_context, name, message, resolved, _ownerSet);
     }
 
     /// <summary>

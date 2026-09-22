@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace DungeonApp.Core.Content;
 
@@ -20,7 +21,26 @@ public readonly record struct ContentId
 {
     public const int MaxLength = 64;
 
-    private ContentId(string value) => Value = value;
+    /// <summary>
+    /// <see cref="JsonConstructorAttribute"/> lets <c>System.Text.Json</c> bind this constructor
+    /// directly even though it stays private - the only reason a state record such as
+    /// <c>CampaignInstance</c> can carry a <see cref="ContentId"/> (inside an
+    /// <c>EntryAddress</c>) and still be deserialized whole, with no hand-written DTO standing in
+    /// for it. Validates exactly the way <see cref="Create"/> does rather than bypassing it: the
+    /// charset is this type's own invariant, not a field-level rule some caller might skip, so
+    /// "the deserializer is the only validator" means the constructor the deserializer calls has to
+    /// enforce it - not that it gets to let it through.
+    /// </summary>
+    [JsonConstructor]
+    private ContentId(string value)
+    {
+        if (!IsValid(value))
+        {
+            throw new ArgumentException($"Invalid content id: '{value}'.", nameof(value));
+        }
+
+        Value = value;
+    }
 
     public string Value { get; }
 

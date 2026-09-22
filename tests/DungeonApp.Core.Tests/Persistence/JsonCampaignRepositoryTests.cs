@@ -28,8 +28,8 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var campaign = NewCampaign();
 
-        await _repository.SaveAsync(campaign);
-        var restored = await _repository.GetAsync(campaign.Id);
+        await _repository.SaveAsync(campaign, []);
+        var restored = await _repository.GetAsync(campaign.Id, []);
 
         Assert.NotNull(restored);
         Assert.Equal(campaign.Id, restored.Id);
@@ -46,14 +46,14 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var campaign = NewCampaign();
 
-        await _repository.SaveAsync(campaign);
+        await _repository.SaveAsync(campaign, []);
 
         Assert.True(File.Exists(_library.DocumentPath(campaign.Id.Value)));
     }
 
     [Fact]
     public async Task Returns_null_for_a_campaign_that_is_not_there()
-        => Assert.Null(await _repository.GetAsync(CampaignId.New()));
+        => Assert.Null(await _repository.GetAsync(CampaignId.New(), []));
 
     [Fact]
     public async Task Reports_an_empty_shelf_before_the_library_exists()
@@ -67,9 +67,9 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     [Fact]
     public async Task Lists_campaigns_in_a_stable_order()
     {
-        await _repository.SaveAsync(NewCampaign("Zamek Nocy"));
-        await _repository.SaveAsync(NewCampaign("Kroniki Doliny"));
-        await _repository.SaveAsync(NewCampaign("Mokradła"));
+        await _repository.SaveAsync(NewCampaign("Zamek Nocy"), []);
+        await _repository.SaveAsync(NewCampaign("Kroniki Doliny"), []);
+        await _repository.SaveAsync(NewCampaign("Mokradła"), []);
 
         var names = (await _repository.ListAsync()).Select(summary => summary.Name.Value).ToArray();
 
@@ -80,7 +80,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     [Fact]
     public async Task Skips_a_damaged_campaign_when_listing()
     {
-        await _repository.SaveAsync(NewCampaign("Kroniki Doliny"));
+        await _repository.SaveAsync(NewCampaign("Kroniki Doliny"), []);
         _library.WriteDocument(Guid.NewGuid(), "{ this is not json");
 
         var summaries = await _repository.ListAsync();
@@ -102,9 +102,29 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
             """);
 
         var exception = await Assert.ThrowsAsync<CampaignStoreException>(
-            () => _repository.GetAsync(new CampaignId(id)));
+            () => _repository.GetAsync(new CampaignId(id), []));
 
         Assert.Equal(CampaignStoreFailure.UnsupportedFormatVersion, exception.Failure);
+    }
+
+    /// <summary>docs/architecture.md, "Wersjonowanie": no migration exists, so an older format is refused - distinguishably from a newer one - rather than guessed at.</summary>
+    [Fact]
+    public async Task Refuses_a_document_written_by_an_older_build()
+    {
+        var id = Guid.NewGuid();
+        _library.WriteDocument(id, $$"""
+            {
+              "formatVersion": {{JsonCampaignRepository.CurrentFormatVersion - 1}},
+              "id": "{{id}}",
+              "name": "Z przeszłości",
+              "createdAt": "2026-08-27T18:30:00+00:00"
+            }
+            """);
+
+        var exception = await Assert.ThrowsAsync<CampaignStoreException>(
+            () => _repository.GetAsync(new CampaignId(id), []));
+
+        Assert.Equal(CampaignStoreFailure.LegacyFormatVersion, exception.Failure);
     }
 
     [Fact]
@@ -114,7 +134,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         _library.WriteDocument(id, "{ this is not json");
 
         var exception = await Assert.ThrowsAsync<CampaignStoreException>(
-            () => _repository.GetAsync(new CampaignId(id)));
+            () => _repository.GetAsync(new CampaignId(id), []));
 
         Assert.Equal(CampaignStoreFailure.Unreadable, exception.Failure);
     }
@@ -125,7 +145,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         var id = Guid.NewGuid();
         _library.WriteDocument(id, $$"""
             {
-              "formatVersion": 1,
+              "formatVersion": {{JsonCampaignRepository.CurrentFormatVersion}},
               "id": "{{id}}",
               "name": "   ",
               "createdAt": "2026-08-27T18:30:00+00:00"
@@ -133,7 +153,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
             """);
 
         var exception = await Assert.ThrowsAsync<CampaignStoreException>(
-            () => _repository.GetAsync(new CampaignId(id)));
+            () => _repository.GetAsync(new CampaignId(id), []));
 
         Assert.Equal(CampaignStoreFailure.Invalid, exception.Failure);
     }
@@ -146,7 +166,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     public async Task Writes_no_manifest_field_that_nothing_reads()
     {
         var campaign = NewCampaign();
-        await _repository.SaveAsync(campaign);
+        await _repository.SaveAsync(campaign, []);
 
         var root = ReadManifest(campaign);
 
@@ -156,11 +176,12 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// Dropping those fields is a change to what gets written, not to what can be read. A save made
-    /// before they went away still opens, which is why their removal needed no format migration.
+    /// docs/architecture.md, "Wersjonowanie": "Migracji nie budujemy" - a manifest from the format
+    /// this build's predecessor wrote (one file per instance, no state models) is refused
+    /// distinguishably rather than half-read or silently reinterpreted.
     /// </summary>
     [Fact]
-    public async Task Reads_a_document_that_still_carries_the_dropped_fields()
+    public async Task Refuses_a_manifest_from_the_pre_state_model_format()
     {
         var id = Guid.NewGuid();
         _library.WriteDocument(id, $$"""
@@ -169,17 +190,15 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
               "id": "{{id}}",
               "name": "Kroniki Doliny",
               "createdAt": "2026-08-27T18:30:00+00:00",
-              "ruleset": "dnd5e",
-              "contentPacks": ["goblinoids"],
               "generation": 1,
-              "dataBlocks": []
+              "instances": []
             }
             """);
 
-        var restored = await _repository.GetAsync(new CampaignId(id));
+        var exception = await Assert.ThrowsAsync<CampaignStoreException>(
+            () => _repository.GetAsync(new CampaignId(id), []));
 
-        Assert.NotNull(restored);
-        Assert.Equal("Kroniki Doliny", restored.Name.Value);
+        Assert.Equal(CampaignStoreFailure.LegacyFormatVersion, exception.Failure);
     }
 
     /// <summary>
@@ -191,11 +210,11 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var campaign = NewCampaign();
 
-        await _repository.SaveAsync(campaign);
+        await _repository.SaveAsync(campaign, []);
         Assert.Equal(1, ReadManifest(campaign).GetProperty("generation").GetInt64());
 
-        await _repository.SaveAsync(campaign);
-        await _repository.SaveAsync(campaign);
+        await _repository.SaveAsync(campaign, []);
+        await _repository.SaveAsync(campaign, []);
         Assert.Equal(3, ReadManifest(campaign).GetProperty("generation").GetInt64());
     }
 
@@ -204,8 +223,8 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     {
         var campaign = NewCampaign();
 
-        await _repository.SaveAsync(campaign);
-        await _repository.SaveAsync(campaign);
+        await _repository.SaveAsync(campaign, []);
+        await _repository.SaveAsync(campaign, []);
 
         Assert.Empty(Directory.EnumerateFiles(_library.CampaignDirectory(campaign.Id.Value), "*.tmp"));
     }

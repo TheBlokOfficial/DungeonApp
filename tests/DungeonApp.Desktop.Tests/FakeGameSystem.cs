@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
+using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 
 namespace DungeonApp.Desktop.Tests;
@@ -38,6 +39,8 @@ internal sealed class FakeGameSystem(
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; } = systemTabs ?? [];
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; } = campaignTabs ?? [];
+
+    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
     public bool HasSet(ContentId set) => set == Id;
 

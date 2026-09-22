@@ -118,7 +118,7 @@ public sealed class WarmSystemContentStep(
         ContentRegistry registry,
         CancellationToken cancellationToken)
     {
-        var warmupSession = new CampaignSession(campaign, campaigns);
+        var warmupSession = new CampaignSession(campaign, campaigns, system.StateModels);
         var warmupContext = new CampaignTabContext(warmupSession, registry);
 
         foreach (var declaration in system.CampaignTabs)
