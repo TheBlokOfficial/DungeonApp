@@ -63,7 +63,7 @@ etapie aplikacja działa, a testy przechodzą.
 | 1 | **Ekran wyboru systemu i pasek boczny.** Rama wystawia systemowi deklarację zakładek; biurko i rejestr stają się zakładkami D&D; pozycja kampanii — półka albo strona kampanii; zakładki kampanii zamknięte bez otwartej kampanii; powrót do wyboru i zamknięcie kampanii jako przyciski ramy; zakładka kategorii System nie dostaje kampanii. | nowe wejście do aplikacji, pasek z grupami Kampania i System, strona kampanii, kłódki | rama musi przestać sama stawiać biurko, zanim da się je z niej wynieść |
 | 2 | **Wyniesienie wspólnego kodu interfejsu do biblioteki:** biurko i system okien, kontrolki kart, widok listy z kartą. Najpierw testy granic, potem przeprowadzka. | nic — zachowanie jak po etapie 1 | mechanizm pilnujący granicy powstaje przed rozbiórką |
 | 3 | **Rama zapisuje modele stanu systemu.** Instancje pierwszym takim modelem; kampania pamięta swój system; półka pokazuje kampanie aktywnego systemu. | kampanie w obrębie swojego systemu | rdzeń trzyma dziś instancje wewnątrz kampanii i musi przestać, zanim da się je wynieść |
-| 4 | **Wyniesienie wspólnej logiki do biblioteki:** paczki, wpisy, rejestr, instancje, nakładki. Wczytywanie paczek staje się krokiem startowym, który rama uruchamia, nie wiedząc, co robi. | nic | wymaga etapu 3 |
+| 4 | **Wyniesienie wspólnej logiki do biblioteki wpisów:** paczki, wpisy, rejestr, instancje, nakładki. Projekt z etapu 2 rozdziela się na bibliotekę biurka i część interfejsu biblioteki wpisów (kontrolki kart, lista z kartą); biblioteki nie referencują się nawzajem. Wczytywanie paczek staje się krokiem startowym, który rama uruchamia, nie wiedząc, co robi. | nic | wymaga etapu 3 |
 
 **Ustalenia do etapów** — zapisane, żeby nie trzeba ich było tłumaczyć od nowa:
 

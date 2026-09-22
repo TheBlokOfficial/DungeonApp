@@ -162,7 +162,7 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | Pojęcie | Znaczenie |
 |---|---|
 | **rama** | Szkielet aplikacji: okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie — tworzenie, wczytanie, usuwanie, zapis — i jedyna droga zmiany ich stanu. Nie wie, czym jest wpis. |
-| **biblioteka** | Wspólny, neutralny kod, z którego system korzysta albo nie: biurko i system okien, kontrolki kart, paczki, wpisy, instancje. Sama niczego nie robi; rama nie wie o jej istnieniu. |
+| **biblioteka** | Wspólny, neutralny kod, który wykonuje za systemy robotę wspólną dla wielu z nich, żeby żaden nie pisał jej od nowa — biblioteka w tym samym sensie co w programowaniu. **Bibliotek jest kilka**, każda o jednym temacie: biblioteka wpisów (paczki, wpisy, rejestr, instancje, nakładki, kontrolki kart, szkielet zakładki treści), biblioteka biurka (okna, ich układ, dolny panel), później silnik formuł. System bierze z nich dowolny podzbiór albo nic. Sama niczego nie robi; rama nie wie o jej istnieniu. |
 | **system** | Skompilowany projekt wybierany przy starcie aplikacji: typy treści, ich widoki, zakładki, narzędzia biurka, dodatki. Jedyne miejsce w aplikacji, w którym wolno wiedzieć, czym jest potwór. |
 | **dodatek** | Nagłówek na stronie kampanii grupujący warianty zasad zadeklarowane przez system. Sam niczego nie włącza. |
 | **wariant** | Pojedyncza zmiana zasad z dodatku — jednej mechaniki albo kilku naraz — włączana osobnym przełącznikiem na stronie kampanii, z parametrami będącymi wartościami. Może dokładać i zastępować. |
@@ -179,14 +179,14 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | **narzędzie** | Backend okna na biurku, wnoszony przez system. |
 | **panel / okno** | Pływające okno na biurku. Kontener; hostuje narzędzie. |
 | **paczka** | Katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów treści. |
-| **rejestr** | Co biblioteka wie o zainstalowanych paczkach po wczytaniu i zwalidowaniu. Wspólny, tylko do odczytu. |
+| **rejestr** | Co biblioteka wpisów wie o zainstalowanych paczkach po wczytaniu i zwalidowaniu. Wspólny, tylko do odczytu. |
 
 ## 8. Rama, biblioteka, system
 
 | Część | Projekt | Charakter | Co wolno wiedzieć |
 |---|---|---|---|
-| **Rama** | `DungeonApp.Core` + `DungeonApp.Desktop`, po wyniesieniu z nich biblioteki | kompilowana | okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie, ich zapis, zdarzenia, jedyna droga zmiany stanu. **Nie zna `Entry`. Nie zna biurka.** |
-| **Biblioteka** | osobne projekty — podział ustala plan przebudowy | kompilowana | biurko i system okien, kontrolki kart, paczki, rejestr, wpisy, instancje i nakładki, później silnik formuł. **Zna `Entry`. Nie zna `Monster`.** |
+| **Rama** | `DungeonApp.Core` + `DungeonApp.Desktop`, po wyniesieniu z nich bibliotek | kompilowana | okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie, ich zapis, zdarzenia, jedyna droga zmiany stanu. **Nie zna `Entry`. Nie zna biurka.** |
+| **Biblioteki** | osobne projekty, każda biblioteka osobno — podział ustala plan przebudowy | kompilowana | biblioteka wpisów: paczki, rejestr, wpisy, instancje, nakładki, kontrolki kart, szkielet zakładki treści; biblioteka biurka: biurko i system okien; później silnik formuł. **Biblioteka wpisów zna `Entry`. Żadna nie zna `Monster`.** |
 | **System** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, zakładki, narzędzia biurka, dodatki. **Jedyne miejsce, gdzie wolno być konkretnym.** |
 | **Paczka** | `Dokumenty\DungeonApp\Packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
 | **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
@@ -200,9 +200,9 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
                    │ korzysta, jeśli chce   │ deklaruje zakładki,
                    ▼                        │ zapisuje stan
         ┌───────────────────────────┐       │
-        │  BIBLIOTEKA               │       │
-        │  biurko · kontrolki kart  │       │
-        │  paczki · wpisy · okazy   │       │
+        │  BIBLIOTEKI               │       │
+        │  wpisy: paczki · karty    │       │
+        │  biurko: okna · układ     │       │
         └──────────┬────────────────┘       │
                    │                        │
         ┌──────────▼────────────────────────▼──────────┐
@@ -215,16 +215,19 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
    kampania ──wskazuje──►  swój system i paczki, które sama zadeklarowała
 ```
 
-- **Strzałki idą tylko w dół.** Rama nie wie, że istnieje biblioteka ani jakikolwiek system;
+- **Strzałki idą tylko w dół.** Rama nie wie, że istnieje jakakolwiek biblioteka albo system;
   biblioteka nie wie, że istnieje jakikolwiek system.
+- **Biblioteki nie znają się nawzajem; składa je system.** Okno biurka pokazujące instancje to system
+  łączący okno z biblioteki biurka z danymi z biblioteki wpisów. Zależność między bibliotekami jest
+  wyjątkiem: jawnym, jednokierunkowym i tylko tam, gdzie jedna naprawdę potrzebuje drugiej w środku.
 - **Systemy nigdy nie referencują się nawzajem.**
 - **Ładowanie systemów jest statyczne** — referencją projektu, nigdy `Assembly.LoadFrom`.
 - **Rama zachowuje drzwi zapisu.** System przejmuje wygląd i zawartość aplikacji, nigdy jedynej drogi
   zmiany stanu — sekcja *Gdzie mieszka stan*.
 - **Dziś system jest jeden**, a ekran wyboru systemu istnieje mimo to. Drugi system powstaje
   w dniu, w którym naprawdę zmienia się gra, i jest wtedy równoległy, nie zależny.
-- **Granica jest sprawdzalna mechanicznie**: rama i biblioteka nie referencują żadnego systemu, rama
-  nie referencuje biblioteki, a źródła ramy i biblioteki nie zawierają słownictwa treści — sekcja
+- **Granica jest sprawdzalna mechanicznie**: rama i biblioteki nie referencują żadnego systemu, rama
+  nie referencuje żadnej biblioteki, a źródła ramy i bibliotek nie zawierają słownictwa treści — sekcja
   *Granice mechaniczne*.
 
 **Dlaczego →** [decisions.md](decisions.md), *Rama, biblioteka, system*.
@@ -233,11 +236,17 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 
 - **Biblioteka jest wspólnym kodem, nie piętrem, przez które wszystko przechodzi.** Sama niczego nie
   robi: nie rejestruje się w ramie, nie wnosi zakładki, nie ma własnego cyklu życia.
+- **Każda biblioteka ma jeden temat i wykonuje za systemy wspólną robotę** — wpisy, biurko, formuły —
+  żeby ten sam kod nie powstawał w każdym systemie od nowa.
+- **Biblioteka ma wobec ramy ten sam dostęp co system — ani więcej, ani mniej.** Te same kontrakty,
+  ten sam stan kampanii tylko do odczytu, to samo jedyne wejście zmiany. Od systemu różni ją to,
+  czego nie wie — żadnego systemu i niczego konkretnego — a nie to, co może. Nie ma drzwi, których
+  system by nie miał; robi tylko za niego to, co każdy system musiałby napisać sam.
 - **Biurko pojawia się na pasku bocznym wyłącznie wtedy, gdy system je tam postawi.**
-- **System bierze z biblioteki, co chce** — i może nie wziąć nic.
-- **Generyczny wpis mieszka w bibliotece, nie w ramie**: wpis, paczka, rejestr, instancja i nakładka
+- **System bierze z bibliotek, co chce** — którąkolwiek, kilka albo żadną.
+- **Generyczny wpis mieszka w bibliotece wpisów, nie w ramie**: wpis, paczka, rejestr, instancja i nakładka
   są jednym wspólnym mechanizmem dla wszystkich systemów.
-- **Silnik formuł biblioteki jest drogą domyślną.** System, który z niego nie korzysta, liczy po
+- **Silnik formuł jest drogą domyślną.** System, który z niego nie korzysta, liczy po
   swojemu — pod tymi samymi pięcioma zakazami, pilnowanymi wtedy wyłącznie przeglądem.
 
 **Dlaczego →** [decisions.md](decisions.md), *Biblioteka, nie warstwa*.
@@ -313,16 +322,16 @@ kontrolki i nie niosą parametrów układu — zaprojektowany widok swój układ
 ```
  goblin.json                             ← plik, który piszesz ręcznie
      │
-     │  loader biblioteki: sprawdza tożsamość, adres, wskazanie typu
+     │  loader biblioteki wpisów sprawdza tożsamość, adres, wskazanie typu
      ▼
  Entry { id, nazwa, wskazanie typu, nierozpakowane wartości }
-     │                                   ← tu biblioteka się zatrzymuje.
+     │                                   ← tu biblioteka wpisów staje.
      │                                     Nie zagląda do wartości.
      │  system rozpakowuje wartości w swój rekord
      ▼
  Monster { Ac = 15, Hp = 7, Speed = "30 stóp", … }
      │                                   ← typowane; kompilator już to sprawdził
-     │  biblioteka dobiera widok po typie
+     │  biblioteka wpisów dobiera widok
      ▼
  MonsterCardView                         ← zaprojektowany układ statbloku
 ```
@@ -335,7 +344,7 @@ Plik wpisu:
 
 * **`values` deserializuje się wprost w rekord**, ze ścisłym traktowaniem nieznanych kluczy. Nie ma
   własnego walidatora wartości — robi to deserializator.
-* **Biblioteka niesie kopertę, system otwiera list.** Biblioteka wie, że coś przyszło, skąd, pod
+* **Biblioteka wpisów niesie kopertę, system otwiera list.** Biblioteka wie, że coś przyszło, skąd, pod
   jakim adresem i do jakiego typu się odwołuje — i nic więcej. Odrzucanie treści, rejestr
   i oznaczanie tego, co się nie rozwiązało, istnieją w jednym miejscu i działają tak samo dla
   każdego systemu.
@@ -400,7 +409,7 @@ Zaklinanie nie wymaga nowego mechanizmu: biblioteka publikuje kontrakt wkładu, 
 slot (czyli decyduje, że miecz da się zaklinać), a paczka dostarcza Ostrość V jako zwykły wpis
 z własną kartą. Miecz jest pojemnikiem na zaklęcia tak samo, jak plecak na miecze.
 
-* **Biblioteka nie ma zdania o tym, co wpis powinien mieć w slocie.** Decyduje autor treści.
+* **Biblioteka wpisów nie ma zdania o tym, co wpis powinien mieć w slocie.** Decyduje autor treści.
 * **Zawartość początkowa slotu wskazuje wyłącznie wpisy z tej samej paczki.** Instancja rozwiązuje
   referencje wobec wszystkich paczek kampanii.
 * **Gdy instancja zmieni zawartość slotu, przejmuje całą listę**, nie różnicę.
@@ -670,7 +679,7 @@ widoczna, kopiowalna, przenoszalna na pendrivie — a układ biurka w danych apl
 stanu, które kampania trzyma; rama zapisuje je wszystkie w jednym zatwierdzeniu i jest jedyną drogą
 ich zmiany. Model to rekord z `required`, deserializator jako jedyny walidator, identyfikator, numer
 wersji. Niezgodna wersja modelu oznacza, nie migruje. Instancje z nakładkami są pierwszym takim
-modelem — dostarcza go biblioteka.
+modelem — dostarcza go biblioteka wpisów.
 
 **Rama jest właścicielem jedynej drogi zmiany stanu i powiadomień o zmianie. System nigdy nie
 dostaje drzwi zapisu.** Kształt tej drogi ma czynić czwarty i piąty zakaz **niewykonalnymi**,
@@ -758,7 +767,7 @@ kliknięciu pozycji i który narzędzie może pokazać.
 ### 18.3 Zakładki treści
 
 Treść systemu przegląda się w zakładkach kategorii System — np. osobno przedmioty, potwory,
-zaklęcia — zaprojektowanych przez system. Biblioteka daje do nich wspólny widok listy z kartą i trzy
+zaklęcia — zaprojektowanych przez system. Biblioteka wpisów daje do nich wspólny widok listy z kartą i trzy
 filtry: **po kategorii** (właściwość typu treści), **po paczce** i **po typie treści**. Źródłem
 wszystkich jest rejestr.
 
@@ -784,14 +793,15 @@ wszystkich jest rejestr.
 „desired" / „effective", debounce zapisu układu — **bez zmian wizualnych i bez zmian w geometrii.**
 Okno hostuje **narzędzie biurka**, nie kartę.
 
-* **System okien mieszka w bibliotece.** Biurko jest jedną z zakładek, które system może postawić
+* **System okien mieszka w bibliotece biurka.** Biurko jest jedną z zakładek, które system może postawić
   w kategorii Kampania — bez pisania od nowa okien, ich przesuwania i zamykania.
 * **Katalog okien biurka jest tym, co deklaruje system** wraz z włączonymi wariantami, składanym przy
   otwarciu kampanii. Nic w ramie ani w bibliotece nie nazywa żadnego systemu po imieniu.
-* **System wnosi okno jako gotową kontrolkę**, a biblioteka podaje mu wąskie okno na otwartą
-  kampanię: instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy
-  panel. Nie sesję i nie samą kampanię — nic więcej osiągalnego stamtąd. Żaden szablon w bibliotece
-  nie zna typu z systemu.
+* **System wnosi okno jako gotową kontrolkę i sam składa je z tego, czego potrzebuje.** Biblioteka
+  biurka daje okno, jego miejsce i układ — nie dane; nie wie, że wpisy istnieją. Instancje, rejestr
+  i rozwiązywanie wskazań system bierze z biblioteki wpisów, a stan kampanii i jedyne drzwi zapisu —
+  z ramy, przez kontekst zakładki kampanii. Nie sesję i nie samą kampanię — nic więcej osiągalnego
+  stamtąd. Żaden szablon w bibliotece nie zna typu z systemu.
 * **Okno może udostępniać widżety do gniazd dolnego panelu biurka** — miniatury pokazujące pojedynczą
   daną, jak czas w fikcji ([mockup](images/mockup_biurko_nowe.png)). Widżet jest częścią deklaracji
   okna, nie osobnym katalogiem, nie ma własnego stanu i czyta stan kampanii wyłącznie do odczytu —
@@ -895,7 +905,8 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
 | Granica | Jak egzekwowana | Status |
 |---|---|---|
 | logika ramy bez Avalonii | test po referencjach | istnieje (`Core`) |
-| logika biblioteki bez Avalonii | test po referencjach | powstaje razem z biblioteką |
+| logika bibliotek bez Avalonii | test po referencjach | powstaje razem z pierwszą biblioteką bez Avalonii |
+| biblioteki nie referencują się nawzajem, poza jawnym wyjątkiem | test po referencjach | powstaje z rozdziałem bibliotek |
 | rama i biblioteka bez **nazw rodzajów** treści | skan źródeł po słowniku z systemu | istnieje dla `Core` i `Desktop`; obejmie bibliotekę |
 | rama i biblioteka bez **nazw pól** treści | koperta: nie ma API przyjmującego nazwę pola | wchodzi z kopertą, nie testem |
 | rama nie referencuje biblioteki | test po referencjach | powstaje razem z biblioteką |

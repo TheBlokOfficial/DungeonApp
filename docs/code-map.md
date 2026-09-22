@@ -506,6 +506,9 @@ najbardziej złożona czysta logika w bibliotece.
   nie wnosi własnego. Dwustopniowy szew `PanelCatalog.For` (najpierw panele biblioteki, potem
   narzędzia systemu) zostaje w kodzie mimo pustej pierwszej listy. Rusztowanie opisane jako
   rusztowanie, nie rezerwacja: kod, który je czyta, istnieje i działa.
+* **`DungeonApp.Library.Desktop` łączy dziś dwie biblioteki** — biurko z systemem okien i interfejs
+  wpisów (kontrolki kart, lista z kartą), a kontekst okna narzędzia podaje instancje i rejestr, czyli
+  biurko zna wpisy. Model docelowy ma osobne biblioteki, które się nie znają; rozdział w etapie 4.
 * **Kontrolki karty (`Controls/Content/*`) istnieją dziś tylko w bibliotece** — poprawny stan po
   etapie 2, ale jeszcze bez drugiego systemu, który by potwierdził, że biblioteka jest dla nich
   właściwym domem, a nie tylko miejscem, do którego akurat przeniósł je jedyny istniejący system.

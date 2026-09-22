@@ -76,6 +76,14 @@ a pięciu zakazów pilnuje wtedy wyłącznie przegląd. To stan przyjęty już p
 treści w kodzie (pozycja „Karta składana z listy elementów podanej przez dane"); biblioteka sprawia
 tylko, że droga zgodna z zakazami jest zarazem najkrótsza.
 
+**Wiele bibliotek, nie jedna** — 2026-09-22, autor. Biblioteka jest tym samym co w programowaniu:
+wykonuje za systemy wspólną robotę, żeby każdy nie pisał jej od nowa, i dzięki niej ten sam kod nie
+powiela się w wielu systemach. Stąd biblioteka na temat — wpisy, biurko, formuły — a nie jeden
+wspólny worek: system, który chce biurka bez wpisów albo wpisów bez biurka, bierze tylko to, czego
+potrzebuje. **Biblioteki nie znają się nawzajem**, bo zależność między nimi sprawiłaby, że wzięcie
+jednej ciągnie drugą; składa je system, jedyny, który wie, czego potrzebuje. Wcześniej biurko
+podawało oknu systemu instancje i rejestr — w tym modelu byłaby to biblioteka biurka znająca wpisy.
+
 **Odrzucone w tym temacie:** „Biblioteka wspólna jako warstwa pośrednia".
 
 ### Dodatki
