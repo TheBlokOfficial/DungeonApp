@@ -59,6 +59,11 @@ zapisu.
 Twojej pracy i nie wolno ich zagarnąć do Twojego commita. Ta reguła jest starsza od powyższej i ma
 przed nią pierwszeństwo: „commituj zawsze" znaczy „commituj **swoje** zawsze".
 
+**Porządki po własnej pracy asystent robi sam, bez pytania.** Decyzja autora z 2026-09-22: wpis
+w `.gitignore`, usunięcie kopii roboczej i gałęzi subagenta po przeniesieniu wyniku, drobna higiena
+repozytorium — to decyzje asystenta. Pytanie o nie kosztuje dodatkową turę rozmowy i niczego nie
+wnosi. Pyta się o to, co zmienia aplikację, dokumenty z decyzjami albo cudzą pracę.
+
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
 
@@ -289,8 +294,9 @@ poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".
 **Kopia robocza subagenta startuje z `origin/master`, nie z lokalnego `master`.** Autor nie wypycha
 na bieżąco, więc zdalna gałąź bywa daleko w tyle — 2026-09-22 o dwadzieścia cztery commity, i subagent
 zrobił na niej całe zadanie. **Brief implementacyjny zaczyna się od `git reset --hard master`
-w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. Katalog `.claude/`
-w drzewie głównym to kopie robocze subagentów — nie wchodzi do commitów.
+w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. Kopie robocze leżą
+w `.claude/worktrees/`, wykluczonym w `.gitignore`; po przeniesieniu wyniku do `master` asystent
+usuwa kopię i gałąź subagenta.
 
 **Zadania redakcyjne na długich dokumentach architekt robi sam; subagentom zostaje kod.** Obserwacja
 z 2026-09-22, nie reguła o przyczynie: czterech subagentów z rzędu (Sonnet) na zadaniu

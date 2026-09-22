@@ -8,3 +8,6 @@ riderModule.iml
 .build-tmp/
 .build-verify/
 *.stackdump
+
+# Kopie robocze subagentów (docs/collaboration.md, "Środowisko")
+.claude/worktrees/
