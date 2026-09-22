@@ -111,6 +111,8 @@ etapie aplikacja działa, a testy przechodzą.
   i ocena stanu; zasada i powód — [collaboration.md](collaboration.md), *Jak pisać dokumenty tego
   repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
   ta praca jest już tylko skracaniem.
+* **Etap 3 — w toku od 2026-09-22.** Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
+  stanu i zapis, potem system w kampanii i półka), przed scaleniem uruchamia autor. Docelowy kształt —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
   - **Stan dziś:** zakładka i narzędzie systemu dostają żywy magazyn instancji z metodami
@@ -124,8 +126,16 @@ etapie aplikacja działa, a testy przechodzą.
   - **Kampania pamięta system** — pole w manifeście; bez niego albo z nieobecnym systemem widoczna
     jako niedostępna. Półka pokazuje kampanie aktywnego systemu. Niezgodna wersja modelu — kampania
     niedostępna, bez migracji.
-  - **Rozstrzygnięte przez architekta, do weta:** nieudany zapis na dysk zostawia zmianę w pamięci
-    z ostrzeżeniem na pasku, jak dziś.
+  - **Rozstrzygnięte przez architekta, przyjęte bez weta 2026-09-22:** nieudany zapis na dysk
+    zostawia zmianę w pamięci z ostrzeżeniem na pasku, jak dziś; model to zbiór rzeczy z własnym
+    identyfikatorem (rzecz pojedyncza — zbiór jednoelementowy); jeden plik na model; model
+    zadeklarowany, a nieobecny na dysku jest pusty, plik modelu nieznanego zostaje nietknięty;
+    wejście zmiany odmawia, nie kolejkuje; instancje do etapu 4 w rdzeniu, w wydzielonym miejscu,
+    którego zapis i wejście zmiany nie znają (test granicy); kampanie nieprzypisywalne do żadnego
+    obecnego systemu widać na każdej półce jako niedostępne, kampanie innego obecnego systemu są
+    ukryte; wygląd kampanii niedostępnej bez fajerwerków.
+  - **Czego struktura nie zatrzyma:** widok, który po powiadomieniu sam zaplanuje zmianę na później.
+    Pilnuje tego przegląd, nie kod.
   - **Obieg:** etap dotyka zapisu stanu i granicy automatyzacji, więc wynik porównuje z briefem
     i z pięcioma zakazami drugi subagent.
 * **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają
