@@ -102,6 +102,10 @@ etapie aplikacja działa, a testy przechodzą.
   razu w docelowym stanie i pamięta zwinięcie po „Zmień system", czy ekran ładowania zasłania
   rozgrzewkę (w kodzie jest ukryty host rozgrzewki, osobnego ekranu ładowania nie dodano — jeśli
   okno pokazuje się przed końcem rozgrzewki, to jest pierwsza rzecz do dokończenia).
+* **Zacięcia mierzyć, nie oglądać.** 2026-09-22 autor potwierdził, że po poprawkach wejście w system
+  działa dobrze — i sam zauważył, że dowodu nie ma: animacja rozwijania paska, która dawniej czyniła
+  zacięcie widocznym, już nie gra przy wejściu. Następnym razem: czas rozgrzewki i czas od kliknięcia
+  systemu do pierwszej narysowanej klatki jako logowane liczby.
 * **Mapa kodu nie uwzględnia etapów 1–2** — dogonienie jej jest pierwszą pracą następnej sesji.
 * **Etap 3 — kształt drogi zapisu zatwierdzony przez autora 2026-09-22.** Deklaracja —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
