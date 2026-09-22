@@ -784,6 +784,11 @@ Okno hostuje **narzędzie biurka**, nie kartę.
   kampanię: instancje, rejestr, rozwiązywanie wskazań i te same drzwi zapisu, którymi idzie każdy
   panel. Nie sesję i nie samą kampanię — nic więcej osiągalnego stamtąd. Żaden szablon w bibliotece
   nie zna typu z systemu.
+* **Okno może udostępniać widżety do slotów dolnego panelu biurka** — miniatury pokazujące pojedynczą
+  daną, jak czas w fikcji ([mockup](images/mockup_biurko_nowe.png)). Widżet jest częścią deklaracji
+  okna, nie osobnym katalogiem, nie ma własnego stanu i czyta stan kampanii wyłącznie do odczytu —
+  także wtedy, gdy jego okno jest schowane albo zamknięte. Zmiana idzie przez okno i tę samą jedyną
+  drogę zapisu. Kierunek na później; powstaje z pierwszym widżetem.
 
 **Dlaczego →** [decisions.md](decisions.md), *Narzędzia biurka i system okien*.
 
