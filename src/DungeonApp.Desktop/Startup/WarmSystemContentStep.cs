@@ -43,8 +43,8 @@ public sealed class WarmSystemContentStep(
     {
         var content = registry();
 
-        Campaign? warmupCampaign = dataStep.WarmupCampaignId is { } id
-            ? await preparations.PeekAsync(id, cancellationToken)
+        Campaign? warmupCampaign = dataStep.WarmupCampaignSummary is { } summary
+            ? await preparations.PeekAsync(summary, cancellationToken)
             : null;
 
         foreach (var system in systems)
@@ -52,7 +52,10 @@ public sealed class WarmSystemContentStep(
             await WarmSystemTabsAsync(ui, system, content, cancellationToken);
             await WarmCardsAsync(ui, system, content, cancellationToken);
 
-            if (warmupCampaign is not null)
+            // The sampled campaign belongs to exactly one system (docs/architecture.md, "Kampania
+            // należy do jednego systemu"); warming another compiled system's campaign tabs against it
+            // would hand that system's tab factories a session built from a stranger's declarations.
+            if (warmupCampaign is not null && warmupCampaign.SystemId == system.Id)
             {
                 await WarmCampaignTabsAsync(ui, system, warmupCampaign, content, cancellationToken);
             }

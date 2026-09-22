@@ -6,10 +6,11 @@
              x:DataType="library:CampaignLibraryViewModel">
 
     <UserControl.Styles>
-        <!-- A shelf row. Fixed height on purpose: the list must stay scannable and must not
-             re-flow because one campaign has a longer name than the rest. -->
+        <!-- A shelf row. A minimum rather than a fixed height on purpose: the list must stay
+             scannable and must not re-flow for its own sake, but an unavailable row is allowed to
+             grow by exactly one line for its reason - see Border.campaign-row.unavailable below. -->
         <Style Selector="Border.campaign-row">
-            <Setter Property="Height" Value="{DynamicResource DungeonCampaignRowHeight}" />
+            <Setter Property="MinHeight" Value="{DynamicResource DungeonCampaignRowHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
@@ -25,6 +26,11 @@
              control is hovered, so it never looks like opening and deleting are one action. -->
         <Style Selector="Border.campaign-row.delete-hover:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        </Style>
+        <!-- An unavailable campaign: greyed by reusing the muted text token everywhere the
+             available row uses the primary one, never a new brush or an opacity literal. -->
+        <Style Selector="Border.campaign-row.unavailable TextBlock.campaign-name">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
         <Style Selector="Button.campaign-open">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -140,11 +146,14 @@
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                <Border Classes="campaign-row">
+                                <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
                                     <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
-                                             click-through, so only the delete control intercepts it. -->
+                                             click-through, so only the delete control intercepts it.
+                                             Disabled together with OpenCommand's own canExecute - an
+                                             unavailable campaign refuses to open at the operation
+                                             level too, not only through this disabled button. -->
                                         <Button Grid.ColumnSpan="5"
                                                 Classes="campaign-open"
                                                 Command="{Binding OpenCommand}" />
@@ -164,13 +173,19 @@
                                                        VerticalAlignment="Center"
                                                        Source="{StaticResource DungeonIconCampaignRecord}" />
                                             </Border>
-                                            <TextBlock Grid.Column="1"
-                                                       VerticalAlignment="Center"
-                                                       FontFamily="{DynamicResource DungeonDisplayFont}"
-                                                       FontSize="{DynamicResource DungeonCampaignNameFontSize}"
-                                                       Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                                       Text="{Binding Name}"
-                                                       TextTrimming="CharacterEllipsis" />
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Classes="campaign-name"
+                                                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                                                           FontSize="{DynamicResource DungeonCampaignNameFontSize}"
+                                                           Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                                           Text="{Binding Name}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock FontSize="{DynamicResource DungeonHelperFontSize}"
+                                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                           IsVisible="{Binding !IsAvailable}"
+                                                           Text="{Binding UnavailabilityReason}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
                                             <TextBlock Grid.Column="2"
                                                        VerticalAlignment="Center"
                                                        FontSize="{DynamicResource DungeonHelperFontSize}"

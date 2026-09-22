@@ -49,8 +49,8 @@ public sealed class WarmFrameChromeStep(
             await WarmSidebarAsync(ui, system, startCollapsed: true, cancellationToken);
         }
 
-        if (dataStep.WarmupCampaignId is { } id &&
-            await preparations.PeekAsync(id, cancellationToken) is { } campaign)
+        if (dataStep.WarmupCampaignSummary is { } summary &&
+            await preparations.PeekAsync(summary, cancellationToken) is { } campaign)
         {
             var pageViewModel = new CampaignPageViewModel(campaign, closeCampaign: () => Task.CompletedTask);
             await WarmAsync(ui, new CampaignPageView { DataContext = pageViewModel }, cancellationToken);

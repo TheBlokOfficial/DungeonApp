@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -70,15 +69,6 @@ public partial class App : Avalonia.Application
 
         _campaigns = new JsonCampaignRepository(libraryPath);
 
-        // Every compiled system's own declarations, unioned. Correct today because exactly one
-        // system exists to union - docs/architecture.md, "Dziś system jest jeden" - and only an
-        // interim stand-in for the day a campaign's own system is tracked in its manifest (out of
-        // scope for this étape): the code that warms and creates campaigns here runs before the GM
-        // has picked *which* system a given campaign belongs to, so it cannot yet ask that one
-        // system alone. Once the manifest carries a campaign's system, this union is replaced by
-        // that one system's own StateModels wherever a specific campaign is being read or written.
-        var declarations = _systems.SelectMany(system => system.StateModels).ToArray();
-
         // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
         // mieszka stan") - obok, nie pod
         // danymi aplikacji.
@@ -95,8 +85,10 @@ public partial class App : Avalonia.Application
         // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
         // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten dziś wystawia wyłącznie
         // system, w swoim własnym konstruktorze (DungeonApp.App/Program.cs), bo rama nie stawia
-        // biurka.
-        _preparations = new CampaignPreparationCache(_campaigns, declarations);
+        // biurka. Deklaracje, którymi czyta jedną konkretną kampanię, nie są tu już z góry ustalone -
+        // każda kampania niesie własny system w manifeście (docs/architecture.md, "Kampania należy do
+        // jednego systemu"), więc cache sam dopasowuje go do jednego z `_systems` przy każdym odczycie.
+        _preparations = new CampaignPreparationCache(_campaigns, _systems);
 
         // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
         // otwierające kampanię prowadzi do metody na powłoce, która jeszcze nie istnieje - domyka się
@@ -104,8 +96,10 @@ public partial class App : Avalonia.Application
         // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
         _campaignLibrary = new CampaignLibraryViewModel(
             _campaigns,
-            new CreateCampaign(_campaigns, TimeProvider.System, declarations),
-            id => _shell!.OpenCampaignAsync(id));
+            new CreateCampaign(_campaigns, TimeProvider.System),
+            _preparations,
+            _systems,
+            summary => _shell!.OpenCampaignAsync(summary));
 
         // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Wszystko wizualne, co GM mógłby
         // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, przed pokazaniem ekranu

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
@@ -16,13 +18,26 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// It owns presentation state only. Naming rules live in <see cref="CampaignName"/> and creation
 /// lives in <see cref="CreateCampaign"/>; this class decides what the GM is told, not what is legal.
 /// </para>
+/// <para>
+/// <see cref="SetActiveSystem"/> is called once per system choice, before the shelf is shown for real
+/// (<c>AppShellViewModel.ChooseSystemAsync</c>). Before it is ever called - during the startup
+/// warmup pass, which runs before any system is chosen - <see cref="LoadAsync"/> shows every campaign
+/// unfiltered, since nothing about that pass is ever seen by the GM. Once an active system is set,
+/// the shelf filters to docs/architecture.md's "Pasek boczny: trzy kategorie" rule: the active
+/// system's own campaigns (available or not), plus any campaign that cannot be assigned to *any*
+/// compiled system at all; a campaign belonging to a different, compiled system is hidden rather than
+/// shown unavailable.
+/// </para>
 /// </summary>
 public sealed class CampaignLibraryViewModel : ObservableObject
 {
     private readonly ICampaignRepository _campaigns;
     private readonly CreateCampaign _createCampaign;
-    private readonly Func<CampaignId, Task> _openCampaign;
+    private readonly CampaignPreparationCache _preparations;
+    private readonly IReadOnlyList<IGameSystem> _systems;
+    private readonly Func<CampaignSummary, Task> _openCampaign;
 
+    private IGameSystem? _activeSystem;
     private string _newCampaignName = string.Empty;
     private string? _nameError;
     private bool _isBusy;
@@ -31,10 +46,14 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public CampaignLibraryViewModel(
         ICampaignRepository campaigns,
         CreateCampaign createCampaign,
-        Func<CampaignId, Task> openCampaign)
+        CampaignPreparationCache preparations,
+        IReadOnlyList<IGameSystem> systems,
+        Func<CampaignSummary, Task> openCampaign)
     {
         _campaigns = campaigns;
         _createCampaign = createCampaign;
+        _preparations = preparations;
+        _systems = systems;
         _openCampaign = openCampaign;
 
         CreateCommand = new AsyncCommand(CreateAsync, () => CanCreate);
@@ -93,7 +112,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         }
     }
 
-    public bool CanCreate => !IsBusy && CampaignName.Validate(NewCampaignName) is CampaignNameError.None;
+    public bool CanCreate => !IsBusy && _activeSystem is not null && CampaignName.Validate(NewCampaignName) is CampaignNameError.None;
 
     /// <summary>
     /// True only once a read has actually finished. Without the loaded flag the empty state would
@@ -102,6 +121,17 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public bool IsEmpty => _isLoaded && Campaigns.Count == 0;
 
     public bool HasCampaigns => Campaigns.Count > 0;
+
+    /// <summary>
+    /// Called once per system choice, before the shelf is shown for real - see the type's own remarks.
+    /// Does not reload by itself; the caller is expected to call <see cref="LoadAsync"/> right after.
+    /// </summary>
+    public void SetActiveSystem(IGameSystem system)
+    {
+        _activeSystem = system;
+        RaisePropertyChanged(nameof(CanCreate));
+        CreateCommand.RaiseCanExecuteChanged();
+    }
 
     public async Task<IReadOnlyList<CampaignSummary>> LoadAsync()
     {
@@ -112,11 +142,21 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         {
             summaries = await _campaigns.ListAsync();
 
+            var activeSystem = _activeSystem;
+            var visible = activeSystem is null ? summaries : summaries.Where(summary => ShouldShow(summary, activeSystem)).ToArray();
+
             Campaigns.Clear();
 
-            foreach (var summary in summaries)
+            foreach (var summary in visible)
             {
-                Campaigns.Add(new CampaignRowViewModel(summary, OpenAsync, DeleteAsync));
+                // During the pre-system warmup pass nothing here is ever shown to the GM, so there is
+                // no point paying for a full read per campaign - every row simply reports itself
+                // available until the real, per-system reload replaces it.
+                var availability = activeSystem is null
+                    ? CampaignAvailability.Available
+                    : await _preparations.CheckAvailabilityAsync(summary);
+
+                Campaigns.Add(new CampaignRowViewModel(summary, availability, OpenAsync, DeleteAsync));
             }
 
             _isLoaded = true;
@@ -137,13 +177,39 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         return summaries;
     }
 
+    /// <summary>
+    /// A campaign is shown on <paramref name="activeSystem"/>'s shelf when it is that system's own, or
+    /// when it cannot be assigned to any compiled system at all (no system recorded, or one this build
+    /// does not know) - docs/architecture.md, "Kampania należy do jednego systemu". A campaign belonging
+    /// to a different, compiled system is hidden rather than shown unavailable.
+    /// </summary>
+    private bool ShouldShow(CampaignSummary summary, IGameSystem activeSystem)
+    {
+        if (summary.SystemId is not { } systemId)
+        {
+            return true;
+        }
+
+        if (systemId == activeSystem.Id)
+        {
+            return true;
+        }
+
+        return !_systems.Any(system => system.Id == systemId);
+    }
+
     private async Task CreateAsync()
     {
+        if (_activeSystem is not { } system)
+        {
+            return;
+        }
+
         IsBusy = true;
 
         try
         {
-            await _createCampaign.ExecuteAsync(NewCampaignName);
+            await _createCampaign.ExecuteAsync(NewCampaignName, system.Id, system.StateModels);
 
             NewCampaignName = string.Empty;
         }
@@ -165,7 +231,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            await _openCampaign(row.Id);
+            await _openCampaign(row.Summary);
         }
         catch (CampaignStoreException)
         {

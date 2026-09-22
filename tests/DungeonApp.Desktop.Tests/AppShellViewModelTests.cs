@@ -83,9 +83,9 @@ public sealed class AppShellViewModelTests
     private static AppShellViewModel BuildShell(System.Collections.Generic.IReadOnlyList<IGameSystem> systems)
     {
         var repository = new InMemoryCampaignRepository();
+        var preparations = new CampaignPreparationCache(repository, systems);
         var campaignLibrary = new CampaignLibraryViewModel(
-            repository, new CreateCampaign(repository, TimeProvider.System, []), _ => Task.CompletedTask);
-        var preparations = new CampaignPreparationCache(repository, []);
+            repository, new CreateCampaign(repository, TimeProvider.System), preparations, systems, _ => Task.CompletedTask);
 
         return new AppShellViewModel(
             systems,

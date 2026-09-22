@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
 
 namespace DungeonApp.Core.Persistence;
@@ -85,6 +86,7 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
             campaign.Name.Value,
             campaign.CreatedAt,
             Generation: generation,
+            System: campaign.SystemId?.Value,
             Models: modelEntries);
 
         // Staged last, so Commit moves it last: its arrival is what marks the whole generation as
@@ -129,13 +131,22 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
             modelsById[declaration.ModelId] = await ReadModelAsync(directory, declaration, modelEntry, cancellationToken);
         }
 
+        var systemId = ContentId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : (ContentId?)null;
+
         var snapshot = CampaignStateSnapshot.FromModels(modelsById);
-        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, snapshot);
+        return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, systemId, snapshot);
     }
 
     /// <summary>
-    /// Reads manifests only. Drawing the shelf must not cost the value of every model in every
-    /// campaign, and a campaign whose model files are torn still deserves to be listed.
+    /// Reads manifests only, and never skips a directory - docs/architecture.md, "Kampania należy do
+    /// jednego systemu": "Kampania, której systemu nie ma w programie, jest widoczna jako niedostępna
+    /// - nie znika." Drawing the shelf must not cost the value of every model in every campaign, and
+    /// a campaign whose manifest itself is damaged still deserves a row, with whatever this can
+    /// recover (the directory's own name and creation time at worst) and a
+    /// <see cref="CampaignSummary.ManifestFailure"/> the shell can turn into a reason. Whether a
+    /// campaign can actually be opened - matching its <see cref="CampaignSummary.SystemId"/> against a
+    /// compiled system, and reading its declared state - is not this method's job; that is the exact
+    /// same read <see cref="GetAsync"/> already performs, left to whoever is deciding availability.
     /// </summary>
     public async Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
     {
@@ -150,31 +161,63 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var manifestPath = Path.Combine(directory, ManifestFileName);
-
-            if (!File.Exists(manifestPath))
+            // Not a directory this store ever created for a campaign - nothing to key a summary by.
+            if (!Guid.TryParse(Path.GetFileName(directory), out var guid))
             {
                 continue;
             }
 
-            try
-            {
-                var manifest = await ReadManifestAsync(manifestPath, cancellationToken);
-                var name = ValidateManifest(manifest, manifestPath);
-
-                summaries.Add(new CampaignSummary(new CampaignId(manifest.Id), name, manifest.CreatedAt));
-            }
-            catch (CampaignStoreException)
-            {
-                // One damaged campaign must not hide the whole shelf. Telling the GM about it is a
-                // separate job for the library screen, not a reason to fail the entire read.
-            }
+            summaries.Add(await ReadSummaryAsync(new CampaignId(guid), directory, cancellationToken));
         }
 
         return summaries
             .OrderBy(summary => summary.Name.Value, StringComparer.CurrentCultureIgnoreCase)
             .ThenBy(summary => summary.CreatedAt)
             .ToArray();
+    }
+
+    /// <summary>
+    /// Reads one campaign's manifest as leniently as <see cref="ListAsync"/> needs to: a directory
+    /// whose manifest cannot be parsed at all, or whose format version this build does not yet
+    /// understand, still gets a row - with the directory's own name and creation time standing in for
+    /// whatever the manifest could not supply, and the failure recorded rather than swallowed. A
+    /// manifest that parses, whatever its format version, contributes whatever it actually has -
+    /// including no system at all, which is not itself a failure here (docs/architecture.md, "Kampania
+    /// należy do jednego systemu": a pre-system manifest is a campaign without one, not a broken one).
+    /// </summary>
+    private async Task<CampaignSummary> ReadSummaryAsync(
+        CampaignId id, string directory, CancellationToken cancellationToken)
+    {
+        var fallbackName = CampaignName.Create(Path.GetFileName(directory));
+        var fallbackCreatedAt = new DateTimeOffset(Directory.GetCreationTimeUtc(directory), TimeSpan.Zero);
+
+        var manifestPath = Path.Combine(directory, ManifestFileName);
+
+        if (!File.Exists(manifestPath))
+        {
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, CampaignStoreFailure.Unreadable);
+        }
+
+        CampaignManifest manifest;
+
+        try
+        {
+            manifest = await ReadManifestAsync(manifestPath, cancellationToken);
+        }
+        catch (CampaignStoreException ex)
+        {
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, ex.Failure);
+        }
+
+        if (manifest.FormatVersion > CurrentFormatVersion)
+        {
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, CampaignStoreFailure.UnsupportedFormatVersion);
+        }
+
+        var name = CampaignName.TryCreate(manifest.Name, out var validName) ? validName : fallbackName;
+        var systemId = ContentId.TryCreate(manifest.System, out var parsedSystemId) ? parsedSystemId : (ContentId?)null;
+
+        return new CampaignSummary(id, name, manifest.CreatedAt, systemId);
     }
 
     public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)
@@ -377,6 +420,10 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         string? Name,
         DateTimeOffset CreatedAt,
         long Generation,
+        // Null for a campaign created before this field existed, or restored from a manifest that
+        // never recorded one - docs/architecture.md, "Kampania należy do jednego systemu": no format
+        // version bump for this field, and a v2 manifest without it reads back exactly like a v1 one.
+        string? System = null,
         // Nullable and defaulted nowhere near strictly, on purpose: a manifest for a campaign that
         // has never had a single record in any model simply has no such key.
         IReadOnlyList<ModelEntry>? Models = null);
