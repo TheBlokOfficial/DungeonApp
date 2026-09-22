@@ -83,6 +83,80 @@ public sealed class GlobalSidebarRenderingTests
         }
     }
 
+    /// <summary>
+    /// docs/tasks.md, zadanie 2: the sidebar shown after choosing a system must have its target
+    /// collapse state from the very first frame, never expanded-then-collapsing. Both
+    /// <see cref="Sidebar_constructed_already_collapsed_has_collapsed_heading_height_on_the_first_frame"/>
+    /// and its expanded counterpart build the view model with <c>startCollapsed</c> passed to the
+    /// constructor - the fix - rather than toggling after construction the way <see cref="BuildWindow"/>
+    /// above still does for the pre-existing row-gap coverage.
+    /// </summary>
+    [AvaloniaFact]
+    public void Sidebar_constructed_already_collapsed_has_collapsed_heading_height_on_the_first_frame()
+    {
+        var window = BuildWindowConstructedAt(startCollapsed: true);
+
+        AssertEveryHeadingHeight(window, expected: 0);
+    }
+
+    [AvaloniaFact]
+    public void Sidebar_constructed_already_expanded_has_expanded_heading_height_on_the_first_frame()
+    {
+        var window = BuildWindowConstructedAt(startCollapsed: false);
+
+        AssertEveryHeadingHeight(window, expected: 44);
+    }
+
+    /// <summary>
+    /// docs/tasks.md, zadanie 2, the "Zmień system" case: AppShellView.axaml hosts the sidebar through
+    /// a <c>ContentControl</c> bound to <c>AppShellViewModel.Sidebar</c>, resolved by a
+    /// <see cref="GlobalSidebarViewModel"/> <c>DataTemplate</c> - never a persistent
+    /// <see cref="GlobalSidebarView"/> instance whose <c>DataContext</c> is merely rebound. That
+    /// matters because a first, manual check (rebinding <c>DataContext</c> on one already-shown
+    /// <see cref="GlobalSidebarView"/>) still showed an expanded frame after the swap: the control had
+    /// already rendered once, so its Width/heading transitions played across the change instead of
+    /// skipping it. A <c>DataTemplate</c> behind a <c>ContentControl</c> instantiates a fresh visual
+    /// per distinct <c>Content</c> reference, which is what this test exercises and what
+    /// AppShellView.axaml now relies on.
+    /// </summary>
+    [AvaloniaFact]
+    public void A_fresh_sidebar_built_by_the_content_templates_data_template_shows_the_next_systems_collapse_state_immediately()
+    {
+        var host = new ContentControl();
+        host.DataTemplates.Add(new Avalonia.Controls.Templates.FuncDataTemplate<GlobalSidebarViewModel>(
+            (vm, _) => new GlobalSidebarView { DataContext = vm, Width = vm.SidebarWidth }));
+
+        var window = new Window { Content = host, Width = 224, Height = 728 };
+        window.Show();
+
+        host.Content = BuildSidebarViewModel(startCollapsed: false);
+        window.GetLayoutManager()!.ExecuteLayoutPass();
+        AssertEveryHeadingHeight(window, expected: 44);
+
+        // The "Zmień system" moment: a second, distinct GlobalSidebarViewModel with the collapse
+        // state the frame remembered from the first system's sidebar (docs/tasks.md, zadanie 3).
+        host.Content = BuildSidebarViewModel(startCollapsed: true);
+        window.GetLayoutManager()!.ExecuteLayoutPass();
+
+        AssertEveryHeadingHeight(window, expected: 0);
+    }
+
+    private static GlobalSidebarViewModel BuildSidebarViewModel(bool startCollapsed)
+    {
+        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
+        var campaignTab = new CampaignTabDeclaration(
+            "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
+
+        return new GlobalSidebarViewModel(
+            [systemTab],
+            [campaignTab],
+            () => Task.CompletedTask,
+            _ => Task.CompletedTask,
+            _ => { },
+            () => Task.CompletedTask,
+            startCollapsed);
+    }
+
     private static Window BuildWindow(bool startCollapsed, out GlobalSidebarViewModel viewModel)
     {
         var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
@@ -108,6 +182,42 @@ public sealed class GlobalSidebarRenderingTests
         window.GetLayoutManager()!.ExecuteLayoutPass();
 
         return window;
+    }
+
+    /// <summary>Builds the sidebar with its collapse state fixed by the constructor's own <c>startCollapsed</c> parameter - never by a post-construction toggle.</summary>
+    private static Window BuildWindowConstructedAt(bool startCollapsed)
+    {
+        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
+        var campaignTab = new CampaignTabDeclaration(
+            "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
+
+        var viewModel = new GlobalSidebarViewModel(
+            [systemTab],
+            [campaignTab],
+            () => Task.CompletedTask,
+            _ => Task.CompletedTask,
+            _ => { },
+            () => Task.CompletedTask,
+            startCollapsed);
+
+        var view = new GlobalSidebarView { DataContext = viewModel };
+        var window = new Window { Content = view, Width = 224, Height = 728 };
+        window.Show();
+        window.GetLayoutManager()!.ExecuteLayoutPass();
+
+        return window;
+    }
+
+    /// <summary>Each of the three group headings' own Border.Height (KAMPANIA/SYSTEM/APLIKACJA) - bound to <see cref="GlobalSidebarViewModel.HeadingHeight"/>.</summary>
+    private static void AssertEveryHeadingHeight(Window window, double expected)
+    {
+        var headings = window.GetVisualDescendants()
+            .OfType<Border>()
+            .Where(border => border.Child is TextBlock textBlock && textBlock.Classes.Contains("sidebar-section-heading"))
+            .ToList();
+
+        Assert.True(headings.Count == 3, $"Oczekiwano trzech nagłówków grup, znaleziono {headings.Count}.");
+        Assert.All(headings, border => Assert.Equal(expected, border.Bounds.Height));
     }
 
     /// <summary>Every "Button.nav-button" in document order - the four rows this sidebar renders today.</summary>

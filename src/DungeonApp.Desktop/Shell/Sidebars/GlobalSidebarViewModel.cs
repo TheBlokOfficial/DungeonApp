@@ -42,7 +42,8 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         Func<Task> selectCampaignPosition,
         Func<CampaignTabDeclaration, Task> selectCampaignTab,
         Action<SystemTabDeclaration> selectSystemTab,
-        Func<Task> changeSystem)
+        Func<Task> changeSystem,
+        bool startCollapsed = false)
     {
         CampaignPositionItem = CreateSelectableItem(
             "shell.campaign-position", ShelfIconResourceKey, ShelfLabel, selectCampaignPosition);
@@ -106,6 +107,17 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             IsCollapsed = !IsCollapsed;
             return Task.CompletedTask;
         });
+
+        // Set before this instance is ever handed to a view (docs/tasks.md, zadanie 2): Avalonia's
+        // Transitions only animate a property change measured against a frame the control already
+        // rendered. Setting the target collapse state here, before GlobalSidebarView is even
+        // constructed, gives the first layout pass nothing earlier to transition from, so the
+        // width/heading/label animations play only on a later real toggle - never on first show, and
+        // never on the fresh instance "Zmień system" builds for the next system.
+        if (startCollapsed)
+        {
+            IsCollapsed = true;
+        }
 
         // Initial highlight: the campaign position, shown as the shelf before any tab is ever clicked.
         Select(CampaignPositionItem);

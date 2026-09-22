@@ -20,6 +20,25 @@
         <DataTemplate DataType="campaignLibrary:CampaignPageViewModel">
             <campaignLibrary:CampaignPageView />
         </DataTemplate>
+        <!-- A fresh GlobalSidebarView per DataTemplate build - not a persistent element rebound by
+             DataContext - is what makes zadanie 2 hold on "Zmień system" too, not only on the very
+             first system choice: a control Avalonia has never rendered before has no earlier frame for
+             its Width/heading/label transitions to play across (docs/tasks.md; confirmed by
+             DungeonApp.Desktop.RenderingTests.GlobalSidebarRenderingTests, whose DataContext-swap-on-
+             an-already-shown-instance probe fails without this). -->
+        <DataTemplate DataType="sidebars:GlobalSidebarViewModel">
+            <sidebars:GlobalSidebarView Width="{Binding SidebarWidth}">
+                <sidebars:GlobalSidebarView.Transitions>
+                    <animation:Transitions>
+                        <animation:DoubleTransition Property="Width" Duration="0:0:0.18">
+                            <animation:DoubleTransition.Easing>
+                                <easings:CubicEaseInOut />
+                            </animation:DoubleTransition.Easing>
+                        </animation:DoubleTransition>
+                    </animation:Transitions>
+                </sidebars:GlobalSidebarView.Transitions>
+            </sidebars:GlobalSidebarView>
+        </DataTemplate>
         <!-- A system tab's or a campaign tab's content arrives as an already-finished Control
              (ITabContent.Content), never a view model - so it needs no template here. Avalonia hosts
              a Control assigned directly as Content as-is, the same trick a panel's own body already
@@ -38,19 +57,7 @@
 
             <!-- Pasek boczny + treść, dopiero po wyborze systemu. -->
             <DockPanel LastChildFill="True" IsVisible="{Binding IsSystemChosen}">
-                <sidebars:GlobalSidebarView DockPanel.Dock="Left"
-                                            DataContext="{Binding Sidebar}"
-                                            Width="{Binding SidebarWidth}">
-                    <sidebars:GlobalSidebarView.Transitions>
-                        <animation:Transitions>
-                            <animation:DoubleTransition Property="Width" Duration="0:0:0.18">
-                                <animation:DoubleTransition.Easing>
-                                    <easings:CubicEaseInOut />
-                                </animation:DoubleTransition.Easing>
-                            </animation:DoubleTransition>
-                        </animation:Transitions>
-                    </sidebars:GlobalSidebarView.Transitions>
-                </sidebars:GlobalSidebarView>
+                <ContentControl DockPanel.Dock="Left" Content="{Binding Sidebar}" />
 
                 <Border Background="{DynamicResource DungeonBackstageBrush}"
                         BoxShadow="inset 0 0 8 0 #24000000">

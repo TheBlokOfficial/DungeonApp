@@ -96,11 +96,24 @@ public partial class App : Avalonia.Application
             new CreateCampaign(_campaigns, TimeProvider.System),
             id => _shell!.OpenCampaignAsync(id));
 
-        // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Przed ekranem wyboru wczytuje
-        // się wyłącznie treść (architecture.md, "Przepływy"): półka, rozgrzewka danych kampanii i
-        // rozgrzewka zakładek kampanii przenoszą się do wyboru systemu (AppShellViewModel), bo
-        // dopiero wtedy wiadomo, którego systemu zakładki rozgrzewać.
-        _startupSteps = [_contentPacksStep];
+        // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Wszystko wizualne, co GM mógłby
+        // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, przed pokazaniem ekranu
+        // wyboru jako interaktywnego (docs/tasks.md, zadanie 1 - zamrożenie przy wyborze systemu
+        // znikło stąd, nie skróceniem rozgrzewki, tylko przeniesieniem jej przed kurtynę startową):
+        // paczki treści, półka, dane każdej kampanii z półki, potem chrom ramy (ekran wyboru, półka,
+        // pasek boczny w obu stanach, strona kampanii) i na końcu zawartość każdego wkompilowanego
+        // systemu (jego zakładki, karty wpisów, biurko z narzędziami).
+        var shelfStep = new LoadCampaignShelfStep(_campaignLibrary);
+        var dataStep = new WarmCampaignDataStep(_preparations, shelfStep);
+
+        _startupSteps =
+        [
+            _contentPacksStep,
+            shelfStep,
+            dataStep,
+            new WarmFrameChromeStep(_systems, _campaignLibrary, _preparations, dataStep),
+            new WarmSystemContentStep(_systems, () => _contentPacksStep!.Registry, _campaigns, _preparations, dataStep)
+        ];
     }
 
     public override void OnFrameworkInitializationCompleted()
