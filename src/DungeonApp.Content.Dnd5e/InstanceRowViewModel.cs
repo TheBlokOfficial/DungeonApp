@@ -45,11 +45,11 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         Message = message;
 
         // Branching on a content type's own id ("monster") is legal here and nowhere outside this
-        // content set - see docs/decisions.md on where that knowledge is allowed to live.
+        // system - see docs/decisions.md on where that knowledge is allowed to live.
         CanEditHitPoints = resolved.Unresolved is null
             && resolved.Source is { } source
             && source.Entry.Type.Set == ownerSet
-            && source.Entry.Type.Type.Value == Dnd5eContentSet.MonsterTypeId;
+            && source.Entry.Type.Type.Value == Dnd5eSystem.MonsterTypeId;
 
         if (CanEditHitPoints)
         {

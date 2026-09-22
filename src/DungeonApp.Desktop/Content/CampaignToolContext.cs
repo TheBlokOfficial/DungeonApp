@@ -7,20 +7,20 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Content;
 
 /// <summary>
-/// The narrow window a content set's own desk tool gets onto the open campaign - built once per
-/// <see cref="CampaignToolProvider.ToolsFor"/> call and handed to every <see cref="IContentSet.CreateTools"/>.
+/// The narrow window a system's own desk tool gets onto the open campaign - built once per
+/// <see cref="CampaignToolProvider.ToolsFor"/> call and handed to every <see cref="IGameSystem.CreateTools"/>.
 /// <para>
 /// Deliberately not <see cref="CampaignSession"/> and not <see cref="Core.Campaigns.Campaign"/>
-/// themselves: docs/architecture.md's "Warstwy i granice" lets a content set know what its own content
+/// themselves: docs/architecture.md's "Warstwy i granice" lets a system know what its own content
 /// looks like, not everything a campaign happens to carry. A tool gets exactly the four things
 /// "narzędzie czytające pole po nazwie mieszka w zestawie" needs - the campaign's instances, the
 /// registry to resolve entries against, the resolver that does the resolving, and the one door any
 /// write goes through - and nothing else reachable from here.
 /// </para>
 /// <para>
-/// In production, only <see cref="CampaignToolProvider"/> ever builds one - a content set receives an
+/// In production, only <see cref="CampaignToolProvider"/> ever builds one - a system receives an
 /// instance as a parameter and never constructs its own. The constructor stays public rather than
-/// internal, the same way <see cref="CampaignSession"/>'s does, precisely so a content set's own test
+/// internal, the same way <see cref="CampaignSession"/>'s does, precisely so a system's own test
 /// project (a separate assembly, with no reason to reference this one's internals) can build a
 /// context directly against a hand-built <see cref="CampaignSession"/> and registry, without running
 /// the whole shell to get one.

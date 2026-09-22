@@ -22,7 +22,7 @@ namespace DungeonApp.Architecture.Tests;
 /// every loaded <c>DungeonApp.Content.*</c> assembly, so the engine and the shell are denied
 /// exactly the vocabulary the content layer introduces, and the ban widens by itself as content
 /// types are written. The short fixed list beside them only covers what an English-named violation
-/// would reach for before any zestaw names it.
+/// would reach for before any system names it.
 /// </para>
 /// <para>
 /// Field names are deliberately not part of this dictionary. "name", "type", "size", "description"

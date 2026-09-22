@@ -7,11 +7,11 @@ using System.Reflection;
 namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
-/// Zestawy never reference each other ("Warstwy i granice"). Today there is exactly one
+/// Systemy never reference each other ("Warstwy i granice"). Today there is exactly one
 /// (DungeonApp.Content.Dnd5e), so a naive version of this test would pass whether or not the rule
 /// actually held, simply because there is nothing yet to violate it - the same trap
 /// <see cref="CoreEntryKindIndependenceTests.The_scan_reaches_engine_shell_and_the_content_dictionary"/>
-/// guards against for the vocabulary scan. The assertion that at least one zestaw was found closes
+/// guards against for the vocabulary scan. The assertion that at least one system was found closes
 /// that gap.
 /// <para>
 /// The edge this forbids is one <i>within</i> a single layer: two content assemblies depending on
@@ -21,7 +21,7 @@ namespace DungeonApp.Architecture.Tests;
 /// that knows about a given game system".
 /// </para>
 /// <para>
-/// Discovering "every zestaw that exists" from <see cref="Assembly.GetReferencedAssemblies"/> would
+/// Discovering "every system that exists" from <see cref="Assembly.GetReferencedAssemblies"/> would
 /// be unreliable: an unused project reference can be trimmed by the compiler and never show up in
 /// the emitted metadata, so a passing result could mean either "no cross-references" or "the
 /// reference exists but nobody uses it yet". This instead lists every
@@ -58,7 +58,7 @@ public sealed class ContentAssemblyIsolationTests
 
         Assert.True(
             offences.Length == 0,
-            "A zestaw must never reference another zestaw: " + string.Join(", ", offences));
+            "A system must never reference another system: " + string.Join(", ", offences));
     }
 
     private static IReadOnlyList<string> ContentAssemblyNamesUnderSrc() =>

@@ -8,7 +8,7 @@ using DungeonApp.Desktop.Features.CampaignWorkspace.Panels;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// A minimal <see cref="IContentSet"/> shared by every Desktop test that needs one:
+/// A minimal <see cref="IGameSystem"/> shared by every Desktop test that needs one:
 /// <see cref="ContentPackLoader"/> tests use it as an <see cref="IContentTypeCatalog"/>, registry
 /// tests use it as an <see cref="IContentPresentation"/> too. It knows exactly the descriptors it is
 /// given and draws a trivial placeholder card for any resolved entry - it exists to exercise the
@@ -19,17 +19,17 @@ namespace DungeonApp.Desktop.Tests;
 /// message to reject, or <see langword="null"/> to accept. Defaults to always accepting.
 /// </para>
 /// <para>
-/// <paramref name="tools"/> lets a <see cref="CampaignToolProvider"/> test simulate a content set
+/// <paramref name="tools"/> lets a <see cref="CampaignToolProvider"/> test simulate a system
 /// that brings a tool belt, without this fake needing to know what a real tool looks like: a factory
 /// receives the <see cref="CampaignToolContext"/> the provider built and returns whatever descriptors
 /// a test wants to see stitched onto <see cref="Panels.PanelCatalog"/>. Defaults to bringing none.
 /// </para>
 /// </summary>
-internal sealed class FakeContentSet(
+internal sealed class FakeGameSystem(
     ContentId id,
     IReadOnlyList<ContentTypeDescriptor> descriptors,
     Func<ContentValues, string?>? validate = null,
-    Func<CampaignToolContext, IReadOnlyList<WorkspacePanelDescriptor>>? tools = null) : IContentSet
+    Func<CampaignToolContext, IReadOnlyList<WorkspacePanelDescriptor>>? tools = null) : IGameSystem
 {
     public ContentId Id { get; } = id;
 

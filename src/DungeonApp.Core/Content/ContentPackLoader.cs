@@ -15,7 +15,7 @@ namespace DungeonApp.Core.Content;
 /// <see cref="Persistence.JsonCampaignRepository"/> does - there is no container here, and this is the
 /// composition root's job to wire up, not something the engine resolves for itself. <paramref
 /// name="types"/> is the engine's only window into content types (see <see cref="IContentTypeCatalog"/>)
-/// - the composition root hands in the aggregate over every installed content set.
+/// - the composition root hands in the aggregate over every installed system.
 /// <para>
 /// The governing rule for a pack's own manifest: <b>a pack is rejected whole, and says why.</b> A
 /// malformed <c>pack.json</c> throws the whole directory out - there is no identity to address its
@@ -360,7 +360,7 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
     /// the version, then <see cref="IContentTypeCatalog.TryValidate"/>. Every one of the four ways an
     /// entry can fail to resolve marks only that entry (<see cref="EntryUnresolvedReason"/>) - none of
     /// them reject the pack itself, which is exactly the "Odrzucanie całej paczki za jeden wadliwy
-    /// wpis" reversal docs/decisions.md records: a content set that rejects one entry's values says
+    /// wpis" reversal docs/decisions.md records: a system that rejects one entry's values says
     /// nothing about any other entry beside it.
     /// </summary>
     private static IEnumerable<RegisteredEntry> ResolveEntries(

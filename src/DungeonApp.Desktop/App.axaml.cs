@@ -21,7 +21,7 @@ public partial class App : Avalonia.Application
     // Handed in through the constructor rather than discovered anywhere below - see
     // DungeonApp.App/Program.cs. Not a service locator: everything built from this list
     // (the two aggregates below) is still plain constructor injection into the pieces that need it.
-    private readonly IReadOnlyList<IContentSet> _contentSets;
+    private readonly IReadOnlyList<IGameSystem> _systems;
 
     private WorkspaceLayoutStore? _layoutStore;
     private JsonCampaignRepository? _campaigns;
@@ -33,16 +33,16 @@ public partial class App : Avalonia.Application
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
-    public App(IReadOnlyList<IContentSet> contentSets)
+    public App(IReadOnlyList<IGameSystem> systems)
     {
-        _contentSets = contentSets;
+        _systems = systems;
     }
 
     /// <summary>
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
     /// class - it never runs in the shipped app, which always goes through the constructor above,
     /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
-    /// empty content set list only ever reaches <see cref="Initialize"/> under design-time tooling;
+    /// empty system list only ever reaches <see cref="Initialize"/> under design-time tooling;
     /// outside of it, the guard at the top of that method turns this into a loud failure instead of
     /// a silently empty registry.
     /// </summary>
@@ -52,13 +52,13 @@ public partial class App : Avalonia.Application
 
     public override void Initialize()
     {
-        if (_contentSets.Count == 0 && !Avalonia.Controls.Design.IsDesignMode)
+        if (_systems.Count == 0 && !Avalonia.Controls.Design.IsDesignMode)
         {
             throw new InvalidOperationException(
-                "Aplikacja została zbudowana bez żadnego zestawu treści. W praktyce oznacza to " +
+                "Aplikacja została zbudowana bez żadnego systemu. W praktyce oznacza to " +
                 "pusty katalog typów, więc każdy wpis w każdej paczce zostanie nierozwiązany, a " +
                 "rejestr treści pozostanie pusty. Napraw to w korzeniu kompozycji - " +
-                "DungeonApp.App/Program.cs - przekazując tam co najmniej jeden zestaw treści.");
+                "DungeonApp.App/Program.cs - przekazując tam co najmniej jeden system.");
         }
 
         AvaloniaXamlLoader.Load(this);
@@ -87,16 +87,16 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Packs");
 
-        var contentTypes = new ContentTypeCatalogAggregate(_contentSets);
-        _presentation = new ContentPresentationAggregate(_contentSets);
+        var contentTypes = new ContentTypeCatalogAggregate(_systems);
+        _presentation = new ContentPresentationAggregate(_systems);
 
         _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, contentTypes));
 
-        // Built once, here, alongside the other aggregates over _contentSets - never per campaign
+        // Built once, here, alongside the other aggregates over _systems - never per campaign
         // open. The registry Func mirrors the one handed to the shell below: packs are not loaded
         // yet at this point in Initialize, so reading _contentPacksStep.Registry has to wait for
         // ToolsFor, called only once a campaign actually opens.
-        _toolProvider = new CampaignToolProvider(_contentSets, () => _contentPacksStep!.Registry, contentTypes);
+        _toolProvider = new CampaignToolProvider(_systems, () => _contentPacksStep!.Registry, contentTypes);
 
         // Cache dzielony przez krok rozgrzewki stołu i przez otwarcie prawdziwej kampanii później -
         // to ta sama instancja, żeby rozgrzewka nie liczyła się drugi raz przy pierwszym otwarciu.

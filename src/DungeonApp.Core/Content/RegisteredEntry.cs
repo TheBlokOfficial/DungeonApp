@@ -32,7 +32,7 @@ public sealed record RegisteredEntry
 
     /// <summary>
     /// Supplementary, reason-specific text - populated only alongside
-    /// <see cref="EntryUnresolvedReason.ValuesRejected"/>, where it carries the content set's own
+    /// <see cref="EntryUnresolvedReason.ValuesRejected"/>, where it carries the system's own
     /// explanation of what it rejected. It is the only channel the GM has for that explanation
     /// (see <see cref="IContentTypeCatalog.TryValidate"/>), so it is threaded all the way through
     /// to the registry screen rather than discarded once the entry is marked unresolved.

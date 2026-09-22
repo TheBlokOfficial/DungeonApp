@@ -6,7 +6,7 @@ namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
 /// The downward half of "Warstwy i granice": DungeonApp.Core and DungeonApp.Desktop must not
-/// reference any content assembly. A zestaw is the only place in the app allowed to know what a
+/// reference any content assembly. A system is the only place in the app allowed to know what a
 /// Monster or a Gear is; if the engine or the shell referenced one, that knowledge would reach them
 /// at compile time regardless of what <see cref="CoreEntryKindIndependenceTests"/>' vocabulary scan
 /// finds in the source text.

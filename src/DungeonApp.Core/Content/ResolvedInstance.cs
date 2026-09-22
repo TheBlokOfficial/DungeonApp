@@ -41,7 +41,7 @@ public sealed record ResolvedInstance
     public InstanceUnresolvedReason? Unresolved { get; }
 
     /// <summary>
-    /// The content set's own explanation for refusing the merged values - populated only alongside
+    /// The system's own explanation for refusing the merged values - populated only alongside
     /// <see cref="InstanceUnresolvedReason.ValuesRejected"/>, the same text
     /// <see cref="IContentTypeCatalog.TryValidate"/> returned in its own <c>out string? error</c>.
     /// </summary>

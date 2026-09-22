@@ -14,7 +14,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
     private static readonly ContentTypeReference ThingReference =
         new(ContentId.Create("sys"), ContentId.Create("thing"));
 
-    private static FakeContentSet ThingContentSet() =>
+    private static FakeGameSystem ThingSystem() =>
         new(ContentId.Create("sys"), [new ContentTypeDescriptor(ThingReference, "Thing", 1)]);
 
     private const string PackJson = """
@@ -44,7 +44,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
         _packs.WriteFile("content", "pack.json", PackJson);
         _packs.WriteFile("content", "entries/e1.json", EntryJson);
 
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingSystem()));
 
         await step.PrepareAsync(CancellationToken.None);
 
@@ -64,7 +64,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
         _packs.WriteFile("good", "entries/e1.json", EntryJson);
         _packs.WriteFile("broken", "pack.json", "{ this is not json");
 
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingSystem()));
 
         await step.PrepareAsync(CancellationToken.None);
 
@@ -77,7 +77,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
     public async Task PrepareAsync_does_not_throw_when_packs_directory_is_missing()
     {
         var missingPath = Path.Combine(_packs.Path, "does-not-exist");
-        var step = new LoadContentPacksStep(new ContentPackLoader(missingPath, ThingContentSet()));
+        var step = new LoadContentPacksStep(new ContentPackLoader(missingPath, ThingSystem()));
 
         await step.PrepareAsync(CancellationToken.None);
 
@@ -89,7 +89,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
     [Fact]
     public void Registry_is_an_empty_registry_before_PrepareAsync_runs()
     {
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingSystem()));
 
         Assert.NotNull(step.Registry);
         Assert.Empty(step.Registry.Packs);
@@ -100,7 +100,7 @@ public sealed class LoadContentPacksStepTests : IDisposable
     [Fact]
     public void Describe_returns_a_non_empty_message()
     {
-        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingContentSet()));
+        var step = new LoadContentPacksStep(new ContentPackLoader(_packs.Path, ThingSystem()));
 
         Assert.False(string.IsNullOrWhiteSpace(step.Describe()));
     }

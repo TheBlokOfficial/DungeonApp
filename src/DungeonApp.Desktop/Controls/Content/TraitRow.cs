@@ -3,7 +3,7 @@ namespace DungeonApp.Desktop.Controls.Content;
 /// <summary>
 /// One row a <see cref="TraitListView"/> shows: a label, its value, and an optional second value
 /// shown alongside it - "15" with its source "zbroja skórzana, tarcza" is one row carrying two
-/// strings, not two rows. The card designer builds these directly in a content set's card view; no
+/// strings, not two rows. The card designer builds these directly in a system's card view; no
 /// pack file ever names one.
 /// </summary>
 public sealed record TraitRow(string Label, string Value, string? Secondary = null)

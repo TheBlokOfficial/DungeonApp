@@ -10,7 +10,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// State for the "Świat kampanii" desk tool: every instance this campaign holds, and a picker to
-/// bring a new one in from this content set's own resolved entries. The first consumer of
+/// bring a new one in from this system's own resolved entries. The first consumer of
 /// <see cref="Core.Content.CampaignInstances"/> and <see cref="Core.Content.InstanceResolver"/> -
 /// nothing in the engine or the shell reads either of them yet.
 /// <para>
@@ -36,8 +36,8 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         _context = context;
         _ownerSet = ownerSet;
 
-        // Every entry this content set owns and that resolved cleanly - never one belonging to
-        // another content set, and never one the registry already marked broken. The registry itself does
+        // Every entry this system owns and that resolved cleanly - never one belonging to
+        // another system, and never one the registry already marked broken. The registry itself does
         // not change while a campaign is open, so this list is built once rather than on every
         // refresh.
         AddableEntries =
@@ -70,7 +70,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
 
     public bool HasInstances => Instances.Count > 0;
 
-    /// <summary>Entries this content set can offer for adding - see the constructor for the filter.</summary>
+    /// <summary>Entries this system can offer for adding - see the constructor for the filter.</summary>
     public IReadOnlyList<AddableEntryOption> AddableEntries { get; }
 
     /// <summary>
@@ -170,7 +170,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
     /// <summary>
     /// One Polish sentence per <see cref="InstanceUnresolvedReason"/> - never a shared generic
     /// fallback, mirroring how the registry screen explains a broken entry. The values-rejected case
-    /// appends the content set's own explanation (<see cref="ResolvedInstance.UnresolvedDetail"/>),
+    /// appends the system's own explanation (<see cref="ResolvedInstance.UnresolvedDetail"/>),
     /// because that text is the only place the reason for the rejection lives.
     /// </summary>
     private static string Describe(InstanceUnresolvedReason reason, CampaignInstance instance, ResolvedInstance resolved) =>
@@ -183,7 +183,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
             InstanceUnresolvedReason.EntryUnresolved =>
                 "Wpis, na który wskazuje ta instancja, nie związał się z żadnym typem treści.",
             InstanceUnresolvedReason.ValuesRejected =>
-                $"Zestaw treści odrzucił wartości tej instancji: {resolved.UnresolvedDetail}",
+                $"System odrzucił wartości tej instancji: {resolved.UnresolvedDetail}",
             _ => "Tej instancji nie da się wyświetlić.",
         };
 }

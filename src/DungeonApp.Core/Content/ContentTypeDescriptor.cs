@@ -1,8 +1,8 @@
 namespace DungeonApp.Core.Content;
 
 /// <summary>
-/// Metadata about one content type a content set declares: its address, its display name, and its
-/// current version. Nothing here says anything about shape - the shape lives in the content set's
+/// Metadata about one content type a system declares: its address, its display name, and its
+/// current version. Nothing here says anything about shape - the shape lives in the system's
 /// own record, which this layer is never allowed to name (see <see cref="IContentTypeCatalog"/>).
 /// <para>
 /// A value type, deliberately: <see cref="IContentTypeCatalog.TryGet"/> hands one back through an

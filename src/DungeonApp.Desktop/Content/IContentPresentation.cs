@@ -21,7 +21,7 @@ public interface IContentPresentation
     /// <summary>
     /// Builds the finished card for <paramref name="entry"/>. Callers must never call this for an
     /// unresolved entry - one whose <see cref="RegisteredEntry.Type"/> is null - because there is no
-    /// content set to build a card with; an implementation is free to throw rather than guess, since
+    /// system to build a card with; an implementation is free to throw rather than guess, since
     /// a caller that already has a <see cref="RegisteredEntry"/> can and must check
     /// <see cref="RegisteredEntry.Unresolved"/> first.
     /// </summary>

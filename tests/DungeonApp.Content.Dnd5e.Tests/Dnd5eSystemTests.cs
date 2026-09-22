@@ -13,9 +13,9 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// deserializer (<c>System.Text.Json</c>, driven by <see cref="Monster"/>/<see cref="Gear"/>'s own
 /// <see langword="required"/> members and strict unmapped-member handling) is what rejects bad
 /// content now, with zero bespoke validation code written anywhere in
-/// <see cref="Dnd5eContentSet.TryValidate"/>.
+/// <see cref="Dnd5eSystem.TryValidate"/>.
 /// </summary>
-public sealed class Dnd5eContentSetTests
+public sealed class Dnd5eSystemTests
 {
     [Fact]
     public async Task Goblin_entry_deserializes_into_a_monster_with_correct_values()
@@ -62,7 +62,7 @@ public sealed class Dnd5eContentSetTests
         packs.WriteFile("pack", "pack.json", PackJson);
         packs.WriteFile("pack", "entries/e.json", EntryJsonWithUnknownKey);
 
-        var registry = await new ContentPackLoader(packs.Path, new Dnd5eContentSet()).LoadAsync();
+        var registry = await new ContentPackLoader(packs.Path, new Dnd5eSystem()).LoadAsync();
 
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
@@ -76,7 +76,7 @@ public sealed class Dnd5eContentSetTests
         packs.WriteFile("pack", "pack.json", PackJson);
         packs.WriteFile("pack", "entries/e.json", EntryJsonMissingRequiredActions);
 
-        var registry = await new ContentPackLoader(packs.Path, new Dnd5eContentSet()).LoadAsync();
+        var registry = await new ContentPackLoader(packs.Path, new Dnd5eSystem()).LoadAsync();
 
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
@@ -84,7 +84,7 @@ public sealed class Dnd5eContentSetTests
     }
 
     private static Task<ContentRegistry> LoadFixturesAsync() =>
-        new ContentPackLoader(RepositoryRoot.PackFixtures, new Dnd5eContentSet()).LoadAsync(CancellationToken.None);
+        new ContentPackLoader(RepositoryRoot.PackFixtures, new Dnd5eSystem()).LoadAsync(CancellationToken.None);
 
     private const string PackJson = """
         {

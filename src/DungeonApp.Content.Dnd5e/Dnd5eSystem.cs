@@ -21,18 +21,18 @@ namespace DungeonApp.Content.Dnd5e;
 /// "monster" anywhere, and neither ever will just because this switch exists.
 /// </para>
 /// </summary>
-public sealed class Dnd5eContentSet : IContentSet
+public sealed class Dnd5eSystem : IGameSystem
 {
     // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
     // whether a row is a monster, and docs/decisions.md permits branching on this id only inside
-    // this content set - duplicating the literal there instead would let the two silently drift.
+    // this system - duplicating the literal there instead would let the two silently drift.
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
     private readonly ContentTypeDescriptor _monster;
     private readonly ContentTypeDescriptor _gear;
 
-    public Dnd5eContentSet()
+    public Dnd5eSystem()
     {
         Id = ContentId.Create("dnd5e");
         _monster = new ContentTypeDescriptor(new ContentTypeReference(Id, ContentId.Create(MonsterTypeId)), "Potwór", 1);
@@ -120,8 +120,8 @@ public sealed class Dnd5eContentSet : IContentSet
     }
 
     /// <summary>
-    /// This content set's tool belt: one window, "Świat kampanii", listing this campaign's instances and
-    /// offering this content set's own resolved entries to bring in as new ones. Sized from the
+    /// This system's tool belt: one window, "Świat kampanii", listing this campaign's instances and
+    /// offering this system's own resolved entries to bring in as new ones. Sized from the
     /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
     /// invented here.
     /// </summary>

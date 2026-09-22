@@ -21,7 +21,7 @@ public enum InstanceUnresolvedReason
     EntryUnresolved,
 
     /// <summary>
-    /// The entry's values, with the instance's patch overlaid, were refused by the content set -
+    /// The entry's values, with the instance's patch overlaid, were refused by the system -
     /// see <see cref="ResolvedInstance.UnresolvedDetail"/> for its explanation.
     /// </summary>
     ValuesRejected

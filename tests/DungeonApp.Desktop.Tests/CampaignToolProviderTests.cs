@@ -13,7 +13,7 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// Covers the new consumer wiring this pass adds: a content set's own desk tools reach
+/// Covers the new consumer wiring this pass adds: a system's own desk tools reach
 /// <see cref="PanelCatalog"/>, and <see cref="CampaignToolProvider"/> only reads the registry once a
 /// campaign is actually opened - never at composition-root time, when no pack has loaded yet.
 /// </summary>
@@ -22,7 +22,7 @@ public sealed class CampaignToolProviderTests
     private static readonly ContentId SetId = ContentId.Create("fake-set");
 
     [Fact]
-    public void PanelCatalog_built_from_no_content_set_is_empty()
+    public void PanelCatalog_built_from_no_system_is_empty()
     {
         var catalog = PanelCatalog.For([]);
 
@@ -30,12 +30,12 @@ public sealed class CampaignToolProviderTests
     }
 
     [Fact]
-    public void A_content_sets_tools_reach_the_panel_catalog_and_are_findable()
+    public void A_systems_tools_reach_the_panel_catalog_and_are_findable()
     {
         var session = BuildSession();
         var fakeDescriptor = BuildDescriptor("fake.tool");
-        var contentSet = new FakeContentSet(SetId, [], tools: _ => [fakeDescriptor]);
-        var provider = new CampaignToolProvider([contentSet], () => EmptyRegistry(), new FakeContentTypeCatalog());
+        var system = new FakeGameSystem(SetId, [], tools: _ => [fakeDescriptor]);
+        var provider = new CampaignToolProvider([system], () => EmptyRegistry(), new FakeContentTypeCatalog());
 
         var catalog = PanelCatalog.For(provider.ToolsFor(session));
 
@@ -45,11 +45,11 @@ public sealed class CampaignToolProviderTests
     }
 
     [Fact]
-    public void Tools_from_every_installed_content_set_are_stitched_together()
+    public void Tools_from_every_installed_system_are_stitched_together()
     {
         var session = BuildSession();
-        var first = new FakeContentSet(ContentId.Create("first"), [], tools: _ => [BuildDescriptor("first.tool")]);
-        var second = new FakeContentSet(ContentId.Create("second"), [], tools: _ => [BuildDescriptor("second.tool")]);
+        var first = new FakeGameSystem(ContentId.Create("first"), [], tools: _ => [BuildDescriptor("first.tool")]);
+        var second = new FakeGameSystem(ContentId.Create("second"), [], tools: _ => [BuildDescriptor("second.tool")]);
         var provider = new CampaignToolProvider([first, second], () => EmptyRegistry(), new FakeContentTypeCatalog());
 
         var tools = provider.ToolsFor(session);
@@ -71,10 +71,10 @@ public sealed class CampaignToolProviderTests
             ? EmptyRegistry()
             : throw new InvalidOperationException("The registry must not be read before a campaign opens.");
 
-        var contentSet = new FakeContentSet(SetId, [], tools: _ => []);
+        var system = new FakeGameSystem(SetId, [], tools: _ => []);
 
         // Building the provider must not touch the Func at all.
-        var provider = new CampaignToolProvider([contentSet], Registry, new FakeContentTypeCatalog());
+        var provider = new CampaignToolProvider([system], Registry, new FakeContentTypeCatalog());
 
         loaded = true;
         var session = BuildSession();

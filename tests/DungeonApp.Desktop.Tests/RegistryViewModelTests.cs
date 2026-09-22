@@ -16,7 +16,7 @@ namespace DungeonApp.Desktop.Tests;
 /// <para>
 /// Unlike before the content-registry pivot, a card is now a finished <see cref="Avalonia.Controls.Control"/>
 /// built by whatever <see cref="Content.IContentPresentation"/> the view model is given
-/// (<see cref="FakeContentSet"/> here) - this view model has no way to inspect what is inside it, so
+/// (<see cref="FakeGameSystem"/> here) - this view model has no way to inspect what is inside it, so
 /// these tests only assert that a resolved entry produces one and an unresolved entry does not.
 /// </para>
 /// </summary>
@@ -27,7 +27,7 @@ public sealed class RegistryViewModelTests : IDisposable
     private static readonly ContentTypeReference IstotaV1 =
         new(ContentId.Create("dnd5e"), ContentId.Create("istota"));
 
-    private static FakeContentSet BuildContentSet() =>
+    private static FakeGameSystem BuildSystem() =>
         new(
             ContentId.Create("dnd5e"),
             [new ContentTypeDescriptor(IstotaV1, "Istota", 1)],
@@ -36,7 +36,7 @@ public sealed class RegistryViewModelTests : IDisposable
                 var raw = values.Read<System.Collections.Generic.Dictionary<string, JsonElement>>();
 
                 return raw.TryGetValue("odrzuc", out var flag) && flag.ValueKind == JsonValueKind.True
-                    ? "Wartości odrzucone przez testowy zestaw."
+                    ? "Wartości odrzucone przez testowy system."
                     : null;
             });
 
@@ -81,7 +81,7 @@ public sealed class RegistryViewModelTests : IDisposable
         }
         """;
 
-    // Known type and version, but the fake content set's validate delegate refuses these values.
+    // Known type and version, but the fake system's validate delegate refuses these values.
     private const string ZepsutyJson = """
         {
           "id": "zepsuty",
@@ -106,11 +106,11 @@ public sealed class RegistryViewModelTests : IDisposable
         _packs.WriteFile("bestiariusz", "entries/chimera.json", ChimeraJson);
         _packs.WriteFile("bestiariusz", "entries/zepsuty.json", ZepsutyJson);
 
-        var contentSet = BuildContentSet();
-        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        var system = BuildSystem();
+        var registry = await new ContentPackLoader(_packs.Path, system).LoadAsync(CancellationToken.None);
         Assert.Empty(registry.RejectedPacks);
 
-        return new RegistryViewModel(registry, contentSet);
+        return new RegistryViewModel(registry, system);
     }
 
     /// <summary>
@@ -125,12 +125,12 @@ public sealed class RegistryViewModelTests : IDisposable
         _packs.WriteFile("bestiariusz", "entries/zzz-uszkodzony.json", BrokenJson);
         _packs.WriteFile("bestiariusz", "entries/aaa-uszkodzony.json", BrokenJson);
 
-        var contentSet = BuildContentSet();
-        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        var system = BuildSystem();
+        var registry = await new ContentPackLoader(_packs.Path, system).LoadAsync(CancellationToken.None);
         Assert.Empty(registry.RejectedPacks);
         Assert.Equal(2, registry.RejectedEntries.Count);
 
-        return new RegistryViewModel(registry, contentSet);
+        return new RegistryViewModel(registry, system);
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public sealed class RegistryViewModelTests : IDisposable
         var valuesRejectedMessage = viewModel.UnresolvedMessage;
         Assert.False(viewModel.HasCard);
         Assert.False(string.IsNullOrWhiteSpace(valuesRejectedMessage));
-        Assert.Contains("Wartości odrzucone przez testowy zestaw.", valuesRejectedMessage);
+        Assert.Contains("Wartości odrzucone przez testowy system.", valuesRejectedMessage);
 
         // Each reason gets its own wording, never a shared generic fallback text.
         Assert.NotEqual(missingSetMessage, versionMismatchMessage);
@@ -210,9 +210,9 @@ public sealed class RegistryViewModelTests : IDisposable
     [Fact]
     public async Task Empty_registry_reports_IsEmpty_without_throwing()
     {
-        var contentSet = BuildContentSet();
-        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
-        var viewModel = new RegistryViewModel(registry, contentSet);
+        var system = BuildSystem();
+        var registry = await new ContentPackLoader(_packs.Path, system).LoadAsync(CancellationToken.None);
+        var viewModel = new RegistryViewModel(registry, system);
 
         Assert.True(viewModel.IsEmpty);
         Assert.Empty(viewModel.Entries);
@@ -228,10 +228,10 @@ public sealed class RegistryViewModelTests : IDisposable
     [Fact]
     public async Task Empty_registry_does_not_invite_a_selection()
     {
-        var contentSet = BuildContentSet();
-        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        var system = BuildSystem();
+        var registry = await new ContentPackLoader(_packs.Path, system).LoadAsync(CancellationToken.None);
 
-        Assert.False(new RegistryViewModel(registry, contentSet).ShowSelectionPrompt);
+        Assert.False(new RegistryViewModel(registry, system).ShowSelectionPrompt);
     }
 
     [Fact]
@@ -315,13 +315,13 @@ public sealed class RegistryViewModelTests : IDisposable
         _packs.WriteFile("bestiariusz", "pack.json", PackJson);
         _packs.WriteFile("bestiariusz", "entries/uszkodzony.json", BrokenJson);
 
-        var contentSet = BuildContentSet();
-        var registry = await new ContentPackLoader(_packs.Path, contentSet).LoadAsync(CancellationToken.None);
+        var system = BuildSystem();
+        var registry = await new ContentPackLoader(_packs.Path, system).LoadAsync(CancellationToken.None);
         Assert.Empty(registry.RejectedPacks);
         Assert.Empty(registry.Entries);
         Assert.Single(registry.RejectedEntries);
 
-        var viewModel = new RegistryViewModel(registry, contentSet);
+        var viewModel = new RegistryViewModel(registry, system);
 
         Assert.False(viewModel.IsEmpty);
         Assert.True(viewModel.ShowSelectionPrompt);

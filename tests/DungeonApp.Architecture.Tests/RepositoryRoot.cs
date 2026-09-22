@@ -22,7 +22,7 @@ internal static class RepositoryRoot
 
     public static string Path { get; } = Locate();
 
-    /// <summary>Every project under <c>src/</c>, for the checks that enumerate zestawy by file.</summary>
+    /// <summary>Every project under <c>src/</c>, for the checks that enumerate systemy by file.</summary>
     public static string SrcSources { get; } =
         System.IO.Path.Combine(Path, "src");
 

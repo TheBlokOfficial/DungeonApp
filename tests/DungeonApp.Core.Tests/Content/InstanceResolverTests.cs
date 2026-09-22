@@ -14,7 +14,7 @@ public sealed class InstanceResolverTests
     private static readonly EntryAddress Address = new(PackId, EntryId);
     private static readonly ContentTypeReference Type = new(ContentId.Create("sample-set"), ContentId.Create("sample-type"));
 
-    // A dictionary of raw elements stands in for whatever a content set would deserialize an
+    // A dictionary of raw elements stands in for whatever a system would deserialize an
     // envelope into - the engine (and this resolver) never names a real content type's shape, so
     // neither does a test of it.
     private static ContentValues Envelope(string json) =>

@@ -12,7 +12,7 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// referenced - this project already keeps <c>RepositoryRoot</c> as its own copy for the same reason:
 /// a project reference between test projects would be a needless edge for the sake of one small fake.
 /// <see cref="SaveCount"/> is what <see cref="CampaignInstancesToolViewModelTests"/> uses to prove a
-/// write went through the campaign session's save door - the one door this content set's tool is
+/// write went through the campaign session's save door - the one door this system's tool is
 /// required to use.
 /// </summary>
 internal sealed class InMemoryCampaignRepository : ICampaignRepository

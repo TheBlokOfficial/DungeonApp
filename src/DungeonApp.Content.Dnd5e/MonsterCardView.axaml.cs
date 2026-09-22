@@ -7,7 +7,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// The monster statblock, composed from <see cref="TraitListView"/> and <see cref="ProseBlockView"/>.
-/// <see cref="Dnd5eContentSet.CreateCard"/> sets the model once, immediately after construction,
+/// <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after construction,
 /// through <see cref="SetMonster"/> - there is no bindable property to update it later, because
 /// nothing in this application ever needs to: a card is built fresh every time an entry is selected.
 /// A plain parameterless constructor (rather than taking the model as a constructor argument) keeps

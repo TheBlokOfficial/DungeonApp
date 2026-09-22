@@ -36,8 +36,8 @@ public sealed class InstancePersistenceTests : IDisposable
     private string InstanceFilePath(Campaign campaign, InstanceId id) =>
         Path.Combine(InstancesDirectory(campaign), $"{id.Value:D}.json");
 
-    /// <summary>A record shaped the way a content set's own patch record would be, used only to read a
-    /// patch back through the same envelope API a content set uses - <see cref="ContentValues.Read{T}"/>
+    /// <summary>A record shaped the way a system's own patch record would be, used only to read a
+    /// patch back through the same envelope API a system uses - <see cref="ContentValues.Read{T}"/>
     /// - rather than by inspecting raw JSON.</summary>
     private sealed record SamplePatch(int? Hp, string? Name, bool? Cursed, double? Multiplier, string[]? Tags);
 
@@ -58,7 +58,7 @@ public sealed class InstancePersistenceTests : IDisposable
     }
 
     /// <summary>The most load-bearing round-trip in this step: the sealed envelope has to carry every
-    /// property back exactly as it went in, through the same <c>Read</c>/<c>From</c> pair a content set
+    /// property back exactly as it went in, through the same <c>Read</c>/<c>From</c> pair a system
     /// uses, and nothing in the store may ever look at a property by name to get there.</summary>
     [Fact]
     public async Task A_non_empty_patch_round_trips_value_for_value()

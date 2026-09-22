@@ -157,7 +157,7 @@ public sealed class RegistryViewModel : ObservableObject
 
     /// <summary>
     /// Frames the loader's own English diagnostic text in one Polish sentence, the same way
-    /// <see cref="DescribeUnresolved"/> frames a content set's rejection detail - never translating
+    /// <see cref="DescribeUnresolved"/> frames a system's rejection detail - never translating
     /// or rewording the diagnostic itself.
     /// </summary>
     private static string DescribeNotLoaded(string reason) => $"Nie udało się wczytać tego pliku: {reason}";
@@ -170,13 +170,13 @@ public sealed class RegistryViewModel : ObservableObject
         return reason switch
         {
             EntryUnresolvedReason.MissingSet =>
-                $"Ten wpis odwołuje się do zestawu treści „{setId}”, który nie jest zainstalowany.",
+                $"Ten wpis odwołuje się do systemu „{setId}”, który nie jest zainstalowany.",
             EntryUnresolvedReason.MissingType =>
-                $"Zestaw „{setId}” nie zna już typu treści „{typeId}”.",
+                $"System „{setId}” nie zna już typu treści „{typeId}”.",
             EntryUnresolvedReason.TypeVersionMismatch =>
-                $"Typ treści „{typeId}” w zestawie „{setId}” zmienił się od czasu zapisania tego wpisu. Trzeba go zapisać ponownie.",
+                $"Typ treści „{typeId}” w systemie „{setId}” zmienił się od czasu zapisania tego wpisu. Trzeba go zapisać ponownie.",
             EntryUnresolvedReason.ValuesRejected =>
-                $"Zestaw „{setId}” nie przyjął wartości tego wpisu dla typu „{typeId}”: {entry.UnresolvedDetail}",
+                $"System „{setId}” nie przyjął wartości tego wpisu dla typu „{typeId}”: {entry.UnresolvedDetail}",
             _ => "Tego wpisu nie da się wyświetlić."
         };
     }

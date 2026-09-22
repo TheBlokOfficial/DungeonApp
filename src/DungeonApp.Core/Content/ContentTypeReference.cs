@@ -4,7 +4,7 @@ namespace DungeonApp.Core.Content;
 
 /// <summary>
 /// An entry's pointer to the content type that gives it its shape, written in a pack file as
-/// <c>"set:type"</c> - the id of the content set that declares the type, then the id of the type
+/// <c>"set:type"</c> - the id of the system that declares the type, then the id of the type
 /// itself within that set.
 /// <para>
 /// Parsing is deliberately strict about the punctuation: exactly one colon, and both halves must

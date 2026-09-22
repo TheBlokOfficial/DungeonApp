@@ -9,7 +9,7 @@ namespace DungeonApp.Core.Tests.Content;
 public sealed class ContentValuesTests
 {
     /// <summary>
-    /// A record standing in for whatever a content set deserializes an envelope into. It describes
+    /// A record standing in for whatever a system deserializes an envelope into. It describes
     /// nothing in particular on purpose: the engine does not know what kind of thing an entry is,
     /// and a test of the engine that needed a monster or a piece of gear to make its point would be
     /// asserting something the engine is not allowed to know.
@@ -17,7 +17,7 @@ public sealed class ContentValuesTests
     private sealed record Sample(string Title, int Size, string? Note = null);
 
     // The constructor is internal by design, so a test builds envelopes through the same public
-    // door a content set uses. A dictionary of raw elements is not a stand-in for any content
+    // door a system uses. A dictionary of raw elements is not a stand-in for any content
     // type's record - it is just the shape that lets a test choose property names and the exact
     // spelling of a value without naming anything real.
     private static ContentValues Envelope(string json) =>
@@ -173,7 +173,7 @@ public sealed class ContentValuesTests
     }
 
     // ---------------------------------------------------------------------
-    // The return leg: a record edited by a content set and turned back into a patch.
+    // The return leg: a record edited by a system and turned back into a patch.
     // ---------------------------------------------------------------------
 
     [Fact]

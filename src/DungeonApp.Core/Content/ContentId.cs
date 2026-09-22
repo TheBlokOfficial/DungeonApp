@@ -4,7 +4,7 @@ using System.Linq;
 namespace DungeonApp.Core.Content;
 
 /// <summary>
-/// The permanent identifier of a pack, a content set, a content type, or an entry, such as
+/// The permanent identifier of a pack, a system, a content type, or an entry, such as
 /// <c>dnd5e</c> or <c>fifth-edition</c>.
 /// <para>
 /// The character set is deliberately narrow, for two reasons. First, an id is a document's declared

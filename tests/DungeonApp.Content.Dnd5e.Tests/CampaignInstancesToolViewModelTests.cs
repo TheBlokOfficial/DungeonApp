@@ -11,13 +11,13 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// <summary>
 /// The first consumer of <c>CampaignInstances</c> and <c>InstanceResolver</c> anywhere in the
 /// application. Every fixture builds its <see cref="ContentRegistry"/> by hand rather than through
-/// <see cref="ContentPackLoader"/> - unlike <c>Dnd5eContentSetTests</c>, this suite is about the view
+/// <see cref="ContentPackLoader"/> - unlike <c>Dnd5eSystemTests</c>, this suite is about the view
 /// model's own logic (which rows appear, which entries are offered, what a write does), not about
 /// deserialization, so a hand-built registry keeps each test to exactly the entries it needs.
 /// </summary>
 public sealed class CampaignInstancesToolViewModelTests
 {
-    private static readonly Dnd5eContentSet Dnd5e = new();
+    private static readonly Dnd5eSystem Dnd5e = new();
 
     [Fact]
     public void The_instance_list_reflects_every_instance_the_campaign_holds()
@@ -90,10 +90,10 @@ public sealed class CampaignInstancesToolViewModelTests
     }
 
     [Fact]
-    public void Addable_entries_exclude_unresolved_entries_and_entries_from_another_content_set()
+    public void Addable_entries_exclude_unresolved_entries_and_entries_from_another_system()
     {
-        var foreignSet = ContentId.Create("other-set");
-        var foreignReference = new ContentTypeReference(foreignSet, ContentId.Create("thing"));
+        var foreignSystem = ContentId.Create("other-set");
+        var foreignReference = new ContentTypeReference(foreignSystem, ContentId.Create("thing"));
         var foreignEntry = new Entry(ContentId.Create("widget"), "Cudzy wpis", foreignReference, 1, ContentValues.Empty);
         var foreignRegistered = RegisteredEntry.CreateResolved(
             new EntryAddress(ContentId.Create("pack"), ContentId.Create("widget")),

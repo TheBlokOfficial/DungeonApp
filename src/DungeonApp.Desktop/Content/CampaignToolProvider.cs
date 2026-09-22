@@ -8,7 +8,7 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Content;
 
 /// <summary>
-/// Built once in the composition root: the single place that turns every installed content set's
+/// Built once in the composition root: the single place that turns every installed system's
 /// tool belt into the panels one open campaign's <see cref="Features.CampaignWorkspace.Panels.PanelCatalog"/>
 /// offers.
 /// <para>
@@ -21,7 +21,7 @@ namespace DungeonApp.Desktop.Content;
 /// </para>
 /// </summary>
 public sealed class CampaignToolProvider(
-    IReadOnlyList<IContentSet> sets,
+    IReadOnlyList<IGameSystem> systems,
     Func<ContentRegistry> registry,
     IContentTypeCatalog types)
 {
@@ -31,6 +31,6 @@ public sealed class CampaignToolProvider(
 
         var context = new CampaignToolContext(session, registry(), types);
 
-        return [.. sets.SelectMany(set => set.CreateTools(context))];
+        return [.. systems.SelectMany(system => system.CreateTools(context))];
     }
 }

@@ -8,16 +8,16 @@ namespace DungeonApp.Core.Content;
 /// <summary>
 /// A sealed envelope over one entry's raw <c>values</c> object. This is the one class
 /// docs/architecture.md's "Deklaracja treści" section means when it says the file format is now a
-/// choice of serializer, not an architectural decision: swap the serializer here, and every content
-/// set's call to <see cref="Read{T}"/> keeps compiling and behaving the same, because none of them
+/// choice of serializer, not an architectural decision: swap the serializer here, and every system's
+/// call to <see cref="Read{T}"/> keeps compiling and behaving the same, because none of them
 /// ever touch a <see cref="JsonElement"/> directly.
 /// <para>
 /// <see cref="Read{T}"/> is generic, and <c>Core</c> is allowed to carry a generic method here
 /// without breaking the boundary that keeps the engine from ever knowing what kind of thing an
 /// entry is: the engine itself never names any concrete <c>T</c>. It stores this envelope unopened - the constructor is
 /// <see langword="internal"/>, so only <see cref="ContentPackLoader"/> ever builds one - and hands
-/// it, still sealed, to whichever content set claims the entry's content type reference. That
-/// content set is the only code that ever instantiates <see cref="Read{T}"/> with a concrete
+/// it, still sealed, to whichever system claims the entry's content type reference. That
+/// system is the only code that ever instantiates <see cref="Read{T}"/> with a concrete
 /// record. A generic method whose type parameter the generic code itself never names is opaque to
 /// that code, not a leak of the boundary it sits inside.
 /// </para>
@@ -76,7 +76,7 @@ public sealed class ContentValues
     /// <summary>
     /// Deserializes the envelope into <typeparamref name="T"/>, camelCase-mapped and strict about
     /// unmapped members. Throws on any failure - a missing required member, an unknown key, a value
-    /// of the wrong shape - and leaves catching it to the caller: a content set's
+    /// of the wrong shape - and leaves catching it to the caller: a system's
     /// <see cref="IContentTypeCatalog.TryValidate"/> implementation, or its card-building code,
     /// both of which know what a rejection means here, unlike this bare envelope type.
     /// </summary>
@@ -91,7 +91,7 @@ public sealed class ContentValues
     /// itself an object, the patch replaces that object whole and does not merge into it. A deep
     /// merge would have to decide what a nested key means - whether two objects under the same name
     /// describe the same thing and should be combined, or are two different things and should be
-    /// swapped - and that is a judgement only the content set may make. The shallow rule needs no
+    /// swapped - and that is a judgement only the system may make. The shallow rule needs no
     /// such judgement, so it is the one the engine can hold.
     /// </para>
     /// </summary>
@@ -162,10 +162,10 @@ public sealed class ContentValues
     }
 
     /// <summary>
-    /// Seals a content set's record back into an envelope - the return leg of
+    /// Seals a system's record back into an envelope - the return leg of
     /// <see cref="Read{T}"/>, and the only way an edited record becomes something
     /// <see cref="Difference"/> can compare. Like <see cref="Read{T}"/>, the engine never names a
-    /// concrete <typeparamref name="T"/>; the content set that opened the envelope is the one that
+    /// concrete <typeparamref name="T"/>; the system that opened the envelope is the one that
     /// closes it.
     /// </summary>
     public static ContentValues From<T>(T record) =>

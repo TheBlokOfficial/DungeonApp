@@ -11,13 +11,13 @@ public sealed class AppTests
     /// <i>loudly</i>, and an exception nobody can act on would satisfy the type alone.
     /// </summary>
     [Fact]
-    public void Initialize_throws_and_names_the_composition_root_when_built_without_any_content_set()
+    public void Initialize_throws_and_names_the_composition_root_when_built_without_any_system()
     {
         var app = new App();
 
         var error = Assert.Throws<InvalidOperationException>(() => app.Initialize());
 
-        Assert.Contains("zestaw", error.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("system", error.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("DungeonApp.App/Program.cs", error.Message, StringComparison.Ordinal);
     }
 }

@@ -7,14 +7,14 @@ namespace DungeonApp.Core.Content;
 /// all).
 /// <para>
 /// <see cref="TypeVersion"/> is the version of the content type this entry was written against,
-/// captured at file-write time rather than re-read from the content set on every load - it is
+/// captured at file-write time rather than re-read from the system on every load - it is
 /// exactly what lets a content type's version bump leave this entry's binding provably stale
 /// (<see cref="EntryUnresolvedReason.TypeVersionMismatch"/>) instead of silently reinterpreting old
 /// values under a new shape.
 /// </para>
 /// <para>
 /// <see cref="Values"/> is the unopened envelope docs/architecture.md's "Deklaracja treści" section
-/// describes: the engine carries it, but only the content set named by <see cref="Type"/> ever
+/// describes: the engine carries it, but only the system named by <see cref="Type"/> ever
 /// opens it, by deserializing it into its own record.
 /// </para>
 /// </summary>
