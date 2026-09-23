@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace DungeonApp.Architecture.Tests;
 
@@ -34,11 +36,32 @@ internal static class RepositoryRoot
     public static string DesktopSources { get; } =
         System.IO.Path.Combine(Path, "src", "DungeonApp.Desktop");
 
-    /// <summary>The shared UI library's own sources - the desk, its windows, and the card controls
-    /// systems compose. Scanned for the same vocabulary the engine and the shell are (see
-    /// docs/architecture.md, "Rama, biblioteka, system": the library "zna Entry, nie zna Monster").</summary>
-    public static string LibraryDesktopSources { get; } =
-        System.IO.Path.Combine(Path, "src", "DungeonApp.Library.Desktop");
+    /// <summary>
+    /// Every library project's own source root - one entry per <c>src/DungeonApp.Library.*</c>
+    /// directory, discovered rather than named, so a library that is later split, renamed or added
+    /// keeps the same vocabulary scan (docs/architecture.md, "Rama, biblioteka, system": a library
+    /// "zna Entry, nie zna Monster") automatically, instead of quietly falling outside it the way a
+    /// hardcoded single path would.
+    /// </summary>
+    public static IReadOnlyList<string> LibrarySourceRoots { get; } =
+        Directory.EnumerateDirectories(SrcSources, "DungeonApp.Library.*", SearchOption.TopDirectoryOnly)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
+
+    /// <summary>
+    /// Every library project's simple assembly name - "DungeonApp.Library.Workspace",
+    /// "DungeonApp.Library.Entries.Desktop" and so on - read from the <c>.csproj</c> files under
+    /// <c>src/</c> rather than hardcoded, the same discovery <see cref="LibrarySourceRoots"/> uses,
+    /// so the reference-boundary tests that load these assemblies by name cover a newly split or
+    /// renamed library without needing to change.
+    /// </summary>
+    public static IReadOnlyList<string> LibraryAssemblyNames { get; } =
+        Directory.EnumerateFiles(SrcSources, "DungeonApp.Library.*.csproj", SearchOption.AllDirectories)
+            .Select(System.IO.Path.GetFileNameWithoutExtension)
+            .Where(name => name is not null)
+            .Select(name => name!)
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
 
     private static string Locate()
     {

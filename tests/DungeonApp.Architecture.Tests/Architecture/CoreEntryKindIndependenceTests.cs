@@ -98,9 +98,11 @@ public sealed class CoreEntryKindIndependenceTests
         Assert.Contains(
             files,
             file => file.StartsWith(RepositoryRoot.DesktopSources, StringComparison.OrdinalIgnoreCase));
+        Assert.NotEmpty(RepositoryRoot.LibrarySourceRoots);
         Assert.Contains(
             files,
-            file => file.StartsWith(RepositoryRoot.LibraryDesktopSources, StringComparison.OrdinalIgnoreCase));
+            file => RepositoryRoot.LibrarySourceRoots.Any(
+                root => file.StartsWith(root, StringComparison.OrdinalIgnoreCase)));
         Assert.Contains(
             files,
             file => file.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase));
@@ -111,7 +113,7 @@ public sealed class CoreEntryKindIndependenceTests
     [
         .. SourceFiles(RepositoryRoot.CoreSources),
         .. SourceFiles(RepositoryRoot.DesktopSources),
-        .. SourceFiles(RepositoryRoot.LibraryDesktopSources)
+        .. RepositoryRoot.LibrarySourceRoots.SelectMany(SourceFiles)
     ];
 
     private static IEnumerable<string> SourceFiles(string root) =>

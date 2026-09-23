@@ -26,14 +26,22 @@ public sealed class ContentAssemblyReferenceTests
     }
 
     /// <summary>
-    /// The library is common UI code, not a system (docs/architecture.md, "Rama, biblioteka,
-    /// system": the library "zna Entry, nie zna Monster") - it must be exactly as ignorant of any
-    /// content assembly as the engine and the shell are.
+    /// Every library is common UI code, not a system (docs/architecture.md, "Rama, biblioteka,
+    /// system": a library "zna Entry, nie zna Monster") - each must be exactly as ignorant of any
+    /// content assembly as the engine and the shell are. Discovered by scanning <c>src/</c> for
+    /// <c>DungeonApp.Library.*.csproj</c> (see <see cref="RepositoryRoot.LibraryAssemblyNames"/>)
+    /// rather than named, so a library that is later split or renamed stays covered.
     /// </summary>
     [Fact]
-    public void Library_Desktop_does_not_reference_any_content_assembly()
+    public void No_library_assembly_references_any_content_assembly()
     {
-        AssertReferencesNoContentAssembly(Assembly.Load("DungeonApp.Library.Desktop"));
+        var libraryAssemblyNames = RepositoryRoot.LibraryAssemblyNames;
+        Assert.NotEmpty(libraryAssemblyNames);
+
+        foreach (var name in libraryAssemblyNames)
+        {
+            AssertReferencesNoContentAssembly(Assembly.Load(name));
+        }
     }
 
     private static void AssertReferencesNoContentAssembly(Assembly assembly)

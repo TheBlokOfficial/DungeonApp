@@ -27,6 +27,18 @@
         <Style Selector="Border.campaign-row.delete-hover:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
         </Style>
+        <!-- An unavailable row has nothing of its own to react to a hover - the trash control is
+             the only interactive thing left in it, and it already owns its own highlight above. -->
+        <Style Selector="Border.campaign-row.unavailable:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        </Style>
+        <!-- Name, date and arrow dim the same way any disabled control in this theme does - the
+             Button ControlTheme's own ":disabled { Opacity: 0.48 }" (DungeonControls.axaml) is the
+             only disabled-state opacity this theme defines; reused here by value rather than
+             inventing a second one, since it is not exposed as a named resource to bind to. -->
+        <Style Selector="Control.campaign-dim:disabled">
+            <Setter Property="Opacity" Value="0.48" />
+        </Style>
         <Style Selector="Button.campaign-open">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -141,17 +153,19 @@
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                <Border Classes="campaign-row">
+                                <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
                                     <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
                                              click-through, so only the delete control intercepts it.
-                                             Disabled together with OpenCommand's own canExecute - an
+                                             IsEnabled mirrors OpenCommand's own canExecute explicitly,
+                                             rather than relying only on the command wiring - an
                                              unavailable campaign refuses to open at the operation
                                              level too, not only through this disabled button. -->
                                         <Button Grid.ColumnSpan="5"
                                                 Classes="campaign-open"
-                                                Command="{Binding OpenCommand}" />
+                                                Command="{Binding OpenCommand}"
+                                                IsEnabled="{Binding IsAvailable}" />
                                         <Grid Grid.ColumnSpan="3"
                                               ColumnDefinitions="Auto,*,Auto"
                                               ColumnSpacing="{DynamicResource DungeonSpacingSm}"
@@ -180,7 +194,10 @@
                                                            Source="{StaticResource DungeonIconWarningTriangle}" />
                                                 </Panel>
                                             </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Classes="campaign-dim"
+                                                        IsEnabled="{Binding IsAvailable}">
                                                 <TextBlock Classes="campaign-name"
                                                            FontFamily="{DynamicResource DungeonDisplayFont}"
                                                            FontSize="{DynamicResource DungeonCampaignNameFontSize}"
@@ -190,6 +207,8 @@
                                             </StackPanel>
                                             <TextBlock Grid.Column="2"
                                                        VerticalAlignment="Center"
+                                                       Classes="campaign-dim"
+                                                       IsEnabled="{Binding IsAvailable}"
                                                        FontSize="{DynamicResource DungeonHelperFontSize}"
                                                        Foreground="{DynamicResource DungeonTextMutedBrush}"
                                                        Text="{Binding CreatedAt}" />
@@ -207,6 +226,8 @@
                                                Width="16"
                                                Height="16"
                                                VerticalAlignment="Center"
+                                               Classes="campaign-dim"
+                                               IsEnabled="{Binding IsAvailable}"
                                                IsHitTestVisible="False"
                                                Source="{StaticResource DungeonIconChevronRight}" />
                                     </Grid>

@@ -13,8 +13,8 @@ namespace DungeonApp.Architecture.Tests;
 /// exists.
 /// <para>
 /// Matched by assembly-name prefix, the same way <see cref="ContentAssemblyReferenceTests"/> matches
-/// "DungeonApp.Content." - this étape only builds <c>DungeonApp.Library.Desktop</c>, but the prefix
-/// also denies a later, Avalonia-free <c>DungeonApp.Library</c> without this test needing to change.
+/// "DungeonApp.Content." - this covers every <c>DungeonApp.Library.*</c> project at once, so this
+/// test needs no change as libraries are split, renamed, or added.
 /// </para>
 /// </summary>
 public sealed class LibraryAssemblyReferenceTests

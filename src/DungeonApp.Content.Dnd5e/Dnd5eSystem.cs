@@ -6,12 +6,12 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.Content.Instances;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
-using DungeonApp.Library.Desktop.Content;
-using DungeonApp.Library.Desktop.Controls.Workspace;
-using DungeonApp.Library.Desktop.Features.CampaignWorkspace;
-using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Layout;
-using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Panels;
-using DungeonApp.Library.Desktop.Features.Registry;
+using DungeonApp.Library.Entries.Desktop.Content;
+using DungeonApp.Library.Entries.Desktop.Features.Registry;
+using DungeonApp.Library.Workspace.Controls.Workspace;
+using DungeonApp.Library.Workspace.Features.CampaignWorkspace;
+using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
+using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Panels;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -154,12 +154,12 @@ public sealed class Dnd5eSystem : IGameSystem
     /// The "Biurko" Campaign-category tab: the shared desk (<see cref="CampaignDesk"/>), stocked with
     /// this system's own tool belt and nothing else - there is no cross-system tool provider
     /// stitching several systems' tools together any more, so building the tool list is this
-    /// system's own job now, from a <see cref="CampaignToolContext"/> it builds itself out of the
+    /// system's own job now, from a <see cref="CampaignEntriesContext"/> it builds itself out of the
     /// tab context plus its own type catalog.
     /// </summary>
     private async Task<ITabContent> CreateDeskTabAsync(CampaignTabContext context)
     {
-        var toolContext = new CampaignToolContext(context, this);
+        var toolContext = new CampaignEntriesContext(context, this);
         var tools = BuildTools(toolContext);
 
         return await CampaignDesk.CreateAsync(context, _layoutStore, tools);
@@ -171,7 +171,7 @@ public sealed class Dnd5eSystem : IGameSystem
     /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
     /// invented here.
     /// </summary>
-    private IReadOnlyList<WorkspacePanelDescriptor> BuildTools(CampaignToolContext context)
+    private IReadOnlyList<WorkspacePanelDescriptor> BuildTools(CampaignEntriesContext context)
     {
         var minimum = WorkspaceMetrics.Fallback;
         var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.ToolPanelMinWidth);
@@ -198,7 +198,7 @@ public sealed class Dnd5eSystem : IGameSystem
         ];
     }
 
-    private Control BuildToolView(CampaignToolContext context) =>
+    private Control BuildToolView(CampaignEntriesContext context) =>
         new CampaignInstancesToolView
         {
             DataContext = new CampaignInstancesToolViewModel(context, Id),

@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:deck="using:DungeonApp.Library.Workspace.Features.CampaignWorkspace.Deck"
+             xmlns:surface="using:DungeonApp.Library.Workspace.Controls.Workspace"
+             xmlns:workspace="using:DungeonApp.Library.Workspace.Features.CampaignWorkspace"
+             x:Class="DungeonApp.Library.Workspace.Features.CampaignWorkspace.CampaignWorkspaceView"
+             x:DataType="workspace:CampaignWorkspaceViewModel">
+
+    <!-- The desk's own two ControlThemes (WorkspaceSurface, PanelWindow) live in the library, not
+         the frame - docs/architecture.md, "Narzędzia biurka i system okien": the frame must never
+         name a library type, not even in a resource include. Merged here, on the library's own
+         top-level view, rather than in the frame's Application.Resources: PanelWindow instances are
+         generated inside Surface below, so they sit in this control's logical tree and resolve their
+         implicit theme from these merged resources the same way they would from an application-wide
+         dictionary. -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://DungeonApp.Library.Workspace/Themes/WorkspaceControls.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}" />
+
+        <!-- After the surface in document order, so the cards lie on top of the desk. A panel can
+             never be lost under them: the clamp keeps every panel fully inside the surface. -->
+        <deck:PanelDeckView HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom" />
+    </Grid>
+</UserControl>
