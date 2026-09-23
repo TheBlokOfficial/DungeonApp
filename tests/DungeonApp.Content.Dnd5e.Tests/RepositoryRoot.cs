@@ -21,7 +21,7 @@ internal static class RepositoryRoot
     /// <see cref="Gear"/>.
     /// </summary>
     public static string PackFixtures { get; } =
-        System.IO.Path.Combine(Path, "tests", "DungeonApp.Core.Tests", "Packs");
+        System.IO.Path.Combine(Path, "tests", "DungeonApp.Library.Entries.Tests", "Packs");
 
     private static string Locate()
     {

@@ -7,7 +7,7 @@ namespace DungeonApp.Desktop.Tests;
 /// A throwaway packs directory on the real filesystem, shared by every Desktop test that needs
 /// <see cref="DungeonApp.Library.Entries.ContentPackLoader"/> to read real files rather than a
 /// hand-built <see cref="DungeonApp.Library.Entries.ContentRegistry"/>. Mirrors
-/// <c>DungeonApp.Core.Tests.Fakes.TemporaryPacks</c> in spirit, trimmed to what these tests need -
+/// <c>DungeonApp.Library.Entries.Tests.Fakes.TemporaryPacks</c> in spirit, trimmed to what these tests need -
 /// the Desktop test project deliberately does not reference DungeonApp.Core.Tests.
 /// </summary>
 public sealed class TestPacks : IDisposable
