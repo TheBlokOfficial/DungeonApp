@@ -13,17 +13,21 @@
              own - the button either sits at rest or is being pointed at, nothing else.
 
              The bar's own outer Border (below) is DungeonTopBarHeight tall with a 1px bottom
-             edge, so its content area is DungeonTopBarHeight minus that 1px. No Height is set
-             here - VerticalAlignment="Stretch" (the Grid cell's default) lets the button fill
-             that reduced content area exactly, ending right above the bar's bottom line rather
-             than overlapping it. Width stays DungeonTopBarHeight so the hit area is square: 1px
-             for the left line plus the same height as the fill. The left line shares its border
+             edge, so its content area is DungeonTopBarHeight minus that 1px. VerticalAlignment
+             ="Stretch" (the Grid cell's default) is meant to let the button fill that reduced
+             content area exactly, ending right above the bar's bottom line rather than
+             overlapping it. Width stays DungeonTopBarHeight so the hit area is square: 1px for
+             the left line plus the same height as the fill. The left line shares its border
              token (color and thickness) with the bar's own bottom edge. It is drawn by an outer
              element that carries no fill of its own; the hover background lives on a separate
              element nested inside it, so it sits geometrically inside the line and can never
-             paint over it. -->
+             paint over it. Height is reset to NaN (auto) because the global Style
+             Selector="Button" in BuiltInControls.axaml sets a fixed Height, and leaving this
+             more specific style silent on it does not undo that Setter, so the fixed height
+             would keep beating Stretch. -->
         <Style Selector="Button.frame-action">
             <Setter Property="Width" Value="{DynamicResource DungeonTopBarHeight}" />
+            <Setter Property="Height" Value="NaN" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -13,43 +14,92 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// Headless-rendering coverage for the "Zmień system" button's own layout, fixed after the coordinator
 /// traced the actual cause of the hover-covers-the-line bug: TopBarView.axaml's outer frame Border is
 /// <c>DungeonTopBarHeight</c> tall with a 1px bottom edge, so its content area is one pixel shorter than
-/// that. The button used to set an explicit <c>Height="{DynamicResource DungeonTopBarHeight}"</c> too -
-/// one pixel taller than the space it was given - so it overflowed into the bar's own bottom line and
-/// painted over it on hover. The fix drops the explicit Height in favour of
-/// <c>VerticalAlignment="Stretch"</c>, so the button's own Bounds can never exceed the bar's content
-/// area in the first place.
+/// that. The button's own style never set Height, but the global <c>Style Selector="Button"</c> in
+/// BuiltInControls.axaml does (38, DungeonControlHeight) - a more specific selector that leaves a
+/// property alone does not un-set a less specific selector's Setter for it, so that fixed 38 silently
+/// beat <c>VerticalAlignment="Stretch"</c> and the button never grew to fill the bar. Every assertion
+/// below measures the button against the bar's own Border, not against a hard-coded pixel count, so it
+/// keeps catching the same class of mistake even if the tokens change.
 /// </summary>
 public sealed class TopBarRenderingTests
 {
-    private const double TopBarHeight = 52;
     private const double BarBottomEdge = 1;
 
     [AvaloniaFact]
-    public void The_change_system_buttons_bottom_edge_never_reaches_the_bars_own_bottom_line()
+    public void The_change_system_buttons_height_fills_the_bars_content_area()
     {
         var window = BuildWindow();
+        var bar = FindTopBarBorder(window);
         var button = FindChangeSystemButton(window);
 
-        Visual buttonAsVisual = button;
-        var buttonBottom = buttonAsVisual.TranslatePoint(new Point(0, button.Bounds.Height), window)!.Value.Y;
-        var barContentBottom = TopBarHeight - BarBottomEdge;
+        var expectedHeight = bar.Bounds.Height - BarBottomEdge;
 
-        Assert.True(
-            buttonBottom <= barContentBottom,
-            $"Dolna krawędź przycisku ({buttonBottom}) wychodzi poza wnętrze paska ({barContentBottom}) i zasłoniłaby jego dolną linię.");
+        Assert.Equal(expectedHeight, button.Bounds.Height);
+    }
+
+    [AvaloniaFact]
+    public void The_change_system_buttons_top_edge_meets_the_bars_top_edge()
+    {
+        var window = BuildWindow();
+        var bar = FindTopBarBorder(window);
+        var button = FindChangeSystemButton(window);
+
+        var barTop = TopLeftIn(bar, window).Y;
+        var buttonTop = TopLeftIn(button, window).Y;
+
+        Assert.Equal(barTop, buttonTop);
     }
 
     [AvaloniaFact]
     public void The_change_system_button_is_as_wide_as_the_bar_is_tall()
     {
         var window = BuildWindow();
+        var bar = FindTopBarBorder(window);
         var button = FindChangeSystemButton(window);
 
-        Assert.Equal(TopBarHeight, button.Bounds.Width);
+        Assert.Equal(bar.Bounds.Height, button.Bounds.Width);
     }
+
+    [AvaloniaFact]
+    public void The_change_system_buttons_right_edge_meets_the_bars_right_edge()
+    {
+        var window = BuildWindow();
+        var bar = FindTopBarBorder(window);
+        var button = FindChangeSystemButton(window);
+
+        var barRight = TopLeftIn(bar, window).X + bar.Bounds.Width;
+        var buttonRight = TopLeftIn(button, window).X + button.Bounds.Width;
+
+        Assert.Equal(barRight, buttonRight);
+    }
+
+    [AvaloniaFact]
+    public void The_templates_left_line_element_spans_the_buttons_full_height()
+    {
+        var window = BuildWindow();
+        var button = FindChangeSystemButton(window);
+        var leftLineBorder = FindTemplateLeftLineBorder(button);
+
+        Assert.Equal(button.Bounds.Height, leftLineBorder.Bounds.Height);
+    }
+
+    private static Point TopLeftIn(Visual visual, Visual ancestor) =>
+        visual.TranslatePoint(new Point(0, 0), ancestor)!.Value;
 
     private static Button FindChangeSystemButton(Window window) =>
         window.GetVisualDescendants().OfType<Button>().Single(b => b.Classes.Contains("frame-action"));
+
+    private static Border FindTopBarBorder(Window window)
+    {
+        var button = FindChangeSystemButton(window);
+
+        return window.GetVisualDescendants()
+            .OfType<Border>()
+            .First(b => b.GetVisualDescendants().Contains(button));
+    }
+
+    private static Border FindTemplateLeftLineBorder(Button button) =>
+        button.GetVisualDescendants().OfType<Border>().First(b => b.BorderThickness.Left > 0);
 
     private static Window BuildWindow()
     {
