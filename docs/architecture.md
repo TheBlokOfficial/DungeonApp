@@ -514,6 +514,13 @@ Paczka to katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów tr
   w oficjalnym podręczniku. Aplikacja nie zna pojęcia autorytetu.
 * **Jedna przestrzeń nazw na paczkę.** Id wpisu i id dokumentu nie mogą kolidować w obrębie jednej
   paczki.
+* **System może dostarczać paczki razem ze sobą** — zwykłe paczki w tym samym formacie, leżące obok
+  programu, tylko do odczytu, aktualizowane z wydaniem aplikacji. Wczytuje je ten sam mechanizm do
+  tego samego rejestru, a ich wpisy mają zwykłe adresy. Paczki MG leżą w `Dokumenty\DungeonApp\Packs\`.
+  **Logika nigdy nie rozróżnia źródła paczki**; źródło wolno pokazać na ekranie — etykietą albo
+  filtrem po paczce — i nic więcej. Wpisów wkompilowanych w kod systemu nie ma.
+* **Homebrew na wpisie z paczki dostarczonej to kopia we własnej paczce, pod własnym adresem** —
+  nie edycja i nie podmiana po cichu.
 
 ### 13.1 Co się dzieje, gdy treść jest zepsuta
 
@@ -984,15 +991,7 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    wariantów; kampania z wariantem, który dokłada albo podmienia zakładkę, po otwarciu pokaże inną.
    **Wyzwalacz:** pierwszy taki wariant.
 
-10. **Wpisy wbudowane w system.** Czy system ma nieść własną, integralną listę wpisów — podręcznik
-    podstawowy — a paczki byłyby treścią dodaną przez MG. Zderza się z dwiema deklaracjami: „wszystko,
-    co paczka wnosi, jest homebrew z definicji; aplikacja nie zna pojęcia autorytetu" (sekcja
-    *Paczki, wczytywanie, bezpieczeństwo*) oraz „zmianę wpisu traktujemy jak patchnote" — wpis
-    wkompilowany zmienia się dopiero z nowym wydaniem aplikacji. Otwarte też, jaki adres dostaje wpis
-    bez paczki, skoro instancja wskazuje wpis przez przestrzeń nazw paczki. **Wyzwalacz:** projekt
-    zakładek treści albo pierwsza treść, którą autor chce dostarczać razem z systemem. Dygresja
-    autora z 2026-09-23.
-11. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
+10. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
     który się kopiuje, przenosi i wersjonuje jako dokument użytkownika. Baza danych zmienia to
     wszystko naraz, więc to więcej niż format pliku (pytanie 1). **Wyzwalacz:** autorstwo treści
     w aplikacji (pytanie 2) — dopóki wpisy powstają poza aplikacją, plik jest ich naturalną formą —

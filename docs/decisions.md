@@ -242,6 +242,17 @@ z uzasadnieniem, które je trzymało — pozycja „Odrzucanie całej paczki za 
 **Model bezpieczeństwa.** Paczka to czyste dane — nie ma czego uruchamiać, więc nie ma czego
 izolować. Bez pętli w języku limity wystarczają, żeby czas ewaluacji był ograniczony z góry.
 
+**Paczki dostarczane z systemem zamiast wpisów wbudowanych** — autor i asystent, 2026-09-23, z dygresji
+autora: czy system ma nieść własną listę wpisów, a paczki byłyby treścią dodaną przez MG. Paczka
+dostarczana z systemem daje to samo bez drugiego mechanizmu: jedna droga do rejestru, zwykłe adresy
+wpisów, poprawka w nowym wydaniu dociera do kampanii jak każdy patchnote, a zasada „aplikacja nie zna
+pojęcia autorytetu" zostaje, bo logika nie rozgałęzia się po źródle. Argument praktyczny: pełnego
+podręcznika D&D nie wolno dostarczać — na wolnej licencji jest tylko wycinek zasad (SRD) — więc treść
+dostarczona zawsze będzie mniejszością, a paczki MG normą; tym bardziej muszą działać identycznie.
+Odrzucone tego samego dnia: **wpisy wkompilowane w kod systemu** — łamią podział „typy treści to kod,
+wpisy to dane" (*Gdzie biegnie linia między kodem a danymi*), tworzą drugą drogę do rejestru i nie
+mają adresu, skoro instancja wskazuje wpis przez przestrzeń nazw paczki.
+
 **Odrzucone w tym temacie:** „Rozdział na paczkę systemową i paczkę treści", „Odrzucanie całej
 paczki za jeden wadliwy wpis".
 

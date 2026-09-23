@@ -32,8 +32,8 @@ w którym stają pierwsze zakładki treści; sam rejestr zostaje jako ich źród
 * **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka. **Pasek tytułu okna w mockupie nie
   jest projektem paska górnego** i się nim nie sugerować.
 * **Przy projektowaniu rozważyć** dwie pierwsze pozycje z „Czekają na miejsce na ekranie" (niżej)
-  oraz pytania otwarte „Paczka a system" i „Wpisy wbudowane w system" w architekturze — dopiero
-  przy projekcie interfejsu, nie przed nim.
+  oraz pytanie otwarte „Paczka a system" w architekturze — dopiero przy projekcie interfejsu, nie
+  przed nim.
 * **Przed briefem ustalić z autorem, co z mockupu wchodzi do pierwszej wersji** — mockup pokazuje
   rzeczy, których architektura w pierwszej wersji nie przewiduje albo których dziś nie ma: tworzenie
   i edycję wpisów, typy zaklęć i NPC, pełny blok statystyk potwora.
