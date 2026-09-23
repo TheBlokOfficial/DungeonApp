@@ -111,7 +111,11 @@ etapie aplikacja działa, a testy przechodzą.
   i ocena stanu; zasada i powód — [collaboration.md](collaboration.md), *Jak pisać dokumenty tego
   repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
   ta praca jest już tylko skracaniem.
-* **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne z powodem — działa. **Do naprawy: wiersz półki po etapie się rozjechał** — układ karty kampanii i kolory (wyszarzenie nazwy, linia powodu, kosz i strzałka przy niedostępnej) wyglądają źle; interfejs to rzemiosło autora, więc przed poprawką zapytać, czy robi ją sam. **Do wyjaśnienia — zniknięcie kampanii z dysku.** Półka pokazuje poprawnie wszystko, co jest na dysku (trzy katalogi). Ale dwie kampanie formatu 2 założone 2026-09-22 ok. 22:14–22:15 (wersją z samą pierwszą połową etapu) zniknęły z dysku, a o 22:20:53 powstała trzecia, także bez systemu. Autor niczego nie usuwał. Sprawdzone: testy nie dotykają Dokumentów; katalog kampanii kasuje tylko jawne „Usuń" na półce. Pierwszy krok: odtworzyć z wersją z `master` (założyć, zamknąć, „Zmień system", wrócić) i patrzeć na katalog. Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
+* **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne — działa. Dwie poprawki po etapie, decyzje autora z 2026-09-23, w toku:
+  - **Wiersz kampanii niedostępnej** różni się od zwykłego wyłącznie nieinteraktywnością, wyszarzeniem i ikoną (czerwony trójkąt ostrzegawczy zamiast książki); bez linii powodu, nazwa w kolorze zwykłego wiersza, kosz zostaje.
+  - **Usunięcie kampanii przenosi ją do Kosza systemu** zamiast kasować trwale; bez okna potwierdzenia. Powód: zniknięcie kampanii 2026-09-22 — w kodzie jedyną drogą kasowania katalogu kampanii jest kosz na półce, bez potwierdzenia i z pominięciem Kosza, tuż przed strzałką otwierania; najpewniej przypadkowe trafienie (brak logów, dowodu nie będzie). Trzy późniejsze zniknięcia usunął autor świadomie.
+  
+  Zielone światło dane; wykonanie dwoma briefami po kolei (silnik
   stanu i zapis, potem system w kampanii i półka), autor sprawdza na `master` po scaleniu. Docelowy kształt —
   [architecture.md](architecture.md), *Gdzie mieszka stan*; uzasadnienie — [decisions.md](decisions.md),
   ta sama sekcja. Do briefu:
@@ -141,6 +145,27 @@ etapie aplikacja działa, a testy przechodzą.
 * **Etap 3 — stare kampanie to dane testowe.** Decyzja autora: kampanie zapisane bez systemu stają
   się niedostępne — widoczne, nie znikają ([architecture.md](architecture.md), *Gdzie mieszka
   stan*) — i zakłada się je od nowa. Żadnego kodu przypisującego im system.
+* **Etap 4 — zielone światło 2026-09-23.** Dwa briefy po kolei: najpierw rozdział biblioteki
+  interfejsu na bibliotekę biurka i część interfejsu wpisów (czysta przeprowadzka, test „biblioteki
+  się nie referencują" przed nią); potem logika wpisów z rdzenia do biblioteki bez Avalonii
+  i odchudzenie kontraktu ramy (test „logika bibliotek bez Avalonii" przed nią). Autor nie widzi
+  zmian; etap zmienia start, więc po scaleniu uruchamia go na `master`.
+  - **Przyjęte bez weta:** projekty `DungeonApp.Library.Entries` (bez Avalonii),
+    `DungeonApp.Library.Entries.Desktop` (karty, rejestr) i `DungeonApp.Library.Workspace` (dawne
+    `Library.Desktop`: biurko i okna) — dwie części biblioteki wpisów mogą się znać, różne biblioteki
+    nie; system przestaje być dla ramy katalogiem typów i prezentacją kart — mówi, kim jest, jakie ma
+    zakładki, jaki stan zapisuje i jakie kroki startowe zgłasza; rama uruchamia kroki systemu, nie
+    wiedząc, co robią, a tekst ostrzeżenia przy awarii podaje system; kroki samej ramy dostają ogólny
+    tekst ostrzeżenia; rama dostaje własny typ tożsamości systemu, format manifestu bez zmian; każdy
+    system sam wczytuje paczki i ma własny rejestr, agregat katalogów ramy znika (konsekwencja dla
+    pytania „Paczka a system" — do dopisania w architekturze); ścieżkę paczek ustala korzeń kompozycji;
+    kontekst zakładki systemowej znika jako pusty, a pilnowanie „nie widzi kampanii" przechodzi na
+    deklarację zakładki; kontekst okna narzędzia przechodzi do interfejsu wpisów pod nazwą bez
+    „narzędzia"; test „zapis nie zna instancji" zastępuje ogólny test „rama nie referencuje
+    biblioteki"; nazwa katalogu kontraktu systemu w ramie zostaje.
+  - **Obieg:** zamiast drugiego subagenta porównującego wynik z zakazami — decyzja autora
+    z 2026-09-23 — test napisany przed przeprowadzką: kampania zapisana dzisiejszym kodem wczytuje się
+    i zapisuje po etapie bajt w bajt tak samo; diff zapisu przegląda architekt.
 * **Między etapami nic nie wchodzi na zapas.** Dodatki powstają z pierwszym prawdziwym dodatkiem
   (niżej, „Odłożone"), formuły, sloty i dokument — po etapie 4.
 
