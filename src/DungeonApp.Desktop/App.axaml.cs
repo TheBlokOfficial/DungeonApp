@@ -67,7 +67,11 @@ public partial class App : Avalonia.Application
             "DungeonApp",
             "Campaigns");
 
-        _campaigns = new JsonCampaignRepository(libraryPath);
+        // Usunięcie kampanii w działającej aplikacji trafia do Kosza systemu, nie znika trwale - tak,
+        // żeby przypadkowe kliknięcie dało się cofnąć. JsonCampaignRepository nie zna Kosza - to
+        // wybór korzenia kompozycji, wstrzyknięty, żeby testy (które budują ten magazyn same, z
+        // wariantem trwałym) nigdy nie mogły trafić do prawdziwego Kosza użytkownika.
+        _campaigns = new JsonCampaignRepository(libraryPath, DeleteDirectoryToRecycleBin);
 
         // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
         // mieszka stan") - obok, nie pod
@@ -149,5 +153,26 @@ public partial class App : Avalonia.Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>
+    /// The Recycle Bin is a Windows shell concept; <see cref="OperatingSystem.IsWindows"/> is the
+    /// source-level guard CA1416 asks for, not a suppression of it. Off Windows there is no bin to
+    /// send anything to, so this falls back to the same permanent delete the store used before this
+    /// injection existed.
+    /// </summary>
+    private static void DeleteDirectoryToRecycleBin(string path)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(
+                path,
+                Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,
+                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+        }
+        else
+        {
+            Directory.Delete(path, recursive: true);
+        }
     }
 }

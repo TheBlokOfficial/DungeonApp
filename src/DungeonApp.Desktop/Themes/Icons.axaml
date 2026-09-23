@@ -116,4 +116,13 @@
             <GeometryDrawing Geometry="M8,11 L8,7 A4,4 0 0 1 16,7 L16,11" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <!-- An unavailable campaign row shows this in place of its record emblem. Uses the danger pen,
+         same as the trash icon, so both draw from the one red token this theme has. -->
+    <DrawingImage x:Key="DungeonIconWarningTriangle" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,3 L22,20 L2,20 Z" Pen="{StaticResource DungeonIconDangerPen}" />
+            <GeometryDrawing Geometry="M12,9 L12,15" Pen="{StaticResource DungeonIconDangerPen}" />
+            <GeometryDrawing Geometry="M12,18 L12,18.1" Pen="{StaticResource DungeonIconDangerPen}" />
+        </DrawingGroup>
+    </DrawingImage>
 </ResourceDictionary>

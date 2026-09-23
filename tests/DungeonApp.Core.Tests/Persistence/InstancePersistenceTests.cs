@@ -29,7 +29,10 @@ public sealed class InstancePersistenceTests : IDisposable
     private readonly TemporaryLibrary _library = new();
     private readonly JsonCampaignRepository _repository;
 
-    public InstancePersistenceTests() => _repository = new JsonCampaignRepository(_library.Path);
+    // Permanent delete on purpose: a test must never be able to reach the real Recycle Bin - see
+    // JsonCampaignRepository.DeleteAsync's doc comment.
+    public InstancePersistenceTests() =>
+        _repository = new JsonCampaignRepository(_library.Path, path => Directory.Delete(path, recursive: true));
 
     public void Dispose() => _library.Dispose();
 

@@ -6,9 +6,9 @@
              x:DataType="library:CampaignLibraryViewModel">
 
     <UserControl.Styles>
-        <!-- A shelf row. A minimum rather than a fixed height on purpose: the list must stay
-             scannable and must not re-flow for its own sake, but an unavailable row is allowed to
-             grow by exactly one line for its reason - see Border.campaign-row.unavailable below. -->
+        <!-- A shelf row. A minimum rather than a fixed height so the row can accommodate content,
+             but the row's layout is identical whether the campaign is available or not - an
+             unavailable row no longer carries a reason line, so it never grows past this minimum. -->
         <Style Selector="Border.campaign-row">
             <Setter Property="MinHeight" Value="{DynamicResource DungeonCampaignRowHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -26,11 +26,6 @@
              control is hovered, so it never looks like opening and deleting are one action. -->
         <Style Selector="Border.campaign-row.delete-hover:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
-        </Style>
-        <!-- An unavailable campaign: greyed by reusing the muted text token everywhere the
-             available row uses the primary one, never a new brush or an opacity literal. -->
-        <Style Selector="Border.campaign-row.unavailable TextBlock.campaign-name">
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
         <Style Selector="Button.campaign-open">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -146,7 +141,7 @@
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
+                                <Border Classes="campaign-row">
                                     <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
@@ -167,11 +162,23 @@
                                                     Background="{DynamicResource DungeonBackstageBrush}"
                                                     BorderBrush="{DynamicResource DungeonBorderBrush}"
                                                     BorderThickness="1">
-                                                <Image Width="16"
-                                                       Height="16"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       Source="{StaticResource DungeonIconCampaignRecord}" />
+                                                <Panel>
+                                                    <!-- Available: the same record emblem as always.
+                                                         Unavailable: a warning triangle in place of it -
+                                                         the row's only remaining icon distinction. -->
+                                                    <Image Width="16"
+                                                           Height="16"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           IsVisible="{Binding IsAvailable}"
+                                                           Source="{StaticResource DungeonIconCampaignRecord}" />
+                                                    <Image Width="16"
+                                                           Height="16"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           IsVisible="{Binding !IsAvailable}"
+                                                           Source="{StaticResource DungeonIconWarningTriangle}" />
+                                                </Panel>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Classes="campaign-name"
@@ -179,11 +186,6 @@
                                                            FontSize="{DynamicResource DungeonCampaignNameFontSize}"
                                                            Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                                            Text="{Binding Name}"
-                                                           TextTrimming="CharacterEllipsis" />
-                                                <TextBlock FontSize="{DynamicResource DungeonHelperFontSize}"
-                                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                                           IsVisible="{Binding !IsAvailable}"
-                                                           Text="{Binding UnavailabilityReason}"
                                                            TextTrimming="CharacterEllipsis" />
                                             </StackPanel>
                                             <TextBlock Grid.Column="2"
