@@ -231,7 +231,19 @@ warstwy.
 
 ## 4. Briefy dla subagentów
 
-Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą z incydentów.
+**Subagentów uruchamia się jako jeden z dwóch własnych rodzajów** z `.claude/agents/` — decyzja
+autora z 2026-09-23: `wykonawca` do zleceń zmieniających kod, `zwiadowca` do zwiadu i diagnozy tylko
+do odczytu. Ich definicje niosą zakazy niżej, krok zrównania kopii z `master` i stały format
+raportu, więc brief już ich nie powtarza — mówi tylko, co zrobić, od czego zacząć i co jest
+baseline'em. Model domyślny obu to Sonnet; przy zadaniu mechanicznym zlecenie podaje Haiku (reguła
+wyboru modelu — sekcja 1). Zmiana zakazu albo formatu raportu idzie do definicji i tutaj naraz:
+definicja jest wersją wykonawczą, ten dokument — uzasadnieniem.
+
+*Dlaczego:* zakazy i format raportu żyły dotąd w każdym briefie z osobna, a ten dokument przypominał,
+że właśnie w długich briefach łatwo pominąć zakaz, który wydaje się oczywisty. Oszczędność tokenów
+jest mała; zysk jest w tym, że zakazu nie da się zapomnieć.
+
+Zakazy, które niosą definicje — wszystkie pochodzą z incydentów:
 
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
    aplikacji autora, żeby odblokować `dotnet clean`. Poprawne zachowanie to zgłosić blokadę, nie
