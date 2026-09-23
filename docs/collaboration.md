@@ -243,6 +243,18 @@ definicja jest wersją wykonawczą, ten dokument — uzasadnieniem.
 że właśnie w długich briefach łatwo pominąć zakaz, który wydaje się oczywisty. Oszczędność tokenów
 jest mała; zysk jest w tym, że zakazu nie da się zapomnieć.
 
+**Diagnoza przechodzi w poprawkę przez raport, nie przez wznowienie.** Decyzja autora
+z 2026-09-23. Domyślnie diagnozuje `zwiadowca`, a poprawkę robi nowy `wykonawca`, którego brief
+niesie gotową diagnozę — raport jest zarazem miejscem, w którym architekt i autor widzą przyczynę,
+zanim cokolwiek się zmieni. Wyjątek: gdy z góry wiadomo, że poprawka będzie drobna i zależna od
+niuansów trudnych do zapisania w briefie, albo gdy autor prosi o tego samego agenta — wtedy
+diagnozę dostaje `wykonawca` z poleceniem „najpierw tylko diagnoza, bez zmian", a po raporcie
+kontynuuje poprawkę; jego kopia zostaje (sekcja *Środowisko*).
+
+*Z liczb tego dnia:* diagnoza przycisku paska górnego kosztowała około 158 tys. tokenów, bo szukała
+przyczyny; nowy wykonawca z diagnozą w briefie zrobił poprawkę za około 93 tys., nie szukając jej
+drugi raz. Wznowiony diagnosta niósłby swój kontekst przez każdy krok poprawki.
+
 Zakazy, które niosą definicje — wszystkie pochodzą z incydentów:
 
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
