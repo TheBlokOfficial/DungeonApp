@@ -181,13 +181,8 @@ etapie aplikacja działa, a testy przechodzą.
   - **Zlecenie 2 — następne:** przeprowadzka `Core/Content/**` do `DungeonApp.Library.Entries`,
     mechanicznie; tymczasowy skan zastępuje test po referencjach „rama nie referencuje biblioteki",
     test „zapis nie zna instancji" odchodzi; testy treści do własnego projektu.
-* **Pasek górny — poprawka po sprawdzeniu przez autora, scalona 2026-09-23, czeka na jego
-  sprawdzenie.** Przyczyną zasłaniania dolnej linii był przycisk wyższy o piksel od wnętrza paska;
-  teraz wypełnia wnętrze i rysuje tylko lewą linię krawędzi, obszar najechania jest kwadratem.
-  Podpowiedź „Zmień system" wróciła, osierocony token usunięty. **Drugi przebieg (autor, zrzuty):**
-  przycisk był za niski — globalny styl przycisków narzuca stałą wysokość, styl paska jej nie znosił;
-  poprawione, test mierzy przycisk z każdej strony i nie przechodził przed poprawką. Niewyjaśnione:
-  odstęp od prawej krawędzi okna widoczny na zrzucie, którego pomiar bez ekranu nie pokazuje. **Z dawnego paska górnego nic nie wraca** — decyzja autora.
+* **Pasek górny — sprawdzony przez autora 2026-09-23, zamknięty.** Z dawnego paska górnego nic nie
+  wraca — decyzja autora.
 * **Pasek górny i porządki paska bocznego — zrobione 2026-09-23** (decyzje autora):
   - **Pasek górny** nad obszarem treści, obok paska bocznego (położenie rozstrzygnął architekt);
     wysokość nagłówka paska bocznego, dolne krawędzie w jednej linii; widoczny po wyborze systemu.
