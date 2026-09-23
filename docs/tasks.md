@@ -166,6 +166,19 @@ etapie aplikacja działa, a testy przechodzą.
   - **Obieg:** zamiast drugiego subagenta porównującego wynik z zakazami — decyzja autora
     z 2026-09-23 — test napisany przed przeprowadzką: kampania zapisana dzisiejszym kodem wczytuje się
     i zapisuje po etapie bajt w bajt tak samo; diff zapisu przegląda architekt.
+* **Pasek górny i porządki paska bocznego — decyzje autora z 2026-09-23, po briefie 1 etapu 4,
+  przed briefem 2** (oba dotykają powłoki i startu, więc po kolei, nie równolegle):
+  - **Pasek górny** nad obszarem treści, obok paska bocznego (położenie rozstrzygnął architekt);
+    wysokość nagłówka paska bocznego, dolne krawędzie w jednej linii; widoczny po wyborze systemu.
+    Z prawej kwadratowe przyciski z samą ikoną, jeden stan — najechanie. Pierwszy: „Zmień system"
+    z ikoną drzwi wyjściowych (znika z paska bocznego — nie otwiera zakładki, tylko wykonuje akcję).
+    Z lewej, luźny pomysł autora: nazwa systemu › nazwa otwartej kampanii, tekst nieklikalny.
+  - **Pasek boczny:** etykiety na ekranie — kategoria System jako „Biblioteka", kategoria Aplikacja
+    jako „System" (pojęcia w dokumentach i kodzie bez zmian); w kategorii Aplikacja zakładka
+    „Ustawienia" z zębatką, otwierająca pustą zakładkę — widmo z woli autora; kategoria Aplikacja
+    przyklejona do dołu, przy zwijaniu chowa się tylko jej nagłówek, a pozycje nie zmieniają
+    wysokości; lekki odstęp między pozycjami jednej kategorii; po zwinięciu wyraźny odstęp między
+    grupami Kampania i Biblioteka, margines nad pierwszym nagłówkiem bez zmian.
 * **Między etapami nic nie wchodzi na zapas.** Dodatki powstają z pierwszym prawdziwym dodatkiem
   (niżej, „Odłożone"), formuły, sloty i dokument — po etapie 4.
 
