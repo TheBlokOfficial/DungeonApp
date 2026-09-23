@@ -5,9 +5,12 @@ using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.Content.Instances;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Startup;
 using DungeonApp.Library.Entries.Desktop.Content;
 using DungeonApp.Library.Entries.Desktop.Features.Registry;
+using DungeonApp.Library.Entries.Desktop.Startup;
 using DungeonApp.Library.Workspace.Controls.Workspace;
 using DungeonApp.Library.Workspace.Features.CampaignWorkspace;
 using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
@@ -28,8 +31,16 @@ namespace DungeonApp.Content.Dnd5e;
 /// <c>Core</c> or <c>Desktop</c> branching on entry kind - neither of them contains the word
 /// "monster" anywhere, and neither ever will just because this switch exists.
 /// </para>
+/// <para>
+/// Carries two distinct identities on purpose (docs/architecture.md, "Rama, biblioteka, system"):
+/// <see cref="Id"/> is what the frame knows this system as (<see cref="SystemId"/>, never
+/// <c>DungeonApp.Core.Content</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
+/// content-set id every content type reference and pack entry in this system actually points at. Both
+/// are minted from the same literal, but nothing enforces that they stay equal - a system is free to
+/// pick a different one for either.
+/// </para>
 /// </summary>
-public sealed class Dnd5eSystem : IGameSystem
+public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
     // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
     // whether a row is a monster, and docs/decisions.md permits branching on this id only inside
@@ -40,22 +51,38 @@ public sealed class Dnd5eSystem : IGameSystem
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ContentTypeDescriptor _monster;
     private readonly ContentTypeDescriptor _gear;
+    private readonly LoadContentPacksStep _loadPacksStep;
 
-    public Dnd5eSystem(WorkspaceLayoutStore layoutStore)
+    public Dnd5eSystem(WorkspaceLayoutStore layoutStore, string packsPath)
     {
         ArgumentNullException.ThrowIfNull(layoutStore);
+        ArgumentNullException.ThrowIfNull(packsPath);
 
         _layoutStore = layoutStore;
 
-        Id = ContentId.Create("dnd5e");
-        _monster = new ContentTypeDescriptor(new ContentTypeReference(Id, ContentId.Create(MonsterTypeId)), "Potwór", 1);
-        _gear = new ContentTypeDescriptor(new ContentTypeReference(Id, ContentId.Create(GearTypeId)), "Przedmiot", 1);
+        Id = SystemId.Create("dnd5e");
+        ContentSetId = ContentId.Create("dnd5e");
+        _monster = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(MonsterTypeId)), "Potwór", 1);
+        _gear = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)), "Przedmiot", 1);
+
+        _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, this));
+        var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
+        StartupSteps = [_loadPacksStep, warmCardsStep];
 
         SystemTabs = [new SystemTabDeclaration("dnd5e.registry", "Rejestr", "DungeonIconDatabase", CreateRegistryTab)];
         CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
 
-    public ContentId Id { get; }
+    public SystemId Id { get; }
+
+    /// <summary>
+    /// The content-set id every <see cref="ContentTypeReference"/> and pack entry this system owns
+    /// actually points at - distinct from <see cref="Id"/>, the frame's own identity for this system.
+    /// Public, not internal: a system's own test project is a separate assembly with no reason to
+    /// reference this one's internals, the same rationale <see cref="CampaignEntriesContext"/>'s
+    /// public constructor already follows.
+    /// </summary>
+    public ContentId ContentSetId { get; }
 
     public string DisplayName => "Dungeons & Dragons 5e";
 
@@ -65,17 +92,19 @@ public sealed class Dnd5eSystem : IGameSystem
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [InstancesModel.Declaration];
 
-    public bool HasSet(ContentId set) => set == Id;
+    public IReadOnlyList<IStartupStep> StartupSteps { get; }
+
+    public bool HasSet(ContentId set) => set == ContentSetId;
 
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
-        if (reference.Set == Id && reference.Type.Value == MonsterTypeId)
+        if (reference.Set == ContentSetId && reference.Type.Value == MonsterTypeId)
         {
             descriptor = _monster;
             return true;
         }
 
-        if (reference.Set == Id && reference.Type.Value == GearTypeId)
+        if (reference.Set == ContentSetId && reference.Type.Value == GearTypeId)
         {
             descriptor = _gear;
             return true;
@@ -87,9 +116,9 @@ public sealed class Dnd5eSystem : IGameSystem
 
     public bool TryValidate(ContentTypeReference reference, ContentValues values, out string? error)
     {
-        if (reference.Set != Id)
+        if (reference.Set != ContentSetId)
         {
-            error = $"'{Id}' does not own content type reference '{reference}'.";
+            error = $"'{ContentSetId}' does not own content type reference '{reference}'.";
             return false;
         }
 
@@ -106,7 +135,7 @@ public sealed class Dnd5eSystem : IGameSystem
                     break;
 
                 default:
-                    error = $"'{Id}' declares no content type '{reference.Type}'.";
+                    error = $"'{ContentSetId}' declares no content type '{reference.Type}'.";
                     return false;
             }
         }
@@ -126,27 +155,27 @@ public sealed class Dnd5eSystem : IGameSystem
 
     public Control CreateCard(Entry entry)
     {
-        if (entry.Type.Set == Id && entry.Type.Type.Value == MonsterTypeId)
+        if (entry.Type.Set == ContentSetId && entry.Type.Type.Value == MonsterTypeId)
         {
             var view = new MonsterCardView();
             view.SetMonster(entry.Values.Read<Monster>());
             return view;
         }
 
-        if (entry.Type.Set == Id && entry.Type.Type.Value == GearTypeId)
+        if (entry.Type.Set == ContentSetId && entry.Type.Type.Value == GearTypeId)
         {
             var view = new GearCardView();
             view.SetGear(entry.Values.Read<Gear>());
             return view;
         }
 
-        throw new InvalidOperationException($"'{Id}' cannot draw a card for content type reference '{entry.Type}'.");
+        throw new InvalidOperationException($"'{ContentSetId}' cannot draw a card for content type reference '{entry.Type}'.");
     }
 
     /// <summary>The "Rejestr" System-category tab: today's registry screen, drawn by this system's own presentation.</summary>
-    private ITabContent CreateRegistryTab(SystemTabContext context)
+    private ITabContent CreateRegistryTab()
     {
-        var viewModel = new RegistryViewModel(context.Registry, this);
+        var viewModel = new RegistryViewModel(_loadPacksStep.Registry, this);
         return new DelegateTabContent(new RegistryView { DataContext = viewModel });
     }
 
@@ -155,11 +184,11 @@ public sealed class Dnd5eSystem : IGameSystem
     /// this system's own tool belt and nothing else - there is no cross-system tool provider
     /// stitching several systems' tools together any more, so building the tool list is this
     /// system's own job now, from a <see cref="CampaignEntriesContext"/> it builds itself out of the
-    /// tab context plus its own type catalog.
+    /// tab context plus its own registry and type catalog.
     /// </summary>
     private async Task<ITabContent> CreateDeskTabAsync(CampaignTabContext context)
     {
-        var toolContext = new CampaignEntriesContext(context, this);
+        var toolContext = new CampaignEntriesContext(context, _loadPacksStep.Registry, this);
         var tools = BuildTools(toolContext);
 
         return await CampaignDesk.CreateAsync(context, _layoutStore, tools);
@@ -201,6 +230,6 @@ public sealed class Dnd5eSystem : IGameSystem
     private Control BuildToolView(CampaignEntriesContext context) =>
         new CampaignInstancesToolView
         {
-            DataContext = new CampaignInstancesToolViewModel(context, Id),
+            DataContext = new CampaignInstancesToolViewModel(context, ContentSetId),
         };
 }

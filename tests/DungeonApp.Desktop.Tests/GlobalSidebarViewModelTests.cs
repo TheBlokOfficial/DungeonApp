@@ -52,7 +52,7 @@ public sealed class GlobalSidebarViewModelTests
     [Fact]
     public async Task Activating_the_campaign_position_after_a_different_row_was_selected_makes_it_the_only_active_row()
     {
-        var declaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", _ => new FakeTabContent());
+        var declaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", () => new FakeTabContent());
         var sidebar = BuildSidebar(systemTabs: [declaration]);
         await ((AsyncCommand)sidebar.SystemTabItems[0].SelectCommand).ExecuteAsync();
         Assert.False(sidebar.CampaignPositionItem.IsActive);

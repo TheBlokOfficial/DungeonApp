@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
@@ -25,7 +24,7 @@ namespace DungeonApp.Desktop.Shell;
 /// never leave anything here for a later real open to find already built.
 /// </para>
 /// </summary>
-public sealed class ActiveSystemSession(IGameSystem system, Func<ContentRegistry> registry, ICampaignRepository campaigns)
+public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository campaigns)
 {
     private readonly Dictionary<string, ITabContent> _systemTabContents = [];
     private readonly Dictionary<string, ITabContent> _campaignTabContents = [];
@@ -49,7 +48,7 @@ public sealed class ActiveSystemSession(IGameSystem system, Func<ContentRegistry
         CloseCampaign();
 
         _openCampaign = new CampaignSession(campaign, campaigns, System.StateModels);
-        _campaignTabContext = new CampaignTabContext(_openCampaign, registry());
+        _campaignTabContext = new CampaignTabContext(_openCampaign);
     }
 
     /// <summary>Releases every Campaign-category tab built for the open campaign and closes it.</summary>
@@ -88,7 +87,7 @@ public sealed class ActiveSystemSession(IGameSystem system, Func<ContentRegistry
 
         if (!_systemTabContents.TryGetValue(declaration.Id, out var content))
         {
-            content = declaration.CreateContent(new SystemTabContext(registry()));
+            content = declaration.CreateContent();
             _systemTabContents[declaration.Id] = content;
         }
 

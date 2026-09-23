@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Shell;
 
@@ -15,7 +15,7 @@ namespace DungeonApp.Desktop.Tests;
 /// </summary>
 public sealed class ActiveSystemSessionTests
 {
-    private static readonly ContentId SystemId = ContentId.Create("fake-system");
+    private static readonly SystemId FakeSystemId = SystemId.Create("fake-system");
 
     [Fact]
     public async Task Campaign_tabs_are_unreachable_before_a_campaign_is_open()
@@ -60,7 +60,7 @@ public sealed class ActiveSystemSessionTests
     public async Task A_system_tabs_content_is_built_once_and_the_same_instance_is_returned_on_later_shows()
     {
         var calls = 0;
-        var declaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", _ =>
+        var declaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", () =>
         {
             calls++;
             return new FakeTabContent();
@@ -95,7 +95,7 @@ public sealed class ActiveSystemSessionTests
     {
         var systemContent = new FakeTabContent();
         var campaignContent = new FakeTabContent();
-        var systemDeclaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", _ => systemContent);
+        var systemDeclaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", () => systemContent);
         var campaignDeclaration = new CampaignTabDeclaration("camp.tab", "Tab", "icon", _ => Task.FromResult<ITabContent>(campaignContent));
         var session = BuildSession(systemTabs: [systemDeclaration], campaignTabs: [campaignDeclaration]);
         session.OpenCampaign(NewCampaign());
@@ -151,12 +151,12 @@ public sealed class ActiveSystemSessionTests
         await repository.SaveAsync(campaign, []);
 
         var warmupSession = new CampaignSession(campaign, repository, []);
-        var warmupContext = new CampaignTabContext(warmupSession, EmptyRegistry());
+        var warmupContext = new CampaignTabContext(warmupSession);
         var warmedUp = (FakeTabContent)await declaration.CreateContentAsync(warmupContext);
         warmedUp.Dispose();
 
-        var system = new FakeGameSystem(SystemId, [], campaignTabs: [declaration]);
-        var session = new ActiveSystemSession(system, EmptyRegistry, repository);
+        var system = new FakeGameSystem(FakeSystemId, [], campaignTabs: [declaration]);
+        var session = new ActiveSystemSession(system, repository);
         session.OpenCampaign(campaign);
         var real = await session.GetOrCreateCampaignTabAsync(declaration);
 
@@ -169,11 +169,9 @@ public sealed class ActiveSystemSessionTests
         System.Collections.Generic.IReadOnlyList<SystemTabDeclaration>? systemTabs = null,
         System.Collections.Generic.IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null)
     {
-        var system = new FakeGameSystem(SystemId, [], systemTabs: systemTabs, campaignTabs: campaignTabs);
-        return new ActiveSystemSession(system, EmptyRegistry, new InMemoryCampaignRepository());
+        var system = new FakeGameSystem(FakeSystemId, systemTabs: systemTabs, campaignTabs: campaignTabs);
+        return new ActiveSystemSession(system, new InMemoryCampaignRepository());
     }
-
-    private static ContentRegistry EmptyRegistry() => new([], [], [], []);
 
     private static Campaign NewCampaign() => Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
 }

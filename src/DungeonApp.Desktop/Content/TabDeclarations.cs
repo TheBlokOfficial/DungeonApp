@@ -4,16 +4,17 @@ using System.Threading.Tasks;
 namespace DungeonApp.Desktop.Content;
 
 /// <summary>
-/// One tab a system declares in the System sidebar category: a constant triple plus a synchronous
-/// factory, read once when the system is chosen (docs/tasks.md, "Etap 1 - projekt styku"). Synchronous
-/// because nothing a System-category tab needs today - the content registry, already built by the
-/// time a system can be chosen - requires storage IO to draw.
+/// One tab a system declares in the System sidebar category: a constant triple plus a synchronous,
+/// parameterless factory, read once when the system is chosen. Parameterless is what makes "a
+/// System-category tab never sees the open campaign" structural rather than a promise a context
+/// class happens to keep today (docs/architecture.md, "Pasek boczny: trzy kategorie") - there is
+/// nothing here a factory could even accept a campaign through.
 /// </summary>
 public sealed record SystemTabDeclaration(
     string Id,
     string Title,
     string IconResourceKey,
-    Func<SystemTabContext, ITabContent> CreateContent);
+    Func<ITabContent> CreateContent);
 
 /// <summary>
 /// One tab a system declares in the Campaign sidebar category: a constant triple plus an

@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
@@ -34,7 +33,6 @@ public sealed class AppShellViewModel : ObservableObject
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignPreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
-    private readonly Func<ContentRegistry> _contentRegistry;
 
     private object _currentWorkspaceContent;
     private bool _isReady;
@@ -58,14 +56,12 @@ public sealed class AppShellViewModel : ObservableObject
         ICampaignRepository campaigns,
         CampaignLibraryViewModel campaignLibrary,
         CampaignPreparationCache preparations,
-        IStartupStep[] startupSteps,
-        Func<ContentRegistry> contentRegistry)
+        IStartupStep[] startupSteps)
     {
         _campaigns = campaigns;
         _campaignLibrary = campaignLibrary;
         _preparations = preparations;
         _startupSteps = startupSteps;
-        _contentRegistry = contentRegistry;
 
         SystemSelection = new SystemSelectionViewModel(systems, ChooseSystemAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
@@ -145,11 +141,13 @@ public sealed class AppShellViewModel : ObservableObject
     public async Task RunStartupAsync(StartupUiContext ui)
     {
         var stopwatch = Stopwatch.StartNew();
+        IStartupStep? currentStep = null;
 
         try
         {
             foreach (var step in _startupSteps)
             {
+                currentStep = step;
                 StartupMessage = step.Describe();
 
                 var stepWatch = Stopwatch.StartNew();
@@ -169,7 +167,7 @@ public sealed class AppShellViewModel : ObservableObject
         catch (Exception)
         {
             ui.WarmupHost.Content = null;
-            CompleteStartupWithWarning();
+            CompleteStartupWithWarning(currentStep?.FailureWarning);
         }
         finally
         {
@@ -184,11 +182,16 @@ public sealed class AppShellViewModel : ObservableObject
         StatusBar.Message = "Gotowe";
     }
 
-    private void CompleteStartupWithWarning()
+    /// <summary>
+    /// <paramref name="warning"/> comes from whichever step failed (<see cref="IStartupStep.FailureWarning"/>)
+    /// - the frame never knows why a step failed, only that one did, so the step itself is the only
+    /// one that can put that into words (docs/architecture.md, "Start aplikacji").
+    /// </summary>
+    private void CompleteStartupWithWarning(string? warning)
     {
         StartupMessage = string.Empty;
         IsReady = true;
-        StatusBar.Message = "Nie udało się przygotować paczek treści. Zostaną wczytane na żądanie.";
+        StatusBar.Message = warning ?? "Nie udało się w pełni przygotować startu aplikacji. Zostanie uruchomiona mimo to.";
     }
 
     /// <summary>
@@ -251,7 +254,7 @@ public sealed class AppShellViewModel : ObservableObject
     /// </summary>
     private async Task ChooseSystemAsync(IGameSystem system)
     {
-        _session = new ActiveSystemSession(system, _contentRegistry, _campaigns);
+        _session = new ActiveSystemSession(system, _campaigns);
 
         var sidebar = new GlobalSidebarViewModel(
             system.SystemTabs,

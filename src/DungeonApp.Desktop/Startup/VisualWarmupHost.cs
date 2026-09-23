@@ -10,8 +10,13 @@ namespace DungeonApp.Desktop.Startup;
 /// Wspólna mechanika kroków rozgrzewki wizualnej: podepnij kontrolkę pod niewidoczny host, poczekaj
 /// na jej <see cref="Control.Loaded"/>, oddaj sterowanie dispatcherowi, odepnij. Wydzielone, żeby
 /// każdy krok per typ panelu nie powtarzał tej samej sekwencji.
+/// <para>
+/// Publiczne, nie <c>internal</c>: krok startowy zgłaszany przez system (docs/architecture.md,
+/// "Start aplikacji") mieszka w innym zestawie i potrzebuje dokładnie tej samej sekwencji do
+/// rozgrzewki kart, których treść zna tylko on.
+/// </para>
 /// </summary>
-internal static class VisualWarmupHost
+public static class VisualWarmupHost
 {
     public static async Task AttachAndWaitAsync(
         ContentControl host,

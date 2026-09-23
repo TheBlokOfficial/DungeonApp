@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
+using DungeonApp.Core.Systems;
 using DungeonApp.Core.Tests.Fakes;
 
 namespace DungeonApp.Core.Tests.Campaigns;
@@ -9,7 +9,7 @@ namespace DungeonApp.Core.Tests.Campaigns;
 public sealed class CreateCampaignTests
 {
     private static readonly DateTimeOffset Moment = new(2026, 8, 27, 18, 30, 0, TimeSpan.Zero);
-    private static readonly ContentId SystemId = ContentId.Create("test-system");
+    private static readonly SystemId TestSystemId = SystemId.Create("test-system");
 
     private readonly InMemoryCampaignRepository _repository = new();
     private readonly CreateCampaign _createCampaign;
@@ -20,7 +20,7 @@ public sealed class CreateCampaignTests
     [Fact]
     public async Task Stores_the_campaign_it_created()
     {
-        var created = await _createCampaign.ExecuteAsync("Kroniki Doliny", SystemId, []);
+        var created = await _createCampaign.ExecuteAsync("Kroniki Doliny", TestSystemId, []);
 
         var stored = await _repository.GetAsync(created.Id, []);
 
@@ -33,9 +33,9 @@ public sealed class CreateCampaignTests
     [Fact]
     public async Task Stamps_the_campaign_with_the_active_system()
     {
-        var created = await _createCampaign.ExecuteAsync("Kroniki Doliny", SystemId, []);
+        var created = await _createCampaign.ExecuteAsync("Kroniki Doliny", TestSystemId, []);
 
-        Assert.Equal(SystemId, created.SystemId);
+        Assert.Equal(TestSystemId, created.SystemId);
     }
 
     /// <summary>
@@ -45,8 +45,8 @@ public sealed class CreateCampaignTests
     [Fact]
     public async Task Treats_a_repeated_name_as_a_separate_campaign()
     {
-        var first = await _createCampaign.ExecuteAsync("Kroniki Doliny", SystemId, []);
-        var second = await _createCampaign.ExecuteAsync("Kroniki Doliny", SystemId, []);
+        var first = await _createCampaign.ExecuteAsync("Kroniki Doliny", TestSystemId, []);
+        var second = await _createCampaign.ExecuteAsync("Kroniki Doliny", TestSystemId, []);
 
         Assert.NotEqual(first.Id, second.Id);
         Assert.Equal(2, _repository.SaveCount);
@@ -56,7 +56,7 @@ public sealed class CreateCampaignTests
     [Fact]
     public async Task Leaves_the_store_untouched_when_the_name_is_rejected()
     {
-        await Assert.ThrowsAsync<ArgumentException>(() => _createCampaign.ExecuteAsync("   ", SystemId, []));
+        await Assert.ThrowsAsync<ArgumentException>(() => _createCampaign.ExecuteAsync("   ", TestSystemId, []));
 
         Assert.Equal(0, _repository.SaveCount);
     }

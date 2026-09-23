@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 
@@ -12,16 +12,16 @@ namespace DungeonApp.Desktop.Tests;
 
 public sealed class CampaignPreparationCacheTests
 {
-    private static readonly ContentId SystemId = ContentId.Create("fake-system");
+    private static readonly SystemId FakeSystemId = SystemId.Create("fake-system");
 
     [Fact]
     public async Task WarmAsync_MakesFirstTakeUsePreparedCampaign()
     {
-        var campaign = Campaign.Create(CampaignName.Create("Rozgrzana"), TimeProvider.System, SystemId);
+        var campaign = Campaign.Create(CampaignName.Create("Rozgrzana"), TimeProvider.System, FakeSystemId);
         var repository = new CountingRepository(campaign);
-        var system = new FakeGameSystem(SystemId, []);
+        var system = new FakeGameSystem(FakeSystemId, []);
         var cache = new CampaignPreparationCache(repository, [system]);
-        var summary = new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt, SystemId);
+        var summary = new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt, FakeSystemId);
 
         await cache.WarmAsync([summary]);
         var borrowed = await cache.PeekAsync(summary);
@@ -38,9 +38,9 @@ public sealed class CampaignPreparationCacheTests
     {
         var id = CampaignId.New();
         var repository = new CountingRepository(null);
-        var system = new FakeGameSystem(SystemId, []);
+        var system = new FakeGameSystem(FakeSystemId, []);
         var cache = new CampaignPreparationCache(repository, [system]);
-        var summary = new CampaignSummary(id, CampaignName.Create("Usunięta"), DateTimeOffset.UtcNow, SystemId);
+        var summary = new CampaignSummary(id, CampaignName.Create("Usunięta"), DateTimeOffset.UtcNow, FakeSystemId);
 
         await cache.WarmAsync([summary]);
 
@@ -65,7 +65,7 @@ public sealed class CampaignPreparationCacheTests
     {
         var repository = new CountingRepository(null);
         var cache = new CampaignPreparationCache(repository, []);
-        var summary = new CampaignSummary(CampaignId.New(), CampaignName.Create("Obcy system"), DateTimeOffset.UtcNow, SystemId);
+        var summary = new CampaignSummary(CampaignId.New(), CampaignName.Create("Obcy system"), DateTimeOffset.UtcNow, FakeSystemId);
 
         var exception = await Assert.ThrowsAsync<CampaignUnavailableException>(() => cache.TakeAsync(summary));
 

@@ -25,8 +25,9 @@ public sealed class CampaignInstancesToolViewModelTests
 {
     // Never opens a real desk tab, so nothing here writes to the store - same isolation pattern as
     // Dnd5eSystemTests.NewSystem.
-    private static readonly Dnd5eSystem Dnd5e = new(new WorkspaceLayoutStore(
-        Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-{Guid.NewGuid():N}")));
+    private static readonly Dnd5eSystem Dnd5e = new(
+        new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-{Guid.NewGuid():N}")),
+        Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-packs-{Guid.NewGuid():N}"));
 
     [Fact]
     public async Task The_instance_list_reflects_every_instance_the_campaign_holds()
@@ -110,7 +111,7 @@ public sealed class CampaignInstancesToolViewModelTests
             new ContentTypeDescriptor(foreignReference, "Cokolwiek", 1));
 
         var unresolvedEntry = new Entry(
-            ContentId.Create("broken"), "Zepsuty wpis", new ContentTypeReference(Dnd5e.Id, ContentId.Create("gear")), 1, ContentValues.Empty);
+            ContentId.Create("broken"), "Zepsuty wpis", new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear")), 1, ContentValues.Empty);
         var unresolvedRegistered = RegisteredEntry.CreateUnresolved(
             new EntryAddress(ContentId.Create("pack"), ContentId.Create("broken")),
             unresolvedEntry,
@@ -263,7 +264,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
     private static RegisteredEntry ResolvedGear(string packId, string entryId, string name)
     {
-        var reference = new ContentTypeReference(Dnd5e.Id, ContentId.Create("gear"));
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
         var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(new Gear { Rarity = "Pospolity" }));
 
         Assert.True(Dnd5e.TryGet(reference, out var descriptor));
@@ -273,7 +274,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
     private static RegisteredEntry ResolvedMonster(string packId, string entryId, string name, int hp)
     {
-        var reference = new ContentTypeReference(Dnd5e.Id, ContentId.Create("monster"));
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("monster"));
         var monster = new Monster
         {
             Size = "Mały",
@@ -330,9 +331,9 @@ public sealed class CampaignInstancesToolViewModelTests
 
             var campaign = Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
             var session = new CampaignSession(campaign, Repository, [InstancesModel.Declaration]);
-            var tabContext = new CampaignTabContext(session, Registry);
+            var tabContext = new CampaignTabContext(session);
 
-            Context = new CampaignEntriesContext(tabContext, Dnd5e);
+            Context = new CampaignEntriesContext(tabContext, Registry, Dnd5e);
         }
 
         public ContentRegistry Registry { get; }
@@ -341,7 +342,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
         public CampaignEntriesContext Context { get; }
 
-        public CampaignInstancesToolViewModel CreateViewModel() => new(Context, Dnd5e.Id);
+        public CampaignInstancesToolViewModel CreateViewModel() => new(Context, Dnd5e.ContentSetId);
 
         /// <summary>Every instance the campaign holds right now, read from the context's own snapshot - the test-side equivalent of what used to be <c>Context.Instances.All</c>.</summary>
         public IReadOnlyCollection<CampaignInstance> Instances() =>

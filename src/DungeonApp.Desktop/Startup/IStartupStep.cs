@@ -19,4 +19,12 @@ public interface IStartupStep
 
     /// <summary>Zastosowanie efektu kroku na żywym drzewie interfejsu.</summary>
     Task ApplyAsync(StartupUiContext ui, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Komunikat pokazywany na pasku stanu, gdy ten krok zawiedzie i przerwie sekwencję startową
+    /// (rama nigdy nie zna przyczyny awarii - to krok ją nazywa). Domyślny tekst, ogólny, wystarcza
+    /// krokom samej ramy; krok zgłaszany przez system nadpisuje go własnym, konkretnym tekstem.
+    /// </summary>
+    string FailureWarning =>
+        "Nie udało się w pełni przygotować startu aplikacji. Zostanie uruchomiona mimo to.";
 }

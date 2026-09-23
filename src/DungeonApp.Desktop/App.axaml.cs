@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
@@ -18,15 +18,13 @@ namespace DungeonApp.Desktop;
 public partial class App : Avalonia.Application
 {
     // Handed in through the constructor rather than discovered anywhere below - see
-    // DungeonApp.App/Program.cs. Not a service locator: everything built from this list
-    // (the two aggregates below) is still plain constructor injection into the pieces that need it.
+    // DungeonApp.App/Program.cs. Not a service locator: everything built from this list is still
+    // plain constructor injection into the pieces that need it.
     private readonly IReadOnlyList<IGameSystem> _systems;
 
     private JsonCampaignRepository? _campaigns;
     private CampaignPreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
-    private LoadContentPacksStep? _contentPacksStep;
-    private ContentTypeCatalogAggregate? _contentTypes;
     private IStartupStep[]? _startupSteps;
     private AppShellViewModel? _shell;
 
@@ -73,18 +71,6 @@ public partial class App : Avalonia.Application
         // wariantem trwałym) nigdy nie mogły trafić do prawdziwego Kosza użytkownika.
         _campaigns = new JsonCampaignRepository(libraryPath, DeleteDirectoryToRecycleBin);
 
-        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
-        // mieszka stan") - obok, nie pod
-        // danymi aplikacji.
-        var packsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "DungeonApp",
-            "Packs");
-
-        _contentTypes = new ContentTypeCatalogAggregate(_systems);
-
-        _contentPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, _contentTypes));
-
         // Cache dzielony przez rozgrzewkę pierwszej kampanii po wyborze systemu i przez otwarcie
         // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
         // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten dziś wystawia wyłącznie
@@ -109,19 +95,20 @@ public partial class App : Avalonia.Application
         // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, przed pokazaniem ekranu
         // wyboru jako interaktywnego (docs/tasks.md, zadanie 1 - zamrożenie przy wyborze systemu
         // znikło stąd, nie skróceniem rozgrzewki, tylko przeniesieniem jej przed kurtynę startową):
-        // paczki treści, półka, dane każdej kampanii z półki, potem chrom ramy (ekran wyboru, półka,
-        // pasek boczny w obu stanach, strona kampanii) i na końcu zawartość każdego wkompilowanego
-        // systemu (jego zakładki, karty wpisów, biurko z narzędziami).
+        // najpierw każdy wkompilowany system przygotowuje własną treść (paczki, karty - jego własne
+        // kroki startowe, rama nie wie, co robią), potem półka, dane każdej kampanii z półki, chrom
+        // ramy (ekran wyboru, półka, pasek boczny w obu stanach, strona kampanii) i na końcu zakładki
+        // każdego wkompilowanego systemu (jego rejestr, jego biurko z narzędziami).
         var shelfStep = new LoadCampaignShelfStep(_campaignLibrary);
         var dataStep = new WarmCampaignDataStep(_preparations, shelfStep);
 
         _startupSteps =
         [
-            _contentPacksStep,
+            .. _systems.SelectMany(system => system.StartupSteps),
             shelfStep,
             dataStep,
             new WarmFrameChromeStep(_systems, _campaignLibrary, _preparations, dataStep),
-            new WarmSystemContentStep(_systems, () => _contentPacksStep!.Registry, _campaigns, _preparations, dataStep)
+            new WarmSystemTabsStep(_systems, _campaigns, _preparations, dataStep)
         ];
     }
 
@@ -134,8 +121,7 @@ public partial class App : Avalonia.Application
                 _campaigns!,
                 _campaignLibrary!,
                 _preparations!,
-                _startupSteps!,
-                () => _contentPacksStep!.Registry);
+                _startupSteps!);
 
             desktop.MainWindow = new MainWindow
             {
