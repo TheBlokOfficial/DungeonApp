@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 280 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 286 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -164,21 +164,23 @@ etapie aplikacja działa, a testy przechodzą.
   - **Obieg:** zamiast drugiego subagenta porównującego wynik z zakazami — decyzja autora
     z 2026-09-23 — test napisany przed przeprowadzką: kampania zapisana dzisiejszym kodem wczytuje się
     i zapisuje po etapie bajt w bajt tak samo; diff zapisu przegląda architekt.
-* **Stan na koniec sesji 2026-09-23.** Brief 1 etapu 4, poprawki wiersza półki, usuwanie do Kosza,
-  pasek górny i porządki paska bocznego — scalone do `master` i wypchnięte (278 testów zielonych);
-  **czeka na sprawdzenie przez autora w aplikacji.** Brief 2 etapu 4 przerwany końcem budżetu —
-  wynik leży **niescalony** w kopii `.claude/worktrees/agent-aa1c1f0d80b018636`, gałąź
-  `worktree-agent-aa1c1f0d80b018636`, baza `882a6d8`. Dwa commity: `8a0aedf` — **zielony** (277
-  testów): test formatu bajt w bajt na wzorcowej kampanii i pusty projekt `DungeonApp.Library.Entries`
-  z testem braku Avalonii; `cf51c04` — **WIP, build czerwony (43 błędy)**: `Core/Content/**`
-  przeniesione do biblioteki, `SystemId` w rdzeniu gotowy, testy treści przeniesione (bez `.csproj`
-  i wpisu w `.sln`). Niezrobione: cały kontrakt ramy (`IGameSystem`, konteksty zakładek, kroki
-  startowe, agregat, prezentacja kart), kompozycja, rozgrzewka kart, testy architektury. Rekomendacja
-  na następną sesję: najpierw przenieść `8a0aedf` na `master` (mechanizm przed rozbiórką), potem
-  dokończyć od WIP po zrównaniu z `master`.
-  Brief 2 i tak trzeba będzie zrównać z `master` (pasek górny zmienił powłokę i rozgrzewkę). Katalog
-  `.claude/worktrees/agent-a417bdbecb5ce8014` to pozostałość po scalonej kopii (usunięcie zablokowane
-  przez otwarte pliki) — skasować.
+* **Etap 4 — brief 2 podzielony na dwa zlecenia (2026-09-23, zgoda autora).** Przerwany brief 2
+  łączył przeprowadzkę logiki wpisów z odchudzeniem ramy, więc build był czerwony do samego końca —
+  rama używała przenoszonych typów. Kopia z przerwanym briefem skasowana; z niej na `master` trafił
+  tylko zielony commit: test formatu bajt w bajt i pusty projekt `DungeonApp.Library.Entries`.
+  - **Zlecenie 1 — scalone 2026-09-23, czeka na uruchomienie przez autora** (zmienia start).
+    Rama nie zna logiki wpisów, choć ta fizycznie leży jeszcze w `Core/Content`; pilnuje tego
+    tymczasowy skan źródeł. System mówi ramie, kim jest, jakie ma zakładki, modele stanu i kroki
+    startowe; wczytywanie paczek i rozgrzewka kart są krokami systemu; zakładkę rejestru buduje
+    system z widoku biblioteki; rama ma własny typ tożsamości systemu; kontekst zakładki systemowej
+    zniknął, pilnowanie „nie widzi kampanii" przeszło na deklarację. Format zapisu bez zmian.
+    **Do weta autora:** rozgrzewka kart biegnie na początku startu, zaraz po paczkach, a nie na
+    końcu — rama uruchamia kroki systemu razem, nie wiedząc, co robią; wciąż przed kurtyną;
+    ogólny tekst ostrzeżenia ramy przy awarii kroku startowego ma nowe brzmienie; system niesie
+    dwa identyfikatory — dla ramy i dla własnych typów treści.
+  - **Zlecenie 2 — następne:** przeprowadzka `Core/Content/**` do `DungeonApp.Library.Entries`,
+    mechanicznie; tymczasowy skan zastępuje test po referencjach „rama nie referencuje biblioteki",
+    test „zapis nie zna instancji" odchodzi; testy treści do własnego projektu.
 * **Pasek górny — poprawka po sprawdzeniu przez autora, scalona 2026-09-23, czeka na jego
   sprawdzenie.** Przyczyną zasłaniania dolnej linii był przycisk wyższy o piksel od wnętrza paska;
   teraz wypełnia wnętrze i rysuje tylko lewą linię krawędzi, obszar najechania jest kwadratem.
