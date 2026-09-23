@@ -21,17 +21,6 @@ Gałąź: `master`. Build bez ostrzeżeń, 282 testy zielone (w tym testy render
 
 ---
 
-## Do sprawdzenia przez autora na `master`
-
-Krok 9 zamknięty 2026-09-23 — autor uruchomił etap 4 na `master`, bez weta. Zostają dwie poprawki
-etapu 3, scalone tego samego dnia:
-
-1. **Wiersz kampanii niedostępnej** — różni się od zwykłego wyłącznie nieinteraktywnością,
-   wyszarzeniem i ikoną (czerwony trójkąt zamiast książki); kosz zostaje.
-2. **Usunięcie kampanii** przenosi ją do Kosza systemu, bez okna potwierdzenia.
-
----
-
 ## Następne: krok 10 — zakładki treści zamiast zakładki rejestru
 
 Decyzja autora z 2026-09-23. Docelowy kształt — [architecture.md](architecture.md), *Zakładki
