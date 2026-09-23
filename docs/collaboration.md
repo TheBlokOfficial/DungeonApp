@@ -67,6 +67,11 @@ wnosi. Pyta się o to, co zmienia aplikację, dokumenty z decyzjami albo cudzą 
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
 
+**Jeden wykonawca naraz, chyba że autor prosi o równoległość.** Decyzja autora z 2026-09-23.
+Subagent oszczędza okno kontekstu architekta i jest tu wskazany — ale kilku równoległych skraca
+czas, nie budżet tokenów, a czas w tej pracy nie gra roli. Kolejne zlecenie idzie więc po
+zamknięciu poprzedniego; równolegle tylko na wyraźne polecenie autora.
+
 **Subagentów nie uruchamiaj na najdroższym modelu.** Decyzja autora z 2026-09-14. Zadania, które im
 się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny właśnie po to, żeby myślenie
 zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
@@ -224,9 +229,13 @@ Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
    aplikacji autora, żeby odblokować `dotnet clean`. Poprawne zachowanie to zgłosić blokadę, nie
    sprzątnąć cudzy proces — patrz „Środowisko".
-2. **Nie przeszukuj `bin/` ani `obj/`.** Subagent zaczął grepować pliki `.dll` w poszukiwaniu
-   referencji do typów. Skanuj tylko źródła; katalogi wyjściowe zawierają kopie i pochodne, więc
-   odpowiedź jest i zaszumiona, i kosztowna.
+2. **Nie przeszukuj `bin/`, `obj/` ani niczego poza repozytorium** — pakietów NuGet, źródeł
+   bibliotek, reszty dysku. Subagent zaczął grepować pliki `.dll` w poszukiwaniu referencji do typów.
+   Skanuj tylko źródła repozytorium; katalogi wyjściowe zawierają kopie i pochodne, więc odpowiedź
+   jest i zaszumiona, i kosztowna. 2026-09-23 inny przeszukiwał cały dysk w poszukiwaniu źródeł
+   kontrolki Avalonii, żeby ustalić, jak rysuje tło względem krawędzi — brief tego nie przesądzał.
+   Wiedzę o zachowaniu biblioteki zdobywa się pomiarem (wyrenderuj i zmierz) albo się ją zgłasza;
+   luka, która pcha wykonawcę poza repozytorium, jest luką briefu.
 3. **Nie tłum ostrzeżeń** (`#pragma`, `<NoWarn>`, `SuppressMessage`). `TreatWarningsAsErrors` jest
    włączone celowo — kompilator jest tu walidatorem treści. Ostrzeżenie się naprawia u źródła albo
    zgłasza, nigdy nie wycisza.
@@ -328,6 +337,12 @@ Niepotwierdzone zostaje wtedy wyłącznie to, że sam plik wykonywalny się link
 **Mimo wszystko nie zabijaj tego procesu z własnej inicjatywy.** Po nazwie procesu nie widać
 różnicy między podglądaczem a działającą instancją `DungeonApp.App` — widać ją dopiero po linii
 poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".
+
+**Kopię po diagnozie zostaw, dopóki nie zapadnie, kto robi poprawkę.** Reguła „po przeniesieniu
+wyniku usuń kopię i gałąź" dotyczy wyniku scalonego do `master`. Diagnoza nie ma czego scalać,
+a po niej zwykle przychodzi poprawka — 2026-09-23 autor chciał ją powierzyć temu samemu wykonawcy,
+który znał już przyczynę, i nie dało się go wznowić, bo architekt skasował jego kopię zaraz po
+raporcie. Wznowienie wymaga istniejącej kopii; nowy wykonawca zaczyna od zera.
 
 **Kopia robocza subagenta startuje z `origin/master`, nie z lokalnego `master`.** Autor nie wypycha
 na bieżąco, więc zdalna gałąź bywa daleko w tyle — 2026-09-22 o dwadzieścia cztery commity, i subagent
