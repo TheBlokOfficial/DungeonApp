@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "generation": 1,
+  "records": [
+    {
+      "id": "27a5bad0-d2d5-4a08-9917-3306acd1832a",
+      "source": {
+        "pack": "bestiary",
+        "entry": "goblin"
+      },
+      "label": "Krzywy",
+      "patch": {
+        "hp": 3,
+        "tags": [
+          "elite",
+          "boss"
+        ]
+      }
+    },
+    {
+      "id": "f2f659c8-208a-4a0a-b62e-5768fb336401",
+      "source": {
+        "pack": "gear",
+        "entry": "iron-sword"
+      },
+      "label": null,
+      "patch": {}
+    }
+  ]
+}
