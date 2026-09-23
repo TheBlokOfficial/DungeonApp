@@ -185,7 +185,11 @@ etapie aplikacja działa, a testy przechodzą.
 **Po przebudowie — krok 10: zakładki treści zamiast zakładki rejestru.** Decyzja autora
 z 2026-09-23. Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; wygląd —
 mockup autora `docs/images/mockup_rejestr.png`. Zakładka „Rejestr" znika w dniu, w którym stają
-pierwsze zakładki treści; sam rejestr zostaje jako ich źródło. Przy projektowaniu rozważyć dwie
+pierwsze zakładki treści; sam rejestr zostaje jako ich źródło. **Każdy typ treści to osobna
+zakładka na pasku, z jednego szkieletu biblioteki wpisów** — mockup pokazuje jeden ekran z typami
+jako przełącznikiem, i tym się wynik od niego różni (autor, 2026-09-23). Źródło mockupu:
+`docs/images/mockup_rejestr.html` — z niego brać wymiary, nie z obrazka; **pasek tytułu okna
+w mockupie nie jest projektem paska górnego** i się nim nie sugerować. Przy projektowaniu rozważyć dwie
 pozycje z „Czekają na miejsce na ekranie" i pytanie „Paczka a system". Przed briefem do ustalenia
 z autorem, co z mockupu wchodzi do pierwszej wersji — mockup pokazuje rzeczy, których architektura
 w pierwszej wersji nie przewiduje albo których dziś nie ma (tworzenie i edycja wpisów, typy
