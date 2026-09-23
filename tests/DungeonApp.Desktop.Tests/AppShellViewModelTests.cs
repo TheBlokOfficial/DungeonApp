@@ -61,7 +61,7 @@ public sealed class AppShellViewModelTests
         await shell.Sidebar!.ToggleCollapsedCommand.ExecuteAsync();
         Assert.True(shell.Sidebar!.IsCollapsed);
 
-        await ((AsyncCommand)shell.Sidebar!.ChangeSystemItem.SelectCommand).ExecuteAsync();
+        await ((AsyncCommand)shell.TopBar.ChangeSystemCommand).ExecuteAsync();
         Assert.Null(shell.Sidebar);
 
         await shell.SystemSelection.Systems[1].ChooseCommand.ExecuteAsync();

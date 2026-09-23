@@ -10,15 +10,17 @@ namespace DungeonApp.Desktop.Shell.Sidebars;
 /// <summary>
 /// The sidebar shown once a system is chosen: three categories (docs/architecture.md, "Pasek boczny:
 /// trzy kategorie") - Kampania (the campaign position, plus the chosen system's Campaign-category
-/// tabs), System (the chosen system's System-category tabs) and Aplikacja (today, just "Zmień
-/// system"). The category names are this class's own row grouping; the shell decides what each
+/// tabs), System (the chosen system's System-category tabs, shown on screen as "Biblioteka") and
+/// Aplikacja (shown on screen as "System" - today just "Ustawienia", a frame-owned position with no
+/// content of its own). The category names are this class's own row grouping - and, for the middle
+/// and last one, deliberately not what the screen shows for them; the shell decides what each
 /// selection shows.
 /// <para>
-/// Owns exactly one piece of navigation state: which row is active. That state spans the Kampania
-/// and System rows together - the campaign position and every tab, of either category, are one
-/// mutually exclusive set, because the content area shows exactly one of them at a time. "Zmień
-/// system" is not part of that set: choosing it does not linger as a highlighted row, it leaves the
-/// system behind entirely.
+/// Owns exactly one piece of navigation state: which row is active. That state now spans all three
+/// categories together - the campaign position, every tab of either the Kampania or System category,
+/// and "Ustawienia" are one mutually exclusive set, because the content area shows exactly one of
+/// them at a time. Unlike the "Zmień system" row this sidebar used to carry, "Ustawienia" is a real
+/// destination: it lingers as a highlighted row exactly like any tab does.
 /// </para>
 /// </summary>
 public sealed class GlobalSidebarViewModel : ObservableObject
@@ -42,7 +44,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         Func<Task> selectCampaignPosition,
         Func<CampaignTabDeclaration, Task> selectCampaignTab,
         Action<SystemTabDeclaration> selectSystemTab,
-        Func<Task> changeSystem,
+        Func<Task> selectSettings,
         bool startCollapsed = false)
     {
         CampaignPositionItem = CreateSelectableItem(
@@ -92,15 +94,16 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             }),
         ];
 
-        // Never part of _selectableItems: leaving the system is a momentary action, not a
-        // destination that stays highlighted the way a tab does.
-        ChangeSystemItem = new NavigationItemViewModel(
-            "shell.change-system", "DungeonIconSettings", "Zmień system", new AsyncCommand(changeSystem));
-        _allItems.Add(ChangeSystemItem);
+        // A real destination, unlike the "Zmień system" row this used to be: it joins
+        // _selectableItems like the campaign position and every tab do, so choosing it lingers as a
+        // highlighted row instead of firing a one-off action.
+        SettingsItem = CreateSelectableItem("shell.settings", "DungeonIconSettings", "Ustawienia", selectSettings);
+        _selectableItems.Add(SettingsItem);
+        _allItems.Add(SettingsItem);
 
         // The Aplikacja category's row, as the one-element collection the same ItemsControl
         // mechanism needs - see CampaignItems above for why a bare ContentPresenter is not used.
-        ChangeSystemItems = [ChangeSystemItem];
+        SettingsItems = [SettingsItem];
 
         ToggleCollapsedCommand = new AsyncCommand(() =>
         {
@@ -113,7 +116,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         // rendered. Setting the target collapse state here, before GlobalSidebarView is even
         // constructed, gives the first layout pass nothing earlier to transition from, so the
         // width/heading/label animations play only on a later real toggle - never on first show, and
-        // never on the fresh instance "Zmień system" builds for the next system.
+        // never on the fresh instance choosing a new system builds.
         if (startCollapsed)
         {
             IsCollapsed = true;
@@ -139,14 +142,14 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>The System category's rows, one per <see cref="Content.IGameSystem.SystemTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> SystemTabItems { get; }
 
-    /// <summary>The Aplikacja category's one row today.</summary>
-    public NavigationItemViewModel ChangeSystemItem { get; }
+    /// <summary>The Aplikacja category's one row today - a frame-owned position with no content of its own.</summary>
+    public NavigationItemViewModel SettingsItem { get; }
 
     /// <summary>
-    /// <see cref="ChangeSystemItem"/> as the one-element list the Aplikacja category's
+    /// <see cref="SettingsItem"/> as the one-element list the Aplikacja category's
     /// <c>ItemsControl</c> draws - see <see cref="CampaignItems"/> for why.
     /// </summary>
-    public IReadOnlyList<NavigationItemViewModel> ChangeSystemItems { get; }
+    public IReadOnlyList<NavigationItemViewModel> SettingsItems { get; }
 
     public AsyncCommand ToggleCollapsedCommand { get; }
 

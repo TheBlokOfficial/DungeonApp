@@ -1,0 +1,9 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:settings="using:DungeonApp.Desktop.Shell.Settings"
+             x:Class="DungeonApp.Desktop.Shell.Settings.SettingsView"
+             x:DataType="settings:SettingsViewModel">
+    <!-- Deliberately empty - see SettingsViewModel's own remarks. The backstage brush keeps the
+         blank tab visually consistent with every other static screen rather than showing raw black. -->
+    <Grid Background="{DynamicResource DungeonBackstageBrush}" />
+</UserControl>

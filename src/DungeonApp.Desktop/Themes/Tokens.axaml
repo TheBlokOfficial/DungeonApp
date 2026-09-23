@@ -74,6 +74,11 @@
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
 
+        <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
+        <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style
+             that dims rather than recolors, so a second view never has to invent its own number. -->
+        <x:Double x:Key="DungeonDisabledOpacity">0.48</x:Double>
+
         <!-- PĘDZLE KONTROLEK I PANELI ========================================= -->
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
@@ -148,7 +153,10 @@
         <x:Double x:Key="DungeonBrandMarkFontSize">16</x:Double>
         <x:Double x:Key="DungeonBrandMarkLargeFrameSize">96</x:Double>
         <x:Double x:Key="DungeonBrandMarkLargeFontSize">64</x:Double>
-        <GridLength x:Key="DungeonTopBarHeight">52</GridLength>
+        <!-- Shared by the top bar's own height and the sidebar header's (GlobalSidebarView.axaml),
+             so their bottom borders always draw as one continuous line - a plain Double, not a
+             GridLength, since both usages are a Height, never a column/row size. -->
+        <x:Double x:Key="DungeonTopBarHeight">52</x:Double>
         <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>

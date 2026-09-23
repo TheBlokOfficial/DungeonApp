@@ -5,18 +5,22 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Shell.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.SystemSelection;
+using DungeonApp.Desktop.Shell.TopBar;
+using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
 /// Rozgrzewa ramę - wszystko, co GM widzi niezależnie od tego, jaki system wybierze, i zanim wybierze
 /// jakikolwiek: ekran wyboru systemu, półkę, pasek boczny w obu stanach zwinięcia (dla każdego
-/// wkompilowanego systemu - to jego deklaracje zakładek nadają paskowi kształt) i stronę kampanii,
-/// jeśli na półce jest choć jedna kampania. Zawartość poszczególnych systemów - ich zakładki, karty
-/// wpisów, biurko - rozgrzewa osobno <see cref="WarmSystemContentStep"/>; ten krok nigdy nie buduje
-/// niczego przez tymczasową sesję kampanii.
+/// wkompilowanego systemu - to jego deklaracje zakładek nadają paskowi kształt), pasek górny i pustą
+/// zakładkę "Ustawienia" (żadne z nich nie zależy od zwinięcia paska bocznego, więc każde rozgrzewa
+/// się raz) oraz stronę kampanii, jeśli na półce jest choć jedna kampania. Zawartość poszczególnych
+/// systemów - ich zakładki, karty wpisów, biurko - rozgrzewa osobno <see cref="WarmSystemContentStep"/>;
+/// ten krok nigdy nie buduje niczego przez tymczasową sesję kampanii.
 /// <para>
 /// Każda rozgrzewana kontrolka jest egzemplarzem rzucanym - powiązanym z prawdziwym modelem tam, gdzie
 /// jeden już istnieje (półka), albo z tymczasowym, wyrzucanym zaraz po rozgrzewce (ekran wyboru, pasek,
@@ -49,6 +53,16 @@ public sealed class WarmFrameChromeStep(
             await WarmSidebarAsync(ui, system, startCollapsed: true, cancellationToken);
         }
 
+        // Neither varies with sidebar collapse (the top bar no longer mirrors the sidebar's width the
+        // way the old, unused context strip did; the empty settings tab has no layout to speak of at
+        // all), so each warms once.
+        await WarmAsync(
+            ui,
+            new TopBarView { DataContext = new TopBarViewModel(new AsyncCommand(() => Task.CompletedTask)) },
+            cancellationToken);
+
+        await WarmAsync(ui, new SettingsView { DataContext = new SettingsViewModel() }, cancellationToken);
+
         if (dataStep.WarmupCampaignSummary is { } summary &&
             await preparations.PeekAsync(summary, cancellationToken) is { } campaign)
         {
@@ -67,7 +81,7 @@ public sealed class WarmFrameChromeStep(
             selectCampaignPosition: () => Task.CompletedTask,
             selectCampaignTab: _ => Task.CompletedTask,
             selectSystemTab: _ => { },
-            changeSystem: () => Task.CompletedTask,
+            selectSettings: () => Task.CompletedTask,
             startCollapsed: startCollapsed);
 
         return WarmAsync(ui, new GlobalSidebarView { DataContext = sidebar }, cancellationToken);
