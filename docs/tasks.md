@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 274 testy zielone (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 278 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -107,10 +107,8 @@ etapie aplikacja działa, a testy przechodzą.
   działa dobrze — i sam zauważył, że dowodu nie ma: animacja rozwijania paska, która dawniej czyniła
   zacięcie widocznym, już nie gra przy wejściu. Następnym razem: czas rozgrzewki i czas od kliknięcia
   systemu do pierwszej narysowanej klatki jako logowane liczby.
-* **Odchudzić mapę kodu do części oceniającej.** Spis plików wypada, zostają granice, punkty styku
-  i ocena stanu; zasada i powód — [collaboration.md](collaboration.md), *Jak pisać dokumenty tego
-  repozytorium*, punkt o mapie kodu. Wersja pełna, dogoniona do etapów 1–2, powstała 2026-09-22, więc
-  ta praca jest już tylko skracaniem.
+* **Mapa kodu odchudzona 2026-09-23** — spis plików wypadł, zostaje część oceniająca; pełne
+  dogonienie po etapie 4 (nagłówek mapy mówi, co jest nieaktualne).
 * **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne — działa. Dwie poprawki po etapie, decyzje autora z 2026-09-23, w toku:
   - **Wiersz kampanii niedostępnej** różni się od zwykłego wyłącznie nieinteraktywnością, wyszarzeniem i ikoną (czerwony trójkąt ostrzegawczy zamiast książki); bez linii powodu, nazwa w kolorze zwykłego wiersza, kosz zostaje.
   - **Usunięcie kampanii przenosi ją do Kosza systemu** zamiast kasować trwale; bez okna potwierdzenia. Powód: zniknięcie kampanii 2026-09-22 — w kodzie jedyną drogą kasowania katalogu kampanii jest kosz na półce, bez potwierdzenia i z pominięciem Kosza, tuż przed strzałką otwierania; najpewniej przypadkowe trafienie (brak logów, dowodu nie będzie). Trzy późniejsze zniknięcia usunął autor świadomie.

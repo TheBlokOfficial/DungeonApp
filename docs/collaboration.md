@@ -210,6 +210,13 @@ warstwy.
    bierze się doraźnie od subagenta tylko do odczytu — pytanie o dzisiejszą drogę zapisu kosztowało
    ułamek tego, co aktualizacja całej mapy.
 
+   **Mapa jest dla architekta, nie dla wykonawcy** — przegląd autora i asystenta z 2026-09-23. Autor
+   zauważył, że subagenci spędzają dużą część pracy na szukaniu w kodzie, i zapytał, czy mapa działa
+   jako nawigacja. Nie działa i nie miała działać: jej nagłówek od początku mówi, że nie czyta się
+   jej, żeby edytować plik. Dla architekta, który nie czyta źródeł, jest oknem na kod — ocena stanu,
+   granice, ścieżki, wzorce zmian. Tego samego dnia żaden brief nie wskazywał mapy, więc szukanie
+   subagentów nic o niej nie mówi. Wniosek: nawigację niesie **brief** (punkty niżej), nie mapa.
+
 ## 4. Briefy dla subagentów
 
 Każdy brief w tym repozytorium musi nieść te trzy zakazy. Wszystkie pochodzą z incydentów.
@@ -241,6 +248,10 @@ Co jeszcze się sprawdziło:
   referencja okaże się żywa, zatrzymaj się i zgłoś", dopisz, że to właśnie jest wynik, po który
   wysyłasz zadanie. Inaczej subagent traktuje zatrzymanie jako porażkę i próbuje obejść.
 * **Ogranicz długość raportu**, gdy budżet jest niski.
+* **Podawaj w briefie punkty wejścia** — konkretne pliki i typy, od których zacząć, z mapy albo ze
+  zwiadu. Brief 2 etapu 4 (2026-09-23) niósł akapit „Stan dziś" z nazwami miejsc do zmiany; to jest
+  wzór. Gdy zadanie pasuje do wzorca z sekcji mapy „Punkty rozszerzeń", wskaż tę sekcję z nazwy.
+  Szukanie, którego brief nie oszczędził, jest kosztem briefu, nie wykonawcy.
 
 **Dlaczego to tu stoi:** briefy w tym repo są długie i precyzyjne, i właśnie dlatego łatwo w nich
 pominąć zakaz, który wydaje się oczywisty.

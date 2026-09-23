@@ -17,12 +17,12 @@ niż jakiekolwiek ich streszczenie tutaj.
 > w chwili edytowania pliku. Kiedy dopisujesz tu akapit, sprawdź, po której stronie tej linii stoi —
 > jeśli po drugiej, jego miejsce jest w komentarzu przy kodzie.
 
-> **Aktualność: 2026-09-22.** Dogoniony do etapu 1 (ekran wyboru systemu, pasek z trzema kategoriami,
-> biurko i rejestr jako zakładki systemu, strona kampanii, rozgrzewka przy starcie), etapu 2 (biurko,
-> system okien, kontrolki kart i widok listy z kartą wyniesione do `DungeonApp.Library.Desktop`)
-> i etapu 3 (niezmienne modele stanu, jedno wejście zmiany, system w kampanii, półka z kampaniami
-> niedostępnymi) — w części oceniającej i w opisie modelu i persystencji; tabele plików niżej
-> są sprzed etapu 3 i czekają na odchudzenie mapy. Co dalej — [tasks.md](tasks.md).
+> **Aktualność: 2026-09-23, w połowie etapu 4.** Graf projektów w „Projekty i granice" jest aktualny (brief 1 etapu 4:
+> `Library.Desktop` rozdzielone na `Library.Workspace` i `Library.Entries.Desktop`). **Reszta opisuje
+> stan sprzed tego rozdziału i sprzed paska górnego** — tam, gdzie pada `Library.Desktop`
+> albo `CampaignToolContext`, czytaj odpowiednio jedną z dwóch bibliotek albo `CampaignEntriesContext`;
+> pasek górny jest już na ekranie, „Zmień system" stoi w nim, a kategoria Aplikacja niesie
+> „Ustawienia". Pełne dogonienie — po etapie 4, który i tak przestawia kontrakt ramy.
 
 ---
 
@@ -60,11 +60,12 @@ autora na mockupy** — leżą tam luzem; od 2026-09-22 architektura odsyła do 
 opisuje kierunek, który ten mockup pokazuje.
 
 ```
-DungeonApp.Core              — nie referencuje niczego z repozytorium
-DungeonApp.Desktop           — referencuje Core
-DungeonApp.Library.Desktop   — referencuje Core i Desktop
-DungeonApp.Content.Dnd5e     — referencuje Core, Desktop i Library.Desktop
-DungeonApp.App               — referencuje Desktop i Content.Dnd5e
+DungeonApp.Core                    — nie referencuje niczego z repozytorium
+DungeonApp.Desktop                 — referencuje Core
+DungeonApp.Library.Workspace       — referencuje Core i Desktop          (biurko, system okien)
+DungeonApp.Library.Entries.Desktop — referencuje Core i Desktop          (karty, rejestr, kontekst wpisów na kampanię)
+DungeonApp.Content.Dnd5e           — referencuje Core, Desktop i obie biblioteki
+DungeonApp.App                     — referencuje Desktop i Content.Dnd5e
 ```
 
 **Ta odwrotność jest sednem, nie szczegółem.** System zależy od ramy i od biblioteki, a nie
@@ -94,89 +95,13 @@ dwa pola z manifestu bez podbicia wersji formatu.
 
 ---
 
-## 2. Mapa modułów
+## 2. Gdzie szukać
 
-### `src/DungeonApp.Core` — domena, zero Avalonii
-
-| Ścieżka | Odpowiedzialność |
-|---|---|
-| `Campaigns/Campaign.cs` | Korzeń agregatu: tożsamość, nazwa, data, **instancje**, magistrala zdarzeń. `Create` vs `Restore` — jawne rozróżnienie „nowa" od „odtworzona z dysku". |
-| `Campaigns/CampaignId.cs`, `CampaignName.cs`, `CampaignSummary.cs` | Typy wartości: trwałe ID, zwalidowana nazwa (≤100 znaków), lekki DTO do listowania. |
-| `Campaigns/CreateCampaign.cs` | Jedyny use case tworzenia kampanii. |
-| `Campaigns/ICampaignRepository.cs` | Port. Jedyna implementacja: `JsonCampaignRepository`. |
-| `Events/CampaignEvents.cs` | Synchroniczna magistrala **per kampania** (nigdy statyczna), z limitem kaskady. |
-| `Events/ICampaignEvent.cs`, `EventCascadeException.cs` | Kontrakt zdarzenia i wyjątek pętli. |
-| `Content/*` — wpisy | `Pack`, `Entry`, `ContentValues` (koperta + arytmetyka nakładki), `ContentId`, `ContentTypeReference`, `ContentTypeDescriptor`, `IContentTypeCatalog`, `ContentRegistry`, `RegisteredEntry`, `EntryAddress`, `EntryUnresolvedReason`, `RejectedPack`, `RejectedEntry`, `PackVersion`, `ContentPackLoader`. |
-| `Content/*` — instancje | `CampaignInstance`, `InstanceId`, `CampaignInstances`, `CampaignInstanceEvents`, `InstanceResolver`, `ResolvedInstance`, `InstanceUnresolvedReason`. |
-| `Persistence/JsonCampaignRepository.cs` | Format na dysku, transakcyjność, błędy. |
-| `Persistence/AtomicWrite.cs` | Zapis „obok, potem podmiana" jako **jeden** prymityw. Używają go `JsonCampaignRepository` i `WorkspaceLayoutStore`. |
-| `Persistence/CampaignStoreException.cs` | `Unreadable`, `UnsupportedFormatVersion`, `Invalid`, `TornSave`. |
-| `CampaignRuleException.cs` | „Reguła kampanii odmówiła" — komunikat czytany wprost przez MG. |
-
-### `src/DungeonApp.Desktop` — rama: powłoka, kontrakt systemu, motyw
-
-| Ścieżka | Odpowiedzialność |
-|---|---|
-| `App.axaml.cs` | Kompozycja: repozytoria, loader, agregat katalogu typów, cache przygotowania, jawna tablica pięciu kroków startowych, `AppShellViewModel`. |
-| `Content/IGameSystem.cs` | Kontrakt systemu widziany od strony ramy: typy, karty, `DisplayName`, `SystemTabs` (kategoria System) i `CampaignTabs` (kategoria Kampania). |
-| `Content/ITabContent.cs`, `DelegateTabContent.cs` | Gotowa zawartość zakładki: `Control` + `IDisposable`. `DelegateTabContent` — implementacja dla zakładek bez własnego sprzątania. |
-| `Content/TabDeclarations.cs` | `SystemTabDeclaration` (fabryka synchroniczna, `SystemTabContext`) i `CampaignTabDeclaration` (fabryka asynchroniczna, `CampaignTabContext`) — stałe deklarowane raz, przy wyborze systemu. |
-| `Content/SystemTabContext.cs` | Wąskie okno zakładki kategorii System: tylko rejestr treści, strukturalnie bez niczego nazywającego kampanię (pilnuje `SystemTabContextIndependenceTests`). |
-| `Content/CampaignTabContext.cs` | Okno zakładki kategorii Kampania: sesja kampanii, rejestr, instancje, magistrala zdarzeń, jedne drzwi zapisu. |
-| `Content/ContentTypeCatalogAggregate.cs` | Agreguje listę systemów do pojedynczego katalogu typów. |
-| `Shell/AppShellViewModel.cs` | Ekran wyboru systemu kontra pasek boczny + treść; sekwencja startowa; „Zmień system". Deleguje cykl życia zakładek do `ActiveSystemSession`. |
-| `Shell/ActiveSystemSession.cs` | Jedna instancja na wybrany system: buduje i cache'uje zawartość zakładek obu kategorii przy pierwszym pokazaniu, otwiera/zamyka kampanię, zwalnia wszystko na powrót do wyboru i wyjście. Bez Avalonii — testowalna bez okna. |
-| `Shell/CampaignSession.cs` | **Jedyna droga zmiany otwartej kampanii.** |
-| `Shell/Sidebars/*` | `GlobalSidebarViewModel` — trzy kategorie (Kampania, System, Aplikacja), stan zwinięcia przeżywający zmianę systemu. `TopBar/*`, `StatusBar/*` — pasek kontekstu (w kodzie, nie na ekranie — patrz „Ocena stanu"), pasek stanu. |
-| `Shell/SystemSelection/*` | Pełnoekranowy ekran wyboru systemu — pierwszy widok po starcie. |
-| `Features/CampaignLibrary/CampaignLibraryViewModel` i `View` | Półka kampanii: lista, tworzenie, usuwanie, otwieranie. |
-| `Features/CampaignLibrary/CampaignPageViewModel` i `View` | Strona otwartej kampanii (dawna pozycja na pasku po otwarciu) — nazwa, data, „Zamknij kampanię". |
-| `Features/CampaignLibrary/CampaignPreparationCache.cs` | Cache przygotowania kampanii, dzielony przez rozgrzewkę startową i prawdziwe otwarcie. |
-| `Startup/*` | Jawna, kolejnościowa tablica pięciu kroków startowych (patrz „Warstwa desktopowa"). |
-| `Controls/AnchoredContentHost.cs`, `ResourceKeyToImageConverter.cs` | Ograniczenie szerokości treści; konwerter ikon — zostały w ramie, bo używa ich też ona sama, nie tylko biblioteka. |
-| `Themes/*.axaml` | `Tokens` (183), `BuiltInControls` (163), `Icons` (119). `DungeonControls` skurczył się do 33 linii — style biurka i okien przeszły dosłownie do `Library.Desktop/Themes/WorkspaceControls.axaml` (251). |
-| `ViewModels/ObservableObject.cs`, `AsyncCommand.cs` | Własna, minimalna infrastruktura MVVM — bez bibliotek. |
-
-### `src/DungeonApp.Library.Desktop` — biblioteka: biurko, system okien, kontrolki kart
-
-Nowy projekt (etap 2). Referencuje `Core` i `Desktop`; nie referencuje żadnego systemu
-(`LibraryAssemblyReferenceTests`, `ContentAssemblyReferenceTests`). Zna `Entry`, nie zna `Monster`.
-
-| Ścieżka | Odpowiedzialność |
-|---|---|
-| `Content/CampaignToolContext.cs` | Wąskie okno, jakie narzędzie systemu dostaje na otwartą kampanię: instancje, rejestr, resolver, magistrala zdarzeń, jedne drzwi zapisu. Budowane przez system samodzielnie z `CampaignTabContext` (ramy) + jego własnego `IContentTypeCatalog`. |
-| `Features/CampaignWorkspace/CampaignDesk.cs` | **Jedyne publiczne wejście biurka.** System oddaje kontekst kampanii, magazyn układu i własną listę narzędzi; dostaje gotowe `ITabContent` z już wczytanym zapisanym układem. Nic nad tym wejściem nie czyta ani nie pisze pliku układu bezpośrednio. |
-| `Features/CampaignWorkspace/CampaignWorkspaceViewModel`, `Layout/*`, `Panels/*`, `Deck/*` | Panele i ich stan, przygotowanie danych, układ (`desired`/`effective`), katalog paneli, pasek zminimalizowanych — przeniesione z ramy bez zmiany zachowania. |
-| `Controls/Workspace/*` | Framework pływających okien: `PanelWindow`, `WorkspaceSurface`, arytmetyka geometrii — przeniesione z ramy. |
-| `Controls/Content/TraitListView`, `ProseBlockView`, `TraitRow` | Współdzielone kontrolki karty — jedyne, z czego system komponuje wygląd wpisu. Przeniesione z ramy w całości (rama ich dziś nie ma). |
-| `Features/Registry/*` | Ekran rejestru: lista wierszy, karta wybranego wpisu jako gotowy `Control` — przeniesiony z ramy; dziś jedyny konsument jest zakładką systemu D&D (patrz „Znane ograniczenie" w tasks.md). |
-| `Themes/WorkspaceControls.axaml` | Style biurka i okien, wyniesione dosłownie z motywu ramy; włącza je sama biblioteka. |
-
-### `src/DungeonApp.App` — korzeń kompozycji
-
-`Program.cs` — `Main` + `BuildAvaloniaApp`. **Jedyne miejsce w aplikacji wymieniające system
-z nazwy** (`new Dnd5eSystem()`), przez referencję projektu, nigdy przez odkrywanie w czasie
-działania.
-
-### `src/DungeonApp.Content.Dnd5e` — system D&D 5e
-
-| Ścieżka | Odpowiedzialność |
-|---|---|
-| `Dnd5eSystem.cs` | **Jedyne miejsce, któremu wolno wiedzieć, czym jest potwór.** Deklaruje `monster` i `gear` (oba w wersji 1), rysuje ich karty, deklaruje `SystemTabs` („Rejestr") i `CampaignTabs` („Biurko"). Zakładka „Biurko" sama buduje `CampaignToolContext` i woła `CampaignDesk.CreateAsync` — nie ma już osobnej metody `CreateTools`, którą rama wywoływałaby za system. |
-| `Monster.cs`, `Gear.cs` | Rekordy z właściwościami nazwanymi i `required` — deserializator jest **jedynym** walidatorem, zero ręcznej walidacji. `Monster.CurrentHp` wypełnia wyłącznie nakładka instancji. |
-| `MonsterCardView`, `GearCardView` | Zaprojektowane karty z kontrolek biblioteki. |
-| `CampaignInstancesToolView(Model)`, `InstanceRowViewModel`, `AddableEntryOption` | Okno „Świat kampanii" — jedyne dziś narzędzie biurka tego systemu, wnoszone jako panel biurka z `CampaignToolContext`. |
-
-### `tests/`
-
-| Projekt | Zakres |
-|---|---|
-| `DungeonApp.Core.Tests` | Kampanie, zdarzenia, persystencja, silnik treści, instancje. |
-| `DungeonApp.Desktop.Tests` | Cache przygotowania, cykl życia zakładek (`ActiveSystemSession`), `AppShellViewModel` (część testowalna bez okna), pasek boczny (`GlobalSidebarViewModel`), krok wczytania paczek, guard na pusty katalog treści. |
-| `DungeonApp.Desktop.RenderingTests` | Jedyny projekt z prawdziwym oknem: headless Avalonia (`Avalonia.Headless.XUnit`, xUnit v3), przez prawdziwy `App`. Sprawdza, że każdy wiersz paska bocznego faktycznie się rysuje (niezerowe granice) i że zwinięty pasek nie zostawia przerw między kategoriami — błędy, których żaden test na samym ViewModelu nie widzi. |
-| `DungeonApp.Library.Desktop.Tests` | Biurko (`CampaignDesk`), geometria paneli, magazyn układu, widok listy rejestru — przeniesione z ramy bez zmiany zachowania; własne kopie pomocniczych klas testowych. |
-| `DungeonApp.Architecture.Tests` | Granice między warstwami. Osobny projekt, bo test widzący wszystkie warstwy naraz nie może mieszkać w warstwie, którą ogranicza. |
-| `DungeonApp.Content.Dnd5e.Tests` | System na prawdziwych plikach paczki; okno „Świat kampanii" na prawdziwej kampanii. |
+Spisu plików tu nie ma — wypadł 2026-09-23 (zasada: [collaboration.md](collaboration.md), *Jak pisać
+dokumenty tego repozytorium*, punkt o mapie kodu). Strukturę katalogów i nazwy typów odtwarza jedno
+przeszukanie, a spis rozjeżdżał się po każdym etapie: w dniu usunięcia opisywał jeszcze magistralę
+zdarzeń z limitem kaskady i instancje w kampanii, których nie było od etapu 3. Punkty wejścia są
+w „Od czego zacząć czytanie kodu" wyżej, wzorce zmian — w „Punkty rozszerzeń" niżej.
 
 ---
 
@@ -436,8 +361,7 @@ okien składa się z tego, co deklaruje wybrany system wraz z dodatkami — [arc
 
 ## 7. Testy
 
-**263 testy, wszystkie zielone** — Core 159, Desktop 24, Desktop.RenderingTests 5,
-Library.Desktop 39, Content.Dnd5e 18, Architecture 18.
+**Liczba testów** stoi w nagłówku [tasks.md](tasks.md) — tu jej nie ma, z tego samego powodu co liczb per plik.
 
 > Liczby per plik **nie są tu wypisywane celowo.** Poprzednia wersja tego dokumentu prowadziła taką
 > tabelę; rozjechała się po cichu i kosztowała sesję na odtworzenie. Runner podaje je w sekundę,
