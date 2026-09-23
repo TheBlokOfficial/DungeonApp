@@ -972,7 +972,8 @@ Kroki 1–8 są zrobione. Otwarte:
 
 | # | Krok | Uwagi |
 |---|---|---|
-| 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | przed 10, bo 10 powstaje w bibliotece; etapy w [tasks.md](tasks.md) |
-| 10 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
+| 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | przed 10 i 11, bo oba powstają w bibliotece; etapy w [tasks.md](tasks.md) |
+| 10 | Zakładki treści zamiast zakładki rejestru | po 9, bo szkielet należy do biblioteki wpisów; wygląd — mockup autora |
+| 11 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
 
 **Dlaczego →** [decisions.md](decisions.md), *Kolejność prac*.

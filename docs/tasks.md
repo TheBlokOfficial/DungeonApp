@@ -182,7 +182,16 @@ etapie aplikacja działa, a testy przechodzą.
 * **Między etapami nic nie wchodzi na zapas.** Dodatki powstają z pierwszym prawdziwym dodatkiem
   (niżej, „Odłożone"), formuły, sloty i dokument — po etapie 4.
 
-Formuły, sloty i dokument są odtąd krokiem 10 i czekają na przebudowę, żeby powstać od razu
+**Po przebudowie — krok 10: zakładki treści zamiast zakładki rejestru.** Decyzja autora
+z 2026-09-23. Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; wygląd —
+mockup autora `docs/images/mockup_rejestr.png`. Zakładka „Rejestr" znika w dniu, w którym stają
+pierwsze zakładki treści; sam rejestr zostaje jako ich źródło. Przy projektowaniu rozważyć dwie
+pozycje z „Czekają na miejsce na ekranie" i pytanie „Paczka a system". Przed briefem do ustalenia
+z autorem, co z mockupu wchodzi do pierwszej wersji — mockup pokazuje rzeczy, których architektura
+w pierwszej wersji nie przewiduje albo których dziś nie ma (tworzenie i edycja wpisów, typy
+zaklęć i NPC, pełny blok statystyk potwora).
+
+Formuły, sloty i dokument są odtąd krokiem 11 i czekają na przebudowę, żeby powstać od razu
 w bibliotece.
 
 ---

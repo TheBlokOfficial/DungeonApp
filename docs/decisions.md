@@ -516,6 +516,12 @@ Przebudowa na ramę, bibliotekę i system zapadła 2026-09-22 i weszła jako kro
 formułami, slotami i dokumentem, żeby te powstały od razu w bibliotece, zamiast być do niej
 przenoszone.
 
+**Zakładki treści weszły jako krok 10, przed formułami** — 2026-09-23, autor na rekomendację
+asystenta. Zakładka rejestru jest rusztowaniem, a jej następca ma już projekt wyglądu; czekają na
+ten ekran dwie pozycje o interfejsie (odrzucone paczki, nagłówek „NIE WCZYTANE") i pytanie
+„Paczka a system". Szkielet zakładki należy do biblioteki wpisów, więc wcześniej niż po przebudowie
+nie ma gdzie powstać.
+
 Kroki zrobione (krok 8 domknięty 2026-09-14):
 
 | # | Krok | Dlaczego tu |
