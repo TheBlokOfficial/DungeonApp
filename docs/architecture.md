@@ -968,7 +968,14 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    **Rozstrzygnąć po slotach, nie przed.** W międzyczasie nie robić: tablicy napisów udającej
    akapity, prozy we front-matterze, własnego DSL-a.
 2. **Autorstwo treści w aplikacji.** Zakładki treści są tylko do odczytu; pytanie zostaje otwarte dla
-   wpisów. Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone.
+   wpisów. Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone. **Kierunek (autor
+   i asystent, 2026-09-23):** formularz edycji każdego typu treści jest projektowany w systemie, jak
+   karta — ogólny edytor generowany z typu wymagałby introspekcji typu treści. Kolejność: (1) przy
+   zakładkach treści, jako kandydat do pierwszej wersji — ponowne wczytanie paczek bez restartu,
+   „otwórz plik" przy wpisie, zepsute wpisy widoczne z powodem; (2) po slotach i formułach —
+   „skopiuj i zmień": kopia wpisu we własnej paczce MG, poprawiana w formularzu; (3) tworzenie od
+   zera tym samym formularzem. Formularz zapisuje ten sam plik wpisu — autorstwo nie zmienia nośnika.
+   Uzasadnienie — [decisions.md](decisions.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
 3. **Katalog pól formularza dokumentu i kształt markera.**
 4. **Czy silnik formuł potrzebuje tablicy przeglądowej** — premia z biegłości, stopnie kości
    w Savage Worlds. Tablica stała nie łamie zakazu gałęzi, ale poszerza język.

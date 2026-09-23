@@ -498,6 +498,14 @@ typu treści przez narzędzie".
 
 ## Pytania otwarte i reguła „nic bez konsumenta"
 
+**Kierunek dla autorstwa treści w aplikacji** — 2026-09-23, z pytania autora, czy edytor wpisów to miły
+dodatek, czy strata czasu. W dojrzałej formie to sedno obietnicy aplikacji: README krytykuje narzędzia,
+które każą pracować w plikach tekstowych, a dopóki wpis dodaje się, pisząc JSON, DungeonApp robi z
+treścią dokładnie to. Ogólny edytor generowany z typu odrzucony, bo wymaga introspekcji typu treści,
+której zakazuje *Kontrakty są interfejsami*. Nie przed slotami, bo zagnieżdżanie zmienia to, co edytor
+w ogóle edytuje — zbudowany wcześniej byłby do przepisania. „Skopiuj i zmień" przed „od zera", bo
+pasuje wprost do reguły, że homebrew na wpisie z paczki dostarczonej to kopia pod własnym adresem.
+
 **Format pliku wpisu.** JSON zawodzi dokładnie w jednym miejscu — długi tekst. Po wejściu slotów
 potwór traci dwa z trzech bloków prozy (akcje i cechy szczególne stają się dołączonymi wpisami),
 więc zostaje jeden długi tekst na plik — a wtedy naturalnym kształtem jest front-matter plus treść,
