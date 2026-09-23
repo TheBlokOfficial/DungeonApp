@@ -16,7 +16,10 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     private readonly TemporaryLibrary _library = new();
     private readonly JsonCampaignRepository _repository;
 
-    public JsonCampaignRepositoryTests() => _repository = new JsonCampaignRepository(_library.Path);
+    // Permanent delete on purpose: a test must never be able to reach the real Recycle Bin - see
+    // JsonCampaignRepository.DeleteAsync's doc comment.
+    public JsonCampaignRepositoryTests() =>
+        _repository = new JsonCampaignRepository(_library.Path, path => Directory.Delete(path, recursive: true));
 
     public void Dispose() => _library.Dispose();
 
@@ -90,7 +93,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     public async Task Reports_an_empty_shelf_before_the_library_exists()
     {
         var repository = new JsonCampaignRepository(
-            Path.Combine(_library.Path, "not-created-yet"));
+            Path.Combine(_library.Path, "not-created-yet"), path => Directory.Delete(path, recursive: true));
 
         Assert.Empty(await repository.ListAsync());
     }

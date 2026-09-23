@@ -30,7 +30,7 @@ namespace DungeonApp.Core.Persistence;
 /// nieczytany, nietknięty na dysku." A declared model with no file simply reads back empty.
 /// </para>
 /// </summary>
-public sealed class JsonCampaignRepository(string libraryPath) : ICampaignRepository
+public sealed class JsonCampaignRepository(string libraryPath, Action<string> deleteDirectory) : ICampaignRepository
 {
     /// <summary>
     /// Bumped from the single-file-per-instance shape this format used before state models existed.
@@ -220,13 +220,21 @@ public sealed class JsonCampaignRepository(string libraryPath) : ICampaignReposi
         return new CampaignSummary(id, name, manifest.CreatedAt, systemId);
     }
 
+    /// <summary>
+    /// How the campaign's directory actually goes away is not this store's decision -
+    /// <paramref name="deleteDirectory"/>, handed in through the constructor, is. A test can never be
+    /// allowed to reach the user's real Recycle Bin, and the composition root that builds the shipped
+    /// app is where "delete" is meant to mean "send to the Recycle Bin" rather than gone for good - see
+    /// DungeonApp.Desktop/App.axaml.cs. There is deliberately no default: whoever constructs this store
+    /// picks one on purpose.
+    /// </summary>
     public Task DeleteAsync(CampaignId id, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var directory = GetCampaignDirectory(id);
         if (Directory.Exists(directory))
         {
-            Directory.Delete(directory, recursive: true);
+            deleteDirectory(directory);
         }
 
         return Task.CompletedTask;
