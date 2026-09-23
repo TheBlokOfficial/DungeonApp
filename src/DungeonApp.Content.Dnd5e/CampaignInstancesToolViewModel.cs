@@ -6,7 +6,7 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.Content.Instances;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.ViewModels;
-using DungeonApp.Library.Desktop.Content;
+using DungeonApp.Library.Entries.Desktop.Content;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -22,7 +22,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// </summary>
 public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposable
 {
-    private readonly CampaignToolContext _context;
+    private readonly CampaignEntriesContext _context;
     private readonly ContentId _ownerSet;
 
     private IReadOnlyList<InstanceRowViewModel> _instances = [];
@@ -30,7 +30,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
     private string? _message;
     private bool _isDisposed;
 
-    public CampaignInstancesToolViewModel(CampaignToolContext context, ContentId ownerSet)
+    public CampaignInstancesToolViewModel(CampaignEntriesContext context, ContentId ownerSet)
     {
         ArgumentNullException.ThrowIfNull(context);
 

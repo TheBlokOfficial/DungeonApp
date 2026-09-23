@@ -8,8 +8,8 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.Content.Instances;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Shell;
-using DungeonApp.Library.Desktop.Content;
-using DungeonApp.Library.Desktop.Features.CampaignWorkspace.Layout;
+using DungeonApp.Library.Entries.Desktop.Content;
+using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 
@@ -332,14 +332,14 @@ public sealed class CampaignInstancesToolViewModelTests
             var session = new CampaignSession(campaign, Repository, [InstancesModel.Declaration]);
             var tabContext = new CampaignTabContext(session, Registry);
 
-            Context = new CampaignToolContext(tabContext, Dnd5e);
+            Context = new CampaignEntriesContext(tabContext, Dnd5e);
         }
 
         public ContentRegistry Registry { get; }
 
         public InMemoryCampaignRepository Repository { get; }
 
-        public CampaignToolContext Context { get; }
+        public CampaignEntriesContext Context { get; }
 
         public CampaignInstancesToolViewModel CreateViewModel() => new(Context, Dnd5e.Id);
 

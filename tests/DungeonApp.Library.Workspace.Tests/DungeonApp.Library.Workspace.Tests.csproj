@@ -18,10 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DungeonApp.Core\DungeonApp.Core.csproj" />
     <ProjectReference Include="..\..\src\DungeonApp.Library.Workspace\DungeonApp.Library.Workspace.csproj" />
-    <ProjectReference Include="..\..\src\DungeonApp.Library.Entries.Desktop\DungeonApp.Library.Entries.Desktop.csproj" />
-    <ProjectReference Include="..\..\src\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
   </ItemGroup>
 
 </Project>

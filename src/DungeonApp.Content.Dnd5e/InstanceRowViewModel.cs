@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.Content.Instances;
 using DungeonApp.Desktop.ViewModels;
-using DungeonApp.Library.Desktop.Content;
+using DungeonApp.Library.Entries.Desktop.Content;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -20,7 +20,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// </summary>
 public sealed class InstanceRowViewModel : ObservableObject, IDisposable
 {
-    private readonly CampaignToolContext _context;
+    private readonly CampaignEntriesContext _context;
     private readonly CampaignInstance _instance;
     private readonly ResolvedInstance _resolved;
 
@@ -28,7 +28,7 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
     private bool _isDisposed;
 
     public InstanceRowViewModel(
-        CampaignToolContext context,
+        CampaignEntriesContext context,
         string displayName,
         string? message,
         ResolvedInstance resolved,
