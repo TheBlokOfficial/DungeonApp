@@ -262,6 +262,13 @@ Co jeszcze się sprawdziło:
   wzór. Gdy zadanie pasuje do wzorca z sekcji mapy „Punkty rozszerzeń", wskaż tę sekcję z nazwy.
   Szukanie, którego brief nie oszczędził, jest kosztem briefu, nie wykonawcy.
 
+* **Poprawka błędu widocznego w aplikacji przychodzi z testem, który na starym kodzie nie
+  przechodzi.** Brief każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt
+  równościami („wypełnia pasek”), nie ograniczeniem („nie wystaje”). 2026-09-23 pierwsza poprawka
+  przycisku paska górnego przyszła z testem zielonym przy błędzie, który autor widział na ekranie:
+  test sprawdzał, że przycisk nie wystaje, a przycisk za niski spełniał to bez trudu. Dopiero drugi
+  przebieg, z wymogiem porażki przed poprawką, dał dowód.
+
 **Dlaczego to tu stoi:** briefy w tym repo są długie i precyzyjne, i właśnie dlatego łatwo w nich
 pominąć zakaz, który wydaje się oczywisty.
 
