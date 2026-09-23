@@ -984,6 +984,21 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    wariantów; kampania z wariantem, który dokłada albo podmienia zakładkę, po otwarciu pokaże inną.
    **Wyzwalacz:** pierwszy taki wariant.
 
+10. **Wpisy wbudowane w system.** Czy system ma nieść własną, integralną listę wpisów — podręcznik
+    podstawowy — a paczki byłyby treścią dodaną przez MG. Zderza się z dwiema deklaracjami: „wszystko,
+    co paczka wnosi, jest homebrew z definicji; aplikacja nie zna pojęcia autorytetu" (sekcja
+    *Paczki, wczytywanie, bezpieczeństwo*) oraz „zmianę wpisu traktujemy jak patchnote" — wpis
+    wkompilowany zmienia się dopiero z nowym wydaniem aplikacji. Otwarte też, jaki adres dostaje wpis
+    bez paczki, skoro instancja wskazuje wpis przez przestrzeń nazw paczki. **Wyzwalacz:** projekt
+    zakładek treści albo pierwsza treść, którą autor chce dostarczać razem z systemem. Dygresja
+    autora z 2026-09-23.
+11. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
+    który się kopiuje, przenosi i wersjonuje jako dokument użytkownika. Baza danych zmienia to
+    wszystko naraz, więc to więcej niż format pliku (pytanie 1). **Wyzwalacz:** autorstwo treści
+    w aplikacji (pytanie 2) — dopóki wpisy powstają poza aplikacją, plik jest ich naturalną formą —
+    albo liczba wpisów, przy której wczytywanie przy starcie staje się odczuwalne. Dygresja autora
+    z 2026-09-23.
+
 **Reguła: nic nie wchodzi bez konsumenta w tym samym wycinku** — ani pole, ani mechanizm.
 Rusztowanie, którego kod czytający istnieje i działa (dziś: `AllowsMultipleInstances`), nie jest
 rezerwacją.
@@ -992,11 +1007,11 @@ rezerwacją.
 
 ## 24. Kolejność prac
 
-Kroki 1–8 są zrobione. Otwarte:
+Kroki 1–9 są zrobione; krok 9 — przebudowa na ramę, bibliotekę i system — zamknięty 2026-09-23.
+Otwarte:
 
 | # | Krok | Uwagi |
 |---|---|---|
-| 9 | Przebudowa: rama, biblioteka, system — ekran wyboru systemu, pasek boczny z trzema kategoriami, biurko jako zakładka systemu, zapis modeli stanu systemu przez ramę | przed 10 i 11, bo oba powstają w bibliotece; etapy w [tasks.md](tasks.md) |
 | 10 | Zakładki treści zamiast zakładki rejestru | po 9, bo szkielet należy do biblioteki wpisów; wygląd — mockup autora |
 | 11 | Formuły, sloty, dokument | kolejność do ustalenia osobno |
 

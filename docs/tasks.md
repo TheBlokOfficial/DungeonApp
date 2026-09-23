@@ -23,23 +23,12 @@ Gałąź: `master`. Build bez ostrzeżeń, 282 testy zielone (w tym testy render
 
 ## Do sprawdzenia przez autora na `master`
 
-Krok 9 z „Kolejność prac" [architecture.md](architecture.md) — przebudowa na ramę, bibliotekę
-i system — jest zrobiony w kodzie i w dokumentach. Zamyka go uruchomienie przez autora; wtedy krok 9
-przechodzi w architekturze na zrobiony, a ta sekcja znika.
+Krok 9 zamknięty 2026-09-23 — autor uruchomił etap 4 na `master`, bez weta. Zostają dwie poprawki
+etapu 3, scalone tego samego dnia:
 
-1. **Etap 4** (zmienia start): start i wybór systemu płynne, bez zacięcia; zakładka rejestru
-   pokazuje wpisy z paczek, karty się otwierają; w otwartej kampanii okno „Świat kampanii" — dodanie
-   i usunięcie okazu przetrwa ponowne otwarcie; przy starcie bez ostrzeżenia na pasku stanu.
-2. **Wiersz kampanii niedostępnej** — różni się od zwykłego wyłącznie nieinteraktywnością,
+1. **Wiersz kampanii niedostępnej** — różni się od zwykłego wyłącznie nieinteraktywnością,
    wyszarzeniem i ikoną (czerwony trójkąt zamiast książki); kosz zostaje.
-3. **Usunięcie kampanii** przenosi ją do Kosza systemu, bez okna potwierdzenia.
-
-**Do weta** — rozstrzygnięte przez architekta albo wykonawcę w etapie 4:
-* rozgrzewka kart biegnie zaraz po paczkach, nie na końcu startu (uzasadnienie i cena —
-  [decisions.md](decisions.md), *Rama, biblioteka, system*);
-* nowe brzmienie ogólnego ostrzeżenia ramy przy awarii kroku startowego;
-* system niesie dwa identyfikatory o tym samym brzmieniu — dla ramy i dla własnych typów treści;
-* pliki logiki wpisów w korzeniu biblioteki, bez katalogu `Content`.
+2. **Usunięcie kampanii** przenosi ją do Kosza systemu, bez okna potwierdzenia.
 
 ---
 
@@ -54,7 +43,8 @@ w którym stają pierwsze zakładki treści; sam rejestr zostaje jako ich źród
 * **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka. **Pasek tytułu okna w mockupie nie
   jest projektem paska górnego** i się nim nie sugerować.
 * **Przy projektowaniu rozważyć** dwie pierwsze pozycje z „Czekają na miejsce na ekranie" (niżej)
-  i pytanie „Paczka a system" w architekturze.
+  oraz pytania otwarte „Paczka a system" i „Wpisy wbudowane w system" w architekturze — dopiero
+  przy projekcie interfejsu, nie przed nim.
 * **Przed briefem ustalić z autorem, co z mockupu wchodzi do pierwszej wersji** — mockup pokazuje
   rzeczy, których architektura w pierwszej wersji nie przewiduje albo których dziś nie ma: tworzenie
   i edycję wpisów, typy zaklęć i NPC, pełny blok statystyk potwora.
