@@ -1,5 +1,5 @@
 using Avalonia.Controls;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 
 namespace DungeonApp.Library.Entries.Desktop.Content;
 

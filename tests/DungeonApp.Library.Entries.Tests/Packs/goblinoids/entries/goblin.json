@@ -1,0 +1,34 @@
+{
+  "id": "goblin",
+  "name": "Goblin",
+  "template": "dnd5e:monster",
+  "templateVersion": 1,
+
+  "values": {
+    "size": "Mały",
+    "type": "humanoid (goblinoid)",
+    "alignment": "neutralny zły",
+
+    "ac": 15,
+    "acSource": "zbroja skórzana, tarcza",
+    "hp": 7,
+    "hpDice": "2k6",
+    "speed": "30 stóp",
+
+    "str": 8,
+    "dex": 14,
+    "con": 10,
+    "int": 10,
+    "wis": 8,
+    "cha": 8,
+
+    "skills": "Skradanie się +6",
+    "senses": "widzenie w ciemności 60 stóp, pasywna Percepcja 9",
+    "languages": "wspólny, goblini",
+    "challenge": "1/4 (50 PD)",
+
+    "specialAbilities": "Zwinna ucieczka. Goblin może w każdej swojej turze wykonać akcję Odwrotu lub Ukrycia się jako akcję dodatkową.",
+    "actions": "Bułat. Atak bronią w zwarciu: +4 do trafienia, zasięg 5 stóp, jeden cel. Trafienie: 5 (1k6+2) obrażeń sieczących.\n\nKrótki łuk. Atak bronią dystansową: +4 do trafienia, zasięg 80/320 stóp, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.",
+    "description": "Mały, tchórzliwy rabuś polujący w gromadzie. Sam ucieka; w dziesiątkę potrafi obrabować karawanę."
+  }
+}

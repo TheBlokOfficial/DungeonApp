@@ -1,0 +1,12 @@
+{
+  "id": "healing-potion",
+  "name": "Eliksir leczenia",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Pospolity",
+    "weight": 1,
+    "description": "Wypity eliksir przywraca 2k4+2 punkty wytrzymałości. Płyn błyszczy i lekko się pieni w fiolce."
+  }
+}

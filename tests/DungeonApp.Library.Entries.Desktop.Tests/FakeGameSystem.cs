@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Avalonia.Controls;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;

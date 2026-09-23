@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
 
