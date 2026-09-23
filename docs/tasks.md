@@ -37,6 +37,16 @@ w którym stają pierwsze zakładki treści; sam rejestr zostaje jako ich źród
 * **Przed briefem ustalić z autorem, co z mockupu wchodzi do pierwszej wersji** — mockup pokazuje
   rzeczy, których architektura w pierwszej wersji nie przewiduje albo których dziś nie ma: tworzenie
   i edycję wpisów, typy zaklęć i NPC, pełny blok statystyk potwora.
+* **Kandydat do pierwszej wersji z kierunku autorstwa treści** (architektura, pytanie otwarte
+  „Autorstwo treści w aplikacji", krok 1): ponowne wczytanie paczek bez restartu, „otwórz plik" przy
+  wpisie, zepsute wpisy widoczne z powodem. Kandydat, nie postanowienie.
+
+**Plan następnej sesji:**
+1. Rozmowa z autorem przy otwartym mockupie: zakres pierwszej wersji — architekt przynosi propozycję
+   z jedną rekomendacją, łącznie z kandydatem wyżej i miejscem na rzeczy zepsute.
+2. Zielone światło, podział na zlecenia, brief(y).
+3. Pierwsze zlecenie idzie przez własny rodzaj agenta `wykonawca` — sprawdza przy okazji, że
+   definicje z `.claude/agents/` działają (zakazy, krok 0, format raportu).
 
 Po kroku 10 — krok 11: formuły, sloty i dokument, od razu w bibliotece. **Nic nie wchodzi na
 zapas** między krokami; dodatki powstają z pierwszym prawdziwym dodatkiem (niżej).
