@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 286 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 289 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -184,8 +184,10 @@ etapie aplikacja działa, a testy przechodzą.
 * **Pasek górny — poprawka po sprawdzeniu przez autora, scalona 2026-09-23, czeka na jego
   sprawdzenie.** Przyczyną zasłaniania dolnej linii był przycisk wyższy o piksel od wnętrza paska;
   teraz wypełnia wnętrze i rysuje tylko lewą linię krawędzi, obszar najechania jest kwadratem.
-  Podpowiedź „Zmień system" wróciła, osierocony token usunięty, test renderujący pilnuje, że przycisk
-  nie wystaje poza pasek. **Z dawnego paska górnego nic nie wraca** — decyzja autora.
+  Podpowiedź „Zmień system" wróciła, osierocony token usunięty. **Drugi przebieg (autor, zrzuty):**
+  przycisk był za niski — globalny styl przycisków narzuca stałą wysokość, styl paska jej nie znosił;
+  poprawione, test mierzy przycisk z każdej strony i nie przechodził przed poprawką. Niewyjaśnione:
+  odstęp od prawej krawędzi okna widoczny na zrzucie, którego pomiar bez ekranu nie pokazuje. **Z dawnego paska górnego nic nie wraca** — decyzja autora.
 * **Pasek górny i porządki paska bocznego — zrobione 2026-09-23** (decyzje autora):
   - **Pasek górny** nad obszarem treści, obok paska bocznego (położenie rozstrzygnął architekt);
     wysokość nagłówka paska bocznego, dolne krawędzie w jednej linii; widoczny po wyborze systemu.
