@@ -16,7 +16,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 278 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 280 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -179,12 +179,11 @@ etapie aplikacja działa, a testy przechodzą.
   Brief 2 i tak trzeba będzie zrównać z `master` (pasek górny zmienił powłokę i rozgrzewkę). Katalog
   `.claude/worktrees/agent-a417bdbecb5ce8014` to pozostałość po scalonej kopii (usunięcie zablokowane
   przez otwarte pliki) — skasować.
-* **Pasek górny — sprawdzony przez autora 2026-09-23, do poprawki** (mała rzecz, pierwsza w następnej
-  sesji): tło przycisku „Zmień system" w stanie najechania zasłania dolną linię krawędzi paska — ma
-  kończyć się nad nią; przycisk nie ma lewej linii krawędzi — ma mieć, tym samym tokenem obramowania;
-  **podpowiedź „Zmień system" po przytrzymaniu kursora ma wrócić** (brief jej zakazał — błąd briefu).
-  Ścieżka system › kampania działa. **Z dawnego paska górnego nic nie wraca** — decyzja autora;
-  osierocony token `DungeonTopBarActionSize` usunąć.
+* **Pasek górny — poprawka po sprawdzeniu przez autora, scalona 2026-09-23, czeka na jego
+  sprawdzenie.** Przyczyną zasłaniania dolnej linii był przycisk wyższy o piksel od wnętrza paska;
+  teraz wypełnia wnętrze i rysuje tylko lewą linię krawędzi, obszar najechania jest kwadratem.
+  Podpowiedź „Zmień system" wróciła, osierocony token usunięty, test renderujący pilnuje, że przycisk
+  nie wystaje poza pasek. **Z dawnego paska górnego nic nie wraca** — decyzja autora.
 * **Pasek górny i porządki paska bocznego — zrobione 2026-09-23** (decyzje autora):
   - **Pasek górny** nad obszarem treści, obok paska bocznego (położenie rozstrzygnął architekt);
     wysokość nagłówka paska bocznego, dolne krawędzie w jednej linii; widoczny po wyborze systemu.
