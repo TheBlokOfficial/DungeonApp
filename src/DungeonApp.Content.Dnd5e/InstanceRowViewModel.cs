@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
-using DungeonApp.Core.Content.Instances;
+using DungeonApp.Library.Entries;
+using DungeonApp.Library.Entries.Instances;
 using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Library.Entries.Desktop.Content;
 

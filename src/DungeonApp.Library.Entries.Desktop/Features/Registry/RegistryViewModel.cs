@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Library.Entries.Desktop.Content;
 

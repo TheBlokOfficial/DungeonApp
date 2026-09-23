@@ -14,6 +14,7 @@
     <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
     <ProjectReference Include="..\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
     <ProjectReference Include="..\DungeonApp.Library.Workspace\DungeonApp.Library.Workspace.csproj" />
+    <ProjectReference Include="..\DungeonApp.Library.Entries\DungeonApp.Library.Entries.csproj" />
     <ProjectReference Include="..\DungeonApp.Library.Entries.Desktop\DungeonApp.Library.Entries.Desktop.csproj" />
   </ItemGroup>
 

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
-using DungeonApp.Core.Content.Instances;
+using DungeonApp.Library.Entries;
+using DungeonApp.Library.Entries.Instances;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Library.Entries.Desktop.Content;
@@ -13,7 +13,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// State for the "Świat kampanii" desk tool: every instance this campaign holds, and a picker to
 /// bring a new one in from this system's own resolved entries. The first consumer of the
-/// <c>entries.instances</c> state model and <see cref="Core.Content.InstanceResolver"/> anywhere in
+/// <c>entries.instances</c> state model and <see cref="Library.Entries.InstanceResolver"/> anywhere in
 /// the application.
 /// <para>
 /// Kept in its own file, free of any Avalonia control reference, so it can be exercised without a

@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;

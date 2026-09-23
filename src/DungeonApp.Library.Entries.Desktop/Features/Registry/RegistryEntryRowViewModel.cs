@@ -1,5 +1,5 @@
 using System;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 
 namespace DungeonApp.Library.Entries.Desktop.Features.Registry;
 

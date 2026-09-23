@@ -1,4 +1,4 @@
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 

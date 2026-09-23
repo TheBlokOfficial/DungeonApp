@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DungeonApp.Library.Entries\DungeonApp.Library.Entries.csproj" />
     <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
   </ItemGroup>
 

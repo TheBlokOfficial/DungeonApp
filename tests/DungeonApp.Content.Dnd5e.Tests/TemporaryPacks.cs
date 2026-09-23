@@ -6,7 +6,7 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// <summary>
 /// A throwaway packs directory on the real filesystem, for the two tests here that need a
 /// deliberately broken entry rather than one of the checked-in fixtures. Mirrors
-/// <c>DungeonApp.Core.Tests.Fakes.TemporaryPacks</c> and <c>DungeonApp.Desktop.Tests.TestPacks</c>,
+/// <c>DungeonApp.Library.Entries.Tests.Fakes.TemporaryPacks</c> and <c>DungeonApp.Desktop.Tests.TestPacks</c>,
 /// trimmed to what this project needs.
 /// </summary>
 internal sealed class TemporaryPacks : IDisposable

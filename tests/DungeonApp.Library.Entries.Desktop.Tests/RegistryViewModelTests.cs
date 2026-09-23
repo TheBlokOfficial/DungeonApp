@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Library.Entries.Desktop.Features.Registry;
 
 namespace DungeonApp.Library.Entries.Desktop.Tests;

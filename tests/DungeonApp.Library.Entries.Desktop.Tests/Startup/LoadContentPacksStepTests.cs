@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
+using DungeonApp.Library.Entries;
 using DungeonApp.Library.Entries.Desktop.Startup;
 
 namespace DungeonApp.Library.Entries.Desktop.Tests;
