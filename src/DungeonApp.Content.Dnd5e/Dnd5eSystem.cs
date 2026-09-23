@@ -34,7 +34,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// Carries two distinct identities on purpose (docs/architecture.md, "Rama, biblioteka, system"):
 /// <see cref="Id"/> is what the frame knows this system as (<see cref="SystemId"/>, never
-/// <c>DungeonApp.Core.Content</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
+/// <c>DungeonApp.Library.Entries</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
 /// content-set id every content type reference and pack entry in this system actually points at. Both
 /// are minted from the same literal, but nothing enforces that they stay equal - a system is free to
 /// pick a different one for either.

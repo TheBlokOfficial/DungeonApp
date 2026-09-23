@@ -21,13 +21,6 @@ internal static class RepositoryRoot
     public static string CoreSources { get; } =
         System.IO.Path.Combine(Path, "src", "DungeonApp.Core");
 
-    /// <summary>
-    /// The hand-written packs. They stand in for a specification until one is written, so they are
-    /// read by tests rather than treated as sample data.
-    /// </summary>
-    public static string PackFixtures { get; } =
-        System.IO.Path.Combine(Path, "tests", "DungeonApp.Core.Tests", "Packs");
-
     private static string Locate()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

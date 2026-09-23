@@ -5,8 +5,8 @@ namespace DungeonApp.Library.Entries.Desktop.Tests;
 
 /// <summary>
 /// A throwaway packs directory on the real filesystem, shared by every Library.Entries.Desktop test that
-/// needs <see cref="DungeonApp.Core.Content.ContentPackLoader"/> to read real files rather than a
-/// hand-built <see cref="DungeonApp.Core.Content.ContentRegistry"/>.
+/// needs <see cref="DungeonApp.Library.Entries.ContentPackLoader"/> to read real files rather than a
+/// hand-built <see cref="DungeonApp.Library.Entries.ContentRegistry"/>.
 /// <para>
 /// Copied minimally from <c>DungeonApp.Desktop.Tests.TestPacks</c> rather than shared across test
 /// projects (docs/tasks.md, etap 2): that class is <c>internal</c> and other Desktop.Tests fixtures
