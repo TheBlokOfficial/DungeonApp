@@ -2,7 +2,7 @@
 
 **Status: projekt docelowy.** Ten dokument deklaruje, **jak ma być** — w czasie teraźniejszym,
 z konsekwencjami, bez argumentów. Przy rozbieżności z kodem prawdą o zamiarze jest ten dokument,
-a prawdą o kodzie jest [code-map.md](code-map.md). Nad jednym i drugim stoi [CLAUDE.md](../CLAUDE.md).
+a prawdą o kodzie jest [code-state.md](code-state.md). Nad jednym i drugim stoi [CLAUDE.md](../CLAUDE.md).
 
 **Dlaczego tak, co odrzucono i co obowiązywało wcześniej** — [decisions.md](decisions.md),
 w sekcjach o tych samych nazwach co tutaj. Czyta się je **przed** zaproponowaniem zmiany, nie po.

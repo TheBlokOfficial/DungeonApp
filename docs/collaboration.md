@@ -91,7 +91,7 @@ a w poprawce zostawił martwą klasę pomocniczą i zracjonalizował resztę. Ob
 **Sesja architektoniczna czyta dokumenty, nie źródła.** Decyzja autora z 2026-09-22. Okno kontekstu
 asystenta prowadzącego sesję jest jej najcenniejszym zasobem, więc asystent projektuje i przegląda,
 a kod pisze i czyta subagent w wąsko zakrojonym zadaniu — wynik asystent weryfikuje, zanim go przyjmie.
-Konkret z kodu, potrzebny do decyzji, przynosi `code-map.md` albo subagent. **Deleguj kod, nie
+Konkret z kodu, potrzebny do decyzji, przynosi `code-state.md` albo subagent. **Deleguj kod, nie
 decyzje:** dokumenty tego repozytorium niosą decyzje, więc pisze je asystent sam.
 
 ### Obieg jednego etapu
@@ -140,7 +140,7 @@ wyborze systemu (widok budowany poza wątkiem okna), na pasku brakowało pozycji
 skakała przy wejściu. Wszystko to widać w pierwszej minucie działania programu i w żadnym teście.
 
 **Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
-Dokumenty dogania architekt na końcu etapu: `code-map.md` (jak jest), `tasks.md` (co dalej).
+Dokumenty dogania architekt na końcu etapu: `code-state.md` (stan kodu), `tasks.md` (co dalej).
 
 ---
 
@@ -190,7 +190,7 @@ warstwy.
 
 4. **Każdy fakt ma jeden dom — nie streszczaj cudzego.** Zanim wpiszesz uzasadnienie, sprawdź, czy
    nie stoi już tam, gdzie należy: „co obowiązuje" w `architecture.md`, „dlaczego" — za przyjętym,
-   przeciw odrzuconemu, co było wcześniej — w `decisions.md`, „jak jest dziś" w `code-map.md`, „co
+   przeciw odrzuconemu, co było wcześniej — w `decisions.md`, „jak jest dziś" w `code-state.md`, „co
    dalej" w `tasks.md`. Odeślij po nazwie sekcji, zamiast powtórzyć. Tabela własności jest
    w `README.md`.
 
@@ -214,25 +214,20 @@ warstwy.
 
 ---
 
-6. **Mapa kodu ma nieść sądy, nie spis plików.** Obserwacja autora z 2026-09-22, po tym jak
-   aktualizacja `code-map.md` zjadła dziesiątą część budżetu sesji. Dokument dzieli się na dwie
-   części o różnej wartości. Tabele „który plik za co odpowiada" odtwarza się ze struktury katalogów
-   i jednego przeszukania w sekundę — i to one rozjeżdżają się po każdej zmianie. Ocena stanu
-   (co dojrzałe, co rusztowanie, gdzie dług, czego nie pokrywa żaden test), granice i punkty styku
-   są sądami, których z kodu wyczytać się nie da w rozsądnym czasie — i to dla nich ten dokument
-   istnieje.
+6. **Stan kodu niesie sądy, nie opis — i musi na siebie zarabiać.** Decyzja autora z 2026-09-23:
+   dokument, który na siebie nie zarabia, zmienia istotę albo znika. `code-state.md` (do tego dnia
+   `code-map.md`, „mapa kodu") trzyma cztery rzeczy: ocenę stanu, luki w testach, pułapki i punkty
+   rozszerzeń. Każda pozycja ma zmieniać decyzję architekta albo treść briefu. Po etapie usuwa się
+   pozycje rozwiązane i dopisuje nowe sądy; dogonienie dłuższe niż kilka zdań znaczy, że dokument
+   wrócił do opisywania.
 
-   *Co z tego wynika:* spis plików wypada, zostaje część oceniająca; mapę aktualizuje się **po etapie
-   zmieniającym strukturę**, nie po każdej sesji; konkret o kodzie, potrzebny do jednej decyzji,
-   bierze się doraźnie od subagenta tylko do odczytu — pytanie o dzisiejszą drogę zapisu kosztowało
-   ułamek tego, co aktualizacja całej mapy.
-
-   **Mapa jest dla architekta, nie dla wykonawcy** — przegląd autora i asystenta z 2026-09-23. Autor
-   zauważył, że subagenci spędzają dużą część pracy na szukaniu w kodzie, i zapytał, czy mapa działa
-   jako nawigacja. Nie działa i nie miała działać: jej nagłówek od początku mówi, że nie czyta się
-   jej, żeby edytować plik. Dla architekta, który nie czyta źródeł, jest oknem na kod — ocena stanu,
-   granice, ścieżki, wzorce zmian. Tego samego dnia żaden brief nie wskazywał mapy, więc szukanie
-   subagentów nic o niej nie mówi. Wniosek: nawigację niesie **brief** (punkty niżej), nie mapa.
+   *Skąd to się wzięło:* 2026-09-22 aktualizacja mapy zjadła dziesiątą część budżetu sesji i wypadł
+   z niej spis plików. 2026-09-23 sesja, która zamknęła etap 4, nie użyła mapy do żadnej decyzji —
+   konkret z kodu przychodził taniej z historii gita, celowanego przeszukania i raportów wykonawców,
+   a jedyny wykonawca, któremu brief ją wskazał, potknął się o nieaktualną nazwę. Opis modelu, zapisu
+   i warstwy okienkowej dublował architekturę albo komentarze przy kodzie i gnił po każdym etapie.
+   Obronił się tylko osąd. Nazwa „mapa" zapraszała przy tym do używania dokumentu jako nawigacji —
+   nawigację niesie **brief** (punkty niżej), nie ten dokument.
 
 ## 4. Briefy dla subagentów
 
@@ -269,9 +264,9 @@ Co jeszcze się sprawdziło:
   referencja okaże się żywa, zatrzymaj się i zgłoś", dopisz, że to właśnie jest wynik, po który
   wysyłasz zadanie. Inaczej subagent traktuje zatrzymanie jako porażkę i próbuje obejść.
 * **Ogranicz długość raportu**, gdy budżet jest niski.
-* **Podawaj w briefie punkty wejścia** — konkretne pliki i typy, od których zacząć, z mapy albo ze
-  zwiadu. Brief 2 etapu 4 (2026-09-23) niósł akapit „Stan dziś" z nazwami miejsc do zmiany; to jest
-  wzór. Gdy zadanie pasuje do wzorca z sekcji mapy „Punkty rozszerzeń", wskaż tę sekcję z nazwy.
+* **Podawaj w briefie punkty wejścia** — konkretne pliki i typy, od których zacząć, ze stanu kodu,
+  z historii gita albo ze zwiadu. Brief 2 etapu 4 (2026-09-23) niósł akapit „Stan dziś" z nazwami miejsc do zmiany; to jest
+  wzór. Gdy zadanie pasuje do wzorca z sekcji „Punkty rozszerzeń" w `code-state.md`, wskaż tę sekcję z nazwy.
   Szukanie, którego brief nie oszczędził, jest kosztem briefu, nie wykonawcy.
 
 * **Poprawka błędu widocznego w aplikacji przychodzi z testem, który na starym kodzie nie

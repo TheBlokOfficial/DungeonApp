@@ -16,7 +16,7 @@ namespace DungeonApp.Library.Workspace.Tests;
 /// Exercises <see cref="CampaignWorkspaceViewModel"/> directly rather than through
 /// <see cref="CampaignDesk.CreateAsync"/>: the latter builds a real <c>CampaignWorkspaceView</c>,
 /// whose compiled XAML needs a running Avalonia application this test project has no headless
-/// harness for (docs/code-map.md already names the view model itself as the part nothing here can
+/// harness for (docs/code-state.md already names the view model itself as the part nothing here can
 /// reach - this closes that gap for exactly the property docs/tasks.md asks for, without reaching
 /// past it into the view). <c>CampaignDesk</c>'s own release sequence - flush, then dispose - is
 /// reproduced by hand below, in that same order.

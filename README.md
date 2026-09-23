@@ -65,7 +65,7 @@ czym jest potwór. Ponieważ powłoce nie wolno znać żadnego zestawu po imieni
 przeniósł się do osobnego projektu wykonywalnego, `DungeonApp.App` — to on jako jedyny wymienia
 zestawy z nazwy.
 
-Od czego zacząć czytanie kodu — [docs/code-map.md](docs/code-map.md).
+Co w kodzie jest dojrzałe, co rusztowaniem, gdzie dług i pułapki, jak rozszerzać — [docs/code-state.md](docs/code-state.md).
 
 ## Dokumenty
 
@@ -77,7 +77,7 @@ nigdy więc nie rozjeżdża się z kodem.
 |---|---|---|
 | [CLAUDE.md](CLAUDE.md) | Czego nigdy nie wolno złamać? | zawsze; wygrywa nawet z kodem |
 | [docs/architecture.md](docs/architecture.md) | Czym to jest i jak jest zbudowane? | żeby się wdrożyć (część I) albo sprawdzić, co obowiązuje (część II–III) |
-| [docs/code-map.md](docs/code-map.md) | Co jest w kodzie dzisiaj i gdzie co leży? | gdy szukasz konkretnego miejsca |
+| [docs/code-state.md](docs/code-state.md) | W jakim stanie jest kod — co dojrzałe, co rusztowanie, gdzie dług i pułapki, jak go rozszerzać? | przed decyzją o kodzie i przy pisaniu briefu |
 | [docs/decisions.md](docs/decisions.md) | Dlaczego tak, co odrzuciliśmy i co obowiązywało wcześniej? | **zanim** zaproponujesz zmianę; do wdrożenia się niepotrzebny |
 | [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
 | [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
@@ -90,7 +90,7 @@ odsyłają do niego po nazwie sekcji — nigdy go nie streszczają „żeby czyt
 |---|---|
 | **co obowiązuje** — deklaracje i ich konsekwencje, w czasie teraźniejszym | `architecture.md` |
 | **dlaczego** — argumenty za przyjętym, kierunki odrzucone z wyzwalaczem powrotu, co obowiązywało wcześniej i kiedy się zmieniło | `decisions.md` |
-| **jak jest dziś** — stan kodu | `code-map.md` |
+| **jak jest dziś** — sądy o stanie kodu | `code-state.md` |
 | **co dalej** | `tasks.md` |
 
 Powód jest praktyczny, nie porządkowy: dopóki każdy dokument powtarzał kawałek sąsiada, żadnego nie
@@ -104,5 +104,5 @@ Dwie rzeczy, które oszczędzają najwięcej czasu:
   lokalne dla kampanii, przełączniki dodatków w środku logiki. Dokument istnieje po to, żeby nie
   wracały co kilka miesięcy jako nowe — a gdy któryś wraca słusznie, zapisuje, dlaczego jego
   odrzucenie straciło podstawy.
-* **`code-map.md` nigdy nie wygrywa z kodem.** On i `architecture.md` rozjeżdżają się **celowo** —
+* **`code-state.md` nigdy nie wygrywa z kodem.** On i `architecture.md` rozjeżdżają się **celowo** —
   jeden opisuje stan, drugi cel.

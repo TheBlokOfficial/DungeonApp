@@ -25,7 +25,7 @@ namespace DungeonApp.Desktop.Shell;
 /// actual tab lifecycle to <see cref="ActiveSystemSession"/>, keeping here only what genuinely needs
 /// Avalonia's dispatcher (the startup sequence, visual warmup) or is pure screen-routing glue -
 /// which is also why, unlike <see cref="ActiveSystemSession"/>, this type has no unit tests of its
-/// own (docs/code-map.md already names this the untested half of the shell, for the same reason).
+/// own (docs/code-state.md already names this the untested half of the shell, for the same reason).
 /// </summary>
 public sealed class AppShellViewModel : ObservableObject
 {

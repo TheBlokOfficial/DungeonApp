@@ -47,7 +47,7 @@
         <!-- A system tab's or a campaign tab's content arrives as an already-finished Control
              (ITabContent.Content), never a view model - so it needs no template here. Avalonia hosts
              a Control assigned directly as Content as-is, the same trick a panel's own body already
-             uses (docs/code-map.md, "Narzędzie oddaje gotową kontrolkę, nie ViewModel"). -->
+             uses (docs/code-state.md, "Narzędzie oddaje gotową kontrolkę, nie ViewModel"). -->
     </UserControl.DataTemplates>
 
     <Grid IsHitTestVisible="{Binding IsReady}">

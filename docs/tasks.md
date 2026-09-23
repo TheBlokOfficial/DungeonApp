@@ -2,7 +2,7 @@
 
 **Status: stan na 2026-09-22.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
-[architecture.md](architecture.md) jak ma być, [code-map.md](code-map.md) jak jest,
+[architecture.md](architecture.md) jak ma być, [code-state.md](code-state.md) w jakim stanie jest kod,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
 
 **Zakres: wyłącznie to, co trzeba zrobić przed zamknięciem bieżącego etapu.** Nie jest spisem funkcji
@@ -13,10 +13,10 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 
 > **Ten dokument nie prowadzi archiwum.** Praca domknięta znika stąd, gdy tylko przestanie być
 > potrzebna do zrozumienia następnego kroku. Co zostało zrobione, mówi historia gita; **dlaczego** —
-> `decisions.md` i `architecture.md`; **jak jest teraz** — `code-map.md`. Do 2026-09-14 stała tu
+> `decisions.md` i `architecture.md`; **w jakim stanie jest kod** — `code-state.md`. Do 2026-09-14 stała tu
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było.
 
-Gałąź: `master`. Build bez ostrzeżeń, 289 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 282 testy zielone (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -40,7 +40,7 @@ a następnie osadzenie treści w konkretnej kampanii. Stan, do którego to dopro
   kształt, w jakim wróci razem ze swoim konsumentem, stoi w [decisions.md](decisions.md), pozycja
   „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".
 
-Szczegóły każdej z tych rzeczy — [code-map.md](code-map.md).
+Ocena każdej z tych rzeczy — [code-state.md](code-state.md).
 
 **2026-09-22 zapadła przebudowa, którą kod dogania etapami (niżej):** dawny silnik i powłoka stają się
 ramą, wspólny kod wychodzi do biblioteki, a system — dawniej zestaw — przejmuje wygląd i zawartość
@@ -107,9 +107,7 @@ etapie aplikacja działa, a testy przechodzą.
   działa dobrze — i sam zauważył, że dowodu nie ma: animacja rozwijania paska, która dawniej czyniła
   zacięcie widocznym, już nie gra przy wejściu. Następnym razem: czas rozgrzewki i czas od kliknięcia
   systemu do pierwszej narysowanej klatki jako logowane liczby.
-* **Mapa kodu odchudzona 2026-09-23** — spis plików wypadł, zostaje część oceniająca; pełne
-  dogonienie po etapie 4 (nagłówek mapy mówi, co jest nieaktualne).
-* **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne — działa. Dwie poprawki po etapie, decyzje autora z 2026-09-23, w toku:
+* **Etap 3 — scalony i sprawdzony przez autora 2026-09-22.** Półka pokazuje stare kampanie jako niedostępne — działa. Dwie poprawki po etapie, decyzje autora z 2026-09-23 — scalone 2026-09-23, **czekają na sprawdzenie przez autora w aplikacji**:
   - **Wiersz kampanii niedostępnej** różni się od zwykłego wyłącznie nieinteraktywnością, wyszarzeniem i ikoną (czerwony trójkąt ostrzegawczy zamiast książki); bez linii powodu, nazwa w kolorze zwykłego wiersza, kosz zostaje.
   - **Usunięcie kampanii przenosi ją do Kosza systemu** zamiast kasować trwale; bez okna potwierdzenia. Powód: zniknięcie kampanii 2026-09-22 — w kodzie jedyną drogą kasowania katalogu kampanii jest kosz na półce, bez potwierdzenia i z pominięciem Kosza, tuż przed strzałką otwierania; najpewniej przypadkowe trafienie (brak logów, dowodu nie będzie). Trzy późniejsze zniknięcia usunął autor świadomie.
   
@@ -178,9 +176,12 @@ etapie aplikacja działa, a testy przechodzą.
     końcu — rama uruchamia kroki systemu razem, nie wiedząc, co robią; wciąż przed kurtyną;
     ogólny tekst ostrzeżenia ramy przy awarii kroku startowego ma nowe brzmienie; system niesie
     dwa identyfikatory — dla ramy i dla własnych typów treści.
-  - **Zlecenie 2 — następne:** przeprowadzka `Core/Content/**` do `DungeonApp.Library.Entries`,
-    mechanicznie; tymczasowy skan zastępuje test po referencjach „rama nie referencuje biblioteki",
-    test „zapis nie zna instancji" odchodzi; testy treści do własnego projektu.
+  - **Zlecenie 2 — scalone 2026-09-23** (wykonawca: Haiku, próba — patrz *collaboration.md*).
+    Logika wpisów w `DungeonApp.Library.Entries`, jej testy we własnym projekcie; tymczasowy skan
+    i test „zapis nie zna instancji" zastąpione testem „rama nie referencuje biblioteki"; paczki
+    wzorcowe w jednej kopii. Do weta: pliki w korzeniu biblioteki bez katalogu `Content`.
+  - **Etap 4 zamyka uruchomienie przez autora na `master`.** Architektura, rejestr decyzji i stan
+    kodu dogonione tego samego dnia; z uruchomieniem krok 9 w architekturze przechodzi na zrobiony.
 * **Pasek górny — sprawdzony przez autora 2026-09-23, zamknięty.** Z dawnego paska górnego nic nie
   wraca — decyzja autora.
 * **Pasek górny i porządki paska bocznego — zrobione 2026-09-23** (decyzje autora):

@@ -16,7 +16,7 @@ namespace DungeonApp.Library.Workspace.Features.CampaignWorkspace;
 /// <para>
 /// Nothing upstream of this call - a system's tab factory, the shell that invokes it - reads or
 /// writes a layout file directly; this is the only place that does, which is what
-/// docs/code-map.md's "Biurko wystawia systemowi jedno publiczne wejście" cashes out to in code.
+/// docs/code-state.md's "Biurko wystawia systemowi jedno publiczne wejście" cashes out to in code.
 /// </para>
 /// </summary>
 public static class CampaignDesk
