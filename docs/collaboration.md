@@ -76,6 +76,18 @@ zamknięciu poprzedniego; równolegle tylko na wyraźne polecenie autora.
 się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny właśnie po to, żeby myślenie
 zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
 
+**Haiku 4.5 do zadań mechanicznych, Sonnet do zadań z rozstrzygnięciami.** Decyzja autora
+z 2026-09-23, po próbie na drugim zleceniu etapu 4. Haiku dostaje zadania, których poprawności
+pilnują build i testy — przeprowadzki, zmiany nazw, poprawki odwołań. Zlecenie wymienia wprost, co
+przenieść, a co usunąć; liczby z raportu architekt przelicza sam. Sonnet dostaje zadania, w których
+w obrębie briefu trzeba coś rozstrzygnąć — kontrakty, diagnozy, interfejs.
+
+*Z próby:* Haiku przeniósł dwadzieścia dwa pliki logiki wpisów bez jednej zmiany poza przestrzenią
+nazw, nie tknął wzorcowej kampanii ani asercji i sam zgłosił, czego nie był pewien — za mniej niż
+połowę kosztu Sonneta przy pierwszym zleceniu tego etapu. Zawiódł w dwóch miejscach: policzył
+w raporcie pliki zamiast testów i zgłosił nieistniejący ubytek; kopiował zamiast przenosić,
+a w poprawce zostawił martwą klasę pomocniczą i zracjonalizował resztę. Oba wyłapała weryfikacja.
+
 **Sesja architektoniczna czyta dokumenty, nie źródła.** Decyzja autora z 2026-09-22. Okno kontekstu
 asystenta prowadzącego sesję jest jej najcenniejszym zasobem, więc asystent projektuje i przegląda,
 a kod pisze i czyta subagent w wąsko zakrojonym zadaniu — wynik asystent weryfikuje, zanim go przyjmie.
