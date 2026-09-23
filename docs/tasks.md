@@ -180,9 +180,13 @@ etapie aplikacja działa, a testy przechodzą.
   dokończyć od WIP po zrównaniu z `master`.
   Brief 2 i tak trzeba będzie zrównać z `master` (pasek górny zmienił powłokę i rozgrzewkę). Katalog
   `.claude/worktrees/agent-a417bdbecb5ce8014` to pozostałość po scalonej kopii (usunięcie zablokowane
-  przez otwarte pliki) — skasować. Do przeglądu: osierocony token `DungeonTopBarActionSize`; dawny
-  pasek górny miał „Zamknij kampanię", Szukaj, Paletę poleceń i blok marki — nie wróciły, decyzja
-  autora, czy którekolwiek ma wrócić.
+  przez otwarte pliki) — skasować.
+* **Pasek górny — sprawdzony przez autora 2026-09-23, do poprawki** (mała rzecz, pierwsza w następnej
+  sesji): tło przycisku „Zmień system" w stanie najechania zasłania dolną linię krawędzi paska — ma
+  kończyć się nad nią; przycisk nie ma lewej linii krawędzi — ma mieć, tym samym tokenem obramowania;
+  **podpowiedź „Zmień system" po przytrzymaniu kursora ma wrócić** (brief jej zakazał — błąd briefu).
+  Ścieżka system › kampania działa. **Z dawnego paska górnego nic nie wraca** — decyzja autora;
+  osierocony token `DungeonTopBarActionSize` usunąć.
 * **Pasek górny i porządki paska bocznego — zrobione 2026-09-23** (decyzje autora):
   - **Pasek górny** nad obszarem treści, obok paska bocznego (położenie rozstrzygnął architekt);
     wysokość nagłówka paska bocznego, dolne krawędzie w jednej linii; widoczny po wyborze systemu.
