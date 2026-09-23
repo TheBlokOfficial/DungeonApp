@@ -4,29 +4,42 @@ using DungeonApp.Desktop.ViewModels;
 namespace DungeonApp.Desktop.Shell.TopBar;
 
 /// <summary>
-/// The context strip. It reports where the GM is and offers the one action that changes that:
-/// leaving an open campaign.
+/// The strip above the content area, to the right of the sidebar. Reports where the GM is - which
+/// system is active and, once one is open, which campaign - and offers the one action that leaves
+/// the system behind: "Zmień system", the same action the sidebar used to carry.
+/// <para>
+/// One instance lives for the whole life of <see cref="AppShellViewModel"/>, updated in place on every
+/// system choice and every campaign open/close, rather than rebuilt the way
+/// <see cref="Sidebars.GlobalSidebarViewModel"/> is per system - nothing here needs a fresh instance to
+/// skip an animation across an already-shown control, because nothing here animates.
+/// </para>
 /// </summary>
-public sealed class TopBarViewModel(string contextTitle, ICommand closeCampaignCommand) : ObservableObject
+public sealed class TopBarViewModel(ICommand changeSystemCommand) : ObservableObject
 {
-    private string _contextTitle = contextTitle;
-    private bool _isCampaignOpen;
+    private string _activeSystemName = string.Empty;
+    private string? _campaignName;
 
-    public string ContextTitle
+    /// <summary>The chosen system's own display name. Empty before any system is chosen - the strip itself stays hidden then (AppShellView.axaml).</summary>
+    public string ActiveSystemName
     {
-        get => _contextTitle;
-        set => SetField(ref _contextTitle, value);
+        get => _activeSystemName;
+        set => SetField(ref _activeSystemName, value);
     }
 
-    /// <summary>
-    /// Drives the close action's visibility. Its column is sized Auto, so hiding the action costs
-    /// no width and the surrounding chrome keeps its geometry.
-    /// </summary>
-    public bool IsCampaignOpen
+    /// <summary>Null while no campaign is open - drives the chevron and this text's own visibility together (<see cref="HasCampaign"/>).</summary>
+    public string? CampaignName
     {
-        get => _isCampaignOpen;
-        set => SetField(ref _isCampaignOpen, value);
+        get => _campaignName;
+        set
+        {
+            if (SetField(ref _campaignName, value))
+            {
+                RaisePropertyChanged(nameof(HasCampaign));
+            }
+        }
     }
 
-    public ICommand CloseCampaignCommand { get; } = closeCampaignCommand;
+    public bool HasCampaign => CampaignName is not null;
+
+    public ICommand ChangeSystemCommand { get; } = changeSystemCommand;
 }

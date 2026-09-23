@@ -3,6 +3,8 @@
              xmlns:shell="using:DungeonApp.Desktop.Shell"
              xmlns:sidebars="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
+             xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
+             xmlns:settings="using:DungeonApp.Desktop.Shell.Settings"
              xmlns:selection="using:DungeonApp.Desktop.Shell.SystemSelection"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
              xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
@@ -19,6 +21,9 @@
         </DataTemplate>
         <DataTemplate DataType="campaignLibrary:CampaignPageViewModel">
             <campaignLibrary:CampaignPageView />
+        </DataTemplate>
+        <DataTemplate DataType="settings:SettingsViewModel">
+            <settings:SettingsView />
         </DataTemplate>
         <!-- A fresh GlobalSidebarView per DataTemplate build - not a persistent element rebound by
              DataContext - is what makes zadanie 2 hold on "Zmień system" too, not only on the very
@@ -55,18 +60,26 @@
             <!-- Ekran wyboru systemu: pełnoekranowy, bez paska bocznego (docs/tasks.md, etap 1). -->
             <ContentControl Content="{Binding SystemSelection}" IsVisible="{Binding !IsSystemChosen}" />
 
-            <!-- Pasek boczny + treść, dopiero po wyborze systemu. -->
+            <!-- Pasek boczny + (pasek górny nad treścią), dopiero po wyborze systemu. Pasek boczny
+                 dokowany jako pierwszy zajmuje pełną wysokość tego DockPanela; pasek górny i treść
+                 dzielą to, co zostaje, w zagnieżdżonym DockPanelu zaczynającym się na tej samej
+                 wysokości co nagłówek paska bocznego - stąd wspólny token DungeonTopBarHeight daje im
+                 jedną ciągłą linię obramowania (TopBarView.axaml, GlobalSidebarView.axaml). -->
             <DockPanel LastChildFill="True" IsVisible="{Binding IsSystemChosen}">
                 <ContentControl DockPanel.Dock="Left" Content="{Binding Sidebar}" />
 
-                <Border Background="{DynamicResource DungeonBackstageBrush}"
-                        BoxShadow="inset 0 0 8 0 #24000000">
-                    <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
-                        <TransitioningContentControl.PageTransition>
-                            <CrossFade Duration="0:0:0.14" />
-                        </TransitioningContentControl.PageTransition>
-                    </TransitioningContentControl>
-                </Border>
+                <DockPanel LastChildFill="True">
+                    <topBar:TopBarView DockPanel.Dock="Top" DataContext="{Binding TopBar}" />
+
+                    <Border Background="{DynamicResource DungeonBackstageBrush}"
+                            BoxShadow="inset 0 0 8 0 #24000000">
+                        <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
+                            <TransitioningContentControl.PageTransition>
+                                <CrossFade Duration="0:0:0.14" />
+                            </TransitioningContentControl.PageTransition>
+                        </TransitioningContentControl>
+                    </Border>
+                </DockPanel>
             </DockPanel>
 
             <!-- Niewidoczny host rozgrzewki - używany zarówno przez wczytanie paczek (przed

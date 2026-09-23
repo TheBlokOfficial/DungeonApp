@@ -10,9 +10,11 @@ using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Shell.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.SystemSelection;
+using DungeonApp.Desktop.Shell.TopBar;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.ViewModels;
 
@@ -40,6 +42,8 @@ public sealed class AppShellViewModel : ObservableObject
     private string _startupMessage = "Wczytywanie paczek treści…";
     private int _completedSteps;
 
+    private readonly SettingsViewModel _settings = new();
+
     private ActiveSystemSession? _session;
     private GlobalSidebarViewModel? _sidebar;
     private CampaignPageViewModel? _campaignPage;
@@ -65,6 +69,10 @@ public sealed class AppShellViewModel : ObservableObject
 
         SystemSelection = new SystemSelectionViewModel(systems, ChooseSystemAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
+        // One instance for the app's whole life (unlike Sidebar, never rebuilt per system) - see
+        // TopBarViewModel's own remarks. "Zmień system" is the same action the sidebar used to
+        // trigger, wired here instead.
+        TopBar = new TopBarViewModel(new AsyncCommand(ReturnToSelectionAsync));
 
         // Backstage first. Nothing about a system is shown before one is chosen.
         _currentWorkspaceContent = _campaignLibrary;
@@ -73,6 +81,8 @@ public sealed class AppShellViewModel : ObservableObject
     public SystemSelectionViewModel SystemSelection { get; }
 
     public StatusBarViewModel StatusBar { get; }
+
+    public TopBarViewModel TopBar { get; }
 
     public GlobalSidebarViewModel? Sidebar
     {
@@ -207,6 +217,7 @@ public sealed class AppShellViewModel : ObservableObject
         CurrentWorkspaceContent = _campaignPage;
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
+        TopBar.CampaignName = campaign.Name.Value;
     }
 
     private async Task CloseCampaignAsync()
@@ -218,6 +229,7 @@ public sealed class AppShellViewModel : ObservableObject
         CurrentWorkspaceContent = _campaignLibrary;
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = "Gotowe";
+        TopBar.CampaignName = null;
 
         // Names and the shelf itself may have moved on while the campaign was open.
         var summaries = await _campaignLibrary.LoadAsync();
@@ -247,7 +259,7 @@ public sealed class AppShellViewModel : ObservableObject
             ShowCampaignPositionAsync,
             ShowCampaignTabAsync,
             ShowSystemTab,
-            ReturnToSelectionAsync,
+            ShowSettingsAsync,
             startCollapsed: _sidebarCollapsed);
 
         sidebar.PropertyChanged += OnSidebarPropertyChanged;
@@ -255,6 +267,8 @@ public sealed class AppShellViewModel : ObservableObject
         Sidebar = sidebar;
         CurrentWorkspaceContent = _campaignLibrary;
         IsSystemChosen = true;
+        TopBar.ActiveSystemName = system.DisplayName;
+        TopBar.CampaignName = null;
 
         _campaignLibrary.SetActiveSystem(system);
         await _campaignLibrary.LoadAsync();
@@ -281,6 +295,8 @@ public sealed class AppShellViewModel : ObservableObject
         IsSystemChosen = false;
         CurrentWorkspaceContent = _campaignLibrary;
         StatusBar.Message = "Gotowe";
+        TopBar.ActiveSystemName = string.Empty;
+        TopBar.CampaignName = null;
 
         return Task.CompletedTask;
     }
@@ -297,6 +313,13 @@ public sealed class AppShellViewModel : ObservableObject
     private Task ShowCampaignPositionAsync()
     {
         CurrentWorkspaceContent = _session is { IsCampaignOpen: true } ? _campaignPage! : _campaignLibrary;
+        return Task.CompletedTask;
+    }
+
+    /// <summary>"Ustawienia": a frame-owned position, available with or without an open campaign. Shows the empty tab - see <see cref="SettingsViewModel"/>'s own remarks.</summary>
+    private Task ShowSettingsAsync()
+    {
+        CurrentWorkspaceContent = _settings;
         return Task.CompletedTask;
     }
 

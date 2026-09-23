@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
@@ -36,13 +37,22 @@ public sealed class GlobalSidebarRenderingTests
         AssertRowDraws(window, "Kampanie");
         AssertRowDraws(window, "Biurko");
         AssertRowDraws(window, "Rejestr");
-        AssertRowDraws(window, "Zmień system");
+        AssertRowDraws(window, "Ustawienia");
     }
 
     /// <summary>
-    /// docs/architecture.md, "Zwijanie paska jak dawniej": in the collapsed rail, every row across all
-    /// three categories is meant to form one continuous column with no gap wider than the spacing
-    /// already used between two rows inside a single group - the pre-etap-1 behaviour with one heading.
+    /// docs/architecture.md, "Zwijanie paska jak dawniej" no longer asks for one continuous column -
+    /// the author reversed that call (etap 4, brief A.6): collapsing must leave a deliberate, designed
+    /// gap between the Kampania group and the Biblioteka group (still named System in code -
+    /// <see cref="GlobalSidebarViewModel.SystemTabItems"/> - but labelled "BIBLIOTEKA" on screen), not
+    /// the small within-group spacing every other adjacent pair of rows gets.
+    /// <para>
+    /// The expected gap is exactly the two view-local values that compose it in
+    /// GlobalSidebarView.axaml: <c>DungeonSpacingLg</c> (16, the outer StackPanel's own
+    /// <c>Spacing</c> between the two groups) plus the Biblioteka group's own items-list top margin
+    /// (8, unchanged from before this change). Asserting the precise sum, not merely "bigger than
+    /// zero", is what tells a designed gap apart from an accidental one.
+    /// </para>
     /// <para>
     /// Headless has no compositor-driven frame clock tied to wall time:
     /// <see cref="Avalonia.Headless.AvaloniaHeadlessPlatform.ForceRenderTimerTick"/>, tried first,
@@ -51,37 +61,75 @@ public sealed class GlobalSidebarRenderingTests
     /// value change on a control that already rendered a prior frame - toggling
     /// <see cref="GlobalSidebarViewModel.IsCollapsed"/> before the view's first <c>Show()</c> gives it
     /// no earlier frame to transition from, so the collapsed state is simply what the first layout
-    /// pass produces. That is the brief's "przy wyłączonych przejściach" case.
-    /// </para>
-    /// <para>
-    /// Caveat worth recording: this asserts the *delivered* fix's geometry, not a regression guard
-    /// against the pre-fix implementation. The pre-fix mechanism (a <c>TranslateTransform</c> on the
-    /// item list) moves pixels only at render time and never changes <see cref="Control.Bounds"/> (an
-    /// arrange-time value) at all, collapsed or not - so a Bounds-only assertion cannot fail against
-    /// it either way. Swapping the fix for a Height animation (rather than a bigger translate) is what
-    /// makes the gap observable here in the first place.
+    /// pass produces.
     /// </para>
     /// </summary>
     [AvaloniaFact]
-    public void Collapsing_the_sidebar_leaves_no_gap_between_rows_of_different_groups()
+    public void Collapsing_the_sidebar_leaves_a_designed_gap_between_kampania_and_biblioteka()
     {
-        var expandedWindow = BuildWindow(startCollapsed: false, out _);
-        var rowsExpanded = GetNavButtons(expandedWindow);
-        Assert.True(rowsExpanded.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rowsExpanded.Count}.");
-        var withinGroupGap = rowsExpanded[1].Bounds.Y - (rowsExpanded[0].Bounds.Y + rowsExpanded[0].Bounds.Height);
+        const double designedGroupGap = 16 + 8; // DungeonSpacingLg + Biblioteka's own items-list top margin.
 
         var collapsedWindow = BuildWindow(startCollapsed: true, out _);
-        var rowsCollapsed = GetNavButtons(collapsedWindow);
-        Assert.True(rowsCollapsed.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rowsCollapsed.Count}.");
-        for (var i = 1; i < rowsCollapsed.Count; i++)
-        {
-            var gap = rowsCollapsed[i].Bounds.Y - (rowsCollapsed[i - 1].Bounds.Y + rowsCollapsed[i - 1].Bounds.Height);
-            Assert.True(
-                gap <= withinGroupGap + 0.5,
-                $"Przerwa między wierszem {i - 1} a {i} po zwinięciu wynosi {gap}, " +
-                $"oczekiwano nie więcej niż odstępu wewnątrz grupy ({withinGroupGap}).");
-        }
+        var rows = GetNavButtons(collapsedWindow);
+        Assert.True(rows.Count >= 4, $"Za mało wierszy do sprawdzenia przerw: {rows.Count}.");
+
+        // rows[0]/[1] are both Kampania (campaign position, then its one campaign tab); rows[2] is
+        // Biblioteka's own single tab - the boundary this test is actually about.
+        var withinGroupGap = TopOf(rows[1], collapsedWindow) - Bottom(rows[0], collapsedWindow);
+        var groupBoundaryGap = TopOf(rows[2], collapsedWindow) - Bottom(rows[1], collapsedWindow);
+
+        Assert.True(withinGroupGap is > 0 and < designedGroupGap, $"Odstęp wewnątrz grupy Kampania ({withinGroupGap}) powinien być mniejszy niż odstęp między grupami.");
+        Assert.Equal(designedGroupGap, groupBoundaryGap, precision: 1);
     }
+
+    /// <summary>
+    /// docs/tasks.md, etap 4, brief A.5: the Aplikacja category (on screen, "SYSTEM" - today just
+    /// "Ustawienia") is pinned to the sidebar's own bottom edge in both collapse states, and
+    /// collapsing only ever hides its own heading - its row must never move vertically. Both halves
+    /// are asserted: the row's Y is identical whether the sidebar is collapsed or not, and that Y
+    /// sits exactly this group's own trailing margin (8, GlobalSidebarView.axaml) above the sidebar's
+    /// own rendered bottom edge in either state.
+    /// </summary>
+    [AvaloniaFact]
+    public void The_aplikacja_categorys_row_stays_at_the_sidebars_bottom_edge_in_both_collapse_states()
+    {
+        const double trailingMargin = 8;
+
+        var expandedWindow = BuildWindow(startCollapsed: false, out _);
+        var expandedSettingsRow = FindRowByLabel(expandedWindow, "Ustawienia");
+
+        var collapsedWindow = BuildWindow(startCollapsed: true, out _);
+        var collapsedSettingsRow = FindRowByLabel(collapsedWindow, "Ustawienia");
+
+        Assert.Equal(TopOf(expandedSettingsRow, expandedWindow), TopOf(collapsedSettingsRow, collapsedWindow), precision: 1);
+
+        AssertSitsAboveTheBottomEdgeBy(expandedWindow, expandedSettingsRow, trailingMargin);
+        AssertSitsAboveTheBottomEdgeBy(collapsedWindow, collapsedSettingsRow, trailingMargin);
+    }
+
+    private static void AssertSitsAboveTheBottomEdgeBy(Window window, Button row, double expectedMargin)
+    {
+        var marginBelowRow = window.Bounds.Height - Bottom(row, window);
+
+        Assert.Equal(expectedMargin, marginBelowRow, precision: 1);
+    }
+
+    private static Button FindRowByLabel(Window window, string label) =>
+        GetNavButtons(window).Single(button =>
+            button.GetVisualDescendants().OfType<TextBlock>().Any(tb => tb.Text == label));
+
+    /// <summary>
+    /// A generated row's own <see cref="Control.Bounds"/> is relative to its immediate visual parent -
+    /// for an <see cref="ItemsControl"/>'s generated item that is the per-item container Avalonia
+    /// wraps it in, not the sidebar - so every row reports the same Bounds.Y (0) regardless of where
+    /// it actually draws. <see cref="Visual.TranslatePoint(Point, Visual)"/> against the window itself
+    /// is what turns that into a comparable, window-relative coordinate.
+    /// </summary>
+    private static double TopOf(Visual visual, Visual window) =>
+        visual.TranslatePoint(new Point(0, 0), window)!.Value.Y;
+
+    private static double Bottom(Control control, Visual window) =>
+        TopOf(control, window) + control.Bounds.Height;
 
     /// <summary>
     /// docs/tasks.md, zadanie 2: the sidebar shown after choosing a system must have its target
