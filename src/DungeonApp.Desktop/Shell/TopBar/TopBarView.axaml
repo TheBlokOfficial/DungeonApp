@@ -12,19 +12,24 @@
         <!-- Square, icon-only, one visual state: hover. No pressed, selected or focus look of its
              own - the button either sits at rest or is being pointed at, nothing else.
 
-             Left and bottom edge lines share the same border token (color and thickness) as the
-             bar's own bottom edge (the Border below, BorderThickness="0,0,0,1"). They are drawn by
-             an outer element that carries no fill of its own; the hover background lives on a
-             separate element nested inside it, so it sits geometrically inside the lines and can
-             never paint over them, regardless of how the outer border itself is positioned. -->
+             The bar's own outer Border (below) is DungeonTopBarHeight tall with a 1px bottom
+             edge, so its content area is DungeonTopBarHeight minus that 1px. No Height is set
+             here - VerticalAlignment="Stretch" (the Grid cell's default) lets the button fill
+             that reduced content area exactly, ending right above the bar's bottom line rather
+             than overlapping it. Width stays DungeonTopBarHeight so the hit area is square: 1px
+             for the left line plus the same height as the fill. The left line shares its border
+             token (color and thickness) with the bar's own bottom edge. It is drawn by an outer
+             element that carries no fill of its own; the hover background lives on a separate
+             element nested inside it, so it sits geometrically inside the line and can never
+             paint over it. -->
         <Style Selector="Button.frame-action">
             <Setter Property="Width" Value="{DynamicResource DungeonTopBarHeight}" />
-            <Setter Property="Height" Value="{DynamicResource DungeonTopBarHeight}" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
-            <Setter Property="BorderThickness" Value="1,0,0,1" />
+            <Setter Property="BorderThickness" Value="1,0,0,0" />
             <Setter Property="CornerRadius" Value="0" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="Template">
