@@ -17,8 +17,9 @@ namespace DungeonApp.Desktop.Content;
 /// from here, in particular never <see cref="Shell.CampaignSession"/> or
 /// <see cref="Core.Campaigns.Campaign"/> themselves, and no object with a method that mutates state
 /// (docs/architecture.md, "Gdzie mieszka stan"). A tab that needs more than its own model's records
-/// - today, the desk's own tools - builds its own <see cref="Library.Desktop.Content.CampaignToolContext"/>
-/// from this context plus its own type catalog, the same way the desk always has.
+/// - today, the desk's own tools - builds its own <c>CampaignEntriesContext</c> (in the entries
+/// library, which the frame does not reference and so cannot name by <c>cref</c>) from this context
+/// plus its own type catalog, the same way the desk always has.
 /// </para>
 /// </summary>
 public sealed class CampaignTabContext

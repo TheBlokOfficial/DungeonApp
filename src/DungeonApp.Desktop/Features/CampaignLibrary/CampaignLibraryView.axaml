@@ -33,16 +33,16 @@
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
         </Style>
         <!-- Name, date and arrow dim the same way any disabled control in this theme does - the
-             Button ControlTheme's own ":disabled { Opacity: 0.48 }" (DungeonControls.axaml) is the
-             only disabled-state opacity this theme defines; reused here by value rather than
-             inventing a second one, since it is not exposed as a named resource to bind to.
+             Button ControlTheme's own ":disabled" style (DungeonControls.axaml) and this one now
+             share DungeonDisabledOpacity (Themes/Tokens.axaml), the only disabled-state opacity this
+             theme defines.
              One selector per concrete type, not a shared "Control.campaign-dim:disabled" base-type
              selector: the base-type form compiled and matched the class and the pseudo-class alike
              (confirmed by inspecting the StackPanel's own Classes at runtime) but its Setter never
              actually took effect - listing StackPanel/TextBlock/Image explicitly is what makes the
              Opacity setter apply. -->
         <Style Selector="StackPanel.campaign-dim:disabled, TextBlock.campaign-dim:disabled, Image.campaign-dim:disabled">
-            <Setter Property="Opacity" Value="0.48" />
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="Button.campaign-open">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
