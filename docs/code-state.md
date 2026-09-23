@@ -53,10 +53,8 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
 
 ### Dług
 
-* **Odrzucone paczki nie docierają do Mistrza Gry** — jedyna pozycja z tabeli „Co się dzieje, gdy
-  treść jest zepsuta", o której się nie dowie. Czeka na zakładki treści.
-* **Zmiana nazwy okazu nie ma konsumenta** — operacja istnieje i jest przetestowana, okno „Świat
-  kampanii" jej nie woła.
+* **Odrzucone paczki nie docierają do Mistrza Gry, a zmiana nazwy okazu nie ma konsumenta** — obie
+  pozycje czekają w kolejce: [tasks.md](tasks.md), *Czekają na miejsce na ekranie*.
 * **Błąd we/wy przy operacjach na kampanii** jest połykany; nazwany komentarzem w kodzie.
 * **Wymóg „widok narzędzia sprząta po sobie" nie stoi w punkcie styku** — fabryka treści panelu
   oddaje `object`; drugi system pozna wymóg dopiero przez wyciek.
