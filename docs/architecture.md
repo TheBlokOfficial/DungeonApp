@@ -185,8 +185,8 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 
 | Część | Projekt | Charakter | Co wolno wiedzieć |
 |---|---|---|---|
-| **Rama** | `DungeonApp.Core` + `DungeonApp.Desktop`, po wyniesieniu z nich bibliotek | kompilowana | okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie, ich zapis, zdarzenia, jedyna droga zmiany stanu. **Nie zna `Entry`. Nie zna biurka.** |
-| **Biblioteki** | osobne projekty, każda biblioteka osobno — podział ustala plan przebudowy | kompilowana | biblioteka wpisów: paczki, rejestr, wpisy, instancje, nakładki, kontrolki kart, szkielet zakładki treści; biblioteka biurka: biurko i system okien; później silnik formuł. **Biblioteka wpisów zna `Entry`. Żadna nie zna `Monster`.** |
+| **Rama** | `DungeonApp.Core` + `DungeonApp.Desktop` | kompilowana | okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie, ich zapis, zdarzenia, jedyna droga zmiany stanu. **Nie zna `Entry`. Nie zna biurka.** |
+| **Biblioteki** | biblioteka wpisów: `DungeonApp.Library.Entries` (logika, bez Avalonii) + `DungeonApp.Library.Entries.Desktop` (interfejs); biblioteka biurka: `DungeonApp.Library.Workspace` | kompilowana | biblioteka wpisów: paczki, rejestr, wpisy, instancje, nakładki, kontrolki kart, szkielet zakładki treści; biblioteka biurka: biurko i system okien; później silnik formuł. **Biblioteka wpisów zna `Entry`. Żadna nie zna `Monster`.** |
 | **System** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, zakładki, narzędzia biurka, dodatki. **Jedyne miejsce, gdzie wolno być konkretnym.** |
 | **Paczka** | `Dokumenty\DungeonApp\Packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
 | **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
@@ -222,6 +222,17 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
   wyjątkiem: jawnym, jednokierunkowym i tylko tam, gdzie jedna naprawdę potrzebuje drugiej w środku.
 - **Systemy nigdy nie referencują się nawzajem.**
 - **Ładowanie systemów jest statyczne** — referencją projektu, nigdy `Assembly.LoadFrom`.
+- **System mówi ramie cztery rzeczy: kim jest, jakie ma zakładki, jakie modele stanu zapisuje
+  i jakie kroki startowe zgłasza.** Rama nie zna jego typów treści ani sposobu rysowania kart.
+  Kroki startowe uruchamia, nie wiedząc, co robią; tekst ostrzeżenia przy awarii kroku podaje
+  system, a kroki samej ramy mają tekst ogólny.
+- **Każdy system sam wczytuje paczki i ma własny rejestr.** Wspólnego rejestru ani wspólnego
+  katalogu typów treści dla wszystkich systemów nie ma. Katalog paczek wskazuje systemowi korzeń
+  kompozycji.
+- **Biblioteka daje szkielet zakładki, system robi z niego swoją zakładkę.** Rama dostaje od systemu
+  zakładkę i nie wie, czy powstała z biblioteki, czy od zera.
+- **Jedna biblioteka może mieć dwa projekty** — logikę bez Avalonii i interfejs. Części jednej
+  biblioteki mogą się znać; różne biblioteki nie.
 - **Rama zachowuje drzwi zapisu.** System przejmuje wygląd i zawartość aplikacji, nigdy jedynej drogi
   zmiany stanu — sekcja *Gdzie mieszka stan*.
 - **Dziś system jest jeden**, a ekran wyboru systemu istnieje mimo to. Drugi system powstaje
@@ -707,7 +718,7 @@ korzystają oba.
 w program. Istnieje także przy jednym systemie. **Wybór systemu poprzedza kampanię**, a nie z niej
 wynika.
 
-**Powrót do wyboru** — przycisk należący do ramy — działa bez restartu. Rama umie
+**Powrót do wyboru** — przycisk „Zmień system" w pasku górnym, należący do ramy — działa bez restartu. Rama umie
 w całości rozebrać aktywny system: zamknąć kampanię, zwolnić jego zakładki i biurko. Nic się przy tym
 nie traci, bo każda zmiana stanu trafia na dysk od razu. **Sprzątanie po sobie przy powrocie jest
 częścią kontraktu zakładki i okna.**
@@ -720,13 +731,20 @@ częścią kontraktu zakładki i okna.**
 | **System** | system | od wyboru systemu | wyłącznie treść systemu — **kampanii nie widzi wcale** |
 | **Aplikacja** | rama | zawsze | ustawienia i inne rzeczy ramy |
 
-Nazwy kategorii są słownikiem dokumentów; etykiety na ekranie ustala projekt interfejsu.
+Nazwy kategorii są słownikiem dokumentów; etykiety na ekranie ustala projekt interfejsu. **Uwaga
+na zderzenie nazw:** na ekranie kategoria System ma etykietę „Biblioteka", a kategoria Aplikacja —
+„System".
 
 * **Kategoria wyznacza nie tylko miejsce zakładki, ale to, co zakładka dostaje.** Zakładka kategorii
   System nie widzi otwartej kampanii. Co potrzebuje stanu kampanii, należy do kategorii Kampania.
 * **System wypełnia pasek wedle zasad ramy, nie rysuje go.** Deklaruje zakładki kategorii Kampania —
   pod pozycją kampanii — i kategorii System; rama je wyświetla. Pozycja kampanii i kategoria
   Aplikacja należą do ramy.
+* **Kategoria Aplikacja niesie zakładkę „Ustawienia".** Pusta, dopóki rama nie ma czego ustawiać.
+* **Pasek boczny niesie zakładki; akcje ramy, które niczego nie otwierają, stoją w pasku górnym.**
+  Pasek górny należy do ramy i stoi nad obszarem treści, obok paska bocznego, od wyboru systemu.
+  Z lewej pokazuje nazwę systemu i otwartej kampanii — tekst, nie nawigację; z prawej przyciski akcji
+  ramy, dziś jeden: „Zmień system".
 * **Pozycja kampanii zmienia się razem ze stanem.** Bez otwartej kampanii jest półką — wczytanie,
   tworzenie, usuwanie. Po otwarciu kampanii zamienia się w **stronę kampanii** i nosi jej nazwę: to,
   co rama o kampanii wie, i przełączniki wariantów. Ani biblioteka, ani system nic na niej nie
@@ -832,10 +850,11 @@ Dwie niezależne osie.
 
 ```
  1.  systemy          wpięte na sztywno — nie mogą zawieść
- 2.  paczki z dysku   wczytane i sprawdzone; zepsute oznaczone, nie blokują
- 3.  rejestr          zbudowany raz, tylko do odczytu
- 4.  wybór systemu    ekran pełnoekranowy
- 5.  po wyborze       półka kampanii tego systemu, rozgrzewka jego zakładek
+ 2.  kroki systemów   każdy system: swoje paczki (zepsute oznaczone, nie blokują),
+                      swój rejestr — zbudowany raz, tylko do odczytu — i rozgrzewka kart
+ 3.  kroki ramy       półka, dane kampanii z półki, rozgrzewka ekranów ramy i zakładek systemów
+ 4.  wybór systemu    ekran pełnoekranowy, interaktywny dopiero po krokach 2–3
+ 5.  po wyborze       półka kampanii tego systemu — nic nie jest budowane od zera
 ```
 
 **Treść jest sprawdzana przed kampaniami.** Żaden krok nie ma prawa zatrzymać wejścia do programu —
@@ -908,15 +927,16 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
 | Granica | Jak egzekwowana | Status |
 |---|---|---|
 | logika ramy bez Avalonii | test po referencjach | istnieje (`Core`) |
-| logika bibliotek bez Avalonii | test po referencjach | powstaje razem z pierwszą biblioteką bez Avalonii |
-| biblioteki nie referencują się nawzajem, poza jawnym wyjątkiem | test po referencjach | powstaje z rozdziałem bibliotek |
-| rama i biblioteka bez **nazw rodzajów** treści | skan źródeł po słowniku z systemu | istnieje dla `Core` i `Desktop`; obejmie bibliotekę |
+| logika bibliotek bez Avalonii | test po referencjach | istnieje (`Library.Entries`) |
+| biblioteki nie referencują się nawzajem, poza jawnym wyjątkiem | test po referencjach | istnieje; części jednej biblioteki nie są wyjątkiem, tylko jedną biblioteką |
+| rama i biblioteka bez **nazw rodzajów** treści | skan źródeł po słowniku z systemu | istnieje dla ramy i bibliotek |
 | rama i biblioteka bez **nazw pól** treści | koperta: nie ma API przyjmującego nazwę pola | wchodzi z kopertą, nie testem |
-| rama nie referencuje biblioteki | test po referencjach | powstaje razem z biblioteką |
-| rama i biblioteka nie referencują systemu | test po referencjach | istnieje dla `Core` i `Desktop`; obejmie bibliotekę |
+| rama nie referencuje biblioteki | test po referencjach | istnieje (`Core`, `Desktop`) |
+| rama i biblioteka nie referencują systemu | test po referencjach | istnieje |
 | system nie referencuje innego systemu | test po referencjach | istnieje |
-| zakładka kategorii System nie widzi kampanii | kształt API ramy: nie dostaje czym; test po refleksji na kontekście zakładki systemu | powstaje razem z paskiem bocznym |
-| o wariantach system dowiaduje się w jednym miejscu | kształt API ramy: konteksty zakładek i okien ich nie niosą | powstaje z pierwszym dodatkiem || narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
+| zakładka kategorii System nie widzi kampanii | kształt API ramy: deklaracja zakładki tej kategorii tworzy ją bez żadnego argumentu; test po refleksji na deklaracji | istnieje |
+| o wariantach system dowiaduje się w jednym miejscu | kształt API ramy: konteksty zakładek i okien ich nie niosą | powstaje z pierwszym dodatkiem |
+| narzędzie nie introspekcjonuje typu treści | przegląd; kandydat na test | do rozstrzygnięcia |
 | brak kaskad zmian stanu | `MaxEventsPerCommand` jako tripwire | istnieje, uzasadnienie do przepisania |
 
 * **Słownik zakazanych słów jest wyciągany z systemu, nie wpisany ręcznie** — dodajesz typ
@@ -951,6 +971,10 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    jakąkolwiek kartę zastępczą. **Wyzwalacz:** pierwszy taki rodzaj treści.
 7. **Paczka a system.** Czy paczka ma deklarować swój system, i gdzie pokazuje się paczka odrzucona
    za zepsuty manifest, której systemu nie da się poznać. „Nigdzie" nie jest odpowiedzią.
+   Wspólnego rejestru nie ma: każdy system czyta katalog paczek sam i każdy odrzuca
+   zepsutą paczkę osobno, więc przy drugim systemie ta sama paczka byłaby zgłaszana tyle razy, ile
+   jest systemów, a wpisy paczki pisanej pod cudzy system — oznaczane jako wadliwe w rejestrze
+   każdego systemu poza jej własnym.
    **Wyzwalacz:** pierwsze miejsce na ekranie dla odrzuconych paczek ([tasks.md](tasks.md),
    „Czekają na miejsce na ekranie").
 8. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym

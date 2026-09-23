@@ -59,6 +59,18 @@ wersjonowanie kaskadowe.
 mechanizmem czekającym na drugi system — pozycja „Ekran wyboru systemu odłożony do drugiego
 systemu".
 
+**Każdy system ma własny rejestr; rama nie zbiera typów treści** — etap 4 przebudowy, 2026-09-23.
+Wspólny katalog typów treści w ramie był jedynym powodem, dla którego rama musiała znać typ treści,
+a przez niego wpis — sprzecznie z „Nie zna `Entry`". Cena: każdy system czyta katalog paczek sam;
+konsekwencja dla pytania „Paczka a system" stoi przy nim w architekturze. Do 2026-09-23 paczki
+wczytywała rama, jednym loaderem dla wszystkich systemów.
+
+**Kroki startowe systemu są dla ramy nieprzezroczyste** — ten sam dzień. Wczytywanie paczek
+i rozgrzewka kart były krokami ramy, co wymagało, żeby znała rejestr i prezentację kart. Tekst
+ostrzeżenia przy awarii podaje system, bo tylko on wie, co zawiodło. Cena, przyjęta bez weta: rama
+uruchamia kroki systemu razem, więc rozgrzewka kart biegnie zaraz po paczkach, a nie na końcu startu —
+jej awaria zabiera pozostałą rozgrzewkę, która wtedy przechodzi w leniwe wczytywanie.
+
 ### Biblioteka, nie warstwa
 
 Osobno, a nie w ramie ani w pierwszym systemie, bo w ramie biurko znów byłoby istotą kampanii,
@@ -380,6 +392,17 @@ czynnością na kampanii, więc wykonuje się ją tam, gdzie kampania jest pokaz
 
 Wcześniej tego samego dnia obowiązywało: półka zawsze, zakładki kampanii dopiero przy otwartej
 kampanii. Do 2026-09-22 kampanię zamykało się z paska bocznego.
+
+**Akcje ramy w pasku górnym, nie na pasku bocznym** — autor, 2026-09-23. „Zmień system" stało
+w kategorii Aplikacja, ale nie otwiera zakładki, tylko wykonuje akcję — na pasku, który służy do
+przechodzenia między miejscami, udawało miejsce. Ta sama zasada co przy zamykaniu kampanii. Położenie
+paska górnego — nad obszarem treści, obok paska bocznego — rozstrzygnął architekt. Z dawnego paska
+górnego nic nie wraca — autor.
+
+**Etykiety kategorii na ekranie: „Biblioteka" dla kategorii System, „System" dla kategorii
+Aplikacja** — autor, 2026-09-23. Słownik dokumentów i kodu zostaje bez zmian, również z jego woli.
+Zakładka „Ustawienia" w kategorii Aplikacja jest pusta z woli autora — pasek ma pokazywać docelowy
+kształt, zanim rama będzie miała cokolwiek do ustawienia.
 
 ### Okno czy zakładka — kryterium
 
