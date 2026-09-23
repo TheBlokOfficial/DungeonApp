@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
@@ -25,7 +25,7 @@ public sealed class AppShellViewModelTests
     {
         var systemTabCalls = 0;
         var campaignTabCalls = 0;
-        var systemTabDeclaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", _ =>
+        var systemTabDeclaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", () =>
         {
             systemTabCalls++;
             return new FakeTabContent();
@@ -36,7 +36,7 @@ public sealed class AppShellViewModelTests
             return Task.FromResult<ITabContent>(new FakeTabContent());
         });
         var system = new FakeGameSystem(
-            ContentId.Create("sys-a"), [], systemTabs: [systemTabDeclaration], campaignTabs: [campaignTabDeclaration]);
+            SystemId.Create("sys-a"), systemTabs: [systemTabDeclaration], campaignTabs: [campaignTabDeclaration]);
 
         var shell = BuildShell([system]);
 
@@ -51,8 +51,8 @@ public sealed class AppShellViewModelTests
     [Fact]
     public async Task Collapsing_the_sidebar_then_changing_the_system_keeps_the_next_sidebar_collapsed()
     {
-        var systemA = new FakeGameSystem(ContentId.Create("sys-a"), []);
-        var systemB = new FakeGameSystem(ContentId.Create("sys-b"), []);
+        var systemA = new FakeGameSystem(SystemId.Create("sys-a"), []);
+        var systemB = new FakeGameSystem(SystemId.Create("sys-b"), []);
         var shell = BuildShell([systemA, systemB]);
 
         await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync();
@@ -72,7 +72,7 @@ public sealed class AppShellViewModelTests
     [Fact]
     public async Task A_freshly_chosen_systems_sidebar_starts_expanded_when_never_collapsed_before()
     {
-        var system = new FakeGameSystem(ContentId.Create("sys-a"), []);
+        var system = new FakeGameSystem(SystemId.Create("sys-a"), []);
         var shell = BuildShell([system]);
 
         await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync();
@@ -92,7 +92,6 @@ public sealed class AppShellViewModelTests
             repository,
             campaignLibrary,
             preparations,
-            startupSteps: [],
-            contentRegistry: () => new ContentRegistry([], [], [], []));
+            startupSteps: []);
     }
 }

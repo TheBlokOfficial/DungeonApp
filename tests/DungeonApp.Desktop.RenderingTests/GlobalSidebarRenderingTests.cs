@@ -191,7 +191,7 @@ public sealed class GlobalSidebarRenderingTests
 
     private static GlobalSidebarViewModel BuildSidebarViewModel(bool startCollapsed)
     {
-        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
+        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, () => new FakeTabContent());
         var campaignTab = new CampaignTabDeclaration(
             "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
 
@@ -207,7 +207,7 @@ public sealed class GlobalSidebarRenderingTests
 
     private static Window BuildWindow(bool startCollapsed, out GlobalSidebarViewModel viewModel)
     {
-        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
+        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, () => new FakeTabContent());
         var campaignTab = new CampaignTabDeclaration(
             "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
 
@@ -235,7 +235,7 @@ public sealed class GlobalSidebarRenderingTests
     /// <summary>Builds the sidebar with its collapse state fixed by the constructor's own <c>startCollapsed</c> parameter - never by a post-construction toggle.</summary>
     private static Window BuildWindowConstructedAt(bool startCollapsed)
     {
-        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, _ => new FakeTabContent());
+        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, () => new FakeTabContent());
         var campaignTab = new CampaignTabDeclaration(
             "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
 

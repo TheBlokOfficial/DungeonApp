@@ -3,16 +3,26 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Startup;
+using DungeonApp.Library.Entries.Desktop.Content;
 
 namespace DungeonApp.Library.Entries.Desktop.Tests;
 
 /// <summary>
 /// A minimal <see cref="IGameSystem"/> for the Library.Entries.Desktop tests that need an
 /// <see cref="IContentPresentation"/> to hand a <see cref="Features.Registry.RegistryViewModel"/>
-/// (<c>RegistryViewModelTests</c>). It knows exactly the descriptors it is given and draws a trivial
-/// placeholder card for any resolved entry - it exists to exercise the registry's plumbing, not to
-/// stand in for any real content type, so it names none.
+/// (<c>RegistryViewModelTests</c>, <c>LoadContentPacksStepTests</c>). It knows exactly the descriptors
+/// it is given and draws a trivial placeholder card for any resolved entry - it exists to exercise the
+/// registry's plumbing, not to stand in for any real content type, so it names none.
+/// <para>
+/// Implements <see cref="IContentTypeCatalog"/> and <see cref="IContentPresentation"/> directly, not
+/// through <see cref="IGameSystem"/> - the frame's own contract no longer carries either
+/// (docs/architecture.md, "Rama, biblioteka, system"), so <see cref="ContentSetId"/> is this fake's own
+/// concrete identity, separate from the frame's <see cref="Id"/>, the same split
+/// <c>Dnd5eSystem</c> makes.
+/// </para>
 /// <para>
 /// Copied minimally from <c>DungeonApp.Desktop.Tests.FakeGameSystem</c> rather than shared (docs/tasks.md,
 /// etap 2): that class is <c>internal</c> and still backs several Desktop.Tests fixtures unrelated to
@@ -25,9 +35,11 @@ internal sealed class FakeGameSystem(
     IReadOnlyList<ContentTypeDescriptor> descriptors,
     Func<ContentValues, string?>? validate = null,
     IReadOnlyList<SystemTabDeclaration>? systemTabs = null,
-    IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null) : IGameSystem
+    IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null) : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
-    public ContentId Id { get; } = id;
+    public SystemId Id { get; } = SystemId.Create(id.Value);
+
+    public ContentId ContentSetId { get; } = id;
 
     public string DisplayName { get; } = id.ToString();
 
@@ -37,7 +49,9 @@ internal sealed class FakeGameSystem(
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
-    public bool HasSet(ContentId set) => set == Id;
+    public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];
+
+    public bool HasSet(ContentId set) => set == ContentSetId;
 
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {

@@ -1,6 +1,6 @@
 using System;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.Systems;
 
 namespace DungeonApp.Core.Campaigns;
 
@@ -24,5 +24,5 @@ public sealed record CampaignSummary(
     CampaignId Id,
     CampaignName Name,
     DateTimeOffset CreatedAt,
-    ContentId? SystemId,
+    SystemId? SystemId,
     CampaignStoreFailure? ManifestFailure = null);

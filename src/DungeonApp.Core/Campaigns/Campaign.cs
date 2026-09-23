@@ -1,6 +1,6 @@
 using System;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 
 namespace DungeonApp.Core.Campaigns;
 
@@ -16,7 +16,7 @@ public sealed class Campaign
     private Campaign(
         CampaignId id,
         CampaignName name,
-        ContentId? systemId,
+        SystemId? systemId,
         DateTimeOffset createdAt,
         CampaignStateSnapshot snapshot)
     {
@@ -37,7 +37,7 @@ public sealed class Campaign
     /// do jednego systemu"). Null for a campaign that predates this field, or one whose manifest never
     /// recorded it - never migrated or guessed at.
     /// </summary>
-    public ContentId? SystemId { get; }
+    public SystemId? SystemId { get; }
 
     /// <summary>
     /// Read from an injected <see cref="TimeProvider"/> rather than <c>DateTimeOffset.UtcNow</c>, so
@@ -51,7 +51,7 @@ public sealed class Campaign
     public static Campaign Create(
         CampaignName name,
         TimeProvider timeProvider,
-        ContentId? systemId = null)
+        SystemId? systemId = null)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(timeProvider);
@@ -67,7 +67,7 @@ public sealed class Campaign
         CampaignId id,
         CampaignName name,
         DateTimeOffset createdAt,
-        ContentId? systemId,
+        SystemId? systemId,
         CampaignStateSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(name);

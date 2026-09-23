@@ -44,7 +44,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     [Fact]
     public async Task Persists_the_campaigns_system()
     {
-        var systemId = DungeonApp.Core.Content.ContentId.Create("dnd5e");
+        var systemId = DungeonApp.Core.Systems.SystemId.Create("dnd5e");
         var campaign = Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment), systemId);
 
         await _repository.SaveAsync(campaign, []);
@@ -113,7 +113,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     [Fact]
     public async Task Lists_a_campaigns_system()
     {
-        var systemId = DungeonApp.Core.Content.ContentId.Create("dnd5e");
+        var systemId = DungeonApp.Core.Systems.SystemId.Create("dnd5e");
         await _repository.SaveAsync(
             Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment), systemId), []);
 

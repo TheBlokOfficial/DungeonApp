@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
@@ -256,7 +256,7 @@ public enum CampaignUnavailableReason
     UnknownSystem
 }
 
-public sealed class CampaignUnavailableException(CampaignId id, CampaignUnavailableReason reason, ContentId? systemId = null)
+public sealed class CampaignUnavailableException(CampaignId id, CampaignUnavailableReason reason, SystemId? systemId = null)
     : Exception(BuildMessage(id, reason, systemId))
 {
     public CampaignId CampaignId { get; } = id;
@@ -264,9 +264,9 @@ public sealed class CampaignUnavailableException(CampaignId id, CampaignUnavaila
     public CampaignUnavailableReason Reason { get; } = reason;
 
     /// <summary>Set only for <see cref="CampaignUnavailableReason.UnknownSystem"/>.</summary>
-    public ContentId? SystemId { get; } = systemId;
+    public SystemId? SystemId { get; } = systemId;
 
-    private static string BuildMessage(CampaignId id, CampaignUnavailableReason reason, ContentId? systemId) => reason switch
+    private static string BuildMessage(CampaignId id, CampaignUnavailableReason reason, SystemId? systemId) => reason switch
     {
         CampaignUnavailableReason.NoSystem => $"Campaign '{id}' has no system recorded.",
         CampaignUnavailableReason.UnknownSystem =>

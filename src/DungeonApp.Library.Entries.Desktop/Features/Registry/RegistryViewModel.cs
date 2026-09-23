@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls;
 using DungeonApp.Core.Content;
-using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.ViewModels;
+using DungeonApp.Library.Entries.Desktop.Content;
 
 namespace DungeonApp.Library.Entries.Desktop.Features.Registry;
 

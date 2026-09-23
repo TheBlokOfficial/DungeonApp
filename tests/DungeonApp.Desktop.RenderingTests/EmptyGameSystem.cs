@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Startup;
 
 namespace DungeonApp.Desktop.RenderingTests;
 
@@ -14,7 +15,7 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// </summary>
 internal sealed class EmptyGameSystem : IGameSystem
 {
-    public ContentId Id { get; } = ContentId.Create("rendering-tests-empty");
+    public SystemId Id { get; } = SystemId.Create("rendering-tests-empty");
 
     public string DisplayName => "Rendering Tests";
 
@@ -24,21 +25,7 @@ internal sealed class EmptyGameSystem : IGameSystem
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
-    public bool HasSet(ContentId set) => set == Id;
-
-    public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
-    {
-        descriptor = default;
-        return false;
-    }
-
-    public bool TryValidate(ContentTypeReference reference, ContentValues values, out string? error)
-    {
-        error = "unknown content type.";
-        return false;
-    }
-
-    public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+    public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];
 }
 
 /// <summary>A minimal <see cref="ITabContent"/> for tab declarations that this project's tests never click.</summary>

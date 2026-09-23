@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Content;
-using DungeonApp.Desktop.Startup;
+using DungeonApp.Library.Entries.Desktop.Startup;
 
-namespace DungeonApp.Desktop.Tests;
+namespace DungeonApp.Library.Entries.Desktop.Tests;
 
 public sealed class LoadContentPacksStepTests : IDisposable
 {

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 
 namespace DungeonApp.Core.Campaigns;
 
@@ -29,7 +29,7 @@ public sealed class CreateCampaign(
     /// </summary>
     public async Task<Campaign> ExecuteAsync(
         string? name,
-        ContentId systemId,
+        SystemId systemId,
         IReadOnlyList<StateModelDeclaration> declarations,
         CancellationToken cancellationToken = default)
     {

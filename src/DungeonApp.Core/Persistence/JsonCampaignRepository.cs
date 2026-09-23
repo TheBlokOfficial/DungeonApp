@@ -6,8 +6,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 
 namespace DungeonApp.Core.Persistence;
 
@@ -131,7 +131,7 @@ public sealed class JsonCampaignRepository(string libraryPath, Action<string> de
             modelsById[declaration.ModelId] = await ReadModelAsync(directory, declaration, modelEntry, cancellationToken);
         }
 
-        var systemId = ContentId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : (ContentId?)null;
+        var systemId = SystemId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : (SystemId?)null;
 
         var snapshot = CampaignStateSnapshot.FromModels(modelsById);
         return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, systemId, snapshot);
@@ -215,7 +215,7 @@ public sealed class JsonCampaignRepository(string libraryPath, Action<string> de
         }
 
         var name = CampaignName.TryCreate(manifest.Name, out var validName) ? validName : fallbackName;
-        var systemId = ContentId.TryCreate(manifest.System, out var parsedSystemId) ? parsedSystemId : (ContentId?)null;
+        var systemId = SystemId.TryCreate(manifest.System, out var parsedSystemId) ? parsedSystemId : (SystemId?)null;
 
         return new CampaignSummary(id, name, manifest.CreatedAt, systemId);
     }

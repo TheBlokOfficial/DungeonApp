@@ -93,8 +93,9 @@ public sealed class Dnd5eSystemTests
     /// fresh temp directory per call is enough, the same isolation pattern
     /// <c>WorkspaceLayoutStoreTests</c> uses for the real thing.
     /// </summary>
-    private static Dnd5eSystem NewSystem() => new(new WorkspaceLayoutStore(
-        Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-{Guid.NewGuid():N}")));
+    private static Dnd5eSystem NewSystem() => new(
+        new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-{Guid.NewGuid():N}")),
+        Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-packs-{Guid.NewGuid():N}"));
 
     private const string PackJson = """
         {

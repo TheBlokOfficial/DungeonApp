@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
+using DungeonApp.Core.Systems;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Content;
@@ -21,9 +21,9 @@ namespace DungeonApp.Desktop.Tests;
 /// </summary>
 public sealed class CampaignLibraryViewModelTests
 {
-    private static readonly ContentId SystemA = ContentId.Create("system-a");
-    private static readonly ContentId SystemB = ContentId.Create("system-b");
-    private static readonly ContentId GhostSystem = ContentId.Create("ghost-system");
+    private static readonly SystemId SystemA = SystemId.Create("system-a");
+    private static readonly SystemId SystemB = SystemId.Create("system-b");
+    private static readonly SystemId GhostSystem = SystemId.Create("ghost-system");
 
     [Fact]
     public async Task Shows_the_active_systems_own_campaign_as_available()
@@ -171,7 +171,7 @@ public sealed class CampaignLibraryViewModelTests
     private static CampaignLibraryViewModel BuildLibrary(
         FakeShelfRepository repository,
         IReadOnlyList<IGameSystem> systems,
-        ContentId activeSystem,
+        SystemId activeSystem,
         Func<CampaignSummary, Task>? onOpen = null)
     {
         var preparations = new CampaignPreparationCache(repository, systems);
@@ -186,10 +186,10 @@ public sealed class CampaignLibraryViewModelTests
     }
 
     private static CampaignSummary MakeSummary(
-        string name, ContentId? systemId, CampaignStoreFailure? manifestFailure = null) =>
+        string name, SystemId? systemId, CampaignStoreFailure? manifestFailure = null) =>
         new(CampaignId.New(), CampaignName.Create(name), DateTimeOffset.UtcNow, systemId, manifestFailure);
 
-    private static Campaign MakeCampaign(CampaignSummary summary, ContentId systemId) =>
+    private static Campaign MakeCampaign(CampaignSummary summary, SystemId systemId) =>
         Campaign.Restore(summary.Id, summary.Name, summary.CreatedAt, systemId, CampaignStateSnapshot.Empty);
 
     private sealed class FakeShelfRepository(IReadOnlyList<CampaignSummary> summaries) : ICampaignRepository

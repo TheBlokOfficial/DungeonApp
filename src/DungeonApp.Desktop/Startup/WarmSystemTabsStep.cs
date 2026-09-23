@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Content;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
@@ -13,14 +12,17 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa zawartość każdego wkompilowanego systemu - to, co "wybór systemu" dawniej budował na
+/// Rozgrzewa każdą zakładkę każdego wkompilowanego systemu - to, co "wybór systemu" dawniej budował na
 /// wątku UI w chwili kliknięcia (docs/tasks.md, objaw 1). Dla każdego systemu: jego zakładki kategorii
-/// System (rejestr, wraz z kartą pierwszego rozwiązanego wpisu każdego typu treści, jeśli paczki
-/// dostarczają choć jeden - typ bez ani jednego wpisu nie ma z czego zbudować karty, więc jest
-/// pomijany, tak samo jak dotąd pomijana jest rozgrzewka przy pustej półce), i jego zakładki kategorii
-/// Kampania (biurko, wraz z oknem każdego zadeklarowanego narzędzia - <see cref="CampaignTabDeclaration.CreateContentAsync"/>
-/// buduje cały gotowy widok biurka naraz, więc osobne rozgrzewanie panelu po panelu nie jest tu
-/// potrzebne) wobec pierwszej kampanii z półki, jeśli jakaś istnieje.
+/// System (rama nie wie, co która buduje - tylko że każda jest deklaracją bez parametru, więc nie może
+/// sięgnąć po kampanię), i jego zakładki kategorii Kampania wobec pierwszej kampanii z półki, jeśli
+/// jakaś istnieje.
+/// <para>
+/// Rozgrzewka kart i wczytywanie paczek treści nie są już tutaj - odkąd każdy system sam wczytuje
+/// własne paczki i ma własny rejestr (docs/architecture.md, "Rama, biblioteka, system"), to jego
+/// własne kroki startowe (<see cref="IGameSystem.StartupSteps"/>), nie coś rama umiałaby zrobić za
+/// niego bez znajomości treści.
+/// </para>
 /// <para>
 /// Każda zawartość jest egzemplarzem rzucanym, budowanym przez tymczasowy kontekst - nigdy przez
 /// <see cref="ActiveSystemSession"/>, która przy wyborze systemu zbuduje swój własny, prawdziwy
@@ -28,52 +30,46 @@ namespace DungeonApp.Desktop.Startup;
 /// podręcznej, którą później czytałby wybór systemu.
 /// </para>
 /// </summary>
-public sealed class WarmSystemContentStep(
+public sealed class WarmSystemTabsStep(
     IReadOnlyList<IGameSystem> systems,
-    Func<ContentRegistry> registry,
     ICampaignRepository campaigns,
     CampaignPreparationCache preparations,
     WarmCampaignDataStep dataStep) : IStartupStep
 {
-    public string Describe() => "Rozgrzewanie zawartości systemów…";
+    public string Describe() => "Rozgrzewanie zakładek systemów…";
 
     public Task PrepareAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public async Task ApplyAsync(StartupUiContext ui, CancellationToken cancellationToken)
     {
-        var content = registry();
-
         Campaign? warmupCampaign = dataStep.WarmupCampaignSummary is { } summary
             ? await preparations.PeekAsync(summary, cancellationToken)
             : null;
 
         foreach (var system in systems)
         {
-            await WarmSystemTabsAsync(ui, system, content, cancellationToken);
-            await WarmCardsAsync(ui, system, content, cancellationToken);
+            await WarmSystemTabsAsync(ui, system, cancellationToken);
 
             // The sampled campaign belongs to exactly one system (docs/architecture.md, "Kampania
             // należy do jednego systemu"); warming another compiled system's campaign tabs against it
             // would hand that system's tab factories a session built from a stranger's declarations.
             if (warmupCampaign is not null && warmupCampaign.SystemId == system.Id)
             {
-                await WarmCampaignTabsAsync(ui, system, warmupCampaign, content, cancellationToken);
+                await WarmCampaignTabsAsync(ui, system, warmupCampaign, cancellationToken);
             }
         }
     }
 
     private static async Task WarmSystemTabsAsync(
-        StartupUiContext ui, IGameSystem system, ContentRegistry registry, CancellationToken cancellationToken)
+        StartupUiContext ui, IGameSystem system, CancellationToken cancellationToken)
     {
-        var context = new SystemTabContext(registry);
-
         foreach (var declaration in system.SystemTabs)
         {
             ITabContent? tab = null;
 
             try
             {
-                tab = declaration.CreateContent(context);
+                tab = declaration.CreateContent();
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, tab.Content, cancellationToken);
             }
             catch (Exception)
@@ -87,42 +83,14 @@ public sealed class WarmSystemContentStep(
         }
     }
 
-    /// <summary>
-    /// One card per distinct, resolved content type this system owns among the loaded entries - the
-    /// first entry found for each. A type with no entry in any installed pack has nothing to build a
-    /// card from and is skipped, the same way an empty shelf skips campaign warmup below.
-    /// </summary>
-    private static async Task WarmCardsAsync(
-        StartupUiContext ui, IGameSystem system, ContentRegistry registry, CancellationToken cancellationToken)
-    {
-        var samples = registry.Entries
-            .Where(entry => entry.Type is { } type && type.Reference.Set == system.Id)
-            .GroupBy(entry => entry.Type!.Value.Reference)
-            .Select(group => group.First());
-
-        foreach (var entry in samples)
-        {
-            try
-            {
-                var card = system.CreateCard(entry.Entry);
-                await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, card, cancellationToken);
-            }
-            catch (Exception)
-            {
-                // Warmup is an optimization - the registry screen still draws the card for real on selection.
-            }
-        }
-    }
-
     private async Task WarmCampaignTabsAsync(
         StartupUiContext ui,
         IGameSystem system,
         Campaign campaign,
-        ContentRegistry registry,
         CancellationToken cancellationToken)
     {
         var warmupSession = new CampaignSession(campaign, campaigns, system.StateModels);
-        var warmupContext = new CampaignTabContext(warmupSession, registry);
+        var warmupContext = new CampaignTabContext(warmupSession);
 
         foreach (var declaration in system.CampaignTabs)
         {
