@@ -170,8 +170,14 @@ etapie aplikacja działa, a testy przechodzą.
   pasek górny i porządki paska bocznego — scalone do `master` i wypchnięte (278 testów zielonych);
   **czeka na sprawdzenie przez autora w aplikacji.** Brief 2 etapu 4 przerwany końcem budżetu —
   wynik leży **niescalony** w kopii `.claude/worktrees/agent-aa1c1f0d80b018636`, gałąź
-  `worktree-agent-aa1c1f0d80b018636` (niedokończone w commicie „WIP:"). Następna sesja: przeczytać
-  log tej gałęzi, zdecydować — dokończyć od WIP czy zacząć brief 2 od nowa na aktualnym `master`.
+  `worktree-agent-aa1c1f0d80b018636`, baza `882a6d8`. Dwa commity: `8a0aedf` — **zielony** (277
+  testów): test formatu bajt w bajt na wzorcowej kampanii i pusty projekt `DungeonApp.Library.Entries`
+  z testem braku Avalonii; `cf51c04` — **WIP, build czerwony (43 błędy)**: `Core/Content/**`
+  przeniesione do biblioteki, `SystemId` w rdzeniu gotowy, testy treści przeniesione (bez `.csproj`
+  i wpisu w `.sln`). Niezrobione: cały kontrakt ramy (`IGameSystem`, konteksty zakładek, kroki
+  startowe, agregat, prezentacja kart), kompozycja, rozgrzewka kart, testy architektury. Rekomendacja
+  na następną sesję: najpierw przenieść `8a0aedf` na `master` (mechanizm przed rozbiórką), potem
+  dokończyć od WIP po zrównaniu z `master`.
   Brief 2 i tak trzeba będzie zrównać z `master` (pasek górny zmienił powłokę i rozgrzewkę). Katalog
   `.claude/worktrees/agent-a417bdbecb5ce8014` to pozostałość po scalonej kopii (usunięcie zablokowane
   przez otwarte pliki) — skasować. Do przeglądu: osierocony token `DungeonTopBarActionSize`; dawny
