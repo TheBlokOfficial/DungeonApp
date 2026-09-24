@@ -50,6 +50,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    element odsunięty w lewo od tła pozycji, krótszy od niej, zaokrąglony — jak `.sidebar-item.active::before`
    w `mockup_rejestr.html`; kolor kreski — intensywny akcent (jak na liście wpisów); tło zaznaczonej
    pozycji zostaje szare. Decyzja autora z 2026-09-24.
+   W tym samym zleceniu — półka kampanii: tło wiersza kampanii niedostępnej przygaszone względem
+   dostępnej (dziś identyczne); istniejący kolor tła o stopień ciemniejszy, obramowanie zostaje.
 3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
    kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
    tym samym układem. Reguły półki — architektura, *Gdzie mieszka stan*. Autor przenosi swoje paczki
