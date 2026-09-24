@@ -61,6 +61,10 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
+        <!-- Przycisk w Avalonii domyślnie przycina do swoich granic, co ucina otoczkę najechania
+             (BoxShadow Border tła, 3 px na zewnątrz) do ledwo widocznej krawędzi. Treść i tak mieści
+             się w przycisku: tekst przycina się wielokropkiem w ContentPresenterze. -->
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="PART_Background"
