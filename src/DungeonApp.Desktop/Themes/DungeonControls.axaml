@@ -93,6 +93,12 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
         </Style>
+        <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
+             styl odmiany stoi po stanach zwykłego. -->
+        <Style Selector="^.primary:pointerover, ^.primary:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
         <Style Selector="^.primary:not(:disabled):pointerover /template/ Border#PART_Background,
                        ^.primary:not(:disabled):pressed /template/ Border#PART_Background">
             <Setter Property="BoxShadow" Value="{DynamicResource DungeonAccentHoverHaloShadow}" />
@@ -110,6 +116,12 @@
 
         <!-- Niszczący -->
         <Style Selector="^.danger">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
+             styl odmiany stoi po stanach zwykłego. -->
+        <Style Selector="^.danger:pointerover, ^.danger:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
