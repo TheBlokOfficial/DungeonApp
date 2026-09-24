@@ -321,7 +321,12 @@ nazywa pojęć systemu.
 **Konwencje interakcji** — rozstrzygnięte przez architekta 2026-09-24; autor oddał decyzję („liczę na
 profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
 
-* **Ręka wyłącznie nad odnośnikiem.** Tak robią okna systemowe Windows i macOS: ręka mówi „to cię
+* **Bez ręki** — autor, 2026-09-24, po porcji 1 („kursor łapkę usuwamy wszędzie, jeżeli to
+  akceptowalne”). Architekt przyznał: w aplikacji nie ma odnośnika, który gdzieś przenosi — „Wyczyść
+  filtry”, „Sortuj”, „Pokaż szczegóły” to polecenia wyglądające jak tekst, a polecenie ręki nie
+  potrzebuje. Klikalność pokazuje najechanie (szary jaśnieje i dostaje podkreślenie). Ręka wraca
+  dopiero z odnośnikiem wyprowadzającym poza aplikację. Wcześniejsza reguła poniżej.
+* **Ręka wyłącznie nad odnośnikiem** *(zastąpione przez „Bez ręki”)*. Tak robią okna systemowe Windows i macOS: ręka mówi „to cię
   gdzieś przeniesie", a kontrolka, która wygląda jak kontrolka, nie potrzebuje drugiego sygnału —
   daje go stan najechania. Ręka nad każdym przyciskiem to nawyk stron internetowych; w aplikacji
   okienkowej zaciera różnicę między odnośnikiem a przyciskiem. Reguła jest przy tym jedna
@@ -330,13 +335,17 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   ją każdemu przyciskowi. Autor sprostował, że mockup jest makietą ekranu rejestru, nie projektem
   aplikacji, i że w kontrolkach profesjonalność, czytelność i intuicyjność idą przed wiernością
   makiecie — podstawa tamtej decyzji odpadła.
-* **Najechanie przycisku z wypełnieniem pogłębia kolor** — autor, 2026-09-24, po porcji 1. Odrzucone
-  po obejrzeniu w aplikacji albo na próbkach: rozjaśnienie (kolor „mniej jaskrawy”, w stronę pastelu),
-  podbicie nasycenia („przejaskrawiony”, źle zwłaszcza przy koszu), obwódka, uniesienie z cieniem,
-  poświata („nic z tego mi się nie podoba”). Autor nie chce zmiany charakteru koloru; wybrał
-  pogłębienie o odcień (−3 punkty jasności HSL: akcent #AC7B37, czerwień #90402C, kontrast napisu
-  4,8 i 6,2). Mocniej się nie da — ciemny napis na akcencie spadłby poniżej 4,5:1. Poświatę
-  odradzał też architekt: tak zwykle wygląda wskaźnik fokusu klawiatury.
+* **Najechanie przycisku z wypełnieniem: kolor bez zmian, otoczka** — autor, 2026-09-24, po porcji 1.
+  Odrzucone po obejrzeniu w aplikacji albo na próbkach: rozjaśnienie (kolor „mniej jaskrawy”, w stronę
+  pastelu), podbicie nasycenia („przejaskrawiony”, źle zwłaszcza przy koszu), obwódka wewnątrz,
+  uniesienie z cieniem. Autor nie chce zmiany charakteru koloru. Najpierw wybrał pogłębienie o odcień
+  (−3 punkty jasności HSL: akcent #AC7B37, czerwień #90402C; mocniej się nie da — ciemny napis na
+  akcencie spadłby poniżej 4,5:1); przed zleceniem zmienił zdanie na otoczkę z próbki D: pas 3 px
+  wokół przycisku, akcent o nieprzezroczystości 35 %, czerwień 45 %, wypełnienie bez zmian. Architekt
+  odradzał wcześniej, bo tak zwykle wygląda wskaźnik fokusu klawiatury; dziś fokus nie jest widoczny
+  wcale, więc kolizji nie ma. **Warunek na później:** wskaźnik fokusu przy obsłudze klawiatury musi
+  się od otoczki odróżniać (inny kolor albo odsunięta cienka linia), inaczej najechanie i fokus
+  zleją się w jedno.
 * **Odnośniki samodzielne szare** — autor, 2026-09-24: „Wyczyść filtry”, „Sortuj” w akcencie
   wyglądały źle. Architekt przyznał rację: to polecenia, nie przejścia, a akcent rozlany na polecenia
   przestaje znaczyć „wybrane / główne”. Odnośnik w zdaniu zostaje w akcencie z podkreśleniem.

@@ -664,14 +664,15 @@ kolorów znaczeń z motywu ramy.
 **Konwencje interakcji** — należą do szablonów kontrolek w motywie ramy, nie do widoków. Kontrolka
 idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 
-* **Kursor:** ręka wyłącznie nad odnośnikiem — przyciskiem w odmianie „link" i klikalnym tekstem;
-  kursor tekstowy w polach do pisania i nad tekstem do zaznaczenia; strzałka wszędzie indziej.
-  Klikalność pozostałych kontrolek pokazuje stan najechania.
+* **Kursor:** kursor tekstowy w polach do pisania i nad tekstem do zaznaczenia; strzałka wszędzie
+  indziej, także nad odnośnikami. Klikalność pokazuje stan najechania. Ręki nie ma — wróci dopiero
+  z odnośnikiem, który wyprowadza poza aplikację (np. strona w przeglądarce).
 * **Stany:** spoczynek, najechanie, wybrane (wiersz, zakładka, przełącznik) i wyłączone mają własny
   wygląd. Wciśnięcie nie ma własnego wyglądu: kontrolka wygląda jak pod myszą. Najechanie kontrolki
-  bez barwy rozjaśnia tło; kontrolka wypełniona barwą znaczenia (akcent, czerwień) pod myszą pogłębia
-  ją o odcień — nigdy nie rozjaśnia, nie odbarwia i nie podbija jaskrawości; treść nigdy nie
-  przygasa. Wyłączona kontrolka traci
+  bez barwy rozjaśnia tło; kontrolka wypełniona barwą znaczenia (akcent, czerwień) pod myszą
+  zachowuje kolor i dostaje otoczkę — pas 3 px tej samej barwy z przezroczystością wokół krawędzi;
+  wypełnienie nigdy się nie rozjaśnia, nie odbarwia i nie podbija jaskrawości; treść nigdy nie
+  przygasa. Otoczka należy do najechania — przyszły wskaźnik fokusu klawiatury musi wyglądać inaczej. Wyłączona kontrolka traci
   barwę znaczenia (akcent, czerwień): jest szara jak każda wyłączona, bo niczego nie robi. Ikona
   w kontrolce ma zawsze kolor jej tekstu i swój rysunek (konturowa zostaje konturowa).
 * **Odnośnik w zdaniu** ma stopień i grubość zdania, różni się kolorem i stałym podkreśleniem — sam
