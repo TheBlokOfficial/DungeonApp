@@ -141,7 +141,7 @@
                     </Grid>
                     <TextBlock
                                FontSize="{DynamicResource DungeonHelperFontSize}"
-                               Foreground="{DynamicResource DungeonDangerBrush}"
+                               Foreground="{DynamicResource DungeonDangerTextBrush}"
                                IsVisible="{Binding HasNameError}"
                                Text="{Binding NameError}" />
                 </StackPanel>

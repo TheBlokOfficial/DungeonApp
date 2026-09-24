@@ -89,7 +89,7 @@
                                        Classes="row-name"
                                        IsVisible="{Binding IsBroken}"
                                        TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource DungeonDangerBrush}" />
+                                       Foreground="{DynamicResource DungeonDangerTextBrush}" />
 
                             <TextBlock Grid.Column="1" Classes="muted" Text="{Binding BadgeText}"
                                        IsVisible="{Binding HasPlainBadge}"
@@ -302,7 +302,7 @@
                            FontFamily="{DynamicResource DungeonDisplayFont}"
                            FontSize="{StaticResource ContentDetailNameFontSize}"
                            FontWeight="Medium"
-                           Foreground="{DynamicResource DungeonDangerBrush}" />
+                           Foreground="{DynamicResource DungeonDangerTextBrush}" />
                 <SelectableTextBlock Text="{Binding Reason}"
                                       TextWrapping="Wrap"
                                       Foreground="{DynamicResource DungeonTextRegularBrush}" />

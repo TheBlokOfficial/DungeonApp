@@ -59,6 +59,9 @@
         <Color x:Key="DungeonWarningColor">#CF9B55</Color>
         <!-- Niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
+        <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
+             Danger zostaje dla teł i ikon. -->
+        <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
 
         <!-- PĘDZLE ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -99,6 +102,7 @@
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
+        <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
 
         <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
         <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style
