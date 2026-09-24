@@ -79,7 +79,7 @@ public sealed class ForegroundIcon : Control
                 break;
 
             case GeometryDrawing { Geometry: { } geometry } shape:
-                var fill = shape.Brush is null ? null : foreground;
+                var fill = PaintsNothing(shape.Brush) ? null : foreground;
                 var pen = shape.Pen is null
                     ? null
                     : new Pen(foreground, shape.Pen.Thickness, shape.Pen.DashStyle, shape.Pen.LineCap,
@@ -88,4 +88,14 @@ public sealed class ForegroundIcon : Control
                 break;
         }
     }
+
+    /// <summary>
+    /// An outline shape in the set declares no Brush, but GeometryDrawing's default Brush is
+    /// Transparent, not null - so "has a brush" alone would fill every outline icon solid. A shape is
+    /// filled only when its source brush actually paints something.
+    /// </summary>
+    private static bool PaintsNothing(IBrush? brush) =>
+        brush is null
+        || brush.Opacity <= 0
+        || brush is ISolidColorBrush { Color.A: 0 };
 }
