@@ -20,7 +20,7 @@
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Przyciski" />
-        <TextBlock Classes="caption muted" Text="Najedź i wciśnij, żeby zobaczyć stany." />
+        <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć stany. Wciśnięty wygląda jak pod myszą." />
 
         <Grid ColumnDefinitions="140,Auto"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"

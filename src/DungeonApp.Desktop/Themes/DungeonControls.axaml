@@ -10,9 +10,10 @@
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
         Wyłączony przycisk z wypełnieniem (.primary, .danger) jest neutralny: tło, krawędź i tekst
         zwykłego - wyłączony nie niesie znaczenia "główna akcja" ani "zniszczenie", bo nic nie robi.
-        Wciśnięcie nie ma własnego koloru w żadnej odmianie: tło i krawędź zostają z najechania, a
-        treść (tekst i ikona) przygasa do DungeonPressedContentOpacity - jednym stylem dla wszystkich
-        odmian, na ContentPresenterze, więc tło nie przygasa razem z treścią.
+        Wciśnięcie nie ma własnego wyglądu w żadnej odmianie: każdy styl najechania obejmuje też
+        :pressed, więc wciśnięty przycisk wygląda dokładnie jak pod myszą - także wciśnięty z
+        klawiatury albo gdy mysz zjedzie z wciśniętego. Nic nie przygasza treści ani jej nie zmniejsza
+        (RenderTransform i Transitions wyzerowane; motyw Fluenta nie działa, bo ten go zastępuje).
         Fokus nie ma własnego wyglądu (FocusAdorner pusty).
         Odmiany:
           (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
@@ -55,7 +56,6 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <!-- Tło i krawędź osobno od treści: wciśnięcie przygasza tylko treść. -->
                 <Border Name="PART_Background"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -75,11 +75,7 @@
         </Setter>
 
         <!-- Zwykły -->
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
-        </Style>
-        <Style Selector="^:pressed">
+        <Style Selector="^:pointerover, ^:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
@@ -90,11 +86,7 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
         </Style>
-        <Style Selector="^.primary:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrightBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="^.primary:pressed">
+        <Style Selector="^.primary:pointerover, ^.primary:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrightBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
@@ -104,11 +96,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.subtle:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="^.subtle:pressed">
+        <Style Selector="^.subtle:pointerover, ^.subtle:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
@@ -118,11 +106,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.danger:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonDangerHoverBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="^.danger:pressed">
+        <Style Selector="^.danger:pointerover, ^.danger:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonDangerHoverBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
@@ -138,19 +122,13 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <Style Selector="^.link:pointerover">
+        <Style Selector="^.link:pointerover, ^.link:pressed">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <!-- Podkreślenie dziedziczy tekst treści przez ContentPresenter. -->
-        <Style Selector="^.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
-        </Style>
-        <Style Selector="^.link:pressed">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
-        <Style Selector="^.link:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Style Selector="^.link:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+                       ^.link:pressed /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 
@@ -175,11 +153,6 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        </Style>
-
-        <!-- Wciśnięcie, wspólne dla wszystkich odmian: treść przygasa o stopień. -->
-        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Opacity" Value="{DynamicResource DungeonPressedContentOpacity}" />
         </Style>
 
         <Style Selector="^:disabled">
