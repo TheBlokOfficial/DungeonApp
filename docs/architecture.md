@@ -534,8 +534,8 @@ Zasada nadrzędna: **wadliwa treść zostaje widoczna i oznaczona. Nigdy nie zni
 | brakuje paczki, do której odwołuje się kampania | instancje oznaczone, notatki nietknięte, kampania otwiera się dalej |
 
 **Zakładki treści systemu są jedynym kanałem, którym Mistrz Gry się o tym dowiaduje** — ich projekt
-bez miejsca na rzeczy zepsute jest niekompletny **funkcjonalnie**, nie kosmetycznie. Gdzie pokazuje
-się paczka odrzucona, której systemu nie da się poznać — sekcja *Pytania otwarte*.
+bez miejsca na rzeczy zepsute jest niekompletny **funkcjonalnie**, nie kosmetycznie. Gdzie dokładnie
+stoją — sekcja *Zakładki treści*.
 
 ### 13.2 Model bezpieczeństwa
 
@@ -649,6 +649,11 @@ Widok, który czyta skądkolwiek, jakie ma pola, jest naruszeniem — sprawdzaln
 
 Jedyne miejsce, w którym sekwencja pochodzi z treści, to **dokument** — bo dokument *jest*
 sekwencją. Karta jest układem.
+
+**Kolor w motywie nazywa cel, nie barwę.** Widok sięga po kolor przez jego zadanie („treść
+niewczytana", „tło biurka"), nigdy przez to, że akurat jest czerwony. Nowy cel dostaje nowy token
+z komentarzem o przeznaczeniu — także wtedy, gdy jego wartość powtarza istniejący. Kolory celów
+należących do systemu (np. rzadkość przedmiotu) mieszkają w systemie, nie w motywie ramy.
 
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 
@@ -808,6 +813,16 @@ wszystkich jest rejestr.
   Sprawdzian po skutku awarii: literówka psuje **etykietę filtra**, a nie nawigację.
 * **Zakładka treści nie jest miejscem wewnątrz kampanii.** Wybór wpisu w kampanii jest **momentem,
   nie miejscem**: przywoływanym z narzędzia, filtrowanym do paczek kampanii, znikającym po wyborze.
+* **Lista zakładki treści dzieli się na sekcje po paczce** — nagłówek sekcji to źródło wpisu.
+* **Rzeczy zepsute stoją na liście, oznaczone kolorem treści niewczytanej.** Zepsuty wpis — na dole
+  sekcji swojej paczki. Odrzucona paczka — ostatni nagłówek listy, bez wpisów. Wpis z wadliwymi
+  wartościami i znanym typem pokazuje tylko zakładka jego typu; to, czego typu nie da się ustalić —
+  odrzucona paczka, wpis o nieczytelnej kopercie albo o nieznanym typie — pokazuje każda zakładka
+  treści systemu. Wybranie rzeczy zepsutej pokazuje powód w miejscu karty.
+* **Filtry po wartościach nie ukrywają rzeczy zepsutych** — te wartości nie mają. Działają na nie
+  filtr po paczce i wyszukiwanie po nazwie.
+* **Paczki wczytuje się od nowa przyciskiem w nagłówku zakładki treści**, bez restartu. Nowy stan
+  rejestru dociera do wszystkich zakładek treści i do biurka otwartej kampanii.
 * **Tworzenie, edycja i usuwanie treści w zakładkach treści są poza pierwszą wersją.**
 
 **Dlaczego →** [decisions.md](decisions.md), *Nawigacja: ekran wyboru systemu i pasek boczny*.
@@ -971,8 +986,8 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    wpisów. Obejście przez wpisy lokalne dla kampanii pozostaje odrzucone. **Kierunek (autor
    i asystent, 2026-09-23):** formularz edycji każdego typu treści jest projektowany w systemie, jak
    karta — ogólny edytor generowany z typu wymagałby introspekcji typu treści. Kolejność: (1) przy
-   zakładkach treści, jako kandydat do pierwszej wersji — ponowne wczytanie paczek bez restartu,
-   „otwórz plik" przy wpisie, zepsute wpisy widoczne z powodem; (2) po slotach i formułach —
+   zakładkach treści — ponowne wczytanie paczek bez restartu i zepsute wpisy widoczne z powodem
+   (weszły do kroku 10); po nich dodanie paczki przeciągnięciem jej do okna; (2) po slotach i formułach —
    „skopiuj i zmień": kopia wpisu we własnej paczce MG, poprawiana w formularzu; (3) tworzenie od
    zera tym samym formularzem. Formularz zapisuje ten sam plik wpisu — autorstwo nie zmienia nośnika.
    Uzasadnienie — [decisions.md](decisions.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
@@ -983,14 +998,12 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    zapisana; brakuje przejścia przez realny system.
 6. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
    jakąkolwiek kartę zastępczą. **Wyzwalacz:** pierwszy taki rodzaj treści.
-7. **Paczka a system.** Czy paczka ma deklarować swój system, i gdzie pokazuje się paczka odrzucona
-   za zepsuty manifest, której systemu nie da się poznać. „Nigdzie" nie jest odpowiedzią.
-   Wspólnego rejestru nie ma: każdy system czyta katalog paczek sam i każdy odrzuca
-   zepsutą paczkę osobno, więc przy drugim systemie ta sama paczka byłaby zgłaszana tyle razy, ile
-   jest systemów, a wpisy paczki pisanej pod cudzy system — oznaczane jako wadliwe w rejestrze
-   każdego systemu poza jej własnym.
-   **Wyzwalacz:** pierwsze miejsce na ekranie dla odrzuconych paczek ([tasks.md](tasks.md),
-   „Czekają na miejsce na ekranie").
+7. **Paczka a system.** Czy paczka ma deklarować swój system. Miejsce na ekranie dla paczki
+   odrzuconej jest rozstrzygnięte (sekcja *Zakładki treści*); zostaje to, że wspólnego rejestru nie
+   ma: każdy system czyta katalog paczek sam i każdy odrzuca zepsutą paczkę osobno, więc przy drugim
+   systemie ta sama paczka byłaby zgłaszana tyle razy, ile jest systemów, a wpisy paczki pisanej pod
+   cudzy system — oznaczane jako wadliwe w rejestrze każdego systemu poza jej własnym.
+   **Wyzwalacz:** drugi system.
 8. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym
    dodatkiem, czy któryś wariant okaże się sensowny wyłącznie w pakiecie z innymi. **Wyzwalacz:**
    pierwszy prawdziwy dodatek.

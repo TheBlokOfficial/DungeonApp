@@ -1,6 +1,6 @@
 # DungeonApp — kolejka pracy
 
-**Status: stan na 2026-09-23.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
+**Status: stan na 2026-09-24.** Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-state.md](code-state.md) w jakim stanie jest kod,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
@@ -23,30 +23,34 @@ Gałąź: `master`. Build bez ostrzeżeń, 282 testy zielone (w tym testy render
 
 ## Następne: krok 10 — zakładki treści zamiast zakładki rejestru
 
-Decyzja autora z 2026-09-23. Docelowy kształt — [architecture.md](architecture.md), *Zakładki
-treści*; wygląd — mockup autora `docs/images/mockup_rejestr.png`. Zakładka „Rejestr" znika w dniu,
-w którym stają pierwsze zakładki treści; sam rejestr zostaje jako ich źródło.
+Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; wygląd — mockup autora
+`docs/images/mockup_rejestr.png`. Zakres pierwszej wersji ustalony z autorem 2026-09-24.
 
-* **Każdy typ treści to osobna zakładka na pasku, z jednego szkieletu biblioteki wpisów** — mockup
-  pokazuje jeden ekran z typami jako przełącznikiem, i tym się wynik od niego różni (autor).
-* **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka. **Pasek tytułu okna w mockupie nie
-  jest projektem paska górnego** i się nim nie sugerować.
-* **Przy projektowaniu rozważyć** dwie pierwsze pozycje z „Czekają na miejsce na ekranie" (niżej)
-  oraz pytanie otwarte „Paczka a system" w architekturze — dopiero przy projekcie interfejsu, nie
-  przed nim.
-* **Przed briefem ustalić z autorem, co z mockupu wchodzi do pierwszej wersji** — mockup pokazuje
-  rzeczy, których architektura w pierwszej wersji nie przewiduje albo których dziś nie ma: tworzenie
-  i edycję wpisów, typy zaklęć i NPC, pełny blok statystyk potwora.
-* **Kandydat do pierwszej wersji z kierunku autorstwa treści** (architektura, pytanie otwarte
-  „Autorstwo treści w aplikacji", krok 1): ponowne wczytanie paczek bez restartu, „otwórz plik" przy
-  wpisie, zepsute wpisy widoczne z powodem. Kandydat, nie postanowienie.
+* **Dwie zakładki w kategorii System: potwory i przedmioty**, z jednego szkieletu biblioteki wpisów.
+  Zakładka „Rejestr" znika razem z nimi.
+* **Wchodzi:** wyszukiwanie po nazwie; sortowanie po nazwie i po kluczu systemu; filtry po
+  kategorii, po paczce i po wartości wskazanej przez system; czyszczenie filtrów; odznaka wiersza;
+  licznik wpisów; nagłówek szczegółu (kategoria, nazwa, tagi) rysowany przez szkielet, pod nim karta
+  systemu; sekcje po paczce z rzeczami zepsutymi na dole; powód błędu w miejscu karty; przycisk
+  wczytania paczek od nowa.
+* **Nie wchodzi:** tworzenie, edycja, kopiowanie, usuwanie; zaklęcia i NPC; filtr po typie treści
+  (bez zakładki z kilkoma typami nie ma konsumenta); pasek stanu i Ctrl+K z mockupu.
+* **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka. Pasek tytułu okna w mockupie nie
+  jest projektem paska górnego. **Mockup jest prawie kwadratowy** — na ekranie 16:9 lista trzyma
+  szerokość z mockupu, treść szczegółu swoją największą szerokość z mockupu, wyrównana do listy.
+* **Kolory po celu:** treść niewczytana dostaje własny token w motywie ramy; kolory rzadkości —
+  własne tokeny w systemie.
 
-**Plan następnej sesji:**
-1. Rozmowa z autorem przy otwartym mockupie: zakres pierwszej wersji — architekt przynosi propozycję
-   z jedną rekomendacją, łącznie z kandydatem wyżej i miejscem na rzeczy zepsute.
-2. Zielone światło, podział na zlecenia, brief(y).
-3. Pierwsze zlecenie idzie przez własny rodzaj agenta `wykonawca` — sprawdza przy okazji, że
-   definicje z `.claude/agents/` działają (zakazy, krok 0, format raportu).
+**Zlecenia, po kolei:**
+1. Logika szkieletu bez okna — sekcje po paczce, rzeczy zepsute, wyszukiwanie, filtry, sortowanie,
+   styk, przez który system podaje kategorię, tagi, odznakę, klucze filtra i sortowania.
+2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
+3. Zwiad: jak żyje rejestr (kto go trzyma, kto dostaje przy zakładkach i biurku); potem zlecenie
+   wczytania paczek od nowa.
+
+**Po kroku 10, osobnymi etapami:** dodanie paczki przeciągnięciem do okna (do rozstrzygnięcia: katalog
+czy archiwum; kolizja nazwy — odmowa z komunikatem, nigdy nadpisanie); karty potwora i przedmiotu
+według mockupu.
 
 Po kroku 10 — krok 11: formuły, sloty i dokument, od razu w bibliotece. **Nic nie wchodzi na
 zapas** między krokami; dodatki powstają z pierwszym prawdziwym dodatkiem (niżej).
@@ -71,8 +75,8 @@ pola `Ruleset` i `ContentPacks` w manifeście kampanii".
 
 ### Czekają na miejsce na ekranie — trzy pozycje o interfejsie
 
-Wszystkie czekają, aż autor zechce zaprojektować dla nich miejsce na ekranie. Dwie pierwsze stanęłyby
-na ekranie, który zastąpią zakładki treści — rozważyć je przy kroku 10, nie osobno.
+Wszystkie czekają, aż autor zechce zaprojektować dla nich miejsce na ekranie. Dwie pierwsze rozwiązuje
+projekt kroku 10 — znikają stąd po jego scaleniu.
 
 1. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
    wyświetla — świadoma decyzja autora z 2026-09-12. Jedyna pozycja z tabeli „Co się dzieje, gdy

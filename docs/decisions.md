@@ -307,7 +307,13 @@ wywołano"".
 
 ## Niezmiennik interfejsu
 
-*Brak argumentów poza deklaracją w architekturze.*
+**Kolor nazywa cel, nie barwę** — autor, 2026-09-24, przy czerwieni dla treści niewczytanej. Widok,
+który bierze kolor „bo jest czerwony", wiąże swoje znaczenie z przypadkową wartością: zmiana barwy
+jednej roli przemalowuje wszystko, co ją pożyczyło. Stan z tego dnia był tego dowodem — jeden kolor
+„ostrzeżenia" niósł naraz wpis niewczytany, kłopot okazu na biurku i komunikat po operacji, a kolor
+„niebezpieczeństwa" nie miał żadnego użytkownika ani zapisanego celu. Motyw znał już tę zasadę dla
+teł (role ramy, zaplecza i biurka rozdzielone mimo równych wartości); rozciąga się na wszystkie kolory.
+Kolory rzadkości i inne pojęcia systemu nie mogą stać w motywie ramy, bo rama nie nazywa pojęć systemu.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane".
@@ -432,8 +438,25 @@ Grupowanie z danych jest legalne wewnątrz zakładki, bo zakładka jest skompilo
 pochodzi z treści, a z treści pochodzi wyłącznie zawartość jednego wymiaru. Literówką nie da się
 zgubić drogi powrotnej.
 
+**Sekcje po paczce** — autor, 2026-09-24. Mockup dzielił listę nagłówkami typów treści; po
+rozdzieleniu typów na osobne zakładki tę rolę przejmuje paczka, czyli wymiar, w którym treść
+faktycznie mieszka. Ten sam podział daje rzeczom zepsutym miejsce bez osobnego ekranu: odrzucona
+paczka jest po prostu ostatnim nagłówkiem, zepsuty wpis — ostatnim wierszem swojej sekcji.
+
+**Rzeczy bez ustalonego typu w każdej zakładce** — asystent, przyjęte przez autora 2026-09-24.
+Odrzucona paczka i wpis bez czytelnego typu nie należą do żadnej zakładki typu; pokazanie ich
+wszędzie jest głośniejsze, ale jedyną alternatywą było „nigdzie", sprzeczne z zasadą, że wadliwa
+treść nie znika po cichu. Przy jednym systemie i kilku zepsutych plikach szum jest mały.
+
+**Filtry po wartościach omijają rzeczy zepsute**, bo tych wartości nie mają — filtr, który by je
+ukrywał, ukrywałby błąd razem z brakiem danych, o którym ma informować.
+
+**Przycisk wczytania od nowa w nagłówku zakładki, nie w pasku górnym** — pasek górny należy do ramy,
+a rama nie wie, że paczki istnieją.
+
 **Odrzucone w tym temacie:** „Kontekstowy sidebar", „Nawigacja o zawartości pochodzącej z danych",
-„Rejestr jako miejsce wewnątrz kampanii", „Ekran wyboru systemu odłożony do drugiego systemu".
+„Rejestr jako miejsce wewnątrz kampanii", „Ekran wyboru systemu odłożony do drugiego systemu",
+„Otwórz plik przy wpisie".
 
 ## Narzędzia biurka i system okien
 
@@ -929,6 +952,20 @@ bytu, któremu tracker mógłby zostać przypisany jako sekcja.
 
 **Czym to zastąpiono.** Tracker tur jest narzędziem biurka — własne okno, własny blok
 danych — tak jak każde inne narzędzie.
+
+### 38. „Otwórz plik" przy wpisie
+
+**Co proponowano.** Asystent, 2026-09-23 i 24: przy zakładkach treści polecenie otwierające plik
+wpisu w zewnętrznym edytorze — razem z wczytaniem od nowa domykałoby pętlę poprawiania zepsutego
+wpisu bez restartu.
+
+**Dlaczego odrzucone.** Autor, 2026-09-24: sprowadza Mistrza Gry na niższy poziom wiedzy — do
+plików i ich formatu — z którego aplikacja ma go wyprowadzać. README krytykuje narzędzia każące
+pracować w plikach tekstowych; przycisk, który je otwiera, robi z aplikacji dokładnie to.
+
+**Czym to zastąpiono.** Wczytanie od nowa przyciskiem i powód błędu widoczny w miejscu karty; jako
+następny krok — dodanie paczki przeciągnięciem jej do okna. **Wraca, jeśli** autorstwo w aplikacji
+okaże się odległe, a poprawianie plików poza nią — codziennością.
 
 ## Logika i bezpieczeństwo
 
