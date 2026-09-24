@@ -23,6 +23,7 @@
                     Spacing="{DynamicResource DungeonSpacingXxxl}">
             <sections:TypographySection />
             <sections:SpacingSection />
+            <sections:SurfacesSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

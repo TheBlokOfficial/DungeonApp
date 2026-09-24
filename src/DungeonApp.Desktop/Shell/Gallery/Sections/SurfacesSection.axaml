@@ -1,0 +1,290 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.SurfacesSection">
+    <!-- The surface and line colors of Themes/Tokens.axaml with their meanings, the three surface
+         classes of Themes/Surfaces.axaml (each also with long text and empty), and the three Separator
+         variants of Themes/DungeonControls.axaml. Every sample has a fixed width, so long text shows
+         whether it trims or wraps instead of widening the sample. -->
+    <UserControl.Styles>
+        <Style Selector="Border.swatch">
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="StackPanel.swatch-row">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Spacing" Value="{DynamicResource DungeonSpacingMd}" />
+        </Style>
+        <Style Selector="StackPanel.swatch-row > StackPanel">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.wrap">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Powierzchnie i linie" />
+
+        <!-- DRABINA KOLORÓW =================================================== -->
+        <TextBlock Classes="overline-sm muted" Text="DRABINA KOLORÓW" />
+        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackgroundBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Background" />
+                    <TextBlock Classes="caption muted" Text="tło: najgłębszy poziom, pod całą resztą" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonSurfaceBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Surface" />
+                    <TextBlock Classes="caption muted" Text="powierzchnia: poziom nad tłem" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonSurfaceHeaderBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="SurfaceHeader" />
+                    <TextBlock Classes="caption muted" Text="powierzchnia: poziom nad tłem (nagłówek powierzchni)" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonFrameBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Frame" />
+                    <TextBlock Classes="caption muted" Text="rama: stałe otoczenie treści (pasek boczny, pasek górny)" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonFrameHoverBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="FrameHover" />
+                    <TextBlock Classes="caption muted" Text="najechanie na ramie: ten element ramy reaguje na mysz" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackstageBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Backstage" />
+                    <TextBlock Classes="caption muted" Text="zaplecze: tło treści poza kampanią (biblioteka, półka, galeria)" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackstageWideBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BackstageWide" />
+                    <TextBlock Classes="caption muted" Text="zaplecze w szerokich widokach (gradient rozpięty na cały widok - w próbce widać jego początek)" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <!-- BackstageEdge has no brush of its own: it exists only as the gradient's last stop. -->
+                <Border Classes="swatch">
+                    <Border.Background>
+                        <SolidColorBrush Color="{DynamicResource DungeonBackstageEdgeColor}" />
+                    </Border.Background>
+                </Border>
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BackstageEdge" />
+                    <TextBlock Classes="caption muted" Text="zaplecze przy dalekiej krawędzi szerokiego widoku (koniec gradientu BackstageWide)" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonDeskBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Desk" />
+                    <TextBlock Classes="caption muted" Text="biurko: tło treści otwartej kampanii" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackstageCardBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BackstageCard" />
+                    <TextBlock Classes="caption muted" Text="karta: rzecz wyodrębniona z tła, czytana jako całość" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackstageRowBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BackstageRow" />
+                    <TextBlock Classes="caption muted" Text="wiersz: pozycja, którą można wskazać" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBackstageRowHoverBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BackstageRowHover" />
+                    <TextBlock Classes="caption muted" Text="najechanie: to reaguje na mysz" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonSurfaceHoverBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="SurfaceHover" />
+                    <TextBlock Classes="caption muted" Text="najechanie: to reaguje na mysz" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonSurfaceActiveBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="SurfaceActive" />
+                    <TextBlock Classes="caption muted" Text="aktywne: wybrane albo wciśnięte teraz" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBorderBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="Border" />
+                    <TextBlock Classes="caption muted" Text="linia: dzieli, nie wyróżnia; krawędź powierzchni i separator" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonBorderStrongBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="BorderStrong" />
+                    <TextBlock Classes="caption muted" Text="obramowanie wyraźne: kontrolka pod myszą, aktywne okno, krawędź ramy" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonPanelWindowBackgroundBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="PanelWindowBackground" />
+                    <TextBlock Classes="caption muted" Text="okno biurka: tło okna" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonPanelWindowHeaderBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="PanelWindowHeader" />
+                    <TextBlock Classes="caption muted" Text="okno biurka: nagłówek okna" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonPanelWindowBorderBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="PanelWindowBorder" />
+                    <TextBlock Classes="caption muted" Text="okno biurka: krawędź okna" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Classes="swatch-row">
+                <Border Classes="swatch" Background="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
+                <StackPanel>
+                    <TextBlock Classes="label" Text="PanelWindowActiveBorder" />
+                    <TextBlock Classes="caption muted" Text="okno biurka: krawędź aktywnego okna" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- POWIERZCHNIE ====================================================== -->
+        <TextBlock Classes="overline-sm muted" Text="POWIERZCHNIE NA TLE ZAPLECZA" />
+        <Border Background="{DynamicResource DungeonBackstageBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+                <!-- surface-card -->
+                <StackPanel Width="280" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <TextBlock Classes="caption muted" Text="surface-card" />
+                    <Border Classes="surface-card">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Classes="display-md" Text="Goblin" />
+                            <TextBlock Classes="body wrap" Text="Mały, złośliwy humanoid. KP 15, 7 punktów wytrzymałości." />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Classes="caption muted" Text="surface-card · długi tekst" />
+                    <Border Classes="surface-card">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Classes="display-md" Text="Goblin wódz plemienia Zębatej Paszczy z Doliny Mgieł" />
+                            <TextBlock Classes="body wrap" Text="Mały, złośliwy humanoid, który dowodzi bandą z jaskini nad rzeką. Nagłówek przycina się do szerokości karty, akapit zawija się w kolejne linie - karta rośnie w dół, nigdy wszerz." />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Classes="caption muted" Text="surface-card · pusta" />
+                    <Border Classes="surface-card" />
+                </StackPanel>
+
+                <!-- surface-section -->
+                <StackPanel Width="240" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <TextBlock Classes="caption muted" Text="surface-section" />
+                    <Border Classes="surface-section">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Classes="label" Text="Siła 8" />
+                            <TextBlock Classes="label" Text="Zręczność 14" />
+                            <TextBlock Classes="label" Text="Kondycja 10" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Classes="caption muted" Text="surface-section · długi tekst" />
+                    <Border Classes="surface-section">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Classes="label" Text="Ukrywanie się w cieniu i skradanie się między namiotami" />
+                            <TextBlock Classes="label" Text="Zręczność 14" />
+                            <TextBlock Classes="label" Text="Percepcja bierna w ciemności, bez źródła światła" />
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Classes="caption muted" Text="surface-section · pusta" />
+                    <Border Classes="surface-section" />
+                </StackPanel>
+
+                <!-- surface-panel -->
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                    <TextBlock Classes="caption muted" Text="surface-panel · zwykły, długi tekst, pusty" />
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingLg}">
+                        <Border Classes="surface-panel" Width="120" Height="200">
+                            <StackPanel Margin="{DynamicResource DungeonPaddingMd}" Spacing="{DynamicResource DungeonSpacingSm}">
+                                <TextBlock Classes="label" Text="Kampanie" />
+                                <TextBlock Classes="label" Text="Galeria" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="surface-panel" Width="120" Height="200">
+                            <StackPanel Margin="{DynamicResource DungeonPaddingMd}" Spacing="{DynamicResource DungeonSpacingSm}">
+                                <TextBlock Classes="label" Text="Kampanie w przygotowaniu" />
+                                <TextBlock Classes="label" Text="Galeria kontrolek ramy" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="surface-panel" Width="120" Height="200" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- LINIE ============================================================= -->
+        <TextBlock Classes="overline-sm muted" Text="LINIE" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Width="280" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Separator · domyślny (lista)" />
+                <Border Classes="surface-card">
+                    <StackPanel>
+                        <TextBlock Classes="label" Padding="{DynamicResource DungeonPaddingSm}" Text="Goblin" />
+                        <Separator />
+                        <TextBlock Classes="label" Padding="{DynamicResource DungeonPaddingSm}" Text="Hobgoblin" />
+                        <Separator />
+                        <TextBlock Classes="label" Padding="{DynamicResource DungeonPaddingSm}" Text="Niedźwieżuk" />
+                        <Separator />
+                        <TextBlock Classes="label" Padding="{DynamicResource DungeonPaddingSm}" Text="Szef bandy goblinów z Doliny Mgieł" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Width="280" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Separator · section (sekcje karty)" />
+                <Border Classes="surface-card">
+                    <StackPanel>
+                        <TextBlock Classes="body wrap" Text="Mały, złośliwy humanoid. Zwykle trzyma się w bandach i atakuje z zasadzki." />
+                        <Separator Classes="section" />
+                        <TextBlock Classes="body wrap" Text="Zwinny unik: w swojej turze może się odsunąć albo schować jako akcję dodatkową." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Width="280" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Separator · vertical (kolumny)" />
+                <Border Classes="surface-card">
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingMd}">
+                        <TextBlock Grid.Column="0" Classes="body wrap" Text="Lewa kolumna: KP 15, 7 PW, szybkość 9 m." />
+                        <Separator Grid.Column="1" Classes="vertical" />
+                        <TextBlock Grid.Column="2" Classes="body wrap" Text="Prawa kolumna: sejmitar, krótki łuk." />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
