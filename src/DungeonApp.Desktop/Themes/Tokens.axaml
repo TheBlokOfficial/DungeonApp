@@ -50,8 +50,6 @@
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
         <!-- AccentBright: akcent pod myszą. -->
         <Color x:Key="DungeonAccentBrightColor">#C8944A</Color>
-        <!-- AccentAction: akcent wciśnięty. -->
-        <Color x:Key="DungeonAccentActionColor">#AD7B36</Color>
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <!-- Sukces: udało się. -->
@@ -62,8 +60,6 @@
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
         <!-- DangerHover: niebezpieczeństwo pod myszą. -->
         <Color x:Key="DungeonDangerHoverColor">#8C3E2B</Color>
-        <!-- DangerPressed: niebezpieczeństwo wciśnięte. -->
-        <Color x:Key="DungeonDangerPressedColor">#7A3525</Color>
         <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
              Danger zostaje dla teł i ikon. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
@@ -100,20 +96,22 @@
         <SolidColorBrush x:Key="DungeonTextMutedBrush" Color="{DynamicResource DungeonTextMutedColor}" />
         <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
-        <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
         <SolidColorBrush x:Key="DungeonDangerHoverBrush" Color="{DynamicResource DungeonDangerHoverColor}" />
-        <SolidColorBrush x:Key="DungeonDangerPressedBrush" Color="{DynamicResource DungeonDangerPressedColor}" />
         <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
 
         <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
         <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style
              that dims rather than recolors, so a second view never has to invent its own number. -->
         <x:Double x:Key="DungeonDisabledOpacity">0.48</x:Double>
+
+        <!-- Treść wciśniętej kontrolki (tekst i ikona) przygasa o stopień; tło zostaje z najechania.
+             Wciśnięcie nie ma własnego koloru (docs/architecture.md, sekcja 15, "Stany"). -->
+        <x:Double x:Key="DungeonPressedContentOpacity">0.8</x:Double>
 
         <!-- PĘDZLE KONTROLEK I PANELI ========================================= -->
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />

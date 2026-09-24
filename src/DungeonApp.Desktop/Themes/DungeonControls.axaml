@@ -8,6 +8,9 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Wciśnięcie nie ma własnego koloru w żadnej odmianie: tło i krawędź zostają z najechania, a
+        treść (tekst i ikona) przygasa do DungeonPressedContentOpacity - jednym stylem dla wszystkich
+        odmian, na ContentPresenterze, więc tło nie przygasa razem z treścią.
         Fokus nie ma własnego wyglądu (FocusAdorner pusty).
         Odmiany:
           (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
@@ -46,19 +49,22 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  TextBlock.TextTrimming="CharacterEllipsis"
-                                  TextBlock.TextWrapping="NoWrap"
-                                  RecognizesAccessKey="True" />
+                <!-- Tło i krawędź osobno od treści: wciśnięcie przygasza tylko treść. -->
+                <Border Name="PART_Background"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap"
+                                      RecognizesAccessKey="True" />
+                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -68,7 +74,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
         <Style Selector="^:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
 
@@ -83,7 +89,7 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="^.primary:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentActionBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrightBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
@@ -97,7 +103,7 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="^.subtle:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
@@ -111,7 +117,7 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="^.danger:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonDangerPressedBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerHoverBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
@@ -137,7 +143,9 @@
         <Style Selector="^.link:pressed">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentActionBrush}" />
+        </Style>
+        <Style Selector="^.link:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 
         <!-- Ikonowy -->
@@ -145,6 +153,11 @@
             <Setter Property="Width" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!-- Wciśnięcie, wspólne dla wszystkich odmian: treść przygasa o stopień. -->
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonPressedContentOpacity}" />
         </Style>
 
         <Style Selector="^:disabled">
