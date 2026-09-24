@@ -132,19 +132,6 @@
         <Style Selector="TextBlock.nav-label.locked">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
-        <Style Selector="Button.sidebar-toggle">
-            <Setter Property="Width" Value="40" />
-            <Setter Property="Height" Value="40" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
-        </Style>
-        <Style Selector="Button.sidebar-toggle:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
     </UserControl.Styles>
 
     <!-- Chrome deliberately differs from the flat backstage canvas. The campaign grid remains
@@ -241,7 +228,7 @@
                          replaces the fading brand mark without changing containers or rows. -->
                     <Grid Width="64"
                           HorizontalAlignment="Right">
-                        <Button Classes="sidebar-toggle"
+                        <Button Classes="subtle icon"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding ToggleCollapsedCommand}">

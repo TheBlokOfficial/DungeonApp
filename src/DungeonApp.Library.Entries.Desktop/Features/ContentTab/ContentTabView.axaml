@@ -183,26 +183,6 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
-        <Style Selector="Button.content-link">
-            <Setter Property="Height" Value="NaN" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="FontSize" Value="{StaticResource ContentChipFontSize}" />
-            <Setter Property="FontWeight" Value="Normal" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
-        </Style>
-        <Style Selector="Button.content-link:pointerover">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
-        </Style>
-        <!-- krok 10, brief A4: "„Wyczyść filtry" podkreślone" - mockup's .clear-filters only, never
-             .sort-btn, even though both share content-link's own look otherwise. Button has no
-             TextDecorations of its own; the underline lives on the TextBlock this button wraps its
-             text in (below), tagged with this same class. -->
-        <Style Selector="TextBlock.underline">
-            <Setter Property="TextDecorations" Value="Underline" />
-        </Style>
 
         <!-- krok 10, brief A2: list/detail scrollbar thumb per the mockup's own
              .list-scroll::-webkit-scrollbar-thumb / .detail-panel::-webkit-scrollbar-thumb
@@ -428,7 +408,7 @@
                         </WrapPanel>
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <Button Grid.Column="0" Classes="content-link" HorizontalAlignment="Left">
+                            <Button Grid.Column="0" Classes="link" HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
                                     <TextBlock Text="{Binding SelectedSort, StringFormat='Sortuj: {0}'}" />
                                     <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
@@ -441,10 +421,9 @@
                                     </Flyout>
                                 </Button.Flyout>
                             </Button>
-                            <Button Grid.Column="1" Classes="content-link" HorizontalAlignment="Right"
-                                    Command="{Binding ClearFiltersCommand}">
-                                <TextBlock Classes="underline" Text="Wyczyść filtry" />
-                            </Button>
+                            <Button Grid.Column="1" Classes="link" HorizontalAlignment="Right"
+                                    Command="{Binding ClearFiltersCommand}"
+                                    Content="Wyczyść filtry" />
                         </Grid>
                     </StackPanel>
 

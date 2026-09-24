@@ -23,7 +23,11 @@
         <Style Selector="Border.system-option:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
+        <!-- A full-row click target, not a button of its own (the list-row portion replaces it).
+             Height is reset to auto so VerticalAlignment="Stretch" fills the row: the Button
+             ControlTheme (DungeonControls.axaml) gives every button DungeonControlHeight. -->
         <Style Selector="Button.system-option-open">
+            <Setter Property="Height" Value="NaN" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="Transparent" />

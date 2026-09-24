@@ -52,27 +52,17 @@
         <Style Selector="StackPanel.campaign-dim:disabled, TextBlock.campaign-dim:disabled, Image.campaign-dim:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
+        <!-- A full-record click target, not a button of its own (the list-row portion replaces it).
+             Height is reset to auto so VerticalAlignment="Stretch" fills the record: the Button
+             ControlTheme (DungeonControls.axaml) gives every button DungeonControlHeight. -->
         <Style Selector="Button.campaign-open">
+            <Setter Property="Height" Value="NaN" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
-        </Style>
-        <Style Selector="Button.campaign-delete">
-            <Setter Property="Width" Value="28" />
-            <Setter Property="Height" Value="28" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-            <Setter Property="ToolTip.Tip" Value="Usuń kampanię" />
-        </Style>
-        <Style Selector="Button.campaign-delete:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         </Style>
     </UserControl.Styles>
 
@@ -135,9 +125,7 @@
                         <Button Grid.Column="1"
                                 Classes="primary"
                                 Content="+  Utwórz"
-                                Command="{Binding CreateCommand}"
-                                Height="{DynamicResource DungeonControlHeight}"
-                                Padding="20,0" />
+                                Command="{Binding CreateCommand}" />
                     </Grid>
                     <TextBlock
                                FontSize="{DynamicResource DungeonHelperFontSize}"
@@ -167,7 +155,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,28,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
                                              click-through, so only the delete control intercepts it.
@@ -227,8 +215,9 @@
                                                        Text="{Binding CreatedAt}" />
                                         </Grid>
                                         <Button Grid.Column="3"
-                                                Classes="campaign-delete"
+                                                Classes="subtle icon"
                                                 Command="{Binding DeleteCommand}"
+                                                ToolTip.Tip="Usuń kampanię"
                                                 PointerEntered="OnDeletePointerEntered"
                                                 PointerExited="OnDeletePointerExited">
                                             <Image Width="16"

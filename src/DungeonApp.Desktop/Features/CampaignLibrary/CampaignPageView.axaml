@@ -27,9 +27,7 @@
                     </StackPanel>
 
                     <Button Content="Zamknij kampanię"
-                            Command="{Binding CloseCampaignCommand}"
-                            Height="{DynamicResource DungeonControlHeight}"
-                            Padding="20,0" />
+                            Command="{Binding CloseCampaignCommand}" />
                 </StackPanel>
             </Grid>
         </controls:AnchoredContentHost>
