@@ -17,7 +17,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było;
 > 2026-09-23 dokument znów miał 271 linii, z czego trzy czwarte było zamkniętą historią etapów.
 
-Gałąź: `master`. Build bez ostrzeżeń, 330 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 361 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -42,44 +42,30 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   dostają komentarze ze znaczeniem (niebezpieczeństwo — zepsute albo nieodwracalne; ostrzeżenie —
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
-**W toku (stan na koniec sesji 2026-09-24)** — dwóch wykonawców równolegle, na prośbę autora; kopie
-w `.claude/worktrees/agent-*`, gałęzie `worktree-agent-*` (`git worktree list`). Jeśli sesja urwała się
-przed ich raportem: sprawdzić commity w gałęziach (`git log master..<gałąź>`), zweryfikować jak zwykle
-(build bez ostrzeżeń kompilatora, testy ≥ 330, testy granic), scalić po kolei, usunąć kopie. Gałąź bez
-commitów = praca przerwana; zlecić od nowa z briefu opisanego niżej.
-**Obaj zatrzymani przez architekta na koniec budżetu**; niedokończona praca zapisana w ich gałęziach
-commitem „WIP: przerwane…" — niezweryfikowana. Następna sesja: nowy wykonawca na każdą gałąź, z tym
-opisem jako briefem i poleceniem „najpierw oceń WIP (co zrobione, co brakuje), dokończ, zgłoś".
-* **Katalogi i półka** (zlecenie 3 niżej) — z dołączoną poprawką tła kampanii niedostępnej.
-* **Poprawki zakładek treści** — lista autora po obejrzeniu aplikacji: szczegół przy liście (nie
-  wyśrodkowany), paski przewijania, linia nagłówka na całą szerokość, lupa, strzałki chipów i sortowania,
-  „Wyczyść filtry" podkreślone, widoczna kreska zaznaczenia, zaznaczony wiersz pogrubiony, nagłówki
-  sekcji wersalikami, odznaka z samym wyzwaniem, okruszki z „›", pole `group` potwora jako kategoria,
-  karta bez dublujących wierszy, inna ikona „Potworów", lista rozwijana (pod chipem, czcionka wierszy,
-  wybór = przygaszony akcent, obramowanie jak pole wyszukiwania). Testy renderujące mierzą położenie
-  i widoczność. **Rozszerzenie w osobnym commicie:** karta potwora według mockupu (rząd KP/PZ/szybkość,
-  cechy w ramkach z modyfikatorami, właściwości, wyzwanie jako chip, nagłówki sekcji z kreską, opis
-  kursywą) — bez parsowania akcji z prozy (to krok 11, sloty).
-* Po scaleniu obu: **autor sprawdza w aplikacji** i przenosi ręcznie paczki do `dnd5e\packs\`,
-  kampanie do `dnd5e\campaigns\`, dopisuje `group` w swoich paczkach. Potem zlecenie 4 (zwiad rejestru,
-  przycisk wczytania od nowa).
+**Czeka na autora (stan 2026-09-24, po scaleniu zleceń 2 i 3 oraz poprawek):**
+* Sprawdzenie w aplikacji zakładek treści, karty potwora, paska bocznego i półki.
+* Ręczne przeniesienie paczek do `Dokumenty\DungeonApp\dnd5e\packs\`, kampanii do
+  `Dokumenty\DungeonApp\dnd5e\campaigns\`; dopisanie `group` potworom w swoich paczkach (bez niego
+  potwór nie ma kategorii).
+* Odstępstwa od mockupu do oceny — każde zostaje, dopóki autor nie zdecyduje inaczej:
+  kreska zaznaczenia wpisu wewnątrz wiersza, nie wystająca (pułapka w `code-state.md`); paski
+  przewijania w kolorze z mockupu, ale w domyślnej szerokości; kreska sekcji „Akcje" w kolorze akcentu
+  zamiast czerwieni z mockupu i modyfikatory cech bez kolorowania znaku — bo czerwień znaczy
+  w motywie „zepsute albo nieodwracalne", a zieleń „udało się".
 
 **Zlecenia, po kolei:**
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
    wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
 2. ~~Widok według mockupu i dwie zakładki systemu w miejsce rejestru~~ — scalone 2026-09-24.
    **Czeka na sprawdzenie przez autora w aplikacji.**
-3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
-   kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
-   tym samym układem. Reguły półki — architektura, *Gdzie mieszka stan*. Autor przenosi swoje paczki
-   i kampanie ręcznie po scaleniu. Dołączona poprawka z tego samego obszaru: przygaszone tło
-   kampanii niedostępnej (niżej, *Poprawki czekające na obszar*).
+3. ~~Katalogi paczek i kampanii per system, reguła niezgodności, tło kampanii niedostępnej~~ —
+   scalone 2026-09-24. Paczek dostarczanych z systemem nie ma w kodzie — `code-state.md`, *Dług*.
 4. Zwiad: jak żyje rejestr (kto go trzyma, kto dostaje przy zakładkach i biurku); potem zlecenie
    wczytania paczek od nowa.
 
 **Po kroku 10, osobnymi etapami:** dodanie paczki przeciągnięciem do okna (do rozstrzygnięcia: katalog
-czy archiwum; kolizja nazwy — odmowa z komunikatem, nigdy nadpisanie); karty potwora i przedmiotu
-według mockupu.
+czy archiwum; kolizja nazwy — odmowa z komunikatem, nigdy nadpisanie); karta przedmiotu
+według mockupu (karta potwora zrobiona 2026-09-24).
 
 Po kroku 10 — krok 11: formuły, sloty i dokument, od razu w bibliotece. **Nic nie wchodzi na
 zapas** między krokami; dodatki powstają z pierwszym prawdziwym dodatkiem (niżej).
@@ -92,14 +78,7 @@ Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie
 albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
 *Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
 
-**Rama — półka kampanii** (zabiera zlecenie 3 kroku 10)
-* Tło wiersza kampanii niedostępnej przygaszone względem dostępnej (dziś identyczne): istniejący kolor
-  tła o stopień ciemniejszy, obramowanie zostaje. Autor, 2026-09-24.
-
-**Rama — pasek boczny**
-* Kreska zaznaczenia jako osobny element odsunięty w lewo od tła pozycji, krótszy od niej,
-  zaokrąglony — jak `.sidebar-item.active::before` w `docs/images/mockup_rejestr.html`. Kolor kreski —
-  intensywny akcent, jak na liście wpisów; tło zaznaczonej pozycji zostaje szare. Autor, 2026-09-24.
+Pusto — obie poprawki zabrały zlecenia z 2026-09-24.
 
 ---
 

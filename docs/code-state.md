@@ -65,6 +65,9 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
   z autorem.
 * **Kolory stanów mają zapisane znaczenie, pozostałe kolory motywu — nie.** Reguła z *Niezmiennika
   interfejsu* obowiązuje wszystkie.
+* **Paczek dostarczanych z systemem nie ma w kodzie** — architektura je deklaruje, ale nie istnieje
+  ani drugie źródło wczytywania, ani kopiowanie paczek do katalogu programu. Kto je wprowadzi,
+  zaczyna od zera; układ katalogu ma być taki jak paczek MG (`<system>\packs\`).
 * **Migracji nie ma** — zbyt nowy format to odmowa odczytu, niezgodna wersja typu treści oznacza
   wpis. Strukturalnie przygotowane, ścieżki brak.
 
@@ -80,7 +83,8 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
   opóźniony zapis układu, cała logika gestów okna. Z geometrii pokryte jest tylko dopasowanie do
   min/max — snapowanie, ograniczanie ruchu i maksymalizacja nie.
 * **Testy renderujące** (bez ekranu, przez prawdziwy `App`) sprawdzają tylko to, po co powstały:
-  wiersze paska bocznego, zwinięty pasek, wiersze półki, geometrię przycisku paska górnego.
+  pasek boczny, półkę, przycisk paska górnego, zakładkę treści i karty. Od 2026-09-24 rasteryzują
+  prawdziwe piksele (Skia) — próbkowanie koloru działa; wzór w `CampaignLibraryRenderingTests`.
 * **Skan słownikowy granic bywa niestabilny w pełnym przebiegu** — wykonawca 2026-09-24 widział
   sporadyczną porażkę `Engine_and_shell_do_not_name_any_entry_kind` tylko przy `dotnet test` całego
   rozwiązania, także na kodzie sprzed swojej zmiany; trzy pełne przebiegi po scaleniu — zielone.
@@ -111,6 +115,13 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   sprzątać ich przy okazji; kasowanie danych, których się nie rozumie, jest gorsze niż bezwładny plik.
 * **Rozgrzane kontrolki są egzemplarzami rzucanymi.** Prawdziwa zakładka buduje własny egzemplarz
   przy pierwszym pokazaniu; współdzielenie ich z rozgrzewką zmieniłoby cykl życia zakładek.
+* **`MaxWidth` z domyślnym rozciąganiem centruje element** w szerszym miejscu, zamiast przykleić go
+  do lewej; `HorizontalAlignment="Left"` z kolei zwęża go do treści. Ograniczenie szerokości od lewej
+  kładzie się na kolumnę siatki. Tak szczegół zakładki treści stał daleko od listy (2026-09-24),
+  a test mierzący same szerokości tego nie widział.
+* **Element wystający ujemnym marginesem poza wiersz listy z przewijaniem jest przycinany** na krawędzi
+  wiersza, niezależnie od `ClipToBounds` przodków — przyczyny nie ustalono. Dlatego kreska
+  zaznaczenia wpisu stoi wewnątrz wiersza; na pasku bocznym (bez przewijania) wystaje, jak w mockupie.
 * **Pasek boczny budowany jest od nowa przy każdym wyborze systemu** (warunek animacji zwijania);
   stan zwinięcia trzyma rama, tylko w pamięci. Przepięcie istniejącego paska zamiast budowy nowego
   psuje animację.
