@@ -62,7 +62,8 @@ systemu".
 **Każdy system ma własny rejestr; rama nie zbiera typów treści** — etap 4 przebudowy, 2026-09-23.
 Wspólny katalog typów treści w ramie był jedynym powodem, dla którego rama musiała znać typ treści,
 a przez niego wpis — sprzecznie z „Nie zna `Entry`". Cena: każdy system czyta katalog paczek sam;
-konsekwencja dla pytania „Paczka a system" stoi przy nim w architekturze. Do 2026-09-23 paczki
+skutek dla paczek pisanych pod cudzy system rozwiązało położenie paczki w katalogu systemu (*Gdzie
+mieszka stan*). Do 2026-09-23 paczki
 wczytywała rama, jednym loaderem dla wszystkich systemów.
 
 **Kroki startowe systemu są dla ramy nieprzezroczyste** — ten sam dzień. Wczytywanie paczek
@@ -368,6 +369,23 @@ wcześniejszego stanu — dają rotujące kopie zapasowe, bez tamtego ryzyka. **
 chce wrócić do wcześniejszego stanu kampanii albo zapis po każdej zmianie staje się odczuwalnie wolny
 — dziś każdy zapis przepisuje wszystkie instancje kampanii.
 
+**Paczki w katalogu swojego systemu** — autor i asystent, 2026-09-24. Do tego dnia leżały we
+wspólnym `Packs\` na górze, a każdy system czytałby cały katalog i rozpoznawał swoje wpisy po typie.
+Dwa powody zmiany. Autor: po wyjściu wpisów z ramy do biblioteki katalog na samej górze udawał
+fundament aplikacji, a paczka w praktyce należy do jednego systemu, bo tylko on zna typy jej wpisów.
+Asystent: tego samego dnia przyjęto, że wpis nieznanego typu świeci w każdej zakładce treści — przy
+wspólnym katalogu paczka pisana pod drugi system świeciłaby w pierwszym zawsze, nie będąc zepsuta.
+Położenie rozstrzyga przynależność bez pola w manifeście; pytanie „paczka a system" zamknięte.
+**Katalog nazywa system, nie bibliotekę** — biblioteka jest podziałem kodu, którego użytkownik nie
+widzi; widzi systemy. **Identyfikator, nie nazwa wyświetlana** — zmiana nazwy na ekranie nie
+osieroca katalogu.
+
+**Małe litery, bez spacji** — autor, 2026-09-24. Wnętrze paczek i kampanii już tak wyglądało
+(`pack.json`, `entries`, `datablocks`), a identyfikator systemu i tak jest pisany małymi literami;
+wielką literą pisane były tylko dwa katalogi na górze. Wyjątkiem jest `DungeonApp` — nazwa programu
+w Dokumentach, jak foldery gier. Windows nie rozróżnia wielkości liter, więc istniejący
+`Campaigns\` działa dalej bez przenoszenia.
+
 **Odrzucone w tym temacie:** „Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście
 kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".
 
@@ -546,8 +564,8 @@ kości w Savage Worlds są tabelami.
 **Widok domyślny karty.** Dziś oba istniejące rodzaje treści mają karty zaprojektowane, więc
 pytanie jest puste.
 
-**Paczka a system.** Paczka nie deklaruje systemu — jej wpisy wskazują typy treści, a te należą do
-systemów.
+**Paczka a system** — zamknięte 2026-09-24: paczka nie deklaruje systemu, należy do tego, w którego
+katalogu leży (*Gdzie mieszka stan*).
 
 ### Nawyk przerwany — skąd reguła „nic bez konsumenta"
 

@@ -46,7 +46,10 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 1. Logika szkieletu bez okna — sekcje po paczce, rzeczy zepsute, wyszukiwanie, filtry, sortowanie,
    styk, przez który system podaje kategorię, tagi, odznakę, klucze filtra i sortowania.
 2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
-3. Zwiad: jak żyje rejestr (kto go trzyma, kto dostaje przy zakładkach i biurku); potem zlecenie
+3. Katalogi (zadanie mechaniczne, Haiku): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
+   kampanie z `...\campaigns\` — małe litery; paczki dostarczane z systemem tym samym układem.
+   Autor przenosi swoje paczki ręcznie po scaleniu.
+4. Zwiad: jak żyje rejestr (kto go trzyma, kto dostaje przy zakładkach i biurku); potem zlecenie
    wczytania paczek od nowa.
 
 **Po kroku 10, osobnymi etapami:** dodanie paczki przeciągnięciem do okna (do rozstrzygnięcia: katalog

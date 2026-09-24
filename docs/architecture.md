@@ -188,8 +188,8 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | **Rama** | `DungeonApp.Core` + `DungeonApp.Desktop` | kompilowana | okno, pasek boczny i górny, stopka, ekran wyboru systemu, ustawienia; kampanie, ich zapis, zdarzenia, jedyna droga zmiany stanu. **Nie zna `Entry`. Nie zna biurka.** |
 | **Biblioteki** | biblioteka wpisów: `DungeonApp.Library.Entries` (logika, bez Avalonii) + `DungeonApp.Library.Entries.Desktop` (interfejs); biblioteka biurka: `DungeonApp.Library.Workspace` | kompilowana | biblioteka wpisów: paczki, rejestr, wpisy, instancje, nakładki, kontrolki kart, szkielet zakładki treści; biblioteka biurka: biurko i system okien; później silnik formuł. **Biblioteka wpisów zna `Entry`. Żadna nie zna `Monster`.** |
 | **System** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, zakładki, narzędzia biurka, dodatki. **Jedyne miejsce, gdzie wolno być konkretnym.** |
-| **Paczka** | `Dokumenty\DungeonApp\Packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
-| **Kampania** | `Dokumenty\DungeonApp\Campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
+| **Paczka** | `Dokumenty\DungeonApp\<system>\packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
+| **Kampania** | `Dokumenty\DungeonApp\campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
 
 ```
         ┌──────────────────────────────────────────────┐
@@ -516,7 +516,9 @@ Paczka to katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów tr
   paczki.
 * **System może dostarczać paczki razem ze sobą** — zwykłe paczki w tym samym formacie, leżące obok
   programu, tylko do odczytu, aktualizowane z wydaniem aplikacji. Wczytuje je ten sam mechanizm do
-  tego samego rejestru, a ich wpisy mają zwykłe adresy. Paczki MG leżą w `Dokumenty\DungeonApp\Packs\`.
+  tego samego rejestru, a ich wpisy mają zwykłe adresy. Paczki MG leżą w `Dokumenty\DungeonApp\<system>\packs\`.
+* **Paczka należy do systemu, w którego katalogu leży.** System czyta wyłącznie własny katalog paczek
+  (i własne paczki dostarczone); paczka nie deklaruje systemu.
   **Logika nigdy nie rozróżnia źródła paczki**; źródło wolno pokazać na ekranie — etykietą albo
   filtrem po paczce — i nic więcej. Wpisów wkompilowanych w kod systemu nie ma.
 * **Homebrew na wpisie z paczki dostarczonej to kopia we własnej paczce, pod własnym adresem** —
@@ -693,9 +695,12 @@ przez autora treści.
 
 | Co | Gdzie | Charakter |
 |---|---|---|
-| Paczki | `Dokumenty\DungeonApp\Packs\<paczka>\` | Instalowane, tylko do odczytu, wspólne. Dokument użytkownika — widoczny i kopiowalny. |
-| Kampanie | `Dokumenty\DungeonApp\Campaigns\<id>\` | Manifest — w nim system kampanii oraz włączone warianty z parametrami — oraz modele stanu zadeklarowane przez system. |
+| Paczki | `Dokumenty\DungeonApp\<system>\packs\<paczka>\` | Instalowane, tylko do odczytu, należą do systemu z nazwy katalogu. Dokument użytkownika — widoczny i kopiowalny. |
+| Kampanie | `Dokumenty\DungeonApp\campaigns\<id>\` | Manifest — w nim system kampanii oraz włączone warianty z parametrami — oraz modele stanu zadeklarowane przez system. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Stan aplikacji, nie dokument. |
+
+**Katalogi pod `DungeonApp` nazywa się małymi literami, bez spacji**; `<system>` to stały
+identyfikator systemu (`dnd5e`), nie jego nazwa wyświetlana.
 
 **Kampania jest dokumentem, układ okien jest ustawieniem programu.** Kampania leży w Dokumentach —
 widoczna, kopiowalna, przenoszalna na pendrivie — a układ biurka w danych aplikacji.
@@ -1000,12 +1005,9 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    zapisana; brakuje przejścia przez realny system.
 6. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
    jakąkolwiek kartę zastępczą. **Wyzwalacz:** pierwszy taki rodzaj treści.
-7. **Paczka a system.** Czy paczka ma deklarować swój system. Miejsce na ekranie dla paczki
-   odrzuconej jest rozstrzygnięte (sekcja *Zakładki treści*); zostaje to, że wspólnego rejestru nie
-   ma: każdy system czyta katalog paczek sam i każdy odrzuca zepsutą paczkę osobno, więc przy drugim
-   systemie ta sama paczka byłaby zgłaszana tyle razy, ile jest systemów, a wpisy paczki pisanej pod
-   cudzy system — oznaczane jako wadliwe w rejestrze każdego systemu poza jej własnym.
-   **Wyzwalacz:** drugi system.
+7. **Kampanie w katalogu systemu.** Paczki leżą w katalogu swojego systemu, kampanie — we wspólnym,
+   choć każda należy do jednego systemu i wybór systemu ją poprzedza. Czy przenieść je do
+   `<system>\campaigns\`. Pytanie autora z 2026-09-24, odłożone jako osobny temat.
 8. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym
    dodatkiem, czy któryś wariant okaże się sensowny wyłącznie w pakiecie z innymi. **Wyzwalacz:**
    pierwszy prawdziwy dodatek.
