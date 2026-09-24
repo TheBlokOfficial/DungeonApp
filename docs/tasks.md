@@ -80,13 +80,14 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 
      | # | Porcja | Rundy | Pomiar |
      |---|---|---|---|
-     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | czeka | 33 / 5,8 / 3,1 mln |
+     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1: obcięte ogonki, sztuczne grubości kroju nagłówków; siedem stopni pisma (architekt) | 33 / 5,8 / 3,1 mln |
+     | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | | |
      | 1 | przyciski — sześć odmian | | |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe | | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia | | |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
-     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, separator, okruszki | | |
+     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
      | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
      | 8 | tag, chip, odznaka, tabela | | |
      | 9 | odcięcie motywu domyślnego biblioteki | | |
@@ -142,6 +143,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   z niego fokus (dziś kursor miga dalej).
 
 *B. Karta potwora*
+* Opisy, akcje i cechy szczególne stylem tekstu do zaznaczenia (porcja 2); powód błędu w miejscu karty
+  także — *Konwencje interakcji* w `architecture.md`.
 * Nagłówki „Cechy szczególne"/„Akcje" jasne i wyraźne jak w mockupie; „CECHY" wersalikami; styl
   etykiet cech; liczby KP/PZ/szybkości i cech wyróżnione; ikonki przy KP, PZ, szybkości.
 

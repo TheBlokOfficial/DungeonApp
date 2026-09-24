@@ -43,7 +43,7 @@ jego zmian z własnej inicjatywy. **Rzemiosło** to obowiązek wykonawcy, bez py
 polecenia w briefie — lista kontrolna stoi w definicji wykonawcy (`.claude/agents/wykonawca.md`,
 *Rzemiosło interfejsu*): każdy stan kontrolki obsłużony świadomie, fokus zdejmowany kliknięciem obok
 i Escape, układ niezależny od zawartości, pasek przewijania tylko przy potrzebie, tekst wyrównany
-w polu, przycisk bez działania wygaszony. Ta lista jest minimum, nie granicą: błąd rzemiosła spoza
+w polu, przycisk bez działania wygaszony, ręka nad tym, co klikalne. Ta lista jest minimum, nie granicą: błąd rzemiosła spoza
 niej wykonawca też poprawia — w kontrolce, którą i tak zmienia. **Rób też funkcje osiągalnymi** — moduł,
 którego nie da się otworzyć z działającej aplikacji, jest dla autora bezwartościowy.
 

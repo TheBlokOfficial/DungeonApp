@@ -66,6 +66,8 @@ zawsze, także gdy brief o nim milczy. Każda kontrolka, którą dodajesz albo z
 - **Pasek przewijania tylko przy potrzebie** — nie ma stałego pasa przy liście, która się mieści.
 - **Tekst wyrównany w polu** — także tekst zastępczy; w pionie na środku z założenia.
 - **Przycisk bez działania wygaszony** — gdy nie ma czego zrobić, jest wyłączony, nie martwy.
+- **Kursor:** ręka nad wszystkim, co reaguje na kliknięcie; kursor tekstowy w polu do pisania; strzałka
+  nad elementem wyłączonym i wszędzie indziej. Nadaje go szablon kontrolki, nie widok.
 
 Błąd rzemiosła spoza listy w kontrolce, którą i tak zmieniasz, też poprawiasz. Każdą taką poprawkę
 wypisujesz w raporcie wśród rzeczy rozstrzygniętych samodzielnie.

@@ -318,6 +318,26 @@ w kodzie. Rzadkość przedmiotu nie pożycza kolorów znaczeń: „bardzo rzadki
 „niebezpieczeństwa" czytałby się jako zagrożenie. Jej kolory mieszkają w systemie, bo rama nie
 nazywa pojęć systemu.
 
+**Konwencje interakcji** — rozstrzygnięte przez architekta 2026-09-24; autor oddał decyzję („liczę na
+profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
+
+* **Ręka nad wszystkim klikalnym**, nie tylko nad przyciskami. Konwencja okien systemowych daje rękę
+  wyłącznie odnośnikom, ale ta aplikacja mówi językiem mockupu, a mockup daje ją każdemu przyciskowi.
+  Reguła „klikalne = ręka" jest jedna i sprawdzalna bez wyjątków; „wybrane elementy" wymagałyby listy,
+  którą każdy wykonawca prowadziłby po swojemu. Pasek przewijania i przyciski okna zostają przy
+  strzałce, bo tam użytkownik oczekuje zachowania systemu.
+* **Zaznaczanie tekstu tam, gdzie się go kopiuje, nie wszędzie.** MG przenosi fragment opisu albo
+  akcji do notatek; komunikat błędu kopiuje się, żeby go komuś pokazać. W wierszach i nagłówkach
+  przeciągnięcie myszą kłóciłoby się z kliknięciem.
+* **Kolor zaznaczenia z akcentu**, bo „zaznaczone" i „wybrane" to dla użytkownika to samo; mocniejszy
+  niż tło wybranego wiersza, bo zaznaczenie w tekście musi być widoczne na każdej literze.
+* **Siedem stopni pisma zamiast dwunastu z mockupu.** Mockup miał pary różniące się o pół piksela
+  (13 i 13,5, 12 i 12,5, 11 i 11,5, 10,5 i 11) — w galerii nie do odróżnienia. Stopień, którego nie
+  widać, nie niesie informacji, a każe wybierać. Role zostały; łączą się tylko ich stopnie. Wysokość
+  linii dostają wyłącznie style tekstu wielowierszowego: nagłówek o linii 1,05 z mockupu obcinał
+  w aplikacji ogonki liter.
+* **Liczby nigdy krojem nagłówków** — Cormorant ma cyfry starodrukowe, „15" czyta się jak „1s".
+
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor
 Hybrid) zamiast Avalonii".

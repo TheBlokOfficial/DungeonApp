@@ -661,6 +661,18 @@ czerwieni — wtedy ten sam kolor znaczy wszędzie to samo i użytkownik czyta g
 Skale należące do systemu (np. rzadkość przedmiotu) mają własne kolory w systemie i nie pożyczają
 kolorów znaczeń z motywu ramy.
 
+**Konwencje interakcji** — należą do szablonów kontrolek w motywie ramy, nie do widoków:
+
+* **Kursor:** ręka nad wszystkim, co reaguje na kliknięcie; kursor tekstowy w polach do pisania
+  i nad tekstem do zaznaczenia; strzałka wszędzie indziej — także nad elementem wyłączonym, paskiem
+  przewijania i przyciskami okna.
+* **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)
+  i w komunikatach błędów. Etykiety, przyciski, wiersze list i nagłówki się nie zaznaczają. Kolor
+  zaznaczenia to akcent z przezroczystością — ten sam znak „wybrane" co zaznaczony wiersz.
+* **Pismo:** siedem stopni — 11, 12, 13 dla tekstu interfejsu, 15 dla wyróżnionych liczb, 16, 26,
+  34 dla nagłówków. Style tekstu nazywają role, nie stopnie; nowa rola dostaje jeden z tych stopni.
+  Liczby idą krojem o stałej szerokości, nigdy krojem nagłówków.
+
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 
 ## 16. Poziomy logiki i formuły
