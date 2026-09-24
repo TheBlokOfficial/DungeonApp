@@ -43,7 +43,6 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
 
 ### Rusztowanie — celowo tymczasowe
 
-* **Zakładka rejestru** — przejściowa, do zakładek treści (krok 10 w architekturze).
 * **`AllowsMultipleInstances`** — czytane przy odtwarzaniu układu, żaden panel go nie ustawia.
 * **Dwustopniowy katalog paneli** (najpierw panele biblioteki, potem narzędzia systemu) — pierwsza
   lista jest pusta.
@@ -53,16 +52,19 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
 
 ### Dług
 
-* **Odrzucone paczki nie docierają do Mistrza Gry, a zmiana nazwy okazu nie ma konsumenta** — obie
-  pozycje czekają w kolejce: [tasks.md](tasks.md), *Czekają na miejsce na ekranie*.
+* **Zmiana nazwy okazu nie ma konsumenta** — czeka w kolejce: [tasks.md](tasks.md), *Czeka na
+  miejsce na ekranie*.
 * **Błąd we/wy przy operacjach na kampanii** jest połykany; nazwany komentarzem w kodzie.
 * **Wymóg „widok narzędzia sprząta po sobie" nie stoi w punkcie styku** — fabryka treści panelu
   oddaje `object`; drugi system pozna wymóg dopiero przez wyciek.
 * **Rozgrzewka kart biegnie zaraz po paczkach**, bo rama uruchamia kroki systemu razem — jej awaria
   zabiera pozostałą rozgrzewkę, która przechodzi wtedy w leniwe wczytywanie. Przyjęte bez weta.
-* **Kolory stanów („sukces", „ostrzeżenie", „niebezpieczeństwo") nie mają zapisanego znaczenia**
-  — wbrew regule z *Niezmiennika interfejsu*. Komentarze dochodzą w kroku 10, razem z pierwszym
-  użyciem „niebezpieczeństwa" dla treści niewczytanej.
+* **Token „przygaszony akcent" ma wartość zwykłego akcentu** — nazwa obiecuje co innego, niż daje.
+  Zakładka treści używa dlatego własnego przygaszonego tła zaznaczenia; kto sięgnie po token,
+  dostanie pełny pomarańcz. Poprawa wartości przemaluje jego obecnych użytkowników — do obejrzenia
+  z autorem.
+* **Kolory stanów mają zapisane znaczenie, pozostałe kolory motywu — nie.** Reguła z *Niezmiennika
+  interfejsu* obowiązuje wszystkie.
 * **Migracji nie ma** — zbyt nowy format to odmowa odczytu, niezgodna wersja typu treści oznacza
   wpis. Strukturalnie przygotowane, ścieżki brak.
 
@@ -79,6 +81,10 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
   min/max — snapowanie, ograniczanie ruchu i maksymalizacja nie.
 * **Testy renderujące** (bez ekranu, przez prawdziwy `App`) sprawdzają tylko to, po co powstały:
   wiersze paska bocznego, zwinięty pasek, wiersze półki, geometrię przycisku paska górnego.
+* **Skan słownikowy granic bywa niestabilny w pełnym przebiegu** — wykonawca 2026-09-24 widział
+  sporadyczną porażkę `Engine_and_shell_do_not_name_any_entry_kind` tylko przy `dotnet test` całego
+  rozwiązania, także na kodzie sprzed swojej zmiany; trzy pełne przebiegi po scaleniu — zielone.
+  Przy następnym wystąpieniu: zwiad przyczyny, zanim ktokolwiek uzna test za zawodny.
 * **Prawdziwe okno Windows** — ramka, skalowanie, dekoracje systemowe — jest poza zasięgiem testów
   bez ekranu. 2026-09-23 zrzut autora pokazał odstęp, którego pomiar bez ekranu nie pokazywał.
 

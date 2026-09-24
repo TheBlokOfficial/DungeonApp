@@ -17,7 +17,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było;
 > 2026-09-23 dokument znów miał 271 linii, z czego trzy czwarte było zamkniętą historią etapów.
 
-Gałąź: `master`. Build bez ostrzeżeń, 326 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 330 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -45,7 +45,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 **Zlecenia, po kolei:**
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
    wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
-2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
+2. ~~Widok według mockupu i dwie zakładki systemu w miejsce rejestru~~ — scalone 2026-09-24.
+   **Czeka na sprawdzenie przez autora w aplikacji.**
 3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
    kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
    tym samym układem. Reguły półki — architektura, *Gdzie mieszka stan*. Autor przenosi swoje paczki
@@ -96,19 +97,11 @@ pola `Ruleset` i `ContentPacks` w manifeście kampanii".
 
 **Wyzwalacz:** pierwszy wariant zasad, który autor chce mieć w konkretnej kampanii.
 
-### Czekają na miejsce na ekranie — trzy pozycje o interfejsie
+### Czeka na miejsce na ekranie: nazwa okazu
 
-Wszystkie czekają, aż autor zechce zaprojektować dla nich miejsce na ekranie. Dwie pierwsze rozwiązuje
-projekt kroku 10 — znikają stąd po jego scaleniu.
+Czeka, aż autor zechce zaprojektować dla niej miejsce na ekranie.
 
-1. **Odrzucone paczki nigdzie się nie pokazują.** Loader je odnotowuje, ekran rejestru ich nie
-   wyświetla — świadoma decyzja autora z 2026-09-12. Jedyna pozycja z tabeli „Co się dzieje, gdy
-   treść jest zepsuta", o której Mistrz Gry nie dowiaduje się z aplikacji: paczka odrzucona za
-   literówkę w manifeście znika dziś po cichu.
-2. **Nagłówek `NIE WCZYTANE` czyni pierwszy zepsuty wiersz wyższym od pozostałych**, bo niesie go ten
-   wiersz, a nie prawdziwy nagłówek sekcji. Cena za „jedna lista, jeden szablon", zostawiona
-   świadomie 2026-09-13.
-3. **Nie da się nazwać okazu.** Operacja zmiany nazwy własnej instancji istnieje, jest przetestowana
+* **Nie da się nazwać okazu.** Operacja zmiany nazwy własnej instancji istnieje, jest przetestowana
    i **nikt jej nie woła** — okno „Świat kampanii" umie dodać, zmienić punkty życia i usunąć, mimo
    że lista pokazuje właśnie nazwę własną, gdy jest. Konsument jest jednym polem tekstowym stąd.
 
