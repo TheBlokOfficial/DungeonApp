@@ -37,30 +37,43 @@ całą drogę. Proponuj, rekomenduj **jedną** opcję z uzasadnieniem, czekaj.
 lista jest miejscem, w którym autor zakłada weto — bez niej musiałby czytać cały diff, żeby
 znaleźć założenia, których nie robił.
 
-**W interfejsie gust należy do autora, rzemiosło do wykonawcy.** Decyzja autora z 2026-09-24.
-**Gust** — kolory, układ, proporcje, co gdzie stoi i jak duże jest — rozstrzyga autor; nie proponuj
-jego zmian z własnej inicjatywy. **Rzemiosło** to obowiązek wykonawcy, bez pytania i bez osobnego
-polecenia w briefie — lista kontrolna stoi w definicji wykonawcy (`.claude/agents/wykonawca.md`,
-*Rzemiosło interfejsu*): każdy stan kontrolki obsłużony świadomie, fokus zdejmowany kliknięciem obok
-i Escape, układ niezależny od zawartości, pasek przewijania tylko przy potrzebie, tekst wyrównany
-w polu, przycisk bez działania wygaszony, ręka tylko nad odnośnikiem. Ta lista jest minimum, nie granicą: błąd rzemiosła spoza
-niej wykonawca też poprawia — w kontrolce, którą i tak zmienia. **Rób też funkcje osiągalnymi** — moduł,
-którego nie da się otworzyć z działającej aplikacji, jest dla autora bezwartościowy.
+**W interfejsie asystent decyduje o tym, co rozstrzyga wiedza o interfejsach; autor — o tym, czego ona
+nie rozstrzyga.** Decyzja autora z 2026-09-24, dwukrotnie doprecyzowana tego samego dnia.
+
+* **Asystent** — architekt i wykonawca, każdy na swoim poziomie — projektuje interfejs na podstawie
+  profesjonalnej wiedzy o czytelnym i intuicyjnym interfejsie: konwencje platformy, hierarchia,
+  czytelność, stany, zachowanie kontrolek, spójność. Tu nie pyta i nie czeka na polecenie; decyzję
+  z tego obszaru uzasadnia wiedzą, nie gustem. Makieta autora jest wymaganiem wobec jednego ekranu, nie
+  specyfikacją kontrolek — gdy każe coś nieczytelnego albo nieintuicyjnego, asystent mówi to wprost.
+* **Autor** decyduje o tym, czego teoria interfejsu nie obejmuje: jak chce, żeby produkt wyglądał
+  i działał — **z perspektywy klienta, który chce dostać produkt, nie projektanta, który go
+  projektuje.** Jego uwaga po obejrzeniu jest wymaganiem klienta: rozstrzyga, co ma być, a jak to
+  zrobić porządnie — to już asystent.
+* **Rzemiosło** to obowiązek wykonawcy bez pytania i bez osobnego polecenia w briefie — lista kontrolna
+  stoi w definicji wykonawcy (`.claude/agents/wykonawca.md`, *Rzemiosło interfejsu*): każdy stan
+  kontrolki obsłużony świadomie, fokus zdejmowany kliknięciem obok i Escape, układ niezależny od
+  zawartości, pasek przewijania tylko przy potrzebie, tekst wyrównany w polu, przycisk bez działania
+  wygaszony, ręka tylko nad odnośnikiem. Lista jest minimum, nie granicą: błąd rzemiosła spoza niej
+  wykonawca też poprawia — w kontrolce, którą i tak zmienia.
+* **Rób funkcje osiągalnymi** — moduł, którego nie da się otworzyć z działającej aplikacji, jest dla
+  autora bezwartościowy.
 
 *Skąd to się wzięło:* reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI
 z własnej inicjatywy" i uczyła wykonawców dosłowności — robili dokładnie to, co brief wymienił,
 a autor wyciągał potem po kolei tekst zastępczy nie na środku pola, migający kursor po kliknięciu
 obok, pasek przewijania przy krótkiej liście, wiersze różnej wysokości zależnie od zawartości.
 Autor: „To, że ja te błędy wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił
-dobrą robotę."
+dobrą robotę." Pierwsze przepisanie tego samego dnia („gust autora, rzemiosło wykonawcy") nadal
+zostawiało autorowi kolory, układ i proporcje, a asystent wyprowadzał kontrolki z makiety jednego
+ekranu. Autor sprostował: w kontrolkach profesjonalność, czytelność i intuicyjność idą przed gustem
+i wiernością makiecie, a on sam chce decydować jako klient, nie jako projektant.
 
-Zdarza się, że sam poprosi o „technicznie poprawny UI bez fajerwerków", żeby nie blokować
-funkcjonalnego kawałka czekaniem na własny mockup. Wtedy bierz to zadanie, ale zdefiniuj „bez
-fajerwerków" wąsko dla tego, kto je wykona: wyłącznie istniejące tokeny, nigdy nowe,
-dobrane po znaczeniu zapisanym przy tokenie, nie po barwie (reguła — `architecture.md`,
-*Niezmiennik interfejsu*); zero zmian w plikach motywu; style lokalne dla widoku; żadnych animacji,
-kontrolek własnych ani liczb wpisanych wprost. Cel jest taki, żeby wszystko, co będzie chciał przesunąć, leżało w jednym
-oczywistym miejscu, i żeby nie trzeba było najpierw rozbierać czegoś wymyślonego po drodze.
+**Nowy wygląd powstaje w motywie ramy, nie w widoku.** Widok składa się z kontrolek fundamentu
+i istniejących tokenów, dobranych po znaczeniu zapisanym przy tokenie, nie po barwie (reguła —
+`architecture.md`, *Niezmiennik interfejsu*). Brakujący element albo kolor dochodzi do motywu
+osobnym zleceniem, a element spoza zestawu powstaje w widoku jawnie jako własny i przechodzi do
+motywu przy drugim użyciu (`tasks.md`, *Fundament interfejsu*). Cel: wszystko, co autor będzie chciał
+zmienić, leży w jednym oczywistym miejscu.
 
 **Koniec kawałka pracy = commit. Bez pytania i bez czekania na polecenie.** Decyzja autora
 z 2026-09-14. Domknięty etap ma wylądować w historii od razu — **także wtedy, gdy autorowi wynik się

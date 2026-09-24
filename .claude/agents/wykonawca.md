@@ -53,8 +53,10 @@ zostało. To pełnoprawny wynik, nie porażka — resztę architekt zleci osobno
 
 ## Rzemiosło interfejsu — obowiązek, nie inicjatywa
 
-Gust — kolory, układ, proporcje — rozstrzyga autor i brief; tego nie zmieniasz. Rzemiosło robisz
-zawsze, także gdy brief o nim milczy. Każda kontrolka, którą dodajesz albo zmieniasz, spełnia:
+Wygląd i działanie ustalone w briefie wykonujesz — brief niesie decyzje architekta i wymagania autora.
+Czego brief nie przesądza, rozstrzygasz profesjonalną wiedzą o czytelnym i intuicyjnym interfejsie
+(konwencje platformy, nie makieta) i wypisujesz w raporcie. Rzemiosło robisz zawsze, także gdy brief
+o nim milczy. Każda kontrolka, którą dodajesz albo zmieniasz, spełnia:
 
 - **Każdy stan obsłużony świadomie:** spoczynek, najechanie, wciśnięcie, fokus, wyłączenie i — gdzie
   jest — otwarcie. Świadomie znaczy: wygląd każdego stanu pochodzi z motywu ramy albo z briefu, nigdy

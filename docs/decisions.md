@@ -1060,7 +1060,7 @@ I argument rozstrzygający: przyczyna dzisiejszej fuszerki leżała głównie w 
 uczeni dosłowności, kontrolki na domyślnym motywie z nałożonymi poprawkami, dowodzenie wyglądu bez
 ekranu. Zmiana technologii przed naprawą procesu nie pozwoliłaby odróżnić, co pomogło.
 
-**Czym to zastąpiono.** Naprawa procesu — reguła „gust autora, rzemiosło wykonawcy"
+**Czym to zastąpiono.** Naprawa procesu — reguła o podziale decyzji w interfejsie
 (`collaboration.md`) — i fundament interfejsu: każda kontrolka z własnym, kompletnym szablonem
 w motywie ramy, sprawdzana przez autora w galerii kontrolek (`tasks.md`).
 
