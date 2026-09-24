@@ -159,6 +159,20 @@ ekranu — renderowanie w testach, próbkowanie pikseli, walkę z przycinaniem �
 2026-09-24 szczegół wyśrodkowany daleko od listy przeszedł test szerokości, a 2026-09-22 etap przeszedł
 247 testów i padał po wyborze systemu. Autor łapie takie rzeczy w pierwszej minucie w aplikacji.
 
+**Nowe testy tylko tam, gdzie błędu nie widać w aplikacji albo niszczyłby dane.** Decyzja autora
+z 2026-09-24. Testy granic i testy formatu na wzorcowych paczkach i kampaniach — zawsze. Nowe testy
+logiki — przy zapisie kampanii, drodze zmiany stanu, wczytywaniu paczek i poprawce zgłoszonego błędu
+logiki; nie przy każdej zmianie. Istniejące testy logiki zostają: ich trzymanie nic nie kosztuje,
+dopóki nie zmienia się zachowanie.
+
+*Dlaczego — z tych samych 120 przebiegów:* praca przy testach to co czwarty krok wykonawców.
+Istniejący test zawiódł w trakcie cudzej zmiany 17 razy w całej historii: 9 razy test granic
+i 3 razy testy formatu — za każdym razem realny błąd; 4 razy testy logiki przy zamierzonej zmianie
+zachowania, poprawione razem z kodem; raz test renderujący z powodu środowiska. Poza granicami
+i formatem żaden test napisany przez wykonawcę nie złapał błędu w cudzej zmianie. Tego samego dnia
+usunięto 17 z 28 testów renderujących — te, które utrwalały świeże decyzje o wyglądzie; zostały
+pilnujące błędów, które już raz wracały (pasek boczny, przycisk paska górnego).
+
 **Autor uruchamia wyłącznie `master`.** Decyzja autora z 2026-09-22: pozostałe gałęzie są robocze
 i nie podaje mu się poleceń uruchamiających aplikację z kopii subagenta. Wynik zweryfikowany przez
 architekta trafia więc do `master` **przed** sprawdzeniem przez autora, a to, co w działającej

@@ -41,6 +41,9 @@ zostało. To pełnoprawny wynik, nie porażka — resztę architekt zleci osobno
   po Twojej zmianie znaczy, że przyczyna jest w zmianie — zgłoś, nie „naprawiaj" testu.
 - **Poprawka błędu w logice przychodzi z testem, który na starym kodzie nie przechodzi.** Sprawdź to
   i napisz w raporcie. Asercje opisują zamierzony kształt równościami, nie ograniczeniem.
+- **Nowe testy piszesz tylko tam, gdzie brief każe** albo gdzie błędu nie byłoby widać w aplikacji
+  lub niszczyłby dane: zapis kampanii, droga zmiany stanu, wczytywanie paczek, granice, format.
+  Testy granic i formatu muszą przechodzić zawsze.
 - **Wyglądu interfejsu nie dowodzisz nowymi testami renderującymi**, chyba że brief każe wprost —
   wygląd sprawdza autor w aplikacji. Build i istniejące testy mają przechodzić.
 - **Commit po każdej zamkniętej części briefu**, nie na końcu.

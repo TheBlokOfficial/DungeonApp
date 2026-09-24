@@ -82,9 +82,9 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
 * **Biurko poza geometrią:** odtwarzanie układu, dopasowanie, maksymalizacja, kolejność okien,
   opóźniony zapis układu, cała logika gestów okna. Z geometrii pokryte jest tylko dopasowanie do
   min/max — snapowanie, ograniczanie ruchu i maksymalizacja nie.
-* **Testy renderujące** (bez ekranu, przez prawdziwy `App`) sprawdzają tylko to, po co powstały:
-  pasek boczny, półkę, przycisk paska górnego, zakładkę treści i karty. Od 2026-09-24 rasteryzują
-  prawdziwe piksele (Skia) — próbkowanie koloru działa; wzór w `CampaignLibraryRenderingTests`.
+* **Wyglądu nie pilnuje żaden test** poza paskiem bocznym (pierwsza klatka, zwijanie, etykiety)
+  i przyciskiem paska górnego — celowo, wygląd sprawdza autor (`collaboration.md`). Testy renderujące
+  nie rasteryzują: próbkowanie pikseli wymaga przełączenia `TestAppBuilder` na Skię.
 * **Skan słownikowy granic bywa niestabilny w pełnym przebiegu** — wykonawca 2026-09-24 widział
   sporadyczną porażkę `Engine_and_shell_do_not_name_any_entry_kind` tylko przy `dotnet test` całego
   rozwiązania, także na kodzie sprzed swojej zmiany; trzy pełne przebiegi po scaleniu — zielone.
