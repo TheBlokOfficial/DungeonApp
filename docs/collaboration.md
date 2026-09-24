@@ -341,6 +341,16 @@ zaksięgowaniem; autor nazwał to ekstremizmem i miał rację — w jednym zakaz
 cztery okazały się dokładnie tym, co odróżnia aplikację od gry komputerowej. Gdy litera i intencja się
 rozjeżdżają, zgłoś rozjazd — nie egzekwuj litery i nie porzucaj intencji.
 
+### Rama a system — jego własne uzasadnienia
+
+* **„DungeonApp nie jest jeszcze grą — jest launcherem i ramą technologiczną. Dopiero system jest
+  grą i to on powinien posiadać kampanie, wpisy, paczki."** Stąd paczki i kampanie w katalogu swojego
+  systemu (2026-09-24). Doprecyzowanie przyjęte przez autora tego samego dnia: rama to raczej
+  **silnik** niż launcher — **system jest właścicielem danych, rama jest właścicielem zasad
+  obchodzenia się z nimi.** Tworzenie, otwieranie i zamykanie kampanii, jedyna droga zmiany stanu,
+  zapis odporny na przerwanie i pięć zakazów zostają w ramie. „System posiada kampanie" nie znaczy,
+  że system sam je zapisuje — pierwszy, który by to robił, obszedłby gwarancje ramy.
+
 ### Warstwa treści — jego własne uzasadnienia
 
 Rozstrzygnięcia są w `architecture.md`. Tu zostają zdania autora, bo to one kończą dyskusję przy
