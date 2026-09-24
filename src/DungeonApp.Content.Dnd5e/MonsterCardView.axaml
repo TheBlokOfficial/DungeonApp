@@ -40,22 +40,22 @@
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPaddingFirst}">
                 <TextBlock Classes="muted" Text="KP" VerticalAlignment="Center" />
                 <TextBlock VerticalAlignment="Center">
-                    <Run x:Name="AcValueRun" x:FieldModifier="public" FontWeight="SemiBold" />
-                    <Run x:Name="AcNoteRun" x:FieldModifier="public" Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                    <Run x:Name="AcValueRun" FontWeight="SemiBold" />
+                    <Run x:Name="AcNoteRun" Foreground="{DynamicResource DungeonTextMutedBrush}" />
                 </TextBlock>
             </StackPanel>
             <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="1,0,0,0" />
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPadding}">
                 <TextBlock Classes="muted" Text="PZ" VerticalAlignment="Center" />
                 <TextBlock VerticalAlignment="Center">
-                    <Run x:Name="HpValueRun" x:FieldModifier="public" FontWeight="SemiBold" />
-                    <Run x:Name="HpNoteRun" x:FieldModifier="public" Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                    <Run x:Name="HpValueRun" FontWeight="SemiBold" />
+                    <Run x:Name="HpNoteRun" Foreground="{DynamicResource DungeonTextMutedBrush}" />
                 </TextBlock>
             </StackPanel>
             <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="1,0,0,0" />
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPadding}">
                 <TextBlock Classes="muted" Text="Szybkość" VerticalAlignment="Center" />
-                <TextBlock x:Name="SpeedValueText" x:FieldModifier="public" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock x:Name="SpeedValueText" FontWeight="SemiBold" VerticalAlignment="Center" />
             </StackPanel>
         </StackPanel>
 
@@ -64,27 +64,27 @@
         <!-- ===== Cechy: sześć wartości w ramkach z modyfikatorami ===== -->
         <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
             <TextBlock Classes="eyebrow" Text="Cechy" />
-            <controls:AbilityGridView x:Name="Abilities" x:FieldModifier="public" />
+            <controls:AbilityGridView x:Name="Abilities" />
         </StackPanel>
 
         <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
 
         <!-- ===== Właściwości: umiejętności / zmysły / języki, wyzwanie jako chip ===== -->
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-            <controls:TraitListView x:Name="SkillsAndSenses" x:FieldModifier="public" />
+            <controls:TraitListView x:Name="SkillsAndSenses" />
             <Grid ColumnDefinitions="Auto,*">
                 <TextBlock Grid.Column="0" Classes="muted" Text="Wyzwanie" VerticalAlignment="Center" />
                 <Border Grid.Column="1" HorizontalAlignment="Left" Margin="{DynamicResource DungeonPaddingMd}"
                         Background="{StaticResource MonsterChallengeChipBrush}"
                         CornerRadius="{StaticResource MonsterChallengeChipCornerRadius}"
                         Padding="{StaticResource MonsterChallengeChipPadding}">
-                    <TextBlock x:Name="ChallengeText" x:FieldModifier="public" Foreground="{DynamicResource DungeonAccentBrush}" FontWeight="SemiBold" />
+                    <TextBlock x:Name="ChallengeText" Foreground="{DynamicResource DungeonAccentBrush}" FontWeight="SemiBold" />
                 </Border>
             </Grid>
         </StackPanel>
 
         <!-- ===== Cechy szczególne (jeśli rekord je niesie) ===== -->
-        <StackPanel x:Name="SpecialAbilitiesSection" x:FieldModifier="public" Spacing="{DynamicResource DungeonSpacingXs}">
+        <StackPanel x:Name="SpecialAbilitiesSection" Spacing="{DynamicResource DungeonSpacingXs}">
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                 <Border Width="{StaticResource MonsterSectionBarWidth}" Height="{StaticResource MonsterSectionBarHeight}"
                         CornerRadius="{StaticResource MonsterSectionBarCornerRadius}"
@@ -111,7 +111,7 @@
         </StackPanel>
 
         <!-- ===== Opis: kursywą, z linią nad blokiem ===== -->
-        <StackPanel x:Name="DescriptionSection" x:FieldModifier="public" Spacing="{DynamicResource DungeonSpacingXs}">
+        <StackPanel x:Name="DescriptionSection" Spacing="{DynamicResource DungeonSpacingXs}">
             <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
             <controls:ProseBlockView x:Name="DescriptionBlock"
                                       FontStyle="Italic"
