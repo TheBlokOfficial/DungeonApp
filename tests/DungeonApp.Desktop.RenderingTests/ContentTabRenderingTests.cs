@@ -76,6 +76,11 @@ public sealed class ContentTabRenderingTests
         // empty on the right, exactly docs/architecture.md's "nadmiar szerokości zostaje pusty po
         // prawej".
         Assert.Equal(1920 - 320 - 720, window.Bounds.Width - listColumn.Bounds.Width - detailInner.Bounds.Width);
+        // ...and it is left over on the right, not split around a centered detail: the detail's
+        // content starts exactly where the list column ends.
+        var listRight = listColumn.TranslatePoint(new Point(listColumn.Bounds.Width, 0), window)!.Value.X;
+        var detailLeft = detailInner.TranslatePoint(new Point(0, 0), window)!.Value.X;
+        Assert.Equal(listRight, detailLeft);
     }
 
     [AvaloniaFact]
@@ -86,9 +91,16 @@ public sealed class ContentTabRenderingTests
         var listColumn = FindByName<Border>(window, "PART_ListColumn");
         var detailInner = FindByName<Border>(window, "PART_DetailInner");
 
+        var detailColumn = FindByName<ScrollViewer>(window, "PART_DetailColumn");
+
         Assert.Equal(320, listColumn.Bounds.Width);
-        Assert.Equal(720, detailInner.Bounds.Width);
-        Assert.Equal(window.Bounds.Width, listColumn.Bounds.Width + detailInner.Bounds.Width);
+        // The detail column is exactly the rest of the window; its content fills whatever the
+        // column's scrollbar leaves of it (as in the mockup, where .detail-panel's own scrollbar
+        // takes its width from .detail-inner) and starts where the list ends.
+        Assert.Equal(window.Bounds.Width, listColumn.Bounds.Width + detailColumn.Bounds.Width);
+        Assert.Equal(detailColumn.Viewport.Width, detailInner.Bounds.Width);
+        var listRight = listColumn.TranslatePoint(new Point(listColumn.Bounds.Width, 0), window)!.Value.X;
+        Assert.Equal(listRight, detailInner.TranslatePoint(new Point(0, 0), window)!.Value.X);
     }
 
     // -----------------------------------------------------------------------------------------

@@ -491,22 +491,22 @@
             </Border>
 
             <!-- ===== Kolumna szczegółu - największa szerokość z mockupu, wyrównana do lewej. ===== -->
-            <!-- The width cap (MaxWidth) lives on this outer Border, one level above the ScrollViewer
-                 it wraps, not on anything inside that ScrollViewer: a ScrollViewer's own content
-                 presenter reserves gutter width for its vertical scrollbar, which would otherwise
-                 shrink whatever is capped inside it by that scrollbar's width - an Avalonia
-                 implementation detail with no equivalent in the mockup's CSS. Capping out here means
-                 PART_DetailInner's own width is exactly min(available Grid column, 720) regardless of
-                 whether a scrollbar ends up showing, which is what "największa szerokość z mockupu"
-                 means and what the rendering test measures. HorizontalAlignment is left at its
-                 Stretch default deliberately: that is what fills up to MaxWidth and then stops,
-                 anchored at the left, instead of shrinking to the content's own natural size. The
-                 padding itself sits one level further in, as the content StackPanel's own Margin, so
-                 it never affects PART_DetailInner's own measured width. -->
-            <Border x:Name="PART_DetailInner"
-                    Grid.Column="1"
-                    MaxWidth="{StaticResource ContentDetailMaxWidth}">
-                <ScrollViewer x:Name="PART_DetailColumn" HorizontalScrollBarVisibility="Disabled">
+            <!-- The ScrollViewer fills the whole column, so its scrollbar stands at the window's right
+                 edge like the mockup's .detail-panel; the content inside is capped at the mockup's
+                 .detail-inner max-width and anchored left. The cap sits on a Grid column, not on
+                 the Border: a MaxWidth-capped element left at Stretch is centered in its wider slot,
+                 which is what put the detail far from the list, and HorizontalAlignment="Left" would
+                 shrink it to its content. A capped star column fills up to the cap and leaves the rest
+                 empty on the right. When a vertical scrollbar shows at the narrowest width, the cap
+                 shrinks by its width - nothing else moves. -->
+            <ScrollViewer x:Name="PART_DetailColumn"
+                          Grid.Column="1"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="{StaticResource ContentDetailMaxWidth}" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="PART_DetailInner">
                     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}" Margin="{StaticResource ContentDetailInnerPadding}">
                         <TextBlock IsVisible="{Binding ShowSelectionPrompt}"
                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
@@ -514,8 +514,9 @@
 
                         <ContentControl Content="{Binding Detail}" IsVisible="{Binding HasDetail}" />
                     </StackPanel>
-                </ScrollViewer>
-            </Border>
+                </Border>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>
