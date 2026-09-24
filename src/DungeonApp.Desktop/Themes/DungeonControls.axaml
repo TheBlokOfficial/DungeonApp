@@ -23,7 +23,8 @@
                      ręka, podkreślenie pod myszą;
           .link.inline - odnośnik w zdaniu (w InlineUIContainer TextBlocka): stopień i grubość
                      otaczającego TextBlocka, tekst Accent, podkreślenie stałe - sam kolor akcentu
-                     obok jasnego tekstu nie daje kontrastu 3:1;
+                     obok jasnego tekstu nie daje kontrastu 3:1; na linii bazowej zdania stawia go
+                     styl InlineUIContainer w BuiltInControls.axaml;
           .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, treść
                      wyśrodkowana (ikona DungeonActionIconSize nadaje sobie rozmiar sama).
         Krawędź ma zawsze 1 px (w odmianach bez krawędzi - przezroczysta), więc zmiana odmiany ani

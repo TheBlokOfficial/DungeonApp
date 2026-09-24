@@ -68,6 +68,16 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
     </Style>
 
+    <!--
+        Kontrolka w linii tekstu (np. odnośnik w zdaniu, Button.link.inline): domyślnie Avalonia
+        stawia jej dolną krawędź na linii bazowej zdania, więc tekst w środku - wysoki na całą linię
+        z jego własnym zejściem - stoi wyżej o to zejście. Dolna krawędź na dolnej krawędzi tekstu
+        kładzie linię bazową treści na linii bazowej zdania, a podkreślenie tuż pod literami.
+    -->
+    <Style Selector="InlineUIContainer">
+        <Setter Property="BaselineAlignment" Value="TextBottom" />
+    </Style>
+
     <Style Selector="ToolTip">
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
