@@ -14,14 +14,19 @@ Twoja kopia robocza startuje ze zdalnej gałęzi, która bywa daleko w tyle. Wyk
 `git reset --hard master` (lokalny `master` głównego repozytorium) i zapamiętaj commit — podajesz go
 w raporcie jako bazę diffu. Jeśli brief podaje oczekiwany commit, a jest inny, zgłoś to.
 
+Zapisz godzinę startu (`date`). **Masz 20 minut.** Sprawdzaj zegar po każdej zamkniętej części
+briefu. Po 20 minutach nie zaczynasz niczego nowego: dokończ bieżącą zmianę, zatwierdź to, co masz
+(co nie przechodzi buildu — commitem z przedrostkiem „WIP:”), i zgłoś raport z listą tego, co
+zostało. To pełnoprawny wynik, nie porażka — resztę architekt zleci osobno.
+
 ## Zakazy — bezwzględne, bez wyjątków od briefu
 
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill` i podobne). Zablokowany plik w `bin/`
    (MSB3021/MSB3027) trzyma podgląd XAML Ridera albo uruchomiona aplikacja autora — zgłoś blokadę
    i zbuduj oraz przetestuj wtedy projekty testowe, które nie zależą od `DungeonApp.App`.
 2. **Nie przeszukuj niczego poza źródłami repozytorium** — ani `bin/`, `obj/`, ani pakietów NuGet,
-   źródeł bibliotek na dysku, reszty dysku. Wiedzę o zachowaniu biblioteki (np. Avalonii) zdobywasz
-   pomiarem — wyrenderuj i zmierz — albo zgłaszasz jej brak.
+   źródeł bibliotek na dysku, reszty dysku. Gdy biblioteka (np. Avalonia) zachowuje się inaczej, niż
+   zakłada brief: **najwyżej dwie próby**, potem opisz w raporcie, co zmierzyłeś, i rób resztę zlecenia.
 3. **Nie tłum ostrzeżeń** (`#pragma`, `<NoWarn>`, `SuppressMessage`). `TreatWarningsAsErrors` jest
    włączone celowo; ostrzeżenie naprawiasz u źródła albo zgłaszasz.
 4. **Pięć zakazów z `CLAUDE.md` obowiązuje** każdą linijkę, którą piszesz.
@@ -34,8 +39,11 @@ w raporcie jako bazę diffu. Jeśli brief podaje oczekiwany commit, a jest inny,
   i zgłoś.** To pełnoprawny wynik, po który architekt Cię wysłał, nie porażka. Nie obchodź go.
 - **Nie zmieniaj tego, co testy sprawdzają**, chyba że brief każe wprost. Czerwony istniejący test
   po Twojej zmianie znaczy, że przyczyna jest w zmianie — zgłoś, nie „naprawiaj" testu.
-- **Poprawka błędu przychodzi z testem, który na starym kodzie nie przechodzi.** Sprawdź to
+- **Poprawka błędu w logice przychodzi z testem, który na starym kodzie nie przechodzi.** Sprawdź to
   i napisz w raporcie. Asercje opisują zamierzony kształt równościami, nie ograniczeniem.
+- **Wyglądu interfejsu nie dowodzisz nowymi testami renderującymi**, chyba że brief każe wprost —
+  wygląd sprawdza autor w aplikacji. Build i istniejące testy mają przechodzić.
+- **Commit po każdej zamkniętej części briefu**, nie na końcu.
 - **Przenosisz, nie kopiujesz** — chyba że brief mówi inaczej. Po przeniesieniu nie zostawiaj
   martwych kopii; sprawdź użycia w całym repozytorium, nie w jednym projekcie.
 - **Commit w swojej gałęzi, z opisem po polsku.** Nie scalaj do `master`, nie wypychaj.

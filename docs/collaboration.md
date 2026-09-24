@@ -145,6 +145,20 @@ dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-
 kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
 zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
+**Wygląd interfejsu sprawdza autor w aplikacji, nie testy.** Decyzja autora z 2026-09-24. Zlecenie
+zmieniające wygląd kończy się zielonym buildem i istniejącymi testami. Nowych testów renderujących
+wykonawca nie pisze, chyba że brief każe wprost — a brief każe dopiero przy błędzie widocznym, który
+autor zobaczył **drugi raz**; wtedy przyczyna jest znana i test jest tani. Uwagi autora po obejrzeniu
+idą następnym krótkim zleceniem. Logika bez okna — bez zmian: poprawka z testem, który przed nią nie
+przechodzi.
+
+*Dlaczego — z zapisów 120 przebiegów subagentów:* do 21.09 typowe zlecenie z kodem trwało 34 kroki
+i 6 minut, od 22.09 — 124 kroki i 17,5 minuty. Piętnaście przebiegów po ponad sto kroków zjadło 70%
+całego zużycia subagentów w projekcie; trzy najdroższe to widoki. Kroki szły na dowodzenie zmiany bez
+ekranu — renderowanie w testach, próbkowanie pikseli, walkę z przycinaniem — a jakość nie rosła:
+2026-09-24 szczegół wyśrodkowany daleko od listy przeszedł test szerokości, a 2026-09-22 etap przeszedł
+247 testów i padał po wyborze systemu. Autor łapie takie rzeczy w pierwszej minucie w aplikacji.
+
 **Autor uruchamia wyłącznie `master`.** Decyzja autora z 2026-09-22: pozostałe gałęzie są robocze
 i nie podaje mu się poleceń uruchamiających aplikację z kopii subagenta. Wynik zweryfikowany przez
 architekta trafia więc do `master` **przed** sprawdzeniem przez autora, a to, co w działającej
@@ -283,8 +297,16 @@ Zakazy, które niosą definicje — wszystkie pochodzą z incydentów:
    Skanuj tylko źródła repozytorium; katalogi wyjściowe zawierają kopie i pochodne, więc odpowiedź
    jest i zaszumiona, i kosztowna. 2026-09-23 inny przeszukiwał cały dysk w poszukiwaniu źródeł
    kontrolki Avalonii, żeby ustalić, jak rysuje tło względem krawędzi — brief tego nie przesądzał.
-   Wiedzę o zachowaniu biblioteki zdobywa się pomiarem (wyrenderuj i zmierz) albo się ją zgłasza;
-   luka, która pcha wykonawcę poza repozytorium, jest luką briefu.
+   Gdy biblioteka zachowuje się inaczej, niż zakłada brief: najwyżej dwie próby, potem pomiar do
+   raportu i dalej z resztą zlecenia. Luka, która pcha wykonawcę poza repozytorium albo w serię prób,
+   jest luką briefu. 2026-09-24 osiemdziesiąt siedem kroków prób przy kresce zaznaczenia — połowa
+   najdroższego zlecenia w projekcie — nie dało wyniku.
+4. **Po 20 minutach pracy nic nowego.** Decyzja autora z 2026-09-24. Wykonawca dokańcza bieżącą
+   zmianę, zatwierdza to, co ma (co nie przechodzi buildu — commitem „WIP:”), i zgłasza, na czym
+   stanął. Commit po każdej zamkniętej części briefu, nie na końcu. *Dlaczego:* koszt kroku rośnie
+   z długością pracy, bo każdy krok czyta od nowa całą dotychczasową rozmowę — stąd 142 mln tokenów
+   odczytu w zleceniu, które napisało 0,25 mln. Czas, a nie kroki, bo zegar wykonawca sprawdzi,
+   a własnych kroków wiarygodnie nie policzy.
 3. **Nie tłum ostrzeżeń** (`#pragma`, `<NoWarn>`, `SuppressMessage`). `TreatWarningsAsErrors` jest
    włączone celowo — kompilator jest tu walidatorem treści. Ostrzeżenie się naprawia u źródła albo
    zgłasza, nigdy nie wycisza.
@@ -311,14 +333,16 @@ Co jeszcze się sprawdziło:
   wzór. Gdy zadanie pasuje do wzorca z sekcji „Punkty rozszerzeń" w `code-state.md`, wskaż tę sekcję z nazwy.
   Szukanie, którego brief nie oszczędził, jest kosztem briefu, nie wykonawcy.
 
-* **Poprawka błędu widocznego w aplikacji przychodzi z testem, który na starym kodzie nie
-  przechodzi.** Brief każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt
+* **Poprawka błędu przychodzi z testem, który na starym kodzie nie przechodzi** — w logice zawsze,
+  przy wyglądzie tylko wtedy, gdy brief każe (*Wygląd interfejsu sprawdza autor*, sekcja 1). Brief
+  każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt
   równościami („wypełnia pasek”), nie ograniczeniem („nie wystaje”). 2026-09-23 pierwsza poprawka
   przycisku paska górnego przyszła z testem zielonym przy błędzie, który autor widział na ekranie:
   test sprawdzał, że przycisk nie wystaje, a przycisk za niski spełniał to bez trudu. Dopiero drugi
   przebieg, z wymogiem porażki przed poprawką, dał dowód.
 
-* **Test renderujący mierzy położenie względem sąsiadów i widoczność, nie tylko wymiar.**
+* **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
+  nie tylko wymiar.**
   2026-09-24 zakładka treści przeszła trzy testy renderujące i w aplikacji miała szczegół
   wyśrodkowany daleko od listy oraz niewidoczną kreskę zaznaczenia: testy sprawdzały szerokość kolumn
   i geometrię kreski, a kreskę przycinała krawędź listy. Brief każe więc mierzyć, gdzie element stoi

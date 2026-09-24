@@ -28,6 +28,10 @@ Zacznij od punktów wejścia ze zlecenia. Szukaj celowo — `grep`, `git log`, `
 fragmenty, nie całe pliki, dopóki pytanie nie wymaga całości. Gdy da się coś zmierzyć (wyrenderować,
 uruchomić test, policzyć), mierz zamiast wnioskować.
 
+Zapisz godzinę startu (`date`). **Masz 20 minut.** Po nich raportujesz to, co masz — z podziałem na
+ustalone i nieustalone. Gdy biblioteka zachowuje się inaczej, niż zakładasz: najwyżej dwie próby
+pomiaru tej samej rzeczy, potem to, co zmierzyłeś, idzie do raportu.
+
 ## Raport
 
 Po polsku, krótko, w granicy długości ze zlecenia:
