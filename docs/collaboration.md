@@ -43,11 +43,10 @@ dla niego bezwartościowy.
 
 Zdarza się, że sam poprosi o „technicznie poprawny UI bez fajerwerków", żeby nie blokować
 funkcjonalnego kawałka czekaniem na własny mockup. Wtedy bierz to zadanie, ale zdefiniuj „bez
-fajerwerków" wąsko dla tego, kto je wykona: istniejące tokeny, dobrane po celu, nie po barwie;
-style lokalne dla widoku; żadnych animacji, kontrolek własnych ani liczb wpisanych wprost. Gdy
-żaden token nie ma potrzebnego celu, wykonawca dodaje nowy, nazwany celem i opisany komentarzem
-(reguła — `architecture.md`, *Niezmiennik interfejsu*), i wymienia go w raporcie; innych zmian
-w plikach motywu nie robi. Cel jest taki, żeby wszystko, co będzie chciał przesunąć, leżało w jednym
+fajerwerków" wąsko dla tego, kto je wykona: wyłącznie istniejące tokeny, nigdy nowe,
+dobrane po znaczeniu zapisanym przy tokenie, nie po barwie (reguła — `architecture.md`,
+*Niezmiennik interfejsu*); zero zmian w plikach motywu; style lokalne dla widoku; żadnych animacji,
+kontrolek własnych ani liczb wpisanych wprost. Cel jest taki, żeby wszystko, co będzie chciał przesunąć, leżało w jednym
 oczywistym miejscu, i żeby nie trzeba było najpierw rozbierać czegoś wymyślonego po drodze.
 
 **Koniec kawałka pracy = commit. Bez pytania i bez czekania na polecenie.** Decyzja autora

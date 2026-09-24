@@ -307,13 +307,15 @@ wywołano"".
 
 ## Niezmiennik interfejsu
 
-**Kolor nazywa cel, nie barwę** — autor, 2026-09-24, przy czerwieni dla treści niewczytanej. Widok,
-który bierze kolor „bo jest czerwony", wiąże swoje znaczenie z przypadkową wartością: zmiana barwy
-jednej roli przemalowuje wszystko, co ją pożyczyło. Stan z tego dnia był tego dowodem — jeden kolor
-„ostrzeżenia" niósł naraz wpis niewczytany, kłopot okazu na biurku i komunikat po operacji, a kolor
-„niebezpieczeństwa" nie miał żadnego użytkownika ani zapisanego celu. Motyw znał już tę zasadę dla
-teł (role ramy, zaplecza i biurka rozdzielone mimo równych wartości); rozciąga się na wszystkie kolory.
-Kolory rzadkości i inne pojęcia systemu nie mogą stać w motywie ramy, bo rama nie nazywa pojęć systemu.
+**Kolor ma jedno zapisane znaczenie** — autor, 2026-09-24, przy czerwieni dla treści niewczytanej:
+użytkownik ma podświadomie łączyć kolor z intencją, a to działa tylko wtedy, gdy kolor znaczy
+wszędzie to samo. Komentarz przy tokenie jest miejscem, w którym to znaczenie staje się regułą,
+a nie przypadkiem — kolory stanów („sukces", „ostrzeżenie", „niebezpieczeństwo") nie miały go do
+tego dnia wcale. Asystent najpierw zrozumiał to jako token na każde miejsce użycia („treść
+niewczytana"); autor sprostował tego samego dnia — chodzi o znaczenie dla użytkownika, nie o cel
+w kodzie. Rzadkość przedmiotu nie pożycza kolorów znaczeń: „bardzo rzadki" w czerwieni
+„niebezpieczeństwa" czytałby się jako zagrożenie. Jej kolory mieszkają w systemie, bo rama nie
+nazywa pojęć systemu.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane".

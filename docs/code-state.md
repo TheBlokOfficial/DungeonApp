@@ -60,10 +60,9 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
   oddaje `object`; drugi system pozna wymóg dopiero przez wyciek.
 * **Rozgrzewka kart biegnie zaraz po paczkach**, bo rama uruchamia kroki systemu razem — jej awaria
   zabiera pozostałą rozgrzewkę, która przechodzi wtedy w leniwe wczytywanie. Przyjęte bez weta.
-* **Kolor „ostrzeżenia" niesie trzy różne cele** — wpis niewczytany w rejestrze, kłopot okazu na
-  biurku, komunikat po operacji — a kolor „niebezpieczeństwa" nie ma celu ani użytkownika. Wbrew
-  regule, że kolor nazywa cel. Rozdzielić przy najbliższej zmianie któregokolwiek z tych miejsc;
-  rejestr zniknie w kroku 10 razem ze swoim użyciem.
+* **Kolory stanów („sukces", „ostrzeżenie", „niebezpieczeństwo") nie mają zapisanego znaczenia**
+  — wbrew regule z *Niezmiennika interfejsu*. Komentarze dochodzą w kroku 10, razem z pierwszym
+  użyciem „niebezpieczeństwa" dla treści niewczytanej.
 * **Migracji nie ma** — zbyt nowy format to odmowa odczytu, niezgodna wersja typu treści oznacza
   wpis. Strukturalnie przygotowane, ścieżki brak.
 

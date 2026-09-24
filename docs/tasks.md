@@ -38,8 +38,9 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 * **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka. Pasek tytułu okna w mockupie nie
   jest projektem paska górnego. **Mockup jest prawie kwadratowy** — na ekranie 16:9 lista trzyma
   szerokość z mockupu, treść szczegółu swoją największą szerokość z mockupu, wyrównana do listy.
-* **Kolory po celu:** treść niewczytana dostaje własny token w motywie ramy; kolory rzadkości —
-  własne tokeny w systemie.
+* **Kolory po znaczeniu:** treść niewczytana bierze kolor „niebezpieczeństwa"; kolory stanów
+  dostają komentarze ze znaczeniem (niebezpieczeństwo — zepsute albo nieodwracalne; ostrzeżenie —
+  wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
 **Zlecenia, po kolei:**
 1. Logika szkieletu bez okna — sekcje po paczce, rzeczy zepsute, wyszukiwanie, filtry, sortowanie,
