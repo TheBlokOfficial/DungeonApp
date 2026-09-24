@@ -3,9 +3,11 @@
              xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ButtonsSection">
     <!-- Every Button variant from the frame's ControlTheme (Themes/DungeonControls.axaml), live: one
-         row per variant with a short label, a long label in a narrow slot (trimmed), an icon with a
-         label, and the disabled state. Nothing here restyles a button - the only local value is the
-         38 px comparison in the control-height row. -->
+         row per variant with a label, an icon with a label, and the disabled state - every button as
+         wide as its label, nothing trimmed. Trimming is shown once, in its own row, as what happens
+         when a container is too narrow. Icons are ForegroundIcon, so they take the button's text
+         colour. Nothing here restyles a button - the only local values are the narrow container in
+         the trimming row and the 38 px comparison in the control-height row. -->
     <UserControl.Styles>
         <Style Selector="StackPanel.button-row">
             <Setter Property="Orientation" Value="Horizontal" />
@@ -14,24 +16,20 @@
         <Style Selector="TextBlock.row-label">
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-        <Style Selector="Button.narrow">
-            <Setter Property="Width" Value="120" />
-        </Style>
     </UserControl.Styles>
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Przyciski" />
         <TextBlock Classes="caption muted" Text="Najedź i wciśnij, żeby zobaczyć stany." />
 
-        <Grid ColumnDefinitions="120,Auto"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+        <Grid ColumnDefinitions="140,Auto"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
             <!-- Zwykły -->
             <TextBlock Grid.Row="0" Classes="caption muted row-label" Text="Zwykły" />
             <StackPanel Grid.Row="0" Grid.Column="1" Classes="button-row">
                 <Button Content="Zapisz" />
-                <Button Classes="narrow" Content="Zamknij kampanię i wróć do biblioteki" />
                 <Button>
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
@@ -47,7 +45,6 @@
             <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Główny · primary" />
             <StackPanel Grid.Row="1" Grid.Column="1" Classes="button-row">
                 <Button Classes="primary" Content="Utwórz" />
-                <Button Classes="primary narrow" Content="Utwórz nową kampanię w tym systemie" />
                 <Button Classes="primary">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
@@ -63,7 +60,6 @@
             <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Cichy · subtle" />
             <StackPanel Grid.Row="2" Grid.Column="1" Classes="button-row">
                 <Button Classes="subtle" Content="Anuluj" />
-                <Button Classes="subtle narrow" Content="Pokaż wszystkie wpisy z tej paczki" />
                 <Button Classes="subtle">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
@@ -79,7 +75,6 @@
             <TextBlock Grid.Row="3" Classes="caption muted row-label" Text="Niszczący · danger" />
             <StackPanel Grid.Row="3" Grid.Column="1" Classes="button-row">
                 <Button Classes="danger" Content="Usuń" />
-                <Button Classes="danger narrow" Content="Usuń kampanię razem z całą historią" />
                 <Button Classes="danger">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
@@ -96,7 +91,6 @@
             <StackPanel Grid.Row="4" Grid.Column="1" Spacing="{DynamicResource DungeonSpacingMd}">
                 <StackPanel Classes="button-row">
                     <Button Classes="link" VerticalAlignment="Center" Content="Wyczyść filtry" />
-                    <Button Classes="link narrow" VerticalAlignment="Center" Content="Otwórz pełny opis tego wpisu" />
                     <Button Classes="link" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
                             <TextBlock Text="Sortuj: nazwa" />
@@ -136,6 +130,13 @@
                            Source="{StaticResource DungeonIconMenu}" />
                 </Button>
             </StackPanel>
+
+            <!-- Przycięcie: wyjście awaryjne, gdy kontener wymusza wąskie miejsce. -->
+            <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Gdy brakuje miejsca" />
+            <!-- Local on purpose: the narrow container that forces the trim. -->
+            <Border Grid.Row="6" Grid.Column="1" Width="120" HorizontalAlignment="Left">
+                <Button Content="Zamknij kampanię i wróć do biblioteki" />
+            </Border>
         </Grid>
 
         <TextBlock Classes="overline-sm muted" Text="WYSOKOŚĆ KONTROLKI" />
