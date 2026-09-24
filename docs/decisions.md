@@ -380,11 +380,23 @@ Położenie rozstrzyga przynależność bez pola w manifeście; pytanie „paczk
 widzi; widzi systemy. **Identyfikator, nie nazwa wyświetlana** — zmiana nazwy na ekranie nie
 osieroca katalogu.
 
+**Kampanie też w katalogu swojego systemu** — autor, 2026-09-24, tego samego dnia co paczki:
+kampanię, tak jak paczkę, wczytuje tylko jeden system, więc nie ma powodu mieszać ich w jednym
+katalogu. Wspólny katalog kosztował dotąd dwa mechanizmy — filtr półki po systemie z manifestu
+i osobną regułę pokazującą kampanię bez systemu albo z systemem nieznanym na półce każdego systemu.
+Położenie usuwa oba. Katalog wylicza rama, która zna identyfikatory systemów — podział warstw się
+nie zmienia. **Manifest zostaje przy systemie** jako tożsamość dokumentu przenośnego (asystent,
+przyjęte bez weta); niezgodność z katalogiem to kampania niedostępna z powodem, nie wybór jednej
+z dwóch prawd po cichu. Do tego dnia kampania nieznanego systemu była widoczna jako niedostępna;
+teraz katalog nieznanego systemu nie jest czytany wcale — tak samo jak jego paczki, bo nie ma dla
+niego ekranu.
+
 **Małe litery, bez spacji** — autor, 2026-09-24. Wnętrze paczek i kampanii już tak wyglądało
 (`pack.json`, `entries`, `datablocks`), a identyfikator systemu i tak jest pisany małymi literami;
 wielką literą pisane były tylko dwa katalogi na górze. Wyjątkiem jest `DungeonApp` — nazwa programu
 w Dokumentach, jak foldery gier. Windows nie rozróżnia wielkości liter, więc istniejący
-`Campaigns\` działa dalej bez przenoszenia.
+stary `Campaigns\` odnalazłby się bez zmiany nazwy — przeniesienie do katalogu systemu i tak go
+zastępuje.
 
 **Odrzucone w tym temacie:** „Zarezerwowane pola `Ruleset` i `ContentPacks` w manifeście
 kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego konsumenta".

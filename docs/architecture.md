@@ -189,7 +189,7 @@ Deklaracje i test do stosowania przy nowych funkcjach są w sekcji *Granica auto
 | **Biblioteki** | biblioteka wpisów: `DungeonApp.Library.Entries` (logika, bez Avalonii) + `DungeonApp.Library.Entries.Desktop` (interfejs); biblioteka biurka: `DungeonApp.Library.Workspace` | kompilowana | biblioteka wpisów: paczki, rejestr, wpisy, instancje, nakładki, kontrolki kart, szkielet zakładki treści; biblioteka biurka: biurko i system okien; później silnik formuł. **Biblioteka wpisów zna `Entry`. Żadna nie zna `Monster`.** |
 | **System** | `DungeonApp.Content.<x>` | kompilowana | typy treści, widoki kart, zakładki, narzędzia biurka, dodatki. **Jedyne miejsce, gdzie wolno być konkretnym.** |
 | **Paczka** | `Dokumenty\DungeonApp\<system>\packs\` | dane | wpisy i dokumenty. Zmienne, dodawane w trakcie sesji. |
-| **Kampania** | `Dokumenty\DungeonApp\campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
+| **Kampania** | `Dokumenty\DungeonApp\<system>\campaigns\` | stan | modele stanu zadeklarowane przez system, jej system i włączone warianty z parametrami. |
 
 ```
         ┌──────────────────────────────────────────────┐
@@ -696,7 +696,7 @@ przez autora treści.
 | Co | Gdzie | Charakter |
 |---|---|---|
 | Paczki | `Dokumenty\DungeonApp\<system>\packs\<paczka>\` | Instalowane, tylko do odczytu, należą do systemu z nazwy katalogu. Dokument użytkownika — widoczny i kopiowalny. |
-| Kampanie | `Dokumenty\DungeonApp\campaigns\<id>\` | Manifest — w nim system kampanii oraz włączone warianty z parametrami — oraz modele stanu zadeklarowane przez system. |
+| Kampanie | `Dokumenty\DungeonApp\<system>\campaigns\<id>\` | Manifest — w nim system kampanii oraz włączone warianty z parametrami — oraz modele stanu zadeklarowane przez system. |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` | Stan aplikacji, nie dokument. |
 
 **Katalogi pod `DungeonApp` nazywa się małymi literami, bez spacji**; `<system>` to stały
@@ -722,8 +722,12 @@ wychodzi po zapisie i niesie wyłącznie odczyt, a wejście zmiany odmawia w tra
 i w trakcie rozsyłania powiadomień: piąty zakaz. Zdolność do zapisu jest oznaczeniem typu, nie
 wspólnym przodkiem z logiką. **Każda zatwierdzona zmiana trafia na dysk od razu.**
 
-**Kampania należy do jednego systemu.** Kampania, której systemu nie ma w programie, jest widoczna
-jako niedostępna — nie znika.
+**Kampania należy do jednego systemu — tego, w którego katalogu leży.** Półka systemu czyta wyłącznie
+jego katalog kampanii. Manifest nadal zapisuje system, bo kampania jest dokumentem przenośnym
+i poza katalogiem musi się sama opisywać: kampania z innym systemem w manifeście niż katalog stoi
+na półce jako niedostępna, z powodem — nie znika i nie otwiera się w obcym systemie. Kampania bez
+systemu w manifeście należy do systemu z katalogu. Katalogów systemów nieznanych programowi program
+nie czyta — ani kampanii, ani paczek.
 
 Magazyn kampanii i magazyn układu biurka zapisują tak samo: plik tymczasowy, atomowe przeniesienie,
 licznik generacji wykrywający zapis przerwany w połowie — jeden prymityw zapisu atomowego, z którego
@@ -1005,17 +1009,14 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    zapisana; brakuje przejścia przez realny system.
 6. **Widok domyślny karty.** Czy rodzaj treści, którego nikt nie zechce zaprojektować, dostaje
    jakąkolwiek kartę zastępczą. **Wyzwalacz:** pierwszy taki rodzaj treści.
-7. **Kampanie w katalogu systemu.** Paczki leżą w katalogu swojego systemu, kampanie — we wspólnym,
-   choć każda należy do jednego systemu i wybór systemu ją poprzedza. Czy przenieść je do
-   `<system>\campaigns\`. Pytanie autora z 2026-09-24, odłożone jako osobny temat.
-8. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym
+7. **Ziarnistość dodatków.** Czy wariant jako jednostka włączania wytrzymuje zderzenie z prawdziwym
    dodatkiem, czy któryś wariant okaże się sensowny wyłącznie w pakiecie z innymi. **Wyzwalacz:**
    pierwszy prawdziwy dodatek.
-9. **Wariant zmieniający zakładki kampanii.** Zamknięte zakładki pokazują listę systemu bez
+8. **Wariant zmieniający zakładki kampanii.** Zamknięte zakładki pokazują listę systemu bez
    wariantów; kampania z wariantem, który dokłada albo podmienia zakładkę, po otwarciu pokaże inną.
    **Wyzwalacz:** pierwszy taki wariant.
 
-10. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
+9. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
     który się kopiuje, przenosi i wersjonuje jako dokument użytkownika. Baza danych zmienia to
     wszystko naraz, więc to więcej niż format pliku (pytanie 1). **Wyzwalacz:** autorstwo treści
     w aplikacji (pytanie 2) — dopóki wpisy powstają poza aplikacją, plik jest ich naturalną formą —
