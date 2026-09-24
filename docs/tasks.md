@@ -75,22 +75,23 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    * **Porcje — przyjęte przez autora 2026-09-24.** Jedna porcja = jeden wykonawca w 20 minutach;
      autor sprawdza każdą w galerii **i w aplikacji**, bo porcja od razu zdejmuje stare poprawki
      nałożone na swoje kontrolki w całej aplikacji. Motyw domyślny biblioteki leży pod spodem do
-     porcji 9. Kolumna „rundy" to poprawki od autora — materiał do punktu kontrolnego.
+     porcji 9. Kolumna „rundy" to poprawki od autora, „pomiar" — kroki, minuty i odczyt z
+     `tools/subagent-usage.py`, suma przebiegów porcji — materiał do punktu kontrolnego.
 
-     | # | Porcja | Rundy |
-     |---|---|---|
-     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | |
-     | 1 | przyciski — sześć odmian | |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe | |
-     | 3 | lista, wiersz listy, pusta lista, pasek przewijania | |
-     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | |
-     | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | |
-     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, separator, okruszki | |
-     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | |
-     | 8 | tag, chip, odznaka, tabela | |
-     | 9 | odcięcie motywu domyślnego biblioteki | |
-     | 10 | klocek: wiersz listy z kreską zaznaczenia | |
-     | 11 | klocek: chip z listą wyboru | |
+     | # | Porcja | Rundy | Pomiar |
+     |---|---|---|---|
+     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | czeka | 33 / 5,8 / 3,1 mln |
+     | 1 | przyciski — sześć odmian | | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe | | |
+     | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
+     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
+     | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
+     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, separator, okruszki | | |
+     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
+     | 8 | tag, chip, odznaka, tabela | | |
+     | 9 | odcięcie motywu domyślnego biblioteki | | |
+     | 10 | klocek: wiersz listy z kreską zaznaczenia | | |
+     | 11 | klocek: chip z listą wyboru | | |
    * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
      to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
    * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie, dla myszki. Autor: aplikacja
