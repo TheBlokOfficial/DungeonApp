@@ -42,16 +42,41 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   dostają komentarze ze znaczeniem (niebezpieczeństwo — zepsute albo nieodwracalne; ostrzeżenie —
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
-**Czeka na autora (stan 2026-09-24, po scaleniu zleceń 2 i 3 oraz poprawek):**
-* Sprawdzenie w aplikacji zakładek treści, karty potwora, paska bocznego i półki.
-* Ręczne przeniesienie paczek do `Dokumenty\DungeonApp\dnd5e\packs\`, kampanii do
-  `Dokumenty\DungeonApp\dnd5e\campaigns\`; dopisanie `group` potworom w swoich paczkach (bez niego
-  potwór nie ma kategorii).
-* Odstępstwa od mockupu do oceny — każde zostaje, dopóki autor nie zdecyduje inaczej:
-  kreska zaznaczenia wpisu wewnątrz wiersza, nie wystająca (pułapka w `code-state.md`); paski
-  przewijania w kolorze z mockupu, ale w domyślnej szerokości; kreska sekcji „Akcje" w kolorze akcentu
-  zamiast czerwieni z mockupu i modyfikatory cech bez kolorowania znaku — bo czerwień znaczy
-  w motywie „zepsute albo nieodwracalne", a zieleń „udało się".
+**Następne (ustalone z autorem 2026-09-24, po obejrzeniu aplikacji) — dwa wąskie zlecenia, po kolei,
+na Opusie, według nowych zasad (limit czasu; wygląd sprawdza autor). Każde kończy się zdjęciem widoku
+z przykładowymi danymi, które architekt kładzie obok mockupu przed scaleniem — odbiór zaproponowany,
+autor nie odpowiedział.** Wymiary z CSS mockupu: brief przytacza selektory (`.entry`,
+`.entry.selected::before`, `.sidebar-item.active::before`, `.filter-chip`, `.filter-chip.on`,
+`.search`, `.clear-filters`, `.list-scroll`), nie każe czytać całego pliku.
+
+*A. Lista i filtry*
+* Kreska zaznaczenia wpisu **przed** wierszem, w odstępie (mockup: `left: -10px`) — lista ma wcięcie,
+  kontener wiersza pełnej szerokości, kreska w wcięciu; bez ujemnych marginesów. Na pasku bocznym
+  odstęp jak w mockupie (`left: -12px`) — dziś kilkakrotnie za mały.
+* Pasek przewijania tylko, gdy jest co przewijać — dziś stały szary pas przy liście.
+* **Wysokość i szerokość wiersza nadaje biblioteka**, nie zawartość — dziś przedmioty (pigułka
+  rzadkości) mają wyższe wiersze niż potwory.
+* **Filtr = lista wartości z polami wyboru**, bez pozycji „Wszystkie"; nic nie zaznaczone = wszystko.
+  Wewnątrz filtra „lub", między filtrami „i" (architekt). Chip reaguje na najechanie, a otwarty ma
+  inne tło i obrócony chevron; chip z zaznaczeniem — styl `.filter-chip.on`. Lista: tło i obramowanie
+  jak pole wyszukiwania, wiersze czcionką wierszy listy. Istniejące testy filtrów dostosować do nowej
+  semantyki.
+* „Wyczyść filtry" wygaszone, gdy nie ma czego czyścić.
+* Pole wyszukiwania: tekst zastępczy wyśrodkowany w pionie; kliknięcie poza polem i Escape zdejmują
+  z niego fokus (dziś kursor miga dalej).
+
+*B. Karta potwora*
+* Nagłówki „Cechy szczególne"/„Akcje" jasne i wyraźne jak w mockupie; „CECHY" wersalikami; styl
+  etykiet cech; liczby KP/PZ/szybkości i cech wyróżnione; ikonki przy KP, PZ, szybkości.
+
+*Pytania do autora przed B:* (1) krój o stałej szerokości znaków dla liczb (mockup: IBM Plex Mono;
+w aplikacji go nie ma)? (2) wyzwanie i PD — osobne pola w paczce teraz czy z akcjami w kroku 11? Od
+tego zależy odznaka „samo wyzwanie" (dziś „1/2 (100 PD)" — jeden napis, wycinać nie wolno). Nazwy
+akcji, pogrubione premie i nagłówki akcji z mockupu wymagają akcji jako osobnych rzeczy — krok 11.
+
+**Czeka na autora:** ręczne przeniesienie kampanii do `Dokumenty\DungeonApp\dnd5e\campaigns\`
+(paczka skopiowana 2026-09-24; stare `Packs` i `Campaigns` nie są czytane); dopisanie `group`
+potworom.
 
 **Zlecenia, po kolei:**
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
