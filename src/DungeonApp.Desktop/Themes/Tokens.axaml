@@ -44,21 +44,27 @@
         <!-- TextPrimary: tekst podstawowy - treść i wszystko domyślnie. -->
         <Color x:Key="DungeonTextPrimaryColor">#E8E4DA</Color>
         <!-- TextRegular: tekst drugorzędny - opis, uzupełnienie. -->
-        <Color x:Key="DungeonTextRegularColor">#9B9A95</Color>
+        <Color x:Key="DungeonTextRegularColor">#B4B2AC</Color>
         <!-- TextMuted: tekst przygaszony - podpis, etykieta, metadane. -->
         <Color x:Key="DungeonTextMutedColor">#8A8983</Color>
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
-        <Color x:Key="DungeonAccentBrightColor">#B8843B</Color>
-        <Color x:Key="DungeonAccentActionColor">#B8843B</Color>
+        <!-- AccentBright: akcent pod myszą. -->
+        <Color x:Key="DungeonAccentBrightColor">#C8944A</Color>
+        <!-- AccentAction: akcent wciśnięty. -->
+        <Color x:Key="DungeonAccentActionColor">#AD7B36</Color>
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <Color x:Key="DungeonPrimaryDisabledColor">#302C28</Color>
         <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
         <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
-        <Color x:Key="DungeonWarningColor">#CF9B55</Color>
+        <Color x:Key="DungeonWarningColor">#D6B84F</Color>
         <!-- Niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
+        <!-- DangerHover: niebezpieczeństwo pod myszą. -->
+        <Color x:Key="DungeonDangerHoverColor">#8C3E2B</Color>
+        <!-- DangerPressed: niebezpieczeństwo wciśnięte. -->
+        <Color x:Key="DungeonDangerPressedColor">#7A3525</Color>
         <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
              Danger zostaje dla teł i ikon. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
@@ -102,6 +108,8 @@
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
+        <SolidColorBrush x:Key="DungeonDangerHoverBrush" Color="{DynamicResource DungeonDangerHoverColor}" />
+        <SolidColorBrush x:Key="DungeonDangerPressedBrush" Color="{DynamicResource DungeonDangerPressedColor}" />
         <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
 
         <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
@@ -198,7 +206,7 @@
         <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
-        <x:Double x:Key="DungeonControlHeight">38</x:Double>
+        <x:Double x:Key="DungeonControlHeight">32</x:Double>
         <x:Double x:Key="DungeonNavigationRowHeight">38</x:Double>
         <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
