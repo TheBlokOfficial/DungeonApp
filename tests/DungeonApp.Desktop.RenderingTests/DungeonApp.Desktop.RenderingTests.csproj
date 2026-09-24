@@ -30,6 +30,10 @@
     <ProjectReference Include="..\..\src\DungeonApp.Library.Entries\DungeonApp.Library.Entries.csproj" />
     <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
     <ProjectReference Include="..\..\src\DungeonApp.Library.Entries.Desktop\DungeonApp.Library.Entries.Desktop.csproj" />
+    <!-- krok 10, brief C: the monster/gear card rendering tests need a real Dnd5eSystem card - a
+         test-only reference, never something production code takes (DungeonApp.Content.Dnd5e itself
+         never references this test project back). -->
+    <ProjectReference Include="..\..\src\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
   </ItemGroup>
 
 </Project>

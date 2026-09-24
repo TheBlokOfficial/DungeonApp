@@ -129,13 +129,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         ContentTabDefinitions = [BuildMonsterContentTab(), BuildGearContentTab()];
 
-        // Icon choice (krok 10, zlecenie 2 report): neither existing icon in Icons.axaml depicts a
-        // creature or an item specifically - DungeonIconBookOpen (a bestiary) and DungeonIconBoxes
-        // (crates) are this system's own pick among what already exists.
+        // Icon choice (krok 10, brief B2): purpose-drawn icons replace the krok 10 zlecenie 2 picks -
+        // DungeonIconDragon (a beast's head) for "Potwory", DungeonIconBackpack for "Przedmioty".
+        // DungeonIconBookOpen stays in Icons.axaml (GlobalSidebarViewModel's own shelf icon still
+        // uses it); DungeonIconBoxes had no other user and was removed with it.
         SystemTabs =
         [
-            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconBookOpen", () => CreateContentTab(0)),
-            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBoxes", () => CreateContentTab(1)),
+            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconDragon", () => CreateContentTab(0)),
+            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBackpack", () => CreateContentTab(1)),
         ];
         CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
@@ -275,15 +276,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         ContentTabDefinitions.SelectMany(tab => tab.ContentTypes).Select(profile => profile.Type).Distinct().ToArray();
 
     /// <summary>
-    /// "Potwory": category = <see cref="Monster.Type"/>; tags = size, type, alignment; badge =
-    /// challenge, no color key; one value filter and one sort, both "Wyzwanie", both ordered by
-    /// <see cref="ChallengeOrder"/> (krok 10, zlecenie 1, część C).
+    /// "Potwory": category = <see cref="Monster.Group"/> (krok 10, brief A9 - never
+    /// <see cref="Monster.Type"/>; a monster with no declared group has no category, full stop);
+    /// tags = size, type, alignment; badge = challenge, no color key; one value filter and one sort,
+    /// both "Wyzwanie", both ordered by <see cref="ChallengeOrder"/> (krok 10, zlecenie 1, część C).
     /// </summary>
     private ContentTabDefinition BuildMonsterContentTab()
     {
         var profile = new ContentTypeProfile<Monster>(
             _monster.Reference,
-            category: monster => monster.Type,
+            category: monster => monster.Group,
             tags: monster => [monster.Size, monster.Type, monster.Alignment],
             badge: monster => new ContentBadge(monster.Challenge),
             valueFilters: [new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder)],

@@ -23,13 +23,14 @@ public sealed class ContentTabsTests
     private static IContentTypeProfile GearProfile() =>
         Dnd5e.ContentTabDefinitions.Single(tab => tab.Title == "Przedmioty").ContentTypes.Single();
 
-    private static Entry MonsterEntry(string challenge, string size = "Mały", string type = "goblinoid", string alignment = "chaotyczne zło")
+    private static Entry MonsterEntry(string challenge, string size = "Mały", string type = "goblinoid", string alignment = "chaotyczne zło", string? group = null)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("monster"));
         var monster = new Monster
         {
             Size = size,
             Type = type,
+            Group = group,
             Alignment = alignment,
             Ac = 10,
             Hp = 1,
@@ -77,12 +78,29 @@ public sealed class ContentTabsTests
     // Monster profile: category, tags, badge, "Wyzwanie" filter and sort.
     // -----------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Krok 10, brief A9: a monster's category is its own optional <see cref="Monster.Group"/> field,
+    /// never <see cref="Monster.Type"/> - the two are deliberately different values here so this test
+    /// would fail if the profile still read <c>Type</c>.
+    /// </summary>
     [Fact]
-    public void A_monsters_category_is_its_own_type_field()
+    public void A_monsters_category_is_its_own_group_field()
     {
-        var entry = MonsterEntry("1/4 (50 PD)", type: "humanoid (goblinoid)");
+        var entry = MonsterEntry("1/4 (50 PD)", type: "humanoid (goblinoid)", group: "Goblinoidy");
 
-        Assert.Equal("humanoid (goblinoid)", MonsterProfile().Category(entry));
+        Assert.Equal("Goblinoidy", MonsterProfile().Category(entry));
+    }
+
+    /// <summary>
+    /// Krok 10, brief A9: "Bez `group` wpis nie ma kategorii" - never a silent fallback to
+    /// <see cref="Monster.Type"/>.
+    /// </summary>
+    [Fact]
+    public void A_monster_with_no_group_has_no_category()
+    {
+        var entry = MonsterEntry("1/4 (50 PD)", type: "humanoid (goblinoid)", group: null);
+
+        Assert.Null(MonsterProfile().Category(entry));
     }
 
     [Fact]

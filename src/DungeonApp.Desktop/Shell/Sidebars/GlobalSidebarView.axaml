@@ -12,6 +12,16 @@
              x:DataType="vm:GlobalSidebarViewModel">
     <UserControl.Resources>
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
+
+        <!-- krok 10, brief B1: the active row's own accent stripe - a separate element, offset left
+             of the row's own background pill (which sits at Margin "8,0", ContentTabView.axaml's
+             row's own gutter reasoning does not apply here: this list has no ScrollViewer, so there
+             is no viewport clip to run into), shorter than the row, rounded - matching the mockup's
+             own ".sidebar-item.active::before" (left:-12px; top:6px; bottom:6px; width:2.5px;
+             border-radius:2px), scaled to this row's own 40px height. -->
+        <x:Double x:Key="SidebarActiveStripeWidth">2.5</x:Double>
+        <Thickness x:Key="SidebarActiveStripeMargin">3,6,0,6</Thickness>
+        <CornerRadius x:Key="SidebarActiveStripeCornerRadius">2</CornerRadius>
         <!-- Shared by every row in every category - the campaign position, a Campaign-category tab,
              a System-category tab, and "Zmień system" alike - so a row's category never shows in its
              own visual shape, only in which group on the page it sits in. -->
@@ -78,14 +88,22 @@
                          (aktywny) pokrywałyby różne szerokości. Wypełnienie zawsze na pełnych
                          granicach, a pasek warstwą na wierzchu — dzięki temu hover i stan
                          aktywny są identyczne co do piksela poza samym paskiem. -->
-                    <Grid>
+                    <Grid ClipToBounds="False">
                         <Border Margin="8,0"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="{TemplateBinding CornerRadius}" />
-                        <Border Width="4"
-                                Margin="8,0,0,0"
+                        <!-- krok 10, brief B1: a separate, shorter, rounded stripe offset to the left
+                             of the row's own background pill (SidebarActiveStripeMargin/Width/
+                             CornerRadius, this file's own Resources) - not a same-height overlay on
+                             its own left edge, per the mockup's ".sidebar-item.active::before". Same
+                             TemplateBinding BorderBrush carrier as before: transparent while inactive
+                             (Button.nav-button's own Background/BorderBrush setters), the accent color
+                             only once Button.nav-button.active applies. -->
+                        <Border Classes="nav-active-stripe"
+                                Width="{StaticResource SidebarActiveStripeWidth}"
+                                Margin="{StaticResource SidebarActiveStripeMargin}"
                                 HorizontalAlignment="Left"
-                                CornerRadius="{TemplateBinding CornerRadius}"
+                                CornerRadius="{StaticResource SidebarActiveStripeCornerRadius}"
                                 Background="{TemplateBinding BorderBrush}" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

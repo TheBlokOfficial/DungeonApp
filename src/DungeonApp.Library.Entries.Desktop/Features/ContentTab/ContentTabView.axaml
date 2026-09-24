@@ -11,10 +11,16 @@
          layout - see the local resources just below; all of them are listed in the zlecenie report. -->
     <UserControl.Resources>
         <conv:DimBrushConverter x:Key="DimBrush" />
+        <conv:UpperCaseConverter x:Key="UpperCase" />
 
         <!-- Master/detail column widths (mockup: .list-panel { flex: 0 0 320px }, .detail-inner { max-width: 720px }). -->
         <x:Double x:Key="ContentListColumnWidth">320</x:Double>
         <x:Double x:Key="ContentDetailMaxWidth">720</x:Double>
+
+        <!-- krok 10, brief A3: the full-width divider's own top-only margin - DungeonSpacingLg (16)
+             as a Thickness; DungeonSpacingLg itself is a Double (Spacing/Width/Height scale, per
+             Tokens.axaml's own two-parallel-sets remark), not assignable to Margin directly. -->
+        <Thickness x:Key="ContentTabDividerMargin">0,16,0,0</Thickness>
 
         <!-- Typography with no matching frame token (mockup: .title-row h1, h1.entry-name, .filter-chip / .sort-btn). -->
         <x:Double x:Key="ContentTabTitleFontSize">26</x:Double>
@@ -33,14 +39,36 @@
         <!-- Pill shape shared by a colored badge and a detail tag (mockup: border-radius: 999px). -->
         <CornerRadius x:Key="ContentPillCornerRadius">999</CornerRadius>
 
+        <!-- krok 10, brief A4: the dropdown chevron shared by every filter chip and the sort button
+             (mockup: .filter-chip svg is 8px, .sort-btn svg is 9px - unified to one size here rather
+             than carrying two near-identical literals for a difference this small). Search icon size
+             matches the mockup's own .search svg (13px). -->
+        <x:Double x:Key="ContentChevronIconSize">9</x:Double>
+        <x:Double x:Key="ContentSearchIconSize">13</x:Double>
+
         <!-- Selected-row look: two SEPARATE elements, matching mockup's .entry.selected (dim
-             background) and .entry.selected::before (a stripe outside the row, not its border) per
-             the architect's clarification - offset -10px, inset 5px top/bottom, width 2.5px, radius
-             2px. DungeonAccentDimColor in Tokens.axaml equals DungeonAccentColor today (not dimmed),
-             so it is not used here - this brush carries the mockup's own dim value instead; the token
-             gap is reported separately, and Tokens.axaml itself is untouched. -->
+             background) and .entry.selected::before (an accent stripe) - inset 5px top/bottom,
+             width 2.5px, radius 2px. DungeonAccentDimColor in Tokens.axaml equals DungeonAccentColor
+             today (not dimmed), so it is not used here - this brush carries the mockup's own dim
+             value instead; the token gap is reported separately, and Tokens.axaml itself is
+             untouched.
+             krok 10, brief A5: the previous session's own attempt (ec09015) placed the stripe OUTSIDE
+             the row via a negative left margin (-10, later found to be -6 too), matching the
+             mockup's own ".sidebar-item.active::before{ left:-12px }" positioning. Measured against
+             the real, rendered pixels (Selected_rows_stripe_renders_a_visible_pixel_at_its_own_center,
+             DungeonApp.Desktop.RenderingTests\ContentTabRenderingTests.cs): ANY negative offset here
+             renders invisible - clipped at exactly the row's own left edge regardless of corner
+             radius, of Padding vs. Margin on the list's own ItemsControl, of ClipToBounds forced
+             false on every ancestor control type between the stripe and the ScrollViewer (Panel,
+             StackPanel, ItemsPresenter, ContentPresenter, ScrollContentPresenter tried individually
+             and all together) - none of it moved the clip edge, which stayed pinned to the row's own
+             bounds. The mechanism was not identified within this step's budget - see the report.
+             Given "musi być widoczna" is the actual requirement, not the exact offset, the stripe
+             sits INSET at the row's own left edge instead (Margin left 0, not negative) - visible
+             plainly, at the cost of the mockup's own "separate element with a gap" look, which this
+             deviation is reported against. -->
         <SolidColorBrush x:Key="ContentSelectedRowBrush" Color="{DynamicResource DungeonAccentColor}" Opacity="0.16" />
-        <Thickness x:Key="ContentRowSelectionStripeMargin">-10,5,0,5</Thickness>
+        <Thickness x:Key="ContentRowSelectionStripeMargin">0,5,0,5</Thickness>
         <x:Double x:Key="ContentRowSelectionStripeWidth">2.5</x:Double>
         <CornerRadius x:Key="ContentRowSelectionStripeCornerRadius">2</CornerRadius>
 
@@ -53,10 +81,12 @@
                     <Button Classes="content-row-button" Command="{Binding SelectCommand}">
                         <Grid ColumnDefinitions="*,Auto">
                             <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                       Classes="row-name"
                                        IsVisible="{Binding !IsBroken}"
                                        TextTrimming="CharacterEllipsis"
                                        Foreground="{DynamicResource DungeonTextRegularBrush}" />
                             <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                       Classes="row-name"
                                        IsVisible="{Binding IsBroken}"
                                        TextTrimming="CharacterEllipsis"
                                        Foreground="{DynamicResource DungeonDangerBrush}" />
@@ -99,6 +129,36 @@
             <Setter Property="CornerRadius" Value="{StaticResource ContentRowSelectionStripeCornerRadius}" />
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
+        <!-- krok 10, brief A5: the selected row's own name draws bolder - mockup's ".entry.selected
+             .entry-title{ font-weight:600 }". The badge is untouched: the mockup leaves its color
+             alone too, and the brief only asks for the row bold, not a badge recolor. -->
+        <Style Selector="Border.content-row-background.selected TextBlock.row-name">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <!-- krok 10, brief A4: the search field's own outer chrome - what TextBox's app-wide style
+             (BuiltInControls.axaml) already draws, moved out here so the magnifier icon can share
+             the same border instead of sitting outside it. -->
+        <Style Selector="Border.content-search">
+            <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,0" />
+        </Style>
+        <Style Selector="TextBox.search-input">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="TextBox.search-input /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="TextBox.search-input:pointerover /template/ Border#PART_BorderElement,
+                         TextBox.search-input:focus /template/ Border#PART_BorderElement,
+                         TextBox.search-input:focus:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
         <Style Selector="Button.content-row-button">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="Padding" Value="{StaticResource ContentRowPadding}" />
@@ -136,6 +196,45 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
+        <!-- krok 10, brief A4: "„Wyczyść filtry" podkreślone" - mockup's .clear-filters only, never
+             .sort-btn, even though both share content-link's own look otherwise. Button has no
+             TextDecorations of its own; the underline lives on the TextBlock this button wraps its
+             text in (below), tagged with this same class. -->
+        <Style Selector="TextBlock.underline">
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+
+        <!-- krok 10, brief A2: list/detail scrollbar thumb per the mockup's own
+             .list-scroll::-webkit-scrollbar-thumb / .detail-panel::-webkit-scrollbar-thumb
+             (background: the mockup's own border-strong token) - scoped to this view only, not the app-wide
+             ScrollBar style (BuiltInControls.axaml), which paints the thumb in the accent color
+             instead. Width is left at the app-wide default: the mockup's own 6px/7px split has no
+             matching Avalonia ScrollBar property found within this step's budget (see the report). -->
+        <Style Selector="ScrollBar">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        </Style>
+
+        <!-- krok 10, brief A11: a filter chip's dropdown - bordered like the search box, its rows in
+             the list rows' own font, the selected option on the dim-accent background
+             (ContentSelectedRowBrush - see its own remarks on the DungeonAccentDimColor token gap). -->
+        <Style Selector="FlyoutPresenter">
+            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+        </Style>
+        <Style Selector="FlyoutPresenter ListBoxItem">
+            <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
+        </Style>
+        <Style Selector="FlyoutPresenter ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ContentSelectedRowBrush}" />
+        </Style>
+        <Style Selector="FlyoutPresenter ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
     </UserControl.Styles>
 
     <!-- Detail column templates - one per shape ContentDetailViewModel can be (docs/architecture.md,
@@ -146,18 +245,18 @@
     <UserControl.DataTemplates>
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
             <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-                <ItemsControl ItemsSource="{Binding Breadcrumbs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="x:String">
-                            <TextBlock Classes="muted" Text="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <!-- krok 10, brief A8: "Okruszki w nagłówku szczegółu rozdzielone „›"." Two runs, not
+                     one ItemsControl per segment: the trail (every breadcrumb but the last, already
+                     joined with "›") stays muted, and the current entry's own name - the last segment
+                     - draws less muted, matching the mockup's ".crumb-path .current" - with one more
+                     "›" between the two when there is a trail at all. -->
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                    <TextBlock Classes="muted" Text="{Binding BreadcrumbTrailText}" IsVisible="{Binding HasBreadcrumbTrail}" />
+                    <TextBlock Classes="muted" Text="›" IsVisible="{Binding HasBreadcrumbTrail}" />
+                    <TextBlock Text="{Binding BreadcrumbCurrent}"
+                               FontSize="{DynamicResource DungeonHelperFontSize}"
+                               Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                </StackPanel>
 
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                     <TextBlock Text="{Binding Category}"
@@ -211,7 +310,7 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,*" MinHeight="0">
+    <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,Auto,*" MinHeight="0">
 
         <!-- ===== Nagłówek zakładki ===== -->
         <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingXxl}" Spacing="{DynamicResource DungeonSpacingXs}">
@@ -226,8 +325,19 @@
             </StackPanel>
         </StackPanel>
 
+        <!-- krok 10, brief A3: "Linia pod nagłówkiem zakładki na całą szerokość obszaru treści, nie
+             tylko pod listą" - today's only line was #PART_ListColumn's own top border, spanning
+             just that column's 320px. This one sits in its own row, above both the list and the
+             detail column, and its own Grid.Row="1" already spans the whole width by construction -
+             no ColumnSpan needed, since the list/detail Grid only starts on the row below.
+             DungeonSpacingLg (16) matches the mockup's own ".registry-body{ margin-top: 16px }". -->
+        <Border Grid.Row="1"
+                Margin="{StaticResource ContentTabDividerMargin}"
+                BorderBrush="{DynamicResource DungeonBorderBrush}"
+                BorderThickness="0,0,0,1" />
+
         <!-- ===== Ciało: lista + szczegół ===== -->
-        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" MinHeight="0">
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,*" MinHeight="0">
 
             <!-- ===== Kolumna listy - stała szerokość, nigdy się nie kurczy. ===== -->
             <Border x:Name="PART_ListColumn"
@@ -235,19 +345,38 @@
                     Width="{StaticResource ContentListColumnWidth}"
                     MinWidth="{StaticResource ContentListColumnWidth}"
                     BorderBrush="{DynamicResource DungeonBorderBrush}"
-                    BorderThickness="0,1,1,0">
+                    BorderThickness="0,0,1,0">
                 <Grid RowDefinitions="Auto,Auto,*" MinHeight="0">
 
                     <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingMd}">
-                        <TextBox Text="{Binding Search, Mode=TwoWay}" PlaceholderText="Szukaj po nazwie…" />
+                        <!-- krok 10, brief A4: "Lupa w polu wyszukiwania" - the TextBox's own chrome
+                             (border/background/corner radius, BuiltInControls.axaml) is disabled on
+                             this one instance via the "search-input" class below, so the icon and the
+                             input share one outer border instead of the input drawing its own. -->
+                        <Border Classes="content-search">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Image Grid.Column="0"
+                                       Width="{StaticResource ContentSearchIconSize}"
+                                       Height="{StaticResource ContentSearchIconSize}"
+                                       Margin="0,0,8,0"
+                                       Source="{StaticResource DungeonIconSearch}" />
+                                <TextBox Grid.Column="1" Classes="search-input"
+                                         Text="{Binding Search, Mode=TwoWay}"
+                                         PlaceholderText="Szukaj po nazwie…" />
+                            </Grid>
+                        </Border>
 
                         <WrapPanel>
                             <Button Classes="content-chip" Classes.active="{Binding CategoryFilter.IsActive}"
-                                    Content="{Binding CategoryFilter.ChipText}"
                                     IsVisible="{Binding CategoryFilter.IsAvailable}"
                                     Margin="0,0,6,6">
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                    <TextBlock Text="{Binding CategoryFilter.ChipText}" />
+                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
+                                           Source="{StaticResource DungeonIconChevronDown}" />
+                                </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout>
+                                    <Flyout Placement="Bottom">
                                         <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
                                                  SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -263,11 +392,15 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
                                         <Button Classes="content-chip" Classes.active="{Binding IsActive}"
-                                                Content="{Binding ChipText}"
                                                 IsVisible="{Binding IsAvailable}"
                                                 Margin="0,0,6,6">
+                                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                                <TextBlock Text="{Binding ChipText}" />
+                                                <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
+                                                       Source="{StaticResource DungeonIconChevronDown}" />
+                                            </StackPanel>
                                             <Button.Flyout>
-                                                <Flyout>
+                                                <Flyout Placement="Bottom">
                                                     <ListBox ItemsSource="{Binding FlyoutItems}"
                                                              SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
                                                 </Flyout>
@@ -278,11 +411,15 @@
                             </ItemsControl>
 
                             <Button Classes="content-chip" Classes.active="{Binding SourceFilter.IsActive}"
-                                    Content="{Binding SourceFilter.ChipText}"
                                     IsVisible="{Binding SourceFilter.IsAvailable}"
                                     Margin="0,0,6,6">
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                    <TextBlock Text="{Binding SourceFilter.ChipText}" />
+                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
+                                           Source="{StaticResource DungeonIconChevronDown}" />
+                                </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout>
+                                    <Flyout Placement="Bottom">
                                         <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
                                                  SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -291,17 +428,23 @@
                         </WrapPanel>
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <Button Grid.Column="0" Classes="content-link" HorizontalAlignment="Left"
-                                    Content="{Binding SelectedSort, StringFormat='Sortuj: {0}'}">
+                            <Button Grid.Column="0" Classes="content-link" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                    <TextBlock Text="{Binding SelectedSort, StringFormat='Sortuj: {0}'}" />
+                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
+                                           Source="{StaticResource DungeonIconChevronDown}" />
+                                </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout>
+                                    <Flyout Placement="Bottom">
                                         <ListBox ItemsSource="{Binding SortOptions}"
                                                  SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
                                     </Flyout>
                                 </Button.Flyout>
                             </Button>
                             <Button Grid.Column="1" Classes="content-link" HorizontalAlignment="Right"
-                                    Content="Wyczyść filtry" Command="{Binding ClearFiltersCommand}" />
+                                    Command="{Binding ClearFiltersCommand}">
+                                <TextBlock Classes="underline" Text="Wyczyść filtry" />
+                            </Button>
                         </Grid>
                     </StackPanel>
 
@@ -318,7 +461,11 @@
                                                     Spacing="{DynamicResource DungeonSpacingXs}"
                                                     Margin="{StaticResource ContentSectionHeaderPadding}"
                                                     IsVisible="{Binding !IsRejectedPack}">
-                                            <TextBlock Classes="eyebrow" Text="{Binding Header}" />
+                                            <!-- krok 10, brief A6: "Nagłówki sekcji po paczce wersalikami" -
+                                                 a screen-header style (the architect's own settled
+                                                 call), applied only here at render time; the pack's
+                                                 own Header string is untouched everywhere else. -->
+                                            <TextBlock Classes="eyebrow" Text="{Binding Header, Converter={StaticResource UpperCase}}" />
                                             <TextBlock Classes="eyebrow" Text="{Binding Count, StringFormat={}{0}}" />
                                         </StackPanel>
 
@@ -344,22 +491,22 @@
             </Border>
 
             <!-- ===== Kolumna szczegółu - największa szerokość z mockupu, wyrównana do lewej. ===== -->
-            <!-- The width cap (MaxWidth) lives on this outer Border, one level above the ScrollViewer
-                 it wraps, not on anything inside that ScrollViewer: a ScrollViewer's own content
-                 presenter reserves gutter width for its vertical scrollbar, which would otherwise
-                 shrink whatever is capped inside it by that scrollbar's width - an Avalonia
-                 implementation detail with no equivalent in the mockup's CSS. Capping out here means
-                 PART_DetailInner's own width is exactly min(available Grid column, 720) regardless of
-                 whether a scrollbar ends up showing, which is what "największa szerokość z mockupu"
-                 means and what the rendering test measures. HorizontalAlignment is left at its
-                 Stretch default deliberately: that is what fills up to MaxWidth and then stops,
-                 anchored at the left, instead of shrinking to the content's own natural size. The
-                 padding itself sits one level further in, as the content StackPanel's own Margin, so
-                 it never affects PART_DetailInner's own measured width. -->
-            <Border x:Name="PART_DetailInner"
-                    Grid.Column="1"
-                    MaxWidth="{StaticResource ContentDetailMaxWidth}">
-                <ScrollViewer x:Name="PART_DetailColumn" HorizontalScrollBarVisibility="Disabled">
+            <!-- The ScrollViewer fills the whole column, so its scrollbar stands at the window's right
+                 edge like the mockup's .detail-panel; the content inside is capped at the mockup's
+                 .detail-inner max-width and anchored left. The cap sits on a Grid column, not on
+                 the Border: a MaxWidth-capped element left at Stretch is centered in its wider slot,
+                 which is what put the detail far from the list, and HorizontalAlignment="Left" would
+                 shrink it to its content. A capped star column fills up to the cap and leaves the rest
+                 empty on the right. When a vertical scrollbar shows at the narrowest width, the cap
+                 shrinks by its width - nothing else moves. -->
+            <ScrollViewer x:Name="PART_DetailColumn"
+                          Grid.Column="1"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="{StaticResource ContentDetailMaxWidth}" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="PART_DetailInner">
                     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}" Margin="{StaticResource ContentDetailInnerPadding}">
                         <TextBlock IsVisible="{Binding ShowSelectionPrompt}"
                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
@@ -367,8 +514,9 @@
 
                         <ContentControl Content="{Binding Detail}" IsVisible="{Binding HasDetail}" />
                     </StackPanel>
-                </ScrollViewer>
-            </Border>
+                </Border>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>
