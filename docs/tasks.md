@@ -72,8 +72,13 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    * Potem klocki złożone z kontrolek: wiersz listy z kreską zaznaczenia, chip z listą wyboru.
    * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
      to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
-   * *Pytanie do autora:* widoczny fokus przy obsłudze klawiaturą (Tab) — usunąć całkiem czy zostawić
-     wyłącznie dla klawiatury?
+   * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie, dla myszki. Autor: aplikacja
+     będzie docelowo „keyboard first" ze skrótami; wtedy fokus pokazuje się **wyłącznie, gdy
+     użytkownik faktycznie zaczął używać klawiatury** — nie przy kliknięciu myszką. Do zrobienia razem
+     z obsługą klawiatury, nie teraz.
+   * **Typografia w fundamencie** (autor: „bardzo ładna i spójna biblioteka typografii"): kroje, stopnie
+     nagłówków i tekstu, odstępy — jako style tekstu ramy, pokazane w galerii. W tym krój o stałej
+     szerokości znaków dla liczb, jak w mockupie (`--font-mono: IBM Plex Mono`).
 4. **Zlecenia A i B niżej, w małych porcjach** — składane z fundamentu; część punktów A (wiersz,
    pasek przewijania, lista rozwijana, pole wyszukiwania) zrobi już fundament (np. kreska i wiersz → filtry → karta). Po każdej
    porcji autor sprawdza w aplikacji, zanim ruszy następna; jego uwagi idą do briefu dosłownie.
@@ -102,10 +107,10 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 * Nagłówki „Cechy szczególne"/„Akcje" jasne i wyraźne jak w mockupie; „CECHY" wersalikami; styl
   etykiet cech; liczby KP/PZ/szybkości i cech wyróżnione; ikonki przy KP, PZ, szybkości.
 
-*Pytania do autora przed B:* (1) krój o stałej szerokości znaków dla liczb (mockup: IBM Plex Mono;
-w aplikacji go nie ma)? (2) wyzwanie i PD — osobne pola w paczce teraz czy z akcjami w kroku 11? Od
-tego zależy odznaka „samo wyzwanie" (dziś „1/2 (100 PD)" — jeden napis, wycinać nie wolno). Nazwy
-akcji, pogrubione premie i nagłówki akcji z mockupu wymagają akcji jako osobnych rzeczy — krok 11.
+*Rozstrzygnięte przez autora 2026-09-24:* **wyzwanie i PD to osobne pola w paczce** — dziś jeden napis
+„1/2 (100 PD)"; odznaka i chip pokazują samo wyzwanie, PD osobno i przygaszone. Autor przerabia swoje
+paczki po zmianie. Krój liczb — w fundamencie (typografia). Nazwy akcji, pogrubione premie
+i nagłówki akcji z mockupu wymagają akcji jako osobnych rzeczy — krok 11.
 
 **Czeka na autora:** ręczne przeniesienie kampanii do `Dokumenty\DungeonApp\dnd5e\campaigns\`
 (paczka skopiowana 2026-09-24; stare `Packs` i `Campaigns` nie są czytane); dopisanie `group`
