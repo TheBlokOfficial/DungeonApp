@@ -16,7 +16,8 @@
           .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
           .link    - link: bez tła i krawędzi, wysokość z treści, tekst Accent, kursor ręka,
                      podkreślenie pod myszą;
-          .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, ikona 16 px.
+          .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, treść
+                     wyśrodkowana (ikona DungeonActionIconSize nadaje sobie rozmiar sama).
         Krawędź ma zawsze 1 px (w odmianach bez krawędzi - przezroczysta), więc zmiana odmiany ani
         stanu nie zmienia rozmiaru. Wysokość i szerokość nadaje motyw albo kontener, nie treść:
         tekst przycina się wielokropkiem.
@@ -129,8 +130,9 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.link:pointerover TextBlock">
-            <Setter Property="TextDecorations" Value="Underline" />
+        <!-- Podkreślenie dziedziczy tekst treści przez ContentPresenter. -->
+        <Style Selector="^.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
         <Style Selector="^.link:pressed">
             <Setter Property="Background" Value="Transparent" />
@@ -143,12 +145,6 @@
             <Setter Property="Width" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Padding" Value="0" />
-        </Style>
-        <Style Selector="^.icon Image">
-            <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
-            <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
         <Style Selector="^:disabled">
