@@ -42,7 +42,7 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
