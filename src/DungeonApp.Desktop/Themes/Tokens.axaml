@@ -48,8 +48,9 @@
         <!-- TextMuted: tekst przygaszony - podpis, etykieta, metadane. -->
         <Color x:Key="DungeonTextMutedColor">#8A8983</Color>
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
-        <!-- AccentBright: akcent pod myszą. -->
-        <Color x:Key="DungeonAccentBrightColor">#C8944A</Color>
+        <!-- AccentBright: akcent pod myszą - odcień Accent, jasność o 7 punktów wyższa (HSL 35°, 52%,
+             55% wobec 35°, 51%, 48%); OnAccent na nim ma kontrast 6,4:1. -->
+        <Color x:Key="DungeonAccentBrightColor">#C7954F</Color>
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <!-- Sukces: udało się. -->
