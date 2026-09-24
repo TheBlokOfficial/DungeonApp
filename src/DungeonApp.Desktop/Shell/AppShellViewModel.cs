@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell.Settings;
@@ -29,7 +30,7 @@ namespace DungeonApp.Desktop.Shell;
 /// </summary>
 public sealed class AppShellViewModel : ObservableObject
 {
-    private readonly ICampaignRepository _campaigns;
+    private readonly IReadOnlyDictionary<SystemId, ICampaignRepository> _repositoriesBySystem;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignPreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
@@ -53,12 +54,12 @@ public sealed class AppShellViewModel : ObservableObject
 
     public AppShellViewModel(
         IReadOnlyList<IGameSystem> systems,
-        ICampaignRepository campaigns,
+        IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
         CampaignLibraryViewModel campaignLibrary,
         CampaignPreparationCache preparations,
         IStartupStep[] startupSteps)
     {
-        _campaigns = campaigns;
+        _repositoriesBySystem = repositoriesBySystem;
         _campaignLibrary = campaignLibrary;
         _preparations = preparations;
         _startupSteps = startupSteps;
@@ -254,7 +255,7 @@ public sealed class AppShellViewModel : ObservableObject
     /// </summary>
     private async Task ChooseSystemAsync(IGameSystem system)
     {
-        _session = new ActiveSystemSession(system, _campaigns);
+        _session = new ActiveSystemSession(system, _repositoriesBySystem[system.Id]);
 
         var sidebar = new GlobalSidebarViewModel(
             system.SystemTabs,

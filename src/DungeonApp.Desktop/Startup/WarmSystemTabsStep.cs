@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
@@ -32,7 +33,7 @@ namespace DungeonApp.Desktop.Startup;
 /// </summary>
 public sealed class WarmSystemTabsStep(
     IReadOnlyList<IGameSystem> systems,
-    ICampaignRepository campaigns,
+    IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
     CampaignPreparationCache preparations,
     WarmCampaignDataStep dataStep) : IStartupStep
 {
@@ -89,7 +90,7 @@ public sealed class WarmSystemTabsStep(
         Campaign campaign,
         CancellationToken cancellationToken)
     {
-        var warmupSession = new CampaignSession(campaign, campaigns, system.StateModels);
+        var warmupSession = new CampaignSession(campaign, repositoriesBySystem[system.Id], system.StateModels);
         var warmupContext = new CampaignTabContext(warmupSession);
 
         foreach (var declaration in system.CampaignTabs)

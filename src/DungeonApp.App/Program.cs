@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using DungeonApp.Content.Dnd5e;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
 
@@ -58,11 +59,12 @@ class Program
         var layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
         // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
-        // mieszka stan") - obok, nie pod danymi aplikacji.
-        var packsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "DungeonApp",
-            "Packs");
+        // mieszka stan") - obok, nie pod danymi aplikacji. Paczka należy do systemu, w którego
+        // katalogu leży: SystemDirectories wylicza ten sam układ ramy dla kampanii i paczek, podany
+        // tu jednym identyfikatorem, którym ten system przedstawia się ramie (Dnd5eSystem.IdValue),
+        // zamiast wpisywać "dnd5e" tu drugi raz.
+        var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var packsPath = SystemDirectories.GmPacks(documentsPath, SystemId.Create(Dnd5eSystem.IdValue));
 
         return [new Dnd5eSystem(layoutStore, packsPath)];
     }

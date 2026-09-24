@@ -10,12 +10,11 @@ public enum CampaignAvailability
 {
     Available,
 
-    /// <summary>No system recorded at all - a pre-system manifest (any format version below the current one) as much
-    /// as a current one that simply never named one.</summary>
-    NoSystem,
-
-    /// <summary>A system is recorded, but no compiled system in this build carries that identifier.</summary>
-    UnknownSystem,
+    /// <summary>The manifest names a system other than the one whose directory this campaign was found in -
+    /// including a system this build does not compile at all, which can never equal a directory's own
+    /// (always-compiled) system. A manifest that names none at all is not this: it belongs to the directory's
+    /// system and opens as Available - docs/architecture.md, "Kampania należy do jednego systemu".</summary>
+    MismatchedSystem,
 
     /// <summary>The manifest was written by a newer build than this one understands.</summary>
     NewerFormat,

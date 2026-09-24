@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Library.Entries.Instances;
 using DungeonApp.Core.Persistence;
@@ -58,14 +59,16 @@ public sealed class CampaignFormatFixtureTests : IDisposable
     [Fact]
     public async Task Loading_the_fixture_and_saving_it_fresh_reproduces_it_byte_for_byte()
     {
+        var systemId = DungeonApp.Core.Systems.SystemId.Create(Dnd5eSystem.IdValue);
+
         var source = new JsonCampaignRepository(
-            FixtureLibrary, path => throw new InvalidOperationException("The fixture must never be deleted."));
+            systemId, FixtureLibrary, path => throw new InvalidOperationException("The fixture must never be deleted."));
 
         var campaign = await source.GetAsync(new CampaignId(CampaignGuid), [InstancesModel.Declaration])
             ?? throw new InvalidOperationException("The campaign format fixture failed to load.");
 
         var destination = new JsonCampaignRepository(
-            _destinationLibrary, path => Directory.Delete(path, recursive: true));
+            systemId, _destinationLibrary, path => Directory.Delete(path, recursive: true));
 
         await destination.SaveAsync(campaign, [InstancesModel.Declaration]);
 

@@ -17,9 +17,17 @@ namespace DungeonApp.Core.Campaigns;
 /// caller - the composition root, wiring the shelf for whichever system the GM just picked - always
 /// has both at hand by the time it calls this.
 /// </para>
+/// <para>
+/// <paramref name="repositoriesBySystem"/> is one repository per compiled system - each scoped to
+/// that system's own campaign directory (docs/architecture.md, "Gdzie mieszka stan": "Kampania należy
+/// do jednego systemu - tego, w którego katalogu leży") - fixed for the life of this instance, built
+/// once by the composition root from <c>IGameSystem.Id</c>, never from a system named by literal.
+/// <paramref name="systemId"/> on <see cref="ExecuteAsync"/> is what picks which one a given call
+/// writes to.
+/// </para>
 /// </summary>
 public sealed class CreateCampaign(
-    ICampaignRepository repository,
+    IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
     TimeProvider timeProvider)
 {
     /// <summary>
@@ -36,7 +44,7 @@ public sealed class CreateCampaign(
         var campaignName = CampaignName.Create(name);
         var campaign = Campaign.Create(campaignName, timeProvider, systemId);
 
-        await repository.SaveAsync(campaign, declarations, cancellationToken);
+        await repositoriesBySystem[systemId].SaveAsync(campaign, declarations, cancellationToken);
 
         return campaign;
     }

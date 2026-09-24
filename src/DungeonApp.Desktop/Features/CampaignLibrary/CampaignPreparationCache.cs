@@ -23,15 +23,16 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// </para>
 /// <para>
 /// Every method here is keyed by a <see cref="CampaignSummary"/>, not a bare <see cref="CampaignId"/>:
-/// opening a campaign now means resolving <em>which</em> system's declarations to read it with, and
-/// that answer lives on the summary (<see cref="CampaignSummary.SystemId"/>), never in a single
-/// declarations list fixed for the whole cache the way it was before a campaign's own system was
-/// tracked at all. <paramref name="systems"/> is every system compiled into this build, fixed for the
-/// life of this cache; a summary whose system is not among them, or names none, is refused before any
-/// disk read is attempted - see <see cref="ResolveDeclarations"/>.
+/// opening a campaign now means resolving <em>which</em> system's declarations - and which of
+/// <paramref name="repositoriesBySystem"/> - to read it with. <see cref="CampaignSummary.DirectorySystemId"/>
+/// answers both: it names the compiled system whose own directory this summary was listed from (always
+/// one of <paramref name="systems"/>, never a stranger - a repository is never built for an uncompiled
+/// system in the first place). A summary whose manifest (<see cref="CampaignSummary.SystemId"/>) names a
+/// different system than that is refused before any disk read is attempted - see <see cref="Resolve"/>.
 /// </para>
 /// </summary>
-public sealed class CampaignPreparationCache(ICampaignRepository campaigns, IReadOnlyList<IGameSystem> systems)
+public sealed class CampaignPreparationCache(
+    IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem, IReadOnlyList<IGameSystem> systems)
 {
     private readonly object _gate = new();
     private readonly Dictionary<CampaignId, Task<Campaign>> _preparations = [];
@@ -105,15 +106,10 @@ public sealed class CampaignPreparationCache(ICampaignRepository campaigns, IRea
             await task.ConfigureAwait(false);
             return CampaignAvailability.Available;
         }
-        catch (CampaignUnavailableException ex) when (ex.Reason == CampaignUnavailableReason.NoSystem)
+        catch (CampaignUnavailableException ex) when (ex.Reason == CampaignUnavailableReason.MismatchedSystem)
         {
             RemoveIfCurrent(summary.Id, task);
-            return CampaignAvailability.NoSystem;
-        }
-        catch (CampaignUnavailableException ex) when (ex.Reason == CampaignUnavailableReason.UnknownSystem)
-        {
-            RemoveIfCurrent(summary.Id, task);
-            return CampaignAvailability.UnknownSystem;
+            return CampaignAvailability.MismatchedSystem;
         }
         catch (CampaignStoreException ex) when (ex.Failure == CampaignStoreFailure.UnsupportedFormatVersion)
         {
@@ -153,48 +149,49 @@ public sealed class CampaignPreparationCache(ICampaignRepository campaigns, IRea
         CampaignSummary summary,
         CancellationToken cancellationToken)
     {
-        var declarations = ResolveDeclarations(summary);
+        var (repository, declarations) = Resolve(summary);
 
         // JsonCampaignRepository performs asynchronous IO, but also restores module state between
         // awaits. Starting the complete operation on the pool keeps that CPU and first-use JIT cost
         // out of Avalonia's dispatcher.
         return await Task.Run(
-                () => campaigns.GetAsync(summary.Id, declarations, cancellationToken),
+                () => repository.GetAsync(summary.Id, declarations, cancellationToken),
                 cancellationToken)
             .ConfigureAwait(false)
             ?? throw new CampaignUnavailableException(summary.Id, CampaignUnavailableReason.Missing);
     }
 
     /// <summary>
-    /// The one place that decides which system's declarations a specific campaign reads with -
-    /// docs/architecture.md, "Kampania należy do jednego systemu". A manifest-level failure
-    /// (<see cref="CampaignSummary.ManifestFailure"/>) is not resolved here at all: an empty
-    /// declaration list is handed to <see cref="ICampaignRepository.GetAsync"/> anyway, so its own
-    /// manifest validation reproduces the very same <see cref="CampaignStoreException"/> the listing
-    /// already saw, rather than this method guessing at or duplicating that reason. Only the one
-    /// check <see cref="ICampaignRepository.GetAsync"/> structurally cannot make itself - whether the
-    /// recorded system exists at all, and whether it is compiled into this build - happens here.
+    /// The one place that decides which repository and which system's declarations a specific campaign
+    /// reads with - docs/architecture.md, "Kampania należy do jednego systemu". A manifest-level failure
+    /// (<see cref="CampaignSummary.ManifestFailure"/>) is not resolved here at all: an empty declaration
+    /// list is handed to the directory's own repository anyway, so its own manifest validation
+    /// reproduces the very same <see cref="CampaignStoreException"/> the listing already saw, rather
+    /// than this method guessing at or duplicating that reason. The one check nothing else can make -
+    /// whether the manifest's own claimed system (if it makes one at all) agrees with the directory this
+    /// summary actually came from - happens here, before either repository or declarations are touched.
     /// </summary>
-    private IReadOnlyList<StateModelDeclaration> ResolveDeclarations(CampaignSummary summary)
+    private (ICampaignRepository Repository, IReadOnlyList<StateModelDeclaration> Declarations) Resolve(
+        CampaignSummary summary)
     {
+        var repository = repositoriesBySystem[summary.DirectorySystemId];
+
         if (summary.ManifestFailure is not null)
         {
-            return [];
+            return (repository, []);
         }
 
-        if (summary.SystemId is not { } systemId)
+        if (summary.SystemId is { } manifestSystemId && manifestSystemId != summary.DirectorySystemId)
         {
-            throw new CampaignUnavailableException(summary.Id, CampaignUnavailableReason.NoSystem);
+            throw new CampaignUnavailableException(
+                summary.Id, CampaignUnavailableReason.MismatchedSystem, manifestSystemId, summary.DirectorySystemId);
         }
 
-        var system = systems.FirstOrDefault(candidate => candidate.Id == systemId);
+        // DirectorySystemId names a compiled system by construction - only ever set from listing a
+        // compiled system's own repository (see CampaignSummary's remarks) - so this lookup cannot miss.
+        var system = systems.First(candidate => candidate.Id == summary.DirectorySystemId);
 
-        if (system is null)
-        {
-            throw new CampaignUnavailableException(summary.Id, CampaignUnavailableReason.UnknownSystem, systemId);
-        }
-
-        return system.StateModels;
+        return (repository, system.StateModels);
     }
 
     private async Task WarmBoundedAsync(
@@ -249,28 +246,29 @@ public enum CampaignUnavailableReason
     /// <summary>The repository answered null: the campaign no longer exists on disk.</summary>
     Missing,
 
-    /// <summary>The campaign's manifest names no system at all.</summary>
-    NoSystem,
-
-    /// <summary>The campaign's manifest names a system, but no compiled system in this build carries that identifier.</summary>
-    UnknownSystem
+    /// <summary>The campaign's manifest names a system other than the one whose directory it was found in.</summary>
+    MismatchedSystem
 }
 
-public sealed class CampaignUnavailableException(CampaignId id, CampaignUnavailableReason reason, SystemId? systemId = null)
-    : Exception(BuildMessage(id, reason, systemId))
+public sealed class CampaignUnavailableException(
+    CampaignId id, CampaignUnavailableReason reason, SystemId? manifestSystemId = null, SystemId? directorySystemId = null)
+    : Exception(BuildMessage(id, reason, manifestSystemId, directorySystemId))
 {
     public CampaignId CampaignId { get; } = id;
 
     public CampaignUnavailableReason Reason { get; } = reason;
 
-    /// <summary>Set only for <see cref="CampaignUnavailableReason.UnknownSystem"/>.</summary>
-    public SystemId? SystemId { get; } = systemId;
+    /// <summary>Set only for <see cref="CampaignUnavailableReason.MismatchedSystem"/>: the system the manifest names.</summary>
+    public SystemId? ManifestSystemId { get; } = manifestSystemId;
 
-    private static string BuildMessage(CampaignId id, CampaignUnavailableReason reason, SystemId? systemId) => reason switch
+    /// <summary>Set only for <see cref="CampaignUnavailableReason.MismatchedSystem"/>: the system whose directory this campaign lives in.</summary>
+    public SystemId? DirectorySystemId { get; } = directorySystemId;
+
+    private static string BuildMessage(
+        CampaignId id, CampaignUnavailableReason reason, SystemId? manifestSystemId, SystemId? directorySystemId) => reason switch
     {
-        CampaignUnavailableReason.NoSystem => $"Campaign '{id}' has no system recorded.",
-        CampaignUnavailableReason.UnknownSystem =>
-            $"Campaign '{id}' belongs to system '{systemId}', which is not compiled into this build.",
+        CampaignUnavailableReason.MismatchedSystem =>
+            $"Campaign '{id}' is recorded for system '{manifestSystemId}' but lives in system '{directorySystemId}''s directory.",
         _ => $"Campaign '{id}' no longer exists."
     };
 }

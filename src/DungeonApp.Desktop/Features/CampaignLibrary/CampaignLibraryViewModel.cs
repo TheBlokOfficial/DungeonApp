@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.ViewModels;
 
@@ -20,18 +21,18 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// </para>
 /// <para>
 /// <see cref="SetActiveSystem"/> is called once per system choice, before the shelf is shown for real
-/// (<c>AppShellViewModel.ChooseSystemAsync</c>). Before it is ever called - during the startup
-/// warmup pass, which runs before any system is chosen - <see cref="LoadAsync"/> shows every campaign
-/// unfiltered, since nothing about that pass is ever seen by the GM. Once an active system is set,
-/// the shelf filters to docs/architecture.md's "Pasek boczny: trzy kategorie" rule: the active
-/// system's own campaigns (available or not), plus any campaign that cannot be assigned to *any*
-/// compiled system at all; a campaign belonging to a different, compiled system is hidden rather than
-/// shown unavailable.
+/// (<c>AppShellViewModel.ChooseSystemAsync</c>). Once an active system is set, <see cref="LoadAsync"/>
+/// reads only that system's own repository - docs/architecture.md, "Gdzie mieszka stan": "Kampania
+/// należy do jednego systemu - tego, w którego katalogu leży." There is nothing left to filter: every
+/// summary a system's own repository returns already belongs to that system's directory, available or
+/// not. Before <see cref="SetActiveSystem"/> is ever called - during the startup warmup pass, which
+/// runs before any system is chosen - <see cref="LoadAsync"/> instead reads every compiled system's
+/// repository and shows the concatenation, since nothing about that pass is ever seen by the GM.
 /// </para>
 /// </summary>
 public sealed class CampaignLibraryViewModel : ObservableObject
 {
-    private readonly ICampaignRepository _campaigns;
+    private readonly IReadOnlyDictionary<SystemId, ICampaignRepository> _repositoriesBySystem;
     private readonly CreateCampaign _createCampaign;
     private readonly CampaignPreparationCache _preparations;
     private readonly IReadOnlyList<IGameSystem> _systems;
@@ -44,13 +45,13 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     private bool _isLoaded;
 
     public CampaignLibraryViewModel(
-        ICampaignRepository campaigns,
+        IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
         CreateCampaign createCampaign,
         CampaignPreparationCache preparations,
         IReadOnlyList<IGameSystem> systems,
         Func<CampaignSummary, Task> openCampaign)
     {
-        _campaigns = campaigns;
+        _repositoriesBySystem = repositoriesBySystem;
         _createCampaign = createCampaign;
         _preparations = preparations;
         _systems = systems;
@@ -140,14 +141,15 @@ public sealed class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            summaries = await _campaigns.ListAsync();
-
             var activeSystem = _activeSystem;
-            var visible = activeSystem is null ? summaries : summaries.Where(summary => ShouldShow(summary, activeSystem)).ToArray();
+
+            summaries = activeSystem is not null
+                ? await _repositoriesBySystem[activeSystem.Id].ListAsync()
+                : await ListEverySystemAsync();
 
             Campaigns.Clear();
 
-            foreach (var summary in visible)
+            foreach (var summary in summaries)
             {
                 // During the pre-system warmup pass nothing here is ever shown to the GM, so there is
                 // no point paying for a full read per campaign - every row simply reports itself
@@ -178,24 +180,21 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     }
 
     /// <summary>
-    /// A campaign is shown on <paramref name="activeSystem"/>'s shelf when it is that system's own, or
-    /// when it cannot be assigned to any compiled system at all (no system recorded, or one this build
-    /// does not know) - docs/architecture.md, "Kampania należy do jednego systemu". A campaign belonging
-    /// to a different, compiled system is hidden rather than shown unavailable.
+    /// Only the pre-system warmup pass calls this: every compiled system's own repository, read and
+    /// concatenated. Nothing here is ever shown to the GM, so a broken system's directory is left to
+    /// fail the same way a single-system <see cref="LoadAsync"/> read already does - the outer catch
+    /// around this call, not a per-system one here.
     /// </summary>
-    private bool ShouldShow(CampaignSummary summary, IGameSystem activeSystem)
+    private async Task<IReadOnlyList<CampaignSummary>> ListEverySystemAsync()
     {
-        if (summary.SystemId is not { } systemId)
+        var all = new List<CampaignSummary>();
+
+        foreach (var system in _systems)
         {
-            return true;
+            all.AddRange(await _repositoriesBySystem[system.Id].ListAsync());
         }
 
-        if (systemId == activeSystem.Id)
-        {
-            return true;
-        }
-
-        return !_systems.Any(system => system.Id == systemId);
+        return all;
     }
 
     private async Task CreateAsync()
@@ -254,7 +253,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await _campaigns.DeleteAsync(row.Id);
+            await _repositoriesBySystem[row.Summary.DirectorySystemId].DeleteAsync(row.Id);
             Campaigns.Remove(row);
             RaisePropertyChanged(nameof(IsEmpty));
             RaisePropertyChanged(nameof(HasCampaigns));

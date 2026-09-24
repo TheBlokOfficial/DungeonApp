@@ -51,6 +51,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
+    // Public, not internal: DungeonApp.App/Program.cs - the one place allowed to name a system by
+    // name - is a separate assembly, and reads this to compute this system's packs directory from
+    // its own identifier (docs/architecture.md, "Gdzie mieszka stan":
+    // "Dokumenty\DungeonApp\<system>\packs\"), rather than typing the literal "dnd5e" a second time
+    // somewhere the two could drift apart.
+    public const string IdValue = "dnd5e";
+
     /// <summary>
     /// Rarity tiers in display order, paired with the color-key name (krok 10, zlecenie 1, część C)
     /// their badge carries - an opaque intent for <see cref="ContentBadge.ColorKey"/>, not a color;

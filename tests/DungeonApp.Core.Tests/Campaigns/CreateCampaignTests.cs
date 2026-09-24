@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Systems;
@@ -15,7 +16,8 @@ public sealed class CreateCampaignTests
     private readonly CreateCampaign _createCampaign;
 
     public CreateCampaignTests()
-        => _createCampaign = new CreateCampaign(_repository, new FixedTimeProvider(Moment));
+        => _createCampaign = new CreateCampaign(
+            new Dictionary<SystemId, ICampaignRepository> { [TestSystemId] = _repository }, new FixedTimeProvider(Moment));
 
     [Fact]
     public async Task Stores_the_campaign_it_created()

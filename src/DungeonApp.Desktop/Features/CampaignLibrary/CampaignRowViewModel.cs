@@ -62,10 +62,8 @@ public sealed class CampaignRowViewModel
     private static string? DescribeUnavailability(CampaignAvailability availability, CampaignSummary summary) => availability switch
     {
         CampaignAvailability.Available => null,
-        CampaignAvailability.NoSystem =>
-            "Kampania bez przypisanego systemu — zapisana starszą wersją programu.",
-        CampaignAvailability.UnknownSystem =>
-            $"System „{summary.SystemId}” nie jest dostępny w tym programie.",
+        CampaignAvailability.MismatchedSystem =>
+            $"Kampania zapisana dla systemu „{summary.SystemId}”, a leży w katalogu systemu „{summary.DirectorySystemId}”.",
         CampaignAvailability.NewerFormat => "Zapisana nowszą wersją programu.",
         CampaignAvailability.IncompatibleModelVersion => "Niezgodna wersja danych systemu.",
         CampaignAvailability.Corrupted => "Pliki kampanii są uszkodzone.",

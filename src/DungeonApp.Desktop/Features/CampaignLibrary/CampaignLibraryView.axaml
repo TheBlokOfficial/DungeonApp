@@ -22,15 +22,23 @@
         <Style Selector="Border.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
+        <!-- An unavailable row sits one step back from an available one: the backstage workspace's
+             own background (DungeonBackstageBrush) rather than the raised row background every other
+             row stands on - reused for its documented role (the recessed surface a row sits on top
+             of), not picked for being darker. Border unchanged. -->
+        <Style Selector="Border.campaign-row.unavailable">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
+        </Style>
         <!-- A destructive action owns its hover state. Keep the record at rest while its trash
              control is hovered, so it never looks like opening and deleting are one action. -->
         <Style Selector="Border.campaign-row.delete-hover:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
         </Style>
         <!-- An unavailable row has nothing of its own to react to a hover - the trash control is
-             the only interactive thing left in it, and it already owns its own highlight above. -->
+             the only interactive thing left in it, and it already owns its own highlight above. Stays
+             at its own (recessed) rest color instead of the available row's rest color. -->
         <Style Selector="Border.campaign-row.unavailable:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
         </Style>
         <!-- Name, date and arrow dim the same way any disabled control in this theme does - the
              Button ControlTheme's own ":disabled" style (DungeonControls.axaml) and this one now
