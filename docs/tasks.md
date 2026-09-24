@@ -46,6 +46,10 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
    wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
 2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
+2a. Pasek boczny ramy (zmiana w ramie, osobne zlecenie po 2): kreska zaznaczenia jako osobny
+   element odsunięty w lewo od tła pozycji, krótszy od niej, zaokrąglony — jak `.sidebar-item.active::before`
+   w `mockup_rejestr.html`; kolor kreski — intensywny akcent (jak na liście wpisów); tło zaznaczonej
+   pozycji zostaje szare. Decyzja autora z 2026-09-24.
 3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
    kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
    tym samym układem. Reguły półki — architektura, *Gdzie mieszka stan*. Autor przenosi swoje paczki
