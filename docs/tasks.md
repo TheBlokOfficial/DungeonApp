@@ -47,6 +47,9 @@ w `.claude/worktrees/agent-*`, gałęzie `worktree-agent-*` (`git worktree list`
 przed ich raportem: sprawdzić commity w gałęziach (`git log master..<gałąź>`), zweryfikować jak zwykle
 (build bez ostrzeżeń kompilatora, testy ≥ 330, testy granic), scalić po kolei, usunąć kopie. Gałąź bez
 commitów = praca przerwana; zlecić od nowa z briefu opisanego niżej.
+**Obaj zatrzymani przez architekta na koniec budżetu**; niedokończona praca zapisana w ich gałęziach
+commitem „WIP: przerwane…" — niezweryfikowana. Następna sesja: nowy wykonawca na każdą gałąź, z tym
+opisem jako briefem i poleceniem „najpierw oceń WIP (co zrobione, co brakuje), dokończ, zgłoś".
 * **Katalogi i półka** (zlecenie 3 niżej) — z dołączoną poprawką tła kampanii niedostępnej.
 * **Poprawki zakładek treści** — lista autora po obejrzeniu aplikacji: szczegół przy liście (nie
   wyśrodkowany), paski przewijania, linia nagłówka na całą szerokość, lupa, strzałki chipów i sortowania,
