@@ -55,8 +55,9 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    Za: CSS mockupu wprost, model pisze w języku, który zna najlepiej, przeglądarka daje podstawy UX.
    Przeciw: przepisanie warstwy okiennej (~3 tys. linii znaczników), technologia niszowa, a przyczyna
    dzisiejszej fuszerki leżała głównie w procesie — zmiana technologii przed naprawą procesu nie
-   pozwoliłaby odróżnić, co pomogło. **Wyzwalacz:** przy naprawionym procesie zlecenia interfejsu
-   nadal kończą się fuszerką albo zjadają większość budżetu — wtedy próba na jednej zakładce.
+   pozwoliłaby odróżnić, co pomogło. **Wyzwalacz:** werdykt punktu kontrolnego (punkt 5) — przy
+   naprawionym procesie i gotowym fundamencie interfejs nadal wychodzi fuszerką albo zjada większość
+   budżetu; wtedy próba na jednej zakładce.
 3. **Fundament interfejsu — zanim cokolwiek innego w interfejsie** (autor: „najpierw od tego zaczął").
    Każda używana kontrolka dostaje w motywie ramy **własny, kompletny szablon zamiast domyślnego**,
    nie poprawki nałożone na domyślny motyw — to one dziś przepuszczają niechciane efekty, tekst
@@ -106,6 +107,20 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    uwagi są lepszą informacją niż zdjęcia bez ekranu. Wymiary z CSS mockupu: brief przytacza
    selektory (`.entry`, `.entry.selected::before`, `.sidebar-item.active::before`, `.filter-chip`,
    `.filter-chip.on`, `.search`, `.clear-filters`, `.list-scroll`), nie każe czytać całego pliku.
+5. **Punkt kontrolny: czy fundament rozwiązał problem — werdykt jawny, zapisany.** Po fundamencie
+   i wdrożeniu go w aplikację (zakładka treści i karta potwora złożone z klocków) architekt z autorem
+   **explicite uznają albo odrzucają** kierunek „Avalonia w obecnej formie". Problem, który
+   rozwiązujemy: interfejs od wykonawców był fuszerką, a jego poprawianie zjadało większość budżetu
+   sesji. Podstawa werdyktu, zmierzona tym samym skryptem co 2026-09-24:
+   * ile rund poprawek od autora potrzebowała każda porcja interfejsu,
+   * czy wracają błędy rzemiosła (stany, fokus, wyrównanie, układ zależny od zawartości),
+   * kroki, czas i odczyt na zlecenie interfejsu — wobec 2026-09-24: typowe zlecenie z kodem od 22.09
+     to 124 kroki i 17,5 minuty, a trzy najdroższe przebiegi w historii projektu to widoki
+     (najdroższy: 362 kroki, 53 minuty, 142 mln tokenów odczytu).
+   Wynik idzie do `decisions.md`, do wpisu o technologii interfejsu (punkt 2): **uznany** — Avalonia
+   zostaje z uzasadnieniem z liczb; **odrzucony** — to jest wyzwalacz próby z interfejsem w HTML-u na
+   jednej zakładce. Autor: „chciałbym to na końcu nazwać […] i rozwiązać, czy zbudowanie tych
+   fundamentów rozwiązało problem".
 
 *A. Lista i filtry*
 * Kreska zaznaczenia wpisu **przed** wierszem, w odstępie (mockup: `left: -10px`) — lista ma wcięcie,
