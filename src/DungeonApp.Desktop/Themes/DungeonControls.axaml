@@ -8,6 +8,8 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Wyłączony przycisk z wypełnieniem (.primary, .danger) jest neutralny: tło, krawędź i tekst
+        zwykłego - wyłączony nie niesie znaczenia "główna akcja" ani "zniszczenie", bo nic nie robi.
         Wciśnięcie nie ma własnego koloru w żadnej odmianie: tło i krawędź zostają z najechania, a
         treść (tekst i ikona) przygasa do DungeonPressedContentOpacity - jednym stylem dla wszystkich
         odmian, na ContentPresenterze, więc tło nie przygasa razem z treścią.
@@ -165,6 +167,13 @@
             <Setter Property="Width" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!-- Wyłączony główny i niszczący wyglądają jak wyłączony zwykły. -->
+        <Style Selector="^.primary:disabled, ^.danger:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
 
         <!-- Wciśnięcie, wspólne dla wszystkich odmian: treść przygasa o stopień. -->
