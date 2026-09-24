@@ -1,13 +1,15 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        Frame text styles (docs/tasks.md, punkt 3 "Fundament interfejsu"), values straight from
-        docs/images/mockup_rejestr.html. Typeface, size, weight, letter spacing and line height only -
-        never a color: the color stays with the context and the existing "muted" class. Line heights
-        are the CSS multiplier times the size, in pixels; letter spacing is CSS em times the size, in
-        pixels. Included after BuiltInControls.axaml, so a size set here wins over "muted"'s own.
-        The overline classes do not uppercase - Avalonia has no style-level text transform; their
-        text is written in capitals.
+        Frame text styles (docs/tasks.md, punkt 3 "Fundament interfejsu"): the mockup's roles
+        (docs/images/mockup_rejestr.html) on seven sizes - 34, 26, 16, 15, 13, 12, 11
+        (docs/decisions.md, "Siedem stopni pisma"). Typeface, size, weight, letter spacing and line
+        height only - never a color: the color stays with the context and the existing "muted" class.
+        Only the multi-line styles (body, display-prose) set a line height - a tighter one clips
+        descenders; it is the CSS multiplier times the size, in pixels. Letter spacing is CSS em times
+        the size, in pixels. Included after BuiltInControls.axaml, so a size set here wins over
+        "muted"'s own. The overline classes do not uppercase - Avalonia has no style-level text
+        transform; their text is written in capitals.
     -->
 
     <!-- DISPLAY =========================================================== -->
@@ -15,7 +17,6 @@
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="34" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="LineHeight" Value="35.7" />
     </Style>
     <Style Selector="TextBlock.display-lg">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
@@ -40,17 +41,11 @@
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="LineHeight" Value="19.5" />
-    </Style>
-    <Style Selector="TextBlock.body-long">
-        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
-        <Setter Property="FontSize" Value="13.5" />
-        <Setter Property="FontWeight" Value="Normal" />
-        <Setter Property="LineHeight" Value="20.925" />
+        <Setter Property="LineHeight" Value="20.15" />
     </Style>
     <Style Selector="TextBlock.body-strong">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
-        <Setter Property="FontSize" Value="13.5" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style Selector="TextBlock.label">
@@ -63,11 +58,6 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="LetterSpacing" Value="0.36" />
-    </Style>
-    <Style Selector="TextBlock.small">
-        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
-        <Setter Property="FontSize" Value="11.5" />
-        <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style Selector="TextBlock.caption">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
@@ -82,9 +72,9 @@
     </Style>
     <Style Selector="TextBlock.overline-sm">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
-        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="LetterSpacing" Value="0.42" />
+        <Setter Property="LetterSpacing" Value="0.44" />
     </Style>
 
     <!-- LICZBY ============================================================ -->
@@ -95,17 +85,12 @@
     </Style>
     <Style Selector="TextBlock.mono">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
-        <Setter Property="FontSize" Value="12.5" />
-        <Setter Property="FontWeight" Value="Normal" />
-    </Style>
-    <Style Selector="TextBlock.mono-sm">
-        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
     <Style Selector="TextBlock.mono-xs">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
-        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
 </Styles>
