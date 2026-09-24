@@ -123,17 +123,20 @@ public sealed class CoreEntryKindIndependenceTests
 
     /// <summary>
     /// Every name a content assembly introduces for a kind of thing: today <c>Monster</c> and
-    /// <c>Gear</c> from DungeonApp.Content.Dnd5e. Touching <see cref="Content.Dnd5e.Monster"/> forces
-    /// that assembly to be loaded before the <see cref="AppDomain"/> is scanned - this project
-    /// carries a project reference to it precisely so that touch is possible.
+    /// <c>Gear</c> from DungeonApp.Content.Dnd5e. The assembly of <see cref="Content.Dnd5e.Monster"/>
+    /// is placed in the scanned list explicitly rather than looked up in the <see cref="AppDomain"/>:
+    /// whether another test has already loaded it depends on test order, and a discarded
+    /// <c>typeof</c> is removed by the compiler, so only a use of the assembly makes the dictionary
+    /// the same on every run. This project carries a project reference to it precisely so that use
+    /// is possible.
     /// </summary>
     private static IReadOnlyList<string> KindsNamedByContentAssemblies()
     {
-        _ = typeof(Content.Dnd5e.Monster);
-
         return
         [
             .. AppDomain.CurrentDomain.GetAssemblies()
+                .Prepend(typeof(Content.Dnd5e.Monster).Assembly)
+                .Distinct()
                 .Where(assembly => assembly.GetName().Name?.StartsWith(
                     "DungeonApp.Content.", StringComparison.Ordinal) == true)
                 .SelectMany(assembly => assembly.GetTypes())
