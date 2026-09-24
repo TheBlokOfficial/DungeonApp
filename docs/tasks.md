@@ -92,7 +92,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
      | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
-     | 8 | tag, chip, odznaka, tabela | | |
+     | 8 | tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany; kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela | | |
      | 9 | odcięcie motywu domyślnego biblioteki | | |
      | 10 | klocek: wiersz listy z kreską zaznaczenia | | |
      | 11 | klocek: chip z listą wyboru | | |
@@ -146,6 +146,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   z niego fokus (dziś kursor miga dalej).
 
 *B. Karta potwora*
+* Wyzwanie — odznaka z motywu w odmianie wyróżnionej (porcja 8), samo „1/2"; PD obok, przygaszone
+  (autor 2026-09-24, pytanie o „marker" wyzwania).
 * Opisy, akcje i cechy szczególne stylem tekstu do zaznaczenia (porcja 2); powód błędu w miejscu karty
   także — *Konwencje interakcji* w `architecture.md`.
 * Nagłówki „Cechy szczególne"/„Akcje" jasne i wyraźne jak w mockupie; „CECHY" wersalikami; styl
