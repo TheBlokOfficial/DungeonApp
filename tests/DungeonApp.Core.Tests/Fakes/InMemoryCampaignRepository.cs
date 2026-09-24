@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 
 namespace DungeonApp.Core.Tests.Fakes;
 
@@ -15,6 +16,11 @@ namespace DungeonApp.Core.Tests.Fakes;
 /// </summary>
 internal sealed class InMemoryCampaignRepository : ICampaignRepository
 {
+    // A single in-memory dictionary models one directory, unlike the real per-system repository - no
+    // test that uses this fake reads CampaignSummary.DirectorySystemId back, so this stand-in value
+    // only has to be a valid one.
+    private static readonly SystemId FallbackDirectorySystemId = SystemId.Create("test-system");
+
     private readonly Dictionary<CampaignId, Campaign> _campaigns = [];
 
     public int SaveCount { get; private set; }
@@ -41,7 +47,9 @@ internal sealed class InMemoryCampaignRepository : ICampaignRepository
     public Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<CampaignSummary>>(
             _campaigns.Values
-                .Select(campaign => new CampaignSummary(campaign.Id, campaign.Name, campaign.CreatedAt, campaign.SystemId))
+                .Select(campaign => new CampaignSummary(
+                    campaign.Id, campaign.Name, campaign.CreatedAt,
+                    campaign.SystemId ?? FallbackDirectorySystemId, campaign.SystemId))
                 .OrderBy(summary => summary.Name.Value, StringComparer.CurrentCultureIgnoreCase)
                 .ToArray());
 }

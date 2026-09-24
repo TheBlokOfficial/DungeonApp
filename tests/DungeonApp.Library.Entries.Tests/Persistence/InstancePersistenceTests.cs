@@ -32,7 +32,8 @@ public sealed class InstancePersistenceTests : IDisposable
     // Permanent delete on purpose: a test must never be able to reach the real Recycle Bin - see
     // JsonCampaignRepository.DeleteAsync's doc comment.
     public InstancePersistenceTests() =>
-        _repository = new JsonCampaignRepository(_library.Path, path => Directory.Delete(path, recursive: true));
+        _repository = new JsonCampaignRepository(
+            DungeonApp.Core.Systems.SystemId.Create("test-system"), _library.Path, path => Directory.Delete(path, recursive: true));
 
     public void Dispose() => _library.Dispose();
 

@@ -13,22 +13,22 @@ using DungeonApp.Desktop.Features.CampaignLibrary;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The shelf's filtering and availability rules - docs/architecture.md, "Kampania należy do jednego
-/// systemu": the active system's own campaigns are shown (available or not), a campaign that cannot
-/// be assigned to any compiled system is shown everywhere as unavailable, and a campaign belonging to
-/// a different, compiled system is hidden. An unavailable row refuses to open and can still be
-/// deleted.
+/// The shelf's availability rules - docs/architecture.md, "Kampania należy do jednego systemu": the
+/// active system's own repository is the only one ever read (there is nothing left to filter - every
+/// summary it returns already belongs to that system's directory), a campaign whose manifest names no
+/// system belongs to the directory it was found in and opens normally, and a campaign whose manifest
+/// names a *different* system than its directory stands on the shelf as unavailable, with a reason. An
+/// unavailable row refuses to open and can still be deleted.
 /// </summary>
 public sealed class CampaignLibraryViewModelTests
 {
     private static readonly SystemId SystemA = SystemId.Create("system-a");
     private static readonly SystemId SystemB = SystemId.Create("system-b");
-    private static readonly SystemId GhostSystem = SystemId.Create("ghost-system");
 
     [Fact]
     public async Task Shows_the_active_systems_own_campaign_as_available()
     {
-        var summary = MakeSummary("Kroniki", SystemA);
+        var summary = MakeSummary("Kroniki", SystemA, SystemA);
         var repository = new FakeShelfRepository([summary]);
         repository.Campaigns[summary.Id] = MakeCampaign(summary, SystemA);
 
@@ -40,23 +40,37 @@ public sealed class CampaignLibraryViewModelTests
         Assert.Null(row.UnavailabilityReason);
     }
 
+    /// <summary>
+    /// A pre-system manifest (or a current one that simply never recorded one) belongs to the
+    /// directory's own system - docs/architecture.md, "Kampania należy do jednego systemu" - and opens
+    /// like any other campaign, never flagged.
+    /// </summary>
     [Fact]
-    public async Task Hides_a_campaign_belonging_to_another_compiled_system()
+    public async Task Shows_a_campaign_with_no_manifest_system_as_belonging_to_the_directorys_system()
     {
-        var summary = MakeSummary("Cudza kampania", SystemB);
+        var summary = MakeSummary("Sprzed systemów", SystemA, systemId: null);
         var repository = new FakeShelfRepository([summary]);
-        repository.Campaigns[summary.Id] = MakeCampaign(summary, SystemB);
+        repository.Campaigns[summary.Id] = MakeCampaign(summary, SystemA);
 
-        var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, []), new FakeGameSystem(SystemB, [])], activeSystem: SystemA);
+        var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA);
         await library.LoadAsync();
 
-        Assert.Empty(library.Campaigns);
+        var row = Assert.Single(library.Campaigns);
+        Assert.True(row.IsAvailable);
+        Assert.Null(row.UnavailabilityReason);
     }
 
+    /// <summary>
+    /// The one case the previous, manifest-driven filter used to hide entirely: with a per-system
+    /// directory, this campaign is never even listed by system A's own repository in the first place,
+    /// so a manifest naming a different system than the directory it is actually found in can only
+    /// mean the directory and the manifest disagree - stood on the shelf as unavailable, with a
+    /// reason, never hidden and never opened under either system.
+    /// </summary>
     [Fact]
-    public async Task Shows_a_campaign_with_no_system_as_unavailable_everywhere()
+    public async Task Shows_a_campaign_whose_manifest_names_a_different_system_than_its_directory_as_unavailable()
     {
-        var summary = MakeSummary("Sprzed systemów", systemId: null);
+        var summary = MakeSummary("Cudza kampania", directorySystemId: SystemA, systemId: SystemB);
         var repository = new FakeShelfRepository([summary]);
 
         var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA);
@@ -64,29 +78,14 @@ public sealed class CampaignLibraryViewModelTests
 
         var row = Assert.Single(library.Campaigns);
         Assert.False(row.IsAvailable);
-        Assert.Equal(
-            "Kampania bez przypisanego systemu — zapisana starszą wersją programu.",
-            row.UnavailabilityReason);
-    }
-
-    [Fact]
-    public async Task Shows_a_campaign_with_an_uncompiled_system_as_unavailable_everywhere()
-    {
-        var summary = MakeSummary("Obcy silnik", GhostSystem);
-        var repository = new FakeShelfRepository([summary]);
-
-        var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA);
-        await library.LoadAsync();
-
-        var row = Assert.Single(library.Campaigns);
-        Assert.False(row.IsAvailable);
-        Assert.Contains("ghost-system", row.UnavailabilityReason);
+        Assert.Contains("system-a", row.UnavailabilityReason);
+        Assert.Contains("system-b", row.UnavailabilityReason);
     }
 
     [Fact]
     public async Task Shows_a_manifest_from_a_newer_build_as_unavailable()
     {
-        var summary = MakeSummary("Z przyszłości", systemId: null, manifestFailure: CampaignStoreFailure.UnsupportedFormatVersion);
+        var summary = MakeSummary("Z przyszłości", SystemA, systemId: null, manifestFailure: CampaignStoreFailure.UnsupportedFormatVersion);
         var repository = new FakeShelfRepository([summary]);
         // A real repository's own manifest validation is what actually throws this, given whatever
         // declarations CampaignPreparationCache passes (empty, here, since the manifest itself already
@@ -103,7 +102,7 @@ public sealed class CampaignLibraryViewModelTests
     [Fact]
     public async Task Shows_an_incompatible_model_version_as_unavailable()
     {
-        var summary = MakeSummary("Stary zapis", SystemA);
+        var summary = MakeSummary("Stary zapis", SystemA, SystemA);
         var repository = new FakeShelfRepository([summary]);
         repository.Failures[summary.Id] = new CampaignStoreException(CampaignStoreFailure.ModelVersionMismatch, "boom");
 
@@ -117,7 +116,7 @@ public sealed class CampaignLibraryViewModelTests
     [Fact]
     public async Task Shows_a_corrupted_campaign_as_unavailable()
     {
-        var summary = MakeSummary("Uszkodzona", SystemA);
+        var summary = MakeSummary("Uszkodzona", SystemA, SystemA);
         var repository = new FakeShelfRepository([summary]);
         repository.Failures[summary.Id] = new CampaignStoreException(CampaignStoreFailure.Unreadable, "boom");
 
@@ -131,7 +130,7 @@ public sealed class CampaignLibraryViewModelTests
     [Fact]
     public async Task An_unavailable_rows_open_command_refuses_to_run()
     {
-        var summary = MakeSummary("Bez systemu", systemId: null);
+        var summary = MakeSummary("Cudza kampania", directorySystemId: SystemA, systemId: SystemB);
         var repository = new FakeShelfRepository([summary]);
         var opened = false;
 
@@ -155,7 +154,7 @@ public sealed class CampaignLibraryViewModelTests
     [Fact]
     public async Task An_unavailable_campaign_can_still_be_deleted()
     {
-        var summary = MakeSummary("Do usunięcia", systemId: null);
+        var summary = MakeSummary("Do usunięcia", directorySystemId: SystemA, systemId: SystemB);
         var repository = new FakeShelfRepository([summary]);
 
         var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA);
@@ -174,10 +173,12 @@ public sealed class CampaignLibraryViewModelTests
         SystemId activeSystem,
         Func<CampaignSummary, Task>? onOpen = null)
     {
-        var preparations = new CampaignPreparationCache(repository, systems);
-        var createCampaign = new CreateCampaign(repository, TimeProvider.System);
+        IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem =
+            systems.ToDictionary(system => system.Id, _ => (ICampaignRepository)repository);
+        var preparations = new CampaignPreparationCache(repositoriesBySystem, systems);
+        var createCampaign = new CreateCampaign(repositoriesBySystem, TimeProvider.System);
         var library = new CampaignLibraryViewModel(
-            repository, createCampaign, preparations, systems,
+            repositoriesBySystem, createCampaign, preparations, systems,
             onOpen ?? (_ => Task.CompletedTask));
 
         library.SetActiveSystem(systems.Single(system => system.Id == activeSystem));
@@ -186,8 +187,8 @@ public sealed class CampaignLibraryViewModelTests
     }
 
     private static CampaignSummary MakeSummary(
-        string name, SystemId? systemId, CampaignStoreFailure? manifestFailure = null) =>
-        new(CampaignId.New(), CampaignName.Create(name), DateTimeOffset.UtcNow, systemId, manifestFailure);
+        string name, SystemId directorySystemId, SystemId? systemId, CampaignStoreFailure? manifestFailure = null) =>
+        new(CampaignId.New(), CampaignName.Create(name), DateTimeOffset.UtcNow, directorySystemId, systemId, manifestFailure);
 
     private static Campaign MakeCampaign(CampaignSummary summary, SystemId systemId) =>
         Campaign.Restore(summary.Id, summary.Name, summary.CreatedAt, systemId, CampaignStateSnapshot.Empty);

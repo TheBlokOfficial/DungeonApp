@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Library.Entries;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 
@@ -17,11 +22,13 @@ namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
 /// Headless-rendering coverage for the shelf row - specifically, the dimming an unavailable row's
-/// name, date and arrow are meant to carry. A visible-value assertion (Bounds, Text) cannot catch this
-/// class of bug the way <see cref="GlobalSidebarRenderingTests"/> catches a zero-bounds row: an
-/// undimmed row draws exactly the right text in exactly the right place, just at full opacity instead
-/// of the theme's own disabled-state opacity, and nothing but reading the rendered
-/// <see cref="Avalonia.Visual.Opacity"/> back can tell the two apart.
+/// name, date and arrow are meant to carry, and the darker background the whole row stands on.
+/// A visible-value assertion (Bounds, Text) cannot catch either class of bug the way
+/// <see cref="GlobalSidebarRenderingTests"/> catches a zero-bounds row: an undimmed row draws exactly
+/// the right text in exactly the right place, just at full opacity instead of the theme's own
+/// disabled-state opacity or the available row's own background color, and nothing but reading the
+/// rendered <see cref="Avalonia.Visual.Opacity"/> or an actual rendered pixel back can tell the two
+/// apart.
 /// </summary>
 public sealed class CampaignLibraryRenderingTests
 {
@@ -63,6 +70,33 @@ public sealed class CampaignLibraryRenderingTests
         Assert.Equal(1d, EffectiveOpacityOf(trashButton), precision: 3);
     }
 
+    /// <summary>
+    /// The author's own fix (2026-09-24, docs/tasks.md's "Poprawki czekające na obszar"): an
+    /// unavailable row's background is one step darker than an available row's, using the existing
+    /// <c>DungeonBackstageBrush</c> token rather than a new one - the very surface the row list itself
+    /// sits on (CampaignLibraryView.axaml's outer Grid). Before that fix both rows painted the exact
+    /// same <c>DungeonBackstageRowBrush</c>, so this assertion (equality, not "darker than") fails on
+    /// that old code: the two sampled pixels come back identical instead of different.
+    /// </summary>
+    [AvaloniaFact]
+    public void An_unavailable_rows_background_is_one_step_darker_than_an_available_rows()
+    {
+        var window = BuildWindow();
+
+        var availableRow = FindRow(window, "Dostępna");
+        var unavailableRow = FindRow(window, "Niedostępna");
+
+        var availablePixel = SampleBackgroundPixel(availableRow);
+        var unavailablePixel = SampleBackgroundPixel(unavailableRow);
+
+        var expectedAvailable = ResolveColor(window, "DungeonBackstageRowBrush");
+        var expectedUnavailable = ResolveColor(window, "DungeonBackstageBrush");
+
+        Assert.Equal(expectedAvailable, availablePixel);
+        Assert.Equal(expectedUnavailable, unavailablePixel);
+        Assert.NotEqual(availablePixel, unavailablePixel);
+    }
+
     private static (double Name, double Date, double Arrow) EffectiveOpacity(Border row)
     {
         var name = row.GetVisualDescendants().OfType<TextBlock>().First(tb => tb.Classes.Contains("campaign-name"));
@@ -96,6 +130,44 @@ public sealed class CampaignLibraryRenderingTests
         return opacity;
     }
 
+    /// <summary>
+    /// Renders the row's own Border to an offscreen bitmap and reads back the color of a pixel well
+    /// inside its bounds (away from the border stroke and corner radius), rather than trusting the
+    /// <see cref="Border.Background"/> brush object - a pixel is what the GM actually sees, and is the
+    /// only thing that would also catch an ancestor painting over it.
+    /// </summary>
+    private static Color SampleBackgroundPixel(Border row)
+    {
+        var width = (int)Math.Ceiling(row.Bounds.Width);
+        var height = (int)Math.Ceiling(row.Bounds.Height);
+
+        using var bitmap = new RenderTargetBitmap(new PixelSize(width, height));
+        bitmap.Render(row);
+
+        var buffer = Marshal.AllocHGlobal(4);
+        try
+        {
+            var samplePoint = new PixelPoint(width / 2, height / 2);
+            bitmap.CopyPixels(new PixelRect(samplePoint.X, samplePoint.Y, 1, 1), buffer, 4, 4);
+
+            var bytes = new byte[4];
+            Marshal.Copy(buffer, bytes, 0, 4);
+
+            // Avalonia's default software render target pixel format is Bgra8888.
+            return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(buffer);
+        }
+    }
+
+    private static Color ResolveColor(Window window, string brushResourceKey)
+    {
+        var brush = (ISolidColorBrush)window.FindResource(brushResourceKey)!;
+        return brush.Color;
+    }
+
     private static Border FindRow(Window window, string name)
     {
         var textBlock = window.GetVisualDescendants()
@@ -108,21 +180,24 @@ public sealed class CampaignLibraryRenderingTests
     private static Window BuildWindow()
     {
         var repository = new NoopCampaignRepository();
-        IReadOnlyList<IGameSystem> systems = [];
-        var preparations = new CampaignPreparationCache(repository, systems);
-        var createCampaign = new CreateCampaign(repository, TimeProvider.System);
+        var system = new EmptyGameSystem();
+        IReadOnlyList<IGameSystem> systems = [system];
+        IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem =
+            new Dictionary<SystemId, ICampaignRepository> { [system.Id] = repository };
+        var preparations = new CampaignPreparationCache(repositoriesBySystem, systems);
+        var createCampaign = new CreateCampaign(repositoriesBySystem, TimeProvider.System);
 
-        var viewModel = new CampaignLibraryViewModel(repository, createCampaign, preparations, systems, _ => Task.CompletedTask);
+        var viewModel = new CampaignLibraryViewModel(repositoriesBySystem, createCampaign, preparations, systems, _ => Task.CompletedTask);
 
         viewModel.Campaigns.Add(new CampaignRowViewModel(
-            new CampaignSummary(CampaignId.New(), CampaignName.Create("Dostępna"), DateTimeOffset.UtcNow, null),
+            new CampaignSummary(CampaignId.New(), CampaignName.Create("Dostępna"), DateTimeOffset.UtcNow, system.Id, system.Id),
             CampaignAvailability.Available,
             _ => Task.CompletedTask,
             _ => Task.CompletedTask));
 
         viewModel.Campaigns.Add(new CampaignRowViewModel(
-            new CampaignSummary(CampaignId.New(), CampaignName.Create("Niedostępna"), DateTimeOffset.UtcNow, null),
-            CampaignAvailability.NoSystem,
+            new CampaignSummary(CampaignId.New(), CampaignName.Create("Niedostępna"), DateTimeOffset.UtcNow, system.Id, SystemId.Create("other-system")),
+            CampaignAvailability.MismatchedSystem,
             _ => Task.CompletedTask,
             _ => Task.CompletedTask));
 

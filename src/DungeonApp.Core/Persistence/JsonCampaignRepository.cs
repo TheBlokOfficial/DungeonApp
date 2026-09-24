@@ -29,8 +29,17 @@ namespace DungeonApp.Core.Persistence;
 /// or deleted, however old its file on disk - "Plik modelu, którego nikt nie zadeklarował →
 /// nieczytany, nietknięty na dysku." A declared model with no file simply reads back empty.
 /// </para>
+/// <para>
+/// One instance is scoped to one system's own campaign directory (docs/architecture.md, "Gdzie
+/// mieszka stan": "Kampania należy do jednego systemu - tego, w którego katalogu leży"); the
+/// composition root builds one of these per compiled system, never a shared instance across systems.
+/// <paramref name="ownerSystemId"/> is stamped onto every <see cref="CampaignSummary.DirectorySystemId"/>
+/// this instance produces, and - only when a manifest records no system of its own - onto the restored
+/// <see cref="Campaign.SystemId"/> too, so the next save this campaign gets naturally writes it back
+/// (never forced here, never a save this read triggers by itself).
+/// </para>
 /// </summary>
-public sealed class JsonCampaignRepository(string libraryPath, Action<string> deleteDirectory) : ICampaignRepository
+public sealed class JsonCampaignRepository(SystemId ownerSystemId, string libraryPath, Action<string> deleteDirectory) : ICampaignRepository
 {
     /// <summary>
     /// Bumped from the single-file-per-instance shape this format used before state models existed.
@@ -131,7 +140,12 @@ public sealed class JsonCampaignRepository(string libraryPath, Action<string> de
             modelsById[declaration.ModelId] = await ReadModelAsync(directory, declaration, modelEntry, cancellationToken);
         }
 
-        var systemId = SystemId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : (SystemId?)null;
+        // A manifest that names no system belongs to this repository's own directory instead
+        // (docs/architecture.md, "Kampania należy do jednego systemu"): stamping that here, on read,
+        // is what lets an ordinary later save pick it up without this method forcing one itself. A
+        // manifest that already names a system - matching or not - is trusted as written; refusing a
+        // mismatch is CampaignPreparationCache's job, before this method is ever reached.
+        var systemId = SystemId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : ownerSystemId;
 
         var snapshot = CampaignStateSnapshot.FromModels(modelsById);
         return Campaign.Restore(new CampaignId(manifest.Id), name, manifest.CreatedAt, systemId, snapshot);
@@ -195,7 +209,7 @@ public sealed class JsonCampaignRepository(string libraryPath, Action<string> de
 
         if (!File.Exists(manifestPath))
         {
-            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, CampaignStoreFailure.Unreadable);
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, ownerSystemId, null, CampaignStoreFailure.Unreadable);
         }
 
         CampaignManifest manifest;
@@ -206,18 +220,18 @@ public sealed class JsonCampaignRepository(string libraryPath, Action<string> de
         }
         catch (CampaignStoreException ex)
         {
-            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, ex.Failure);
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, ownerSystemId, null, ex.Failure);
         }
 
         if (manifest.FormatVersion > CurrentFormatVersion)
         {
-            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, null, CampaignStoreFailure.UnsupportedFormatVersion);
+            return new CampaignSummary(id, fallbackName, fallbackCreatedAt, ownerSystemId, null, CampaignStoreFailure.UnsupportedFormatVersion);
         }
 
         var name = CampaignName.TryCreate(manifest.Name, out var validName) ? validName : fallbackName;
         var systemId = SystemId.TryCreate(manifest.System, out var parsedSystemId) ? parsedSystemId : (SystemId?)null;
 
-        return new CampaignSummary(id, name, manifest.CreatedAt, systemId);
+        return new CampaignSummary(id, name, manifest.CreatedAt, ownerSystemId, systemId);
     }
 
     /// <summary>

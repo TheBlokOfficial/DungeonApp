@@ -12,6 +12,7 @@ namespace DungeonApp.Core.Tests.Persistence;
 public sealed class JsonCampaignRepositoryTests : IDisposable
 {
     private static readonly DateTimeOffset Moment = new(2026, 8, 27, 18, 30, 0, TimeSpan.Zero);
+    private static readonly DungeonApp.Core.Systems.SystemId OwnerSystemId = DungeonApp.Core.Systems.SystemId.Create("dnd5e");
 
     private readonly TemporaryLibrary _library = new();
     private readonly JsonCampaignRepository _repository;
@@ -19,7 +20,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     // Permanent delete on purpose: a test must never be able to reach the real Recycle Bin - see
     // JsonCampaignRepository.DeleteAsync's doc comment.
     public JsonCampaignRepositoryTests() =>
-        _repository = new JsonCampaignRepository(_library.Path, path => Directory.Delete(path, recursive: true));
+        _repository = new JsonCampaignRepository(OwnerSystemId, _library.Path, path => Directory.Delete(path, recursive: true));
 
     public void Dispose() => _library.Dispose();
 
@@ -57,18 +58,20 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// A manifest that never recorded a system - including every one written before this field
-    /// existed - reads back as a campaign without one, never guessed at.
+    /// docs/architecture.md, "Kampania należy do jednego systemu": a manifest that never recorded a
+    /// system - including every one written before this field existed - belongs to the system whose
+    /// own directory it was read from. Reading it stamps that system on immediately, so an ordinary
+    /// later save (never one this read forces by itself) writes it into the manifest for good.
     /// </summary>
     [Fact]
-    public async Task Reads_a_manifest_without_a_system_field_as_no_system()
+    public async Task Reads_a_manifest_without_a_system_field_as_the_directorys_own_system()
     {
         var campaign = NewCampaign();
 
         await _repository.SaveAsync(campaign, []);
         var restored = await _repository.GetAsync(campaign.Id, []);
 
-        Assert.Null(restored!.SystemId);
+        Assert.Equal(OwnerSystemId, restored!.SystemId);
     }
 
     /// <summary>
@@ -93,7 +96,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     public async Task Reports_an_empty_shelf_before_the_library_exists()
     {
         var repository = new JsonCampaignRepository(
-            Path.Combine(_library.Path, "not-created-yet"), path => Directory.Delete(path, recursive: true));
+            OwnerSystemId, Path.Combine(_library.Path, "not-created-yet"), path => Directory.Delete(path, recursive: true));
 
         Assert.Empty(await repository.ListAsync());
     }
@@ -120,6 +123,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         var summary = Assert.Single(await _repository.ListAsync());
 
         Assert.Equal(systemId, summary.SystemId);
+        Assert.Equal(OwnerSystemId, summary.DirectorySystemId);
         Assert.Null(summary.ManifestFailure);
     }
 
@@ -148,6 +152,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(new CampaignId(id), summary.Id);
         Assert.Equal("Kroniki Doliny", summary.Name.Value);
         Assert.Null(summary.SystemId);
+        Assert.Equal(OwnerSystemId, summary.DirectorySystemId);
         Assert.Null(summary.ManifestFailure);
     }
 

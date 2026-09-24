@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Systems;
@@ -80,16 +82,20 @@ public sealed class AppShellViewModelTests
         Assert.False(shell.Sidebar!.IsCollapsed);
     }
 
-    private static AppShellViewModel BuildShell(System.Collections.Generic.IReadOnlyList<IGameSystem> systems)
+    private static AppShellViewModel BuildShell(IReadOnlyList<IGameSystem> systems)
     {
-        var repository = new InMemoryCampaignRepository();
-        var preparations = new CampaignPreparationCache(repository, systems);
+        // One shared instance behind every system's id: this fixture is about tab and sidebar
+        // wiring, never about which directory a campaign lives in, so every system pointing at the
+        // same store is the simplest stand-in.
+        ICampaignRepository repository = new InMemoryCampaignRepository();
+        var repositoriesBySystem = systems.ToDictionary(system => system.Id, _ => repository);
+        var preparations = new CampaignPreparationCache(repositoriesBySystem, systems);
         var campaignLibrary = new CampaignLibraryViewModel(
-            repository, new CreateCampaign(repository, TimeProvider.System), preparations, systems, _ => Task.CompletedTask);
+            repositoriesBySystem, new CreateCampaign(repositoriesBySystem, TimeProvider.System), preparations, systems, _ => Task.CompletedTask);
 
         return new AppShellViewModel(
             systems,
-            repository,
+            repositoriesBySystem,
             campaignLibrary,
             preparations,
             startupSteps: []);

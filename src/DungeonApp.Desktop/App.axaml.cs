@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
+using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
@@ -22,7 +23,7 @@ public partial class App : Avalonia.Application
     // plain constructor injection into the pieces that need it.
     private readonly IReadOnlyList<IGameSystem> _systems;
 
-    private JsonCampaignRepository? _campaigns;
+    private IReadOnlyDictionary<SystemId, ICampaignRepository>? _repositoriesBySystem;
     private CampaignPreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
     private IStartupStep[]? _startupSteps;
@@ -58,18 +59,23 @@ public partial class App : Avalonia.Application
 
         AvaloniaXamlLoader.Load(this);
 
-        // The campaign library lives with the user's documents, not in application data: a campaign
-        // is meant to be a visible, portable, backup-able document rather than hidden app state.
-        var libraryPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-            "DungeonApp",
-            "Campaigns");
+        // Kampanie leżą z dokumentami użytkownika, nie w danych aplikacji: kampania ma być widocznym,
+        // przenośnym, kopiowalnym dokumentem, a nie ukrytym stanem programu. Jeden magazyn na
+        // wkompilowany system, w jego własnym katalogu - docs/architecture.md, "Gdzie mieszka stan":
+        // "Kampania należy do jednego systemu - tego, w którego katalogu leży." SystemDirectories
+        // wylicza tę ścieżkę generycznie z każdego IGameSystem.Id, nigdy z nazwy konkretnego systemu.
+        var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         // Usunięcie kampanii w działającej aplikacji trafia do Kosza systemu, nie znika trwale - tak,
         // żeby przypadkowe kliknięcie dało się cofnąć. JsonCampaignRepository nie zna Kosza - to
         // wybór korzenia kompozycji, wstrzyknięty, żeby testy (które budują ten magazyn same, z
         // wariantem trwałym) nigdy nie mogły trafić do prawdziwego Kosza użytkownika.
-        _campaigns = new JsonCampaignRepository(libraryPath, DeleteDirectoryToRecycleBin);
+        _repositoriesBySystem = _systems.ToDictionary(
+            system => system.Id,
+            system => (ICampaignRepository)new JsonCampaignRepository(
+                system.Id,
+                SystemDirectories.Campaigns(documentsPath, system.Id),
+                DeleteDirectoryToRecycleBin));
 
         // Cache dzielony przez rozgrzewkę pierwszej kampanii po wyborze systemu i przez otwarcie
         // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
@@ -78,15 +84,15 @@ public partial class App : Avalonia.Application
         // biurka. Deklaracje, którymi czyta jedną konkretną kampanię, nie są tu już z góry ustalone -
         // każda kampania niesie własny system w manifeście (docs/architecture.md, "Kampania należy do
         // jednego systemu"), więc cache sam dopasowuje go do jednego z `_systems` przy każdym odczycie.
-        _preparations = new CampaignPreparationCache(_campaigns, _systems);
+        _preparations = new CampaignPreparationCache(_repositoriesBySystem, _systems);
 
         // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
         // otwierające kampanię prowadzi do metody na powłoce, która jeszcze nie istnieje - domyka się
         // nad polem `_shell` i rozstrzyga dopiero przy pierwszym kliknięciu, długo po tym jak
         // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
         _campaignLibrary = new CampaignLibraryViewModel(
-            _campaigns,
-            new CreateCampaign(_campaigns, TimeProvider.System),
+            _repositoriesBySystem,
+            new CreateCampaign(_repositoriesBySystem, TimeProvider.System),
             _preparations,
             _systems,
             summary => _shell!.OpenCampaignAsync(summary));
@@ -108,7 +114,7 @@ public partial class App : Avalonia.Application
             shelfStep,
             dataStep,
             new WarmFrameChromeStep(_systems, _campaignLibrary, _preparations, dataStep),
-            new WarmSystemTabsStep(_systems, _campaigns, _preparations, dataStep)
+            new WarmSystemTabsStep(_systems, _repositoriesBySystem, _preparations, dataStep)
         ];
     }
 
@@ -118,7 +124,7 @@ public partial class App : Avalonia.Application
         {
             _shell = new AppShellViewModel(
                 _systems,
-                _campaigns!,
+                _repositoriesBySystem!,
                 _campaignLibrary!,
                 _preparations!,
                 _startupSteps!);
