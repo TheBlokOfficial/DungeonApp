@@ -232,9 +232,9 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Command="{Binding ToggleCollapsedCommand}">
-                            <Image Width="{DynamicResource DungeonActionIconSize}"
-                                   Height="{DynamicResource DungeonActionIconSize}"
-                                   Source="{StaticResource DungeonIconMenu}" />
+                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                     Height="{DynamicResource DungeonActionIconSize}"
+                                                     Source="{StaticResource DungeonIconMenu}" />
                         </Button>
                     </Grid>
                 </Grid>

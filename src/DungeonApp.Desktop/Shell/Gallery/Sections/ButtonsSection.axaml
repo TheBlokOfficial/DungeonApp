@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ButtonsSection">
     <!-- Every Button variant from the frame's ControlTheme (Themes/DungeonControls.axaml), live: one
          row per variant with a short label, a long label in a narrow slot (trimmed), an icon with a
@@ -33,7 +34,7 @@
                 <Button Classes="narrow" Content="Zamknij kampanię i wróć do biblioteki" />
                 <Button>
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                Source="{StaticResource DungeonIconSettings}" />
                         <TextBlock Text="Ustawienia" />
@@ -49,7 +50,7 @@
                 <Button Classes="primary narrow" Content="Utwórz nową kampanię w tym systemie" />
                 <Button Classes="primary">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                Source="{StaticResource DungeonIconPencil}" />
                         <TextBlock Text="Edytuj" />
@@ -65,7 +66,7 @@
                 <Button Classes="subtle narrow" Content="Pokaż wszystkie wpisy z tej paczki" />
                 <Button Classes="subtle">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                Source="{StaticResource DungeonIconSearch}" />
                         <TextBlock Text="Szukaj" />
@@ -81,7 +82,7 @@
                 <Button Classes="danger narrow" Content="Usuń kampanię razem z całą historią" />
                 <Button Classes="danger">
                     <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                Height="{DynamicResource DungeonActionIconSize}"
                                Source="{StaticResource DungeonIconTrash}" />
                         <TextBlock Text="Usuń" />
@@ -99,7 +100,7 @@
                     <Button Classes="link" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
                             <TextBlock Text="Sortuj: nazwa" />
-                            <Image Width="{DynamicResource DungeonActionIconSize}"
+                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                    Height="{DynamicResource DungeonActionIconSize}"
                                    Source="{StaticResource DungeonIconChevronDown}" />
                         </StackPanel>
@@ -115,22 +116,22 @@
             <TextBlock Grid.Row="5" Classes="caption muted row-label" Text="Ikonowy · icon" />
             <StackPanel Grid.Row="5" Grid.Column="1" Classes="button-row">
                 <Button Classes="icon" ToolTip.Tip="Ustawienia">
-                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            Source="{StaticResource DungeonIconSettings}" />
                 </Button>
                 <Button Classes="subtle icon" ToolTip.Tip="Menu">
-                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            Source="{StaticResource DungeonIconMenu}" />
                 </Button>
                 <Button Classes="danger icon" ToolTip.Tip="Usuń">
-                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            Source="{StaticResource DungeonIconTrash}" />
                 </Button>
                 <Button Classes="subtle icon" IsEnabled="False" ToolTip.Tip="Wyłączony">
-                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            Source="{StaticResource DungeonIconMenu}" />
                 </Button>

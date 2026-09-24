@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ct="using:DungeonApp.Library.Entries.Desktop.Features.ContentTab"
              xmlns:conv="using:DungeonApp.Library.Entries.Desktop.Converters"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Library.Entries.Desktop.Features.ContentTab.ContentTabView"
              x:DataType="ct:ContentTabViewModel">
 
@@ -411,8 +412,8 @@
                             <Button Grid.Column="0" Classes="link" HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
                                     <TextBlock Text="{Binding SelectedSort, StringFormat='Sortuj: {0}'}" />
-                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
-                                           Source="{StaticResource DungeonIconChevronDown}" />
+                                    <dc:ForegroundIcon Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
+                                                       Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
                                     <Flyout Placement="Bottom">
