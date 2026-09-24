@@ -51,7 +51,10 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    nie poprawki nałożone na domyślny motyw — to one dziś przepuszczają niechciane efekty, tekst
    „prawie" na środku i globalne wysokości. W jednym miejscu, raz: stany (spoczynek, najechanie,
    zaznaczenie, wyłączenie — nic więcej), tekst wyśrodkowany w pionie z założenia, wymiary
-   z mockupu jako zasoby motywu. Autor: „jeżeli chcemy potem w jakimś miejscu w interfejsie zrobić
+   jako zasoby motywu. **Kontrolki: profesjonalność, czytelność i intuicyjność przed gustem i wiernością
+   mockupowi** (autor, 2026-09-24) — mockup jest makietą ekranu rejestru, nie projektem całej
+   aplikacji; wymiary i zachowanie kontrolek bierze się z konwencji platformy i czytelności, mockup
+   jest odniesieniem dla zakładek treści. Autor: „jeżeli chcemy potem w jakimś miejscu w interfejsie zrobić
    dropdown albo listę […] masz już od razu gotowy styl zadeklarowany przez styl aplikacji".
    * **Galeria kontrolek** — zakładka ramy nad „Ustawieniami", pod nagłówkiem „System" (kategoria
      Aplikacja; autor 2026-09-24), pokazująca każdą kontrolkę

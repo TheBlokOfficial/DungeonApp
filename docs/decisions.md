@@ -321,11 +321,17 @@ nazywa pojęć systemu.
 **Konwencje interakcji** — rozstrzygnięte przez architekta 2026-09-24; autor oddał decyzję („liczę na
 profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
 
-* **Ręka nad wszystkim klikalnym**, nie tylko nad przyciskami. Konwencja okien systemowych daje rękę
-  wyłącznie odnośnikom, ale ta aplikacja mówi językiem mockupu, a mockup daje ją każdemu przyciskowi.
-  Reguła „klikalne = ręka" jest jedna i sprawdzalna bez wyjątków; „wybrane elementy" wymagałyby listy,
-  którą każdy wykonawca prowadziłby po swojemu. Pasek przewijania i przyciski okna zostają przy
-  strzałce, bo tam użytkownik oczekuje zachowania systemu.
+* **Ręka wyłącznie nad odnośnikiem.** Tak robią okna systemowe Windows i macOS: ręka mówi „to cię
+  gdzieś przeniesie", a kontrolka, która wygląda jak kontrolka, nie potrzebuje drugiego sygnału —
+  daje go stan najechania. Ręka nad każdym przyciskiem to nawyk stron internetowych; w aplikacji
+  okienkowej zaciera różnicę między odnośnikiem a przyciskiem. Reguła jest przy tym jedna
+  i sprawdzalna: ręka ⇔ odmiana „link" albo klikalny tekst.
+  *Wcześniej tego samego dnia:* architekt rozstrzygnął „ręka nad wszystkim klikalnym", bo mockup daje
+  ją każdemu przyciskowi. Autor sprostował, że mockup jest makietą ekranu rejestru, nie projektem
+  aplikacji, i że w kontrolkach profesjonalność, czytelność i intuicyjność idą przed wiernością
+  makiecie — podstawa tamtej decyzji odpadła.
+* **Tekst w kontrolce co najmniej 12.** Stopień 11 z mockupu (chipy filtrów 11,5, czyść filtry 11)
+  jest za mały dla czegoś, w co się celuje myszą; zostaje dla informacji drugorzędnej.
 * **Zaznaczanie tekstu tam, gdzie się go kopiuje, nie wszędzie.** MG przenosi fragment opisu albo
   akcji do notatek; komunikat błędu kopiuje się, żeby go komuś pokazać. W wierszach i nagłówkach
   przeciągnięcie myszą kłóciłoby się z kliknięciem.
