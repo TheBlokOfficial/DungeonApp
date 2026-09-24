@@ -41,8 +41,8 @@
           domyślna   - pozioma, 1 px, pełna szerokość, bez marginesu (linia w liście, między grupami);
           .section   - pozioma, z odstępem DungeonSpacingLg nad i pod linią (między sekcjami karty);
           .vertical  - pionowa, 1 px, pełna wysokość, bez marginesu.
-        Odstęp odmiany .section stawia szablon (StackPanel ze Spacing = DungeonSpacingLg), a nie Margin:
-        Thickness nie da się złożyć z tokenu Double, a literał rozjechałby się z tokenem.
+        Odstęp odmiany .section to Margin z tokenu DungeonPaddingLgVertical (0,16,0,16 - wartość równa
+        DungeonSpacingLg): 16 + 1 + 16.
     -->
     <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator">
         <Setter Property="Focusable" Value="False" />
@@ -62,17 +62,7 @@
         </Setter>
 
         <Style Selector="^.section">
-            <Setter Property="Height" Value="NaN" />
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <!-- Two empty ends, so Spacing puts the token's distance above and below the line. -->
-                    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-                        <Panel />
-                        <Border Name="PART_Line" Height="1" Background="{TemplateBinding Background}" />
-                        <Panel />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter>
+            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingLgVertical}" />
         </Style>
 
         <Style Selector="^.vertical">

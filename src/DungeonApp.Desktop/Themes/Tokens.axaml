@@ -171,6 +171,8 @@
         <Thickness x:Key="DungeonPaddingXl">20</Thickness>
         <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
         <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
+        <!-- Tylko nad i pod - wartość równa DungeonSpacingLg (odstęp separatora .section). -->
+        <Thickness x:Key="DungeonPaddingLgVertical">0,16,0,16</Thickness>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->
