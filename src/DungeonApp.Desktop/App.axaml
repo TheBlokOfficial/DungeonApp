@@ -19,5 +19,6 @@
         <FluentTheme />
         <StyleInclude Source="avares://DungeonApp.Desktop/Themes/BuiltInControls.axaml" />
         <StyleInclude Source="avares://DungeonApp.Desktop/Themes/Typography.axaml" />
+        <StyleInclude Source="avares://DungeonApp.Desktop/Themes/Surfaces.axaml" />
     </Application.Styles>
 </Application>

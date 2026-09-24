@@ -1,0 +1,35 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Powierzchnie ramy (docs/tasks.md, punkt 3 "Fundament interfejsu"): klasy na Border, wyłącznie
+        z tokenów w Themes/Tokens.axaml. Znaczenie każdego koloru jest zapisane tam, nad kolorem.
+        Klasa nadaje tło, krawędź, promień i wnętrze - nigdy rozmiaru: rozmiar daje układ, w którym
+        powierzchnia stoi, a treść dłuższa niż powierzchnia przycina się albo zawija w środku.
+    -->
+
+    <!-- Karta: rzecz wyodrębniona z tła, czytana jako całość. -->
+    <Style Selector="Border.surface-card">
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCardCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingLg}" />
+    </Style>
+
+    <!-- Sekcja z obramowaniem: grupa na powierzchni, na której stoi - bez własnego tła. -->
+    <Style Selector="Border.surface-section">
+        <Setter Property="Background" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMd}" />
+    </Style>
+
+    <!-- Panel ramy: stałe otoczenie treści. Bez krawędzi - linię między panelem a treścią stawia
+         układ, w którym panel stoi, bo tylko on wie, z której strony leży treść. -->
+    <Style Selector="Border.surface-panel">
+        <Setter Property="Background" Value="{DynamicResource DungeonFrameBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+</Styles>
