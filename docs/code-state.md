@@ -85,10 +85,11 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
 * **Wyglądu nie pilnuje żaden test** poza paskiem bocznym (pierwsza klatka, zwijanie, etykiety)
   i przyciskiem paska górnego — celowo, wygląd sprawdza autor (`collaboration.md`). Testy renderujące
   nie rasteryzują: próbkowanie pikseli wymaga przełączenia `TestAppBuilder` na Skię.
-* **Skan słownikowy granic bywa niestabilny w pełnym przebiegu** — wykonawca 2026-09-24 widział
-  sporadyczną porażkę `Engine_and_shell_do_not_name_any_entry_kind` tylko przy `dotnet test` całego
-  rozwiązania, także na kodzie sprzed swojej zmiany; trzy pełne przebiegi po scaleniu — zielone.
-  Przy następnym wystąpieniu: zwiad przyczyny, zanim ktokolwiek uzna test za zawodny.
+* **Skan słownikowy granic ładuje zestawy systemu jawnie.** Słownik zakazanych nazw budują zestawy
+  `DungeonApp.Content.*` obecne w pamięci; odrzucone `_ = typeof(...)` kompilator wycina, więc do
+  2026-09-24 zawartość słownika zależała od tego, czy równoległy test zdążył załadować zestaw — test
+  padał sporadycznie w pełnym przebiegu. Zestaw systemu trafia na listę przez `typeof(...).Assembly`.
+  Nowy system gry dopisuje tam swój zestaw, inaczej wypada spod skanu.
 * **Prawdziwe okno Windows** — ramka, skalowanie, dekoracje systemowe — jest poza zasięgiem testów
   bez ekranu. 2026-09-23 zrzut autora pokazał odstęp, którego pomiar bez ekranu nie pokazywał.
 
@@ -104,10 +105,6 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   `deck-card`, `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
   usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
   porcje wiersza, kafelka i chipa dadzą im własne motywy.
-* **Test `Engine_and_shell_do_not_name_any_entry_kind` padł raz w pełnym przebiegu** (2026-09-24,
-  porcja 1) i nie dał się odtworzyć w czterech kolejnych. Padł znowu w rundzie 2 porcji 1 (pełny
-  przebieg w kopii roboczej wykonawcy; trzy przebiegi per projekt po scaleniu — zielone). Zwiad
-  przyczyny zlecony 2026-09-24.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.
