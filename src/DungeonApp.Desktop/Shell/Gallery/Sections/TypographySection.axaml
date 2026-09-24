@@ -2,13 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TypographySection">
     <!-- Every Themes/Typography.axaml class, one sample each, captioned with its class name and
-         values; then the three typefaces in their three weights. -->
+         values; then the three typefaces in their weights. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Typografia" />
 
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="display-xl" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="display-xl · display 34 · 600 · linia 35.7" />
+            <TextBlock Classes="caption muted" Text="display-xl · display 34 · 600" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="display-lg" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
@@ -20,19 +20,15 @@
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="display-prose" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="display-prose · display 16 · 400 kursywa · linia 25.6" />
+            <TextBlock Classes="caption muted" Text="display-prose · display 16 · 400 kursywa · linia 25.6 (1.6)" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="body" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="body · ui 13 · 400 · linia 19.5" />
-        </StackPanel>
-        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-            <TextBlock Classes="body-long" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="body-long · ui 13.5 · 400 · linia 20.925" />
+            <TextBlock Classes="caption muted" Text="body · ui 13 · 400 · linia 20.15 (1.55)" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="body-strong" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="body-strong · ui 13.5 · 600" />
+            <TextBlock Classes="caption muted" Text="body-strong · ui 13 · 600" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="label" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
@@ -41,10 +37,6 @@
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="label-strong" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
             <TextBlock Classes="caption muted" Text="label-strong · ui 12 · 600 · litery 0.36 (.03em)" />
-        </StackPanel>
-        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-            <TextBlock Classes="small" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="small · ui 11.5 · 400" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="caption" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
@@ -56,7 +48,7 @@
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="overline-sm" Text="ZAŻÓŁĆ GĘŚLĄ JAŹŃ — GOBLIN 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="overline-sm · ui 10.5 · 600 · litery 0.42 (.04em) · wersaliki w tekście" />
+            <TextBlock Classes="caption muted" Text="overline-sm · ui 11 · 600 · litery 0.44 (.04em) · wersaliki w tekście" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="mono-value" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
@@ -64,24 +56,23 @@
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="mono" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="mono · mono 12.5 · 400" />
-        </StackPanel>
-        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-            <TextBlock Classes="mono-sm" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="mono-sm · mono 12 · 400" />
+            <TextBlock Classes="caption muted" Text="mono · mono 12 · 400" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock Classes="mono-xs" Text="Zażółć gęślą jaźń — Goblin 1/2 · KP 15 · 0123456789" />
-            <TextBlock Classes="caption muted" Text="mono-xs · mono 10.5 · 400" />
+            <TextBlock Classes="caption muted" Text="mono-xs · mono 11 · 400" />
         </StackPanel>
 
-        <!-- Kroje: each typeface in 400, 500 and 600, at one size so the weights compare. -->
+        <!-- Kroje: each typeface at one size so the weights compare - the display face in every one
+             of its files (400, 500, 600, 700, 400 italic), the other two in 400, 500 and 600. -->
         <TextBlock Classes="overline-sm muted" Text="KROJE" />
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}" FontSize="16" FontWeight="Normal" Text="Zażółć gęślą jaźń — 0123456789" />
             <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}" FontSize="16" FontWeight="Medium" Text="Zażółć gęślą jaźń — 0123456789" />
             <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}" FontSize="16" FontWeight="SemiBold" Text="Zażółć gęślą jaźń — 0123456789" />
-            <TextBlock Classes="caption muted" Text="DungeonDisplayFont · Cormorant Garamond · 400 / 500 / 600" />
+            <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}" FontSize="16" FontWeight="Bold" Text="Zażółć gęślą jaźń — 0123456789" />
+            <TextBlock FontFamily="{DynamicResource DungeonDisplayFont}" FontSize="16" FontWeight="Normal" FontStyle="Italic" Text="Zażółć gęślą jaźń — 0123456789" />
+            <TextBlock Classes="caption muted" Text="DungeonDisplayFont · Cormorant Garamond · 400 / 500 / 600 / 700 / 400 kursywa" />
         </StackPanel>
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <TextBlock FontFamily="{DynamicResource DungeonUiFont}" FontSize="13" FontWeight="Normal" Text="Zażółć gęślą jaźń — 0123456789" />
