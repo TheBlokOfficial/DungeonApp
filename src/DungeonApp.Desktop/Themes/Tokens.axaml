@@ -48,8 +48,9 @@
         <!-- TextMuted: tekst przygaszony - podpis, etykieta, metadane. -->
         <Color x:Key="DungeonTextMutedColor">#8A8983</Color>
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
-        <!-- AccentBright: akcent pod myszą - odcień Accent, bardziej jaskrawy, nie jaśniejszy: nasycenie
-             +13 punktów, jasność +2 (HSL 35°, 65%, 50% wobec 35°, 51%, 48%); OnAccent na nim 6,2:1. -->
+        <!-- AccentBright: akcent wyróżniony - odcień Accent, bardziej jaskrawy, nie jaśniejszy: nasycenie
+             +13 punktów, jasność +2 (HSL 35°, 65%, 50% wobec 35°, 51%, 48%). Znak marki na ekranie
+             startowym i pasek postępu; przycisk pod myszą go nie używa (ma otoczkę, DungeonAccentHoverHaloShadow). -->
         <Color x:Key="DungeonAccentBrightColor">#D28D2D</Color>
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
@@ -59,10 +60,6 @@
         <Color x:Key="DungeonWarningColor">#D6B84F</Color>
         <!-- Niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
-        <!-- DangerHover: niebezpieczeństwo pod myszą - odcień Danger, bardziej jaskrawy, nie ciemniejszy:
-             nasycenie +14 punktów, jasność +2 (HSL 12°, 67%, 42% wobec 12°, 53%, 40%); TextPrimary na
-             nim 4,53:1 - jaśniej już nie wolno. -->
-        <Color x:Key="DungeonDangerHoverColor">#B33F23</Color>
         <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
              Danger zostaje dla teł i ikon. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
@@ -104,8 +101,19 @@
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
-        <SolidColorBrush x:Key="DungeonDangerHoverBrush" Color="{DynamicResource DungeonDangerHoverColor}" />
         <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
+
+        <!-- OTOCZKI NAJECHANIA ================================================ -->
+        <!-- Pas 3 px na zewnątrz krawędzi, bez przesunięcia i rozmycia, w zaokrągleniu kontrolki
+             (BoxShadow Border tła, zapis "przesunięcie-x przesunięcie-y rozmycie rozciągnięcie kolor").
+             Kolor stoi w tym samym tokenie, bo cień jest typem wartościowym i nie przyjmuje zasobu
+             koloru z osobnego klucza. -->
+        <!-- AccentHoverHalo: akcent pod myszą - otoczka przycisku wypełnionego Accent: Accent #B8843B
+             o nieprzezroczystości 35 %. Wypełnienie pod myszą się nie zmienia. -->
+        <BoxShadows x:Key="DungeonAccentHoverHaloShadow">0 0 0 3 #59B8843B</BoxShadows>
+        <!-- DangerHoverHalo: niebezpieczeństwo pod myszą - otoczka przycisku wypełnionego Danger:
+             Danger #9C4530 o nieprzezroczystości 45 %. Wypełnienie pod myszą się nie zmienia. -->
+        <BoxShadows x:Key="DungeonDangerHoverHaloShadow">0 0 0 3 #739C4530</BoxShadows>
 
         <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
         <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style

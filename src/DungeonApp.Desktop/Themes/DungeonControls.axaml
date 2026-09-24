@@ -8,20 +8,27 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Przycisk z wypełnieniem barwą znaczenia (.primary, .danger) pod myszą nie zmienia wypełnienia:
+        dostaje otoczkę - pas 3 px na zewnątrz krawędzi, bez rozmycia, w zaokrągleniu przycisku
+        (BoxShadow Border tła, tokeny DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
+        Otoczka wychodzi poza granice przycisku: rodzic, który przycina, potrzebuje 3 px odstępu.
+        Wyłączony przycisk otoczki nie ma.
         Wyłączony przycisk z wypełnieniem (.primary, .danger) jest neutralny: tło, krawędź i tekst
         zwykłego - wyłączony nie niesie znaczenia "główna akcja" ani "zniszczenie", bo nic nie robi.
         Wciśnięcie nie ma własnego wyglądu w żadnej odmianie: każdy styl najechania obejmuje też
         :pressed, więc wciśnięty przycisk wygląda dokładnie jak pod myszą - także wciśnięty z
         klawiatury albo gdy mysz zjedzie z wciśniętego. Nic nie przygasza treści ani jej nie zmniejsza
         (RenderTransform i Transitions wyzerowane; motyw Fluenta nie działa, bo ten go zastępuje).
-        Fokus nie ma własnego wyglądu (FocusAdorner pusty).
+        Fokus nie ma własnego wyglądu (FocusAdorner pusty). Kursor jest strzałką w każdej odmianie,
+        także w odnośnikach - klikalność pokazuje najechanie.
         Odmiany:
           (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
           .primary - główny: tło Accent, tekst OnAccent, krawędź przezroczysta;
           .subtle  - cichy: bez tła, krawędź przezroczysta;
           .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
-          .link    - link samodzielny: bez tła i krawędzi, wysokość z treści, tekst Accent, kursor
-                     ręka, podkreślenie pod myszą;
+          .link    - odnośnik samodzielny (polecenie poza zdaniem): bez tła i krawędzi, wysokość
+                     z treści, tekst TextRegular bez podkreślenia; pod myszą TextPrimary
+                     i podkreślenie; ikona w nim ma kolor tekstu (ForegroundIcon);
           .link.inline - odnośnik w zdaniu (w InlineUIContainer TextBlocka): stopień i grubość
                      otaczającego TextBlocka, tekst Accent, podkreślenie stałe - sam kolor akcentu
                      obok jasnego tekstu nie daje kontrastu 3:1; na linii bazowej zdania stawia go
@@ -86,9 +93,9 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
         </Style>
-        <Style Selector="^.primary:pointerover, ^.primary:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrightBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
+        <Style Selector="^.primary:not(:disabled):pointerover /template/ Border#PART_Background,
+                       ^.primary:not(:disabled):pressed /template/ Border#PART_Background">
+            <Setter Property="BoxShadow" Value="{DynamicResource DungeonAccentHoverHaloShadow}" />
         </Style>
 
         <!-- Cichy -->
@@ -106,9 +113,9 @@
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.danger:pointerover, ^.danger:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonDangerHoverBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
+        <Style Selector="^.danger:not(:disabled):pointerover /template/ Border#PART_Background,
+                       ^.danger:not(:disabled):pressed /template/ Border#PART_Background">
+            <Setter Property="BoxShadow" Value="{DynamicResource DungeonDangerHoverHaloShadow}" />
         </Style>
 
         <!-- Link: bez krawędzi (także przezroczystej), bo stoi w linii tekstu. -->
@@ -119,12 +126,12 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
-            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
         <Style Selector="^.link:pointerover, ^.link:pressed">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
         <!-- Podkreślenie dziedziczy tekst treści przez ContentPresenter. -->
         <Style Selector="^.link:pointerover /template/ ContentPresenter#PART_ContentPresenter,
@@ -132,7 +139,11 @@
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 
-        <!-- Odnośnik w zdaniu: stopień i grubość bierze z TextBlocka, w którego linii stoi. -->
+        <!-- Odnośnik w zdaniu: stopień i grubość bierze z TextBlocka, w którego linii stoi; kolor
+             Accent w każdym stanie i stałe podkreślenie. -->
+        <Style Selector="^.link.inline, ^.link.inline:pointerover, ^.link.inline:pressed">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
         <Style Selector="^.link.inline">
             <Setter Property="FontSize" Value="{Binding $parent[TextBlock].FontSize}" />
             <Setter Property="FontWeight" Value="{Binding $parent[TextBlock].FontWeight}" />
