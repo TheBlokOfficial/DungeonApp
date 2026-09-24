@@ -345,7 +345,11 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   odradzał wcześniej, bo tak zwykle wygląda wskaźnik fokusu klawiatury; dziś fokus nie jest widoczny
   wcale, więc kolizji nie ma. **Warunek na później:** wskaźnik fokusu przy obsłudze klawiatury musi
   się od otoczki odróżniać (inny kolor albo odsunięta cienka linia), inaczej najechanie i fokus
-  zleją się w jedno.
+  zleją się w jedno. **Zwykłe i ciche przyciski otoczki nie dostają** (autor zapytał o ujednolicenie
+  po obejrzeniu; architekt, autor przyjął): zasada jest wspólna — najechanie nie zmienia charakteru
+  koloru — a neutralne tło może się rozjaśnić bez przebarwienia. Otoczka na każdej kontrolce to ruch
+  przy każdym przejeździe myszą, nachodzenie na ciasno stojących sąsiadów i zajęty wygląd przyszłego
+  fokusu; na dwóch rzadkich odmianach mówi przy okazji „ważna akcja”.
 * **Odnośniki samodzielne szare** — autor, 2026-09-24: „Wyczyść filtry”, „Sortuj” w akcencie
   wyglądały źle. Architekt przyznał rację: to polecenia, nie przejścia, a akcent rozlany na polecenia
   przestaje znaczyć „wybrane / główne”. Odnośnik w zdaniu zostaje w akcencie z podkreśleniem.

@@ -327,8 +327,17 @@ kontynuuje poprawkę; jego kopia zostaje (sekcja *Środowisko*).
 przyczyny; nowy wykonawca z diagnozą w briefie zrobił poprawkę za około 93 tys., nie szukając jej
 drugi raz. Wznowiony diagnosta niósłby swój kontekst przez każdy krok poprawki.
 
-**Runda poprawek po obejrzeniu przez autora idzie do nowego wykonawcy, nie do wznowionego.** Ustalone
-z autorem 2026-09-24, z pomiaru. Nowy wykonawca startuje od około 47 tys. tokenów kontekstu (instrukcje,
+**Poprawka zaraz po obejrzeniu przez autora idzie do tego samego wykonawcy, jeśli jego pamięć jest
+jeszcze ciepła, a poprawka mała albo średnia.** Ustalone z autorem 2026-09-24, z pomiaru: poprawka
+otoczki w porcji 1 fundamentu, wznowiony wykonawca kilka minut po raporcie — 14 kroków, 2,2 minuty,
+1,7 mln odczytu, wobec 22–50 kroków i 1,5–5,3 mln u nowych wykonawców w rundach tej samej porcji.
+Architekt odtwarza wtedy usuniętą kopię w tym samym miejscu (`git worktree add -b <gałąź>
+<ścieżka kopii> master`) i przekazuje uwagę przez SendMessage. **Nowy wykonawca** dostaje nową
+porcję, rundę zmieniającą zakres albo poprawkę po dłuższej przerwie. Poniżej wcześniejsza reguła
+z tego samego dnia i jej rachunek — ważny, gdy pamięć już wygasła.
+
+*Wcześniej:* runda poprawek po obejrzeniu przez autora szła do nowego wykonawcy, nie do wznowionego.
+Ustalone z autorem 2026-09-24, z pomiaru. Nowy wykonawca startuje od około 47 tys. tokenów kontekstu (instrukcje,
 definicja, brief); wykonawca po porcji kończy ze 100–125 tys., a każdy krok czyta cały kontekst od
 nowa. Pamięć podręczna wykonawców wygasa po 5 minutach, a autor ogląda wynik dłużej — wznowiony
 zapisuje wtedy cały kontekst do pamięci ponownie, drożej niż zwykły odczyt; jego kopia robocza jest
@@ -493,7 +502,9 @@ raporcie. Wznowienie wymaga istniejącej kopii; nowy wykonawca zaczyna od zera.
 **Kopia robocza subagenta startuje z `origin/master`, nie z lokalnego `master`.** Autor nie wypycha
 na bieżąco, więc zdalna gałąź bywa daleko w tyle — 2026-09-22 o dwadzieścia cztery commity, i subagent
 zrobił na niej całe zadanie. **Brief implementacyjny zaczyna się od `git reset --hard master`
-w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. Kopie robocze leżą
+w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. 2026-09-24 system
+uprawnień zablokował wykonawcy `git reset --hard master`; zadziałało `git switch -c <gałąź> master` —
+brief podaje oba, drugi jako zapasowy. Kopie robocze leżą
 w `.claude/worktrees/`, wykluczonym w `.gitignore`; po przeniesieniu wyniku do `master` asystent
 usuwa kopię i gałąź subagenta.
 
