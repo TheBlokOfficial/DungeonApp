@@ -206,6 +206,7 @@ public sealed class GlobalSidebarRenderingTests
             _ => Task.CompletedTask,
             _ => { },
             () => Task.CompletedTask,
+            () => Task.CompletedTask,
             startCollapsed);
     }
 
@@ -221,6 +222,7 @@ public sealed class GlobalSidebarRenderingTests
             () => Task.CompletedTask,
             _ => Task.CompletedTask,
             _ => { },
+            () => Task.CompletedTask,
             () => Task.CompletedTask);
 
         if (startCollapsed)
@@ -249,6 +251,7 @@ public sealed class GlobalSidebarRenderingTests
             () => Task.CompletedTask,
             _ => Task.CompletedTask,
             _ => { },
+            () => Task.CompletedTask,
             () => Task.CompletedTask,
             startCollapsed);
 

@@ -77,6 +77,7 @@ public sealed class GlobalSidebarViewModelTests
             },
             _ => Task.CompletedTask,
             _ => { },
+            () => Task.CompletedTask,
             () => Task.CompletedTask);
 
         await ((AsyncCommand)sidebar.CampaignPositionItem.SelectCommand).ExecuteAsync();
@@ -93,5 +94,6 @@ public sealed class GlobalSidebarViewModelTests
             () => Task.CompletedTask,
             _ => Task.CompletedTask,
             _ => { },
+            () => Task.CompletedTask,
             () => Task.CompletedTask);
 }

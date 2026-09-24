@@ -110,6 +110,8 @@
         <!-- TYPOGRAFIA ========================================================= -->
         <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
         <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/CormorantGaramond#Cormorant Garamond</FontFamily>
+        <!-- Fixed-width figures for numbers (the mockup's font-mono). Regular, Medium and SemiBold files. -->
+        <FontFamily x:Key="DungeonMonoFont">avares://DungeonApp.Desktop/Assets/Fonts/IBMPlexMono#IBM Plex Mono</FontFamily>
 
         <CornerRadius x:Key="DungeonWindowCornerRadius">6</CornerRadius>
         <CornerRadius x:Key="DungeonCardCornerRadius">6</CornerRadius>

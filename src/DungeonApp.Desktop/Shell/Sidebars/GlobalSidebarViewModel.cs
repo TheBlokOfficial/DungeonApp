@@ -44,6 +44,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         Func<Task> selectCampaignPosition,
         Func<CampaignTabDeclaration, Task> selectCampaignTab,
         Action<SystemTabDeclaration> selectSystemTab,
+        Func<Task> selectGallery,
         Func<Task> selectSettings,
         bool startCollapsed = false)
     {
@@ -94,6 +95,12 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             }),
         ];
 
+        // The controls gallery (docs/tasks.md, punkt 3): a frame-owned destination like Ustawienia,
+        // drawn above it in the same category.
+        GalleryItem = CreateSelectableItem("shell.gallery", "DungeonIconGallery", "Galeria kontrolek", selectGallery);
+        _selectableItems.Add(GalleryItem);
+        _allItems.Add(GalleryItem);
+
         // A real destination, unlike the "Zmień system" row this used to be: it joins
         // _selectableItems like the campaign position and every tab do, so choosing it lingers as a
         // highlighted row instead of firing a one-off action.
@@ -101,9 +108,9 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         _selectableItems.Add(SettingsItem);
         _allItems.Add(SettingsItem);
 
-        // The Aplikacja category's row, as the one-element collection the same ItemsControl
-        // mechanism needs - see CampaignItems above for why a bare ContentPresenter is not used.
-        SettingsItems = [SettingsItem];
+        // The Aplikacja category's rows, in display order, for the same ItemsControl mechanism -
+        // see CampaignItems above for why a bare ContentPresenter is not used.
+        ApplicationItems = [GalleryItem, SettingsItem];
 
         ToggleCollapsedCommand = new AsyncCommand(() =>
         {
@@ -142,14 +149,17 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>The System category's rows, one per <see cref="Content.IGameSystem.SystemTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> SystemTabItems { get; }
 
-    /// <summary>The Aplikacja category's one row today - a frame-owned position with no content of its own.</summary>
+    /// <summary>The Aplikacja category's "Galeria kontrolek" row - a frame-owned position showing every theme control in every state.</summary>
+    public NavigationItemViewModel GalleryItem { get; }
+
+    /// <summary>The Aplikacja category's "Ustawienia" row - a frame-owned position with no content of its own.</summary>
     public NavigationItemViewModel SettingsItem { get; }
 
     /// <summary>
-    /// <see cref="SettingsItem"/> as the one-element list the Aplikacja category's
-    /// <c>ItemsControl</c> draws - see <see cref="CampaignItems"/> for why.
+    /// <see cref="GalleryItem"/> and <see cref="SettingsItem"/>, in display order, as the list the
+    /// Aplikacja category's <c>ItemsControl</c> draws - see <see cref="CampaignItems"/> for why.
     /// </summary>
-    public IReadOnlyList<NavigationItemViewModel> SettingsItems { get; }
+    public IReadOnlyList<NavigationItemViewModel> ApplicationItems { get; }
 
     public AsyncCommand ToggleCollapsedCommand { get; }
 

@@ -62,6 +62,15 @@
             <GeometryDrawing Geometry="M15,12 A3,3 0 1 1 9,12 A3,3 0 1 1 15,12" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <!-- Lucide "layout-grid": four 7x7 squares with corner radius 1. -->
+    <DrawingImage x:Key="DungeonIconGallery" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M4,3 L9,3 A1,1 0 0 1 10,4 L10,9 A1,1 0 0 1 9,10 L4,10 A1,1 0 0 1 3,9 L3,4 A1,1 0 0 1 4,3 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M15,3 L20,3 A1,1 0 0 1 21,4 L21,9 A1,1 0 0 1 20,10 L15,10 A1,1 0 0 1 14,9 L14,4 A1,1 0 0 1 15,3 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M15,14 L20,14 A1,1 0 0 1 21,15 L21,20 A1,1 0 0 1 20,21 L15,21 A1,1 0 0 1 14,20 L14,15 A1,1 0 0 1 15,14 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M4,14 L9,14 A1,1 0 0 1 10,15 L10,20 A1,1 0 0 1 9,21 L4,21 A1,1 0 0 1 3,20 L3,15 A1,1 0 0 1 4,14 Z" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
     <DrawingImage x:Key="DungeonIconDatabase" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M21,5 A9,3 0 1 1 3,5 A9,3 0 1 1 21,5" Pen="{StaticResource DungeonIconPen}" />

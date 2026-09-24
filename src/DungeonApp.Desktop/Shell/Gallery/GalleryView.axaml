@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:gallery="using:DungeonApp.Desktop.Shell.Gallery"
+             xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.GalleryView"
+             x:DataType="gallery:GalleryViewModel">
+    <UserControl.Styles>
+        <!-- Every sample and caption trims instead of pushing the column wider than the workspace. -->
+        <Style Selector="TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- The frame-wide ScrollViewer style keeps a permanent bar; the gallery shows one only when its
+         column is taller than the workspace. -->
+    <ScrollViewer Background="{DynamicResource DungeonBackstageBrush}"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <!-- One line per section, in display order: a new section is one view in Sections/ (its
+             heading uses the display-md class) and one line here. -->
+        <StackPanel Margin="{DynamicResource DungeonPaddingXxl}"
+                    HorizontalAlignment="Left"
+                    Spacing="{DynamicResource DungeonSpacingXxxl}">
+            <sections:TypographySection />
+            <sections:SpacingSection />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

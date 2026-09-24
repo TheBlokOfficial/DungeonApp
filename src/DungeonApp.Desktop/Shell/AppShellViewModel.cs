@@ -10,6 +10,7 @@ using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Shell.Gallery;
 using DungeonApp.Desktop.Shell.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.StatusBar;
@@ -41,6 +42,7 @@ public sealed class AppShellViewModel : ObservableObject
     private string _startupMessage = "Wczytywanie paczek treści…";
     private int _completedSteps;
 
+    private readonly GalleryViewModel _gallery = new();
     private readonly SettingsViewModel _settings = new();
 
     private ActiveSystemSession? _session;
@@ -263,6 +265,7 @@ public sealed class AppShellViewModel : ObservableObject
             ShowCampaignPositionAsync,
             ShowCampaignTabAsync,
             ShowSystemTab,
+            ShowGalleryAsync,
             ShowSettingsAsync,
             startCollapsed: _sidebarCollapsed);
 
@@ -317,6 +320,13 @@ public sealed class AppShellViewModel : ObservableObject
     private Task ShowCampaignPositionAsync()
     {
         CurrentWorkspaceContent = _session is { IsCampaignOpen: true } ? _campaignPage! : _campaignLibrary;
+        return Task.CompletedTask;
+    }
+
+    /// <summary>"Galeria kontrolek": a frame-owned position, available with or without an open campaign - see <see cref="GalleryViewModel"/>'s own remarks.</summary>
+    private Task ShowGalleryAsync()
+    {
+        CurrentWorkspaceContent = _gallery;
         return Task.CompletedTask;
     }
 

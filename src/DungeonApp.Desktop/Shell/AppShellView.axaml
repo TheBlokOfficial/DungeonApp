@@ -5,6 +5,7 @@
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
              xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
              xmlns:settings="using:DungeonApp.Desktop.Shell.Settings"
+             xmlns:gallery="using:DungeonApp.Desktop.Shell.Gallery"
              xmlns:selection="using:DungeonApp.Desktop.Shell.SystemSelection"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
              xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
@@ -21,6 +22,9 @@
         </DataTemplate>
         <DataTemplate DataType="campaignLibrary:CampaignPageViewModel">
             <campaignLibrary:CampaignPageView />
+        </DataTemplate>
+        <DataTemplate DataType="gallery:GalleryViewModel">
+            <gallery:GalleryView />
         </DataTemplate>
         <DataTemplate DataType="settings:SettingsViewModel">
             <settings:SettingsView />

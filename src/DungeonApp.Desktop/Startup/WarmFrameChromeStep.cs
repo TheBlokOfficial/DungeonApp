@@ -81,6 +81,7 @@ public sealed class WarmFrameChromeStep(
             selectCampaignPosition: () => Task.CompletedTask,
             selectCampaignTab: _ => Task.CompletedTask,
             selectSystemTab: _ => { },
+            selectGallery: () => Task.CompletedTask,
             selectSettings: () => Task.CompletedTask,
             startCollapsed: startCollapsed);
 

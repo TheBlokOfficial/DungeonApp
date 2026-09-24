@@ -419,7 +419,7 @@
                 </Border>
 
                 <Grid Grid.Row="1" Margin="0,8,0,0">
-                    <ItemsControl ItemsSource="{Binding SettingsItems}" ItemTemplate="{StaticResource NavigationItemTemplate}">
+                    <ItemsControl ItemsSource="{Binding ApplicationItems}" ItemTemplate="{StaticResource NavigationItemTemplate}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />

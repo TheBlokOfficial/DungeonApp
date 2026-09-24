@@ -1,0 +1,97 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.SpacingSection">
+    <!-- The spacing scale, corner radii and control height as they are in Themes/Tokens.axaml. Every
+         caption's number is bound to the sample itself, so it always shows the token's live value. -->
+    <UserControl.Styles>
+        <Style Selector="Border.spacing-bar">
+            <Setter Property="Height" Value="8" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <Style Selector="Border.radius-box">
+            <Setter Property="Width" Value="64" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Odstępy i wymiary" />
+
+        <TextBlock Classes="overline-sm muted" Text="SKALA ODSTĘPÓW" />
+        <Grid ColumnDefinitions="40,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonSpacingMd}"
+              RowSpacing="{DynamicResource DungeonSpacingSm}">
+            <Border x:Name="SpacingXs" Grid.Row="0" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingXs}" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingXs · " /><Run Text="{Binding #SpacingXs.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingSm" Grid.Row="1" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingSm}" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingSm · " /><Run Text="{Binding #SpacingSm.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingMd" Grid.Row="2" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingMd}" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingMd · " /><Run Text="{Binding #SpacingMd.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingLg" Grid.Row="3" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingLg}" />
+            <TextBlock Grid.Row="3" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingLg · " /><Run Text="{Binding #SpacingLg.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingXl" Grid.Row="4" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingXl}" />
+            <TextBlock Grid.Row="4" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingXl · " /><Run Text="{Binding #SpacingXl.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingXxl" Grid.Row="5" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingXxl}" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingXxl · " /><Run Text="{Binding #SpacingXxl.Width}" />
+            </TextBlock>
+            <Border x:Name="SpacingXxxl" Grid.Row="6" Classes="spacing-bar" Width="{DynamicResource DungeonSpacingXxxl}" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonSpacingXxxl · " /><Run Text="{Binding #SpacingXxxl.Width}" />
+            </TextBlock>
+        </Grid>
+
+        <TextBlock Classes="overline-sm muted" Text="PROMIENIE ZAOKRĄGLEŃ" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <Border x:Name="WindowRadius" Classes="radius-box" CornerRadius="{DynamicResource DungeonWindowCornerRadius}" />
+                <TextBlock Classes="caption muted" Text="DungeonWindowCornerRadius" />
+                <TextBlock Classes="caption muted" Text="{Binding #WindowRadius.CornerRadius.TopLeft}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <Border x:Name="CardRadius" Classes="radius-box" CornerRadius="{DynamicResource DungeonCardCornerRadius}" />
+                <TextBlock Classes="caption muted" Text="DungeonCardCornerRadius" />
+                <TextBlock Classes="caption muted" Text="{Binding #CardRadius.CornerRadius.TopLeft}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <Border x:Name="ControlRadius" Classes="radius-box" CornerRadius="{DynamicResource DungeonControlCornerRadius}" />
+                <TextBlock Classes="caption muted" Text="DungeonControlCornerRadius" />
+                <TextBlock Classes="caption muted" Text="{Binding #ControlRadius.CornerRadius.TopLeft}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <Border x:Name="NavigationRadius" Classes="radius-box" CornerRadius="{DynamicResource DungeonNavigationCornerRadius}" />
+                <TextBlock Classes="caption muted" Text="DungeonNavigationCornerRadius" />
+                <TextBlock Classes="caption muted" Text="{Binding #NavigationRadius.CornerRadius.TopLeft}" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="WYSOKOŚĆ KONTROLKI" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+            <Border x:Name="ControlHeight"
+                    Width="160"
+                    Height="{DynamicResource DungeonControlHeight}"
+                    BorderThickness="1"
+                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+                    Background="{DynamicResource DungeonBackstageCardBrush}"
+                    CornerRadius="{DynamicResource DungeonControlCornerRadius}" />
+            <TextBlock Classes="caption muted" VerticalAlignment="Center">
+                <Run Text="DungeonControlHeight · " /><Run Text="{Binding #ControlHeight.Height}" />
+            </TextBlock>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
