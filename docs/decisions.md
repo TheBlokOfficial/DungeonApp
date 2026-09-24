@@ -330,6 +330,16 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   ją każdemu przyciskowi. Autor sprostował, że mockup jest makietą ekranu rejestru, nie projektem
   aplikacji, i że w kontrolkach profesjonalność, czytelność i intuicyjność idą przed wiernością
   makiecie — podstawa tamtej decyzji odpadła.
+* **Najechanie przycisku z wypełnieniem pogłębia kolor** — autor, 2026-09-24, po porcji 1. Odrzucone
+  po obejrzeniu w aplikacji albo na próbkach: rozjaśnienie (kolor „mniej jaskrawy”, w stronę pastelu),
+  podbicie nasycenia („przejaskrawiony”, źle zwłaszcza przy koszu), obwódka, uniesienie z cieniem,
+  poświata („nic z tego mi się nie podoba”). Autor nie chce zmiany charakteru koloru; wybrał
+  pogłębienie o odcień (−3 punkty jasności HSL: akcent #AC7B37, czerwień #90402C, kontrast napisu
+  4,8 i 6,2). Mocniej się nie da — ciemny napis na akcencie spadłby poniżej 4,5:1. Poświatę
+  odradzał też architekt: tak zwykle wygląda wskaźnik fokusu klawiatury.
+* **Odnośniki samodzielne szare** — autor, 2026-09-24: „Wyczyść filtry”, „Sortuj” w akcencie
+  wyglądały źle. Architekt przyznał rację: to polecenia, nie przejścia, a akcent rozlany na polecenia
+  przestaje znaczyć „wybrane / główne”. Odnośnik w zdaniu zostaje w akcencie z podkreśleniem.
 * **Bez stanu wciśnięcia** — autor, 2026-09-24, po porcji 1. Pierwsza uwaga: stan wciśnięty „nie
   przemawia”, wolałby tylko spoczynek, najechanie i wybrane. Architekt zaproponował kompromis
   (tło z najechania, przygaszona treść) z argumentem, że kliknięcie bez odpowiedzi kontrolki wygląda
