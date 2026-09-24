@@ -125,7 +125,7 @@
             BorderThickness instead would resize the panel every time focus moved.
         -->
         <!-- PanelWindowActiveBorder: okno biurka - krawędź aktywnego okna. -->
-        <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush"Color="{DynamicResource DungeonBorderStrongColor}" />
+        <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
         <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
              It must stay Transparent rather than null, because null is not hit-testable. -->
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
