@@ -3,17 +3,121 @@
              xmlns:controls="using:DungeonApp.Library.Entries.Desktop.Controls.Content"
              x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
 
-    <!-- The designed statblock layout: three size/type/alignment traits with no title, a titled
-         defense-and-speed group, the six abilities in a compact grid, skills-and-senses, then three
-         prose blocks. Spacing between them is set once, here, on the host - never carried by a
-         control itself (see docs/architecture.md, "Deklaracja treści"). -->
+    <!-- The designed statblock layout, per the mockup's own "detail-panel" block (krok 10, brief C):
+         a KP/PZ/Szybkość stat-strip, six abilities in a bordered grid, skills-and-senses as plain
+         rows, wyzwanie as a chip, then cechy szczególne / akcje under bar-accented section heads, and
+         an italic description. Size/Type/Alignment and Rarity are gone from this card entirely -
+         they are exactly this content type's own tags, already shown once in the detail header
+         (krok 10, brief A10: "Karta bez dublujących wierszy"), never repeated here.
+         Spacing between controls is set once, here, on the host - never carried by a control itself
+         (see docs/architecture.md, "Deklaracja treści"). -->
+    <UserControl.Resources>
+        <!-- Dimensions with no equivalent frame token, taken from the mockup's own CSS
+             (docs/images/mockup_rejestr.html): .stat-strip/.stat padding and divider,
+             .section-head .bar, .cr-badge - named once here, listed in the zlecenie report. -->
+        <!-- mockup: .stat{padding:0 18px} .stat:first-child{padding-left:0}. -->
+        <Thickness x:Key="MonsterStatPaddingFirst">0,0,18,0</Thickness>
+        <Thickness x:Key="MonsterStatPadding">18,0,18,0</Thickness>
+        <x:Double x:Key="MonsterSectionBarWidth">3</x:Double>
+        <x:Double x:Key="MonsterSectionBarHeight">14</x:Double>
+        <CornerRadius x:Key="MonsterSectionBarCornerRadius">2</CornerRadius>
+        <Thickness x:Key="MonsterChallengeChipPadding">9,1</Thickness>
+        <CornerRadius x:Key="MonsterChallengeChipCornerRadius">6</CornerRadius>
+        <!-- mockup: .section-head h2, .desc are both font-size: 16px. -->
+        <x:Double x:Key="MonsterSectionHeadFontSize">16</x:Double>
+
+        <!-- krok 10, brief A/C: DungeonAccentDimColor in Tokens.axaml equals DungeonAccentColor today
+             (not dimmed) - the same workaround ContentTabView.axaml's own ContentSelectedRowBrush
+             already uses, reported there; this card needs its own copy since resources do not cross
+             UserControl files. -->
+        <SolidColorBrush x:Key="MonsterChallengeChipBrush" Color="{DynamicResource DungeonAccentColor}" Opacity="0.16" />
+    </UserControl.Resources>
+
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-        <controls:TraitListView x:Name="SizeTypeAlignment" />
-        <controls:TraitListView x:Name="DefenseAndSpeed" Title="Obrona i ruch" />
-        <controls:TraitListView x:Name="Abilities" Title="Cechy" Compact="True" />
-        <controls:TraitListView x:Name="SkillsAndSenses" Title="Biegłości i zmysły" />
-        <controls:ProseBlockView x:Name="SpecialAbilitiesBlock" Title="Cechy szczególne" />
-        <controls:ProseBlockView x:Name="ActionsBlock" Title="Akcje" />
-        <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
+
+        <!-- ===== stat-strip: KP / PZ / Szybkość ===== -->
+        <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPaddingFirst}">
+                <TextBlock Classes="muted" Text="KP" VerticalAlignment="Center" />
+                <TextBlock VerticalAlignment="Center">
+                    <Run x:Name="AcValueRun" x:FieldModifier="public" FontWeight="SemiBold" />
+                    <Run x:Name="AcNoteRun" x:FieldModifier="public" Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                </TextBlock>
+            </StackPanel>
+            <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="1,0,0,0" />
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPadding}">
+                <TextBlock Classes="muted" Text="PZ" VerticalAlignment="Center" />
+                <TextBlock VerticalAlignment="Center">
+                    <Run x:Name="HpValueRun" x:FieldModifier="public" FontWeight="SemiBold" />
+                    <Run x:Name="HpNoteRun" x:FieldModifier="public" Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                </TextBlock>
+            </StackPanel>
+            <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="1,0,0,0" />
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" Margin="{StaticResource MonsterStatPadding}">
+                <TextBlock Classes="muted" Text="Szybkość" VerticalAlignment="Center" />
+                <TextBlock x:Name="SpeedValueText" x:FieldModifier="public" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
+
+        <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
+
+        <!-- ===== Cechy: sześć wartości w ramkach z modyfikatorami ===== -->
+        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+            <TextBlock Classes="eyebrow" Text="Cechy" />
+            <controls:AbilityGridView x:Name="Abilities" x:FieldModifier="public" />
+        </StackPanel>
+
+        <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
+
+        <!-- ===== Właściwości: umiejętności / zmysły / języki, wyzwanie jako chip ===== -->
+        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+            <controls:TraitListView x:Name="SkillsAndSenses" x:FieldModifier="public" />
+            <Grid ColumnDefinitions="Auto,*">
+                <TextBlock Grid.Column="0" Classes="muted" Text="Wyzwanie" VerticalAlignment="Center" />
+                <Border Grid.Column="1" HorizontalAlignment="Left" Margin="{DynamicResource DungeonPaddingMd}"
+                        Background="{StaticResource MonsterChallengeChipBrush}"
+                        CornerRadius="{StaticResource MonsterChallengeChipCornerRadius}"
+                        Padding="{StaticResource MonsterChallengeChipPadding}">
+                    <TextBlock x:Name="ChallengeText" x:FieldModifier="public" Foreground="{DynamicResource DungeonAccentBrush}" FontWeight="SemiBold" />
+                </Border>
+            </Grid>
+        </StackPanel>
+
+        <!-- ===== Cechy szczególne (jeśli rekord je niesie) ===== -->
+        <StackPanel x:Name="SpecialAbilitiesSection" x:FieldModifier="public" Spacing="{DynamicResource DungeonSpacingXs}">
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                <Border Width="{StaticResource MonsterSectionBarWidth}" Height="{StaticResource MonsterSectionBarHeight}"
+                        CornerRadius="{StaticResource MonsterSectionBarCornerRadius}"
+                        Background="{DynamicResource DungeonAccentBrush}" />
+                <TextBlock Text="Cechy szczególne" FontFamily="{DynamicResource DungeonDisplayFont}" FontWeight="Medium" FontSize="{StaticResource MonsterSectionHeadFontSize}" />
+            </StackPanel>
+            <controls:ProseBlockView x:Name="SpecialAbilitiesBlock" />
+        </StackPanel>
+
+        <!-- ===== Akcje (Actions jest polem wymaganym rekordu) ===== -->
+        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                <!-- krok 10, brief C: mockup's own ".section-head.action .bar" uses its danger color
+                     for this bar - Danger's own documented meaning in Tokens.axaml ("coś jest zepsute
+                     albo akcja jest nieodwracalna") does not fit "these are a monster's attacks", so
+                     this uses the same accent as "Cechy szczególne" instead of borrowing that token.
+                     Reported as a deviation. -->
+                <Border Width="{StaticResource MonsterSectionBarWidth}" Height="{StaticResource MonsterSectionBarHeight}"
+                        CornerRadius="{StaticResource MonsterSectionBarCornerRadius}"
+                        Background="{DynamicResource DungeonAccentBrush}" />
+                <TextBlock Text="Akcje" FontFamily="{DynamicResource DungeonDisplayFont}" FontWeight="Medium" FontSize="{StaticResource MonsterSectionHeadFontSize}" />
+            </StackPanel>
+            <controls:ProseBlockView x:Name="ActionsBlock" />
+        </StackPanel>
+
+        <!-- ===== Opis: kursywą, z linią nad blokiem ===== -->
+        <StackPanel x:Name="DescriptionSection" x:FieldModifier="public" Spacing="{DynamicResource DungeonSpacingXs}">
+            <Border BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
+            <controls:ProseBlockView x:Name="DescriptionBlock"
+                                      FontStyle="Italic"
+                                      FontFamily="{DynamicResource DungeonDisplayFont}"
+                                      FontSize="{StaticResource MonsterSectionHeadFontSize}"
+                                      Foreground="{DynamicResource DungeonTextRegularBrush}" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

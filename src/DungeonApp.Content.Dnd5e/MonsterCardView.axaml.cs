@@ -6,19 +6,21 @@ using DungeonApp.Library.Entries.Desktop.Controls.Content;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The monster statblock, composed from <see cref="TraitListView"/> and <see cref="ProseBlockView"/>.
-/// <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after construction,
-/// through <see cref="SetMonster"/> - there is no bindable property to update it later, because
-/// nothing in this application ever needs to: a card is built fresh every time an entry is selected.
-/// A plain parameterless constructor (rather than taking the model as a constructor argument) keeps
-/// this control instantiable the same way every other view in the shell is, including by Avalonia's
-/// own design-time tooling.
+/// The monster statblock, laid out per the mockup's own "detail-panel" block (krok 10, brief C):
+/// stat-strip, ability grid with D&amp;D 5e's own modifier arithmetic (<see cref="AbilityModifier"/>),
+/// skills-and-senses, wyzwanie as a chip, cechy szczególne / akcje under bar-accented headers, and an
+/// italic description.
+/// <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after construction, through
+/// <see cref="SetMonster"/> - see <see cref="Gear"/>'s card for the same reasoning on why this stays
+/// a plain parameterless constructor.
 /// <para>
-/// A row whose optional field the entry left blank is left out entirely, matching the layout
-/// docs/architecture.md's example fixture describes: no label ever stands next to nothing. This is
-/// ordinary presentation logic over already-typed, already-validated values - not the kind of
-/// branching CLAUDE.md's five prohibitions rule out, which govern game-mechanical computation, not
-/// whether a UI element has something to show.
+/// <b>What the mockup shows that this card does not.</b> The mockup's own KP stat carries a dopisek
+/// ("skórz., tarcza") whose source is <see cref="Monster.AcSource"/> - shown, since the record
+/// carries it. Nothing in the mockup is skipped for lack of a field on this card: every stat-strip
+/// value, every ability score, every info row and the wyzwanie chip all come from fields
+/// <see cref="Monster"/> already declares. See the krok 10 report for the two color deviations
+/// (the ability modifier's sign and the "Akcje" section bar, both explained where they are set,
+/// below and in MonsterCardView.axaml).
 /// </para>
 /// </summary>
 public partial class MonsterCardView : UserControl
@@ -30,41 +32,37 @@ public partial class MonsterCardView : UserControl
 
     public void SetMonster(Monster monster)
     {
-        SizeTypeAlignment.Rows =
-        [
-            new TraitRow("Rozmiar", monster.Size),
-            new TraitRow("Typ", monster.Type),
-            new TraitRow("Charakter", monster.Alignment)
-        ];
+        AcValueRun.Text = Format(monster.Ac);
+        AcNoteRun.Text = Note(monster.AcSource);
 
-        DefenseAndSpeed.Rows =
-        [
-            new TraitRow("KP", Format(monster.Ac), monster.AcSource),
-            new TraitRow("PZ", Format(monster.Hp), monster.HpDice),
-            new TraitRow("Szybkość", monster.Speed)
-        ];
+        HpValueRun.Text = Format(monster.Hp);
+        HpNoteRun.Text = Note(monster.HpDice);
+
+        SpeedValueText.Text = monster.Speed;
 
         Abilities.Rows =
         [
-            new TraitRow("SIŁ", Format(monster.Str)),
-            new TraitRow("ZRĘ", Format(monster.Dex)),
-            new TraitRow("KON", Format(monster.Con)),
-            new TraitRow("INT", Format(monster.Int)),
-            new TraitRow("MDR", Format(monster.Wis)),
-            new TraitRow("CHA", Format(monster.Cha))
+            new AbilityRow("SIŁ", Format(monster.Str), AbilityModifier.Format(monster.Str)),
+            new AbilityRow("ZRĘ", Format(monster.Dex), AbilityModifier.Format(monster.Dex)),
+            new AbilityRow("KON", Format(monster.Con), AbilityModifier.Format(monster.Con)),
+            new AbilityRow("INT", Format(monster.Int), AbilityModifier.Format(monster.Int)),
+            new AbilityRow("MDR", Format(monster.Wis), AbilityModifier.Format(monster.Wis)),
+            new AbilityRow("CHA", Format(monster.Cha), AbilityModifier.Format(monster.Cha)),
         ];
 
         SkillsAndSenses.Rows = BuildSkillsAndSensesRows(monster);
+        ChallengeText.Text = monster.Challenge;
 
-        SpecialAbilitiesBlock.IsVisible = monster.SpecialAbilities is not null;
+        SpecialAbilitiesSection.IsVisible = monster.SpecialAbilities is not null;
         SpecialAbilitiesBlock.Text = monster.SpecialAbilities;
 
         ActionsBlock.Text = monster.Actions;
 
-        DescriptionBlock.IsVisible = monster.Description is not null;
+        DescriptionSection.IsVisible = monster.Description is not null;
         DescriptionBlock.Text = monster.Description;
     }
 
+    /// <summary>Umiejętności (optional) and Języki (optional) around Zmysły (required) - Wyzwanie is its own chip row, not a plain trait row.</summary>
     private static IReadOnlyList<TraitRow> BuildSkillsAndSensesRows(Monster monster)
     {
         var rows = new List<TraitRow>();
@@ -81,10 +79,11 @@ public partial class MonsterCardView : UserControl
             rows.Add(new TraitRow("Języki", monster.Languages));
         }
 
-        rows.Add(new TraitRow("Wyzwanie", monster.Challenge));
-
         return rows;
     }
 
     private static string Format(int value) => value.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>The mockup's own "(skórz., tarcza)" / "(2k6)" bracketed note - empty (not null) when the source field is absent, so the inline Run simply prints nothing.</summary>
+    private static string Note(string? source) => source is null ? string.Empty : $" ({source})";
 }
