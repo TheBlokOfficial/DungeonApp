@@ -668,10 +668,10 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   kursor tekstowy w polach do pisania i nad tekstem do zaznaczenia; strzałka wszędzie indziej.
   Klikalność pozostałych kontrolek pokazuje stan najechania.
 * **Stany:** spoczynek, najechanie, wybrane (wiersz, zakładka, przełącznik) i wyłączone mają własny
-  wygląd. Wciśnięcie nie ma własnego koloru: zostaje tło z najechania, a treść (tekst i ikona)
-  przygasa o stopień — potwierdzenie kliknięcia bez błysku innej barwy. Wyłączona kontrolka traci
+  wygląd. Wciśnięcie nie ma własnego wyglądu: kontrolka wygląda jak pod myszą. Najechanie rozjaśnia
+  tło, nigdy nie przygasza ani nie odbarwia treści ani wypełnienia. Wyłączona kontrolka traci
   barwę znaczenia (akcent, czerwień): jest szara jak każda wyłączona, bo niczego nie robi. Ikona
-  w kontrolce ma zawsze kolor jej tekstu.
+  w kontrolce ma zawsze kolor jej tekstu i swój rysunek (konturowa zostaje konturowa).
 * **Odnośnik w zdaniu** ma stopień i grubość zdania, różni się kolorem i stałym podkreśleniem — sam
   kolor akcentu obok jasnego tekstu nie daje wymaganego kontrastu 3:1. Odnośnik samodzielny (poza
   zdaniem) jest bez podkreślenia; podkreślenie pojawia się po najechaniu.
