@@ -129,13 +129,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         ContentTabDefinitions = [BuildMonsterContentTab(), BuildGearContentTab()];
 
-        // Icon choice (krok 10, zlecenie 2 report): neither existing icon in Icons.axaml depicts a
-        // creature or an item specifically - DungeonIconBookOpen (a bestiary) and DungeonIconBoxes
-        // (crates) are this system's own pick among what already exists.
+        // Icon choice (krok 10, brief B2): purpose-drawn icons replace the krok 10 zlecenie 2 picks -
+        // DungeonIconDragon (a beast's head) for "Potwory", DungeonIconBackpack for "Przedmioty".
+        // DungeonIconBookOpen stays in Icons.axaml (GlobalSidebarViewModel's own shelf icon still
+        // uses it); DungeonIconBoxes had no other user and was removed with it.
         SystemTabs =
         [
-            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconBookOpen", () => CreateContentTab(0)),
-            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBoxes", () => CreateContentTab(1)),
+            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconDragon", () => CreateContentTab(0)),
+            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBackpack", () => CreateContentTab(1)),
         ];
         CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
