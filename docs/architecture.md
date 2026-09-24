@@ -765,7 +765,9 @@ na zderzenie nazw:** na ekranie kategoria System ma etykietę „Biblioteka", a 
 * **System wypełnia pasek wedle zasad ramy, nie rysuje go.** Deklaruje zakładki kategorii Kampania —
   pod pozycją kampanii — i kategorii System; rama je wyświetla. Pozycja kampanii i kategoria
   Aplikacja należą do ramy.
-* **Kategoria Aplikacja niesie zakładkę „Ustawienia".** Pusta, dopóki rama nie ma czego ustawiać.
+* **Kategoria Aplikacja niesie zakładki „Galeria kontrolek" i „Ustawienia"**, w tej kolejności.
+  Galeria pokazuje każdą kontrolkę motywu ramy w każdym stanie; ustawienia są puste, dopóki rama nie
+  ma czego ustawiać.
 * **Pasek boczny niesie zakładki; akcje ramy, które niczego nie otwierają, stoją w pasku górnym.**
   Pasek górny należy do ramy i stoi nad obszarem treści, obok paska bocznego, od wyboru systemu.
   Z lewej pokazuje nazwę systemu i otwartej kampanii — tekst, nie nawigację; z prawej przyciski akcji
@@ -1034,6 +1036,10 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
 **Reguła: nic nie wchodzi bez konsumenta w tym samym wycinku** — ani pole, ani mechanizm.
 Rusztowanie, którego kod czytający istnieje i działa (dziś: `AllowsMultipleInstances`), nie jest
 rezerwacją.
+
+**Wyjątek: ogólne kontrolki motywu ramy.** Pełny zestaw standardowych kontrolek interfejsu powstaje
+w motywie ramy przed pierwszym użyciem w widoku; ich konsumentem jest galeria kontrolek. Wyjątek nie
+obejmuje niczego, co wie o domenie — funkcji, mechanizmów, kontrolek kart.
 
 **Dlaczego →** [decisions.md](decisions.md), *Pytania otwarte i reguła „nic bez konsumenta"*.
 

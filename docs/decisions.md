@@ -609,6 +609,18 @@ układu honoruje tę flagę), ale żaden panel nie ustawia jej na prawdę. To je
 jako rusztowanie, nie rezerwacja — różnica polega na tym, że kod, który je czyta, istnieje
 i działa.
 
+**Wyjątek: fundament interfejsu** — autor, 2026-09-24. Pełny zestaw standardowych kontrolek powstaje
+w motywie ramy, zanim którykolwiek widok po nie sięgnie. Siedem porażek wyżej nie dotyczy tego
+przypadku, z trzech powodów. **Konsument istnieje:** galeria kontrolek pokazuje każdą kontrolkę
+w każdym stanie, autor ogląda ją przy każdej zmianie motywu — kontrolka nie starzeje się po cichu, bo
+jej zepsucie widać w minutę. **To wzorce znane i skończone** — przycisk, pole, lista rozwijana — a nie
+zgadywanie przyszłej domeny; sześć z siedmiu martwych rzeczy było właśnie takim zgadywaniem.
+**Alternatywa jest gorsza:** element projektowany w pośpiechu przez wykonawcę innego obszaru, jak
+lista rozwijana filtrów z 2026-09-24, zrobiona na doczepkę do zlecenia o zakładkach i poprawiana potem
+przez autora. **Granica:** wyłącznie ogólne elementy interfejsu z motywu ramy. Funkcje, mechanizmy
+i wszystko, co wie o domenie — w tym kontrolki kart — nadal nie powstaje bez konsumenta. Element
+spoza zestawu powstaje w widoku jako własny i przechodzi do motywu przy drugim użyciu.
+
 **Odrzucone w tym temacie:** „Wpisy lokalne dla kampanii", „Zarezerwowane pola `Ruleset`
 i `ContentPacks` w manifeście kampanii", „Utrzymanie warstwy bloków danych po odejściu jej jedynego
 konsumenta".

@@ -53,7 +53,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    zaznaczenie, wyłączenie — nic więcej), tekst wyśrodkowany w pionie z założenia, wymiary
    z mockupu jako zasoby motywu. Autor: „jeżeli chcemy potem w jakimś miejscu w interfejsie zrobić
    dropdown albo listę […] masz już od razu gotowy styl zadeklarowany przez styl aplikacji".
-   * **Galeria kontrolek** — ekran w aplikacji (osiągalny, np. z ustawień) pokazujący każdą kontrolkę
+   * **Galeria kontrolek** — zakładka ramy nad „Ustawieniami", pod nagłówkiem „System" (kategoria
+     Aplikacja; autor 2026-09-24), pokazująca każdą kontrolkę
      w każdym stanie: zwykła, wyłączona, zaznaczona, długi tekst, pusta. Autor sprawdza w niej każdą
      porcję w minutę; zostaje na stałe.
    * **Zakres: pełny zestaw standardowy** (autor: fundament ma objąć „99% wszystkich potencjalnych
@@ -66,19 +67,30 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      obramowanie, wyróżnienie pojedynczej komórki kolorem podanym przez układającego); pasek przewijania; typografia; skala odstępów. **Poza zestawem:**
      kalendarz i wybór koloru — bez zastosowania przy stole, a kalendarz zaprasza do pól niosących czas
      (drugi zakaz). Układ (stosy, siatki, wyrównanie) nie wymaga szablonów — tylko odstępy ze skali.
-   * **Wyjątek od „nic bez konsumenta" — do wpisania w `decisions.md`** z uzasadnieniem: (1) galeria
-     jest prawdziwym konsumentem — każda kontrolka widoczna i sprawdzona przez autora, oglądana przy
-     każdej zmianie motywu, więc nie starzeje się po cichu; (2) to wzorce znane i skończone, nie
-     zgadywanie przyszłej domeny; (3) alternatywą jest element projektowany w pośpiechu przez
-     wykonawcę innego obszaru — lista rozwijana z 2026-09-24. **Granica:** wyłącznie ogólne elementy
-     interfejsu z motywu ramy; funkcje, mechanizmy i wszystko, co wie o domenie, nadal nie powstaje
-     bez konsumenta.
+   * **Wyjątek od „nic bez konsumenta"** — wpisany 2026-09-24 (`decisions.md` i `architecture.md`,
+     *Pytania otwarte i reguła „nic bez konsumenta"*).
    * **Element spoza zestawu:** wykonawca buduje go jawnie jako własny i zgłasza w raporcie; **przy
      drugim użyciu przechodzi do motywu** osobnym zleceniem. Z założenia oryginalne zostają: karty
      treści (projektowane per typ), biurko z oknami, pasek boczny, ekrany jednorazowe.
-   * Porcje, każda sprawdzana przez autora w galerii: przycisk i pole tekstowe → lista i pasek
-     przewijania → pole wyboru i lista rozwijana → zakładki i kafelki.
-   * Potem klocki złożone z kontrolek: wiersz listy z kreską zaznaczenia, chip z listą wyboru.
+   * **Porcje — przyjęte przez autora 2026-09-24.** Jedna porcja = jeden wykonawca w 20 minutach;
+     autor sprawdza każdą w galerii **i w aplikacji**, bo porcja od razu zdejmuje stare poprawki
+     nałożone na swoje kontrolki w całej aplikacji. Motyw domyślny biblioteki leży pod spodem do
+     porcji 9. Kolumna „rundy" to poprawki od autora — materiał do punktu kontrolnego.
+
+     | # | Porcja | Rundy |
+     |---|---|---|
+     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | |
+     | 1 | przyciski — sześć odmian | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe | |
+     | 3 | lista, wiersz listy, pusta lista, pasek przewijania | |
+     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | |
+     | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | |
+     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, separator, okruszki | |
+     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | |
+     | 8 | tag, chip, odznaka, tabela | |
+     | 9 | odcięcie motywu domyślnego biblioteki | |
+     | 10 | klocek: wiersz listy z kreską zaznaczenia | |
+     | 11 | klocek: chip z listą wyboru | |
    * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
      to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
    * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie, dla myszki. Autor: aplikacja
