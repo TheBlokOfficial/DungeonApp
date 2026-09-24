@@ -67,6 +67,25 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    * **Galeria kontrolek** — ekran w aplikacji (osiągalny, np. z ustawień) pokazujący każdą kontrolkę
      w każdym stanie: zwykła, wyłączona, zaznaczona, długi tekst, pusta. Autor sprawdza w niej każdą
      porcję w minutę; zostaje na stałe.
+   * **Zakres: pełny zestaw standardowy** (autor: fundament ma objąć „99% wszystkich potencjalnych
+     elementów interaktywnych"): przyciski we wszystkich odmianach (główny, zwykły, cichy, ikonowy,
+     niszczący, link); pola tekstowe, wyszukiwania, wielowierszowe, liczbowe; pole wyboru, przycisk
+     opcji, przełącznik, suwak; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem; zakładki,
+     przełącznik segmentowy; wiersz listy; menu i menu kontekstowe; podpowiedź, okienko wysuwane, okno
+     potwierdzenia, powiadomienie; wskaźnik postępu; tag, chip, odznaka; kafelek, sekcja rozwijana,
+     separator, okruszki, pusta lista; pasek przewijania; typografia; skala odstępów. **Poza zestawem:**
+     kalendarz i wybór koloru — bez zastosowania przy stole, a kalendarz zaprasza do pól niosących czas
+     (drugi zakaz). Układ (stosy, siatki, wyrównanie) nie wymaga szablonów — tylko odstępy ze skali.
+   * **Wyjątek od „nic bez konsumenta" — do wpisania w `decisions.md`** z uzasadnieniem: (1) galeria
+     jest prawdziwym konsumentem — każda kontrolka widoczna i sprawdzona przez autora, oglądana przy
+     każdej zmianie motywu, więc nie starzeje się po cichu; (2) to wzorce znane i skończone, nie
+     zgadywanie przyszłej domeny; (3) alternatywą jest element projektowany w pośpiechu przez
+     wykonawcę innego obszaru — lista rozwijana z 2026-09-24. **Granica:** wyłącznie ogólne elementy
+     interfejsu z motywu ramy; funkcje, mechanizmy i wszystko, co wie o domenie, nadal nie powstaje
+     bez konsumenta.
+   * **Element spoza zestawu:** wykonawca buduje go jawnie jako własny i zgłasza w raporcie; **przy
+     drugim użyciu przechodzi do motywu** osobnym zleceniem. Z założenia oryginalne zostają: karty
+     treści (projektowane per typ), biurko z oknami, pasek boczny, ekrany jednorazowe.
    * Porcje, każda sprawdzana przez autora w galerii: przycisk i pole tekstowe → lista i pasek
      przewijania → pole wyboru i lista rozwijana → zakładki i kafelki.
    * Potem klocki złożone z kontrolek: wiersz listy z kreską zaznaczenia, chip z listą wyboru.
