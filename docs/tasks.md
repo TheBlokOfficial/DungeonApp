@@ -73,7 +73,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      opcji, przełącznik, suwak; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem; zakładki,
      przełącznik segmentowy; wiersz listy; menu i menu kontekstowe; podpowiedź, okienko wysuwane, okno
      potwierdzenia, powiadomienie; wskaźnik postępu; tag, chip, odznaka; kafelek, sekcja rozwijana,
-     separator, okruszki, pusta lista; pasek przewijania; typografia; skala odstępów. **Poza zestawem:**
+     separator, okruszki, pusta lista; **tabela** (nagłówek, kolumny z wyrównaniem, wcięcia komórek,
+     obramowanie, wyróżnienie pojedynczej komórki kolorem podanym przez układającego); pasek przewijania; typografia; skala odstępów. **Poza zestawem:**
      kalendarz i wybór koloru — bez zastosowania przy stole, a kalendarz zaprasza do pól niosących czas
      (drugi zakaz). Układ (stosy, siatki, wyrównanie) nie wymaga szablonów — tylko odstępy ze skali.
    * **Wyjątek od „nic bez konsumenta" — do wpisania w `decisions.md`** z uzasadnieniem: (1) galeria
@@ -130,6 +131,12 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 „1/2 (100 PD)"; odznaka i chip pokazują samo wyzwanie, PD osobno i przygaszone. Autor przerabia swoje
 paczki po zmianie. Krój liczb — w fundamencie (typografia). Nazwy akcji, pogrubione premie
 i nagłówki akcji z mockupu wymagają akcji jako osobnych rzeczy — krok 11.
+**Cechy potwora — projekt autora 2026-09-24:** kwadratowa tabela z klocka tabeli, trzy kolumny,
+sześć wierszy (po jednym na cechę), ostre narożniki; komórka modyfikatora malowana: dodatni — tło
+zielone, ujemny — czerwone. Kolory **nie** z tokenów stanów (sukces/niebezpieczeństwo mają inne
+znaczenie) — system dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym
+znaczeniem, jak kolory rzadkości (propozycja architekta). Malowanie to prezentacja w skompilowanym
+kodzie karty, nie wyrażenie w danych — pierwszego zakazu nie dotyczy.
 
 **Czeka na autora:** ręczne przeniesienie kampanii do `Dokumenty\DungeonApp\dnd5e\campaigns\`
 (paczka skopiowana 2026-09-24; stare `Packs` i `Campaigns` nie są czytane); dopisanie `group`
