@@ -42,12 +42,27 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   dostają komentarze ze znaczeniem (niebezpieczeństwo — zepsute albo nieodwracalne; ostrzeżenie —
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
-**Następne (ustalone z autorem 2026-09-24, po obejrzeniu aplikacji) — dwa wąskie zlecenia, po kolei,
-na Opusie, według nowych zasad (limit czasu; wygląd sprawdza autor). Każde kończy się zdjęciem widoku
-z przykładowymi danymi, które architekt kładzie obok mockupu przed scaleniem — odbiór zaproponowany,
-autor nie odpowiedział.** Wymiary z CSS mockupu: brief przytacza selektory (`.entry`,
-`.entry.selected::before`, `.sidebar-item.active::before`, `.filter-chip`, `.filter-chip.on`,
-`.search`, `.clear-filters`, `.list-scroll`), nie każe czytać całego pliku.
+**Następne — plan ustalony z autorem 2026-09-24, pod koniec sesji:**
+1. **Reguła „gust autora, rzemiosło wykonawcy"** — przepisać w `collaboration.md` regułę „interfejs
+   to jego rzemiosło, nie dopracowuj UI z własnej inicjatywy", która uczyła wykonawców dosłowności.
+   Gust (kolory, układ, proporcje) — autor. Rzemiosło — obowiązek wykonawcy bez pytania; lista
+   kontrolna do definicji wykonawcy: stany spoczynku, najechania, wciśnięcia, fokusu, wyłączenia
+   i otwarcia; fokus zdejmowany kliknięciem obok i Escape; układ niezależny od zawartości; pasek
+   przewijania tylko przy potrzebie; tekst wyrównany w polu; przycisk bez działania wygaszony.
+   Autor: „To, że ja te błędy wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił
+   dobrą robotę."
+2. **Wpis w `decisions.md`:** interfejs w HTML-u (Blazor Hybrid) rozważony i na razie odrzucony.
+   Za: CSS mockupu wprost, model pisze w języku, który zna najlepiej, przeglądarka daje podstawy UX.
+   Przeciw: przepisanie warstwy okiennej (~3 tys. linii znaczników), technologia niszowa, a przyczyna
+   dzisiejszej fuszerki leżała głównie w procesie — zmiana technologii przed naprawą procesu nie
+   pozwoliłaby odróżnić, co pomogło. **Wyzwalacz:** przy naprawionym procesie zlecenia interfejsu
+   nadal kończą się fuszerką albo zjadają większość budżetu — wtedy próba na jednej zakładce.
+3. **Zlecenia A i B niżej, w małych porcjach** (np. kreska i wiersz → filtry → karta). Po każdej
+   porcji autor sprawdza w aplikacji, zanim ruszy następna; jego uwagi idą do briefu dosłownie.
+   **Bez narzędzia podglądu dla wykonawcy** — autor wybrał częstsze sprawdzanie sam: taniej, a jego
+   uwagi są lepszą informacją niż zdjęcia bez ekranu. Wymiary z CSS mockupu: brief przytacza
+   selektory (`.entry`, `.entry.selected::before`, `.sidebar-item.active::before`, `.filter-chip`,
+   `.filter-chip.on`, `.search`, `.clear-filters`, `.list-scroll`), nie każe czytać całego pliku.
 
 *A. Lista i filtry*
 * Kreska zaznaczenia wpisu **przed** wierszem, w odstępie (mockup: `left: -10px`) — lista ma wcięcie,
