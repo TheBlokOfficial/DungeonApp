@@ -330,6 +330,12 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   ją każdemu przyciskowi. Autor sprostował, że mockup jest makietą ekranu rejestru, nie projektem
   aplikacji, i że w kontrolkach profesjonalność, czytelność i intuicyjność idą przed wiernością
   makiecie — podstawa tamtej decyzji odpadła.
+* **Wciśnięcie bez własnego koloru** — autor, 2026-09-24, po porcji 1: stan wciśnięty „nie
+  przemawia", wolałby tylko spoczynek, najechanie i wybrane. Zupełne usunięcie odrzucone przez
+  architekta: kliknięcie bez żadnej odpowiedzi kontrolki wygląda na niezarejestrowane, zwłaszcza przy
+  akcji, której skutku nie widać od razu, i przy uruchomieniu klawiszem. Kompromis: wciśnięcie
+  zachowuje tło z najechania i tylko przygasza treść. Wcześniej wciśnięcie miało ciemniejszy odcień
+  niż spoczynek — przy każdym kliknięciu tło mrugało jaśniej–ciemniej–jaśniej.
 * **Tekst w kontrolce co najmniej 12.** Stopień 11 z mockupu (chipy filtrów 11,5, czyść filtry 11)
   jest za mały dla czegoś, w co się celuje myszą; zostaje dla informacji drugorzędnej.
 * **Zaznaczanie tekstu tam, gdzie się go kopiuje, nie wszędzie.** MG przenosi fragment opisu albo
