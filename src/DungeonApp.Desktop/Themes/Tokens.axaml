@@ -40,9 +40,13 @@
         <!-- BorderStrong: obramowanie wyraźne - krawędź, na którą ma paść wzrok: kontrolka pod myszą,
              aktywne okno, krawędź ramy. -->
         <Color x:Key="DungeonBorderStrongColor">#413C36</Color>
+        <!-- TEKST -->
+        <!-- TextPrimary: tekst podstawowy - treść i wszystko domyślnie. -->
         <Color x:Key="DungeonTextPrimaryColor">#E8E4DA</Color>
+        <!-- TextRegular: tekst drugorzędny - opis, uzupełnienie. -->
         <Color x:Key="DungeonTextRegularColor">#9B9A95</Color>
-        <Color x:Key="DungeonTextMutedColor">#6C6B66</Color>
+        <!-- TextMuted: tekst przygaszony - podpis, etykieta, metadane. -->
+        <Color x:Key="DungeonTextMutedColor">#8A8983</Color>
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
         <Color x:Key="DungeonAccentBrightColor">#B8843B</Color>
         <Color x:Key="DungeonAccentActionColor">#B8843B</Color>
