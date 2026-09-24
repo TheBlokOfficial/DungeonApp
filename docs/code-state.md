@@ -105,8 +105,9 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
   porcje wiersza, kafelka i chipa dadzą im własne motywy.
 * **Test `Engine_and_shell_do_not_name_any_entry_kind` padł raz w pełnym przebiegu** (2026-09-24,
-  porcja 1) i nie dał się odtworzyć w czterech kolejnych. Jeśli padnie znowu — zwiad przyczyny, nie
-  ponowne uruchomienie.
+  porcja 1) i nie dał się odtworzyć w czterech kolejnych. Padł znowu w rundzie 2 porcji 1 (pełny
+  przebieg w kopii roboczej wykonawcy; trzy przebiegi per projekt po scaleniu — zielone). Zwiad
+  przyczyny zlecony 2026-09-24.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.
