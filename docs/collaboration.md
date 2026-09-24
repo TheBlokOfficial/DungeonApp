@@ -65,6 +65,13 @@ w `.gitignore`, usunięcie kopii roboczej i gałęzi subagenta po przeniesieniu 
 repozytorium — to decyzje asystenta. Pytanie o nie kosztuje dodatkową turę rozmowy i niczego nie
 wnosi. Pyta się o to, co zmienia aplikację, dokumenty z decyzjami albo cudzą pracę.
 
+**Drobne poprawki czekają na swój obszar.** Decyzja autora z 2026-09-24. Poprawka zgłoszona w trakcie
+pracy nie dostaje osobnego zlecenia „w następnej turze" — trafia do `tasks.md`, *Poprawki czekające
+na obszar*, pogrupowana po obszarze kodu. Zabiera ją pierwsze zlecenie, które i tak wchodzi w ten
+obszar; osobny wykonawca dopiero wtedy, gdy uzbiera się ich tyle, że warto. Architekt przy pisaniu
+każdego briefu przegląda tę sekcję. *Dlaczego:* wykonawca, który już zna miejsce, robi poprawkę bez
+szukania go od nowa — osobne zlecenie na jedną drobnostkę płaci za całe wejście w kod.
+
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
 

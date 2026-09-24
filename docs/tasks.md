@@ -46,16 +46,11 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
    wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
 2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
-2a. Pasek boczny ramy (zmiana w ramie, osobne zlecenie po 2): kreska zaznaczenia jako osobny
-   element odsunięty w lewo od tła pozycji, krótszy od niej, zaokrąglony — jak `.sidebar-item.active::before`
-   w `mockup_rejestr.html`; kolor kreski — intensywny akcent (jak na liście wpisów); tło zaznaczonej
-   pozycji zostaje szare. Decyzja autora z 2026-09-24.
-   W tym samym zleceniu — półka kampanii: tło wiersza kampanii niedostępnej przygaszone względem
-   dostępnej (dziś identyczne); istniejący kolor tła o stopień ciemniejszy, obramowanie zostaje.
 3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
    kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
    tym samym układem. Reguły półki — architektura, *Gdzie mieszka stan*. Autor przenosi swoje paczki
-   i kampanie ręcznie po scaleniu.
+   i kampanie ręcznie po scaleniu. Dołączona poprawka z tego samego obszaru: przygaszone tło
+   kampanii niedostępnej (niżej, *Poprawki czekające na obszar*).
 4. Zwiad: jak żyje rejestr (kto go trzyma, kto dostaje przy zakładkach i biurku); potem zlecenie
    wczytania paczek od nowa.
 
@@ -65,6 +60,23 @@ według mockupu.
 
 Po kroku 10 — krok 11: formuły, sloty i dokument, od razu w bibliotece. **Nic nie wchodzi na
 zapas** między krokami; dodatki powstają z pierwszym prawdziwym dodatkiem (niżej).
+
+---
+
+## Poprawki czekające na obszar
+
+Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie pracował w ich obszarze,
+albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
+*Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
+
+**Rama — półka kampanii** (zabiera zlecenie 3 kroku 10)
+* Tło wiersza kampanii niedostępnej przygaszone względem dostępnej (dziś identyczne): istniejący kolor
+  tła o stopień ciemniejszy, obramowanie zostaje. Autor, 2026-09-24.
+
+**Rama — pasek boczny**
+* Kreska zaznaczenia jako osobny element odsunięty w lewo od tła pozycji, krótszy od niej,
+  zaokrąglony — jak `.sidebar-item.active::before` w `docs/images/mockup_rejestr.html`. Kolor kreski —
+  intensywny akcent, jak na liście wpisów; tło zaznaczonej pozycji zostaje szare. Autor, 2026-09-24.
 
 ---
 
