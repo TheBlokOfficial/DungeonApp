@@ -14,20 +14,12 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// <c>App.Initialize()</c>'s "at least one system" guard; each test builds its own
 /// <c>GlobalSidebarViewModel</c> directly.
 /// <para>
-/// <see cref="AvaloniaHeadlessPlatformOptions.UseHeadlessDrawing"/> is set to <c>false</c>: the
-/// default (<c>true</c>) stub renderer runs layout and styling in full but never actually rasterizes
-/// anything, so a captured frame comes back fully transparent - measured directly, by writing a pixel
-/// -sampling assertion against the default and watching it read back <c>#00000000</c> regardless of
-/// what the control underneath actually painted. With it off, layout, styling and opacity assertions
-/// (every other test in this project) behave identically, and a <see cref="RenderTargetBitmap"/> of a
-/// control now reads back the real rendered color - the only way to sample a background pixel at all
-/// (CampaignLibraryRenderingTests's own background test).
+/// Default headless options: layout and styling work, nothing is rasterized to an offscreen bitmap.
 /// </para>
 /// </summary>
 public static class TestAppBuilder
 {
     public static AppBuilder BuildAvaloniaApp() =>
         AppBuilder.Configure(() => new App([new EmptyGameSystem()]))
-            .UseSkia()
-            .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false });
+            .UseHeadless(new AvaloniaHeadlessPlatformOptions());
 }

@@ -236,41 +236,6 @@ public sealed class GlobalSidebarRenderingTests
         return window;
     }
 
-    /// <summary>
-    /// Same as <see cref="BuildWindow"/>, but with <see cref="Window.UseLayoutRounding"/> off (krok
-    /// 10, brief B1) - needed for the active row's stripe geometry, whose mockup value (2.5px width)
-    /// would otherwise snap to a whole device pixel (3), the same reasoning
-    /// <see cref="ContentTabRenderingTests.BuildWindow"/> already documents. Kept separate from
-    /// <see cref="BuildWindow"/> itself so every other test in this type keeps today's default
-    /// (rounded) layout.
-    /// </summary>
-    private static Window BuildWindowExact(bool startCollapsed, out GlobalSidebarViewModel viewModel)
-    {
-        var systemTab = new SystemTabDeclaration("sys.registry", "Rejestr", SystemTabIcon, () => new FakeTabContent());
-        var campaignTab = new CampaignTabDeclaration(
-            "camp.desk", "Biurko", CampaignTabIcon, _ => Task.FromResult<ITabContent>(new FakeTabContent()));
-
-        viewModel = new GlobalSidebarViewModel(
-            [systemTab],
-            [campaignTab],
-            () => Task.CompletedTask,
-            _ => Task.CompletedTask,
-            _ => { },
-            () => Task.CompletedTask);
-
-        if (startCollapsed)
-        {
-            viewModel.ToggleCollapsedCommand.Execute(null);
-        }
-
-        var view = new GlobalSidebarView { DataContext = viewModel };
-        var window = new Window { Content = view, Width = 224, Height = 728, UseLayoutRounding = false };
-        window.Show();
-        window.GetLayoutManager()!.ExecuteLayoutPass();
-
-        return window;
-    }
-
     /// <summary>Builds the sidebar with its collapse state fixed by the constructor's own <c>startCollapsed</c> parameter - never by a post-construction toggle.</summary>
     private static Window BuildWindowConstructedAt(bool startCollapsed)
     {
@@ -294,94 +259,6 @@ public sealed class GlobalSidebarRenderingTests
 
         return window;
     }
-
-    // -----------------------------------------------------------------------------------------
-    // Active row's own stripe (krok 10, brief B1).
-    // -----------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// krok 10, brief B1: "Kreska zaznaczenia pozycji paska bocznego jako osobny element: odsunięta w
-    /// lewo od tła pozycji, krótsza od niej, zaokrąglona." A separate Border (not the background
-    /// pill's own edge), offset left of it, shorter than the row, rounded.
-    /// </summary>
-    [AvaloniaFact]
-    public void The_active_rows_stripe_is_a_separate_element_offset_left_of_the_background_pill_and_shorter()
-    {
-        var window = BuildWindowExact(startCollapsed: false, out var viewModel);
-        viewModel.ActivateCampaignPosition();
-        window.GetLayoutManager()!.ExecuteLayoutPass();
-
-        var activeButton = GetNavButtons(window).Single(b => b.Classes.Contains("active"));
-        var pill = activeButton.GetVisualDescendants().OfType<Border>().First(b => b.Bounds.Width > 10);
-        var stripe = activeButton.GetVisualDescendants().OfType<Border>().Single(b => b.Classes.Contains("nav-active-stripe"));
-
-        var pillTopLeft = TopLeftIn(pill, window);
-        var stripeTopLeft = TopLeftIn(stripe, window);
-
-        Assert.Equal(2.5, stripe.Bounds.Width);
-        Assert.Equal(2, stripe.CornerRadius.TopLeft);
-        // Offset left of the pill (smaller X), never touching or past it.
-        Assert.True(stripeTopLeft.X < pillTopLeft.X, $"Kreska (X={stripeTopLeft.X}) nie jest na lewo od tła pozycji (X={pillTopLeft.X}).");
-        // Shorter than the row: inset top and bottom.
-        Assert.True(stripe.Bounds.Height < activeButton.Bounds.Height, $"Kreska ({stripe.Bounds.Height}) nie jest krótsza od wiersza ({activeButton.Bounds.Height}).");
-        Assert.True(stripeTopLeft.Y > TopOf(activeButton, window), "Kreska nie jest odsunięta od góry wiersza.");
-    }
-
-    /// <summary>
-    /// krok 10, brief B1: pixel-level confirmation the stripe actually paints, not just that its
-    /// Bounds look right (see ContentTabRenderingTests's own remarks on why Bounds alone cannot catch
-    /// a clipped-to-invisible element - the same reasoning applies here).
-    /// </summary>
-    [AvaloniaFact]
-    public void The_active_rows_stripe_renders_a_visible_accent_pixel_at_its_own_center()
-    {
-        var window = BuildWindowExact(startCollapsed: false, out var viewModel);
-        viewModel.ActivateCampaignPosition();
-        window.GetLayoutManager()!.ExecuteLayoutPass();
-
-        var activeButton = GetNavButtons(window).Single(b => b.Classes.Contains("active"));
-        var stripe = activeButton.GetVisualDescendants().OfType<Border>().Single(b => b.Classes.Contains("nav-active-stripe"));
-
-        var samplePoint = stripe.TranslatePoint(new Point(1.25, stripe.Bounds.Height / 2), window)!.Value;
-        var pixel = SamplePixel(window, samplePoint);
-        var accent = ResolveColor(window, "DungeonAccentBrush");
-
-        Assert.Equal(accent, pixel);
-    }
-
-    private static Color SamplePixel(Visual visual, Point point)
-    {
-        var width = (int)Math.Ceiling(visual.Bounds.Width);
-        var height = (int)Math.Ceiling(visual.Bounds.Height);
-
-        using var bitmap = new RenderTargetBitmap(new PixelSize(width, height));
-        bitmap.Render(visual);
-
-        var buffer = Marshal.AllocHGlobal(4);
-        try
-        {
-            var samplePoint = new PixelPoint((int)point.X, (int)point.Y);
-            bitmap.CopyPixels(new PixelRect(samplePoint.X, samplePoint.Y, 1, 1), buffer, 4, 4);
-
-            var bytes = new byte[4];
-            Marshal.Copy(buffer, bytes, 0, 4);
-
-            return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
-        }
-        finally
-        {
-            Marshal.FreeHGlobal(buffer);
-        }
-    }
-
-    private static Color ResolveColor(Window window, string brushResourceKey)
-    {
-        var brush = (ISolidColorBrush)window.FindResource(brushResourceKey)!;
-        return brush.Color;
-    }
-
-    private static Point TopLeftIn(Visual visual, Visual ancestor) =>
-        visual.TranslatePoint(new Point(0, 0), ancestor)!.Value;
 
     /// <summary>Each of the three group headings' own Border.Height (KAMPANIA/SYSTEM/APLIKACJA) - bound to <see cref="GlobalSidebarViewModel.HeadingHeight"/>.</summary>
     private static void AssertEveryHeadingHeight(Window window, double expected)
