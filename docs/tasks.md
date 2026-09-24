@@ -57,7 +57,25 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    dzisiejszej fuszerki leżała głównie w procesie — zmiana technologii przed naprawą procesu nie
    pozwoliłaby odróżnić, co pomogło. **Wyzwalacz:** przy naprawionym procesie zlecenia interfejsu
    nadal kończą się fuszerką albo zjadają większość budżetu — wtedy próba na jednej zakładce.
-3. **Zlecenia A i B niżej, w małych porcjach** (np. kreska i wiersz → filtry → karta). Po każdej
+3. **Fundament interfejsu — zanim cokolwiek innego w interfejsie** (autor: „najpierw od tego zaczął").
+   Każda używana kontrolka dostaje w motywie ramy **własny, kompletny szablon zamiast domyślnego**,
+   nie poprawki nałożone na domyślny motyw — to one dziś przepuszczają niechciane efekty, tekst
+   „prawie" na środku i globalne wysokości. W jednym miejscu, raz: stany (spoczynek, najechanie,
+   zaznaczenie, wyłączenie — nic więcej), tekst wyśrodkowany w pionie z założenia, wymiary
+   z mockupu jako zasoby motywu. Autor: „jeżeli chcemy potem w jakimś miejscu w interfejsie zrobić
+   dropdown albo listę […] masz już od razu gotowy styl zadeklarowany przez styl aplikacji".
+   * **Galeria kontrolek** — ekran w aplikacji (osiągalny, np. z ustawień) pokazujący każdą kontrolkę
+     w każdym stanie: zwykła, wyłączona, zaznaczona, długi tekst, pusta. Autor sprawdza w niej każdą
+     porcję w minutę; zostaje na stałe.
+   * Porcje, każda sprawdzana przez autora w galerii: przycisk i pole tekstowe → lista i pasek
+     przewijania → pole wyboru i lista rozwijana → zakładki i kafelki.
+   * Potem klocki złożone z kontrolek: wiersz listy z kreską zaznaczenia, chip z listą wyboru.
+   * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
+     to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
+   * *Pytanie do autora:* widoczny fokus przy obsłudze klawiaturą (Tab) — usunąć całkiem czy zostawić
+     wyłącznie dla klawiatury?
+4. **Zlecenia A i B niżej, w małych porcjach** — składane z fundamentu; część punktów A (wiersz,
+   pasek przewijania, lista rozwijana, pole wyszukiwania) zrobi już fundament (np. kreska i wiersz → filtry → karta). Po każdej
    porcji autor sprawdza w aplikacji, zanim ruszy następna; jego uwagi idą do briefu dosłownie.
    **Bez narzędzia podglądu dla wykonawcy** — autor wybrał częstsze sprawdzanie sam: taniej, a jego
    uwagi są lepszą informacją niż zdjęcia bez ekranu. Wymiary z CSS mockupu: brief przytacza
