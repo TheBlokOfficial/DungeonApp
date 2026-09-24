@@ -83,7 +83,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 
      | # | Porcja | Rundy | Pomiar |
      |---|---|---|---|
-     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1: obcięte ogonki, sztuczne grubości kroju nagłówków; siedem stopni pisma (architekt) | 33 / 5,8 / 3,1 mln |
+     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1: obcięte ogonki, sztuczne grubości kroju nagłówków; siedem stopni pisma (architekt) | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
      | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | | |
      | 1 | przyciski — sześć odmian | | |
      | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia | | |
