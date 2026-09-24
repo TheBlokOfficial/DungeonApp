@@ -1,8 +1,11 @@
     <ResourceDictionary xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
         <!-- KOLORY ============================================================ -->
+        <!-- Background: tło - najgłębszy poziom, pod całą resztą. -->
         <Color x:Key="DungeonBackgroundColor">#151412</Color>
+        <!-- Surface: powierzchnia - poziom nad tłem. -->
         <Color x:Key="DungeonSurfaceColor">#1B1917</Color>
+        <!-- SurfaceHeader: powierzchnia - poziom nad tłem (nagłówek powierzchni). -->
         <Color x:Key="DungeonSurfaceHeaderColor">#1B1917</Color>
         <!--
             Application depth hierarchy. These semantic roles intentionally remain separate from the
@@ -11,17 +14,31 @@
             header or panel change color as a side effect.
         -->
         <!-- TŁA I OBSZAR ROBOCZY -->
+        <!-- Frame: rama - stałe otoczenie treści (pasek boczny, pasek górny). -->
         <Color x:Key="DungeonFrameColor">#1B1917</Color>
+        <!-- FrameHover: najechanie na ramie - ten element ramy reaguje na mysz. -->
         <Color x:Key="DungeonFrameHoverColor">#282522</Color>
+        <!-- Backstage: zaplecze - tło treści poza kampanią (biblioteka, półka, galeria). -->
         <Color x:Key="DungeonBackstageColor">#151412</Color>
+        <!-- BackstageEdge: zaplecze - tło treści poza kampanią, przy dalekiej krawędzi szerokiego widoku
+             (koniec gradientu BackstageWide). -->
         <Color x:Key="DungeonBackstageEdgeColor">#100F0E</Color>
+        <!-- BackstageCard: karta - rzecz wyodrębniona z tła, czytana jako całość. -->
         <Color x:Key="DungeonBackstageCardColor">#1F1D1A</Color>
+        <!-- BackstageRow: wiersz - pozycja, którą można wskazać. -->
         <Color x:Key="DungeonBackstageRowColor">#221F1C</Color>
+        <!-- BackstageRowHover: najechanie - to reaguje na mysz. -->
         <Color x:Key="DungeonBackstageRowHoverColor">#282522</Color>
+        <!-- Desk: biurko - tło treści otwartej kampanii. -->
         <Color x:Key="DungeonDeskColor">#151412</Color>
+        <!-- SurfaceActive: aktywne - wybrane albo wciśnięte teraz. -->
         <Color x:Key="DungeonSurfaceActiveColor">#282522</Color>
+        <!-- SurfaceHover: najechanie - to reaguje na mysz. -->
         <Color x:Key="DungeonSurfaceHoverColor">#221F1C</Color>
+        <!-- Border: linia - dzieli, nie wyróżnia; krawędź powierzchni i separator. -->
         <Color x:Key="DungeonBorderColor">#302C28</Color>
+        <!-- BorderStrong: obramowanie wyraźne - krawędź, na którą ma paść wzrok: kontrolka pod myszą,
+             aktywne okno, krawędź ramy. -->
         <Color x:Key="DungeonBorderStrongColor">#413C36</Color>
         <Color x:Key="DungeonTextPrimaryColor">#E8E4DA</Color>
         <Color x:Key="DungeonTextRegularColor">#9B9A95</Color>
@@ -46,6 +63,8 @@
         <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
         <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
         <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
+        <!-- BackstageWide: zaplecze - tło treści poza kampanią (biblioteka, półka, galeria), w szerokich
+             widokach. -->
         <!-- Used only by wide, static backstage views. The first half stays calm so the gradient
              does not read as decoration behind the actual content. -->
         <LinearGradientBrush x:Key="DungeonBackstageWideBrush"
@@ -94,15 +113,19 @@
             floating panel can diverge from other surfaces later without touching any view.
             A minimized panel is the same object in another state, so the deck cards share these.
         -->
+        <!-- PanelWindowBackground: okno biurka - tło okna. -->
         <SolidColorBrush x:Key="DungeonPanelWindowBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
+        <!-- PanelWindowHeader: okno biurka - nagłówek okna. -->
         <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
+        <!-- PanelWindowBorder: okno biurka - krawędź okna. -->
         <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
         <!--
             The active panel changes only this brush. A stronger neutral border keeps focus legible
             without making ordinary window selection look like a warning or validation state. Changing
             BorderThickness instead would resize the panel every time focus moved.
         -->
-        <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <!-- PanelWindowActiveBorder: okno biurka - krawędź aktywnego okna. -->
+        <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush"Color="{DynamicResource DungeonBorderStrongColor}" />
         <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
              It must stay Transparent rather than null, because null is not hit-testable. -->
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
