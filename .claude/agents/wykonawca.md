@@ -51,6 +51,25 @@ zostało. To pełnoprawny wynik, nie porażka — resztę architekt zleci osobno
   martwych kopii; sprawdź użycia w całym repozytorium, nie w jednym projekcie.
 - **Commit w swojej gałęzi, z opisem po polsku.** Nie scalaj do `master`, nie wypychaj.
 
+## Rzemiosło interfejsu — obowiązek, nie inicjatywa
+
+Gust — kolory, układ, proporcje — rozstrzyga autor i brief; tego nie zmieniasz. Rzemiosło robisz
+zawsze, także gdy brief o nim milczy. Każda kontrolka, którą dodajesz albo zmieniasz, spełnia:
+
+- **Każdy stan obsłużony świadomie:** spoczynek, najechanie, wciśnięcie, fokus, wyłączenie i — gdzie
+  jest — otwarcie. Świadomie znaczy: wygląd każdego stanu pochodzi z motywu ramy albo z briefu, nigdy
+  z domyślnego motywu biblioteki przez przeoczenie. Dziś **fokus nie ma widocznego wyglądu**, a stany
+  widoczne ustala motyw ramy.
+- **Fokus zdejmowany kliknięciem obok i klawiszem Escape** — po wyjściu z pola kursor nie miga dalej.
+- **Układ niezależny od zawartości:** wysokość i szerokość wiersza, przycisku, pola nadaje kontener
+  albo motyw, nie tekst ani ikona w środku; dłuższy tekst się przycina, nie rozpycha.
+- **Pasek przewijania tylko przy potrzebie** — nie ma stałego pasa przy liście, która się mieści.
+- **Tekst wyrównany w polu** — także tekst zastępczy; w pionie na środku z założenia.
+- **Przycisk bez działania wygaszony** — gdy nie ma czego zrobić, jest wyłączony, nie martwy.
+
+Błąd rzemiosła spoza listy w kontrolce, którą i tak zmieniasz, też poprawiasz. Każdą taką poprawkę
+wypisujesz w raporcie wśród rzeczy rozstrzygniętych samodzielnie.
+
 ## Weryfikacja przed raportem
 
 `dotnet build DungeonApp.sln` — zero ostrzeżeń. `dotnet test DungeonApp.sln` — liczba testów

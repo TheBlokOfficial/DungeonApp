@@ -319,7 +319,8 @@ w kodzie. Rzadkość przedmiotu nie pożycza kolorów znaczeń: „bardzo rzadki
 nazywa pojęć systemu.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
-pośrednia", „Karta składana z listy elementów podanej przez dane".
+pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor
+Hybrid) zamiast Avalonii".
 
 ## Poziomy logiki i formuły
 
@@ -1003,6 +1004,32 @@ pracować w plikach tekstowych; przycisk, który je otwiera, robi z aplikacji do
 **Czym to zastąpiono.** Wczytanie od nowa przyciskiem i powód błędu widoczny w miejscu karty; jako
 następny krok — dodanie paczki przeciągnięciem jej do okna. **Wraca, jeśli** autorstwo w aplikacji
 okaże się odległe, a poprawianie plików poza nią — codziennością.
+
+### 39. Interfejs w HTML-u (Blazor Hybrid) zamiast Avalonii
+
+**Co proponowano.** Rozmowa autora z asystentem, 2026-09-24, po dniu, w którym poprawianie
+interfejsu od wykonawców zjadło większość budżetu sesji: warstwę okienną pisać w HTML-u i CSS-ie,
+osadzonych w oknie aplikacji (Blazor Hybrid), zamiast w znacznikach Avalonii.
+
+**Za.** CSS mockupu przechodzi wprost, bez tłumaczenia wymiarów na inną bibliotekę. Model pisze
+w języku, który zna najlepiej — HTML i CSS są w danych treningowych nieporównanie liczniej niż
+Avalonia. Przeglądarka daje podstawy UX za darmo: fokus, pasek przewijania pokazywany przy potrzebie,
+wyrównanie tekstu w polu — dokładnie te rzeczy, które 2026-09-24 autor wyciągał po wykonawcach.
+
+**Dlaczego odrzucone — na razie.** Przepisanie całej warstwy okiennej, około trzech tysięcy linii
+znaczników. Technologia niszowa, z mniejszą liczbą odpowiedzi na pytania, które padną w trakcie.
+I argument rozstrzygający: przyczyna dzisiejszej fuszerki leżała głównie w procesie — wykonawcy
+uczeni dosłowności, kontrolki na domyślnym motywie z nałożonymi poprawkami, dowodzenie wyglądu bez
+ekranu. Zmiana technologii przed naprawą procesu nie pozwoliłaby odróżnić, co pomogło.
+
+**Czym to zastąpiono.** Naprawa procesu — reguła „gust autora, rzemiosło wykonawcy"
+(`collaboration.md`) — i fundament interfejsu: każda kontrolka z własnym, kompletnym szablonem
+w motywie ramy, sprawdzana przez autora w galerii kontrolek (`tasks.md`).
+
+**Wyzwalacz.** Werdykt punktu kontrolnego po fundamencie (`tasks.md`, punkt kontrolny): przy
+naprawionym procesie i gotowym fundamencie interfejs nadal wychodzi fuszerką albo zjada większość
+budżetu. Wtedy próba z HTML-em na jednej zakładce, zanim cokolwiek innego. Werdykt — uznany albo
+odrzucony, z liczbami — dopisuje się tutaj.
 
 ## Logika i bezpieczeństwo
 

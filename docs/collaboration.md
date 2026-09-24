@@ -37,9 +37,22 @@ całą drogę. Proponuj, rekomenduj **jedną** opcję z uzasadnieniem, czekaj.
 lista jest miejscem, w którym autor zakłada weto — bez niej musiałby czytać cały diff, żeby
 znaleźć założenia, których nie robił.
 
-**Interfejs to jego rzemiosło.** Nie dopracowuj UI i nie proponuj jego zmian z własnej inicjatywy.
-Ale **rób funkcje osiągalnymi** — moduł, którego nie da się otworzyć z działającej aplikacji, jest
-dla niego bezwartościowy.
+**W interfejsie gust należy do autora, rzemiosło do wykonawcy.** Decyzja autora z 2026-09-24.
+**Gust** — kolory, układ, proporcje, co gdzie stoi i jak duże jest — rozstrzyga autor; nie proponuj
+jego zmian z własnej inicjatywy. **Rzemiosło** to obowiązek wykonawcy, bez pytania i bez osobnego
+polecenia w briefie — lista kontrolna stoi w definicji wykonawcy (`.claude/agents/wykonawca.md`,
+*Rzemiosło interfejsu*): każdy stan kontrolki obsłużony świadomie, fokus zdejmowany kliknięciem obok
+i Escape, układ niezależny od zawartości, pasek przewijania tylko przy potrzebie, tekst wyrównany
+w polu, przycisk bez działania wygaszony. Ta lista jest minimum, nie granicą: błąd rzemiosła spoza
+niej wykonawca też poprawia — w kontrolce, którą i tak zmienia. **Rób też funkcje osiągalnymi** — moduł,
+którego nie da się otworzyć z działającej aplikacji, jest dla autora bezwartościowy.
+
+*Skąd to się wzięło:* reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI
+z własnej inicjatywy" i uczyła wykonawców dosłowności — robili dokładnie to, co brief wymienił,
+a autor wyciągał potem po kolei tekst zastępczy nie na środku pola, migający kursor po kliknięciu
+obok, pasek przewijania przy krótkiej liście, wiersze różnej wysokości zależnie od zawartości.
+Autor: „To, że ja te błędy wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił
+dobrą robotę."
 
 Zdarza się, że sam poprosi o „technicznie poprawny UI bez fajerwerków", żeby nie blokować
 funkcjonalnego kawałka czekaniem na własny mockup. Wtedy bierz to zadanie, ale zdefiniuj „bez

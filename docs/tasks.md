@@ -43,21 +43,9 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
 **Następne — plan ustalony z autorem 2026-09-24, pod koniec sesji:**
-1. **Reguła „gust autora, rzemiosło wykonawcy"** — przepisać w `collaboration.md` regułę „interfejs
-   to jego rzemiosło, nie dopracowuj UI z własnej inicjatywy", która uczyła wykonawców dosłowności.
-   Gust (kolory, układ, proporcje) — autor. Rzemiosło — obowiązek wykonawcy bez pytania; lista
-   kontrolna do definicji wykonawcy: stany spoczynku, najechania, wciśnięcia, fokusu, wyłączenia
-   i otwarcia; fokus zdejmowany kliknięciem obok i Escape; układ niezależny od zawartości; pasek
-   przewijania tylko przy potrzebie; tekst wyrównany w polu; przycisk bez działania wygaszony.
-   Autor: „To, że ja te błędy wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił
-   dobrą robotę."
-2. **Wpis w `decisions.md`:** interfejs w HTML-u (Blazor Hybrid) rozważony i na razie odrzucony.
-   Za: CSS mockupu wprost, model pisze w języku, który zna najlepiej, przeglądarka daje podstawy UX.
-   Przeciw: przepisanie warstwy okiennej (~3 tys. linii znaczników), technologia niszowa, a przyczyna
-   dzisiejszej fuszerki leżała głównie w procesie — zmiana technologii przed naprawą procesu nie
-   pozwoliłaby odróżnić, co pomogło. **Wyzwalacz:** werdykt punktu kontrolnego (punkt 5) — przy
-   naprawionym procesie i gotowym fundamencie interfejs nadal wychodzi fuszerką albo zjada większość
-   budżetu; wtedy próba na jednej zakładce.
+1. ~~Reguła „gust autora, rzemiosło wykonawcy"~~ — zrobione 2026-09-24 (`collaboration.md`, lista
+   kontrolna w definicji wykonawcy).
+2. ~~Wpis o interfejsie w HTML-u~~ — zrobione 2026-09-24 (`decisions.md`, pozycja 39, z wyzwalaczem).
 3. **Fundament interfejsu — zanim cokolwiek innego w interfejsie** (autor: „najpierw od tego zaczął").
    Każda używana kontrolka dostaje w motywie ramy **własny, kompletny szablon zamiast domyślnego**,
    nie poprawki nałożone na domyślny motyw — to one dziś przepuszczają niechciane efekty, tekst
@@ -111,7 +99,9 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    i wdrożeniu go w aplikację (zakładka treści i karta potwora złożone z klocków) architekt z autorem
    **explicite uznają albo odrzucają** kierunek „Avalonia w obecnej formie". Problem, który
    rozwiązujemy: interfejs od wykonawców był fuszerką, a jego poprawianie zjadało większość budżetu
-   sesji. Podstawa werdyktu, zmierzona tym samym skryptem co 2026-09-24:
+   sesji. Podstawa werdyktu, zmierzona skryptem `tools/subagent-usage.py` (napisany od nowa
+   2026-09-24, bo pierwszy przepadł; na tych samych zapisach daje 131 kroków i 18,1 minuty dla
+   typowego zlecenia z kodem od 22.09 — porównywać z tymi liczbami, nie z niżej przytoczonymi):
    * ile rund poprawek od autora potrzebowała każda porcja interfejsu,
    * czy wracają błędy rzemiosła (stany, fokus, wyrównanie, układ zależny od zawartości),
    * kroki, czas i odczyt na zlecenie interfejsu — wobec 2026-09-24: typowe zlecenie z kodem od 22.09
