@@ -42,6 +42,25 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   dostają komentarze ze znaczeniem (niebezpieczeństwo — zepsute albo nieodwracalne; ostrzeżenie —
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
+**W toku (stan na koniec sesji 2026-09-24)** — dwóch wykonawców równolegle, na prośbę autora; kopie
+w `.claude/worktrees/agent-*`, gałęzie `worktree-agent-*` (`git worktree list`). Jeśli sesja urwała się
+przed ich raportem: sprawdzić commity w gałęziach (`git log master..<gałąź>`), zweryfikować jak zwykle
+(build bez ostrzeżeń kompilatora, testy ≥ 330, testy granic), scalić po kolei, usunąć kopie. Gałąź bez
+commitów = praca przerwana; zlecić od nowa z briefu opisanego niżej.
+* **Katalogi i półka** (zlecenie 3 niżej) — z dołączoną poprawką tła kampanii niedostępnej.
+* **Poprawki zakładek treści** — lista autora po obejrzeniu aplikacji: szczegół przy liście (nie
+  wyśrodkowany), paski przewijania, linia nagłówka na całą szerokość, lupa, strzałki chipów i sortowania,
+  „Wyczyść filtry" podkreślone, widoczna kreska zaznaczenia, zaznaczony wiersz pogrubiony, nagłówki
+  sekcji wersalikami, odznaka z samym wyzwaniem, okruszki z „›", pole `group` potwora jako kategoria,
+  karta bez dublujących wierszy, inna ikona „Potworów", lista rozwijana (pod chipem, czcionka wierszy,
+  wybór = przygaszony akcent, obramowanie jak pole wyszukiwania). Testy renderujące mierzą położenie
+  i widoczność. **Rozszerzenie w osobnym commicie:** karta potwora według mockupu (rząd KP/PZ/szybkość,
+  cechy w ramkach z modyfikatorami, właściwości, wyzwanie jako chip, nagłówki sekcji z kreską, opis
+  kursywą) — bez parsowania akcji z prozy (to krok 11, sloty).
+* Po scaleniu obu: **autor sprawdza w aplikacji** i przenosi ręcznie paczki do `dnd5e\packs\`,
+  kampanie do `dnd5e\campaigns\`, dopisuje `group` w swoich paczkach. Potem zlecenie 4 (zwiad rejestru,
+  przycisk wczytania od nowa).
+
 **Zlecenia, po kolei:**
 1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
    wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
