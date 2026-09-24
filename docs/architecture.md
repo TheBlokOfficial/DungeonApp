@@ -830,6 +830,8 @@ wszystkich jest rejestr.
   wartościami i znanym typem pokazuje tylko zakładka jego typu; to, czego typu nie da się ustalić —
   odrzucona paczka, wpis o nieczytelnej kopercie albo o nieznanym typie — pokazuje każda zakładka
   treści systemu. Wybranie rzeczy zepsutej pokazuje powód w miejscu karty.
+* **Wartości wpisu pokazuje się tak, jak je zapisano** — aplikacja nie poprawia wielkości liter
+  ani brzmienia. Jak wpis wygląda, decyduje autor paczki.
 * **Filtry po wartościach nie ukrywają rzeczy zepsutych** — te wartości nie mają. Działają na nie
   filtr po paczce i wyszukiwanie po nazwie.
 * **Paczki wczytuje się od nowa przyciskiem w nagłówku zakładki treści**, bez restartu. Nowy stan

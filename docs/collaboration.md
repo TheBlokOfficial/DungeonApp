@@ -308,6 +308,12 @@ Co jeszcze się sprawdziło:
   test sprawdzał, że przycisk nie wystaje, a przycisk za niski spełniał to bez trudu. Dopiero drugi
   przebieg, z wymogiem porażki przed poprawką, dał dowód.
 
+* **Test renderujący mierzy położenie względem sąsiadów i widoczność, nie tylko wymiar.**
+  2026-09-24 zakładka treści przeszła trzy testy renderujące i w aplikacji miała szczegół
+  wyśrodkowany daleko od listy oraz niewidoczną kreskę zaznaczenia: testy sprawdzały szerokość kolumn
+  i geometrię kreski, a kreskę przycinała krawędź listy. Brief każe więc mierzyć, gdzie element stoi
+  względem sąsiada, i próbkować piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
+
 **Dlaczego to tu stoi:** briefy w tym repo są długie i precyzyjne, i właśnie dlatego łatwo w nich
 pominąć zakaz, który wydaje się oczywisty.
 

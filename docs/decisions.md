@@ -483,6 +483,11 @@ treść nie znika po cichu. Przy jednym systemie i kilku zepsutych plikach szum 
 **Filtry po wartościach omijają rzeczy zepsute**, bo tych wartości nie mają — filtr, który by je
 ukrywał, ukrywałby błąd razem z brakiem danych, o którym ma informować.
 
+**Wartości wiernie, bez poprawiania wielkości liter** — autor na rekomendację asystenta,
+2026-09-24, gdy paczka testowa pokazała „humanoid (goblinoid)" tam, gdzie mockup miał „Humanoid".
+Aplikacja, która poprawia zapis, zgaduje: nie odróżni nazwy pisanej małą literą celowo od
+niedbałej, a poprawka działająca tylko na ekranie rozjeżdża się z tym, co jest w pliku.
+
 **Przycisk wczytania od nowa w nagłówku zakładki, nie w pasku górnym** — pasek górny należy do ramy,
 a rama nie wie, że paczki istnieją.
 
