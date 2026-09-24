@@ -327,6 +327,16 @@ kontynuuje poprawkę; jego kopia zostaje (sekcja *Środowisko*).
 przyczyny; nowy wykonawca z diagnozą w briefie zrobił poprawkę za około 93 tys., nie szukając jej
 drugi raz. Wznowiony diagnosta niósłby swój kontekst przez każdy krok poprawki.
 
+**Runda poprawek po obejrzeniu przez autora idzie do nowego wykonawcy, nie do wznowionego.** Ustalone
+z autorem 2026-09-24, z pomiaru. Nowy wykonawca startuje od około 47 tys. tokenów kontekstu (instrukcje,
+definicja, brief); wykonawca po porcji kończy ze 100–125 tys., a każdy krok czyta cały kontekst od
+nowa. Pamięć podręczna wykonawców wygasa po 5 minutach, a autor ogląda wynik dłużej — wznowiony
+zapisuje wtedy cały kontekst do pamięci ponownie, drożej niż zwykły odczyt; jego kopia robocza jest
+też już usunięta po scaleniu. Runda 1 porcji 0 fundamentu: nowy wykonawca — 22 kroki, 1,5 mln odczytu;
+wznowiony, szacunkowo, 2,1 mln nawet przy 15 krokach. Wznowienie opłaca się tylko przy poprawce zaraz
+po raporcie (zanim pamięć wygaśnie), po krótkim przebiegu albo przy niuansach trudnych do zapisania
+w briefie — wtedy kopii nie usuwa się przed decyzją (sekcja *Środowisko*).
+
 Zakazy, które niosą definicje — wszystkie pochodzą z incydentów:
 
 1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
