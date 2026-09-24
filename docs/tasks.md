@@ -17,7 +17,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było;
 > 2026-09-23 dokument znów miał 271 linii, z czego trzy czwarte było zamkniętą historią etapów.
 
-Gałąź: `master`. Build bez ostrzeżeń, 282 testy zielone (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 326 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -43,8 +43,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   wymaga uwagi, ale działa; sukces — udało się); kolory rzadkości — własne tokeny w systemie.
 
 **Zlecenia, po kolei:**
-1. Logika szkieletu bez okna — sekcje po paczce, rzeczy zepsute, wyszukiwanie, filtry, sortowanie,
-   styk, przez który system podaje kategorię, tagi, odznakę, klucze filtra i sortowania.
+1. ~~Logika szkieletu bez okna~~ — zrobione 2026-09-24 (model listy i profile typów w bibliotece
+   wpisów, profile D&D w systemie; porządek wyświetlania po polsku).
 2. Widok według mockupu i dwie zakładki systemu w miejsce rejestru. **Uruchamia autor** po scaleniu.
 3. Katalogi (Sonnet — jest reguła niezgodności): paczki z `Dokumenty\DungeonApp\<system>\packs\`,
    kampanie z `Dokumenty\DungeonApp\<system>\campaigns\`, małe litery; paczki dostarczane z systemem
