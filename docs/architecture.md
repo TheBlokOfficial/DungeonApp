@@ -418,7 +418,9 @@ własną ścieżkę. To drugi rodzaj pola, nie wyjątek.
 
 Zaklinanie nie wymaga nowego mechanizmu: biblioteka publikuje kontrakt wkładu, typ treści deklaruje
 slot (czyli decyduje, że miecz da się zaklinać), a paczka dostarcza Ostrość V jako zwykły wpis
-z własną kartą. Miecz jest pojemnikiem na zaklęcia tak samo, jak plecak na miecze.
+z własną kartą. Miecz jest pojemnikiem na zaklęcia tak samo, jak plecak na miecze. Tak samo potwór:
+jego akcje i cechy szczególne to osobne wpisy w slotach, nie blok prozy, którego potwór jest
+właścicielem (autor, 2026-09-24).
 
 * **Biblioteka wpisów nie ma zdania o tym, co wpis powinien mieć w slocie.** Decyduje autor treści.
 * **Zawartość początkowa slotu wskazuje wyłącznie wpisy z tej samej paczki.** Instancja rozwiązuje
@@ -1018,7 +1020,11 @@ się jako klucz łatki tą samą ścieżką co zmiana stanu.
    wariantów; kampania z wariantem, który dokłada albo podmienia zakładkę, po otwarciu pokaże inną.
    **Wyzwalacz:** pierwszy taki wariant.
 
-9. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
+9. **Liczby akcji potwora w slocie.** Akcja jako osobny wpis niesie premię do trafienia i obrażenia,
+   które wynikają z cech właściciela — ta sama broń u goblina i hobgoblina daje inne liczby. Albo
+   każdy potwór ma własny wpis akcji, albo liczby wylicza formuła z cech właściciela. **Wyzwalacz:**
+   krok 11 — sloty i formuły razem.
+10. **Wpisy w bazie danych zamiast plików.** Dziś wpis to plik pisany ręcznie, a paczka — katalog,
     który się kopiuje, przenosi i wersjonuje jako dokument użytkownika. Baza danych zmienia to
     wszystko naraz, więc to więcej niż format pliku (pytanie 1). **Wyzwalacz:** autorstwo treści
     w aplikacji (pytanie 2) — dopóki wpisy powstają poza aplikacją, plik jest ich naturalną formą —
