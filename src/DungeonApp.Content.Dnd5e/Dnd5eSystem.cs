@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Media;
 using DungeonApp.Library.Entries;
 using DungeonApp.Library.Entries.Instances;
 using DungeonApp.Core.State;
@@ -10,7 +11,7 @@ using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Content;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Library.Entries.Desktop.Content;
-using DungeonApp.Library.Entries.Desktop.Features.Registry;
+using DungeonApp.Library.Entries.Desktop.Features.ContentTab;
 using DungeonApp.Library.Entries.Desktop.Startup;
 using DungeonApp.Library.Workspace.Controls.Workspace;
 using DungeonApp.Library.Workspace.Features.CampaignWorkspace;
@@ -22,8 +23,9 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// The one place in the application allowed to know what a monster or a piece of gear is. Declares
 /// two content types - <c>monster</c> ("Potwór", version 1) and <c>gear</c> ("Przedmiot", version 1)
-/// - builds their cards, and declares this system's tabs: "Rejestr" in the System category, "Biurko"
-/// in the Campaign category.
+/// - builds their cards, and declares this system's tabs: "Potwory" and "Przedmioty" (built from the
+/// library's content-tab skeleton, krok 10 zlecenie 2) in the System category, "Biurko" in the
+/// Campaign category.
 /// <para>
 /// The dispatch on a content type's id inside <see cref="TryGet"/>, <see cref="TryValidate"/> and
 /// <see cref="CreateCard"/> below is legal and necessary here: docs/architecture.md's "Kontrakty są
@@ -71,6 +73,30 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     private static readonly IReadOnlyDictionary<string, string> RarityColorKeys =
         RarityTiers.ToDictionary(tier => tier.Tier, tier => tier.ColorKey, StringComparer.Ordinal);
 
+    /// <summary>
+    /// The brush each rarity color key resolves to (<see cref="ResolveBadgeBrush"/>) - this system's
+    /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens
+    /// (docs/architecture.md, "Niezmiennik interfejsu": "Skale należące do systemu... mają własne
+    /// kolory w systemie i nie pożyczają kolorów znaczeń z motywu ramy"). Four tiers' colors come
+    /// straight from the mockup's own rarity chips; "Legendarny" and "Artefakt" do not appear there,
+    /// so their values are this system's own choice (krok 10, zlecenie 2 report).
+    /// </summary>
+    private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
+    {
+        // Rzadkość: pospolity.
+        ["rarity-common"] = new SolidColorBrush(Color.Parse("#6C6B66")),
+        // Rzadkość: niezwykły.
+        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#84A98B")),
+        // Rzadkość: rzadki.
+        ["rarity-rare"] = new SolidColorBrush(Color.Parse("#B8843B")),
+        // Rzadkość: bardzo rzadki.
+        ["rarity-very-rare"] = new SolidColorBrush(Color.Parse("#CF9B55")),
+        // Rzadkość: legendarny. Mockup nie pokazuje tego stopnia - wybór własny (krok 10, zlecenie 2).
+        ["rarity-legendary"] = new SolidColorBrush(Color.Parse("#E08A3C")),
+        // Rzadkość: artefakt. Mockup nie pokazuje tego stopnia - wybór własny (krok 10, zlecenie 2).
+        ["rarity-artifact"] = new SolidColorBrush(Color.Parse("#C1548C")),
+    };
+
     private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
 
     private readonly WorkspaceLayoutStore _layoutStore;
@@ -94,10 +120,17 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
         StartupSteps = [_loadPacksStep, warmCardsStep];
 
-        SystemTabs = [new SystemTabDeclaration("dnd5e.registry", "Rejestr", "DungeonIconDatabase", CreateRegistryTab)];
-        CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
-
         ContentTabDefinitions = [BuildMonsterContentTab(), BuildGearContentTab()];
+
+        // Icon choice (krok 10, zlecenie 2 report): neither existing icon in Icons.axaml depicts a
+        // creature or an item specifically - DungeonIconBookOpen (a bestiary) and DungeonIconBoxes
+        // (crates) are this system's own pick among what already exists.
+        SystemTabs =
+        [
+            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconBookOpen", () => CreateContentTab(0)),
+            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBoxes", () => CreateContentTab(1)),
+        ];
+        CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
 
     public SystemId Id { get; }
@@ -207,12 +240,32 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         throw new InvalidOperationException($"'{ContentSetId}' cannot draw a card for content type reference '{entry.Type}'.");
     }
 
-    /// <summary>The "Rejestr" System-category tab: today's registry screen, drawn by this system's own presentation.</summary>
-    private ITabContent CreateRegistryTab()
+    public IBrush? ResolveBadgeBrush(string colorKey) => RarityBrushes.GetValueOrDefault(colorKey);
+
+    /// <summary>
+    /// One of this system's two content tabs, built fresh from the library's content-tab skeleton
+    /// (krok 10, zlecenie 2) - <see cref="ContentTabDefinitions"/>'s own index, never a stored
+    /// instance: a System-category tab's factory runs again every time the GM opens it (warmup once,
+    /// the real tab again on first click), and a <see cref="ContentTabViewModel"/> holds mutable
+    /// list state that must not be shared between those two builds.
+    /// </summary>
+    private ITabContent CreateContentTab(int definitionIndex)
     {
-        var viewModel = new RegistryViewModel(_loadPacksStep.Registry, this);
-        return new DelegateTabContent(new RegistryView { DataContext = viewModel });
+        var definition = ContentTabDefinitions[definitionIndex];
+        var viewModel = new ContentTabViewModel(_loadPacksStep.Registry, definition, AllContentTypes, this);
+        return new DelegateTabContent(new ContentTabView { DataContext = viewModel });
     }
+
+    /// <summary>
+    /// Every content type reference every content tab this system declares names - what
+    /// <see cref="ContentTabViewModel"/> needs to tell "no tab anywhere claims this broken entry"
+    /// apart from "some other tab claims it" (docs/architecture.md, "Zakładki treści"; see
+    /// <c>ContentListModel</c>'s own remarks on <c>allKnownTypes</c>). Gathered once here, from the
+    /// same two definitions every tab is built from - never per tab, which would make each tab think
+    /// it was the only one that existed.
+    /// </summary>
+    private IReadOnlyCollection<ContentTypeReference> AllContentTypes =>
+        ContentTabDefinitions.SelectMany(tab => tab.ContentTypes).Select(profile => profile.Type).Distinct().ToArray();
 
     /// <summary>
     /// "Potwory": category = <see cref="Monster.Type"/>; tags = size, type, alignment; badge =

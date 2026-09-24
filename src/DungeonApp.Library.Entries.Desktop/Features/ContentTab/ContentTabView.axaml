@@ -1,0 +1,374 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ct="using:DungeonApp.Library.Entries.Desktop.Features.ContentTab"
+             xmlns:conv="using:DungeonApp.Library.Entries.Desktop.Converters"
+             x:Class="DungeonApp.Library.Entries.Desktop.Features.ContentTab.ContentTabView"
+             x:DataType="ct:ContentTabViewModel">
+
+    <!-- Dimensions, colors and typography below come from docs/images/mockup_rejestr.html, not the
+         screenshot (krok 10, zlecenie 2 brief). Every value with no equivalent token in
+         DungeonApp.Desktop/Themes/Tokens.axaml is named once, here, rather than written into the
+         layout - see the local resources just below; all of them are listed in the zlecenie report. -->
+    <UserControl.Resources>
+        <conv:DimBrushConverter x:Key="DimBrush" />
+
+        <!-- Master/detail column widths (mockup: .list-panel { flex: 0 0 320px }, .detail-inner { max-width: 720px }). -->
+        <x:Double x:Key="ContentListColumnWidth">320</x:Double>
+        <x:Double x:Key="ContentDetailMaxWidth">720</x:Double>
+
+        <!-- Typography with no matching frame token (mockup: .title-row h1, h1.entry-name, .filter-chip / .sort-btn). -->
+        <x:Double x:Key="ContentTabTitleFontSize">26</x:Double>
+        <x:Double x:Key="ContentDetailNameFontSize">34</x:Double>
+        <x:Double x:Key="ContentChipFontSize">11.5</x:Double>
+
+        <!-- Paddings with no matching frame token (mockup: .entry, .list-scroll, .detail-inner, .group-label, .filter-chip, .entry-badge.pill, .tag). -->
+        <Thickness x:Key="ContentRowPadding">9,8</Thickness>
+        <Thickness x:Key="ContentListScrollPadding">10,8,10,24</Thickness>
+        <Thickness x:Key="ContentDetailInnerPadding">40,30,40,70</Thickness>
+        <Thickness x:Key="ContentSectionHeaderPadding">8,12,8,5</Thickness>
+        <Thickness x:Key="ContentChipPadding">9,6</Thickness>
+        <Thickness x:Key="ContentBadgePillPadding">7,2</Thickness>
+        <Thickness x:Key="ContentTagPadding">10,3</Thickness>
+
+        <!-- Pill shape shared by a colored badge and a detail tag (mockup: border-radius: 999px). -->
+        <CornerRadius x:Key="ContentPillCornerRadius">999</CornerRadius>
+
+        <!-- Selected-row look: two SEPARATE elements, matching mockup's .entry.selected (dim
+             background) and .entry.selected::before (a stripe outside the row, not its border) per
+             the architect's clarification - offset -10px, inset 5px top/bottom, width 2.5px, radius
+             2px. DungeonAccentDimColor in Tokens.axaml equals DungeonAccentColor today (not dimmed),
+             so it is not used here - this brush carries the mockup's own dim value instead; the token
+             gap is reported separately, and Tokens.axaml itself is untouched. -->
+        <SolidColorBrush x:Key="ContentSelectedRowBrush" Color="{DynamicResource DungeonAccentColor}" Opacity="0.16" />
+        <Thickness x:Key="ContentRowSelectionStripeMargin">-10,5,0,5</Thickness>
+        <x:Double x:Key="ContentRowSelectionStripeWidth">2.5</x:Double>
+        <CornerRadius x:Key="ContentRowSelectionStripeCornerRadius">2</CornerRadius>
+
+        <!-- One row template shared by every entry row AND a rejected pack's own selectable header
+             (docs/architecture.md, "Zakładki treści": "Odrzucona paczka... wybieralny jak wiersz") -
+             both are the same ContentRowViewModel shape, so this is the one place either is drawn. -->
+        <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
+            <Panel ClipToBounds="False">
+                <Border Classes="content-row-background" Classes.selected="{Binding IsSelected}">
+                    <Button Classes="content-row-button" Command="{Binding SelectCommand}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                       IsVisible="{Binding !IsBroken}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                            <TextBlock Grid.Column="0" Text="{Binding Name}"
+                                       IsVisible="{Binding IsBroken}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource DungeonDangerBrush}" />
+
+                            <TextBlock Grid.Column="1" Classes="muted" Text="{Binding BadgeText}"
+                                       IsVisible="{Binding HasPlainBadge}"
+                                       VerticalAlignment="Center" />
+                            <Border Grid.Column="1"
+                                    IsVisible="{Binding HasColoredBadge}"
+                                    CornerRadius="{StaticResource ContentPillCornerRadius}"
+                                    Padding="{StaticResource ContentBadgePillPadding}"
+                                    Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}">
+                                <TextBlock Text="{Binding BadgeText}"
+                                           Foreground="{Binding BadgeBrush}"
+                                           FontSize="{StaticResource ContentChipFontSize}" />
+                            </Border>
+                        </Grid>
+                    </Button>
+                </Border>
+                <Border Classes="content-row-stripe" IsVisible="{Binding IsSelected}" />
+            </Panel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.content-row-background">
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Border.content-row-background:pointerover:not(.selected)">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="Border.content-row-background.selected">
+            <Setter Property="Background" Value="{StaticResource ContentSelectedRowBrush}" />
+        </Style>
+        <Style Selector="Border.content-row-stripe">
+            <Setter Property="Width" Value="{StaticResource ContentRowSelectionStripeWidth}" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="{StaticResource ContentRowSelectionStripeMargin}" />
+            <Setter Property="CornerRadius" Value="{StaticResource ContentRowSelectionStripeCornerRadius}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="Button.content-row-button">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Padding" Value="{StaticResource ContentRowPadding}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="FontWeight" Value="Normal" />
+        </Style>
+        <Style Selector="Button.content-chip">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Padding" Value="{StaticResource ContentChipPadding}" />
+            <Setter Property="FontSize" Value="{StaticResource ContentChipFontSize}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="Button.content-chip.active">
+            <Setter Property="Background" Value="{StaticResource ContentSelectedRowBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="Button.content-link">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontSize" Value="{StaticResource ContentChipFontSize}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="Button.content-link:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Detail column templates - one per shape ContentDetailViewModel can be (docs/architecture.md,
+         "Niezmiennik interfejsu": the view knows both compiled shapes; only a value ever comes from
+         data). DataType drives which template an untyped ContentControl picks; x:DataType alongside
+         it gives every binding inside compiled type-checking, the same double attribute
+         AppShellView.axaml's own UserControl.DataTemplates already uses. -->
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+                <ItemsControl ItemsSource="{Binding Breadcrumbs}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <TextBlock Classes="muted" Text="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                    <TextBlock Text="{Binding Category}"
+                               IsVisible="{Binding HasCategory}"
+                               FontSize="{DynamicResource DungeonHelperFontSize}"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource DungeonAccentBrush}" />
+                    <TextBlock Text="{Binding Name}"
+                               FontFamily="{DynamicResource DungeonDisplayFont}"
+                               FontSize="{StaticResource ContentDetailNameFontSize}"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                </StackPanel>
+
+                <ItemsControl ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border CornerRadius="{StaticResource ContentPillCornerRadius}"
+                                    Padding="{StaticResource ContentTagPadding}"
+                                    Margin="0,0,6,6"
+                                    BorderThickness="1"
+                                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}">
+                                <TextBlock Text="{Binding}"
+                                           FontSize="{StaticResource ContentChipFontSize}"
+                                           Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <ContentControl Content="{Binding Card}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="ct:BrokenContentDetailViewModel" x:DataType="ct:BrokenContentDetailViewModel">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingMd}">
+                <TextBlock Text="{Binding Name}"
+                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                           FontSize="{StaticResource ContentDetailNameFontSize}"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource DungeonDangerBrush}" />
+                <SelectableTextBlock Text="{Binding Reason}"
+                                      TextWrapping="Wrap"
+                                      Foreground="{DynamicResource DungeonTextRegularBrush}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,*" MinHeight="0">
+
+        <!-- ===== Nagłówek zakładki ===== -->
+        <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingXxl}" Spacing="{DynamicResource DungeonSpacingXs}">
+            <TextBlock Classes="muted" Text="Biblioteka" />
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}" VerticalAlignment="Bottom">
+                <TextBlock Text="{Binding Title}"
+                           FontFamily="{DynamicResource DungeonDisplayFont}"
+                           FontSize="{StaticResource ContentTabTitleFontSize}"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                <TextBlock Classes="muted" Text="{Binding CountText}" VerticalAlignment="Bottom" Margin="0,0,0,4" />
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ===== Ciało: lista + szczegół ===== -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" MinHeight="0">
+
+            <!-- ===== Kolumna listy - stała szerokość, nigdy się nie kurczy. ===== -->
+            <Border x:Name="PART_ListColumn"
+                    Grid.Column="0"
+                    Width="{StaticResource ContentListColumnWidth}"
+                    MinWidth="{StaticResource ContentListColumnWidth}"
+                    BorderBrush="{DynamicResource DungeonBorderBrush}"
+                    BorderThickness="0,1,1,0">
+                <Grid RowDefinitions="Auto,Auto,*" MinHeight="0">
+
+                    <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingMd}">
+                        <TextBox Text="{Binding Search, Mode=TwoWay}" PlaceholderText="Szukaj po nazwie…" />
+
+                        <WrapPanel>
+                            <Button Classes="content-chip" Classes.active="{Binding CategoryFilter.IsActive}"
+                                    Content="{Binding CategoryFilter.ChipText}"
+                                    IsVisible="{Binding CategoryFilter.IsAvailable}"
+                                    Margin="0,0,6,6">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
+                                                 SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+
+                            <ItemsControl ItemsSource="{Binding ValueFilters}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
+                                        <Button Classes="content-chip" Classes.active="{Binding IsActive}"
+                                                Content="{Binding ChipText}"
+                                                IsVisible="{Binding IsAvailable}"
+                                                Margin="0,0,6,6">
+                                            <Button.Flyout>
+                                                <Flyout>
+                                                    <ListBox ItemsSource="{Binding FlyoutItems}"
+                                                             SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Classes="content-chip" Classes.active="{Binding SourceFilter.IsActive}"
+                                    Content="{Binding SourceFilter.ChipText}"
+                                    IsVisible="{Binding SourceFilter.IsAvailable}"
+                                    Margin="0,0,6,6">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
+                                                 SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                        </WrapPanel>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Button Grid.Column="0" Classes="content-link" HorizontalAlignment="Left"
+                                    Content="{Binding SelectedSort, StringFormat='Sortuj: {0}'}">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ListBox ItemsSource="{Binding SortOptions}"
+                                                 SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                            <Button Grid.Column="1" Classes="content-link" HorizontalAlignment="Right"
+                                    Content="Wyczyść filtry" Command="{Binding ClearFiltersCommand}" />
+                        </Grid>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
+
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding Sections}" Padding="{StaticResource ContentListScrollPadding}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="ct:ContentSectionViewModel">
+                                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+
+                                        <!-- Nagłówek zwykłej paczki: etykieta, nie wiersz. -->
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="{DynamicResource DungeonSpacingXs}"
+                                                    Margin="{StaticResource ContentSectionHeaderPadding}"
+                                                    IsVisible="{Binding !IsRejectedPack}">
+                                            <TextBlock Classes="eyebrow" Text="{Binding Header}" />
+                                            <TextBlock Classes="eyebrow" Text="{Binding Count, StringFormat={}{0}}" />
+                                        </StackPanel>
+
+                                        <!-- Nagłówek odrzuconej paczki: wybieralny jak wiersz, kolor niebezpieczeństwa - the same row template every entry row uses. -->
+                                        <ContentControl IsVisible="{Binding IsRejectedPack}"
+                                                         Content="{Binding HeaderRow}"
+                                                         ContentTemplate="{StaticResource ContentRowTemplate}" />
+
+                                        <!-- Wiersze wpisów. -->
+                                        <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource ContentRowTemplate}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Spacing="{DynamicResource DungeonSpacingXs}" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- ===== Kolumna szczegółu - największa szerokość z mockupu, wyrównana do lewej. ===== -->
+            <!-- The width cap (MaxWidth) lives on this outer Border, one level above the ScrollViewer
+                 it wraps, not on anything inside that ScrollViewer: a ScrollViewer's own content
+                 presenter reserves gutter width for its vertical scrollbar, which would otherwise
+                 shrink whatever is capped inside it by that scrollbar's width - an Avalonia
+                 implementation detail with no equivalent in the mockup's CSS. Capping out here means
+                 PART_DetailInner's own width is exactly min(available Grid column, 720) regardless of
+                 whether a scrollbar ends up showing, which is what "największa szerokość z mockupu"
+                 means and what the rendering test measures. HorizontalAlignment is left at its
+                 Stretch default deliberately: that is what fills up to MaxWidth and then stops,
+                 anchored at the left, instead of shrinking to the content's own natural size. The
+                 padding itself sits one level further in, as the content StackPanel's own Margin, so
+                 it never affects PART_DetailInner's own measured width. -->
+            <Border x:Name="PART_DetailInner"
+                    Grid.Column="1"
+                    MaxWidth="{StaticResource ContentDetailMaxWidth}">
+                <ScrollViewer x:Name="PART_DetailColumn" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}" Margin="{StaticResource ContentDetailInnerPadding}">
+                        <TextBlock IsVisible="{Binding ShowSelectionPrompt}"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   Text="Wybierz wpis z listy po lewej, aby zobaczyć kartę." />
+
+                        <ContentControl Content="{Binding Detail}" IsVisible="{Binding HasDetail}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
