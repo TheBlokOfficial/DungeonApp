@@ -1,8 +1,11 @@
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using DungeonApp.Library.Entries;
 using DungeonApp.Library.Entries.Desktop.Content;
@@ -93,7 +96,7 @@ public sealed class ContentTabRenderingTests
     // -----------------------------------------------------------------------------------------
 
     [AvaloniaFact]
-    public void The_selected_rows_stripe_is_a_separate_element_offset_from_the_row_with_a_gap()
+    public void The_selected_rows_stripe_is_a_separate_element_inset_at_the_rows_own_left_edge()
     {
         var viewModel = BuildViewModel();
         var window = BuildWindow(width: 1920, viewModel);
@@ -112,15 +115,107 @@ public sealed class ContentTabRenderingTests
 
         Assert.Equal(2.5, stripe.Bounds.Width);
         Assert.Equal(2, stripe.CornerRadius.TopLeft);
-        Assert.Equal(rowTopLeft.X - 10, stripeTopLeft.X);
+        // krok 10, brief A5: every negative offset tried here (the original -10, and -6, -2)
+        // rendered invisible or clipped to a sliver - see
+        // Selected_rows_stripe_renders_a_visible_pixel_at_its_own_center below, and this type's own
+        // remarks. The stripe sits at the row's own left edge (X equal, not offset) instead.
+        Assert.Equal(rowTopLeft.X, stripeTopLeft.X);
         Assert.Equal(rowTopLeft.Y + 5, stripeTopLeft.Y);
         Assert.Equal(row.Bounds.Height - 10, stripe.Bounds.Height);
-
-        // The gap the coordinator called out: the stripe's right edge never touches the row's own
-        // left edge - it stops short, with empty space between them.
-        var gap = rowTopLeft.X - (stripeTopLeft.X + stripe.Bounds.Width);
-        Assert.Equal(7.5, gap);
     }
+
+    /// <summary>
+    /// krok 10, brief A5: "Kreska zaznaczenia wiersza listy musi być widoczna. Dziś przycina ją
+    /// krawędź listy." A <see cref="Control.Bounds"/> assertion (the test above) cannot catch a
+    /// clipped-to-invisible element - its Bounds are exactly what they should be either way, since
+    /// clipping happens during rendering, not layout. Only an actual rendered pixel, sampled from the
+    /// whole window (reproducing the exact clip/paint chain a GM actually sees), tells the two apart.
+    /// <para>
+    /// This fails against the original -10 margin (ContentRowSelectionStripeMargin,
+    /// ContentTabView.axaml): with ContentListScrollPadding's own 10px left padding, -10 lands the
+    /// stripe exactly on the row's own left edge and paints nothing there - measured directly (see
+    /// that resource's own remarks) - and every other negative offset tried behaved the same way, all
+    /// the way down to -2.
+    /// </para>
+    /// </summary>
+    [AvaloniaFact]
+    public void Selected_rows_stripe_renders_a_visible_pixel_at_its_own_center()
+    {
+        var viewModel = BuildViewModel();
+        var window = BuildWindow(width: 1920, viewModel);
+
+        viewModel.Sections.Single().Rows.Single().SelectCommand.Execute(null);
+        window.GetLayoutManager()!.ExecuteLayoutPass();
+
+        var stripe = window.GetVisualDescendants().OfType<Border>()
+            .Single(b => b.Classes.Contains("content-row-stripe") && b.IsVisible);
+
+        // A point well inside the stripe's own bounds (past its rounded corners), in the WHOLE
+        // window's own coordinate space.
+        var samplePoint = stripe.TranslatePoint(new Point(1.25, stripe.Bounds.Height / 2), window)!.Value;
+
+        var pixel = SamplePixel(window, samplePoint);
+        var accent = ResolveColor(window, "DungeonAccentBrush");
+
+        // The stripe brush itself is fully opaque (Background="{DynamicResource DungeonAccentBrush}"),
+        // so a visible stripe pixel matches the accent color outright - a clipped one instead shows
+        // whatever sits behind it (the list's own background), never this color.
+        Assert.Equal(accent, pixel);
+    }
+
+    /// <summary>krok 10, brief A5: "Zaznaczony wiersz pogrubiony."</summary>
+    [AvaloniaFact]
+    public void Selecting_a_row_makes_its_name_semibold_and_deselecting_it_returns_to_normal()
+    {
+        var viewModel = BuildViewModel();
+        var window = BuildWindow(width: 1920, viewModel);
+
+        // Re-queried after selecting, not captured beforehand: selecting rebuilds Sections (a fresh
+        // ContentRowViewModel/ContentSectionViewModel list, per ContentTabViewModel's own Apply/
+        // ApplyResult), so the ItemsControl regenerates its row containers - a TextBlock reference
+        // captured before the rebuild would be stale, detached from the visual tree.
+        Assert.Equal(FontWeight.Normal, CurrentRowName(window).FontWeight);
+
+        viewModel.Sections.Single().Rows.Single().SelectCommand.Execute(null);
+        window.GetLayoutManager()!.ExecuteLayoutPass();
+
+        Assert.Equal(FontWeight.SemiBold, CurrentRowName(window).FontWeight);
+    }
+
+    private static Color SamplePixel(Visual visual, Point point)
+    {
+        var width = (int)Math.Ceiling(visual.Bounds.Width);
+        var height = (int)Math.Ceiling(visual.Bounds.Height);
+
+        using var bitmap = new RenderTargetBitmap(new PixelSize(width, height));
+        bitmap.Render(visual);
+
+        var buffer = Marshal.AllocHGlobal(4);
+        try
+        {
+            var samplePoint = new PixelPoint((int)point.X, (int)point.Y);
+            bitmap.CopyPixels(new PixelRect(samplePoint.X, samplePoint.Y, 1, 1), buffer, 4, 4);
+
+            var bytes = new byte[4];
+            Marshal.Copy(buffer, bytes, 0, 4);
+
+            // Avalonia's default software render target pixel format is Bgra8888.
+            return Color.FromArgb(bytes[3], bytes[2], bytes[1], bytes[0]);
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(buffer);
+        }
+    }
+
+    private static Color ResolveColor(Window window, string brushResourceKey)
+    {
+        var brush = (ISolidColorBrush)window.FindResource(brushResourceKey)!;
+        return brush.Color;
+    }
+
+    private static TextBlock CurrentRowName(Window window) =>
+        window.GetVisualDescendants().OfType<TextBlock>().Single(tb => tb.Classes.Contains("row-name") && tb.IsVisible);
 
     private static Point TopLeftIn(Visual visual, Visual ancestor) =>
         visual.TranslatePoint(new Point(0, 0), ancestor)!.Value;

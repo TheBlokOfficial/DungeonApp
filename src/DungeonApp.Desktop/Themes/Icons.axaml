@@ -132,4 +132,10 @@
             <GeometryDrawing Geometry="M9,12 L20,12 M16,8 L20,12 L16,16" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <!-- Chevron pointing down - dropdown affordance for a filter chip and the sort button (krok 10,
+         brief A4). Same pen and 24x24 viewbox as every other outline icon; only the direction differs
+         from DungeonIconChevronRight above. -->
+    <DrawingImage x:Key="DungeonIconChevronDown" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M5,9 L12,16 L19,9" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
 </ResourceDictionary>
