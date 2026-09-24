@@ -15,7 +15,7 @@ namespace DungeonApp.Desktop.Content;
 /// content types or a way to draw a card - that knowledge stays entirely on the concrete system
 /// class, used only by the library and by the system's own tab factories.
 /// <para>
-/// Today exactly one implementation exists (<c>Dnd5eSystem</c>), but nothing here or in the
+/// Today exactly one implementation of a game system exists, but nothing here or in the
 /// composition root singles it out - <c>App.axaml.cs</c> holds an <see cref="IReadOnlyList{T}"/>
 /// of these, never a single named instance, per docs/architecture.md's "Narzędzia biurka i system
 /// okien".

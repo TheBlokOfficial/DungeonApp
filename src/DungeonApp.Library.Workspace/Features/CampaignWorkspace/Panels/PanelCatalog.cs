@@ -18,8 +18,8 @@ public sealed class PanelCatalog
     public IReadOnlyList<WorkspacePanelDescriptor> All { get; }
 
     /// <summary>
-    /// <paramref name="tools"/> is what the chosen system's own desk-tab factory built (today,
-    /// <c>Dnd5eSystem.CreateDeskTabAsync</c>, which calls <see cref="CampaignDesk.CreateAsync"/> with
+    /// <paramref name="tools"/> is what the chosen system's own desk-tab factory built (the game
+    /// system implementation's desk-tab method, which calls <see cref="CampaignDesk.CreateAsync"/> with
     /// this list) - the catalog's only source, since the shell itself contributes no panel of its
     /// own. Kept as a dedicated step, rather than handing the list straight through, so that "shell
     /// panels first, then system tools" stays the shape of this code even while the first list is

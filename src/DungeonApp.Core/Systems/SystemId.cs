@@ -14,7 +14,7 @@ namespace DungeonApp.Core.Systems;
 /// frame is not supposed to reference that namespace at all (docs/architecture.md, "Rama, biblioteka,
 /// system" - "system przestaje być dla ramy katalogiem typów"), and a shared type would be exactly
 /// that reference kept alive by a back door. The two ids happen to be spelled the same for today's one
-/// system (<c>Dnd5eSystem</c> mints both from the same literal), but nothing here assumes they must
+/// system (its implementation mints both from the same literal), but nothing here assumes they must
 /// be - a system is free to pick a different content-set id than its own frame identity.
 /// </para>
 /// <para>
