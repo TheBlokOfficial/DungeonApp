@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TextContrastTable">
+    <!-- Rows: text roles; columns: the backgrounds text stands on. The cells are built in code from
+         the two lists in TextContrastTable.axaml.cs, and every contrast ratio is computed there from
+         the current color resources - none is written by hand. -->
+    <Grid x:Name="Table"
+          HorizontalAlignment="Left"
+          ColumnSpacing="{DynamicResource DungeonSpacingXs}"
+          RowSpacing="{DynamicResource DungeonSpacingXs}" />
+</UserControl>

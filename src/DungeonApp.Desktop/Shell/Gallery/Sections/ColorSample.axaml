@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ColorSample">
+    <!-- One rung of the color ladder: the swatch, the token's name, and a caption with the value the
+         swatch actually paints (read from the brush in code) and the token's meaning. -->
+    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+        <Border x:Name="SwatchBorder"
+                Width="48"
+                Height="28"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource DungeonBorderBrush}"
+                VerticalAlignment="Center" />
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock x:Name="TitleText" Classes="label" />
+            <!-- The runs stay on one line: whitespace between inline elements would become spaces. -->
+            <TextBlock Classes="caption muted"><Run x:Name="ValueRun" FontFamily="{DynamicResource DungeonMonoFont}" /><Run Text=" · " /><Run x:Name="MeaningRun" /></TextBlock>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
