@@ -5,9 +5,42 @@
     <!-- MOTYWY PRZYCISKÓW                                                   -->
     <!-- =================================================================== -->
 
+    <!--
+        Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
+        wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Fokus nie ma własnego wyglądu (FocusAdorner pusty).
+        Odmiany:
+          (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
+          .primary - główny: tło Accent, tekst OnAccent, krawędź przezroczysta;
+          .subtle  - cichy: bez tła, krawędź przezroczysta;
+          .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
+          .link    - link: bez tła i krawędzi, wysokość z treści, tekst Accent, kursor ręka,
+                     podkreślenie pod myszą;
+          .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, ikona 16 px.
+        Krawędź ma zawsze 1 px (w odmianach bez krawędzi - przezroczysta), więc zmiana odmiany ani
+        stanu nie zmienia rozmiaru. Wysokość i szerokość nadaje motyw albo kontener, nie treść:
+        tekst przycina się wielokropkiem.
+        Kolejność stylów ma znaczenie: odmiana i jej stany stoją po stanach zwykłego, żeby je
+        nadpisać.
+    -->
     <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
@@ -22,9 +55,102 @@
                                   Padding="{TemplateBinding Padding}"
                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  TextBlock.TextTrimming="CharacterEllipsis"
+                                  TextBlock.TextWrapping="NoWrap"
                                   RecognizesAccessKey="True" />
             </ControlTemplate>
         </Setter>
+
+        <!-- Zwykły -->
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        </Style>
+
+        <!-- Główny -->
+        <Style Selector="^.primary">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
+        </Style>
+        <Style Selector="^.primary:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrightBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.primary:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentActionBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- Cichy -->
+        <Style Selector="^.subtle">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.subtle:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.subtle:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- Niszczący -->
+        <Style Selector="^.danger">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.danger:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerHoverBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.danger:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerPressedBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <!-- Link: bez krawędzi (także przezroczystej), bo stoi w linii tekstu. -->
+        <Style Selector="^.link">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="^.link:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^.link:pointerover TextBlock">
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+        <Style Selector="^.link:pressed">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentActionBrush}" />
+        </Style>
+
+        <!-- Ikonowy -->
+        <Style Selector="^.icon">
+            <Setter Property="Width" Value="{DynamicResource DungeonControlHeight}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="^.icon Image">
+            <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>

@@ -54,7 +54,6 @@
         <Color x:Key="DungeonAccentActionColor">#AD7B36</Color>
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
-        <Color x:Key="DungeonPrimaryDisabledColor">#302C28</Color>
         <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
         <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
@@ -104,7 +103,6 @@
         <SolidColorBrush x:Key="DungeonAccentActionBrush" Color="{DynamicResource DungeonAccentActionColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
-        <SolidColorBrush x:Key="DungeonPrimaryDisabledBrush" Color="{DynamicResource DungeonPrimaryDisabledColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
