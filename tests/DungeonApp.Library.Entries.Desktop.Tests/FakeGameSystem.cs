@@ -81,4 +81,6 @@ internal sealed class FakeGameSystem(
     }
 
     public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+
+    public Avalonia.Media.IBrush? ResolveBadgeBrush(string colorKey) => null;
 }

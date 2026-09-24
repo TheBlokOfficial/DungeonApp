@@ -1,18 +1,19 @@
 using Avalonia.Controls;
+using Avalonia.Media;
 using DungeonApp.Library.Entries;
 
 namespace DungeonApp.Library.Entries.Desktop.Content;
 
 /// <summary>
-/// The library's only window onto what an entry looks like. One method: hand over an entry, get back
-/// a finished card. Implemented by a system (the only place allowed to be concrete about a content
-/// type - docs/architecture.md, "Kontrakty są interfejsami"), consumed by the library wherever it
-/// needs to draw a card without knowing what is inside one - <c>RegistryViewModel</c> today.
+/// The library's only window onto what an entry looks like. Implemented by a system (the only place
+/// allowed to be concrete about a content type - docs/architecture.md, "Kontrakty są interfejsami"),
+/// consumed by the library wherever it needs to draw a card, or color a badge, without knowing what
+/// is inside one - the content tab skeleton (krok 10, zlecenie 2) today.
 /// <para>
 /// This used to be a frame contract (<c>DungeonApp.Desktop.Content.IContentPresentation</c>). It
-/// moved here once the frame stopped needing to draw a card at all: the registry tab is now built by
-/// the system itself, from this library's own registry view, and handed to the frame as a plain,
-/// already-finished tab - the frame never calls <see cref="CreateCard"/>.
+/// moved here once the frame stopped needing to draw a card at all: every tab built from this
+/// library's own skeleton is handed to the frame as a plain, already-finished tab - the frame never
+/// calls either method below.
 /// </para>
 /// </summary>
 public interface IContentPresentation
@@ -25,4 +26,14 @@ public interface IContentPresentation
     /// <see cref="RegisteredEntry.Unresolved"/> first.
     /// </summary>
     Control CreateCard(Entry entry);
+
+    /// <summary>
+    /// Turns a row badge's <see cref="ContentBadge.ColorKey"/> into an actual brush - the one place
+    /// allowed to, per docs/architecture.md's "Niezmiennik interfejsu": colors belonging to a system
+    /// (rarity, today) live in the system, never borrowed from the frame's own meaning-carrying
+    /// tokens. Called only when <see cref="ContentBadge.ColorKey"/> is not null; returns null for a
+    /// key this system does not recognise, which the caller then draws the same plain, muted way as a
+    /// badge with no color key at all - "klucz bez odpowiedzi" never throws.
+    /// </summary>
+    IBrush? ResolveBadgeBrush(string colorKey);
 }

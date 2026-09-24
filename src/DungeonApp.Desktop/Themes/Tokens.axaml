@@ -32,8 +32,11 @@
         <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <Color x:Key="DungeonPrimaryDisabledColor">#302C28</Color>
+        <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
+        <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
         <Color x:Key="DungeonWarningColor">#CF9B55</Color>
+        <!-- Niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
 
         <!-- PĘDZLE ============================================================= -->
