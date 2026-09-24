@@ -674,6 +674,10 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   34 dla nagłówków. Style tekstu nazywają role, nie stopnie; nowa rola dostaje jeden z tych stopni.
   Tekst w kontrolce, którą się klika albo w której się pisze, ma co najmniej 12; stopień 11 jest dla
   informacji drugorzędnej, której się nie klika.
+* **Zakreślenie a odznaka — po tym, czym rzecz jest.** Wartość, która pozostaje tekstem (wyzwanie
+  „1/2", trafienie wyszukiwania), dostaje zakreślenie: styl tekstu jak pogrubienie, tło przylega do
+  liter i płynie z tekstem. Rzecz sama w sobie — kategoria, przynależność, typ („Humanoid") — dostaje
+  odznakę albo tag: pojemnik z wcięciem, zaokrągleniem i wysokością z motywu.
   Liczby idą krojem o stałej szerokości, nigdy krojem nagłówków.
 
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.

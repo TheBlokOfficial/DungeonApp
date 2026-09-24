@@ -86,7 +86,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
      | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | czeka | 33 / 6,3 / 2,7 mln |
      | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety); margines separatora `section` z tokenu grubości zamiast pustych paneli w stosie (obejście z 0b) | | |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*` | | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*` | | |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
@@ -146,8 +146,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   z niego fokus (dziś kursor miga dalej).
 
 *B. Karta potwora*
-* Wyzwanie — odznaka z motywu w odmianie wyróżnionej (porcja 8), samo „1/2"; PD obok, przygaszone
-  (autor 2026-09-24, pytanie o „marker" wyzwania).
+* Wyzwanie — zakreślenie z motywu (porcja 2), samo „1/2"; PD obok, przygaszone. Tagi kategorii
+  („Humanoid") — odznaka/tag z porcji 8. Reguła: `architecture.md`, *Konwencje interakcji*.
 * Opisy, akcje i cechy szczególne stylem tekstu do zaznaczenia (porcja 2); powód błędu w miejscu karty
   także — *Konwencje interakcji* w `architecture.md`.
 * Nagłówki „Cechy szczególne"/„Akcje" jasne i wyraźne jak w mockupie; „CECHY" wersalikami; styl

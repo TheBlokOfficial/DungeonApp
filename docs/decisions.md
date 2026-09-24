@@ -342,6 +342,10 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   widać, nie niesie informacji, a każe wybierać. Role zostały; łączą się tylko ich stopnie. Wysokość
   linii dostają wyłącznie style tekstu wielowierszowego: nagłówek o linii 1,05 z mockupu obcinał
   w aplikacji ogonki liter.
+* **Zakreślenie a odznaka** — autor, 2026-09-24: „przy wyzwaniu chcę zakreślenia, bo to jest wciąż
+  jakby tekst. […] odznaka «Humanoid» nie może być zakreśleniem i musi być kontenerem, bo ma logiczne
+  tło za sobą, prezentuje kategorię". Asystent proponował odznakę dla wyzwania, argumentując wyglądem
+  (wcięcie, stała wysokość); autor rozstrzygnął znaczeniem — i to znaczenie jest regułą.
 * **Liczby nigdy krojem nagłówków** — Cormorant ma cyfry starodrukowe, „15" czyta się jak „1s".
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
