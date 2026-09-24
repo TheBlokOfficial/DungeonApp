@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using DungeonApp.Library.Entries;
@@ -48,6 +49,30 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
+    /// <summary>
+    /// Rarity tiers in display order, paired with the color-key name (krok 10, zlecenie 1, część C)
+    /// their badge carries - an opaque intent for <see cref="ContentBadge.ColorKey"/>, not a color;
+    /// zlecenie 2 is the only place allowed to turn it into one. A rarity string this system does not
+    /// recognise gets no color key and falls after every known tier when "Rzadkość" is ordered
+    /// (see <see cref="RankedTextComparer"/>).
+    /// </summary>
+    private static readonly IReadOnlyList<(string Tier, string ColorKey)> RarityTiers =
+    [
+        ("Pospolity", "rarity-common"),
+        ("Niezwykły", "rarity-uncommon"),
+        ("Rzadki", "rarity-rare"),
+        ("Bardzo rzadki", "rarity-very-rare"),
+        ("Legendarny", "rarity-legendary"),
+        ("Artefakt", "rarity-artifact"),
+    ];
+
+    private static readonly IComparer<string> RarityOrder = new RankedTextComparer([.. RarityTiers.Select(tier => tier.Tier)]);
+
+    private static readonly IReadOnlyDictionary<string, string> RarityColorKeys =
+        RarityTiers.ToDictionary(tier => tier.Tier, tier => tier.ColorKey, StringComparer.Ordinal);
+
+    private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
+
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ContentTypeDescriptor _monster;
     private readonly ContentTypeDescriptor _gear;
@@ -71,6 +96,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         SystemTabs = [new SystemTabDeclaration("dnd5e.registry", "Rejestr", "DungeonIconDatabase", CreateRegistryTab)];
         CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
+
+        ContentTabDefinitions = [BuildMonsterContentTab(), BuildGearContentTab()];
     }
 
     public SystemId Id { get; }
@@ -89,6 +116,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; }
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
+
+    /// <summary>
+    /// This system's two content tabs - "Potwory" and "Przedmioty" - as pure data: a title and the
+    /// content type profile(s) that fill it (krok 10, zlecenie 1, część C). Not stood up on the
+    /// System bar and not touched by <see cref="SystemTabs"/> or <see cref="CreateRegistryTab"/> -
+    /// building the actual tab, from <c>ContentListModel</c>, is zlecenie 2.
+    /// </summary>
+    public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [InstancesModel.Declaration];
 
@@ -177,6 +212,43 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     {
         var viewModel = new RegistryViewModel(_loadPacksStep.Registry, this);
         return new DelegateTabContent(new RegistryView { DataContext = viewModel });
+    }
+
+    /// <summary>
+    /// "Potwory": category = <see cref="Monster.Type"/>; tags = size, type, alignment; badge =
+    /// challenge, no color key; one value filter and one sort, both "Wyzwanie", both ordered by
+    /// <see cref="ChallengeOrder"/> (krok 10, zlecenie 1, część C).
+    /// </summary>
+    private ContentTabDefinition BuildMonsterContentTab()
+    {
+        var profile = new ContentTypeProfile<Monster>(
+            _monster.Reference,
+            category: monster => monster.Type,
+            tags: monster => [monster.Size, monster.Type, monster.Alignment],
+            badge: monster => new ContentBadge(monster.Challenge),
+            valueFilters: [new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder)],
+            sorts: [new ContentSortSpec<Monster>("Wyzwanie", (a, b) => ChallengeOrder.Compare(a.Challenge, b.Challenge))]);
+
+        return new ContentTabDefinition("Potwory", [profile]);
+    }
+
+    /// <summary>
+    /// "Przedmioty": no category (the "Kategoria" filter is unavailable in this tab); tags =
+    /// rarity; badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
+    /// tier and none for anything else; one value filter, "Rzadkość", ordered by
+    /// <see cref="RarityOrder"/>; no extra sort beyond the library's own default (krok 10,
+    /// zlecenie 1, część C).
+    /// </summary>
+    private ContentTabDefinition BuildGearContentTab()
+    {
+        var profile = new ContentTypeProfile<Gear>(
+            _gear.Reference,
+            category: null,
+            tags: gear => [gear.Rarity],
+            badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
+            valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)]);
+
+        return new ContentTabDefinition("Przedmioty", [profile]);
     }
 
     /// <summary>
