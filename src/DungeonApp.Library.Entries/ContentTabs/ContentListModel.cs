@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace DungeonApp.Library.Entries;
@@ -30,6 +31,17 @@ namespace DungeonApp.Library.Entries;
 public sealed class ContentListModel
 {
     public const string DefaultSortLabel = "Nazwa (A-Z)";
+
+    /// <summary>
+    /// The order every user-visible list in a content tab sorts by: pl-PL collation, case
+    /// insensitive, so "Ł", "Ś", "Ż", "Ć" and friends sort next to their plain Latin neighbours
+    /// instead of landing after "z" the way ordinal comparison puts them. Everything a GM actually
+    /// reads as a list - the name sort, broken rows, section headers, "Kategoria" and "Źródło"
+    /// options - goes through this one comparer. Tie-breaking on an address or an already-ordinal
+    /// value (an entry's own <see cref="EntryAddress"/>, a value filter's system-declared numeric or
+    /// ranked order) is a different question and stays whatever it already was.
+    /// </summary>
+    private static readonly StringComparer DisplayOrder = StringComparer.Create(new CultureInfo("pl-PL"), ignoreCase: true);
 
     private readonly ContentTabDefinition _tab;
     private readonly IReadOnlyDictionary<ContentTypeReference, IContentTypeProfile> _profilesByType;
@@ -80,7 +92,7 @@ public sealed class ContentListModel
 
         _categoryFilter = new ContentFilterOptions(
             "Kategoria",
-            DistinctSorted(validRows.Select(entry => Profile(entry).Category(entry.Entry)), StringComparer.OrdinalIgnoreCase));
+            DistinctSorted(validRows.Select(entry => Profile(entry).Category(entry.Entry)), DisplayOrder));
 
         var contributingPackIds = validRows.Select(entry => entry.Address.Pack)
             .Concat(brokenRows.Select(row => row.Pack))
@@ -89,8 +101,8 @@ public sealed class ContentListModel
         var sourceOptions = contributingPackIds
             .Select(id => _packsById[id].Name)
             .Distinct(StringComparer.Ordinal)
-            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
-            .Concat(_rejectedPacks.Select(pack => pack.Location).OrderBy(location => location, StringComparer.OrdinalIgnoreCase))
+            .OrderBy(name => name, DisplayOrder)
+            .Concat(_rejectedPacks.Select(pack => pack.Location).OrderBy(location => location, DisplayOrder))
             .ToArray();
 
         _sourceFilter = new ContentFilterOptions("Źródło", sourceOptions);
@@ -164,19 +176,19 @@ public sealed class ContentListModel
 
                 var broken = RowsFor(_brokenByPack, pack.Id)
                     .Where(row => MatchesSearch(row.DisplayName))
-                    .OrderBy(row => row.DisplayName, StringComparer.Ordinal)
+                    .OrderBy(row => row.DisplayName, DisplayOrder)
                     .ToArray();
 
                 return ContentSection.ForPack(pack.Name, valid, broken);
             })
             .Where(section => section.ShownCount > 0)
             .Where(section => state.Source is null || section.Header == state.Source)
-            .OrderBy(section => section.Header, StringComparer.OrdinalIgnoreCase);
+            .OrderBy(section => section.Header, DisplayOrder);
 
         var rejectedSections = _rejectedPacks
             .Select(ContentSection.ForRejectedPack)
             .Where(section => state.Source is null || section.Header == state.Source)
-            .OrderBy(section => section.Header, StringComparer.OrdinalIgnoreCase);
+            .OrderBy(section => section.Header, DisplayOrder);
 
         IReadOnlyList<ContentSection> sections = [.. validSections, .. rejectedSections];
 
@@ -228,7 +240,7 @@ public sealed class ContentListModel
                 return primary;
             }
 
-            var byName = string.CompareOrdinal(a.Entry.Name, b.Entry.Name);
+            var byName = DisplayOrder.Compare(a.Entry.Name, b.Entry.Name);
 
             return byName != 0 ? byName : string.CompareOrdinal(a.Address.ToString(), b.Address.ToString());
         };

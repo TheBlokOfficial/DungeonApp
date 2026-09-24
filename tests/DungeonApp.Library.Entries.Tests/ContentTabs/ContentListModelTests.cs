@@ -140,10 +140,9 @@ public sealed class ContentListModelTests
 
         var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
 
-        // Ordinal, like every other sort this model does - uppercase "Z" (0x5A) sorts before
-        // lowercase "entries/..." (0x65), the same convention RegistryViewModel already uses.
+        // pl-PL, case insensitive, like every other user-visible order in this model.
         var section = Assert.Single(result.Sections);
-        Assert.Equal(["Zeta", "entries/aardvark.json"], section.BrokenRows.Select(row => row.DisplayName));
+        Assert.Equal(["entries/aardvark.json", "Zeta"], section.BrokenRows.Select(row => row.DisplayName));
     }
 
     // -----------------------------------------------------------------------------------------
@@ -456,6 +455,32 @@ public sealed class ContentListModelTests
 
         var section = Assert.Single(result.Sections);
         Assert.Equal(["Alfa", "Zeta"], section.ValidRows.Select(row => row.Entry.Name));
+    }
+
+    /// <summary>
+    /// Not ordinal: ordinal byte order puts every Polish letter after "z" ("Ż" is 0x017B, far past
+    /// "z"'s 0x007A), which is not the order a Polish-reading GM expects from an alphabetised list.
+    /// Confirmed against pl-PL directly before writing this assertion, not assumed.
+    /// </summary>
+    [Fact]
+    public void The_default_sort_uses_polish_collation_not_byte_order()
+    {
+        var pack = MakePack("alpha", "Alpha");
+        var registry = new ContentRegistry(
+            [pack],
+            [
+                Valid("alpha", "a1", "Żmija", WidgetType, "k", "1"),
+                Valid("alpha", "a2", "Zombie", WidgetType, "k", "1"),
+                Valid("alpha", "a3", "ćma", WidgetType, "k", "1"),
+                Valid("alpha", "a4", "Bugbear", WidgetType, "k", "1"),
+            ],
+            [],
+            []);
+
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
+
+        var section = Assert.Single(result.Sections);
+        Assert.Equal(["Bugbear", "ćma", "Zombie", "Żmija"], section.ValidRows.Select(row => row.Entry.Name));
     }
 
     // -----------------------------------------------------------------------------------------
