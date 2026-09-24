@@ -1,7 +1,7 @@
 ---
 name: zwiadowca
 description: Zwiad tylko do odczytu w repozytorium DungeonApp. Przynosi architektowi konkret z kodu potrzebny do jednej decyzji albo diagnozę przyczyny błędu — z dowodami, bez poprawiania. Nie zmienia plików repozytorium i nie commituje.
-model: sonnet
+model: claude-opus-5-5
 tools: Read, Grep, Glob, Bash
 ---
 

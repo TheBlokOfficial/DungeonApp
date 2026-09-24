@@ -84,11 +84,21 @@ zamknięciu poprzedniego; równolegle tylko na wyraźne polecenie autora.
 się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny właśnie po to, żeby myślenie
 zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
 
-**Haiku 4.5 do zadań mechanicznych, Sonnet do zadań z rozstrzygnięciami.** Decyzja autora
-z 2026-09-23, po próbie na drugim zleceniu etapu 4. Haiku dostaje zadania, których poprawności
+**Haiku 4.5 do zadań mechanicznych, Opus 5.5 do zadań z rozstrzygnięciami.** Decyzja autora
+z 2026-09-23 (Haiku), po próbie na drugim zleceniu etapu 4; Opus 5.5 zamiast Sonneta 5 — 2026-09-24. Haiku dostaje zadania, których poprawności
 pilnują build i testy — przeprowadzki, zmiany nazw, poprawki odwołań. Zlecenie wymienia wprost, co
 przenieść, a co usunąć; liczby z raportu architekt przelicza sam. Sonnet dostaje zadania, w których
 w obrębie briefu trzeba coś rozstrzygnąć — kontrakty, diagnozy, interfejs.
+
+*Dlaczego Opus 5.5 zamiast Sonneta (2026-09-24):* koszt długiego zlecenia to niemal wyłącznie ponowne
+czytanie rozmowy przy każdym kroku, a ten odczyt kosztuje u obu tyle samo. Zlecenie poprawek zakładek
+treści na Sonnecie: 362 kroki, 53 minuty, 142 mln tokenów odczytu wobec 0,25 mln napisanych — ta sama
+praca na Opusie kosztowałaby około 12% więcej, więc zwraca się, gdy robi ją w wyraźnie mniej krokach.
+Sonnet stracił połowę czasu na próby bez wyniku (kreska zaznaczenia) i uznał za poprawne coś, co było
+błędne (szczegół wyśrodkowany). **Wyzwalacz powrotu:** pierwsze dwa–trzy zlecenia na Opusie, zmierzone
+tak samo (kroki, czas, odczyt), nie robią wyraźnie mniej kroków na podobnej pracy — albo wychodzi nowy
+Sonnet; wtedy porównanie od nowa. Haiku zostaje: odczyt za połowę ceny, a poprawności jego zadań
+pilnują build i testy.
 
 *Z próby:* Haiku przeniósł dwadzieścia dwa pliki logiki wpisów bez jednej zmiany poza przestrzenią
 nazw, nie tknął wzorcowej kampanii ani asercji i sam zgłosił, czego nie był pewien — za mniej niż
@@ -107,7 +117,7 @@ decyzje:** dokumenty tego repozytorium niosą decyzje, więc pisze je asystent s
 Ustalony z autorem 2026-09-22.
 
 ```
- AUTOR                  ARCHITEKT                       SUBAGENT (Sonnet)
+ AUTOR                  ARCHITEKT                       SUBAGENT (Opus 5.5)
  │                         │                                │
  │◄── propozycja etapu ────┤  cel, co autor zobaczy,        │
  │    zielone światło ────►│  co rozstrzygam sam, pytania   │
@@ -243,7 +253,7 @@ warstwy.
 autora z 2026-09-23: `wykonawca` do zleceń zmieniających kod, `zwiadowca` do zwiadu i diagnozy tylko
 do odczytu. Ich definicje niosą zakazy niżej, krok zrównania kopii z `master` i stały format
 raportu, więc brief już ich nie powtarza — mówi tylko, co zrobić, od czego zacząć i co jest
-baseline'em. Model domyślny obu to Sonnet; przy zadaniu mechanicznym zlecenie podaje Haiku (reguła
+baseline'em. Model domyślny obu to Opus 5.5; przy zadaniu mechanicznym zlecenie podaje Haiku (reguła
 wyboru modelu — sekcja 1). Zmiana zakazu albo formatu raportu idzie do definicji i tutaj naraz:
 definicja jest wersją wykonawczą, ten dokument — uzasadnieniem.
 
