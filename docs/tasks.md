@@ -84,8 +84,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | # | Porcja | Rundy | Pomiar |
      |---|---|---|---|
      | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
-     | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | czeka | 33 / 6,3 / 2,7 mln |
-     | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety); margines separatora `section` z tokenu grubości zamiast pustych paneli w stosie (obejście z 0b) | | |
+     | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | 1 (architekt: kontrast przygaszonego tekstu i czerwieni, krój nagłówków od 20; autor: domyślny kolor tekstu) | 33 / 6,3 / 2,7 mln |
+     | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) | | |
      | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*` | | |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
@@ -93,6 +93,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
      | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
      | 8 | tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany; kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela | | |
+     | 8b | kompozycje przykładowe w galerii (pomysł autora): lista z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą | | |
      | 9 | odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`) | | |
      | 10 | klocek: wiersz listy z kreską zaznaczenia | | |
      | 11 | klocek: chip z listą wyboru | | |

@@ -346,6 +346,15 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   jakby tekst. […] odznaka «Humanoid» nie może być zakreśleniem i musi być kontenerem, bo ma logiczne
   tło za sobą, prezentuje kategorię". Asystent proponował odznakę dla wyzwania, argumentując wyglądem
   (wcięcie, stała wysokość); autor rozstrzygnął znaczeniem — i to znaczenie jest regułą.
+* **Czytelność z pomiaru, nie z oka** — architekt, 2026-09-24, po obejrzeniu galerii powierzchni.
+  Przygaszony tekst miał 3,1–3,4:1, a norma WCAG AA dla małego tekstu to 4,5:1 — i właśnie ten kolor
+  niosą najmniejsze napisy. Czerwień „niebezpieczeństwa" jako tekst: 2,6–2,9:1, a malowała nazwy wpisów
+  niewczytanych. Krój nagłówków w stopniu 16 czytał się jako „Powierzchnic i linic": Cormorant ma małe
+  oczko litery i cienkie kreski, jest krojem do dużych napisów — 16 wygląda w nim jak 12 kroju tekstu.
+* **Domyślny kolor tekstu — podstawowy** — autor zapytał, czemu galeria jest szara, skoro aplikacja
+  używa głównie białego. Domyślny był „zwykły" (szary), a biały nadawano ręcznie w szesnastu miejscach.
+  Standard systemów kontrolek jest odwrotny: domyślnie tekst podstawowy, drugorzędny jawnie — wtedy
+  miejsce, które zapomni o kolorze, wychodzi czytelne, a nie przygaszone.
 * **Liczby nigdy krojem nagłówków** — Cormorant ma cyfry starodrukowe, „15" czyta się jak „1s".
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma

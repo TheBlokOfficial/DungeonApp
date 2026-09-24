@@ -670,10 +670,13 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 * **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)
   i w komunikatach błędów. Etykiety, przyciski, wiersze list i nagłówki się nie zaznaczają. Kolor
   zaznaczenia to akcent z przezroczystością — ten sam znak „wybrane" co zaznaczony wiersz.
-* **Pismo:** siedem stopni — 11, 12, 13 dla tekstu interfejsu, 15 dla wyróżnionych liczb, 16, 26,
-  34 dla nagłówków. Style tekstu nazywają role, nie stopnie; nowa rola dostaje jeden z tych stopni.
+* **Pismo:** siedem stopni — 11, 12, 13 dla tekstu interfejsu, 15 dla wyróżnionych liczb, 20, 26,
+  34 dla kroju nagłówków, który nie schodzi poniżej 20. Style tekstu nazywają role, nie stopnie; nowa rola dostaje jeden z tych stopni.
   Tekst w kontrolce, którą się klika albo w której się pisze, ma co najmniej 12; stopień 11 jest dla
   informacji drugorzędnej, której się nie klika.
+* **Kolor tekstu:** domyślnie podstawowy (jasny); drugorzędny i przygaszony nadaje się jawnie. Każdy
+  kolor tekstu ma kontrast co najmniej 4,5:1 na każdej powierzchni, na której stoi. Kolor stanu, który
+  jako tło tego nie spełnia, ma osobną, jaśniejszą odmianę do tekstu — o tym samym znaczeniu.
 * **Zakreślenie a odznaka — po tym, czym rzecz jest.** Wartość, która pozostaje tekstem (wyzwanie
   „1/2", trafienie wyszukiwania), dostaje zakreślenie: styl tekstu jak pogrubienie, tło przylega do
   liter i płynie z tekstem. Rzecz sama w sobie — kategoria, przynależność, typ („Humanoid") — dostaje
