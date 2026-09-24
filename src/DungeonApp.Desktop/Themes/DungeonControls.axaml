@@ -17,8 +17,11 @@
           .primary - główny: tło Accent, tekst OnAccent, krawędź przezroczysta;
           .subtle  - cichy: bez tła, krawędź przezroczysta;
           .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
-          .link    - link: bez tła i krawędzi, wysokość z treści, tekst Accent, kursor ręka,
-                     podkreślenie pod myszą;
+          .link    - link samodzielny: bez tła i krawędzi, wysokość z treści, tekst Accent, kursor
+                     ręka, podkreślenie pod myszą;
+          .link.inline - odnośnik w zdaniu (w InlineUIContainer TextBlocka): stopień i grubość
+                     otaczającego TextBlocka, tekst Accent, podkreślenie stałe - sam kolor akcentu
+                     obok jasnego tekstu nie daje kontrastu 3:1;
           .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, treść
                      wyśrodkowana (ikona DungeonActionIconSize nadaje sobie rozmiar sama).
         Krawędź ma zawsze 1 px (w odmianach bez krawędzi - przezroczysta), więc zmiana odmiany ani
@@ -145,6 +148,15 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="^.link:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+        </Style>
+
+        <!-- Odnośnik w zdaniu: stopień i grubość bierze z TextBlocka, w którego linii stoi. -->
+        <Style Selector="^.link.inline">
+            <Setter Property="FontSize" Value="{Binding $parent[TextBlock].FontSize}" />
+            <Setter Property="FontWeight" Value="{Binding $parent[TextBlock].FontWeight}" />
+        </Style>
+        <Style Selector="^.link.inline /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 

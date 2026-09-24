@@ -108,7 +108,7 @@
                     <Button Classes="link" VerticalAlignment="Center" Content="Wyłączony" IsEnabled="False" />
                 </StackPanel>
                 <TextBlock>
-                    <Run Text="Paczka nie wczytała się w całości - " /><InlineUIContainer><Button Classes="link" Content="pokaż szczegóły" /></InlineUIContainer><Run Text=" albo spróbuj ponownie." />
+                    <Run Text="Paczka nie wczytała się w całości - " /><InlineUIContainer><Button Classes="link inline" Content="pokaż szczegóły" /></InlineUIContainer><Run Text=" albo spróbuj ponownie." />
                 </TextBlock>
             </StackPanel>
 
