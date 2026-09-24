@@ -98,10 +98,15 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
 
 Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 
-* **Każdy przycisk dostaje stałą wysokość.** Globalny styl `Button` w motywie ramy
-  (`Themes/BuiltInControls.axaml`) ustawia wysokość zwykłej kontrolki. Przycisk, który ma się
-  rozciągać, musi ją jawnie znieść (`Height = NaN`) — usunięcie własnej wysokości nie daje
-  rozciągania, tylko odsłania globalną. Tak wyszedł za niski przycisk paska górnego (2026-09-23).
+* **Każdy przycisk dostaje stałą wysokość — z motywu przycisku** (`Themes/DungeonControls.axaml`,
+  od porcji 1 fundamentu). `Button` użyty jako wiersz, karta, chip albo pozycja nawigacji (dziś:
+  `nav-button`, `campaign-open`, `system-option-open`, `content-row-button`, `content-chip`,
+  `deck-card`, `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
+  usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
+  porcje wiersza, kafelka i chipa dadzą im własne motywy.
+* **Test `Engine_and_shell_do_not_name_any_entry_kind` padł raz w pełnym przebiegu** (2026-09-24,
+  porcja 1) i nie dał się odtworzyć w czterech kolejnych. Jeśli padnie znowu — zwiad przyczyny, nie
+  ponowne uruchomienie.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.

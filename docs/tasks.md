@@ -85,7 +85,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      |---|---|---|---|
      | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
      | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | 1 (architekt: kontrast przygaszonego tekstu i czerwieni, krój nagłówków od 20; autor: domyślny kolor tekstu); przyjęta — dwa kolory (drugorzędny, ostrzeżenie) przechodzą do porcji 1 | 33 / 6,3 / 2,7 mln + runda 1: 47 / 7,2 / 4,4 mln |
-     | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) | | |
+     | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) → 32; `frame-action` zostaje elementem ramy (pełna wysokość paska), nie przyciskiem (architekt) | czeka | 52 / 8,4 / 6,1 mln |
      | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*` | | |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
@@ -194,7 +194,9 @@ Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie
 albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
 *Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
 
-Pusto — obie poprawki zabrały zlecenia z 2026-09-24.
+* **Narzędzie świata kampanii (Dnd5e, `CampaignInstancesToolView`):** przyciski bez odmiany —
+  „Dodaj"/„Zapisz" do rozważenia jako główny (najwyżej jeden główny w miejscu), „Usuń" jako cichy
+  albo niszczący. Z raportu porcji 1 fundamentu.
 
 ---
 
