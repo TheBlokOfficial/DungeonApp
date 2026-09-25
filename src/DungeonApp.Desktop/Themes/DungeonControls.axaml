@@ -14,6 +14,10 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Przezroczystość wyłączenia w tym i każdym innym motywie ramy idzie po własnym IsEnabled
+        (^[IsEnabled=False]), kolory stanu wyłączonego po :disabled: kontrolka w wyłączonym
+        pojemniku (zakładka, sekcja rozwijana) przygasa raz - przygasza ją pojemnik - a akcent i tak
+        traci.
         Przycisk z wypełnieniem barwą znaczenia (.primary, .danger) pod myszą nie zmienia wypełnienia:
         dostaje otoczkę - pas 3 px na zewnątrz krawędzi, bez rozmycia, w zaokrągleniu przycisku
         (BoxShadow Border tła, tokeny DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
