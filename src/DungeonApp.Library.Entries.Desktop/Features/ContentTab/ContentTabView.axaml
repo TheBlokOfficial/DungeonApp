@@ -367,6 +367,11 @@
 
                     <Border Grid.Row="1" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
 
+                    <dc:EmptyState Grid.Row="2"
+                                   IsVisible="{Binding HasNoMatches}"
+                                   Message="Nic nie pasuje do filtrów i wyszukiwania."
+                                   Hint="Wyczyść filtry albo zmień wyszukiwanie." />
+
                     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                         <ItemsControl ItemsSource="{Binding Sections}" Padding="{StaticResource ContentListScrollPadding}">
                             <ItemsControl.ItemTemplate>

@@ -64,12 +64,10 @@
                 </ListBox>
             </ScrollViewer>
 
-            <TextBlock Grid.Row="1"
-                       VerticalAlignment="Top"
-                       Foreground="{DynamicResource DungeonTextMutedBrush}"
-                       IsVisible="{Binding !HasInstances}"
-                       Text="Ta kampania nie ma jeszcze żadnych instancji."
-                       TextWrapping="Wrap" />
+            <controls:EmptyState Grid.Row="1"
+                                 IsVisible="{Binding !HasInstances}"
+                                 Message="Ta kampania nie ma jeszcze żadnych instancji."
+                                 Hint="Wybierz wpis poniżej i dodaj go do świata." />
         </Grid>
 
         <Grid Grid.Row="1"

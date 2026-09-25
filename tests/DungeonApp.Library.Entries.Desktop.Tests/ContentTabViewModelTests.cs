@@ -92,6 +92,37 @@ public sealed class ContentTabViewModelTests
     }
 
     [Fact]
+    public void A_search_that_matches_nothing_reports_no_matches_and_notifies_both_ways()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "1"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "1")], [], []);
+        var viewModel = BuildViewModel(registry);
+        var notified = new List<string?>();
+        viewModel.PropertyChanged += (_, args) => notified.Add(args.PropertyName);
+
+        Assert.False(viewModel.HasNoMatches);
+
+        viewModel.Search = "Zzz";
+
+        Assert.True(viewModel.HasNoMatches);
+        Assert.Equal(1, notified.Count(name => name == nameof(ContentTabViewModel.HasNoMatches)));
+
+        viewModel.Search = string.Empty;
+
+        Assert.False(viewModel.HasNoMatches);
+        Assert.Equal(2, notified.Count(name => name == nameof(ContentTabViewModel.HasNoMatches)));
+    }
+
+    [Fact]
+    public void A_tab_without_entries_is_not_a_filter_with_no_matches()
+    {
+        var registry = new ContentRegistry([MakePack("p", "Pack")], [], [], []);
+        var viewModel = BuildViewModel(registry);
+
+        Assert.False(viewModel.HasNoMatches);
+    }
+
+    [Fact]
     public void Changing_a_value_filter_rebuilds_the_list()
     {
         var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"), MakeEntry("b", "Beta", "high"));

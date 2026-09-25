@@ -866,6 +866,47 @@
         </Style>
     </ControlTheme>
 
+    <!--
+        Pusta lista (controls:EmptyState): komunikat zamiast wierszy - tekst podstawowy w stopniu
+        i kroju tekstu interfejsu - i opcjonalna podpowiedź pod nim, co zrobić (tekst przygaszony,
+        DungeonHelperFontSize), widoczna tylko przy niepustej. Stoi u góry obszaru listy (nie na
+        środku wysokiej listy) z wcięciem DungeonPaddingMd; bez ilustracji i bez ikony. Tekst zawija
+        się w szerokości listy. Nie ma stanów: nie przyjmuje fokusu i nie reaguje na mysz (kursor
+        tego, na czym leży); tekst się nie zaznacza.
+    -->
+    <ControlTheme x:Key="{x:Type controls:EmptyState}" TargetType="controls:EmptyState">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMd}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Margin="{TemplateBinding Padding}"
+                            Spacing="{DynamicResource DungeonSpacingXs}">
+                    <TextBlock Name="PART_Message"
+                               Text="{TemplateBinding Message}"
+                               Foreground="{TemplateBinding Foreground}"
+                               FontFamily="{TemplateBinding FontFamily}"
+                               FontSize="{TemplateBinding FontSize}"
+                               FontWeight="Normal"
+                               TextWrapping="Wrap" />
+                    <TextBlock Name="PART_Hint"
+                               Text="{TemplateBinding Hint}"
+                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                               FontFamily="{TemplateBinding FontFamily}"
+                               FontSize="{DynamicResource DungeonHelperFontSize}"
+                               FontWeight="Normal"
+                               TextWrapping="Wrap"
+                               IsVisible="{TemplateBinding Hint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
     <!-- =================================================================== -->
     <!-- LINIE                                                               -->
     <!-- =================================================================== -->

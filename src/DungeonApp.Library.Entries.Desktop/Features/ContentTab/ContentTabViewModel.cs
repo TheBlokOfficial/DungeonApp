@@ -26,6 +26,7 @@ public sealed class ContentTabViewModel : ObservableObject
     private string _countText = string.Empty;
     private ContentDetailViewModel? _detail;
     private bool _showSelectionPrompt;
+    private bool _hasNoMatches;
 
     public ContentTabViewModel(
         ContentRegistry registry,
@@ -115,6 +116,17 @@ public sealed class ContentTabViewModel : ObservableObject
         private set => SetField(ref _showSelectionPrompt, value);
     }
 
+    /// <summary>
+    /// The tab holds entries, but today's filters and search show none of them - the list says so and
+    /// points at clearing the filters. False for a tab with no entries at all: there is nothing to
+    /// clear.
+    /// </summary>
+    public bool HasNoMatches
+    {
+        get => _hasNoMatches;
+        private set => SetField(ref _hasNoMatches, value);
+    }
+
     private void ApplyValueFilter(string label, string? value)
     {
         var current = _state.ValueFilters is { } existing
@@ -166,6 +178,7 @@ public sealed class ContentTabViewModel : ObservableObject
         // reasoning the old registry's IsEmpty check made, generalised to "after today's filters",
         // since content tabs (unlike the old registry) can filter their way down to nothing shown.
         ShowSelectionPrompt = Detail is null && Sections.Count > 0;
+        HasNoMatches = Sections.Count == 0 && result.TotalCount > 0;
     }
 
     private ContentSectionViewModel BuildSection(ContentSection section)

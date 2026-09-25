@@ -1,11 +1,13 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ListsSection">
     <!-- The frame's ListBox and ListBoxItem themes (Themes/DungeonControls.axaml), live: one list with
          a row in every static state (rest, selected, disabled) and a row whose text is longer than the
          list, and one list longer than its area (it scrolls with the frame's bar). Hover is checked
          with the mouse. Nothing here restyles a list - the only local values are the lists' size and
-         the card they lie on. -->
+         the card they lie on. Below: the empty list (controls:EmptyState) with a message alone and
+         with a message and a hint, each in a list-sized area so its place at the top shows. -->
     <UserControl.Styles>
         <Style Selector="Border.list-sample">
             <Setter Property="Width" Value="240" />
@@ -48,6 +50,23 @@
                         <ListBoxItem Content="Zombie" />
                         <ListBoxItem Content="Ghul" />
                     </ListBox>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="PUSTA LISTA" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Sam komunikat" />
+                <Border Classes="list-sample" Height="160">
+                    <controls:EmptyState Message="Nie ma jeszcze żadnej kampanii." />
+                </Border>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Komunikat z podpowiedzią" />
+                <Border Classes="list-sample" Height="160">
+                    <controls:EmptyState Message="Nic nie pasuje do filtrów i wyszukiwania."
+                                         Hint="Wyczyść filtry albo zmień wyszukiwanie." />
                 </Border>
             </StackPanel>
         </StackPanel>
