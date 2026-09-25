@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `abfa3aa`.** Na starcie sesji: `git log abfa3aa..master` i `git worktree
+**Stan na: 2026-09-25, po `5420c6d`.** Na starcie sesji: `git log 5420c6d..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -15,9 +15,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Porcje 0–7a obejrzane przez autora; uwagi po 7a (układ menu) odłożone przez autora do `tasks.md`,
-*Poprawki czekające na obszar*, bez rundy. Kopii roboczych brak. **Następny krok:** propozycja
-porcji 7b (*Ustalenia*, *Porcja 7b — propozycja*) przedstawiona autorowi 2026-09-25 i **czeka na
-zielone światło** — sesja zamknięta przed odpowiedzią. Nowa sesja pokazuje ją w skrócie i pyta.
+*Poprawki czekające na obszar*, bez rundy. **W toku:** porcja 7b — zielone światło autora
+2026-09-25 (sesja zadania: „lecimy”); wykonawca (Opus 5.5) pracuje w kopii
+`.claude/worktrees/agent-a7b28fac8b03a1701`, gałąź `worktree-agent-a7b28fac8b03a1701`, baza `5420c6d`.
+**Następny krok:** weryfikacja raportu, scalenie, autor ogląda 7b; potem propozycja porcji 8.
 
 ## Zakres i koniec
 
@@ -149,7 +150,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     Pełny napis w podpowiedzi tylko przy rzeczywistym przycięciu; jawna podpowiedź widoku wygrywa.
   * *Zakładka* ma najwyższą szerokość 240 (ok. 30 znaków) — dłuższa się przycina z podpowiedzią.
   * *Pogrubienie wybranego* rezerwuje miejsce tylko dla nagłówka tekstowego.
-* **Porcja 7b — propozycja architekta** (2026-09-25, **bez zielonego światła**):
+* **Porcja 7b — rozstrzygnięcia architekta** (2026-09-25; zielone światło autora tego dnia):
   1. Najpierw podwójne przygaszenie (`tasks.md`, *Przygaszenie wyłączonych*) we wszystkich motywach.
   2. *Okno potwierdzenia* — kontrolka ramy nad oknem aplikacji: karta na środku, reszta przyciemniona;
      tytuł, jedno–dwa zdania, przyciski w prawym dolnym rogu: „Anuluj” + akcja (główna albo
@@ -163,6 +164,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
      ładowania przy starcie (`MainWindow.axaml`) na nowy wygląd; nieokreślony przy wyłączonych
      animacjach — spokojny pasek.
   5. Galeria — wszystko w każdym stanie, z przyciskami wywołującymi okno i każde powiadomienie.
+  * Doprecyzowane w briefie: czas znikania powiadomienia to stała motywu per odmiana, nie parametr
+    wywołania ani pole typu (drugi zakaz — czytany według intencji, ale bez pola nic nie trzeba
+    rozstrzygać); mysz nad dymkiem wstrzymuje znikanie; ikona informacji w kolorze tekstu
+    drugorzędnego — informacja nie niesie stanu, akcent zostaje dla wybranego i głównego; treść błędu
+    do zaznaczenia; nieokreślony wskaźnik przy wyłączonych animacjach — cały tor w przygaszonym
+    akcencie.
   * Poza zakresem: okno potwierdzenia nigdzie nie podpięte — usuwanie kampanii idzie do kosza
     systemu (odwracalne); pierwszy konsument przyjdzie z akcją nieodwracalną.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
