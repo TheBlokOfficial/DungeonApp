@@ -14,14 +14,14 @@
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
             <Button Content="Krótki tekst">
                 <Button.Flyout>
-                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                    <Flyout Placement="BottomEdgeAlignedLeft">
                         <TextBlock Text="Okienko wysuwane z krótkim tekstem." />
                     </Flyout>
                 </Button.Flyout>
             </Button>
             <Button Content="Długa lista">
                 <Button.Flyout>
-                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                    <Flyout Placement="BottomEdgeAlignedLeft">
                         <ListBox x:Name="LongFlyoutList" Width="200" />
                     </Flyout>
                 </Button.Flyout>

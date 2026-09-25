@@ -1400,10 +1400,13 @@
         DungeonFlyoutShadow. Wysokość najwyżej DungeonFlyoutMaxHeight - dłuższa treść przewija się
         w środku paskiem ramy (motyw ScrollViewer), pasek tylko przy potrzebie. Szerokość z treści.
         Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu; bez animacji otwierania.
-        Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout. Odstęp od
-        elementu, który je otworzył, to właściwość Flyout (VerticalOffset="{StaticResource
-        DungeonFlyoutOffset}") - ustawia ją miejsce użycia, bo Flyout nie jest kontrolką i motywu
-        nie ma.
+        Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout.
+        Położenie: pod elementem, który je otworzył, wyrównane do jego lewej krawędzi - miejsce użycia
+        ustawia Flyout Placement="BottomEdgeAlignedLeft" (Flyout nie jest kontrolką i motywu nie ma);
+        gdy pod spodem brak miejsca, okno wyskakujące odwraca się nad element. Odstęp od elementu to
+        przezroczysty margines DungeonFlyoutMargin nad i pod powierzchnią (Margin tego motywu), nie
+        VerticalOffset - przesunięcie działa zawsze w dół, więc okienko odwrócone w górę nachodziłoby
+        na element; margines jest symetryczny i działa w obu kierunkach.
     -->
     <ControlTheme x:Key="{x:Type FlyoutPresenter}" TargetType="FlyoutPresenter">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -1413,6 +1416,7 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
         <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+        <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="MaxHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
@@ -1472,7 +1476,9 @@
         Fokus nie ma wyglądu (FocusAdorner pusty); bez animacji otwierania.
         Rozwinięta lista: powierzchnia okienka wysuwanego (ten sam motyw FlyoutPresenter - tło,
         krawędź, wcięcie, cień, najwyższa wysokość DungeonFlyoutMaxHeight, przewijanie w środku),
-        co najmniej tak szeroka jak pole, DungeonFlyoutOffset pod nim. Zamyka ją wybór, kliknięcie
+        co najmniej tak szeroka jak pole, pod nim i wyrównana do jego lewej krawędzi (nad nim, gdy pod
+        spodem brak miejsca), odstęp to margines motywu FlyoutPresenter; najwyższą wysokość trzyma
+        sama powierzchnia (MaxHeight okna wyskakującego obcinałoby margines). Zamyka ją wybór, kliknięcie
         obok albo Escape (zachowanie ComboBox).
         Wiersz (ComboBoxItem) to motyw wiersza listy (BasedOn ListBoxItem): te same wysokość,
         wcięcia, najechanie, wybrany = AccentDim bez najechania, wyłączenie.
@@ -1540,10 +1546,8 @@
                            WindowManagerAddShadowHint="False"
                            IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                            MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
-                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
                            PlacementTarget="PART_BorderElement"
-                           Placement="Bottom"
-                           VerticalOffset="{DynamicResource DungeonFlyoutOffset}"
+                           Placement="BottomEdgeAlignedLeft"
                            IsLightDismissEnabled="True"
                            InheritsTransform="True">
                         <FlyoutPresenter Name="PART_DropDown"
@@ -1581,7 +1585,8 @@
         otwarta = najechanie i chevron w górę, wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
         zastępczy; jedna pozycja - jej nazwa; więcej - nazwa pierwszej i "+N"; przycięte wielokropkiem.
         Rozwinięcie: powierzchnia okienka wysuwanego (motyw FlyoutPresenter), co najmniej tak szerokie
-        jak pole, DungeonFlyoutOffset pod nim. Z wyszukiwaniem (IsSearchEnabled) na górze pole
+        jak pole, położone jak w ComboBox (pod polem od lewej krawędzi, nad nim przy braku miejsca).
+        Z wyszukiwaniem (IsSearchEnabled) na górze pole
         wyszukiwania z lupą (TextBox.search), odstęp DungeonSpacingXs pod nim; brak wyników -
         EmptyState "Nic nie pasuje.".
         Wiersz to wiersz listy (ListBoxItem - wysokość, wcięcia, najechanie). Tryb wielokrotny: pole
@@ -1647,8 +1652,7 @@
                            IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                            MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                            PlacementTarget="PART_BorderElement"
-                           Placement="Bottom"
-                           VerticalOffset="{DynamicResource DungeonFlyoutOffset}"
+                           Placement="BottomEdgeAlignedLeft"
                            IsLightDismissEnabled="True"
                            InheritsTransform="True">
                         <FlyoutPresenter Name="PART_DropDown" HorizontalAlignment="Stretch">

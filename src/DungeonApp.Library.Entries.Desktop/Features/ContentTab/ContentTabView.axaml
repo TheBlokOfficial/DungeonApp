@@ -285,7 +285,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                                    <Flyout Placement="BottomEdgeAlignedLeft">
                                         <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
                                                  SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -309,7 +309,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                             </StackPanel>
                                             <Button.Flyout>
-                                                <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                                                <Flyout Placement="BottomEdgeAlignedLeft">
                                                     <ListBox ItemsSource="{Binding FlyoutItems}"
                                                              SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
                                                 </Flyout>
@@ -328,7 +328,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                                    <Flyout Placement="BottomEdgeAlignedLeft">
                                         <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
                                                  SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -344,7 +344,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                                    <Flyout Placement="BottomEdgeAlignedLeft">
                                         <ListBox ItemsSource="{Binding SortOptions}"
                                                  SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
                                     </Flyout>

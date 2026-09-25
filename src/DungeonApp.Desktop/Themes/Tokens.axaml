@@ -324,9 +324,13 @@
              (10 x 32) z wcięciem okienka (2 x 6) i krawędzią (2 x 1); dłuższa treść przewija się
              w środku. -->
         <x:Double x:Key="DungeonFlyoutMaxHeight">334</x:Double>
-        <!-- Odstęp okienka wysuwanego i rozwiniętej listy od elementu, który je otworzył (w dół);
-             wartość równa DungeonSpacingXs - najmniejszy stopień skali. -->
-        <x:Double x:Key="DungeonFlyoutOffset">6</x:Double>
+        <!-- Odstęp okienka wysuwanego i rozwiniętej listy od elementu, który je otworzył:
+             przezroczysty margines nad i pod powierzchnią okienka (motyw FlyoutPresenter), więc
+             działa tak samo, gdy okienko wysuwa się w dół, jak gdy brak miejsca odwraca je nad
+             element; daje też miejsce na cień w pionie. Wartość równa DungeonSpacingXs - najmniejszy
+             stopień skali. W poziomie zero, żeby lewa krawędź okienka stała równo z lewą krawędzią
+             elementu. -->
+        <Thickness x:Key="DungeonFlyoutMargin">0,6</Thickness>
         <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
         <x:Double x:Key="DungeonCampaignListViewportHeight">258</x:Double>
