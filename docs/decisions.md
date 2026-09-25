@@ -421,6 +421,11 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   spodem", a w prawo to znak sekcji rozwijanej albo podmenu. Autor wybrał w prawo → w dół — jego gust
   jako klienta; obie odmiany dostały obrót ruchem, bo przeskok strzałki autor odebrał jako
   „teleportację".
+  Po rundzie 1 (autor): otwarta strzałka wskazuje, gdzie lista faktycznie się pojawiła — lista
+  otwarta w górę ma strzałkę w górę. Obracająca się strzałka przy liście wyskakującej natychmiast była
+  niespójna, więc otwarcie okienka też jest ruchem (wyłania się i dosuwa, ok. 120 ms), a zamknięcie
+  natychmiastowe — po wyborze liczy się wynik, nie efekt (rekomendacja architekta, jak Windows 11
+  i macOS; odrzucone: animowane zamknięcie, strzałka bez ruchu).
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor

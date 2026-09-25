@@ -707,8 +707,11 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   od razu. Wyłączone animacje w systemie wyłączają je w aplikacji.
 * **Okienko i lista rozwijana:** wysuwa się pod tym, co je otworzyło, wyrównane do jego lewej
   krawędzi, z małym odstępem; gdy pod spodem brak miejsca — nad nim, z tym samym odstępem, nigdy na
-  nim. Co je otworzyło, wygląda jak pod myszą, dopóki okienko jest otwarte. Strzałka listy
-  rozwijanej: zamknięta w prawo, otwarta w dół, obrót ruchem.
+  nim. Co je otworzyło, wygląda jak pod myszą, dopóki okienko jest otwarte, i nie gaśnie przy
+  zamykaniu, gdy mysz dalej nad nim stoi. Otwarcie jest ruchem: okienko w ok. 120 ms wyłania się
+  z przezroczystości i dosuwa o kilka punktów od strony tego, co je otworzyło — klikać można od razu;
+  zamknięcie natychmiast. Strzałka listy rozwijanej: zamknięta w prawo, otwarta wskazuje, gdzie
+  lista się pojawiła (w dół albo w górę), obrót ruchem.
 
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 
