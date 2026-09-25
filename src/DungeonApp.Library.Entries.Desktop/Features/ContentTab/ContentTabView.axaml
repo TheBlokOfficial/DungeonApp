@@ -155,15 +155,6 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
 
-        <!-- krok 10, brief A11: a filter chip's dropdown - bordered like the search box. Its rows are
-             the frame's ListBox/ListBoxItem themes (Themes/DungeonControls.axaml). -->
-        <Style Selector="FlyoutPresenter">
-            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
-        </Style>
     </UserControl.Styles>
 
     <!-- Detail column templates - one per shape ContentDetailViewModel can be (docs/architecture.md,
@@ -294,7 +285,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom">
+                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
                                         <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
                                                  SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -318,7 +309,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                             </StackPanel>
                                             <Button.Flyout>
-                                                <Flyout Placement="Bottom">
+                                                <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
                                                     <ListBox ItemsSource="{Binding FlyoutItems}"
                                                              SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
                                                 </Flyout>
@@ -337,7 +328,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom">
+                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
                                         <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
                                                  SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -353,7 +344,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="Bottom">
+                                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
                                         <ListBox ItemsSource="{Binding SortOptions}"
                                                  SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
                                     </Flyout>

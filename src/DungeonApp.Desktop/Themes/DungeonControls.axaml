@@ -1387,4 +1387,64 @@
         </Style>
     </ControlTheme>
 
+    <!-- =================================================================== -->
+    <!-- OKIENKO WYSUWANE                                                    -->
+    <!-- =================================================================== -->
+
+    <!--
+        Okienko wysuwane (FlyoutPresenter - treść Flyout). Szablon wycięty z FlyoutPresenter.xaml
+        Fluenta (Avalonia 12.0.5, MIT): zostały obramowanie, obszar przewijania i prezenter treści
+        (PART_ContentPresenter); wygląd od nowa z tokenów.
+        Powierzchnia jak pole: tło InputBackground, krawędź InputBorder 1 px, zaokrąglenie kontrolki;
+        wcięcie wewnętrzne DungeonPaddingXs, żeby wiersze listy nie dotykały krawędzi; lekki cień
+        DungeonFlyoutShadow. Wysokość najwyżej DungeonFlyoutMaxHeight - dłuższa treść przewija się
+        w środku paskiem ramy (motyw ScrollViewer), pasek tylko przy potrzebie. Szerokość z treści.
+        Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu; bez animacji otwierania.
+        Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout. Odstęp od
+        elementu, który je otworzył, to właściwość Flyout (VerticalOffset="{StaticResource
+        DungeonFlyoutOffset}") - ustawia ją miejsce użycia, bo Flyout nie jest kontrolką i motywu
+        nie ma.
+    -->
+    <ControlTheme x:Key="{x:Type FlyoutPresenter}" TargetType="FlyoutPresenter">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MaxHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        ClipToBounds="True">
+                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
 </ResourceDictionary>

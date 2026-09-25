@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.DropDownsSection">
+    <!-- The frame's FlyoutPresenter theme (Themes/DungeonControls.axaml), live: one flyout with short
+         content and one with a list longer than the flyout's highest height (it scrolls inside with
+         the frame's bar). Closing by a click beside it or Escape is Flyout's own behavior. Nothing
+         here restyles a control - the only local values are sizes. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Okienka i listy rozwijane" />
+
+        <TextBlock Classes="overline-sm muted" Text="OKIENKO WYSUWANE" />
+        <TextBlock Classes="caption muted" Text="Kliknij przycisk, żeby otworzyć okienko; zamyka je kliknięcie obok albo Escape. Dłuższa treść przewija się w środku." />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+            <Button Content="Krótki tekst">
+                <Button.Flyout>
+                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                        <TextBlock Text="Okienko wysuwane z krótkim tekstem." />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button Content="Długa lista">
+                <Button.Flyout>
+                    <Flyout Placement="Bottom" VerticalOffset="{StaticResource DungeonFlyoutOffset}">
+                        <ListBox x:Name="LongFlyoutList" Width="200" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
