@@ -1154,7 +1154,7 @@ ekranu. Zmiana technologii przed naprawą procesu nie pozwoliłaby odróżnić, 
 
 **Czym to zastąpiono.** Naprawa procesu — reguła o podziale decyzji w interfejsie
 (`collaboration.md`) — i fundament interfejsu: każda kontrolka z własnym, kompletnym szablonem
-w motywie ramy, sprawdzana przez autora w galerii kontrolek (`tasks.md`).
+w motywie ramy, sprawdzana przez autora w galerii kontrolek (`zadania/fundament-interfejsu.md`).
 
 **Wyzwalacz.** Werdykt punktu kontrolnego po fundamencie (`tasks.md`, punkt kontrolny): przy
 naprawionym procesie i gotowym fundamencie interfejs nadal wychodzi fuszerką albo zjada większość

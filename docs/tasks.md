@@ -4,6 +4,8 @@
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-state.md](code-state.md) w jakim stanie jest kod,
 [decisions.md](decisions.md) co już odrzucono, [collaboration.md](collaboration.md) jak pracować.
+Duże zadanie w toku może mieć własny dokument w [zadania/](zadania/) — wtedy tutaj stoi o nim jedna
+linia z odnośnikiem, a jego stan, plan i notki są tam (`collaboration.md`, *Dokument zadania*).
 
 **Zakres: wyłącznie to, co trzeba zrobić przed zamknięciem bieżącego etapu.** Nie jest spisem funkcji
 aplikacji i nie zapisuje się tu pracy koncepcyjnej na zapas — całość docelowa mieszka
@@ -46,87 +48,9 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 1. ~~Reguła „gust autora, rzemiosło wykonawcy"~~ — zrobione 2026-09-24 (`collaboration.md`, lista
    kontrolna w definicji wykonawcy).
 2. ~~Wpis o interfejsie w HTML-u~~ — zrobione 2026-09-24 (`decisions.md`, pozycja 39, z wyzwalaczem).
-3. **Fundament interfejsu — zanim cokolwiek innego w interfejsie** (autor: „najpierw od tego zaczął").
-   Każda używana kontrolka dostaje w motywie ramy **własny, kompletny szablon zamiast domyślnego**,
-   nie poprawki nałożone na domyślny motyw — to one dziś przepuszczają niechciane efekty, tekst
-   „prawie" na środku i globalne wysokości. W jednym miejscu, raz: stany (spoczynek, najechanie,
-   zaznaczenie, wyłączenie — nic więcej), tekst wyśrodkowany w pionie z założenia, wymiary
-   jako zasoby motywu. **Kontrolki: profesjonalność, czytelność i intuicyjność przed gustem i wiernością
-   mockupowi** (autor, 2026-09-24) — mockup jest makietą ekranu rejestru, nie projektem całej
-   aplikacji; wymiary i zachowanie kontrolek bierze się z konwencji platformy i czytelności, mockup
-   jest odniesieniem dla zakładek treści. Autor: „jeżeli chcemy potem w jakimś miejscu w interfejsie zrobić
-   dropdown albo listę […] masz już od razu gotowy styl zadeklarowany przez styl aplikacji".
-   * **Galeria kontrolek** — zakładka ramy nad „Ustawieniami", pod nagłówkiem „System" (kategoria
-     Aplikacja; autor 2026-09-24), pokazująca każdą kontrolkę
-     w każdym stanie: zwykła, wyłączona, zaznaczona, długi tekst, pusta. Autor sprawdza w niej każdą
-     porcję w minutę; zostaje na stałe.
-   * **Zakres: pełny zestaw standardowy** (autor: fundament ma objąć „99% wszystkich potencjalnych
-     elementów interaktywnych"): przyciski we wszystkich odmianach (główny, zwykły, cichy, ikonowy,
-     niszczący, link); pola tekstowe, wyszukiwania, wielowierszowe, liczbowe; pole wyboru, przycisk
-     opcji, przełącznik, suwak; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem; zakładki,
-     przełącznik segmentowy; wiersz listy; menu i menu kontekstowe; podpowiedź, okienko wysuwane, okno
-     potwierdzenia, powiadomienie; wskaźnik postępu; tag, chip, odznaka; kafelek, sekcja rozwijana,
-     separator, okruszki, pusta lista; **tabela** (nagłówek, kolumny z wyrównaniem, wcięcia komórek,
-     obramowanie, wyróżnienie pojedynczej komórki kolorem podanym przez układającego); pasek przewijania; typografia; skala odstępów. **Poza zestawem:**
-     kalendarz i wybór koloru — bez zastosowania przy stole, a kalendarz zaprasza do pól niosących czas
-     (drugi zakaz). Układ (stosy, siatki, wyrównanie) nie wymaga szablonów — tylko odstępy ze skali.
-   * **Wyjątek od „nic bez konsumenta"** — wpisany 2026-09-24 (`decisions.md` i `architecture.md`,
-     *Pytania otwarte i reguła „nic bez konsumenta"*).
-   * **Element spoza zestawu:** wykonawca buduje go jawnie jako własny i zgłasza w raporcie; **przy
-     drugim użyciu przechodzi do motywu** osobnym zleceniem. Z założenia oryginalne zostają: karty
-     treści (projektowane per typ), biurko z oknami, pasek boczny, ekrany jednorazowe.
-   * **Porcje — przyjęte przez autora 2026-09-24.** Jedna porcja = jeden wykonawca w 20 minutach;
-     autor sprawdza każdą w galerii **i w aplikacji**, bo porcja od razu zdejmuje stare poprawki
-     nałożone na swoje kontrolki w całej aplikacji. Motyw domyślny biblioteki leży pod spodem do
-     porcji 9. Kolumna „rundy" to poprawki od autora, „pomiar" — kroki, minuty i odczyt z
-     `tools/subagent-usage.py`, suma przebiegów porcji — materiał do punktu kontrolnego.
-
-     | # | Porcja | Rundy | Pomiar |
-     |---|---|---|---|
-     | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
-     | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | 1 (architekt: kontrast przygaszonego tekstu i czerwieni, krój nagłówków od 20; autor: domyślny kolor tekstu); przyjęta — dwa kolory (drugorzędny, ostrzeżenie) przechodzą do porcji 1 | 33 / 6,3 / 2,7 mln + runda 1: 47 / 7,2 / 4,4 mln |
-     | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) → 32, po rundzie 1 → 36 (autor: 32 zbyt ściśnięte); `frame-action` zostaje elementem ramy (pełna wysokość paska), nie przyciskiem (architekt) | 1 (autor: ikony niewidoczne na kolorowych przyciskach, wciśnięcie bez własnego koloru, wyłączony główny szary jak przed porcją, wysokość 36; architekt: przycięcie w galerii, odnośnik w zdaniu, grubość napisów); 2 (autor: ikony konturowe, odnośnik w zdaniu nad linią, najechanie akcentu odbarwia, bez wciśnięcia); 3 (autor: najechanie z wypełnieniem = kolor bez zmian + otoczka 3 px, odnośniki samodzielne szare, bez ręki nigdzie — `decisions.md`; poprawka: przycisk przycinał otoczkę); przyjęta | 52 / 8,4 / 6,1 mln + runda 1: 60 / 8,6 / 6,5 mln + runda 2: 50 / 7,9 / 5,3 mln + runda 3: 30 / 4,9 / 2,4 mln + poprawka otoczki (ten sam wykonawca, wznowiony): 14 / 2,2 / 1,7 mln |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt; po rundzie 1 — krawędź z najechania, bez akcentu); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25; poprawka architekta: aplikacja padała po wejściu w system (selektor potomka w motywie pola), test budujący wszystkie motywy; 1 (autor: krawędź edycji i zaznaczenie w akcencie krzykliwe — zaznaczenie niebieskie; ikona, × i strzałki poza obszarem tekstu, bez tła pod myszą; architekt: liczby całkowite z przecinkiem, tekst pod paskiem przewijania, grubość tekstu w polu, wyrównanie galerii); przyjęta 2026-09-25 — drobne uwagi w *Poprawkach czekających na obszar* | 52 / 10,5 / 7,0 mln + runda 1: 39 / 9,1 / 4,1 mln |
-     | 3 | lista, wiersz listy, pusta lista, pasek przewijania — **ustalenia architekta do briefu niżej**; przygaszony akcent naprawiony (16 %, z kanałem alfa) | scalona 2026-09-25, obejrzana — uwagi autora (przewijanie przechodzi wyżej, najechanie na wybranym) w *Poprawkach czekających na obszar*; wiersz ma wysokość najmniejszą 32, nie stałą, bo panel instancji kampanii ma wiersze z polem liczbowym — panel testowy, do usunięcia (autor), więc bez poprawek | 55 / 9,4 / 7,4 mln |
-     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora w *Poprawkach czekających na obszar* | 40 / 9,8 / 4,8 mln |
-     | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
-     | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
-     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok, np. pasek PZ; tak jak w suwaku z porcji 4) | | |
-     | 8 | tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany; kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela | | |
-     | 8b | kompozycje przykładowe w galerii (pomysł autora): lista z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą | | |
-     | 9 | odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`) | | |
-     | 10 | klocek: wiersz listy z kreską zaznaczenia | | |
-     | 11 | klocek: chip z listą wyboru — chip dostaje najechanie i stan otwarcia (dziś lokalny styl chipa przykrywa najechanie z motywu, więc otwarty chip wygląda jak w spoczynku; po rundzie 1 porcji 5); strzałka jak w liście rozwijanej | | |
-   * **Porcja 3 — ustalenia architekta do briefu (2026-09-25, przed zleceniem):**
-     * *Pasek przewijania:* sam uchwyt — bez toru i bez przycisków krokowych; widoczny wyłącznie, gdy
-       jest co przewijać (dziś `BuiltInControls.axaml` wymusza `Visible` i stały pas); cienki (mockup:
-       uchwyt 6 px, kolor mocnej krawędzi), pod myszą jaśniejszy i szerszy w obrębie własnego pasa;
-       pas zajmuje własne miejsce, nie przykrywa treści (tekst pola wielowierszowego nie może pod nim
-       leżeć — dziś `AllowAutoHide=False` w motywie pola). Znika lokalny styl `ScrollBar`
-       w `ContentTabView` i uchwyt w akcencie z `BuiltInControls`.
-     * *Lista i wiersz:* `ControlTheme` dla `ListBox`/`ListBoxItem` — wysokość wiersza z tokenu, nie
-       z treści; stany: spoczynek (przezroczyste), najechanie (`BackstageRowHover`), wybrane
-       (przygaszony akcent), wybrane pod myszą, wyłączone. **Dług z `code-state.md`:**
-       `DungeonAccentDimColor` ma wartość pełnego akcentu — dostaje wartość dzisiejszego lokalnego
-       `ContentSelectedRowBrush` (akcent 16 %), a użytkownicy tokenu (godło kampanii w `Icons.axaml`,
-       galeria odstępów) do sprawdzenia, czy nie zgasną — wypisać. Znikają lokalne style `ListBoxItem`
-       w `CampaignInstancesToolView` i `FlyoutPresenter ListBoxItem` w `ContentTabView`.
-     * *Pusta lista:* jedna kontrolka ramy — komunikat (tekst zwykły) i opcjonalna podpowiedź
-       (przygaszona), u góry obszaru listy z wcięciem, nie na środku wysokiej listy; bez ilustracji.
-       Wdrożyć tam, gdzie lista dziś bywa pusta (biblioteka kampanii ma `IsEmpty`, zakładka treści
-       przy filtrach bez wyniku, świat kampanii bez okazów).
-     * *Poza porcją 3:* wiersze z `Button` (`content-row-button`, lista kampanii, pasek boczny) — to
-       klocek „wiersz listy z kreską zaznaczenia" (porcja 10) i zlecenia A; filtr z polami wyboru —
-       porcja 5.
-   * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
-     to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
-   * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie, dla myszki. Autor: aplikacja
-     będzie docelowo „keyboard first" ze skrótami; wtedy fokus pokazuje się **wyłącznie, gdy
-     użytkownik faktycznie zaczął używać klawiatury** — nie przy kliknięciu myszką. Do zrobienia razem
-     z obsługą klawiatury, nie teraz.
-   * **Typografia w fundamencie** (autor: „bardzo ładna i spójna biblioteka typografii"): kroje, stopnie
-     nagłówków i tekstu, odstępy — jako style tekstu ramy, pokazane w galerii. W tym krój o stałej
-     szerokości znaków dla liczb, jak w mockupie (`--font-mono: IBM Plex Mono`).
+3. **Fundament interfejsu — zanim cokolwiek innego w interfejsie.** Prowadzony w dokumencie zadania
+   [zadania/fundament-interfejsu.md](zadania/fundament-interfejsu.md): zakres, porcje, ustalenia,
+   pomiar. Stąd zniknie, gdy zadanie się zamknie.
 4. **Zlecenia A i B niżej, w małych porcjach** — składane z fundamentu; część punktów A (wiersz,
    pasek przewijania, lista rozwijana, pole wyszukiwania) zrobi już fundament (np. kreska i wiersz → filtry → karta). Po każdej
    porcji autor sprawdza w aplikacji, zanim ruszy następna; jego uwagi idą do briefu dosłownie.
@@ -141,7 +65,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    sesji. Podstawa werdyktu, zmierzona skryptem `tools/subagent-usage.py` (napisany od nowa
    2026-09-24, bo pierwszy przepadł; na tych samych zapisach daje 131 kroków i 18,1 minuty dla
    typowego zlecenia z kodem od 22.09 — porównywać z tymi liczbami, nie z niżej przytoczonymi):
-   * ile rund poprawek od autora potrzebowała każda porcja interfejsu,
+   * ile rund poprawek od autora potrzebowała każda porcja interfejsu (tabela *Pomiar porcji*
+     w dokumencie zadania fundamentu; przy jego zamknięciu przechodzi tutaj),
    * czy wracają błędy rzemiosła (stany, fokus, wyrównanie, układ zależny od zawartości),
    * kroki, czas i odczyt na zlecenie interfejsu — wobec 2026-09-24: typowe zlecenie z kodem od 22.09
      to 124 kroki i 17,5 minuty, a trzy najdroższe przebiegi w historii projektu to widoki

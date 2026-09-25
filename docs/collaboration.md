@@ -72,7 +72,7 @@ i wiernością makiecie, a on sam chce decydować jako klient, nie jako projekta
 i istniejących tokenów, dobranych po znaczeniu zapisanym przy tokenie, nie po barwie (reguła —
 `architecture.md`, *Niezmiennik interfejsu*). Brakujący element albo kolor dochodzi do motywu
 osobnym zleceniem, a element spoza zestawu powstaje w widoku jawnie jako własny i przechodzi do
-motywu przy drugim użyciu (`tasks.md`, *Fundament interfejsu*). Cel: wszystko, co autor będzie chciał
+motywu przy drugim użyciu (`zadania/fundament-interfejsu.md`, *Ustalenia*). Cel: wszystko, co autor będzie chciał
 zmienić, leży w jednym oczywistym miejscu.
 
 **Koniec kawałka pracy = commit. Bez pytania i bez czekania na polecenie.** Decyzja autora
@@ -213,6 +213,70 @@ skakała przy wejściu. Wszystko to widać w pierwszej minucie działania progra
 
 **Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
 Dokumenty dogania architekt na końcu etapu: `code-state.md` (stan kodu), `tasks.md` (co dalej).
+
+### Dokument zadania
+
+Ustalone z autorem 2026-09-25. Duże, wieloetapowe zadanie — kilkanaście zleceń, kilka sesji, kilka
+dni — dostaje własny dokument w `docs/zadania/`. Niesie wszystko, czego architekt potrzebuje, żeby
+prowadzić to zadanie dalej w nowej sesji: gdzie stoimy, plan, ustalenia, notki. **Stan zadania żyje
+w dokumencie, nie w rozmowie** — sesję da się porzucić po każdym zamkniętym wycinku i zacząć nową
+bez strat. *Dlaczego:* kontekst architekta rósł z każdym wykonawcą, `/compact` gubił szczegóły poza
+kontrolą autora, a nowa sesja płaciła za wdrożenie od zera — przegląd dokumentów, rozpoznanie kolejki
+i dopiero wtedy propozycję.
+
+**Dwa rodzaje sesji — rozpoznaje się je po pierwszym poleceniu autora.**
+
+* **Sesja główna** — autor zaczyna bez wskazania dokumentu zadania. Architekt czyta jak dotąd,
+  prowadzi kierunek i kolejkę; **zakłada** dokument zadania, gdy zadanie ruszy, i **zamyka** go.
+* **Sesja zadania** — autor wskazuje dokument zadania. Architekt czyta `CLAUDE.md`, ten dokument,
+  dokument zadania i to, co ten każe w *Do przeczytania* — nie całą architekturę, rejestr ani
+  kolejkę. Sprawdza, co przybyło w gicie od commita w nagłówku i jakie kopie robocze istnieją, po czym
+  w kilku zdaniach zgłasza, gdzie stoimy i co proponuje. Każde pytanie, które musi zadać, bo dokument
+  go nie uprzedził, jest brakiem w dokumencie — uzupełnia go od razu.
+
+**Kiedy aktualizować** — przy zdarzeniu, nie co kilka tur:
+
+* **zamknięcie wycinka** — w commicie, który dogania dokumenty po scaleniu; raport z wycinka kończy
+  się linią „Dokument zadania aktualny — można zamknąć sesję";
+* **decyzja autora w rozmowie** — od razu, bo najdrożej ją zgubić;
+* **uruchomienie wykonawcy** — w *Gdzie stoimy*: co robi, jego gałąź i kopia. *Skąd:* 2026-09-25,
+  przy zakładaniu pierwszego dokumentu, w kopii roboczej leżała zaczęta porcja fundamentu bez
+  commita, raportu i żadnego śladu w dokumentach — jej brief przepadł z sesją, która go napisała.
+
+**Granica.** Architekt zadania zmienia swobodnie dokument zadania, `code-state.md` i odnośnik
+w `tasks.md`; ustalenie ogólnoprojektowe, które wyszło w zadaniu i które autor zatwierdził, wpisuje
+do `architecture.md` i `decisions.md` jak dotąd. Co wykracza poza zadanie — nowy kierunek, cokolwiek
+dotykające pięciu zakazów, cudzy obszar, kolejność kolejki — idzie do *Do sesji głównej*, chyba że
+autor rozstrzygnie to na miejscu.
+
+**Jeden dom.** Na czas życia dokumentu zadania jego zadanie w `tasks.md` to jedna linia z odnośnikiem.
+*Poprawki czekające na obszar* zostają w `tasks.md` — należą do obszaru kodu, nie do zadania.
+Wykonawca dokumentu zadania nie czyta: co mu potrzebne, architekt przepisuje do briefu.
+
+**Zamknięcie.** Po spełnieniu kryterium końca architekt przenosi to, co przeżywa zadanie — według
+*Przy zamknięciu* — i usuwa plik w tym samym commicie. Historia zostaje w gicie; katalog nie jest
+archiwum.
+
+**Struktura — te sekcje, w tej kolejności.** Sekcja bez treści zostaje z kreską, żeby było widać, że
+jest pusta, a nie zapomniana.
+
+1. **Nagłówek** — nazwa, cel w dwóch–trzech zdaniach, **„Stan na: <data>, po `<commit>`"** — ostatni
+   commit, który stan uwzględnia — i polecenie sprawdzenia `git log <commit>..master` oraz `git
+   worktree list` na starcie.
+2. **Gdzie stoimy** — jeden akapit, **przepisywany, nie dopisywany**: co ostatnio zamknięte, co
+   w toku (wykonawca, gałąź, kopia), następny krok. Jedyne miejsce, które mówi, co teraz.
+3. **Zakres i koniec** — co wchodzi, co nie wchodzi; kryterium zakończenia, po którym dokument umiera.
+4. **Do przeczytania** — sekcje innych dokumentów **po nazwie**, każda z tym, po co i kiedy: na
+   starcie, przed briefem, tylko gdy potrzeba. Na końcu — czego na starcie nie czytać.
+5. **Plan** — wycinki (zlecenie albo porcja) jako lista pól wyboru, w kolejności. Zamknięty zwija się
+   do jednej linii; to, co potrzebne później (pomiar, rundy), idzie do tabeli pod listą.
+6. **Ustalenia** — co przesądzone dla tego zadania: z datą i kto (autor / architekt). Wiąże briefy.
+   Ustalenie ogólnoprojektowe ma dom w `architecture.md` — tu tylko odsyłacz.
+7. **Notki** — pułapki, wskazówki do briefów, obserwacje z raportów, rzeczy do sprawdzenia. Dopisuje
+   się; notkę, która przestała być prawdziwa, poprawia się albo skreśla — nie prostuje późniejszą.
+8. **Do sesji głównej** — sprawy poza zakresem, czekające na sesję główną albo decyzję autora.
+9. **Przy zamknięciu** — co i dokąd przenieść, gdy zadanie się skończy; dopisywane w trakcie, gdy
+   się pojawia.
 
 ---
 

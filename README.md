@@ -81,6 +81,7 @@ nigdy więc nie rozjeżdża się z kodem.
 | [docs/decisions.md](docs/decisions.md) | Dlaczego tak, co odrzuciliśmy i co obowiązywało wcześniej? | **zanim** zaproponujesz zmianę; do wdrożenia się niepotrzebny |
 | [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
 | [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
+| `docs/zadania/*.md` *(poza porządkiem, tymczasowe)* | Na czym stoi jedno duże zadanie w toku? | gdy autor wskaże go na start sesji; znika, gdy zadanie się zamknie |
 
 **Każdy fakt ma jeden dom.** Tabela wyżej mówi, kto wygrywa przy rozbieżności. Ta reguła mówi coś
 innego: kto w ogóle ma prawo rzecz zapisać. Uzasadnienie stoi w jednym dokumencie, a pozostałe
@@ -92,6 +93,7 @@ odsyłają do niego po nazwie sekcji — nigdy go nie streszczają „żeby czyt
 | **dlaczego** — argumenty za przyjętym, kierunki odrzucone z wyzwalaczem powrotu, co obowiązywało wcześniej i kiedy się zmieniło | `decisions.md` |
 | **jak jest dziś** — sądy o stanie kodu | `code-state.md` |
 | **co dalej** | `tasks.md` |
+| **stan jednego dużego zadania w toku** — plan, ustalenia i notki na czas jego trwania | `docs/zadania/<zadanie>.md` |
 
 Powód jest praktyczny, nie porządkowy: dopóki każdy dokument powtarzał kawałek sąsiada, żadnego nie
 dało się bezpiecznie pominąć, a kolumna „kiedy po niego sięgnąć" była fikcją. Po tej regule
