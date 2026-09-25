@@ -25,7 +25,7 @@
         <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij, żeby zobaczyć stan edycji. Kliknięcie obok albo Escape kończy edycję." />
 
         <Grid ColumnDefinitions="140,Auto"
-              RowDefinitions="Auto,Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
             <!-- Jednowierszowe -->
@@ -70,6 +70,35 @@
                 <TextBox Classes="search" Text="smok czerwony dorosły z legowiskiem w górach" />
                 <TextBox Classes="search" Text="Wyłączone" IsEnabled="False" />
             </StackPanel>
+
+            <!-- Wielowierszowe -->
+            <TextBlock Grid.Row="3" Classes="caption muted row-label" VerticalAlignment="Top" Text="Wielowierszowe · AcceptsReturn" />
+            <StackPanel Grid.Row="3" Grid.Column="1" Classes="field-row">
+                <TextBox AcceptsReturn="True" PlaceholderText="Notatka Mistrza Gry" />
+                <TextBox AcceptsReturn="True" Text="Drużyna dotarła do Phandalin o zmierzchu." />
+                <TextBox AcceptsReturn="True" Height="96" Text="Drużyna dotarła do Phandalin o zmierzchu. W gospodzie Pod Kamiennym Wzgórzem czekał na nich Toblen, który opowiedział o Czerwonych Znakach, o zaginionym Gundrenie i o goblinach na trakcie Triboar, a potem jeszcze o kopalni, której nikt nie widział od stu lat." />
+                <TextBox AcceptsReturn="True" Text="Wyłączone" IsEnabled="False" />
+            </StackPanel>
+
+            <!-- Liczbowe -->
+            <TextBlock Grid.Row="4" Classes="caption muted row-label" Text="Liczbowe · NumericUpDown" />
+            <StackPanel Grid.Row="4" Grid.Column="1" Classes="field-row">
+                <NumericUpDown PlaceholderText="PZ" Minimum="0" />
+                <NumericUpDown Value="27" Minimum="0" />
+                <NumericUpDown Value="1234567" Minimum="0" />
+                <NumericUpDown Value="12" IsEnabled="False" />
+            </StackPanel>
+
+            <!-- Tekst do zaznaczenia -->
+            <TextBlock Grid.Row="5" Classes="caption muted row-label" VerticalAlignment="Top" Text="Tekst do zaznaczenia" />
+            <SelectableTextBlock Grid.Row="5" Grid.Column="1" MaxWidth="560" TextWrapping="Wrap"
+                                 Text="Zaznacz fragment myszą i skopiuj Ctrl+C. Kliknięcie obok zdejmuje zaznaczenie. Tak zachowuje się dłuższa treść kart - opisy, akcje, cechy - i komunikaty błędów." />
+
+            <!-- Zakreślenie -->
+            <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Zakreślenie" VerticalAlignment="Top" />
+            <SelectableTextBlock Grid.Row="6" Grid.Column="1" MaxWidth="560" TextWrapping="Wrap">
+                <Run Text="Goblin ma wyzwanie " /><Run Classes="highlight" Text="1/4" /><Run Text=", a szukany " /><Run Classes="search-match" Text="gob" /><Run Text="lin stoi na liście jako trafienie wyszukiwania. Zaznacz zdanie, żeby porównać oba z zaznaczeniem." />
+            </SelectableTextBlock>
         </Grid>
     </StackPanel>
 </UserControl>

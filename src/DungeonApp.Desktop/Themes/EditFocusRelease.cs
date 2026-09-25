@@ -38,9 +38,11 @@ internal static class EditFocusRelease
             return;
         }
 
-        // Kliknięcie wciąż w tym samym polu (także w przycisku wewnątrz pola, np. czyszczenia)
-        // nie przerywa edycji.
-        if (e.Source is Visual source && IsInside(source, (Visual)focused))
+        // Kliknięcie wciąż w tym samym polu (także w przycisku wewnątrz pola, np. czyszczenia) nie
+        // przerywa edycji. Pole złożone z szablonu kontrolki (np. pole liczbowe ze strzałkami) liczy
+        // się w całości - granicą jest kontrolka, której szablon je zawiera.
+        var field = (focused as StyledElement)?.TemplatedParent as Visual ?? (Visual)focused;
+        if (e.Source is Visual source && IsInside(source, field))
         {
             return;
         }

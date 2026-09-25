@@ -101,4 +101,30 @@
     <Style Selector="TextBlock.secondary">
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
     </Style>
+
+    <!--
+        Tekst do zaznaczenia (SelectableTextBlock): dłuższa treść kart i komunikaty błędów. Kursor
+        tekstowy, zaznaczenie kolorem DungeonTextSelectionBrush - tym samym co w polach tekstowych;
+        Ctrl+C kopiuje (zachowanie kontrolki). Kliknięcie obok zdejmuje z niego fokus, a z nim
+        zaznaczenie - rama, Themes/EditFocusRelease.cs.
+    -->
+    <Style Selector="SelectableTextBlock">
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource DungeonTextSelectionBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+    </Style>
+
+    <!--
+        Zakreślenie: styl tekstu na fragmencie (Run albo Span w TextBlocku), jak pogrubienie - tło
+        przylega do liter i płynie z tekstem; bez wcięcia i zaokrąglenia (pojemnik z wcięciem to
+        odznaka). Odmiany po znaczeniu:
+          .highlight    - wyróżnione: wartość ważna w zdaniu, która zostaje tekstem (DungeonHighlightBrush);
+          .search-match - trafienie wyszukiwania: fragment pasujący do szukanego (DungeonSearchMatchBrush).
+    -->
+    <Style Selector="Run.highlight, Span.highlight">
+        <Setter Property="Background" Value="{DynamicResource DungeonHighlightBrush}" />
+    </Style>
+    <Style Selector="Run.search-match, Span.search-match">
+        <Setter Property="Background" Value="{DynamicResource DungeonSearchMatchBrush}" />
+    </Style>
 </Styles>

@@ -212,6 +212,8 @@
         <Thickness x:Key="DungeonPaddingMdHorizontalSmVertical">12,8,12,8</Thickness>
         <!-- Pole wielowierszowe: trzy linie tekstu 13 px (ok. 17 px każda) + wcięcia 8 + 8 + krawędzie. -->
         <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
+        <!-- Pole liczbowe: miejsce na kilka cyfr krojem o stałej szerokości i strzałki; nie zależy od wartości. -->
+        <x:Double x:Key="DungeonNumericInputWidth">96</x:Double>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->
