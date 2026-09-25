@@ -359,6 +359,20 @@
              stopień skali. W poziomie zero, żeby lewa krawędź okienka stała równo z lewą krawędzią
              elementu. -->
         <Thickness x:Key="DungeonFlyoutMargin">0,6</Thickness>
+        <!-- Podpowiedź (ToolTip): wcięcie 8 w poziomie (DungeonSpacingSm) i 4 w pionie - jedna linia
+             pisma 12 daje ok. 24 wysokości; najwyższa szerokość 320 (ok. 50 znaków pisma 12), dłuższy
+             tekst zawija się - podpowiedź nigdy nie przycina. -->
+        <Thickness x:Key="DungeonToolTipPadding">8,4</Thickness>
+        <x:Double x:Key="DungeonToolTipMaxWidth">320</x:Double>
+        <!-- Menu (MenuFlyout, ContextMenu i podmenu): najmniejsza szerokość 160, najwyższa 320;
+             szerokość z najdłuższej pozycji, dłuższy napis przycina się wielokropkiem. -->
+        <x:Double x:Key="DungeonMenuMinWidth">160</x:Double>
+        <x:Double x:Key="DungeonMenuMaxWidth">320</x:Double>
+        <!-- Podmenu stoi górnym wierszem na wysokości pozycji-rodzica: przesunięte w górę o wcięcie
+             powierzchni menu (DungeonFlyoutPadding, 4) i jej krawędź (1). -->
+        <x:Double x:Key="DungeonSubmenuVerticalOffset">-5</x:Double>
+        <!-- Odstęp kolumny skrótu klawiszowego od napisu pozycji menu (DungeonSpacingXxl). -->
+        <Thickness x:Key="DungeonMenuGestureMargin">24,0,0,0</Thickness>
         <!-- Okruszki (controls:Breadcrumbs): strzałka między odcinkami 8 px (mockup rejestru,
              .crumb-path svg) - mniejsza niż ikona akcji (16), bo stoi w tekście 12 px i tylko
              rozdziela. Odstęp po obu stronach strzałki DungeonSpacingXs. -->

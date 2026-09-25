@@ -42,12 +42,11 @@
         <Setter Property="BaselineAlignment" Value="TextBottom" />
     </Style>
 
-    <Style Selector="ToolTip">
-        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+    <!-- Separator w menu (MenuFlyout, ContextMenu, podmenu): linia 1 px na pełną szerokość wnętrza
+         menu, odstęp 4 nad i pod. Mieszka tu, a nie w motywie menu (DungeonControls.axaml), bo
+         ControlTheme nie dopuszcza selektora potomka. -->
+    <Style Selector="MenuFlyoutPresenter > Separator, ContextMenu > Separator, MenuItem > Separator">
+        <Setter Property="Margin" Value="0,4" />
     </Style>
 
     <!--
