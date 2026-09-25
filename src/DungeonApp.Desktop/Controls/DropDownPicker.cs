@@ -170,14 +170,17 @@ public sealed class DropDownPicker : TemplatedControl
         if (change.Property == SelectedItemsProperty)
         {
             ObserveSelection(change.GetNewValue<IList?>());
-            Refresh();
+            UpdateSelection();
+        }
+        else if (change.Property == SelectedItemProperty)
+        {
+            UpdateSelection();
         }
         else if (change.Property == ItemsSourceProperty
-                 || change.Property == SelectedItemProperty
                  || change.Property == SelectionModeProperty
                  || change.Property == SearchTextProperty)
         {
-            Refresh();
+            RebuildRows();
         }
         else if (change.Property == IsDropDownOpenProperty)
         {
@@ -262,7 +265,7 @@ public sealed class DropDownPicker : TemplatedControl
 
         if (_observedSelection is null)
         {
-            Refresh();
+            UpdateSelection();
         }
     }
 
@@ -280,26 +283,44 @@ public sealed class DropDownPicker : TemplatedControl
         }
     }
 
-    // Notifies the view only: the rows and the closed text are redrawn, nothing is written.
-    private void OnSelectionCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => Refresh();
+    // Notifies the view only: the rows' selection state and the closed text are redrawn, nothing
+    // is written.
+    private void OnSelectionCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => UpdateSelection();
 
-    private void Refresh()
+    // The items, the mode or the search changed: new rows. A change of the selection alone never
+    // comes here - it keeps the rows (UpdateSelection), so their containers are not rebuilt.
+    private void RebuildRows()
     {
-        var items = ItemsSource?.Cast<object>().ToList() ?? [];
+        var items = Items();
         var isMultiple = SelectionMode == DropDownPickerMode.Multiple;
-
-        bool IsSelected(object item) => isMultiple
-            ? SelectedItems?.Contains(item) == true
-            : Equals(SelectedItem, item);
 
         Rows = items
             .Select(item => new DropDownPickerRow(item, item.ToString() ?? string.Empty, IsSelected(item), isMultiple))
             .Where(row => DropDownPickerText.Matches(row.Text, SearchText))
             .ToList();
         HasNoMatches = items.Count > 0 && Rows.Count == 0;
+        UpdateSummary(items);
+    }
 
-        // In the order of the items, not of clicking - the closed text does not jump.
+    // The selection changed: the same rows, each told whether it is selected now.
+    private void UpdateSelection()
+    {
+        foreach (var row in Rows)
+        {
+            row.IsSelected = IsSelected(row.Item);
+        }
+
+        UpdateSummary(Items());
+    }
+
+    // In the order of the items, not of clicking - the closed text does not jump.
+    private void UpdateSummary(List<object> items) =>
         SummaryText = DropDownPickerText.Summary(
             items.Where(IsSelected).Select(item => item.ToString() ?? string.Empty).ToList());
-    }
+
+    private List<object> Items() => ItemsSource?.Cast<object>().ToList() ?? [];
+
+    private bool IsSelected(object item) => SelectionMode == DropDownPickerMode.Multiple
+        ? SelectedItems?.Contains(item) == true
+        : Equals(SelectedItem, item);
 }
