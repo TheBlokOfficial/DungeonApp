@@ -201,8 +201,9 @@
         (:disabled). Nic więcej.
           spoczynek  - tło InputBackground, krawędź InputBorder;
           najechanie - krawędź InputHoverBorder;
-          edycja     - krawędź InputEditBorder (akcent), także pod myszą. To stan edycji pola, nie
-                       wskaźnik fokusu klawiatury: pojawia się przy każdym wejściu w pole;
+          edycja     - krawędź InputHoverBorder (ta z najechania, neutralna, bez akcentu) przez całą
+                       edycję, także gdy mysz zjedzie z pola. Pisanie pokazuje karetka; to nie jest
+                       wskaźnik fokusu klawiatury;
           wyłączenie - DungeonDisabledOpacity jak przyciski, bez reakcji na mysz.
         Krawędź ma zawsze 1 px, więc zmiana stanu nie przesuwa układu. Tekst zastępczy
         (InputPlaceholder) nie zmienia się w żadnym stanie. Kursor myszy tekstowy nad całym polem,
@@ -326,12 +327,10 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
 
-        <!-- Najechanie, potem edycja: edycja pod myszą wygląda jak edycja. -->
-        <Style Selector="^:pointerover /template/ Border#PART_BorderElement">
+        <!-- Najechanie i edycja: ta sama krawędź; w edycji trzyma się także bez myszy nad polem. -->
+        <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+                       ^:focus /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
-        </Style>
-        <Style Selector="^:focus /template/ Border#PART_BorderElement">
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputEditBorderBrush}" />
         </Style>
 
         <!-- Wyszukiwania: lupa z szablonu; przycisk czyszczenia - cichy ikonowy, wysoki jak wnętrze
@@ -383,7 +382,7 @@
 
     <!--
         Pole liczbowe (NumericUpDown): wygląd i stany pola tekstowego - spoczynek, najechanie, edycja
-        (fokus gdziekolwiek w polu, :focus-within), wyłączenie. Szablony wycięte z NumericUpDown.xaml
+        (fokus gdziekolwiek w polu, :focus-within; krawędź z najechania, bez akcentu), wyłączenie. Szablony wycięte z NumericUpDown.xaml
         i ButtonSpinner.xaml Fluenta (Avalonia 12.0.5, MIT): zostały ButtonSpinner (PART_Spinner - to on
         zamienia strzałki klawiatury i przyciski w zmianę wartości) i wewnętrzne pole PART_TextBox;
         wypadły DataValidationErrors i przyciski obok siebie. Ramkę i tło rysuje ButtonSpinner;
@@ -469,11 +468,8 @@
         <Style Selector="^:left /template/ Grid#PART_SpinnerPanel">
             <Setter Property="DockPanel.Dock" Value="Left" />
         </Style>
-        <Style Selector="^:pointerover">
+        <Style Selector="^:pointerover, ^:focus-within">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
-        </Style>
-        <Style Selector="^:focus-within">
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputEditBorderBrush}" />
         </Style>
     </ControlTheme>
 

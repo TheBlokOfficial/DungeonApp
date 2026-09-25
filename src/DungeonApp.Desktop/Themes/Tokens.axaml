@@ -126,11 +126,9 @@
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
         <!-- InputBorder: krawędź pola w spoczynku - granica miejsca do pisania, spokojna jak linia. -->
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
-        <!-- InputHoverBorder: pole pod myszą - kliknięcie tu zacznie edycję. -->
+        <!-- InputHoverBorder: pole pod myszą - kliknięcie tu zacznie edycję. Ta sama krawędź trzyma się
+             przez całą edycję, także gdy mysz zjedzie z pola: pisanie pokazuje karetka, nie akcent. -->
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-        <!-- InputEditBorder: pole w edycji - to, co piszesz, trafia tutaj. Akcent, bo to pole jest
-             teraz wybrane; 1 px jak w spoczynku, więc wejście w edycję nie przesuwa układu. -->
-        <SolidColorBrush x:Key="DungeonInputEditBorderBrush" Color="{DynamicResource DungeonAccentColor}" />
         <!-- InputPlaceholder: tekst zastępczy - podpowiedź, co wpisać; pole jest puste. -->
         <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
         <!-- TextSelection: zaznaczony tekst - ten fragment jest wybrany (kopiowanie, zastąpienie). Akcent
