@@ -1943,7 +1943,7 @@
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">
-            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
         </Style>
     </ControlTheme>
 
@@ -2137,7 +2137,7 @@
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">
-            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
         </Style>
     </ControlTheme>
 
