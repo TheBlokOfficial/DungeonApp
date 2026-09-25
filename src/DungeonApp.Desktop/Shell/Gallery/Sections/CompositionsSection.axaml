@@ -58,14 +58,14 @@
                 <TextBlock Name="CountText" Classes="label muted" />
                 <Border Classes="composition-list" Height="360">
                     <Panel>
-                        <ListBox Name="MonsterList" Grid.IsSharedSizeScope="True">
+                        <ListBox Name="SampleList" Grid.IsSharedSizeScope="True">
                             <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="sections:MonsterSample">
+                                <DataTemplate x:DataType="sections:SampleRow">
                                     <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="MonsterType" />
-                                            <ColumnDefinition Width="Auto" SharedSizeGroup="MonsterChallenge" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="RowType" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="RowChallenge" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />

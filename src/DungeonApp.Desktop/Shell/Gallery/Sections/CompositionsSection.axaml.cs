@@ -10,10 +10,10 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 
 /// <summary>
-/// One sample row of the Compositions section's list: a monster's name, type and challenge.
+/// One sample row of the Compositions section's list: a name, a type and a challenge rating.
 /// Gallery data only - held in memory, never written anywhere.
 /// </summary>
-public sealed class MonsterSample(string name, string type, string challenge)
+public sealed class SampleRow(string name, string type, string challenge)
 {
     public string Name { get; } = name;
 
@@ -31,7 +31,7 @@ public sealed class MonsterSample(string name, string type, string challenge)
 /// </summary>
 public partial class CompositionsSection : UserControl
 {
-    private readonly List<MonsterSample> _all =
+    private readonly List<SampleRow> _all =
     [
         new("Bandyta", "Humanoid", "1/8"),
         new("Goblin", "Humanoid", "1/4"),
@@ -47,13 +47,13 @@ public partial class CompositionsSection : UserControl
         new("Młody zielony smok", "Smok", "8"),
     ];
 
-    private readonly ObservableCollection<MonsterSample> _visible = [];
+    private readonly ObservableCollection<SampleRow> _visible = [];
 
     public CompositionsSection()
     {
         InitializeComponent();
 
-        MonsterList.ItemsSource = _visible;
+        SampleList.ItemsSource = _visible;
         SearchBox.TextChanged += (_, _) => ApplyFilter();
         foreach (var chip in TypeChips.Children.OfType<ToggleButton>())
         {
@@ -84,8 +84,8 @@ public partial class CompositionsSection : UserControl
             .ToHashSet(StringComparer.Ordinal);
 
         var matches = _all
-            .Where(monster => text.Length == 0 || monster.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
-            .Where(monster => types.Count == 0 || types.Contains(monster.Type))
+            .Where(row => text.Length == 0 || row.Name.Contains(text, StringComparison.CurrentCultureIgnoreCase))
+            .Where(row => types.Count == 0 || types.Contains(row.Type))
             .ToList();
 
         // Remove what no longer passes, then insert what is missing at its place in the full order.
@@ -113,7 +113,7 @@ public partial class CompositionsSection : UserControl
         CountText.Text = $"{matches.Count} {EntryPlural(matches.Count)}";
 
         var hasRows = matches.Count > 0;
-        MonsterList.IsVisible = hasRows;
+        SampleList.IsVisible = hasRows;
         NoResults.IsVisible = !hasRows;
         NoResultsMessage.Message = isFiltered
             ? "Nic nie pasuje do filtrów i wyszukiwania."
@@ -122,7 +122,7 @@ public partial class CompositionsSection : UserControl
 
     private async void OnDeleteClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button { DataContext: MonsterSample monster } button)
+        if (sender is not Button { DataContext: SampleRow row } button)
         {
             return;
         }
@@ -130,7 +130,7 @@ public partial class CompositionsSection : UserControl
         var confirmed = await ConfirmationDialog.ShowAsync(
             button,
             "Usunąć potwora?",
-            $"„{monster.Name}” zniknie z listy. Zaraz po usunięciu można to cofnąć.",
+            $"„{row.Name}” zniknie z listy. Zaraz po usunięciu można to cofnąć.",
             "Usuń",
             isDestructive: true);
         if (!confirmed)
@@ -138,7 +138,7 @@ public partial class CompositionsSection : UserControl
             return;
         }
 
-        var index = _all.IndexOf(monster);
+        var index = _all.IndexOf(row);
         if (index < 0)
         {
             return;
@@ -151,19 +151,19 @@ public partial class CompositionsSection : UserControl
         NotificationToast.Show(
             this,
             NotificationKind.Information,
-            $"Usunięto „{monster.Name}”.",
+            $"Usunięto „{row.Name}”.",
             "Cofnij",
-            () => Restore(monster, index));
+            () => Restore(row, index));
     }
 
-    private void Restore(MonsterSample monster, int index)
+    private void Restore(SampleRow row, int index)
     {
-        if (_all.Contains(monster))
+        if (_all.Contains(row))
         {
             return;
         }
 
-        _all.Insert(Math.Min(index, _all.Count), monster);
+        _all.Insert(Math.Min(index, _all.Count), row);
         ApplyFilter();
     }
 
