@@ -16,13 +16,15 @@ public sealed class BoldTextReserve : TextBlock
     public static readonly StyledProperty<object?> LabelProperty =
         AvaloniaProperty.Register<BoldTextReserve, object?>(nameof(Label));
 
-    static BoldTextReserve()
+    // Wartości lokalne, nie domyślne: grubość i zawijanie są dziedziczone, więc wartość domyślna
+    // przegrałaby z grubością etykiety (Normal w spoczynku) i kopia nie byłaby pogrubiona.
+    public BoldTextReserve()
     {
-        FontWeightProperty.OverrideDefaultValue<BoldTextReserve>(FontWeight.SemiBold);
-        OpacityProperty.OverrideDefaultValue<BoldTextReserve>(0);
-        IsHitTestVisibleProperty.OverrideDefaultValue<BoldTextReserve>(false);
-        TextWrappingProperty.OverrideDefaultValue<BoldTextReserve>(TextWrapping.NoWrap);
-        TextTrimmingProperty.OverrideDefaultValue<BoldTextReserve>(TextTrimming.CharacterEllipsis);
+        FontWeight = FontWeight.SemiBold;
+        Opacity = 0;
+        IsHitTestVisible = false;
+        TextWrapping = TextWrapping.NoWrap;
+        TextTrimming = TextTrimming.CharacterEllipsis;
     }
 
     public object? Label
