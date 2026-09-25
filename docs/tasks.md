@@ -162,6 +162,14 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     `:disabled`. Porcja 7a zrobiła to dobrze dla zakładek i nagłówka: przezroczystość po **własnym**
     `IsEnabled` kontrolki, kolory stanu wyłączonego dalej po `:disabled`. To samo przestawienie
     przejść we wszystkich motywach, które przygaszają przezroczystością.
+* **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
+  uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które
+  zmienia układ menu (samo przestawienie przygaszenia z porcji 7b się nie liczy):
+  * Skrót klawiszowy nie kończy się na tej samej prawej krawędzi co strzałka podmenu — w pozycji bez
+    podmenu stoi dalej od prawej, z pustym marginesem po miejscu na strzałkę. Skrót i strzałka mają
+    kończyć się w jednej linii przy prawym wcięciu pozycji.
+  * Podmenu nachodzi na menu, z którego wyszło (przesunięcie w poziomie `-5`). Ma stać obok jego
+    krawędzi z małym odstępem, jak okienko od otwierającego — bez nachodzenia.
 * **Suwak — tylko notka, bez korekty teraz** (autor, po rundzie 2 porcji 5, 2026-09-25): uchwyt
   w spoczynku (kolor tekstu drugorzędnego) lekko za ciemny. Pomysł autora na później: pod myszą
   obwódka wokół uchwytu zamiast rozjaśnienia — do zderzenia z wpisem o otoczce w `decisions.md`
