@@ -2921,4 +2921,162 @@
         </Style>
     </ControlTheme>
 
+    <!-- =================================================================== -->
+    <!-- ODZNAKA I TAG                                                       -->
+    <!-- =================================================================== -->
+    <!--
+        Odznaka (controls:Badge) i tag (controls:WordTag): dwa klocki dla rzeczy nieklikalnych,
+        rozróżnione tym, czym jest treść. Odznaka niesie wartość (liczba, wyzwanie "1/2", "+3"):
+        prostokąt DungeonBadgeCornerRadius, wcięcie DungeonBadgePadding, krój liczb DungeonMonoFont,
+        12 (DungeonHelperFontSize), SemiBold. Tag niesie słowo (kategoria, typ, rzadkość): pigułka
+        DungeonTagCornerRadius (połowa wysokości), wcięcie DungeonTagPadding, pismo interfejsu 12,
+        Medium. Oba: wysokość DungeonBadgeHeight, na środku linii w pionie (wiersz listy 32, tekst
+        13), szerokość z treści albo od kontenera; treść się nie zawija - zbyt długa przycina się
+        wielokropkiem z pełnym napisem w podpowiedzi (Themes/TrimmedLabelToolTip.cs). Krawędź zawsze
+        1 px (w odmianach bez krawędzi przezroczysta) - odmiana nie zmienia wymiarów.
+        Bez stanów: nie reagują na mysz, nie przyjmują fokusu, kursor strzałka, tekst się nie
+        zaznacza. Wyłączone - DungeonDisabledOpacity po własnym IsEnabled.
+        Odmiany po znaczeniu (klasy, te same dla obu):
+          (brak)   - neutralna: odznaka - tło BackstageRow, krawędź Border, tekst TextRegular;
+                     tag - bez tła, krawędź BorderStrong, tekst TextRegular;
+          .accent  - tło AccentDim, tekst AccentOnDim, bez krawędzi;
+          .success - tło SuccessDim, tekst Success, bez krawędzi;
+          .warning - tło WarningDim, tekst Warning, bez krawędzi;
+          .danger  - tło DangerDim, tekst DangerOnDim, bez krawędzi;
+          .custom  - kolor podany przez układającego (skale systemu, np. rzadkość): bez krawędzi,
+                     tło i tekst ustawia widok wprost - Background i Foreground z tokenów systemu.
+    -->
+    <ControlTheme x:Key="{x:Type controls:Badge}" TargetType="controls:Badge">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonBadgeHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonBadgePadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonBadgeCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap"
+                                      themes:TrimmedLabelToolTip.IsEnabled="True" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.accent">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+        </Style>
+        <Style Selector="^.success">
+            <Setter Property="Background" Value="{DynamicResource DungeonSuccessDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonSuccessBrush}" />
+        </Style>
+        <Style Selector="^.warning">
+            <Setter Property="Background" Value="{DynamicResource DungeonWarningDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonWarningBrush}" />
+        </Style>
+        <Style Selector="^.danger">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerOnDimBrush}" />
+        </Style>
+        <Style Selector="^.custom">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type controls:WordTag}" TargetType="controls:WordTag">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonBadgeHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonTagPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonTagCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <!-- Przezroczyste, nie puste: podpowiedź przyciętego napisu potrzebuje trafienia myszą. -->
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap"
+                                      themes:TrimmedLabelToolTip.IsEnabled="True" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.accent">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+        </Style>
+        <Style Selector="^.success">
+            <Setter Property="Background" Value="{DynamicResource DungeonSuccessDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonSuccessBrush}" />
+        </Style>
+        <Style Selector="^.warning">
+            <Setter Property="Background" Value="{DynamicResource DungeonWarningDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonWarningBrush}" />
+        </Style>
+        <Style Selector="^.danger">
+            <Setter Property="Background" Value="{DynamicResource DungeonDangerDimBrush}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerOnDimBrush}" />
+        </Style>
+        <Style Selector="^.custom">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
 </ResourceDictionary>
