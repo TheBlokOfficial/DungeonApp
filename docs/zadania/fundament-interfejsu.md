@@ -16,10 +16,8 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Porcje 0–6 przyjęte przez autora; uwagi po porcji 6 (skakanie przy pogrubieniu wybranego,
 wyłączony pojemnik, pusty pasek zakładek) czekają w `tasks.md`, *Poprawki czekające na obszar* —
-zabiera je porcja 7 jako pierwszy punkt. Kopii roboczych brak. **Czeka na decyzję autora**
-propozycja architekta: porcje 7 i 8 dwoma wykonawcami jeden po drugim, obejrzane razem (7 i 8
-korzystają z ustalonych zasad, nie ustalają nowych); sesja ta sama do porcji 8, nowa od 8b.
-**Następny krok:** odpowiedź autora → brief porcji 7.
+zabiera je porcja 7a jako pierwszy punkt. Kopii roboczych brak. **Następny krok:** nowa sesja zadania
+— brief porcji 7a.
 
 ## Zakres i koniec
 
@@ -69,8 +67,9 @@ Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w a
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
 - [x] **0–6** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **7** — najpierw poprawki po porcji 6 (`tasks.md`); potem menu, menu kontekstowe, podpowiedź
-  (także pełny napis przyciętej zakładki, segmentu i przycisku), okno potwierdzenia, powiadomienie, wskaźnik
+- [ ] **7a** — poprawki po porcji 6 (`tasks.md`); menu, menu kontekstowe, podpowiedź (także pełny
+  napis przyciętej zakładki, segmentu i przycisku).
+- [ ] **7b** — okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
 - [ ] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
@@ -147,6 +146,11 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Porcje trwają zwykle 40–68 kroków i 8–13 minut na przebieg; rundy poprawek — mniej. Poprawka zaraz
   po obejrzeniu idzie do wznowionego wykonawcy, jeśli jego pamięć jest ciepła (`collaboration.md`,
   *Briefy dla subagentów*).
+* **Porcje osobno, każda oglądana od razu** — autor, 2026-09-25 (odrzucił łączenie 7 i 8 we wspólne
+  oglądanie). Porcja 7 podzielona na 7a i 7b przez architekta: z poprawkami po porcji 6 i podpowiedzią
+  przyciętych napisów nie mieściła się w jednym wykonawcy.
+* Sesja zadania z jedną porcją, raportem i rozmową o uwagach doszła do ok. 170 tys. tokenów historii —
+  autor zamknął ją po porcji 6; nowa sesja od porcji 7a.
 * Porcja 6: pięć kontrolek zmieściło się w 12 minutach (architekt przewidywał przekroczenie limitu
   — mylnie). Kroki szły na szukanie w motywie kolorów, których brief nie nazwał (wyłączone, powierzchnia
   karty) — **brief podaje nazwy pędzli stanów**: wyłączone to przezroczystość `DungeonDisabledOpacity`,
