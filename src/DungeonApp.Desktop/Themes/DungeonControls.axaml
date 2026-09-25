@@ -1468,7 +1468,7 @@
         Zamknięta wygląda jak pole tekstowe: wysokość DungeonControlHeight, tło, krawędź 1 px
         i zaokrąglenie pola, wcięcie jak w polu; tekst wybranej pozycji wyśrodkowany w pionie,
         w jednej linii przycięty wielokropkiem; bez wyboru - PlaceholderText kolorem zastępczym pola.
-        Po prawej chevron w dół (DungeonIconChevronDown, rozmiar ikony akcji, kolor tekstu
+        Po prawej chevron w prawo (DungeonIconChevronDown obrócony o -90°, rozmiar ikony akcji, kolor tekstu
         przygaszonego, 12 px od krawędzi jak lupa w polu wyszukiwania), sam rysunek bez tła.
         Szerokość nadaje układ (rozciąga się jak pole), nie zawartość. Kursor strzałka.
         Stany:
@@ -1476,9 +1476,9 @@
           najechanie - krawędź InputHoverBorder (jak pole);
           wciśnięcie - jak najechanie;
           otwarta    - jak najechanie, także bez myszy nad polem (bez akcentu, jak pole w edycji);
-                       chevron obrócony w górę;
+                       chevron w dół (zamknięta - w prawo), obrót ruchem;
           wyłączenie - DungeonDisabledOpacity.
-        Fokus nie ma wyglądu (FocusAdorner pusty); bez animacji otwierania.
+        Fokus nie ma wyglądu (FocusAdorner pusty); bez animacji otwierania - rusza się tylko chevron.
         Rozwinięta lista: powierzchnia okienka wysuwanego (ten sam motyw FlyoutPresenter - tło,
         krawędź, wcięcie, cień, najwyższa wysokość DungeonFlyoutMaxHeight, przewijanie w środku),
         co najmniej tak szeroka jak pole, pod nim i wyrównana do jego lewej krawędzi (nad nim, gdy pod
@@ -1571,8 +1571,20 @@
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
+        <!-- Strzałka: zamknięta w prawo, otwarta w dół; obrót ruchem (DungeonMotionDuration,
+             z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
         <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
-            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
@@ -1587,7 +1599,7 @@
         Lista rozwijana ramy (controls:DropDownPicker) - wybór wielokrotny i/lub wyszukiwanie; lista
         pojedyncza bez wyszukiwania to ComboBox wyżej. Zamknięta wygląda i zachowuje się jak ComboBox
         (te same wysokość, tło, krawędź, wcięcie, chevron, stany: spoczynek, najechanie, wciśnięcie,
-        otwarta = najechanie i chevron w górę, wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
+        otwarta = najechanie i chevron w dół, zamknięta - w prawo, obrót ruchem; wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
         zastępczy; jedna pozycja - jej nazwa; więcej - nazwa pierwszej i "+N"; przycięte wielokropkiem.
         Rozwinięcie: powierzchnia okienka wysuwanego (motyw FlyoutPresenter), co najmniej tak szerokie
         jak pole, położone jak w ComboBox (pod polem od lewej krawędzi, nad nim przy braku miejsca).
@@ -1702,8 +1714,20 @@
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
+        <!-- Strzałka: zamknięta w prawo, otwarta w dół; obrót ruchem (DungeonMotionDuration,
+             z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
         <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
-            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />

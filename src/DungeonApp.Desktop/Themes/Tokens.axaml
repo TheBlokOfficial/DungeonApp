@@ -121,6 +121,13 @@
              Danger #9C4530 o nieprzezroczystości 45 %. Wypełnienie pod myszą się nie zmienia. -->
         <BoxShadows x:Key="DungeonDangerHoverHaloShadow">0 0 0 3 #739C4530</BoxShadows>
 
+        <!-- RUCH ============================================================= -->
+        <!-- MotionDuration: czas każdej animacji ramy - coś się przemieszcza, obraca albo pojawia
+             (gałka przełącznika, strzałka listy rozwijanej); najwyżej 150 ms, zawsze z wyhamowaniem
+             (CubicEaseOut). Stan zmienia się od razu, animacja tylko go dogania. Wyłączone animacje
+             w systemie zdejmuje przejścia w całości (Themes/ReducedMotion.axaml). -->
+        <x:TimeSpan x:Key="DungeonMotionDuration">0:0:0.15</x:TimeSpan>
+
         <!-- CIENIE =========================================================== -->
         <!-- FlyoutShadow: okienko wysuwane i rozwinięta lista - lekki cień w dół oddziela je od treści
              pod spodem (czerń o nieprzezroczystości 40 %, przesunięcie 2 px, rozmycie 8 px). Rysuje

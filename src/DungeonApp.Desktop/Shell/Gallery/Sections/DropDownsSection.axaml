@@ -29,7 +29,7 @@
         </StackPanel>
 
         <TextBlock Classes="overline-sm muted" Text="LISTA ROZWIJANA POJEDYNCZA" />
-        <TextBlock Classes="caption muted" Text="Zamknięta wygląda jak pole; otwarta ma krawędź najechania i chevron w górę. Wybór zamyka listę." />
+        <TextBlock Classes="caption muted" Text="Zamknięta wygląda jak pole; otwarta ma krawędź najechania, a chevron obraca się z prawej w dół. Wybór zamyka listę." />
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
                 <TextBlock Classes="caption muted" Text="Pusta" />
