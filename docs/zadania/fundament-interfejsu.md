@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `c37942a`.** Na starcie sesji: `git log c37942a..master` i `git worktree
+**Stan na: 2026-09-25, po `766c60a`.** Na starcie sesji: `git log 766c60a..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,11 +14,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–7b obejrzane przez autora; dwie uwagi po 7b (powiadomienia na pasku stanu, klatkowany
-pasek nieokreślony — „marginalne”) idą z porcją 8, bez osobnej rundy. **W toku:** porcja 8 — zielone
-światło autora 2026-09-25 („możemy jechać z porcją 8”); wykonawca (Opus 5.5) w kopii
-`.claude/worktrees/agent-ac67fed7810cd1405`, gałąź `worktree-agent-ac67fed7810cd1405`, baza `c37942a`.
-**Następny krok:** weryfikacja raportu, scalenie, autor ogląda 8; potem propozycja porcji 8b.
+Porcje 0–7b przyjęte. Porcja 8 scalona 2026-09-25 (z uwagami po 7b) — **czeka na obejrzenie przez
+autora** (galeria: etykiety i chipy, tabele; powiadomienia nad paskiem stanu; płynność paska
+nieokreślonego). Kopii roboczych brak. **Następny krok:** uwagi autora po 8, potem propozycja
+porcji 8b.
 
 ## Zakres i koniec
 
@@ -71,7 +70,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 - [x] **7b** — okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
-- [ ] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
+- [ ] **8** — scalona, czeka na obejrzenie — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
   kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela
   (nagłówek, kolumny z wyrównaniem, wcięcia komórek, obramowanie, wyróżnienie pojedynczej komórki
   kolorem podanym przez układającego — pierwszy konsument: cechy potwora, `tasks.md`, *B*).
@@ -100,6 +99,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25; przyjęta 2026-09-25 — uwagi (pogrubienie wybranego zmienia szerokość, wyłączony pojemnik, pusty pasek) idą z porcją 7, bez osobnej rundy (autor) | 65 / 12,0 / 8,0 mln |
 | 7a | poprawki po porcji 6 (rezerwa pogrubienia — kontrolka `BoldTextReserve`; wyłączony pojemnik przygasza całość raz — przygaszenie po własnym `IsEnabled`, kolory po `:disabled`; pusty pasek bez odstępu); podpowiedź z motywem i pełnym napisem przyciętej etykiety (`TrimmedLabelToolTip`); zakładka najwyżej 240; menu z przycisku, kontekstowe, podmenu, separator; ruch menu w `PopupOpenMotion` | scalona 2026-09-25; obejrzana tego dnia bez rundy — uwagi o menu (skrót nie w linii ze strzałką podmenu, podmenu nachodzi na menu) odłożone do *Poprawek czekających na obszar* (autor: nie na teraz) | 42 / 11,3 / 5,4 mln |
 | 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
+| 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; czeka na obejrzenie | 57 / 11,0 / 6,5 mln |
 
 ## Ustalenia
 
@@ -214,6 +214,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   nie z pozycji menu) albo zlecić poprawkę.
 * Porcja 7b: nowy ruch da się zrobić w kodzie, sprawdzając `SystemMotion.IsReduced` — wtedy nie
   dotyka `ReducedMotion.axaml` ani testu jego czterech reguł (`code-state.md`, *Pułapki*).
+* Porcja 8 (raport): tekst akcentu na przygaszonym akcencie ma 4,05:1 — poniżej reguły 4,5:1
+  (`architecture.md`, *Kolor tekstu*). Wykonawca dodał jaśniejsze odmiany do tekstu na przygaszonym tle
+  (`DungeonAccentOnDim*`, `DungeonDangerOnDim*`) dla odznaki, tagu i chipa. **Wybrana zakładka,
+  segment i wiersz listy mają ten sam błąd** — w `tasks.md`, *Poprawki czekające na obszar*.
+* Porcja 8: odznaka i tag wyłączone przygasają, ale nie tracą barwy — barwa jest tu informacją
+  (rzadkość), nie znakiem działania; reguła „wyłączona traci barwę” dotyczy kontrolek, które coś robią.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
