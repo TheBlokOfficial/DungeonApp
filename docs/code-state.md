@@ -129,6 +129,13 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 * **Pasek boczny budowany jest od nowa przy każdym wyborze systemu** (warunek animacji zwijania);
   stan zwinięcia trzyma rama, tylko w pamięci. Przepięcie istniejącego paska zamiast budowy nowego
   psuje animację.
+* **Lista gubi zaznaczenie, gdy model widoku podmienia jej źródło na nowe obiekty wierszy** — stary
+  obiekt nie istnieje w nowej liście. Wygląda jak błąd kliknięcia (przycisk „Zapisz" w wierszu
+  „odznacza" wiersz), a to przebudowa wierszy po zmianie kampanii (diagnoza z porcji 5, panel
+  instancji). Lista z zaznaczeniem zachowuje obiekty wierszy albo przywraca zaznaczenie po kluczu.
+* **`ScrollViewer.IsScrollChainingEnabled` trzeba ustawić także w motywach, które przekazują ją
+  do własnego przewijania** (`ListBox`, `TextBox`) — ich szablon podaje własną wartość i zasłania
+  ustawienie z motywu przewijania.
 
 ---
 
