@@ -98,6 +98,14 @@ obszar; osobny wykonawca dopiero wtedy, gdy uzbiera się ich tyle, że warto. Ar
 każdego briefu przegląda tę sekcję. *Dlaczego:* wykonawca, który już zna miejsce, robi poprawkę bez
 szukania go od nowa — osobne zlecenie na jedną drobnostkę płaci za całe wejście w kod.
 
+**Auto-udoskonalanie: obieg pracy ma tanieć z sesji na sesję.** Decyzja autora z 2026-09-25.
+Asystent zauważa, gdzie praca płaci czas albo tokeny bez potrzeby — lektura, która nic nie wniosła,
+pytanie, które dokument mógł uprzedzić, szukanie, które mógł oszczędzić brief, reguła czytana przy
+każdym starcie, choć potrzebna raz — i zgłasza to autorowi przy najbliższym raporcie, w jednym–dwóch
+zdaniach z propozycją dopisku albo skrótu. Do dokumentów trafia to dopiero po zgodzie autora, jak
+każda zmiana. Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty,
+tokeny, linie lektury).
+
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
 
