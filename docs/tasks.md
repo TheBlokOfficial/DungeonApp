@@ -230,17 +230,10 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
-* **Pole wyboru, przełącznik, suwak (motyw ramy, `DungeonControls.axaml`)** — pytania autora po
-  porcji 4, 2026-09-25, bez zmian na razie; odpowiedź architekta czeka na słowo autora:
-  * Czy pole wyboru i przełącznik mają mieć najechanie? Architekt: tak — konwencja platform
-    i bibliotek; mówi, że klikalna jest też etykieta (długa etykieta nie pokazuje sama, gdzie kończy
-    się pole).
-  * Czy suwak ma mieć najechanie albo podświetlenie przy przeciąganiu, np. otoczkę? Architekt:
-    rozjaśnienie uchwytu wystarcza; otoczka na każdej kontrolce odrzucona przy przyciskach
-    (`decisions.md`).
-  * Czy trzy stany pola wyboru rozróżniać kolorem, nie tylko znakiem? Architekt: nie — zaznaczone
-    i pośrednie mają ten sam kolor na wszystkich platformach; pośrednie to „częściowo zaznaczone”,
-    ta sama rodzina, a inny kolor sugerowałby inne znaczenie.
+* **Suwak (motyw ramy, `DungeonControls.axaml`)** — uwaga autora po porcji 4, 2026-09-25: rozjaśnienia
+  uchwytu pod myszą nie widać bez przypatrywania się (spoczynek #E8E4DA, pod myszą #FAF8F3 — już przy
+  bieli nie ma dokąd jaśnieć). Architekt: przyciemnić spoczynek (np. kolor tekstu drugorzędnego), żeby
+  pod myszą było wyraźne przejście do jasnego; bez obwódki (pytania z porcji 4 zamknięte, `decisions.md`).
 
 ---
 

@@ -402,6 +402,13 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   Standard systemów kontrolek jest odwrotny: domyślnie tekst podstawowy, drugorzędny jawnie — wtedy
   miejsce, które zapomni o kolorze, wychodzi czytelne, a nie przygaszone.
 * **Liczby nigdy krojem nagłówków** — Cormorant ma cyfry starodrukowe, „15" czyta się jak „1s".
+* **Pole wyboru, przełącznik, suwak — trzy pytania autora po porcji 4, zamknięte na rekomendacji
+  architekta** (autor, 2026-09-25). Najechanie na niezaznaczonym polu wyboru i przełączniku zostaje —
+  pokazuje, że klikalna jest też etykieta, której granicy nie widać. Suwak pod myszą tylko jaśnieje,
+  bez obwódki — obwódka zostaje przy dwóch przyciskach (wpis o najechaniu przycisku), a jej wygląd
+  jest potrzebny przyszłemu wskaźnikowi klawiatury. Stan pośredni pola wyboru ma kolor zaznaczonego,
+  różni się znakiem — to „częściowo zaznaczone", ta sama rodzina; inny kolor sugerowałby inne
+  znaczenie, a tak robią wszystkie platformy.
 * **Ruch tylko tam, gdzie coś się przemieszcza** — autor, 2026-09-25, po porcji 5 (propozycja
   architekta z porcji 4). Autor pytał o animację przełącznika, pola wyboru i suwaka zmieniającego
   kolor z wartością. Ruch mówi, dokąd coś poszło (gałka, obrót strzałki); zmiana koloru przy
