@@ -292,7 +292,7 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="ContextFlyout" Value="{DynamicResource DefaultTextBoxContextFlyout}" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -610,6 +610,8 @@
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="AllowAutoHide" Value="False" />
+        <!-- Kółko myszy nie przechodzi do obszaru wyżej: dojechany do końca zatrzymuje przewijanie. -->
+        <Setter Property="IsScrollChainingEnabled" Value="False" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -778,9 +780,9 @@
         Stany:
           spoczynek          - tło przezroczyste;
           najechanie         - tło BackstageRowHover;
-          wybrane            - tło AccentDim;
-          wybrane pod myszą  - tło AccentDimHover (odrobinę mocniej);
-          wciśnięcie         - wygląda jak pod myszą (wybrane albo nie);
+          wybrane            - tło AccentDim, także pod myszą i wciśnięte - wybrany wiersz nie ma
+                               najechania (klik w niego nic nie zmienia; styl stoi po najechaniu);
+          wciśnięcie         - wygląda jak pod myszą (niewybrany);
           wyłączenie         - DungeonDisabledOpacity jak każda wyłączona kontrolka, tło
                                przezroczyste, bez reakcji na mysz.
         Fokus wiersza nie ma wyglądu (FocusAdorner pusty) - przyjdzie z obsługą klawiatury.
@@ -793,7 +795,7 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
         <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="True" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -856,9 +858,6 @@
         </Style>
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-        </Style>
-        <Style Selector="^:selected:pointerover, ^:selected:pressed">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimHoverBrush}" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />

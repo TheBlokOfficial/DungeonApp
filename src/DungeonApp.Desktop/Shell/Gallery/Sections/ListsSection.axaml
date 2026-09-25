@@ -21,7 +21,7 @@
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Listy" />
-        <TextBlock Classes="caption muted" Text="Najedź na wiersz, żeby zobaczyć najechanie; kliknij, żeby go wybrać. Wiersz ma stałą wysokość, długi tekst przycina się wielokropkiem." />
+        <TextBlock Classes="caption muted" Text="Najedź na wiersz, żeby zobaczyć najechanie; kliknij, żeby go wybrać. Wiersz ma najmniejszą wysokość, długi tekst przycina się wielokropkiem." />
 
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
