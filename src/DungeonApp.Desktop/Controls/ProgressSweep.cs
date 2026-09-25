@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace DungeonApp.Desktop.Controls;
 
@@ -12,7 +11,9 @@ namespace DungeonApp.Desktop.Controls;
 /// Wypełnienie nieokreślonego wskaźnika postępu (część szablonu ProgressBar, Themes/DungeonControls.axaml):
 /// odcinek szerokości <see cref="SegmentFraction"/> toru przesuwa się w pętli od lewej do prawej
 /// w czasie DungeonProgressSweepDuration. To ruch ciągły, nie przejście stanu - rysuje go kod, bo
-/// animacja stylu nie daje się wyłączyć stylem ReducedMotion.axaml.
+/// animacja stylu nie daje się wyłączyć stylem ReducedMotion.axaml. Klatki napędza pętla renderowania
+/// okna (<see cref="TopLevel.RequestAnimationFrame"/>) - odświeżanie idzie z częstotliwością ekranu, nie
+/// z zegara o stałym odstępie; położenie liczy się z upływu czasu, więc nie zależy od liczby klatek.
 /// Spokojny (bez ruchu, cały tor w <see cref="CalmFill"/>): przy wyłączonych animacjach w systemie
 /// (<see cref="Themes.SystemMotion.IsReduced"/>) i gdy kontrolka jest wyłączona.
 /// Zmienia wyłącznie wygląd, nigdy stan aplikacji.
@@ -31,7 +32,8 @@ public sealed class ProgressSweep : Control
     private static readonly CubicEaseInOut Easing = new();
 
     private readonly Stopwatch clock = new();
-    private DispatcherTimer? timer;
+    private bool running;
+    private bool frameRequested;
 
     static ProgressSweep()
     {
@@ -82,13 +84,13 @@ public sealed class ProgressSweep : Control
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        UpdateTimer();
+        UpdateMotion();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        StopTimer();
+        StopMotion();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -96,39 +98,57 @@ public sealed class ProgressSweep : Control
         base.OnPropertyChanged(change);
         if (change.Property == IsVisibleProperty || change.Property == IsEffectivelyEnabledProperty)
         {
-            UpdateTimer();
+            UpdateMotion();
             InvalidateVisual();
         }
     }
 
-    private void UpdateTimer()
+    private void UpdateMotion()
     {
         if (IsCalm || !IsVisible || VisualRoot is null)
         {
-            StopTimer();
+            StopMotion();
             return;
         }
 
-        if (timer is null)
+        if (!running)
         {
-            timer = new DispatcherTimer(TimeSpan.FromMilliseconds(16), DispatcherPriority.Render, OnTick);
+            running = true;
             clock.Restart();
-            timer.Start();
+            RequestFrame();
         }
     }
 
-    private void StopTimer()
+    private void StopMotion()
     {
-        timer?.Stop();
-        timer = null;
+        running = false;
         clock.Stop();
     }
 
-    private void OnTick(object? sender, EventArgs e)
+    private void RequestFrame()
     {
+        if (frameRequested || TopLevel.GetTopLevel(this) is not { } topLevel)
+        {
+            return;
+        }
+
+        frameRequested = true;
+        topLevel.RequestAnimationFrame(OnFrame);
+    }
+
+    private void OnFrame(TimeSpan frameTime)
+    {
+        frameRequested = false;
+        if (!running)
+        {
+            return;
+        }
+
         if (IsEffectivelyVisible)
         {
             InvalidateVisual();
         }
+
+        RequestFrame();
     }
 }

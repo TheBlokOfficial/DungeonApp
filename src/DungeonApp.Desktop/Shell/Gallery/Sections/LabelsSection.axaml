@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.LabelsSection">
+    <!-- The frame's Badge, WordTag and DungeonChip themes, live: badges and tags in every variant,
+         a long label trimmed by a narrow container, both in a list row next to a name; chips in every
+         state (rest, on, disabled, on-disabled, with an icon, long label). The only local colours are
+         the "given by the layout" samples, defined here as a system scale would define them. -->
+    <UserControl.Resources>
+        <!-- Kolor podany przez układającego: przykładowa skala systemu (rzadkość "Rzadki"). -->
+        <SolidColorBrush x:Key="GalleryRareBackgroundBrush" Color="#2E5B8FD6" />
+        <SolidColorBrush x:Key="GalleryRareTextBrush" Color="#9CBDEB" />
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="WrapPanel.label-row">
+            <Setter Property="ItemSpacing" Value="{DynamicResource DungeonSpacingSm}" />
+            <Setter Property="LineSpacing" Value="{DynamicResource DungeonSpacingSm}" />
+        </Style>
+    </UserControl.Styles>
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Odznaki, tagi, chipy" />
+
+        <TextBlock Classes="overline-sm muted" Text="ODZNAKA - WARTOŚĆ" />
+        <WrapPanel Classes="label-row">
+            <controls:Badge Content="12" />
+            <controls:Badge Classes="accent" Content="1/2" />
+            <controls:Badge Classes="success" Content="+3" />
+            <controls:Badge Classes="warning" Content="2/3" />
+            <controls:Badge Classes="danger" Content="-2" />
+            <controls:Badge Classes="custom" Content="CR 5"
+                            Background="{StaticResource GalleryRareBackgroundBrush}"
+                            Foreground="{StaticResource GalleryRareTextBrush}" />
+            <controls:Badge Content="7" IsEnabled="False" />
+            <controls:Badge Classes="accent" Content="1/2" IsEnabled="False" />
+        </WrapPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="TAG - SŁOWO" />
+        <WrapPanel Classes="label-row">
+            <controls:WordTag Content="Humanoid" />
+            <controls:WordTag Classes="accent" Content="Ulubiony" />
+            <controls:WordTag Classes="success" Content="Gotowy" />
+            <controls:WordTag Classes="warning" Content="Niekompletny" />
+            <controls:WordTag Classes="danger" Content="Wrogi" />
+            <controls:WordTag Classes="custom" Content="Rzadki"
+                              Background="{StaticResource GalleryRareBackgroundBrush}"
+                              Foreground="{StaticResource GalleryRareTextBrush}" />
+            <controls:WordTag Content="Wyłączony" IsEnabled="False" />
+        </WrapPanel>
+
+        <TextBlock Classes="caption muted" Text="Długi napis w wąskim kontenerze (120) - wielokropek, pełny w podpowiedzi" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+            <controls:Badge MaxWidth="120" Content="1234567890 / 9876543210" />
+            <controls:WordTag MaxWidth="120" Content="Nieumarły konstrukt żywiołu" />
+            <controls:WordTag MaxWidth="120" Classes="accent" Content="Bardzo długa kategoria wpisu" />
+        </StackPanel>
+
+        <TextBlock Classes="caption muted" Text="W wierszu listy obok nazwy i obok tekstu 13" />
+        <ListBox Width="360" SelectedIndex="1" HorizontalAlignment="Left">
+            <ListBoxItem>
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                        <controls:WordTag Content="Humanoid" />
+                        <controls:Badge Classes="accent" Content="1/4" />
+                    </StackPanel>
+                    <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Goblin" />
+                </DockPanel>
+            </ListBoxItem>
+            <ListBoxItem>
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                        <controls:WordTag Classes="custom" Content="Rzadki"
+                                          Background="{StaticResource GalleryRareBackgroundBrush}"
+                                          Foreground="{StaticResource GalleryRareTextBrush}" />
+                        <controls:Badge Content="+1" />
+                    </StackPanel>
+                    <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Miecz płomieni" />
+                </DockPanel>
+            </ListBoxItem>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+            <TextBlock VerticalAlignment="Center" Text="Wyzwanie" />
+            <controls:Badge Classes="accent" Content="1/2" />
+            <TextBlock VerticalAlignment="Center" Text="typ" />
+            <controls:WordTag Content="Bestia" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="CHIP FILTRA" />
+        <WrapPanel Classes="label-row">
+            <ToggleButton Theme="{StaticResource DungeonChip}" Content="Spoczynek" />
+            <ToggleButton Theme="{StaticResource DungeonChip}" Content="Włączony" IsChecked="True" />
+            <ToggleButton Theme="{StaticResource DungeonChip}" Content="Wyłączony" IsEnabled="False" />
+            <ToggleButton Theme="{StaticResource DungeonChip}" Content="Włączony wyłączony" IsChecked="True" IsEnabled="False" />
+            <ToggleButton Theme="{StaticResource DungeonChip}">
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             Source="{StaticResource DungeonIconBookOpen}" />
+                    <TextBlock Text="Podręcznik" />
+                </StackPanel>
+            </ToggleButton>
+            <ToggleButton Theme="{StaticResource DungeonChip}" MaxWidth="140"
+                          Content="Bardzo długi napis filtra, który się nie mieści" />
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

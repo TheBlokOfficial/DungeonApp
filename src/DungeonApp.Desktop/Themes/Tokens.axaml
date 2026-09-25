@@ -69,6 +69,23 @@
         <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
              Danger zostaje dla teł i ikon. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
+        <!-- Przygaszone kolory stanów: tło pod krótką treścią w kolorze stanu (odznaka, tag). Jak
+             AccentDim - kolor stanu o nieprzezroczystości 16 % (alfa 0x29), zapisany z kanałem alfa,
+             żeby na karcie, wierszu i zapleczu wyglądał jak ta sama przygaszona barwa. Nie do linii
+             ani tekstu. Niebezpieczeństwo z Danger (barwa teł), nie z DangerText. -->
+        <Color x:Key="DungeonSuccessDimColor">#2984A98B</Color>
+        <Color x:Key="DungeonWarningDimColor">#29D6B84F</Color>
+        <Color x:Key="DungeonDangerDimColor">#299C4530</Color>
+        <!-- Tekst na przygaszonym tle (odznaka, tag, włączony chip): Accent i DangerText na własnym
+             przygaszonym tle mają na karcie tylko 4,05:1 i 4,40:1 - poniżej 4,5:1 dla tekstu 12.
+             Ten sam odcień, jaśniejszy (HSL +8 / +4 punkty jasności): 5,1:1 i 5,0:1 na karcie, 5,0:1
+             i 4,9:1 na wierszu. Do tekstu na AccentDim / DangerDim, nie zamiast Accent i DangerText. -->
+        <Color x:Key="DungeonAccentOnDimColor">#C89854</Color>
+        <Color x:Key="DungeonDangerOnDimColor">#D87C64</Color>
+        <!-- TableHeader: wiersz nagłówka tabeli w karcie - neutralnie jaśniejszy od karty
+             (BackstageCard #1F1D1A), wyraźniej niż wiersz (#221F1C); nie akcent. Tekst drugorzędny
+             na nim ok. 7,4:1. -->
+        <Color x:Key="DungeonTableHeaderColor">#262320</Color>
 
         <!-- PĘDZLE ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -108,6 +125,12 @@
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
         <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
+        <SolidColorBrush x:Key="DungeonSuccessDimBrush" Color="{DynamicResource DungeonSuccessDimColor}" />
+        <SolidColorBrush x:Key="DungeonWarningDimBrush" Color="{DynamicResource DungeonWarningDimColor}" />
+        <SolidColorBrush x:Key="DungeonDangerDimBrush" Color="{DynamicResource DungeonDangerDimColor}" />
+        <SolidColorBrush x:Key="DungeonTableHeaderBrush" Color="{DynamicResource DungeonTableHeaderColor}" />
+        <SolidColorBrush x:Key="DungeonAccentOnDimBrush" Color="{DynamicResource DungeonAccentOnDimColor}" />
+        <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
 
         <!-- OTOCZKI NAJECHANIA ================================================ -->
         <!-- Pas 3 px na zewnątrz krawędzi, bez przesunięcia i rozmycia, w zaokrągleniu kontrolki
@@ -370,6 +393,22 @@
         <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
              podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
         <CornerRadius x:Key="DungeonListRowHighlightCornerRadius">3</CornerRadius>
+        <!-- Odznaka (wartość) i tag (słowo): jedna wysokość 20 - mieści linię tekstu 12 z oddechem
+             i stoi na środku wiersza listy (32) i linii tekstu 13. Odznaka to prostokąt o drobnym
+             zaokrągleniu 4 (jak nawigacja), tag - pigułka (połowa wysokości). Wcięcie odznaki 8,
+             tagu 10: pigułka potrzebuje więcej miejsca, żeby tekst nie dotykał łuku. -->
+        <x:Double x:Key="DungeonBadgeHeight">20</x:Double>
+        <CornerRadius x:Key="DungeonBadgeCornerRadius">4</CornerRadius>
+        <Thickness x:Key="DungeonBadgePadding">8,0</Thickness>
+        <CornerRadius x:Key="DungeonTagCornerRadius">10</CornerRadius>
+        <Thickness x:Key="DungeonTagPadding">10,0</Thickness>
+        <!-- Chip filtra: zwarta kontrolka w rzędzie filtrów - niższa od przycisku (36), wcięcie
+             poziome 10, zaokrąglenie jak kontrolki (DungeonControlCornerRadius). -->
+        <x:Double x:Key="DungeonChipHeight">28</x:Double>
+        <Thickness x:Key="DungeonChipPadding">10,0</Thickness>
+        <!-- Tabela w karcie: komórka najmniej 28 wysokości, wcięcie 10 z boków i 6 nad i pod. -->
+        <x:Double x:Key="DungeonTableCellMinHeight">28</x:Double>
+        <Thickness x:Key="DungeonTableCellPadding">10,6</Thickness>
         <!-- Okienko wysuwane i rozwinięta lista: zaokrąglenie powierzchni (6, jak karta) i wewnętrzne
              wcięcie (4 - mniej niż DungeonPaddingXs, żeby podświetlenie wiersza leżało blisko
              krawędzi okienka, bez "ramki w ramce"). Przyciski i pola dalej mają
