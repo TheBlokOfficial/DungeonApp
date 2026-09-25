@@ -137,12 +137,16 @@ public sealed class Breadcrumbs : TemplatedControl
 /// segment. Space goes first to the current segment (up to its full width), then to the separators,
 /// and what is left is shared by the trail segments so that a short segment keeps its full width and
 /// the longer ones get an equal share of the rest (and shorten with an ellipsis). When not even the
-/// separators fit next to the current segment, the trail is not shown.
+/// separators fit next to the current segment, or a shortened trail segment would get less than
+/// <see cref="MinimumTrailSegmentWidth"/>, the trail is not shown.
 /// </summary>
 public sealed class BreadcrumbsPanel : Panel
 {
     public static readonly StyledProperty<double> SpacingProperty =
         AvaloniaProperty.Register<BreadcrumbsPanel, double>(nameof(Spacing));
+
+    // Below this a shortened trail segment is an ellipsis and at most one letter - no longer a path.
+    private const double MinimumTrailSegmentWidth = 24;
 
     private double[] _widths = [];
 
@@ -223,9 +227,19 @@ public sealed class BreadcrumbsPanel : Panel
                 }
             }
 
-            foreach (var index in open)
+            var openShare = open.Count > 0 ? remaining / open.Count : 0;
+            if (open.Count > 0 && openShare < MinimumTrailSegmentWidth)
             {
-                _widths[index] = remaining / open.Count;
+                // A trail segment squeezed to a sliver would show a separator next to nothing
+                // readable - the trail goes away as a whole instead.
+                Array.Clear(_widths, 0, current);
+            }
+            else
+            {
+                foreach (var index in open)
+                {
+                    _widths[index] = openShare;
+                }
             }
         }
 
