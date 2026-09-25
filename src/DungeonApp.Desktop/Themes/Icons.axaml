@@ -3,7 +3,7 @@
     <Pen x:Key="DungeonIconPen" Brush="{DynamicResource DungeonTextMutedBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
     <Pen x:Key="DungeonIconPrimaryPen" Brush="{DynamicResource DungeonTextPrimaryBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
     <Pen x:Key="DungeonIconDangerPen" Brush="{DynamicResource DungeonDangerBrush}" Thickness="1.5" LineCap="Round" LineJoin="Round" />
-    <Pen x:Key="DungeonCampaignEmblemPen" Brush="{DynamicResource DungeonAccentDimBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
+    <Pen x:Key="DungeonCampaignEmblemPen" Brush="{DynamicResource DungeonAccentBrush}" Thickness="1.75" LineCap="Round" LineJoin="Round" />
 
     <DrawingImage x:Key="DungeonIconSearch" Viewbox="0,0,24,24">
         <DrawingGroup>

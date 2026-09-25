@@ -52,7 +52,16 @@
              +13 punktów, jasność +2 (HSL 35°, 65%, 50% wobec 35°, 51%, 48%). Znak marki na ekranie
              startowym i pasek postępu; przycisk pod myszą go nie używa (ma otoczkę, DungeonAccentHoverHaloShadow). -->
         <Color x:Key="DungeonAccentBrightColor">#D28D2D</Color>
-        <Color x:Key="DungeonAccentDimColor">#B8843B</Color>
+        <!-- AccentDim: przygaszony akcent - tło pod tym, co wybrane (wiersz listy, aktywny filtr) albo
+             pod treścią w akcencie (odznaka wyzwania). Accent #B8843B o nieprzezroczystości 16 %
+             (#29B8843B): zapisany z kanałem alfa, a nie przeliczony na tło, bo leży na różnych
+             powierzchniach (zaplecze, karta, okienko filtra) i ma na każdej wyglądać jak ta sama
+             przygaszona barwa, bez szwu. Tekst podstawowy na nim na tle zaplecza (ok. #2F2619)
+             ok. 12:1. Nie do linii ani rysunku - na to jest za słaby; tam idzie Accent. -->
+        <Color x:Key="DungeonAccentDimColor">#29B8843B</Color>
+        <!-- AccentDimHover: wybrane pod myszą - to samo co AccentDim, a do tego mysz nad tym;
+             Accent o nieprzezroczystości 24 % (#3DB8843B), odrobinę mocniej niż AccentDim. -->
+        <Color x:Key="DungeonAccentDimHoverColor">#3DB8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
@@ -97,6 +106,7 @@
         <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
+        <SolidColorBrush x:Key="DungeonAccentDimHoverBrush" Color="{DynamicResource DungeonAccentDimHoverColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
@@ -259,6 +269,9 @@
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
         <x:Double x:Key="DungeonControlHeight">36</x:Double>
         <x:Double x:Key="DungeonNavigationRowHeight">38</x:Double>
+        <!-- Wiersz listy (ListBoxItem): gęściej niż kontrolka (36) - lista to wiele pozycji jedna pod
+             drugą, a wiersz niesie jedną linię tekstu 13 px. -->
+        <x:Double x:Key="DungeonListRowHeight">32</x:Double>
         <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListMaxHeight">336</x:Double>
         <x:Double x:Key="DungeonCampaignListViewportHeight">258</x:Double>

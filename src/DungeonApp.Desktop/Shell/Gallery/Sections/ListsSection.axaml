@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ListsSection">
+    <!-- The frame's ListBox and ListBoxItem themes (Themes/DungeonControls.axaml), live: one list with
+         a row in every static state (rest, selected, disabled) and a row whose text is longer than the
+         list, and one list longer than its area (it scrolls with the frame's bar). Hover is checked
+         with the mouse. Nothing here restyles a list - the only local values are the lists' size and
+         the card they lie on. -->
+    <UserControl.Styles>
+        <Style Selector="Border.list-sample">
+            <Setter Property="Width" Value="240" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Listy" />
+        <TextBlock Classes="caption muted" Text="Najedź na wiersz, żeby zobaczyć najechanie; kliknij, żeby go wybrać. Wiersz ma stałą wysokość, długi tekst przycina się wielokropkiem." />
+
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Stany wiersza" />
+                <Border Classes="list-sample">
+                    <ListBox SelectedIndex="1">
+                        <ListBoxItem Content="Spoczynek" />
+                        <ListBoxItem Content="Wybrany" />
+                        <ListBoxItem Content="Wyłączony" IsEnabled="False" />
+                        <ListBoxItem Content="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                    </ListBox>
+                </Border>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Lista dłuższa niż obszar" />
+                <Border Classes="list-sample" Height="160">
+                    <ListBox>
+                        <ListBoxItem Content="Goblin" />
+                        <ListBoxItem Content="Hobgoblin" />
+                        <ListBoxItem Content="Bugbear" />
+                        <ListBoxItem Content="Kobold" />
+                        <ListBoxItem Content="Ork" />
+                        <ListBoxItem Content="Ogr" />
+                        <ListBoxItem Content="Troll" />
+                        <ListBoxItem Content="Szkielet" />
+                        <ListBoxItem Content="Zombie" />
+                        <ListBoxItem Content="Ghul" />
+                    </ListBox>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

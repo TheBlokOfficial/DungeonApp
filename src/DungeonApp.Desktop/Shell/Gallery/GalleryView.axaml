@@ -23,6 +23,7 @@
             <sections:ButtonsSection />
             <sections:TextFieldsSection />
             <sections:ScrollingSection />
+            <sections:ListsSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -759,6 +759,114 @@
     </ControlTheme>
 
     <!-- =================================================================== -->
+    <!-- LISTY                                                               -->
+    <!-- =================================================================== -->
+
+    <!--
+        Lista (ListBox) i wiersz listy (ListBoxItem). Szablony wycięte z ListBox.xaml
+        i ListBoxItem.xaml Fluenta (Avalonia 12.0.5, MIT): zostały obszar przewijania
+        (PART_ScrollViewer - pasek z motywu ScrollViewer ramy), prezenter elementów
+        (PART_ItemsPresenter) i prezenter treści wiersza (PART_ContentPresenter).
+        Lista leży na powierzchni, na której ją położono: tło przezroczyste, bez krawędzi, bez
+        wewnętrznego wcięcia. Nie ma własnych stanów; fokus bez wyglądu (FocusAdorner pusty).
+        Wiersz: wysokość najmniej DungeonListRowHeight - jedna linia tekstu albo ikona nie zmienia
+        jej ani o piksel; wyższy jest tylko wiersz, którego szablon składa się z kilku kontrolek (np.
+        świat kampanii). Wcięcie poziome DungeonSpacingMd, treść wyśrodkowana w pionie z założenia,
+        tekst w jednej linii przycięty wielokropkiem (szablon wiersza może to jawnie zmienić), stopień
+        i grubość tekstu interfejsu (Normal) w każdym stanie. Zaokrąglenie wyróżnienia
+        DungeonNavigationCornerRadius, bez krawędzi. Kursor strzałka.
+        Stany:
+          spoczynek          - tło przezroczyste;
+          najechanie         - tło BackstageRowHover;
+          wybrane            - tło AccentDim;
+          wybrane pod myszą  - tło AccentDimHover (odrobinę mocniej);
+          wciśnięcie         - wygląda jak pod myszą (wybrane albo nie);
+          wyłączenie         - DungeonDisabledOpacity jak każda wyłączona kontrolka, tło
+                               przezroczyste, bez reakcji na mysz.
+        Fokus wiersza nie ma wyglądu (FocusAdorner pusty) - przyjdzie z obsługą klawiatury.
+    -->
+    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="border"
+                        ClipToBounds="{TemplateBinding ClipToBounds}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+                                  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                  IsScrollInertiaEnabled="{TemplateBinding (ScrollViewer.IsScrollInertiaEnabled)}"
+                                  IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        Margin="{TemplateBinding Padding}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonListRowHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Content="{TemplateBinding Content}"
+                                  Padding="{TemplateBinding Padding}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  TextBlock.TextTrimming="CharacterEllipsis"
+                                  TextBlock.TextWrapping="NoWrap" />
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <Style Selector="^:selected:pointerover, ^:selected:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimHoverBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
     <!-- LINIE                                                               -->
     <!-- =================================================================== -->
 

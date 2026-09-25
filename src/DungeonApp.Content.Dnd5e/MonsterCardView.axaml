@@ -26,11 +26,6 @@
         <!-- mockup: .section-head h2, .desc are both font-size: 16px. -->
         <x:Double x:Key="MonsterSectionHeadFontSize">16</x:Double>
 
-        <!-- krok 10, brief A/C: DungeonAccentDimColor in Tokens.axaml equals DungeonAccentColor today
-             (not dimmed) - the same workaround ContentTabView.axaml's own ContentSelectedRowBrush
-             already uses, reported there; this card needs its own copy since resources do not cross
-             UserControl files. -->
-        <SolidColorBrush x:Key="MonsterChallengeChipBrush" Color="{DynamicResource DungeonAccentColor}" Opacity="0.16" />
     </UserControl.Resources>
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
@@ -75,7 +70,7 @@
             <Grid ColumnDefinitions="Auto,*">
                 <TextBlock Grid.Column="0" Classes="muted" Text="Wyzwanie" VerticalAlignment="Center" />
                 <Border Grid.Column="1" HorizontalAlignment="Left" Margin="{DynamicResource DungeonPaddingMd}"
-                        Background="{StaticResource MonsterChallengeChipBrush}"
+                        Background="{DynamicResource DungeonAccentDimBrush}"
                         CornerRadius="{StaticResource MonsterChallengeChipCornerRadius}"
                         Padding="{StaticResource MonsterChallengeChipPadding}">
                     <TextBlock x:Name="ChallengeText" Foreground="{DynamicResource DungeonAccentBrush}" FontWeight="SemiBold" />

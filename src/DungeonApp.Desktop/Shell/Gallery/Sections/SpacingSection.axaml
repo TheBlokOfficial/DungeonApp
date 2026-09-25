@@ -8,7 +8,7 @@
             <Setter Property="Height" Value="8" />
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
         <Style Selector="Border.radius-box">
             <Setter Property="Width" Value="64" />
