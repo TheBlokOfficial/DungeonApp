@@ -220,7 +220,9 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     poprawić rzemiosło w `.claude/agents/wykonawca.md` („Pasek przewijania tylko przy potrzebie”)
     i jego streszczenie w `collaboration.md`, *W interfejsie asystent decyduje…*.
   * *Pasek nie jest wyśrodkowany w swoim pasie* (autor): odstęp od wierszy mniejszy niż od prawej
-    krawędzi pojemnika. Wyrównać odstępy po obu stronach.
+    krawędzi pojemnika. Rozstrzygnięcie architekta (autor pytał, czy nie przykleić): pasek przy
+    prawej krawędzi pojemnika, wiersze sięgają do jego pasa z tym samym odstępem co od lewej krawędzi
+    — konwencja okienkowa; pasek należy do pojemnika, nie do treści, i łatwiej go trafić przy krawędzi.
   * *Kosz w wierszu* (autor: biały, bez podświetlenia pod myszą, z niepotrzebną podpowiedzią — tak samo
     w liście kampanii, `Features/CampaignLibrary/CampaignLibraryView.axaml`, własna logika
     `delete-hover`): spoczynek kolorem tekstu drugorzędnego, pod myszą jaśnieje tło i ikona (jak
