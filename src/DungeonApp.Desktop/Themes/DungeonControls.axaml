@@ -1595,7 +1595,7 @@
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
-        <!-- Strzałka: zamknięta w prawo, otwarta w dół; obrót ruchem (DungeonMotionDuration,
+        <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę (tam, gdzie lista się pojawiła); obrót ruchem (DungeonMotionDuration,
              z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
         <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-90deg)" />
@@ -1609,6 +1609,11 @@
         </Style>
         <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <!-- Lista otwarta w górę (brak miejsca pod polem; klasa .opens-up z Themes/PopupOpenMotion.cs):
+             strzałka wskazuje w górę - z "w prawo" o 90 stopni w przeciwną stronę niż w dół. -->
+        <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
@@ -1738,7 +1743,7 @@
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
-        <!-- Strzałka: zamknięta w prawo, otwarta w dół; obrót ruchem (DungeonMotionDuration,
+        <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę (tam, gdzie lista się pojawiła); obrót ruchem (DungeonMotionDuration,
              z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
         <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-90deg)" />
@@ -1752,6 +1757,11 @@
         </Style>
         <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <!-- Lista otwarta w górę (brak miejsca pod polem; klasa .opens-up z Themes/PopupOpenMotion.cs):
+             strzałka wskazuje w górę - z "w prawo" o 90 stopni w przeciwną stronę niż w dół. -->
+        <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />

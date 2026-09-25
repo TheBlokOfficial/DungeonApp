@@ -1,6 +1,7 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:DungeonApp.Desktop.Controls">
+        xmlns:controls="using:DungeonApp.Desktop.Controls"
+        xmlns:themes="using:DungeonApp.Desktop.Themes">
     <!--
         Wyłączone animacje w systemie wyłączają je w aplikacji (docs/architecture.md, "Niezmiennik
         interfejsu", Ruch). Dołącza je SystemMotion przy starcie, tylko gdy Windows ma animacje
@@ -16,5 +17,9 @@
     <Style Selector="ComboBox /template/ controls|ForegroundIcon#PART_DropDownGlyph,
                      controls|DropDownPicker /template/ controls|ForegroundIcon#PART_DropDownGlyph">
         <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
+    <!-- Otwarcie okienka i rozwiniętej listy bez ruchu (Themes/PopupOpenMotion.cs). -->
+    <Style Selector="FlyoutPresenter">
+        <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />
     </Style>
 </Styles>

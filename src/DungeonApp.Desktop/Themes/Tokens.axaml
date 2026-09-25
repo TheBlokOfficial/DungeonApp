@@ -127,6 +127,13 @@
              (CubicEaseOut). Stan zmienia się od razu, animacja tylko go dogania. Wyłączone animacje
              w systemie zdejmuje przejścia w całości (Themes/ReducedMotion.axaml). -->
         <x:TimeSpan x:Key="DungeonMotionDuration">0:0:0.15</x:TimeSpan>
+        <!-- PopupOpen: otwarcie okienka wysuwanego i rozwiniętej listy (Themes/PopupOpenMotion.cs) -
+             powierzchnia wyłania się z przezroczystości i dosuwa o Offset od strony otwierającego.
+             Krócej niż MotionDuration (120 wobec 150 ms): to otwarcie, na które użytkownik czeka
+             z kursorem nad wierszami, a przesunięcie jest drobne - dłuższy ruch czytałby się jako
+             opóźnienie. Zamknięcie bez ruchu. -->
+        <x:TimeSpan x:Key="DungeonPopupOpenDuration">0:0:0.12</x:TimeSpan>
+        <x:Double x:Key="DungeonPopupOpenOffset">4</x:Double>
 
         <!-- CIENIE =========================================================== -->
         <!-- FlyoutShadow: okienko wysuwane i rozwinięta lista - lekki cień w dół oddziela je od treści
