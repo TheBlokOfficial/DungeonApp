@@ -236,9 +236,11 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     obco w wierszu. Rozstrzygnięcie architekta: **obszar trafienia akcji w wierszu = cały pas pełnej
     wysokości wiersza** (kolumna na końcu wiersza), wiersz nie podświetla się, gdy mysz jest w tym
     pasie; **pod myszą jaśnieje sam rysunek, bez tła** — jak ikony w polach (`architecture.md`,
-    *Pole do pisania*). Kolor pod myszą: rekomendacja — jasny, nie czerwony, bo czerwień znaczy
-    „nieodwracalne”, a kampania idzie do kosza systemu; **autor chciał czerwieni — czeka na jego
-    słowo** (czerwień tu = zmiana znaczenia koloru, wpisać wtedy do `architecture.md`).
+    *Pole do pisania*). **Kolor: kosz czerwony** (autor, 2026-09-25, wbrew rekomendacji szarego):
+    czerwień znaczy odtąd także „usuwa” — reguła w `architecture.md`, *Niezmiennik interfejsu*, i komentarz
+    przy tokenie niebezpieczeństwa w `Tokens.axaml` do poprawienia w rundzie. Rysunek kolorem tekstu
+    niebezpieczeństwa (`DungeonDangerTextBrush`) w każdym stanie, w którym jest widoczny; pod myszą
+    jaśniejsza czerwień, bez tła (nowy token, jeśli brak).
   * *Wyzwanie to zakreślenie, nie odznaka* (architekt, po sprawdzeniu `decisions.md`, *Zakreślenie
     a odznaka* — decyzja autora z 2026-09-24): wyzwanie w liście i na karcie → styl `.highlight`
     (`Typography.axaml`). **Ustalenie porcji 8 „odznaka = wartość (liczba, „1/2”)” było z tą decyzją

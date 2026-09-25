@@ -655,7 +655,7 @@ Jedyne miejsce, w którym sekwencja pochodzi z treści, to **dokument** — bo d
 sekwencją. Karta jest układem.
 
 **Każdy kolor w motywie ma jedno zapisane znaczenie** — komentarz przy tokenie mówi, co ten kolor
-komunikuje użytkownikowi („niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna").
+komunikuje użytkownikowi („niebezpieczeństwo: coś jest zepsute, akcja usuwa albo jest nieodwracalna").
 Widok sięga po kolor wtedy, gdy chce powiedzieć dokładnie to, nigdy dlatego, że akurat potrzebuje
 czerwieni — wtedy ten sam kolor znaczy wszędzie to samo i użytkownik czyta go bez zastanowienia.
 Skale należące do systemu (np. rzadkość przedmiotu) mają własne kolory w systemie i nie pożyczają

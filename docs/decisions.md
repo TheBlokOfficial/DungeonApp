@@ -405,6 +405,11 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   jakby tekst. […] odznaka «Humanoid» nie może być zakreśleniem i musi być kontenerem, bo ma logiczne
   tło za sobą, prezentuje kategorię". Asystent proponował odznakę dla wyzwania, argumentując wyglądem
   (wcięcie, stała wysokość); autor rozstrzygnął znaczeniem — i to znaczenie jest regułą.
+* **Usuwanie jest czerwone** — autor, 2026-09-25, po porcji 8b (kosz w wierszu listy kampanii):
+  „biały czy szary mi nie pasuje”. Architekt proponował szary kosz jaśniejący pod myszą, bo czerwień
+  znaczyła „zepsute albo nieodwracalne”, a kampania idzie do kosza systemu. Autor rozszerzył znaczenie
+  czerwieni o „usuwa” — konwencja wielu aplikacji; kosz i tak widać tylko pod myszą i na wybranym
+  wierszu, więc lista nie czerwienieje.
 * **Czytelność z pomiaru, nie z oka** — architekt, 2026-09-24, po obejrzeniu galerii powierzchni.
   Przygaszony tekst miał 3,1–3,4:1, a norma WCAG AA dla małego tekstu to 4,5:1 — i właśnie ten kolor
   niosą najmniejsze napisy. Czerwień „niebezpieczeństwa" jako tekst: 2,6–2,9:1, a malowała nazwy wpisów
