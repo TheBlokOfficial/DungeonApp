@@ -183,13 +183,13 @@
              nie akcent. -->
         <SolidColorBrush x:Key="DungeonScrollThumbHoverBrush" Color="#5E5750" />
         <!-- SliderThumb: uchwyt suwaka - tu jest wartość; przeciągnij albo kliknij w tor. Kolor tekstu
-             podstawowego (TextPrimary #E8E4DA): jasny i neutralny, nie akcent - akcent niesie część
-             toru przed uchwytem. -->
-        <SolidColorBrush x:Key="DungeonSliderThumbBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
-        <!-- SliderThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Jaśniejszy od
-             spoczynku (#FAF8F3, ta sama ciepła biel, jasność z ok. 91 % do ok. 97 %), bez zmiany
-             rozmiaru. -->
-        <SolidColorBrush x:Key="DungeonSliderThumbHoverBrush" Color="#FAF8F3" />
+             drugorzędnego (TextRegular #B4B2AC): neutralny, nie akcent - akcent niesie część toru
+             przed uchwytem; przygaszony, żeby pod myszą było dokąd jaśnieć. -->
+        <SolidColorBrush x:Key="DungeonSliderThumbBrush" Color="{DynamicResource DungeonTextRegularColor}" />
+        <!-- SliderThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Kolor tekstu
+             podstawowego (TextPrimary #E8E4DA): wyraźne rozjaśnienie wobec spoczynku (jasność z ok. 70 %
+             do ok. 91 %), bez zmiany rozmiaru; zmiana koloru od razu, bez ruchu. -->
+        <SolidColorBrush x:Key="DungeonSliderThumbHoverBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
 
         <!--
             Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a

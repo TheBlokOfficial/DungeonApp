@@ -1330,14 +1330,14 @@
         z kontenera. Tor DungeonSliderTrackThickness, wyśrodkowany w pionie, zaokrąglony na obu
         końcach: część przed uchwytem w kolorze Foreground (Accent), za uchwytem - Background
         (InputBorder, kolor krawędzi pola). Uchwyt: koło DungeonSliderThumbSize w SliderThumb -
-        neutralny i jasny. Bez podziałki i bez wyświetlanej wartości - wartość pokazuje ten, kto
+        neutralny, w spoczynku przygaszony (tekst drugorzędny). Bez podziałki i bez wyświetlanej wartości - wartość pokazuje ten, kto
         układa widok. Kliknięcie w dowolnym miejscu wysokości kontrolki przenosi uchwyt w to
         miejsce - Slider Avalonii robi to sam (nie ma przełącznika IsMoveToPointEnabled jak w WPF);
         części toru mają przezroczyste tło na całej wysokości, więc trafia każde kliknięcie.
         Kursor strzałka, fokus bez wyglądu (FocusAdorner pusty), bez animacji.
         Stany - nic więcej:
           spoczynek   - jak wyżej;
-          najechanie  - uchwyt SliderThumbHover (jaśniejszy), bez zmiany rozmiaru; mysz nad całą
+          najechanie  - uchwyt SliderThumbHover (tekst podstawowy, wyraźnie jaśniejszy), bez zmiany rozmiaru; mysz nad całą
                         kontrolką, bo kliknięcie w dowolnym jej miejscu rusza uchwyt; tor bez zmian;
           przeciąganie - jak najechanie, także gdy mysz zjedzie z kontrolki;
           wyłączenie  - DungeonDisabledOpacity na całości, bez reakcji na mysz; część przed uchwytem
