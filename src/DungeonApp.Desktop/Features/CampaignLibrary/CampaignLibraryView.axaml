@@ -41,7 +41,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
         </Style>
         <!-- Name, date and arrow dim the same way any disabled control in this theme does - the
-             Button ControlTheme's own ":disabled" style (DungeonControls.axaml) and this one now
+             Button ControlTheme's own disabled style (DungeonControls.axaml) and this one now
              share DungeonDisabledOpacity (Themes/Tokens.axaml), the only disabled-state opacity this
              theme defines.
              One selector per concrete type, not a shared "Control.campaign-dim:disabled" base-type

@@ -14,6 +14,10 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
+        Przezroczystość wyłączenia w tym i każdym innym motywie ramy idzie po własnym IsEnabled
+        (^[IsEnabled=False]), kolory stanu wyłączonego po :disabled: kontrolka w wyłączonym
+        pojemniku (zakładka, sekcja rozwijana) przygasa raz - przygasza ją pojemnik - a akcent i tak
+        traci.
         Przycisk z wypełnieniem barwą znaczenia (.primary, .danger) pod myszą nie zmienia wypełnienia:
         dostaje otoczkę - pas 3 px na zewnątrz krawędzi, bez rozmycia, w zaokrągleniu przycisku
         (BoxShadow Border tła, tokeny DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
@@ -196,7 +200,7 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
 
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -260,7 +264,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -496,8 +500,10 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
             <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
 
@@ -649,7 +655,7 @@
                 </ButtonSpinner>
             </ControlTemplate>
         </Setter>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -831,7 +837,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonScrollThumbHoverBrush}" />
         </Style>
 
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -944,6 +950,8 @@
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1184,6 +1192,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Path">
@@ -1263,6 +1273,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Dot">
@@ -1408,6 +1420,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Knob">
@@ -1521,7 +1535,246 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- WSKAŹNIK POSTĘPU                                                    -->
+    <!-- =================================================================== -->
+
+    <!--
+        Wskaźnik postępu (ProgressBar), tylko poziomy. Szablon wycięty z ProgressBar.xaml Fluenta
+        (Avalonia 12.0.5, MIT): zostały tor i PART_Indicator (szerokość ustawia sam ProgressBar po
+        wartości); wypadły napis z procentem (ShowProgressText - wartość pokazuje ten, kto układa
+        widok), szablon pionowy i animacje nieokreślonego stanu ze stylu (zastępuje je
+        controls:ProgressSweep - ruch w kodzie, który wyłączone animacje w systemie zatrzymują).
+        Orientation="Vertical" dostaje ten sam poziomy szablon - pierwszy konsument dopisze pionowy.
+        Wymiar: grubość DungeonProgressBarThickness, szerokość z kontenera; zaokrąglenie
+        DungeonProgressBarCornerRadius na obu końcach toru i wypełnienia (jak tor suwaka), tor
+        przycina wypełnienie do swojego obrysu.
+        Tor Background (DungeonBorderBrush), wypełnienie Foreground - domyślnie akcent; układający
+        widok może podać inny kolor (np. pasek PZ). Bez fokusu, kursor strzałka, bez przejść.
+        Stany - nic więcej:
+          określony    - wypełnienie od lewej, szerokość według Value w zakresie Minimum..Maximum;
+          nieokreślony - odcinek 40 % toru w kolorze Foreground przesuwa się w pętli
+                         (DungeonProgressSweepDuration); przy wyłączonych animacjach w systemie
+                         spokojny: cały tor w przygaszonym akcencie (DungeonAccentDimBrush), bez ruchu;
+          wyłączony    - DungeonDisabledOpacity (po własnym IsEnabled), wypełnienie traci akcent:
+                         tekst przygaszony (TextMuted), neutralne - jak część toru suwaka przed
+                         uchwytem; nieokreślony wyłączony stoi (cały tor w TextMuted).
+    -->
+    <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar">
+        <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonProgressBarCornerRadius}" />
+        <Setter Property="Height" Value="{DynamicResource DungeonProgressBarThickness}" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonProgressBarThickness}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <Panel>
+                        <Border Name="PART_Indicator"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch"
+                                Background="{TemplateBinding Foreground}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                IsVisible="{TemplateBinding IsIndeterminate, Converter={x:Static BoolConverters.Not}}" />
+                        <controls:ProgressSweep Name="PART_Sweep"
+                                                Fill="{TemplateBinding Foreground}"
+                                                CalmFill="{DynamicResource DungeonAccentDimBrush}"
+                                                IsVisible="{TemplateBinding IsIndeterminate}" />
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ controls|ProgressSweep#PART_Sweep">
+            <Setter Property="CalmFill" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- OKNO POTWIERDZENIA I POWIADOMIENIE                                  -->
+    <!-- =================================================================== -->
+
+    <!--
+        Okno potwierdzenia (controls:ConfirmationDialog) - wywołanie i zachowanie w Controls/ConfirmationDialog.cs.
+        Zasłona DungeonScrimBrush na całym oknie (warstwa controls:WindowOverlay); kliknięcie w nią
+        nic nie robi. Karta na środku: powierzchnia jak okienko wysuwane (DungeonBackstageCardBrush,
+        krawędź 1 px InputBorder, DungeonFlyoutShadow, DungeonFlyoutCornerRadius), szerokość najwyżej
+        DungeonConfirmationDialogMaxWidth, w wąskim oknie węższa - odstęp DungeonSpacingXxl od
+        krawędzi; wcięcie DungeonPaddingXxl. Tytuł stylem display-md (20, krój nagłówków - jak tytuł
+        okna dialogowego Windows), treść tekstem drugorzędnym (TextRegular) 13, oba zawijają się;
+        odstęp tytuł-treść DungeonSpacingSm, treść-przyciski DungeonSpacingXxl. Przyciski w prawym
+        dolnym rogu, odstęp DungeonSpacingSm: "Anuluj" (zwykły) i akcja (.primary albo - niszcząca
+        - .danger). Tab krąży po karcie (TabNavigation Cycle); fokus startowy na "Anuluj"; sama
+        kontrolka przyjmuje fokus (bez wyglądu), żeby klawisze trafiały do niej także po kliknięciu
+        w zasłonę. Pojawienie: całość z przezroczystości, karta dosuwa się o DungeonPopupOpenOffset
+        z dołu (DungeonPopupOpenDuration, wyhamowanie); zamknięcie natychmiast; wyłączone animacje
+        w systemie - od razu. Kursor strzałka.
+    -->
+    <ControlTheme x:Key="{x:Type controls:ConfirmationDialog}" TargetType="controls:ConfirmationDialog">
+        <Setter Property="Background" Value="{DynamicResource DungeonScrimBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="PART_Card"
+                            MaxWidth="{DynamicResource DungeonConfirmationDialogMaxWidth}"
+                            Margin="{DynamicResource DungeonPaddingXxl}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Padding="{DynamicResource DungeonPaddingXxl}"
+                            Background="{DynamicResource DungeonBackstageCardBrush}"
+                            BorderBrush="{DynamicResource DungeonInputBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
+                            BoxShadow="{DynamicResource DungeonFlyoutShadow}">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingXxl}">
+                            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                                <TextBlock Classes="display-md"
+                                           Text="{TemplateBinding Title}"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="body secondary"
+                                           Text="{TemplateBinding Message}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                        Spacing="{DynamicResource DungeonSpacingSm}">
+                                <Button Name="PART_CancelButton" Content="Anuluj" />
+                                <Button Name="PART_ConfirmButton" Content="{TemplateBinding ActionText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Powiadomienie (controls:NotificationToast) - wywołanie i zachowanie w Controls/NotificationToast.cs.
+        Dymek w stosie w prawym dolnym rogu okna (controls:WindowOverlay: odstęp od rogu
+        DungeonPaddingLg, między dymkami DungeonSpacingSm, najnowszy na dole). Powierzchnia jak
+        okienko wysuwane (DungeonBackstageCardBrush, krawędź 1 px InputBorder, DungeonFlyoutShadow,
+        DungeonFlyoutCornerRadius), stała szerokość DungeonNotificationWidth, wcięcie
+        DungeonPaddingMd. Układ: ikona odmiany (DungeonActionIconSize) | treść tekstem podstawowym 13,
+        zawija się, pod nią odnośnik akcji (odnośnik samodzielny .link, tylko gdy jest napis) |
+        krzyżyk zamknięcia - sam rysunek jak x w polu wyszukiwania (DungeonFieldGlyphButton: jaśnieje
+        pod myszą), bez fokusu. Ikona i krzyżyk stoją przy pierwszej linii treści.
+        Odmiany:
+          :information - ikona "i" w kolorze tekstu drugorzędnego (TextRegular) - informacja nie
+                         niesie stanu, akcent zostaje dla wybranego i głównego;
+          :warning     - trójkąt w DungeonWarningBrush;
+          :error       - koło z wykrzyknikiem w DungeonDangerTextBrush; treść da się zaznaczyć
+                         (SelectableTextBlock - komunikat błędu).
+        Dymek nie przyjmuje fokusu i nie ma stanów najechania (mysz nad nim tylko wstrzymuje
+        znikanie). Pojawienie: z przezroczystości i dosunięcie o DungeonNotificationOpenOffset od
+        prawej (DungeonPopupOpenDuration, wyhamowanie); zniknięcie natychmiast; wyłączone animacje
+        w systemie - od razu. Kursor strzałka (tekst błędu - tekstowy, styl SelectableTextBlock).
+    -->
+    <ControlTheme x:Key="{x:Type controls:NotificationToast}" TargetType="controls:NotificationToast">
+        <Setter Property="Width" Value="{DynamicResource DungeonNotificationWidth}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonFlyoutCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMd}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                        <controls:ForegroundIcon Name="PART_Icon"
+                                                 Grid.Column="0"
+                                                 Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 VerticalAlignment="Top" />
+                        <StackPanel Grid.Column="1" Spacing="{DynamicResource DungeonSpacingXs}">
+                            <TextBlock Name="PART_Message"
+                                       Text="{TemplateBinding Message}"
+                                       TextWrapping="Wrap" />
+                            <SelectableTextBlock Name="PART_SelectableMessage"
+                                                 Text="{TemplateBinding Message}"
+                                                 TextWrapping="Wrap" />
+                            <Button Name="PART_ActionButton"
+                                    Classes="link"
+                                    HorizontalAlignment="Left"
+                                    Content="{TemplateBinding ActionText}"
+                                    IsVisible="{TemplateBinding ActionText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+                        <Button Name="PART_CloseButton"
+                                Grid.Column="2"
+                                Theme="{StaticResource DungeonFieldGlyphButton}"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                     Height="{DynamicResource DungeonActionIconSize}"
+                                                     Source="{DynamicResource DungeonIconClear}" />
+                        </Button>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_Icon">
+            <Setter Property="Source" Value="{DynamicResource DungeonIconInfo}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^ /template/ SelectableTextBlock#PART_SelectableMessage">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:warning /template/ controls|ForegroundIcon#PART_Icon">
+            <Setter Property="Source" Value="{DynamicResource DungeonIconWarningTriangle}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonWarningBrush}" />
+        </Style>
+        <Style Selector="^:error /template/ controls|ForegroundIcon#PART_Icon">
+            <Setter Property="Source" Value="{DynamicResource DungeonIconError}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerTextBrush}" />
+        </Style>
+        <Style Selector="^:error /template/ TextBlock#PART_Message">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ SelectableTextBlock#PART_SelectableMessage">
+            <Setter Property="IsVisible" Value="True" />
         </Style>
     </ControlTheme>
 
@@ -1875,6 +2128,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2014,7 +2269,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2162,7 +2417,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2470,6 +2725,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">

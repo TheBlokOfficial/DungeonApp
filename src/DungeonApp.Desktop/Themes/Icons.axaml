@@ -128,6 +128,22 @@
             <GeometryDrawing Geometry="M12,18 L12,18.1" Pen="{StaticResource DungeonIconDangerPen}" />
         </DrawingGroup>
     </DrawingImage>
+    <!-- Informacja: koło z literą i - powiadomienie odmiany informacja. -->
+    <DrawingImage x:Key="DungeonIconInfo" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,3 A9,9 0 1 1 11.99,3 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,11 L12,16.5" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,7.5 L12,7.6" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
+    <!-- Błąd: koło z wykrzyknikiem - powiadomienie odmiany błąd. -->
+    <DrawingImage x:Key="DungeonIconError" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,3 A9,9 0 1 1 11.99,3 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,7.5 L12,13" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12,16.4 L12,16.5" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
     <!-- The top bar's "Zmień system" action: an open doorway with an arrow leaving through it. -->
     <DrawingImage x:Key="DungeonIconExitDoor" Viewbox="0,0,24,24">
         <DrawingGroup>
