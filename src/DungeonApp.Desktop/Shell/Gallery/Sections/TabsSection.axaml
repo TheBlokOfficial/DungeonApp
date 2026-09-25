@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TabsSection">
+    <!-- The frame's TabControl, TabItem, TabStrip and TabStripItem themes and the segmented control
+         (ListBox with DungeonSegmentedControl), live: plain, disabled (whole control and one item),
+         selected, long text in a narrow column (the strip wraps, a header longer than the column
+         trims), empty (no tabs, no selection). Hover is checked with the mouse. Nothing here restyles
+         a control - the only local values are column widths; the segments' items come from the
+         code-behind (generated containers take the DungeonSegment container theme). -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Zakładki i przełączniki" />
+        <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij, żeby wybrać. Wybrane pod myszą się nie zmienia." />
+
+        <TextBlock Classes="overline-sm muted" Text="ZAKŁADKI Z TREŚCIĄ" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="320">
+                <TextBlock Classes="caption muted" Text="Zwykłe, jedna wyłączona" />
+                <TabControl SelectedIndex="0">
+                    <TabItem Header="Potwory">
+                        <TextBlock Text="Treść zakładki Potwory." />
+                    </TabItem>
+                    <TabItem Header="Czary">
+                        <TextBlock Text="Treść zakładki Czary." />
+                    </TabItem>
+                    <TabItem Header="Przedmioty">
+                        <TextBlock Text="Treść zakładki Przedmioty." />
+                    </TabItem>
+                    <TabItem Header="Wyłączona" IsEnabled="False">
+                        <TextBlock Text="Treść wyłączonej zakładki." />
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="320">
+                <TextBlock Classes="caption muted" Text="Cała wyłączona (wybrana traci akcent)" />
+                <TabControl SelectedIndex="1" IsEnabled="False">
+                    <TabItem Header="Potwory">
+                        <TextBlock Text="Treść zakładki Potwory." />
+                    </TabItem>
+                    <TabItem Header="Czary">
+                        <TextBlock Text="Treść zakładki Czary." />
+                    </TabItem>
+                    <TabItem Header="Przedmioty">
+                        <TextBlock Text="Treść zakładki Przedmioty." />
+                    </TabItem>
+                </TabControl>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Długie napisy (kolumna 240)" />
+                <TabControl SelectedIndex="0">
+                    <TabItem Header="Rzuty ukryte">
+                        <TextBlock Text="Pasek zawija się do nowej linii." />
+                    </TabItem>
+                    <TabItem Header="Bestiariusz">
+                        <TextBlock Text="Bestiariusz." />
+                    </TabItem>
+                    <TabItem Header="Przedmioty magiczne i artefakty z dawnych epok">
+                        <TextBlock Text="Napis dłuższy niż kolumna przycina się." />
+                    </TabItem>
+                </TabControl>
+                <TextBlock Classes="caption muted" Text="Bez zakładek" />
+                <TabControl />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="SAM PASEK ZAKŁADEK" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Zwykły, jedna wyłączona" />
+                <TabStrip SelectedIndex="0">
+                    <TabStripItem Content="Wszystko" />
+                    <TabStripItem Content="Humanoid" />
+                    <TabStripItem Content="Smok" />
+                    <TabStripItem Content="Wyłączona" IsEnabled="False" />
+                </TabStrip>
+                <TextBlock Classes="caption muted" Text="Bez wyboru" />
+                <TabStrip>
+                    <TabStripItem Content="Wszystko" />
+                    <TabStripItem Content="Humanoid" />
+                    <TabStripItem Content="Smok" />
+                </TabStrip>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Cały wyłączony" />
+                <TabStrip SelectedIndex="2" IsEnabled="False">
+                    <TabStripItem Content="Wszystko" />
+                    <TabStripItem Content="Humanoid" />
+                    <TabStripItem Content="Smok" />
+                </TabStrip>
+                <TextBlock Classes="caption muted" Text="Bez pozycji" />
+                <TabStrip />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Długie napisy (kolumna 240)" />
+                <TabStrip SelectedIndex="1">
+                    <TabStripItem Content="Wszystko" />
+                    <TabStripItem Content="Nieumarły" />
+                    <TabStripItem Content="Konstrukt" />
+                    <TabStripItem Content="Istota z innego planu egzystencji" />
+                </TabStrip>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="PRZEŁĄCZNIK SEGMENTOWY" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Zwykły (szerokość z treści)" />
+                <ListBox x:Name="PlainSegments" Theme="{StaticResource DungeonSegmentedControl}" />
+                <TextBlock Classes="caption muted" Text="Bez wyboru" />
+                <ListBox x:Name="UnselectedSegments" Theme="{StaticResource DungeonSegmentedControl}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Wyłączony (wybrany traci akcent)" />
+                <ListBox x:Name="DisabledSegments"
+                         Theme="{StaticResource DungeonSegmentedControl}"
+                         IsEnabled="False" />
+                <TextBlock Classes="caption muted" Text="Szerokość od układającego (320)" />
+                <ListBox x:Name="StretchedSegments"
+                         Theme="{StaticResource DungeonSegmentedControl}"
+                         Width="320" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Długie napisy (kolumna 240)" />
+                <ListBox x:Name="LongSegments"
+                         Theme="{StaticResource DungeonSegmentedControl}"
+                         HorizontalAlignment="Stretch" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

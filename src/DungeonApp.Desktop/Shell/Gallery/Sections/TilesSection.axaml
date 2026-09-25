@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TilesSection">
+    <!-- The frame's tile (Button with DungeonTile), Expander and breadcrumbs themes, live: tiles with an
+         icon and with text, disabled, in two sizes (the size comes from here - the tile has none of its
+         own); expanders collapsed, expanded, disabled, with a long header; breadcrumbs with a trail,
+         with one segment, and the same trail in a narrow column (the trail shortens, then goes away).
+         Nothing here restyles a control - the only local values are sizes; the breadcrumbs' segments
+         come from the code-behind. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Kafelki, sekcje, okruszki" />
+        <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij nagłówek sekcji, żeby ją rozwinąć albo zwinąć." />
+
+        <TextBlock Classes="overline-sm muted" Text="KAFELEK" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Mały (44): ikona, tekst, wyłączony" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <Button Theme="{StaticResource DungeonTile}"
+                            Width="{DynamicResource DungeonDeckCardSize}"
+                            Height="{DynamicResource DungeonDeckCardSize}">
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 Source="{DynamicResource DungeonIconDragon}" />
+                    </Button>
+                    <Button Theme="{StaticResource DungeonTile}"
+                            Width="{DynamicResource DungeonDeckCardSize}"
+                            Height="{DynamicResource DungeonDeckCardSize}"
+                            Content="K20" />
+                    <Button Theme="{StaticResource DungeonTile}"
+                            Width="{DynamicResource DungeonDeckCardSize}"
+                            Height="{DynamicResource DungeonDeckCardSize}"
+                            IsEnabled="False">
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 Source="{DynamicResource DungeonIconBackpack}" />
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Duży (120 x 72): ikona, długi tekst, wyłączony" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <Button Theme="{StaticResource DungeonTile}" Width="120" Height="72">
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 Source="{DynamicResource DungeonIconBookOpen}" />
+                    </Button>
+                    <Button Theme="{StaticResource DungeonTile}"
+                            Width="120"
+                            Height="72"
+                            Content="Inicjatywa i kolejność tury" />
+                    <Button Theme="{StaticResource DungeonTile}"
+                            Width="120"
+                            Height="72"
+                            Content="Wyłączony"
+                            IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="SEKCJA ROZWIJANA" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="320">
+                <TextBlock Classes="caption muted" Text="Zwinięta i rozwinięta" />
+                <Expander Header="Cechy">
+                    <TextBlock Text="Wyczulony węch. Przewaga w testach Mądrości (Percepcja) opartych na węchu." TextWrapping="Wrap" />
+                </Expander>
+                <Expander Header="Akcje" IsExpanded="True">
+                    <TextBlock Text="Ugryzienie. Atak bronią naturalną: +4 do trafienia, zasięg 1,5 m, jeden cel." TextWrapping="Wrap" />
+                </Expander>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Wyłączona: zwinięta i rozwinięta" />
+                <Expander Header="Reakcje" IsEnabled="False">
+                    <TextBlock Text="Parowanie." />
+                </Expander>
+                <Expander Header="Akcje legendarne" IsEnabled="False" IsExpanded="True">
+                    <TextBlock Text="Wykrycie. Ruch ogonem." TextWrapping="Wrap" />
+                </Expander>
+                <TextBlock Classes="caption muted" Text="Długi nagłówek (kolumna 240)" />
+                <Expander Header="Akcje legendarne dostępne wyłącznie w legowisku">
+                    <TextBlock Text="Nagłówek przycina się wielokropkiem." TextWrapping="Wrap" />
+                </Expander>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="OKRUSZKI" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Ślad i bieżący odcinek" />
+                <controls:Breadcrumbs x:Name="TrailBreadcrumbs" />
+                <TextBlock Classes="caption muted" Text="Jeden odcinek" />
+                <controls:Breadcrumbs x:Name="SingleBreadcrumbs" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Wąsko (200): ślad się skraca" />
+                <Border Width="200" HorizontalAlignment="Left">
+                    <controls:Breadcrumbs x:Name="NarrowBreadcrumbs" />
+                </Border>
+                <TextBlock Classes="caption muted" Text="Bardzo wąsko (120): ślad znika" />
+                <Border Width="120" HorizontalAlignment="Left">
+                    <controls:Breadcrumbs x:Name="VeryNarrowBreadcrumbs" />
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

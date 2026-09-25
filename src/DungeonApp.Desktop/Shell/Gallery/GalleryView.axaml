@@ -26,6 +26,8 @@
             <sections:ListsSection />
             <sections:ChoicesSection />
             <sections:DropDownsSection />
+            <sections:TabsSection />
+            <sections:TilesSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
