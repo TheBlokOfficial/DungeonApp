@@ -367,10 +367,8 @@
              (.type-tab: 8 px + linia 13 px + 8 px) daje ok. 32. Wcięcie poziome 12 (DungeonSpacingMd). -->
         <x:Double x:Key="DungeonTabHeight">32</x:Double>
         <Thickness x:Key="DungeonTabPadding">12,0</Thickness>
-        <!-- Odstęp między zakładkami w pasku, w poziomie i między liniami po zawinięciu: 3 px
-             z mockupu (.type-tabs gap) - poniżej skali odstępów, bo zakładki bez krawędzi i bez tła
-             w spoczynku czytają się jako jeden pasek; większy odstęp rozbiłby go na osobne przyciski. -->
-        <x:Double x:Key="DungeonTabSpacing">3</x:Double>
+        <!-- Odstęp między zakładkami w pasku (w poziomie i między liniami po zawinięciu) idzie ze
+             skali: DungeonSpacingXs. Mockup rejestru ma 3 px (.type-tabs gap) - poza skalą. -->
         <!-- Przełącznik segmentowy (ListBox z motywem DungeonSegmentedControl): pojemnik ma wysokość
              i krawędź pola (DungeonControlHeight, Input*), segmenty leżą w nim z wcięciem 3 px od
              krawędzi i zaokrągleniem 3 - mniejszym niż pojemnik (5), żeby wybrany segment czytał się
