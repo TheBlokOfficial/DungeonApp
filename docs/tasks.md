@@ -230,6 +230,14 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
+* **Wiersz listy i okienko (motyw ramy, `DungeonControls.axaml`)** — uwaga autora po porcji 5,
+  2026-09-25, wybrany wariant B z makiety architekta; bez osobnego zlecenia, przy okazji:
+  * Podświetlenia sąsiednich wierszy stykają się zaokrąglonymi rogami (wcięcia na styku). Podświetlenie
+    o 1 px węższe z góry i z dołu — 2 px odstępu między sąsiednimi, wiersz dalej zajmuje 32.
+  * „Ramka w ramce" w okienku i rozwinięciu: wewnętrzne wcięcie okienka mniejsze (4 zamiast 6),
+    zaokrąglenie podświetlenia wyraźnie drobniejsze niż okienka (3 wobec 6) — jedno okienko
+    z podświetleniem w środku, nie pudełko w pudełku. Dotyczy `ListBoxItem`, `ComboBoxItem`, wierszy
+    `DropDownPicker`, `FlyoutPresenter`.
 * **Suwak (motyw ramy, `DungeonControls.axaml`)** — uwaga autora po porcji 4, 2026-09-25: rozjaśnienia
   uchwytu pod myszą nie widać bez przypatrywania się (spoczynek #E8E4DA, pod myszą #FAF8F3 — już przy
   bieli nie ma dokąd jaśnieć). Architekt: przyciemnić spoczynek (np. kolor tekstu drugorzędnego), żeby
