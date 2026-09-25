@@ -278,9 +278,13 @@
         <x:Double x:Key="DungeonToggleTrackHeight">18</x:Double>
         <CornerRadius x:Key="DungeonToggleTrackCornerRadius">9</CornerRadius>
         <x:Double x:Key="DungeonToggleKnobSize">12</x:Double>
-        <!-- Tor suwaka: grubość 4, zaokrąglony w pełni. -->
+        <!-- Tor suwaka: grubość 4, zaokrąglony w pełni na obu końcach toru (promień 2). Tor to dwie
+             części stykające się pod uchwytem: przed uchwytem (zaokrąglony tylko początek) i za nim
+             (zaokrąglony tylko koniec) - styk pod uchwytem jest prosty, więc przy uchwycie nie
+             widać przerwy ani wcięcia. -->
         <x:Double x:Key="DungeonSliderTrackThickness">4</x:Double>
-        <CornerRadius x:Key="DungeonSliderTrackCornerRadius">2</CornerRadius>
+        <CornerRadius x:Key="DungeonSliderTrackStartCornerRadius">2,0,0,2</CornerRadius>
+        <CornerRadius x:Key="DungeonSliderTrackEndCornerRadius">0,2,2,0</CornerRadius>
         <!-- Uchwyt suwaka: koło o średnicy 14, zaokrąglenie połowa. -->
         <x:Double x:Key="DungeonSliderThumbSize">14</x:Double>
         <CornerRadius x:Key="DungeonSliderThumbCornerRadius">7</CornerRadius>

@@ -1,13 +1,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ChoicesSection">
-    <!-- The frame's CheckBox, RadioButton and ToggleSwitch themes (Themes/DungeonControls.axaml), live:
+    <!-- The frame's CheckBox, RadioButton, ToggleSwitch and Slider themes (Themes/DungeonControls.axaml), live:
          every static state (unchecked, checked, indeterminate, disabled in each), a label longer than
          its column (it wraps, the mark stays by the first line), a mark without a label and a group of
          three radio buttons. Hover is checked with the mouse. Nothing here restyles a control - the
-         only local values are the long label's column width and the group name. -->
+         only local values are the long label's column width, the group name and the sliders' ranges;
+         the last slider shows its value in a number beside it (the slider itself never shows one). -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-        <TextBlock Classes="display-md" Text="Pola wyboru" />
+        <TextBlock Classes="display-md" Text="Wybór i suwak" />
         <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij znacznik albo etykietę, żeby zmienić stan. Zaznaczone pod myszą się nie zmienia." />
 
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
@@ -77,6 +78,36 @@
                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
                     <ToggleSwitch />
                     <ToggleSwitch IsChecked="True" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="SUWAK" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Wartości: 0, środek, maksimum" />
+                <Slider Minimum="0" Maximum="100" Value="0" />
+                <Slider Minimum="0" Maximum="100" Value="50" />
+                <Slider Minimum="0" Maximum="100" Value="100" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
+                <TextBlock Classes="caption muted" Text="Wyłączony" />
+                <Slider Minimum="0" Maximum="100" Value="0" IsEnabled="False" />
+                <Slider Minimum="0" Maximum="100" Value="60" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Złożenie: suwak i liczba obok" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+                    <Slider Name="GalleryComposedSlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="20"
+                            Value="12"
+                            TickFrequency="1"
+                            IsSnapToTickEnabled="True" />
+                    <TextBlock Classes="mono-value"
+                               VerticalAlignment="Center"
+                               Text="{Binding #GalleryComposedSlider.Value, StringFormat={}{0:0}}" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

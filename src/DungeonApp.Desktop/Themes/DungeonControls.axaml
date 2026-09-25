@@ -1281,4 +1281,111 @@
         </Style>
     </ControlTheme>
 
+    <!-- =================================================================== -->
+    <!-- SUWAK                                                               -->
+    <!-- =================================================================== -->
+
+    <!--
+        Suwak (Slider), tylko poziomy. Szablon wycięty z Slider.xaml Fluenta (Avalonia 12.0.5, MIT):
+        zostały PART_Track z częściami toru PART_DecreaseButton i PART_IncreaseButton (RepeatButton)
+        i uchwytem (Thumb); wypadły podziałki (TickBar), DataValidationErrors, podpowiedź z wartością
+        i szablon pionowy. Suwak pionowy nie ma konsumenta: Orientation="Vertical" dostaje ten sam
+        poziomy szablon - pierwszy konsument dopisze pionowy osobnym zleceniem.
+        Wysokość najmniej DungeonControlHeight (stoi w rzędzie z polem i przyciskiem), szerokość
+        z kontenera. Tor DungeonSliderTrackThickness, wyśrodkowany w pionie, zaokrąglony na obu
+        końcach: część przed uchwytem w kolorze Foreground (Accent), za uchwytem - Background
+        (InputBorder, kolor krawędzi pola). Uchwyt: koło DungeonSliderThumbSize w SliderThumb -
+        neutralny i jasny. Bez podziałki i bez wyświetlanej wartości - wartość pokazuje ten, kto
+        układa widok. Kliknięcie w dowolnym miejscu wysokości kontrolki przenosi uchwyt w to
+        miejsce - Slider Avalonii robi to sam (nie ma przełącznika IsMoveToPointEnabled jak w WPF);
+        części toru mają przezroczyste tło na całej wysokości, więc trafia każde kliknięcie.
+        Kursor strzałka, fokus bez wyglądu (FocusAdorner pusty), bez animacji.
+        Stany - nic więcej:
+          spoczynek   - jak wyżej;
+          najechanie  - uchwyt SliderThumbHover (jaśniejszy), bez zmiany rozmiaru; mysz nad całą
+                        kontrolką, bo kliknięcie w dowolnym jej miejscu rusza uchwyt; tor bez zmian;
+          przeciąganie - jak najechanie, także gdy mysz zjedzie z kontrolki;
+          wyłączenie  - DungeonDisabledOpacity na całości, bez reakcji na mysz; część przed uchwytem
+                        traci akcent - tekst przygaszony (TextMuted), neutralna, wciąż odróżnialna
+                        od reszty toru.
+    -->
+    <ControlTheme x:Key="DungeonSliderTrackPart" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Border Height="{DynamicResource DungeonSliderTrackThickness}"
+                            VerticalAlignment="Center"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="DungeonSliderThumb" TargetType="Thumb">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Width" Value="{DynamicResource DungeonSliderThumbSize}" />
+        <Setter Property="Height" Value="{DynamicResource DungeonSliderThumbSize}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonSliderThumbCornerRadius}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonSliderThumbBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type Slider}" TargetType="Slider">
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+                    <Track Name="PART_Track"
+                           Minimum="{TemplateBinding Minimum}"
+                           Maximum="{TemplateBinding Maximum}"
+                           Value="{TemplateBinding Value, Mode=TwoWay}"
+                           IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                           Orientation="Horizontal">
+                        <Track.DecreaseButton>
+                            <RepeatButton Name="PART_DecreaseButton"
+                                          Theme="{StaticResource DungeonSliderTrackPart}"
+                                          Background="{TemplateBinding Foreground}"
+                                          CornerRadius="{DynamicResource DungeonSliderTrackStartCornerRadius}" />
+                        </Track.DecreaseButton>
+                        <Track.IncreaseButton>
+                            <RepeatButton Name="PART_IncreaseButton"
+                                          Theme="{StaticResource DungeonSliderTrackPart}"
+                                          Background="{TemplateBinding Background}"
+                                          CornerRadius="{DynamicResource DungeonSliderTrackEndCornerRadius}" />
+                        </Track.IncreaseButton>
+                        <Thumb Name="PART_Thumb" Theme="{StaticResource DungeonSliderThumb}" />
+                    </Track>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Thumb#PART_Thumb,
+                       ^ /template/ Thumb#PART_Thumb:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonSliderThumbHoverBrush}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
 </ResourceDictionary>
