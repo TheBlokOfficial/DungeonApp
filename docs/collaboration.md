@@ -103,7 +103,8 @@ Asystent zauważa, gdzie praca płaci czas albo tokeny bez potrzeby — lektura,
 pytanie, które dokument mógł uprzedzić, szukanie, które mógł oszczędzić brief, reguła czytana przy
 każdym starcie, choć potrzebna raz — i zgłasza to autorowi przy najbliższym raporcie, w jednym–dwóch
 zdaniach z propozycją dopisku albo skrótu. Do dokumentów trafia to dopiero po zgodzie autora, jak
-każda zmiana. Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty,
+każda zmiana. **Uwaga kończy się pytaniem „czy mogę to wpisać?”** — nie zostaje w rozmowie
+i nie jest zapowiedzią powrotu „później” (autor, tego samego dnia): niezadane pytanie ginie z sesją. Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty,
 tokeny, linie lektury).
 
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
