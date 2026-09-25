@@ -14,9 +14,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8 obejrzane przez autora. Porcja 8b scalona 2026-09-25 (poprawki po 8, sekcja galerii
-„Kompozycje”) — czeka na obejrzenie przez autora. Kopii roboczych brak. **Następny krok:** uwagi autora
-po 8b (runda albo przyjęcie), potem propozycja porcji 9.
+Porcje 0–8b obejrzane przez autora. Po 8b uwagi autora i architekta zebrane w *Ustaleniach*
+(*Porcja 8b — runda 1*); brief jeszcze nie napisany — sesja zamknięta przed nim (budżet). Kopii
+roboczych brak. **Następny krok:** otwarte pytanie autora o cel kompozycji (niżej), potem brief rundy 1
+dla nowego wykonawcy; po niej porcja 9.
 
 ## Zakres i koniec
 
@@ -211,6 +212,37 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
        powiadomienie z odnośnikiem „Cofnij”.
   * Cel kompozycji: odstępy między klockami, wyrównanie w pionie w jednym rzędzie, kolory obok siebie
     — sprawdzone przed zleceniami A i B, nie w nich.
+* **Porcja 8b — runda 1** (2026-09-25; uwagi autora po obejrzeniu + ocena architekta ze zrzutu):
+  * *Pasek przewijania rezerwuje miejsce zawsze* (autor): pojawia się i znika, gdy trzeba, ale nie
+    oddaje ani nie zabiera miejsca treści — dziś po usunięciu kilku wierszy pasek znika i wiersze
+    przeskakują w prawo. Globalnie w motywie `ScrollViewer`, przy widoczności `Auto`. Przy briefie
+    wpisać regułę do `architecture.md` (*Niezmiennik interfejsu*) i uzasadnienie do `decisions.md`;
+    poprawić rzemiosło w `.claude/agents/wykonawca.md` („Pasek przewijania tylko przy potrzebie”)
+    i jego streszczenie w `collaboration.md`, *W interfejsie asystent decyduje…*.
+  * *Pasek nie jest wyśrodkowany w swoim pasie* (autor): odstęp od wierszy mniejszy niż od prawej
+    krawędzi pojemnika. Wyrównać odstępy po obu stronach.
+  * *Kosz w wierszu* (autor: biały, bez podświetlenia pod myszą, z niepotrzebną podpowiedzią — tak samo
+    w liście kampanii, `Features/CampaignLibrary/CampaignLibraryView.axaml`, własna logika
+    `delete-hover`): spoczynek kolorem tekstu drugorzędnego, pod myszą jaśnieje tło i ikona (jak
+    `.subtle`), **bez podpowiedzi** — kosz i × są znakami powszechnymi (druga taka decyzja autora, po
+    krzyżyku w polu wyszukiwania; wpisać do `architecture.md` jako regułę). Architekt: akcja w wierszu
+    widoczna tylko pod myszą i na wybranym wierszu, miejsce zarezerwowane (przezroczystość, nie
+    zwijanie). `row-action` z galerii przechodzi do motywu — lista kampanii to drugie użycie.
+    Zbadać, czemu `.subtle` w wierszu nie ma najechania, i poprawić u źródła.
+  * *Wyzwanie to zakreślenie, nie odznaka* (architekt, po sprawdzeniu `decisions.md`, *Zakreślenie
+    a odznaka* — decyzja autora z 2026-09-24): wyzwanie w liście i na karcie → styl `.highlight`
+    (`Typography.axaml`). **Ustalenie porcji 8 „odznaka = wartość (liczba, „1/2”)” było z tą decyzją
+    sprzeczne** — odznaka niesie licznik przypięty do czegoś (np. liczba wpisów przy filtrze), nie
+    wartość z karty. Przykłady w galerii (`LabelsSection`) poprawić, jeśli pokazują wartości.
+  * *Pasek wartości karty* (architekt): KP, PW, Szybkość jako tekst krojem liczb, bez odznak;
+    pary etykieta–wartość w stałej siatce (dwie w rzędzie) — dziś „Wyzwanie” spada do drugiej linii
+    przypadkiem, bo w rzędzie zabrakło miejsca.
+  * *Minus w modyfikatorach* — znak „−” (U+2212), nie łącznik.
+  * **Otwarte pytanie autora:** czy kompozycje mają być ładne, czy tylko pokazywać zestaw. Odpowiedź
+    architekta (do potwierdzenia): mają być poprawnie złożone z klocków — odstępy, wyrównanie,
+    znaczenie kolorów — bo te same błędy powtórzyłyby się w zleceniach A i B; nie są projektem ekranu
+    (ten przyjdzie z A i B). Gdy autor uzna je za brzydkie — dopytać, co konkretnie, i ocenić, czy to
+    wada klocka (poprawka w motywie), czy tylko układu galerii.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
