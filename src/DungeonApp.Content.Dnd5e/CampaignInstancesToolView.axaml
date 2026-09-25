@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dnd="using:DungeonApp.Content.Dnd5e"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.CampaignInstancesToolView"
              x:DataType="dnd:CampaignInstancesToolViewModel">
 
@@ -40,37 +41,46 @@
                 <ListBox ItemsSource="{Binding Instances}">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="dnd:InstanceRowViewModel">
-                            <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-                                <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                           Text="{Binding DisplayName}"
-                                           TextTrimming="CharacterEllipsis" />
-                                <TextBlock Foreground="{DynamicResource DungeonWarningBrush}"
-                                           IsVisible="{Binding HasMessage}"
-                                           Text="{Binding Message}"
-                                           TextWrapping="Wrap" />
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
+                                <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                                    <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                               Text="{Binding DisplayName}"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Foreground="{DynamicResource DungeonWarningBrush}"
+                                               IsVisible="{Binding HasMessage}"
+                                               Text="{Binding Message}"
+                                               TextWrapping="Wrap" />
 
-                                <!-- Deliberately plain: existing tokens, no new control, no hardcoded
-                                     numbers - the author redesigns this row later and should not have
-                                     to undo anything invented along the way. -->
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="{DynamicResource DungeonSpacingXs}"
-                                            IsVisible="{Binding CanEditHitPoints}">
-                                    <TextBlock VerticalAlignment="Center"
-                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                               Text="PZ:" />
-                                    <NumericUpDown Minimum="0"
-                                                   Value="{Binding CurrentHp}" />
-                                    <TextBlock VerticalAlignment="Center"
-                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                               Text="{Binding MaxHp, StringFormat='z {0}'}" />
-                                    <Button Command="{Binding SaveHitPointsCommand}"
-                                            Content="Zapisz" />
+                                    <!-- Deliberately plain: existing tokens, no new control, no hardcoded
+                                         numbers - the author redesigns this row later and should not have
+                                         to undo anything invented along the way. -->
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="{DynamicResource DungeonSpacingXs}"
+                                                IsVisible="{Binding CanEditHitPoints}">
+                                        <TextBlock VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                   Text="PZ:" />
+                                        <NumericUpDown Minimum="0"
+                                                       Value="{Binding CurrentHp}" />
+                                        <TextBlock VerticalAlignment="Center"
+                                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                   Text="{Binding MaxHp, StringFormat='z {0}'}" />
+                                        <Button Command="{Binding SaveHitPointsCommand}"
+                                                Content="Zapisz" />
+                                    </StackPanel>
                                 </StackPanel>
 
-                                <Button HorizontalAlignment="Left"
+                                <!-- Usuń stoi przy każdym wierszu: cichy ikonowy, nazwa w podpowiedzi. -->
+                                <Button Grid.Column="1"
+                                        Classes="subtle icon"
+                                        VerticalAlignment="Top"
                                         Command="{Binding RemoveCommand}"
-                                        Content="Usuń" />
-                            </StackPanel>
+                                        ToolTip.Tip="Usuń">
+                                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                             Height="{DynamicResource DungeonActionIconSize}"
+                                                             Source="{StaticResource DungeonIconTrash}" />
+                                </Button>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -96,6 +106,7 @@
                           PlaceholderText="Wybierz wpis…"
                           SelectedItem="{Binding SelectedToAdd, Mode=TwoWay}" />
                 <Button Grid.Column="1"
+                        Classes="primary"
                         Command="{Binding AddCommand}"
                         Content="Dodaj" />
             </Grid>
