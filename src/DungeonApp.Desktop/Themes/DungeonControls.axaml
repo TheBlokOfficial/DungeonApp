@@ -1,6 +1,11 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+                    xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes"
+                    xmlns:converters="using:Avalonia.Controls.Converters">
+
+    <!-- Skrót klawiszowy pozycji menu zapisany po konwencji platformy (Ctrl+S). -->
+    <converters:PlatformKeyGestureConverter x:Key="DungeonKeyGestureConverter" />
 
     <!-- =================================================================== -->
     <!-- MOTYWY PRZYCISKÓW                                                   -->
@@ -85,7 +90,8 @@
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                       TextBlock.TextTrimming="CharacterEllipsis"
                                       TextBlock.TextWrapping="NoWrap"
-                                      RecognizesAccessKey="True" />
+                                      RecognizesAccessKey="True"
+                                      themes:TrimmedLabelToolTip.IsEnabled="True" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -244,7 +250,8 @@
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                       TextBlock.TextTrimming="CharacterEllipsis"
                                       TextBlock.TextWrapping="NoWrap"
-                                      RecognizesAccessKey="True" />
+                                      RecognizesAccessKey="True"
+                                      themes:TrimmedLabelToolTip.IsEnabled="True" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -466,8 +473,7 @@
                 <Template>
                     <Button Theme="{StaticResource DungeonFieldGlyphButton}"
                             Command="{Binding $parent[TextBox].Clear}"
-                            IsVisible="{Binding $parent[TextBox].Text, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                            ToolTip.Tip="Wyczyść">
+                            IsVisible="{Binding $parent[TextBox].Text, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                         <controls:ForegroundIcon Source="{DynamicResource DungeonIconClear}" />
                     </Button>
                 </Template>
@@ -1586,6 +1592,294 @@
     </ControlTheme>
 
     <!-- =================================================================== -->
+    <!-- PODPOWIEDŹ                                                          -->
+    <!-- =================================================================== -->
+
+    <!--
+        Podpowiedź (ToolTip). Szablon napisany od nowa; nazwa części z ToolTip.xaml Fluenta
+        (Avalonia 12.0.5, MIT): PART_ContentPresenter. Tło SurfaceHeader, tekst TextPrimary, krawędź
+        1 px BorderStrong, zaokrąglenie DungeonControlCornerRadius, cień DungeonFlyoutShadow; krój
+        interfejsu 12 (DungeonHelperFontSize), wcięcie DungeonToolTipPadding. Najwyższa szerokość
+        DungeonToolTipMaxWidth - dłuższy tekst się zawija, podpowiedź nigdy nie przycina. Tekst się
+        nie zaznacza. Bez animacji: pojawia się od razu po opóźnieniu biblioteki, przy wskaźniku
+        (domyślne położenie). Przezroczysty margines DungeonFlyoutMargin daje miejsce na cień.
+        Nie ma stanów - nie reaguje na mysz.
+    -->
+    <ControlTheme x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonToolTipPadding}" />
+        <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonToolTipMaxWidth}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      TextBlock.TextWrapping="Wrap"
+                                      TextBlock.TextTrimming="None" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- MENU                                                                -->
+    <!-- =================================================================== -->
+
+    <!--
+        Menu rozwijane z przycisku (MenuFlyout -> MenuFlyoutPresenter) i menu kontekstowe
+        (ContextMenu) z pozycjami (MenuItem) i separatorem. Pasek menu (Menu) nie ma motywu ramy -
+        rama nawiguje paskiem bocznym. Szablony napisane od nowa; nazwy części z MenuFlyoutPresenter.xaml,
+        ContextMenu.xaml i MenuItem.xaml Fluenta (Avalonia 12.0.5, MIT): PART_ItemsPresenter,
+        PART_Popup, PART_HeaderPresenter, PART_InputGestureText.
+        Powierzchnia (menu i podmenu): jak okienko wysuwane (FlyoutPresenter) - tło InputBackground,
+        krawędź InputBorder 1 px, zaokrąglenie DungeonFlyoutCornerRadius, wcięcie DungeonFlyoutPadding,
+        cień DungeonFlyoutShadow, najwyższa wysokość DungeonFlyoutMaxHeight z przewijaniem w środku
+        (pasek tylko przy potrzebie). Szerokość z najdłuższej pozycji, od DungeonMenuMinWidth do
+        DungeonMenuMaxWidth.
+        Położenie: menu z przycisku jak okienko (widok ustawia MenuFlyout Placement=
+        "BottomEdgeAlignedLeft" - MenuFlyout nie jest kontrolką i motywu nie ma; margines
+        DungeonFlyoutMargin, odwrócone nad przycisk, gdy brak miejsca); menu kontekstowe przy
+        wskaźniku (zachowanie biblioteki); podmenu w prawo, górnym wierszem na wysokości pozycji
+        (DungeonSubmenuVerticalOffset), w lewo, gdy brak miejsca. Otwarcie ruchem
+        (Themes/PopupOpenMotion.cs): menu z przycisku od strony przycisku, menu kontekstowe i podmenu
+        samym wyłonieniem; zamknięcie natychmiast.
+        Pozycja: wysokość DungeonListRowHeight, podświetlenie jak wiersz listy (pędzel
+        BackstageRowHover, wcięcie DungeonListRowHighlightInset, zaokrąglenie
+        DungeonListRowHighlightCornerRadius), wcięcie tekstu 12. Kolumny wspólne dla menu
+        (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót] [strzałka podmenu]; kolumna ikony ma
+        szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
+        TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) do prawej,
+        12, TextMuted, odstęp DungeonMenuGestureMargin. Ikona i ptaszek kolorem tekstu pozycji.
+        Stany pozycji:
+          spoczynek   - bez tła;
+          najechanie  - podświetlenie; wskazana klawiaturą (:selected) i wciśnięta - jak najechanie;
+          otwarte podmenu (:open) - jak najechanie, dopóki podmenu jest otwarte;
+          wyłączona   - DungeonDisabledOpacity, bez podświetlenia;
+          .danger     - napis i ikona DangerText, podświetlenie neutralne; wyłączona traci czerwień.
+        Fokus bez własnego wyglądu (FocusAdorner pusty); kursor strzałka.
+    -->
+    <ControlTheme x:Key="{x:Type MenuFlyoutPresenter}" TargetType="MenuFlyoutPresenter">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonFlyoutCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
+        <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
+        <Setter Property="MinWidth" Value="{DynamicResource DungeonMenuMinWidth}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonMenuMaxWidth}" />
+        <Setter Property="MaxHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        ClipToBounds="True">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        Margin="{TemplateBinding Padding}"
+                                        KeyboardNavigation.TabNavigation="Continue"
+                                        Grid.IsSharedSizeScope="True" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ContextMenu}" TargetType="ContextMenu">
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonFlyoutCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
+        <Setter Property="MinWidth" Value="{DynamicResource DungeonMenuMinWidth}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonMenuMaxWidth}" />
+        <Setter Property="MaxHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="WindowManagerAddShadowHint" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        ClipToBounds="True">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        Margin="{TemplateBinding Padding}"
+                                        KeyboardNavigation.TabNavigation="Continue"
+                                        Grid.IsSharedSizeScope="True" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type MenuItem}" TargetType="MenuItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <!-- Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie między
+                         podświetleniami - najechanie nie gaśnie między pozycjami. -->
+                    <Border Background="Transparent">
+                        <Border Name="PART_LayoutRoot"
+                                Margin="{DynamicResource DungeonListRowHighlightInset}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemGesture" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemChevron" />
+                                </Grid.ColumnDefinitions>
+                                <Panel Name="PART_IconColumn"
+                                       Width="{DynamicResource DungeonActionIconSize}"
+                                       Height="{DynamicResource DungeonActionIconSize}"
+                                       Margin="{DynamicResource DungeonMenuIconMargin}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="False">
+                                    <ContentPresenter Name="PART_IconPresenter"
+                                                      Content="{TemplateBinding Icon}"
+                                                      HorizontalContentAlignment="Stretch"
+                                                      VerticalContentAlignment="Stretch" />
+                                    <controls:ForegroundIcon Name="PART_ToggleIcon"
+                                                             IsVisible="False"
+                                                             Foreground="{TemplateBinding Foreground}"
+                                                             Source="{DynamicResource DungeonIconCheck}" />
+                                </Panel>
+                                <ContentPresenter Name="PART_HeaderPresenter"
+                                                  Grid.Column="1"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding Header}"
+                                                  ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                                  TextBlock.TextTrimming="CharacterEllipsis"
+                                                  TextBlock.TextWrapping="NoWrap"
+                                                  RecognizesAccessKey="True" />
+                                <TextBlock Name="PART_InputGestureText"
+                                           Grid.Column="2"
+                                           Margin="{DynamicResource DungeonMenuGestureMargin}"
+                                           VerticalAlignment="Center"
+                                           FontSize="{DynamicResource DungeonHelperFontSize}"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                           TextWrapping="NoWrap"
+                                           IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                           Text="{TemplateBinding InputGesture, Converter={StaticResource DungeonKeyGestureConverter}}" />
+                                <controls:ForegroundIcon Name="PART_Chevron"
+                                                         Grid.Column="3"
+                                                         Width="{DynamicResource DungeonActionIconSize}"
+                                                         Height="{DynamicResource DungeonActionIconSize}"
+                                                         Margin="{DynamicResource DungeonMenuChevronMargin}"
+                                                         VerticalAlignment="Center"
+                                                         Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                         Source="{DynamicResource DungeonIconChevronRight}" />
+                            </Grid>
+                        </Border>
+                    </Border>
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           Placement="RightEdgeAlignedTop"
+                           VerticalOffset="{DynamicResource DungeonSubmenuVerticalOffset}"
+                           IsLightDismissEnabled="False"
+                           IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
+                        <Border Name="PART_SubmenuSurface"
+                                MinWidth="{DynamicResource DungeonMenuMinWidth}"
+                                MaxWidth="{DynamicResource DungeonMenuMaxWidth}"
+                                MaxHeight="{DynamicResource DungeonFlyoutMaxHeight}"
+                                Background="{DynamicResource DungeonInputBackgroundBrush}"
+                                BorderBrush="{DynamicResource DungeonInputBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
+                                BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                                ClipToBounds="True">
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ItemsPresenter Name="PART_ItemsPresenter"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                Margin="{DynamicResource DungeonFlyoutPadding}"
+                                                Grid.IsSharedSizeScope="True" />
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:icon /template/ Panel#PART_IconColumn,
+                         ^:toggle /template/ Panel#PART_IconColumn,
+                         ^:radio /template/ Panel#PART_IconColumn">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:toggle:checked /template/ controls|ForegroundIcon#PART_ToggleIcon,
+                         ^:radio:checked /template/ controls|ForegroundIcon#PART_ToggleIcon">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:radio /template/ controls|ForegroundIcon#PART_ToggleIcon">
+            <Setter Property="Source" Value="{DynamicResource DungeonIconRadioDot}" />
+        </Style>
+        <Style Selector="^:empty /template/ controls|ForegroundIcon#PART_Chevron">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:selected, ^:pressed, ^:open">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="^.danger">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerTextBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
     <!-- LISTA ROZWIJANA                                                     -->
     <!-- =================================================================== -->
 
@@ -1887,8 +2181,10 @@
         niesie tło.
         Zakładka (TabItem i TabStripItem wyglądają tak samo - wspólna podstawa DungeonTabHeaderBase):
         wysokość DungeonTabHeight, wcięcie DungeonTabPadding, zaokrąglenie DungeonCornerRadius, bez
-        krawędzi, krój interfejsu 13. Szerokość z napisu - zakładka mieści swój napis; wielokropek
-        tylko wtedy, gdy kontener wymusza węższe miejsce. Kursor strzałka, tekst się nie zaznacza,
+        krawędzi, krój interfejsu 13. Szerokość z napisu, najwyżej DungeonTabMaxWidth; dłuższy napis
+        przycina się wielokropkiem i pokazuje pełny w podpowiedzi (Themes/TrimmedLabelToolTip.cs).
+        Szerokość rezerwuje pogrubiony napis (controls:BoldTextReserve), więc wybór nie zmienia
+        szerokości zakładki. Kursor strzałka, tekst się nie zaznacza,
         fokus bez wyglądu (FocusAdorner pusty), bez przejść - zmiana wyboru zmienia kolor od razu.
         Stany:
           spoczynek          - bez tła, tekst TextRegular;
@@ -1896,14 +2192,16 @@
           wciśnięcie         - jak najechanie;
           wybrana            - tło AccentDim, tekst Accent, SemiBold; pod myszą bez zmian (styl stoi
                                po najechaniu);
-          wyłączona          - DungeonDisabledOpacity, bez tła, tekst TextRegular, bez reakcji na
-                               mysz; wybrana wyłączona traci akcent: tło neutralne InputBackground
+          wyłączona          - DungeonDisabledOpacity (tylko zakładka wyłączona sama - w wyłączonym
+                               pasku albo TabControl przygasza raz całość), bez tła, tekst
+                               TextRegular, bez reakcji na mysz; wybrana wyłączona traci akcent: tło neutralne InputBackground
                                (jak znacznik wyłączonego zaznaczonego pola wyboru), tekst
                                TextRegular, zostaje SemiBold.
         Pasek: od lewej, zawija się do nowej linii (WrapPanel), odstęp DungeonSpacingXs w poziomie
         i między liniami. Bez tła i krawędzi.
-        TabControl: pasek u góry, pod nim treść wybranej zakładki z odstępem DungeonSpacingLg; obszar
-        treści bez tła i krawędzi. Obsługiwana jest wyłącznie pozycja paska u góry (TabStripPlacement
+        TabControl: pasek u góry, pod nim treść wybranej zakładki z odstępem DungeonSpacingLg (bez
+        zakładek - bez paska i odstępu); obszar treści bez tła i krawędzi. Wyłączony TabControl
+        przygasza całość raz. Obsługiwana jest wyłącznie pozycja paska u góry (TabStripPlacement
         Top) - szablon nie czyta TabStripPlacement.
     -->
     <ControlTheme x:Key="DungeonTabHeaderBase" TargetType="ContentControl">
@@ -1927,6 +2225,7 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonTabMaxWidth}" />
 
         <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
@@ -1940,10 +2239,14 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
-            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+        </Style>
+        <!-- Przygasza tylko zakładka wyłączona sama (IsEnabled="False"); zakładka w wyłączonym pasku
+             też jest :disabled, ale przygasza ją raz cały pasek - bez podwójnego przygaszenia. -->
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
 
@@ -1958,13 +2261,18 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      Content="{TemplateBinding Header}"
-                                      ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                      TextBlock.TextTrimming="CharacterEllipsis"
-                                      TextBlock.TextWrapping="NoWrap" />
+                    <Panel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <controls:BoldTextReserve Label="{TemplateBinding Header}" />
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Header}"
+                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap"
+                                          themes:TrimmedLabelToolTip.IsEnabled="True" />
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -1981,13 +2289,18 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      TextBlock.TextTrimming="CharacterEllipsis"
-                                      TextBlock.TextWrapping="NoWrap" />
+                    <Panel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <controls:BoldTextReserve Label="{TemplateBinding Content}" />
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap"
+                                          themes:TrimmedLabelToolTip.IsEnabled="True" />
+                    </Panel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -2017,6 +2330,10 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
     </ControlTheme>
 
     <ControlTheme x:Key="{x:Type TabControl}" TargetType="TabControl">
@@ -2044,7 +2361,9 @@
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         DockPanel.Dock="Top"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
-                        <Panel DockPanel.Dock="Top" Height="{DynamicResource DungeonSpacingLg}" />
+                        <Panel Name="PART_TabStripSpacing"
+                               DockPanel.Dock="Top"
+                               Height="{DynamicResource DungeonSpacingLg}" />
                         <Panel>
                             <ContentPresenter Name="PART_SelectedContentHost2"
                                               Margin="{TemplateBinding Padding}"
@@ -2060,6 +2379,16 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+
+        <!-- Bez zakładek pasek nie zajmuje miejsca: znika też odstęp nad treścią. -->
+        <Style Selector="^:empty /template/ Panel#PART_TabStripSpacing">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <!-- Wyłączony TabControl przygasza całość - pasek i treść - raz; zakładki w nim nie
+             przygaszają się drugi raz (ich przygaszenie idzie po własnym IsEnabled). -->
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
     </ControlTheme>
 
     <!-- =================================================================== -->
@@ -2077,7 +2406,8 @@
         stanów - wyłączony przełącznik zostawia go bez zmian, wyłączone są segmenty.
         Pojedynczy wybór; brak wyboru dozwolony (żaden segment nie jest podświetlony).
         Segment: zaokrąglenie DungeonSegmentCornerRadius, wcięcie poziome 12, tekst wyśrodkowany
-        w obu osiach, jedna linia z wielokropkiem, krój interfejsu 13. Kursor strzałka, fokus bez
+        w obu osiach, jedna linia z wielokropkiem (przycięty - pełny w podpowiedzi), krój interfejsu
+        13. Szerokość rezerwuje pogrubiony napis (controls:BoldTextReserve). Kursor strzałka, fokus bez
         wyglądu, bez przejść - bez przesuwanej wkładki, kolor zmienia się od razu.
         Stany segmentu (zasada wspólna z zakładką):
           spoczynek   - bez tła, tekst TextRegular;
@@ -2109,16 +2439,22 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Background="{TemplateBinding Background}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  TextBlock.TextTrimming="CharacterEllipsis"
-                                  TextBlock.TextWrapping="NoWrap" />
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <controls:BoldTextReserve Label="{TemplateBinding Content}" />
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap"
+                                          themes:TrimmedLabelToolTip.IsEnabled="True" />
+                    </Panel>
+                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -2197,7 +2533,7 @@
           spoczynek   - bez tła;
           najechanie  - tło SurfaceHover; wciśnięcie - jak najechanie;
           rozwinięta  - bez osobnego wyglądu, zmienia się tylko strzałka;
-          wyłączona   - nagłówek i strzałka DungeonDisabledOpacity, bez reakcji na mysz.
+          wyłączona   - cała sekcja (nagłówek i treść) DungeonDisabledOpacity raz, bez reakcji na mysz.
         Treść: wcięcie DungeonExpanderContentPadding (równo z napisem nagłówka), pojawia się i znika
         od razu - bez animacji wysokości i bez ContentTransition.
     -->
@@ -2269,6 +2605,9 @@
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <!-- Przygasza tylko nagłówek wyłączony sam; w wyłączonej sekcji przygasza ją raz cała sekcja. -->
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2299,7 +2638,6 @@
                                   DockPanel.Dock="Top"
                                   Theme="{StaticResource DungeonExpanderHeader}"
                                   CornerRadius="{TemplateBinding CornerRadius}"
-                                  IsEnabled="{TemplateBinding IsEnabled}"
                                   Content="{TemplateBinding Header}"
                                   ContentTemplate="{TemplateBinding HeaderTemplate}"
                                   IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
@@ -2319,6 +2657,11 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
+
+        <!-- Wyłączona sekcja przygasza całość - nagłówek i treść - raz. -->
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
     </ControlTheme>
 
 </ResourceDictionary>

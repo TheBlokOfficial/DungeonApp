@@ -27,6 +27,7 @@
             <sections:ChoicesSection />
             <sections:DropDownsSection />
             <sections:TabsSection />
+            <sections:MenusSection />
             <sections:TilesSection />
         </StackPanel>
     </ScrollViewer>

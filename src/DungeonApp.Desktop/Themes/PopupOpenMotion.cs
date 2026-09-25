@@ -10,14 +10,16 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Otwarcie okienka wysuwanego i rozwiniętej listy (każde okno wyskakujące, którego treścią jest
-/// FlyoutPresenter: Flyout, ComboBox, DropDownPicker), raz dla całej aplikacji
+/// Otwarcie okienka wysuwanego, rozwiniętej listy i menu (każde okno wyskakujące, którego treścią jest
+/// FlyoutPresenter - Flyout, ComboBox, DropDownPicker - albo MenuFlyoutPresenter, ContextMenu
+/// i powierzchnia podmenu MenuItem), raz dla całej aplikacji
 /// (docs/architecture.md, "Niezmiennik interfejsu", Okienko i lista rozwijana):
 /// <list type="bullet">
 /// <item>ustala, czy okno stanęło pod otwierającym, czy nad nim, i daje otwierającemu klasę
 /// <see cref="OpensUpClass"/>, gdy nad - motyw obraca po niej strzałkę listy w górę;</item>
 /// <item>wyłania powierzchnię z przezroczystości i dosuwa ją o DungeonPopupOpenOffset od strony
-/// otwierającego w DungeonPopupOpenDuration. Okno jest otwarte i klikalne od pierwszej klatki -
+/// otwierającego w DungeonPopupOpenDuration. Menu kontekstowe i podmenu nie mają strony
+/// otwierającego - tylko wyłaniają się z przezroczystości. Okno jest otwarte i klikalne od pierwszej klatki -
 /// ruch tylko dogania stan. Zamknięcie jest natychmiastowe (nic tu go nie dotyczy).</item>
 /// </list>
 /// Wyłączone animacje w systemie: ReducedMotion.axaml ustawia <see cref="IsEnabledProperty"/>
@@ -32,13 +34,13 @@ internal static class PopupOpenMotion
     public const string OpensUpClass = "opens-up";
 
     public static readonly AttachedProperty<bool> IsEnabledProperty =
-        AvaloniaProperty.RegisterAttached<FlyoutPresenter, bool>("IsEnabled", typeof(PopupOpenMotion), defaultValue: true);
+        AvaloniaProperty.RegisterAttached<Control, bool>("IsEnabled", typeof(PopupOpenMotion), defaultValue: true);
 
     private static bool registered;
 
-    public static bool GetIsEnabled(FlyoutPresenter presenter) => presenter.GetValue(IsEnabledProperty);
+    public static bool GetIsEnabled(Control presenter) => presenter.GetValue(IsEnabledProperty);
 
-    public static void SetIsEnabled(FlyoutPresenter presenter, bool value) => presenter.SetValue(IsEnabledProperty, value);
+    public static void SetIsEnabled(Control presenter, bool value) => presenter.SetValue(IsEnabledProperty, value);
 
     public static void Register()
     {
@@ -53,7 +55,23 @@ internal static class PopupOpenMotion
 
     private static void OnIsOpenChanged(Popup popup, AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.NewValue is not true || popup.Child is not FlyoutPresenter presenter)
+        if (e.NewValue is not true || popup.Child is not Control presenter)
+        {
+            return;
+        }
+
+        // Menu kontekstowe i podmenu: bez strony otwierającego - samo wyłonienie.
+        if (presenter is ContextMenu || popup.TemplatedParent is MenuItem)
+        {
+            if (GetIsEnabled(presenter))
+            {
+                Run(presenter, opensUp: false, offset: 0d);
+            }
+
+            return;
+        }
+
+        if (presenter is not (FlyoutPresenter or MenuFlyoutPresenter))
         {
             return;
         }
@@ -70,16 +88,16 @@ internal static class PopupOpenMotion
 
         if (GetIsEnabled(presenter))
         {
-            Run(presenter, opensUp);
+            Run(presenter, opensUp, offset: null);
         }
     }
 
-    private static void Run(FlyoutPresenter presenter, bool opensUp)
+    private static void Run(Control presenter, bool opensUp, double? offset)
     {
         var duration = presenter.TryFindResource("DungeonPopupOpenDuration", out var d) && d is TimeSpan span
             ? span
             : TimeSpan.FromMilliseconds(120);
-        var offset = presenter.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
+        offset ??= presenter.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
 
         // Animacja przesunięcia działa na TranslateTransform w RenderTransform (animator przekształceń
         // Avalonii 12 nie animuje RenderTransform zapisanego jako TransformOperations).
@@ -89,7 +107,7 @@ internal static class PopupOpenMotion
         }
 
         // Otwarte w dół - z góry (ujemne przesunięcie), otwarte w górę - z dołu.
-        var from = opensUp ? offset : -offset;
+        var from = opensUp ? offset.Value : -offset.Value;
         var animation = new Animation
         {
             Duration = duration,

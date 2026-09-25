@@ -19,8 +19,8 @@
                      Expander /template/ ToggleButton#ExpanderHeader /template/ controls|ForegroundIcon#PART_Chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
-    <!-- Otwarcie okienka i rozwiniętej listy bez ruchu (Themes/PopupOpenMotion.cs). -->
-    <Style Selector="FlyoutPresenter">
+    <!-- Otwarcie okienka, rozwiniętej listy i menu bez ruchu (Themes/PopupOpenMotion.cs). -->
+    <Style Selector="FlyoutPresenter, MenuFlyoutPresenter, ContextMenu, MenuItem /template/ Border#PART_SubmenuSurface">
         <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />
     </Style>
 </Styles>
