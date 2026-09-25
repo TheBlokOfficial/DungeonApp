@@ -242,6 +242,14 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   segment i wiersz listy mają ten sam błąd** — w `tasks.md`, *Poprawki czekające na obszar*.
 * Porcja 8: odznaka i tag wyłączone przygasają, ale nie tracą barwy — barwa jest tu informacją
   (rzadkość), nie znakiem działania; reguła „wyłączona traci barwę” dotyczy kontrolek, które coś robią.
+* **Pomiar sesji architekta 2026-09-25** (z zapisu sesji, pole `usage`): pamięć podręczna sesji
+  architekta ma ważność **1 h** (zapis droższy: 2× zamiast 1,25×; odczyt 0,1× tak samo), wykonawców —
+  **5 min**. Przerwy na wykonawcę (8 i 10,5 min) pamięci architekta nie wygasiły — po powrocie odczyt
+  całości, zapis tylko przyrostu. Start sesji: ok. 55 tys. sama rama (instrukcje systemu, narzędzia,
+  `CLAUDE.md`, pamięć), +28 tys. `collaboration.md` z dokumentem zadania, +30 tys. reszta lektur
+  startowych (w tym ok. 13 tys. za `tasks.md` czytany od początku zamiast samej sekcji) → ok. 113 tys.
+  przed pierwszym briefem. Zapytanie (każde wywołanie narzędzia) kosztuje ok. 10 % kontekstu; nowa sesja
+  zwraca się po ok. jednej porcji. Propozycje z pomiaru — u autora.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
