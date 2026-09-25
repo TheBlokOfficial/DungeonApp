@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `28c21bc`.** Na starcie sesji: `git log 28c21bc..master` i `git worktree
+**Stan na: 2026-09-25, po `f41cbe5`.** Na starcie sesji: `git log f41cbe5..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,10 +14,13 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–6 przyjęte przez autora; uwagi po porcji 6 (skakanie przy pogrubieniu wybranego,
-wyłączony pojemnik, pusty pasek zakładek) czekają w `tasks.md`, *Poprawki czekające na obszar* —
-zabiera je porcja 7a jako pierwszy punkt. Kopii roboczych brak. **Następny krok:** nowa sesja zadania
-— brief porcji 7a.
+Porcje 0–6 przyjęte przez autora. **W toku: porcja 7a** — wykonawca (Opus 5.5) uruchomiony
+2026-09-25 w kopii `.claude/worktrees/agent-a6ca32e00436f848f`, gałąź
+`worktree-agent-a6ca32e00436f848f` (jego gałąź `porcja-7a`, jeśli reset był zablokowany). Brief:
+poprawki po porcji 6 z `tasks.md`, podpowiedź (także pełny napis przyciętej zakładki, segmentu
+i przycisku; × w polu wyszukiwania bez podpowiedzi), menu z przycisku i kontekstowe, sekcja galerii
+„Menu i podpowiedzi”; rozstrzygnięcia architekta — *Ustalenia*, *Porcja 7a*. **Następny krok:**
+raport → weryfikacja, scalenie, autor ogląda.
 
 ## Zakres i koniec
 
@@ -138,6 +141,16 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     w dół.
   * *Okruszki* — kontrolka ramy: odcinki nieklikalne (nie ma dokąd nawigować), przy braku miejsca
     skraca się ślad, bieżący odcinek na końcu.
+* **Porcja 7a — rozstrzygnięcia architekta** (2026-09-25):
+  * *Menu* = menu z przycisku (`MenuFlyout`) i kontekstowe; **paska menu nie ma** — rama nawiguje
+    paskiem bocznym, nic by go nie użyło. Powierzchnia jak okienko wysuwane; pozycja jak wiersz listy
+    (32, to samo podświetlenie); kolumny: ikona/ptaszek (tylko gdy któraś pozycja ją ma), napis,
+    skrót przygaszony, strzałka podmenu. Ptaszek kolorem tekstu, nie akcentem — menu to polecenia,
+    nie wybór. Pozycja niszcząca: czerwony napis, podświetlenie neutralne.
+  * *Podpowiedź*: pismo 12, najwyżej 320 szerokości i zawija się (nigdy nie przycina), bez ruchu.
+    Pełny napis w podpowiedzi tylko przy rzeczywistym przycięciu; jawna podpowiedź widoku wygrywa.
+  * *Zakładka* ma najwyższą szerokość 240 (ok. 30 znaków) — dłuższa się przycina z podpowiedzią.
+  * *Pogrubienie wybranego* rezerwuje miejsce tylko dla nagłówka tekstowego.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
