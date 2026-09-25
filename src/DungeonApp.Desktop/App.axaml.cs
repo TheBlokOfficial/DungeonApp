@@ -58,6 +58,7 @@ public partial class App : Avalonia.Application
         }
 
         AvaloniaXamlLoader.Load(this);
+        Themes.SystemMotion.Apply(this);
 
         // Kampanie leżą z dokumentami użytkownika, nie w danych aplikacji: kampania ma być widocznym,
         // przenośnym, kopiowalnym dokumentem, a nie ukrytym stanem programu. Jeden magazyn na

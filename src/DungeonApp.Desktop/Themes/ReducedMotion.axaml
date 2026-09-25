@@ -1,0 +1,20 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DungeonApp.Desktop.Controls">
+    <!--
+        Wyłączone animacje w systemie wyłączają je w aplikacji (docs/architecture.md, "Niezmiennik
+        interfejsu", Ruch). Dołącza je SystemMotion przy starcie, tylko gdy Windows ma animacje
+        wyłączone; style stoją nad motywami kontrolek, więc zdejmują ich przejścia - stan zmienia się
+        od razu, bez ruchu. Każde przejście motywu ramy (DungeonMotionDuration) ma tu swój wpis.
+    -->
+    <Style Selector="ToggleSwitch">
+        <Setter Property="KnobTransitions" Value="{x:Null}" />
+    </Style>
+    <Style Selector="ToggleSwitch /template/ Border#PART_Track">
+        <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
+    <Style Selector="ComboBox /template/ controls|ForegroundIcon#PART_DropDownGlyph,
+                     controls|DropDownPicker /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+        <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
+</Styles>
