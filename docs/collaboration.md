@@ -260,6 +260,22 @@ autor rozstrzygnie to na miejscu.
 *Poprawki czekające na obszar* zostają w `tasks.md` — należą do obszaru kodu, nie do zadania.
 Wykonawca dokumentu zadania nie czyta: co mu potrzebne, architekt przepisuje do briefu.
 
+**Założenie** — w sesji głównej, gdy zadanie ma ruszyć, jednym commitem:
+
+1. Plik `docs/zadania/<zadanie>.md` — nazwa po polsku, małymi literami, słowa łączone myślnikiem,
+   nazywa zadanie, nie etap ani datę (`fundament-interfejsu`, nie `krok-10-etap-3`).
+2. Treść zadania **przenosi się** z `tasks.md`, nie kopiuje: plan, ustalenia, pomiary i uwagi idą do
+   dokumentu, w kolejce zostaje jedna linia z odnośnikiem. Praca już domknięta zwija się w planie do
+   jednej linii; to, co jest w historii gita i nikomu dalej niepotrzebne, nie przechodzi wcale.
+3. Odsyłacze do przeniesionej sekcji kolejki — w pozostałych dokumentach i definicjach subagentów —
+   przepina się na dokument zadania (wyszukać nazwę sekcji we wszystkich dokumentach).
+4. *Do przeczytania* dobiera architekt sesji głównej, bo zna całość: sekcje, bez których nie da się
+   napisać poprawnego briefu w tym zadaniu, na start; resztę — na „tylko gdy potrzeba".
+5. *Gdzie stoimy* opisuje stan w chwili założenia, łącznie z tym, co pokażą `git worktree list`
+   i niezatwierdzone zmiany; nagłówek dostaje commit, na którym ten stan zapisano.
+6. Sprawdzian przed commitem: czy nowa sesja z samym tym plikiem i jego lekturami doszłaby do
+   propozycji następnego wycinka bez pytania autora o kontekst.
+
 **Zamknięcie.** Po spełnieniu kryterium końca architekt przenosi to, co przeżywa zadanie — według
 *Przy zamknięciu* — i usuwa plik w tym samym commicie. Historia zostaje w gicie; katalog nie jest
 archiwum.
