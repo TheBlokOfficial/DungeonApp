@@ -433,6 +433,8 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   więc przycisk nie zaprasza od razu do następnego. Architekt poparł: nie łamie reguły, a nie wymaga
   odtwarzania stanu myszy, na którym obejście byłoby kruche. Koszt: przy natychmiastowym ponownym
   otwarciu brak podświetlenia (kliknięcie działa).
+  **Furtka (autor, po obejrzeniu rundy 2):** do rozważenia powrót do konwencji — bez mignięcia,
+  a gdy mysz zostaje nad otwierającym, najechanie zostaje. Nie teraz; wariant działa.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor
