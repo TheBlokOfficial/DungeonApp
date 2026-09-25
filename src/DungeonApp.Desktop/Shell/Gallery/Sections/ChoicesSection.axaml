@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ChoicesSection">
+    <!-- The frame's CheckBox and RadioButton themes (Themes/DungeonControls.axaml), live: every static
+         state (unchecked, checked, indeterminate, disabled in each), a label longer than its column
+         (it wraps, the mark stays by the first line), a mark without a label and a group of three
+         radio buttons. Hover is checked with the mouse. Nothing here restyles a control - the only
+         local values are the long label's column width and the group name. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Pola wyboru" />
+        <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij znacznik albo etykietę, żeby zmienić stan. Zaznaczone pod myszą się nie zmienia." />
+
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Pole wyboru" />
+                <StackPanel>
+                    <CheckBox Content="Niezaznaczone" />
+                    <CheckBox Content="Zaznaczone" IsChecked="True" />
+                    <CheckBox Content="Pośrednie" IsThreeState="True" IsChecked="{x:Null}" />
+                    <CheckBox Content="Wyłączone" IsEnabled="False" />
+                    <CheckBox Content="Wyłączone zaznaczone" IsChecked="True" IsEnabled="False" />
+                    <CheckBox Content="Wyłączone pośrednie" IsThreeState="True" IsChecked="{x:Null}" IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Przycisk opcji - grupa" />
+                <StackPanel>
+                    <RadioButton GroupName="GalleryAbility" Content="Siła" IsChecked="True" />
+                    <RadioButton GroupName="GalleryAbility" Content="Zręczność" />
+                    <RadioButton GroupName="GalleryAbility" Content="Kondycja" />
+                </StackPanel>
+                <TextBlock Classes="caption muted" Text="Wyłączony" />
+                <StackPanel>
+                    <RadioButton GroupName="GalleryDisabled" Content="Wyłączony" IsEnabled="False" />
+                    <RadioButton GroupName="GalleryDisabled" Content="Wyłączony zaznaczony" IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Długa etykieta (kolumna 240)" />
+                <StackPanel Width="240">
+                    <CheckBox Content="Pokazuj w rejestrze także okazy, które nie należą do żadnego obszaru kampanii" />
+                    <RadioButton GroupName="GalleryLong" Content="Rzuty ukryte: wynik widzi tylko Mistrz Gry, gracze widzą jedynie, że rzut padł" />
+                </StackPanel>
+                <TextBlock Classes="caption muted" Text="Bez etykiety" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <CheckBox />
+                    <CheckBox IsChecked="True" />
+                    <RadioButton GroupName="GalleryBare" />
+                    <RadioButton GroupName="GalleryBare" IsChecked="True" />
+                </StackPanel>
+                <TextBlock Classes="caption muted" Text="W rzędzie z polem i przyciskiem" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <TextBox Width="120" Text="Goblin" />
+                    <CheckBox Content="Ukryty" />
+                    <Button Content="Dodaj" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

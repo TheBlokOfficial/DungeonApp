@@ -24,6 +24,7 @@
             <sections:TextFieldsSection />
             <sections:ScrollingSection />
             <sections:ListsSection />
+            <sections:ChoicesSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

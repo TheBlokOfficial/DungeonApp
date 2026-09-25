@@ -166,6 +166,14 @@
              spoczynku o ok. 10 punktów jasności (#5E5750, HSL 30°, 8 %, 34 %), wciąż neutralny,
              nie akcent. -->
         <SolidColorBrush x:Key="DungeonScrollThumbHoverBrush" Color="#5E5750" />
+        <!-- SliderThumb: uchwyt suwaka - tu jest wartość; przeciągnij albo kliknij w tor. Kolor tekstu
+             podstawowego (TextPrimary #E8E4DA): jasny i neutralny, nie akcent - akcent niesie część
+             toru przed uchwytem. -->
+        <SolidColorBrush x:Key="DungeonSliderThumbBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
+        <!-- SliderThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Jaśniejszy od
+             spoczynku (#FAF8F3, ta sama ciepła biel, jasność z ok. 91 % do ok. 97 %), bez zmiany
+             rozmiaru. -->
+        <SolidColorBrush x:Key="DungeonSliderThumbHoverBrush" Color="#FAF8F3" />
 
         <!--
             Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
@@ -242,6 +250,40 @@
         <x:Double x:Key="DungeonScrollThumbMinLength">24</x:Double>
         <!-- Uchwyt zaokrąglony w pełni (pigułka) przy każdej szerokości. -->
         <CornerRadius x:Key="DungeonScrollThumbCornerRadius">999</CornerRadius>
+
+        <!-- Pole wyboru, przycisk opcji, przełącznik, suwak - wymiary znaczników. Cała kontrolka ma
+             wysokość najmniej DungeonControlHeight (stoi w jednym rzędzie z polem i przyciskiem). -->
+        <!-- Znacznik pola wyboru (kwadrat) i przycisku opcji (koło): bok 16 - wyraźnie mniejszy od
+             linii tekstu z odstępami, a na tyle duży, że ptaszek w nim się czyta. -->
+        <x:Double x:Key="DungeonChoiceMarkSize">16</x:Double>
+        <!-- Zaokrąglenie kwadratu pola wyboru: mniejsze niż kontrolki (5), bo kwadrat jest mały - 3 na
+             bok 16 to ok. 1/5 boku; kwadrat wciąż czyta się jako kwadrat, nie jako koło. -->
+        <CornerRadius x:Key="DungeonCheckBoxCornerRadius">3</CornerRadius>
+        <!-- Koło przycisku opcji: połowa DungeonChoiceMarkSize - pełne zaokrąglenie. -->
+        <CornerRadius x:Key="DungeonRadioButtonCornerRadius">8</CornerRadius>
+        <!-- Kropka zaznaczonego przycisku opcji: średnica. -->
+        <x:Double x:Key="DungeonRadioDotSize">6</x:Double>
+        <!-- Grubość kreski ptaszka i kreski stanu pośredniego - ta sama liczba co pióro ikon ramy
+             (DungeonIconPen), rysowana w pikselach znacznika 16 px, zaokrąglone końce i złącza. -->
+        <x:Double x:Key="DungeonChoiceGlyphThickness">1.75</x:Double>
+        <!-- Etykieta obok znacznika (pole wyboru, przycisk opcji, przełącznik): z lewej odstęp od
+             znacznika DungeonSpacingSm; nad i pod (36 - linia tekstu 13 px, ok. 16) / 2 = 10 - pierwsza
+             linia stoi na środku wysokości kontrolki, tam gdzie znacznik, a dłuższa etykieta zawija
+             się w dół, znacznik zostaje przy pierwszej linii. -->
+        <Thickness x:Key="DungeonChoiceLabelPadding">8,10,0,10</Thickness>
+        <!-- Tor przełącznika: 36 x 18, zaokrąglony w pełni; gałka 12, 3 px od krawędzi toru w obu
+             położeniach. Szerokość toru to dwa razy pole gałki (18) - tak jak w szablonie Fluenta
+             (40 x 20, pole gałki 20), z którego kontrolka liczy położenie gałki. -->
+        <x:Double x:Key="DungeonToggleTrackWidth">36</x:Double>
+        <x:Double x:Key="DungeonToggleTrackHeight">18</x:Double>
+        <CornerRadius x:Key="DungeonToggleTrackCornerRadius">9</CornerRadius>
+        <x:Double x:Key="DungeonToggleKnobSize">12</x:Double>
+        <!-- Tor suwaka: grubość 4, zaokrąglony w pełni. -->
+        <x:Double x:Key="DungeonSliderTrackThickness">4</x:Double>
+        <CornerRadius x:Key="DungeonSliderTrackCornerRadius">2</CornerRadius>
+        <!-- Uchwyt suwaka: koło o średnicy 14, zaokrąglenie połowa. -->
+        <x:Double x:Key="DungeonSliderThumbSize">14</x:Double>
+        <CornerRadius x:Key="DungeonSliderThumbCornerRadius">7</CornerRadius>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->
