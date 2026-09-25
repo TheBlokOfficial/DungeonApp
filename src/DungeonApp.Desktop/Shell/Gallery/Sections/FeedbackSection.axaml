@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.FeedbackSection">
+    <!-- The frame's ProgressBar theme, ConfirmationDialog and NotificationToast, live: determinate
+         progress at 0, part and full, indeterminate, disabled (both), a custom fill colour; buttons
+         opening the confirmation with a main and a destructive action (answer shown next to them);
+         buttons raising every notification kind, with an action link and with long text. Nothing
+         here restyles a control. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Postęp, potwierdzenie, powiadomienia" />
+
+        <TextBlock Classes="overline-sm muted" Text="WSKAŹNIK POSTĘPU" />
+        <Grid ColumnDefinitions="200,240" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonSpacingXxl}"
+              RowSpacing="{DynamicResource DungeonSpacingLg}">
+            <TextBlock Grid.Row="0" Classes="caption muted" Text="Określony: 0" />
+            <ProgressBar Grid.Row="0" Grid.Column="1" Minimum="0" Maximum="100" Value="0" />
+            <TextBlock Grid.Row="1" Classes="caption muted" Text="Określony: 35 %" />
+            <ProgressBar Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="100" Value="35" />
+            <TextBlock Grid.Row="2" Classes="caption muted" Text="Określony: pełny" />
+            <ProgressBar Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="100" Value="100" />
+            <TextBlock Grid.Row="3" Classes="caption muted" Text="Nieokreślony" />
+            <ProgressBar Grid.Row="3" Grid.Column="1" IsIndeterminate="True" />
+            <TextBlock Grid.Row="4" Classes="caption muted" Text="Wyłączony: 60 %" />
+            <ProgressBar Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="100" Value="60" IsEnabled="False" />
+            <TextBlock Grid.Row="5" Classes="caption muted" Text="Wyłączony nieokreślony" />
+            <ProgressBar Grid.Row="5" Grid.Column="1" IsIndeterminate="True" IsEnabled="False" />
+            <TextBlock Grid.Row="6" Classes="caption muted" Text="Inny kolor (np. pasek PZ): 70 %" />
+            <ProgressBar Grid.Row="6" Grid.Column="1" Minimum="0" Maximum="100" Value="70"
+                         Foreground="{DynamicResource DungeonDangerTextBrush}" />
+        </Grid>
+
+        <TextBlock Classes="overline-sm muted" Text="OKNO POTWIERDZENIA" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+            <Button Content="Akcja główna" Click="OnConfirmMainClick" />
+            <Button Content="Akcja niszcząca" Click="OnConfirmDestructiveClick" />
+            <TextBlock x:Name="ConfirmationAnswer"
+                       Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+                       VerticalAlignment="Center"
+                       Classes="secondary"
+                       Text="—" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="POWIADOMIENIA" />
+        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingSm}" LineSpacing="{DynamicResource DungeonSpacingSm}">
+            <Button Content="Informacja" Click="OnInformationClick" />
+            <Button Content="Ostrzeżenie" Click="OnWarningClick" />
+            <Button Content="Błąd" Click="OnErrorClick" />
+            <Button Content="Z odnośnikiem akcji" Click="OnWithActionClick" />
+            <Button Content="Długa treść" Click="OnLongClick" />
+        </WrapPanel>
+    </StackPanel>
+</UserControl>

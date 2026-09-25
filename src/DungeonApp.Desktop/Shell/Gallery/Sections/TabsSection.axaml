@@ -37,12 +37,24 @@
                         <TextBlock Text="Treść zakładki Potwory." />
                     </TabItem>
                     <TabItem Header="Czary">
-                        <TextBlock Text="Treść zakładki Czary." />
+                        <!-- Przycisk i pole w wyłączonej zakładce przygasają raz - jak wyłączone same obok. -->
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Text="Treść zakładki Czary." />
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                                <Button Classes="primary" Content="Rzuć" />
+                                <TextBox Width="140" Text="Kula ognia" />
+                            </StackPanel>
+                        </StackPanel>
                     </TabItem>
                     <TabItem Header="Przedmioty">
                         <TextBlock Text="Treść zakładki Przedmioty." />
                     </TabItem>
                 </TabControl>
+                <TextBlock Classes="caption muted" Text="Dla porównania: wyłączone same" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <Button Classes="primary" Content="Rzuć" IsEnabled="False" />
+                    <TextBox Width="140" Text="Kula ognia" IsEnabled="False" />
+                </StackPanel>
             </StackPanel>
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="240">
                 <TextBlock Classes="caption muted" Text="Długie napisy (kolumna 240)" />

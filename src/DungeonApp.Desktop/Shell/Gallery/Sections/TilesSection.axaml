@@ -76,8 +76,20 @@
                     <TextBlock Text="Parowanie." />
                 </Expander>
                 <Expander Header="Akcje legendarne" IsEnabled="False" IsExpanded="True">
-                    <TextBlock Text="Wykrycie. Ruch ogonem." TextWrapping="Wrap" />
+                    <!-- Przycisk i pole w wyłączonej sekcji przygasają raz - jak wyłączone same pod nią. -->
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                        <TextBlock Text="Wykrycie. Ruch ogonem." TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                            <Button Content="Użyj" />
+                            <TextBox Width="100" Text="3" />
+                        </StackPanel>
+                    </StackPanel>
                 </Expander>
+                <TextBlock Classes="caption muted" Text="Dla porównania: wyłączone same" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <Button Content="Użyj" IsEnabled="False" />
+                    <TextBox Width="100" Text="3" IsEnabled="False" />
+                </StackPanel>
                 <TextBlock Classes="caption muted" Text="Długi nagłówek (kolumna 240)" />
                 <Expander Header="Akcje legendarne dostępne wyłącznie w legowisku">
                     <TextBlock Text="Nagłówek przycina się wielokropkiem." TextWrapping="Wrap" />

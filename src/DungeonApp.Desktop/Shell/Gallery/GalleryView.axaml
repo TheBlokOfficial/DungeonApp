@@ -28,6 +28,7 @@
             <sections:DropDownsSection />
             <sections:TabsSection />
             <sections:MenusSection />
+            <sections:FeedbackSection />
             <sections:TilesSection />
         </StackPanel>
     </ScrollViewer>
