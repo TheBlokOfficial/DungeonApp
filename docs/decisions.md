@@ -1720,6 +1720,14 @@ być agnostyczne co do zadania i treści, nieść uniwersalną oszczędność �
 bo go teraz nie potrzebowałem«”. Skrót wyprowadzony z jednej sesji wycina lekturę, która w następnym
 zadaniu będzie potrzebna, a obieg pracy robi się zbiorem wyjątków.
 
+### Odsyłacz do sekcji czyta się jako sekcję, nie jako plik
+
+Pomiar z 2026-09-25, z zapisu sesji (pole `usage`): sesja zadania doszła do ok. 113 tys. tokenów
+kontekstu przed pierwszym briefem, a ok. 13 tys. z tego to kolejka zadań przeczytana od początku, gdy
+dokument zadania wskazywał w niej jedną sekcję na ok. 40 linii. Każde kolejne zapytanie w sesji czyta
+cały kontekst od nowa, więc zbędna lektura na starcie kosztuje przy każdym wywołaniu narzędzia do końca
+sesji, nie raz.
+
 ### W interfejsie asystent decyduje o tym, co rozstrzyga wiedza o interfejsach
 
 Reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI z własnej inicjatywy"

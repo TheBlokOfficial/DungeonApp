@@ -132,6 +132,11 @@ a kod pisze i czyta subagent w wąsko zakrojonym zadaniu — wynik asystent wery
 Konkret z kodu, potrzebny do decyzji, przynosi `code-state.md` albo subagent. **Deleguj kod, nie
 decyzje:** dokumenty tego repozytorium niosą decyzje, więc pisze je asystent sam.
 
+**Odsyłacz do sekcji czyta się jako sekcję, nie jako plik.** Decyzja autora z 2026-09-25. Gdy dokument
+albo brief wskazuje sekcję po nazwie, najpierw znajduje się jej nagłówek, potem czyta od niego do
+następnego nagłówka tego samego poziomu — nie plik od początku. Całość czyta się tylko wtedy, gdy
+wskazano cały dokument.
+
 ### Obieg jednego etapu
 
 Ustalony z autorem 2026-09-22.

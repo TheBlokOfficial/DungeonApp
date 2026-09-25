@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `8fbde1b`.** Na starcie sesji: `git log 8fbde1b..master` i `git worktree
+**Stan na: 2026-09-25, po `488234f`.** Na starcie sesji: `git log 488234f..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -249,13 +249,18 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   `CLAUDE.md`, pamięć), +28 tys. `collaboration.md` z dokumentem zadania, +30 tys. reszta lektur
   startowych (w tym ok. 13 tys. za `tasks.md` czytany od początku zamiast samej sekcji) → ok. 113 tys.
   przed pierwszym briefem. Zapytanie (każde wywołanie narzędzia) kosztuje ok. 10 % kontekstu; nowa sesja
-  zwraca się po ok. jednej porcji. Propozycje z pomiaru — u autora.
+  zwraca się po ok. jednej porcji. Z pomiaru: reguła „odsyłacz do sekcji czyta się jako sekcję”
+  przyjęta (`collaboration.md`); budżet długości dokumentu czytanego co sesję — *Do sesji głównej*.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
 ## Do sesji głównej
 
-—
+* **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
+  z pomiaru w *Notkach*): `collaboration.md` ma ok. 500 linii i jest czytany w całości co sesję.
+  Propozycja: limit długości dla dokumentów czytanych zawsze, rzadko potrzebne — do części czytanej
+  „gdy potrzeba”. Limit ustalić po przejrzeniu, co z dokumentu sesja rzeczywiście używa na starcie.
+  Autor: omówić w sesji głównej (przebudowuje dokument wspólny dla wszystkich zadań).
 
 ## Przy zamknięciu
 
