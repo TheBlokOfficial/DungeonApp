@@ -701,6 +701,14 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   liter i płynie z tekstem. Rzecz sama w sobie — kategoria, przynależność, typ („Humanoid") — dostaje
   odznakę albo tag: pojemnik z wcięciem, zaokrągleniem i wysokością z motywu.
   Liczby idą krojem o stałej szerokości, nigdy krojem nagłówków.
+* **Ruch:** animacja tylko tam, gdzie coś się przemieszcza, obraca albo pojawia (gałka przełącznika,
+  strzałka listy rozwijanej, rozwijanie sekcji); najwyżej 150 ms, z wyhamowaniem; stan zmienia się
+  od razu, animacja tylko go dogania — nic nie czeka na ruch. Najechanie i zaznaczenie zmieniają kolor
+  od razu. Wyłączone animacje w systemie wyłączają je w aplikacji.
+* **Okienko i lista rozwijana:** wysuwa się pod tym, co je otworzyło, wyrównane do jego lewej
+  krawędzi, z małym odstępem; gdy pod spodem brak miejsca — nad nim, z tym samym odstępem, nigdy na
+  nim. Co je otworzyło, wygląda jak pod myszą, dopóki okienko jest otwarte. Strzałka listy
+  rozwijanej: zamknięta w prawo, otwarta w dół, obrót ruchem.
 
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 

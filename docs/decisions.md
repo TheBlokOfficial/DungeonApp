@@ -402,6 +402,18 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   Standard systemów kontrolek jest odwrotny: domyślnie tekst podstawowy, drugorzędny jawnie — wtedy
   miejsce, które zapomni o kolorze, wychodzi czytelne, a nie przygaszone.
 * **Liczby nigdy krojem nagłówków** — Cormorant ma cyfry starodrukowe, „15" czyta się jak „1s".
+* **Ruch tylko tam, gdzie coś się przemieszcza** — autor, 2026-09-25, po porcji 5 (propozycja
+  architekta z porcji 4). Autor pytał o animację przełącznika, pola wyboru i suwaka zmieniającego
+  kolor z wartością. Ruch mówi, dokąd coś poszło (gałka, obrót strzałki); zmiana koloru przy
+  najechaniu i zaznaczeniu ma być natychmiastowa, bo opóźnione podświetlenie czyta się jako
+  ociężałość. Górna granica 150 ms i zasada „stan od razu, animacja dogania", bo przy stole liczy się
+  szybkość, a nie efekt. Zgoda z systemowym wyłączeniem animacji — niektórym ruch przeszkadza. Kolor
+  suwaka z wartością odrzucony: zwykły suwak nie wie, czy wysoko to dobrze; znaczenie podaje widok.
+* **Strzałka listy rozwijanej: w prawo → w dół** — autor, 2026-09-25, po porcji 5. Architekt
+  rekomendował w dół → w górę: na wszystkich platformach strzałka w dół mówi „rozwinie się lista pod
+  spodem", a w prawo to znak sekcji rozwijanej albo podmenu. Autor wybrał w prawo → w dół — jego gust
+  jako klienta; obie odmiany dostały obrót ruchem, bo przeskok strzałki autor odebrał jako
+  „teleportację".
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor
