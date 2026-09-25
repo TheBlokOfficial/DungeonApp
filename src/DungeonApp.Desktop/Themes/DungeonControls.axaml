@@ -196,7 +196,7 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
 
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -260,7 +260,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -496,8 +496,10 @@
         </Style>
 
         <Style Selector="^:disabled">
-            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
             <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
 
@@ -649,7 +651,7 @@
                 </ButtonSpinner>
             </ControlTemplate>
         </Setter>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -831,7 +833,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonScrollThumbHoverBrush}" />
         </Style>
 
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -944,6 +946,8 @@
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1184,6 +1188,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Path">
@@ -1263,6 +1269,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Dot">
@@ -1408,6 +1416,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Knob">
@@ -1521,6 +1531,8 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1875,6 +1887,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2014,7 +2028,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2162,7 +2176,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^:disabled">
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2470,6 +2484,8 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">
