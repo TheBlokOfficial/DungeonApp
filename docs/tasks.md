@@ -86,8 +86,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
      | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | 1 (architekt: kontrast przygaszonego tekstu i czerwieni, krój nagłówków od 20; autor: domyślny kolor tekstu); przyjęta — dwa kolory (drugorzędny, ostrzeżenie) przechodzą do porcji 1 | 33 / 6,3 / 2,7 mln + runda 1: 47 / 7,2 / 4,4 mln |
      | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) → 32, po rundzie 1 → 36 (autor: 32 zbyt ściśnięte); `frame-action` zostaje elementem ramy (pełna wysokość paska), nie przyciskiem (architekt) | 1 (autor: ikony niewidoczne na kolorowych przyciskach, wciśnięcie bez własnego koloru, wyłączony główny szary jak przed porcją, wysokość 36; architekt: przycięcie w galerii, odnośnik w zdaniu, grubość napisów); 2 (autor: ikony konturowe, odnośnik w zdaniu nad linią, najechanie akcentu odbarwia, bez wciśnięcia); 3 (autor: najechanie z wypełnieniem = kolor bez zmian + otoczka 3 px, odnośniki samodzielne szare, bez ręki nigdzie — `decisions.md`; poprawka: przycisk przycinał otoczkę); przyjęta | 52 / 8,4 / 6,1 mln + runda 1: 60 / 8,6 / 6,5 mln + runda 2: 50 / 7,9 / 5,3 mln + runda 3: 30 / 4,9 / 2,4 mln + poprawka otoczki (ten sam wykonawca, wznowiony): 14 / 2,2 / 1,7 mln |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt; po rundzie 1 — krawędź z najechania, bez akcentu); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25; poprawka architekta: aplikacja padała po wejściu w system (selektor potomka w motywie pola), test budujący wszystkie motywy; 1 (autor: krawędź edycji i zaznaczenie w akcencie krzykliwe — zaznaczenie niebieskie; ikona, × i strzałki poza obszarem tekstu, bez tła pod myszą; architekt: liczby całkowite z przecinkiem, tekst pod paskiem przewijania, grubość tekstu w polu, wyrównanie galerii) — scalona, **czeka na sprawdzenie przez autora** | 52 / 10,5 / 7,0 mln + runda 1: 39 / 9,1 / 4,1 mln |
-     | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt; po rundzie 1 — krawędź z najechania, bez akcentu); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25; poprawka architekta: aplikacja padała po wejściu w system (selektor potomka w motywie pola), test budujący wszystkie motywy; 1 (autor: krawędź edycji i zaznaczenie w akcencie krzykliwe — zaznaczenie niebieskie; ikona, × i strzałki poza obszarem tekstu, bez tła pod myszą; architekt: liczby całkowite z przecinkiem, tekst pod paskiem przewijania, grubość tekstu w polu, wyrównanie galerii); przyjęta 2026-09-25 — drobne uwagi w *Poprawkach czekających na obszar* | 52 / 10,5 / 7,0 mln + runda 1: 39 / 9,1 / 4,1 mln |
+     | 3 | lista, wiersz listy, pusta lista, pasek przewijania — **ustalenia architekta do briefu niżej** | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
@@ -97,6 +97,27 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 9 | odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`) | | |
      | 10 | klocek: wiersz listy z kreską zaznaczenia | | |
      | 11 | klocek: chip z listą wyboru | | |
+   * **Porcja 3 — ustalenia architekta do briefu (2026-09-25, przed zleceniem):**
+     * *Pasek przewijania:* sam uchwyt — bez toru i bez przycisków krokowych; widoczny wyłącznie, gdy
+       jest co przewijać (dziś `BuiltInControls.axaml` wymusza `Visible` i stały pas); cienki (mockup:
+       uchwyt 6 px, kolor mocnej krawędzi), pod myszą jaśniejszy i szerszy w obrębie własnego pasa;
+       pas zajmuje własne miejsce, nie przykrywa treści (tekst pola wielowierszowego nie może pod nim
+       leżeć — dziś `AllowAutoHide=False` w motywie pola). Znika lokalny styl `ScrollBar`
+       w `ContentTabView` i uchwyt w akcencie z `BuiltInControls`.
+     * *Lista i wiersz:* `ControlTheme` dla `ListBox`/`ListBoxItem` — wysokość wiersza z tokenu, nie
+       z treści; stany: spoczynek (przezroczyste), najechanie (`BackstageRowHover`), wybrane
+       (przygaszony akcent), wybrane pod myszą, wyłączone. **Dług z `code-state.md`:**
+       `DungeonAccentDimColor` ma wartość pełnego akcentu — dostaje wartość dzisiejszego lokalnego
+       `ContentSelectedRowBrush` (akcent 16 %), a użytkownicy tokenu (godło kampanii w `Icons.axaml`,
+       galeria odstępów) do sprawdzenia, czy nie zgasną — wypisać. Znikają lokalne style `ListBoxItem`
+       w `CampaignInstancesToolView` i `FlyoutPresenter ListBoxItem` w `ContentTabView`.
+     * *Pusta lista:* jedna kontrolka ramy — komunikat (tekst zwykły) i opcjonalna podpowiedź
+       (przygaszona), u góry obszaru listy z wcięciem, nie na środku wysokiej listy; bez ilustracji.
+       Wdrożyć tam, gdzie lista dziś bywa pusta (biblioteka kampanii ma `IsEmpty`, zakładka treści
+       przy filtrach bez wyniku, świat kampanii bez okazów).
+     * *Poza porcją 3:* wiersze z `Button` (`content-row-button`, lista kampanii, pasek boczny) — to
+       klocek „wiersz listy z kreską zaznaczenia" (porcja 10) i zlecenia A; filtr z polami wyboru —
+       porcja 5.
    * Szablon domyślny Avalonii (MIT, jawny) przejmuje się raz, świadomie — brief wskazuje, który i skąd;
      to nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
    * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie, dla myszki. Autor: aplikacja
@@ -194,7 +215,16 @@ Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie
 albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
 *Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
 
-Brak — ostatnią (odmiany przycisków w narzędziu świata kampanii) zabrała porcja 2 fundamentu.
+* **Pola tekstowe (motyw ramy, `DungeonControls.axaml`, `FieldIconPointer.cs`)** — uwagi autora po
+  rundzie 1 porcji 2, 2026-09-25:
+  * Przycisk × w polu wyszukiwania bez podpowiedzi „Wyczyść" — sam krzyżyk jest czytelny.
+  * Ikona na początku pola (ołówek, lupa) tylko przykrywa obszar tekstu, nie odcina go: nad ikoną,
+    obok niej, nad nią i pod nią da się złapać kursor tekstowy. Obszar tekstu ma zaczynać się za
+    ikoną — cały pas od krawędzi pola do tekstu, na pełnej wysokości, to strefa ikony ze strzałką.
+  * Zaznaczanie jak w przeglądarce: przeciągnięcie **rozpoczęte obok tekstu** (np. w pustym miejscu
+    karty) i przeprowadzone nad tekstem do zaznaczenia ma go zaznaczać — dziś trzeba trafić w sam
+    tekst. Do rozstrzygnięcia przy zleceniu: zasięg (obszar wokół jednego bloku tekstu czy cała
+    karta; zaznaczenie przez kilka bloków naraz to osobna, większa rzecz).
 
 ---
 
