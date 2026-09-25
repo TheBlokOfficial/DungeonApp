@@ -155,13 +155,13 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
-* **Zakładki, przełącznik segmentowy, sekcja rozwijana (motyw ramy, `DungeonControls.axaml`)** — uwagi
-  autora po porcji 6, 2026-09-25; zabiera je porcja 7 fundamentu:
-  * Pogrubienie wybranej zakładki (`TabItem`, `TabStripItem`) i segmentu zmienia szerokość — napis
-    ma rezerwować miejsce na pogrubienie w każdym stanie (niewidoczna pogrubiona kopia napisu pod
-    widocznym wyznacza szerokość). Pogrubienie zostaje.
-  * Wyłączony `TabControl` i `Expander` przygaszają tylko nagłówek — treść ma przygasnąć też.
-  * Pusty pasek zakładek w `TabControl` zostawia odstęp nad treścią — pusty pasek nie zajmuje miejsca.
+* **Przygaszenie wyłączonych (motyw ramy, `DungeonControls.axaml`)** — z raportu porcji 7a,
+  2026-09-25; zabiera porcja 7b fundamentu:
+  * Kontrolka w treści wyłączonego `TabControl` albo `Expander` (przycisk, pole) przygasa podwójnie:
+    pojemnik przygasza całość, a jej motyw przygasza ją znowu, bo dziecko wyłączonego rodzica też ma
+    `:disabled`. Porcja 7a zrobiła to dobrze dla zakładek i nagłówka: przezroczystość po **własnym**
+    `IsEnabled` kontrolki, kolory stanu wyłączonego dalej po `:disabled`. To samo przestawienie
+    przejść we wszystkich motywach, które przygaszają przezroczystością.
 * **Suwak — tylko notka, bez korekty teraz** (autor, po rundzie 2 porcji 5, 2026-09-25): uchwyt
   w spoczynku (kolor tekstu drugorzędnego) lekko za ciemny. Pomysł autora na później: pod myszą
   obwódka wokół uchwytu zamiast rozjaśnienia — do zderzenia z wpisem o otoczce w `decisions.md`

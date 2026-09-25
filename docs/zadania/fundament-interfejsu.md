@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `f41cbe5`.** Na starcie sesji: `git log f41cbe5..master` i `git worktree
+**Stan na: 2026-09-25, po `abfa3aa`.** Na starcie sesji: `git log abfa3aa..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,13 +14,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–6 przyjęte przez autora. **W toku: porcja 7a** — wykonawca (Opus 5.5) uruchomiony
-2026-09-25 w kopii `.claude/worktrees/agent-a6ca32e00436f848f`, gałąź
-`worktree-agent-a6ca32e00436f848f` (jego gałąź `porcja-7a`, jeśli reset był zablokowany). Brief:
-poprawki po porcji 6 z `tasks.md`, podpowiedź (także pełny napis przyciętej zakładki, segmentu
-i przycisku; × w polu wyszukiwania bez podpowiedzi), menu z przycisku i kontekstowe, sekcja galerii
-„Menu i podpowiedzi”; rozstrzygnięcia architekta — *Ustalenia*, *Porcja 7a*. **Następny krok:**
-raport → weryfikacja, scalenie, autor ogląda.
+Porcje 0–6 przyjęte przez autora. **Porcja 7a scalona** 2026-09-25 (`abfa3aa`), czeka na
+obejrzenie przez autora w galerii i w aplikacji. Kopii roboczych brak — usunięta po scaleniu; przy
+poprawce zaraz po obejrzeniu odtworzyć ją i wznowić tego samego wykonawcę (`collaboration.md`,
+*Briefy dla subagentów*). **Następny krok:** uwagi autora do 7a → runda albo przyjęcie; potem
+brief porcji 7b — zabiera z `tasks.md` podwójne przygaszenie treści wyłączonego pojemnika.
 
 ## Zakres i koniec
 
@@ -102,6 +100,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora rozstrzygnięte (`decisions.md`, *Niezmiennik interfejsu*) | 40 / 9,8 / 4,8 mln |
 | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
 | 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25; przyjęta 2026-09-25 — uwagi (pogrubienie wybranego zmienia szerokość, wyłączony pojemnik, pusty pasek) idą z porcją 7, bez osobnej rundy (autor) | 65 / 12,0 / 8,0 mln |
+| 7a | poprawki po porcji 6 (rezerwa pogrubienia — kontrolka `BoldTextReserve`; wyłączony pojemnik przygasza całość raz — przygaszenie po własnym `IsEnabled`, kolory po `:disabled`; pusty pasek bez odstępu); podpowiedź z motywem i pełnym napisem przyciętej etykiety (`TrimmedLabelToolTip`); zakładka najwyżej 240; menu z przycisku, kontekstowe, podmenu, separator; ruch menu w `PopupOpenMotion` | scalona 2026-09-25 | 42 / 11,3 / 5,4 mln |
 
 ## Ustalenia
 
@@ -170,6 +169,9 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   nie osobny kolor; neutralne wybrane — `DungeonSurfaceActiveBrush`; powierzchnia karty —
   `DungeonBackstageCardBrush`. Motywy w `DungeonControls.axaml` test budujący obejmuje sam — brief to
   mówi, żeby wykonawca nie sprawdzał.
+* Porcja 7a (raport): **położenie `MenuFlyout` pod przyciskiem ustawia widok** — okienko wysuwane nie
+  jest kontrolką, motyw go nie dosięga (tak samo zwykłe okienko z porcji 5). Brief kompozycji
+  i zleceń A/B ma to podawać.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
