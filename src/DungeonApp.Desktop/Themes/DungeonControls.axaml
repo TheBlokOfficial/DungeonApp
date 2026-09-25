@@ -206,23 +206,62 @@
                        wskaźnik fokusu klawiatury;
           wyłączenie - DungeonDisabledOpacity jak przyciski, bez reakcji na mysz.
         Krawędź ma zawsze 1 px, więc zmiana stanu nie przesuwa układu. Tekst zastępczy
-        (InputPlaceholder) nie zmienia się w żadnym stanie. Kursor myszy tekstowy nad całym polem,
-        strzałka nad przyciskiem w polu (nadaje go motyw przycisku). Fokus klawiatury nie ma własnego
+        (InputPlaceholder) nie zmienia się w żadnym stanie. Ikona na początku i przycisk czyszczenia
+        stoją obok obszaru tekstu, nie w nim: kursor tekstowy tylko nad obszarem tekstu (prezenter
+        z przewijaniem i jego wcięcie), nad ikoną i przyciskiem strzałka; kliknięcie ani przeciągnięcie
+        na nich nie stawia karetki i nie zaczyna zaznaczania. Fokus klawiatury nie ma własnego
         wyglądu (FocusAdorner pusty). Kliknięcie obok i Escape zdejmują fokus z pola - rama,
         Themes/EditFocusRelease.cs.
         Pole jednowierszowe ma wysokość DungeonControlHeight; za długi tekst przewija się w środku,
         pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem.
         Ikona na początku pola: InnerLeftContent (np. ForegroundIcon) - motyw nadaje jej odstęp od
-        krawędzi i kolor tekstu przygaszonego; tekst zaczyna się za nią o zwykłe wcięcie pola.
+        krawędzi i kolor tekstu przygaszonego; tekst zaczyna się za nią o zwykłe wcięcie pola. Ikona
+        nie reaguje na mysz: bez najechania, kliknięcie w nią nie robi nic.
         Menu kontekstowe (wytnij/kopiuj/wklej) - domyślne Fluenta, do porcji 7.
         Odmiany:
           (brak)          - jednowierszowe;
-          .search         - wyszukiwania: lupa na początku, przycisk czyszczenia (x) na końcu,
-                            widoczny tylko przy niepustym polu; czyszczenie zostawia fokus w polu;
+          .search         - wyszukiwania: lupa na początku, przycisk czyszczenia (x) na końcu -
+                            sam rysunek (DungeonFieldGlyphButton), wewnątrz ramki z wcięciem jak
+                            lupa, widoczny tylko przy niepustym polu; czyszczenie zostawia fokus
+                            w polu;
           AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
                             DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
                             tylko przy potrzebie.
     -->
+    <!--
+        Przycisk-rysunek w polu (czyszczenie x): stoi obok obszaru tekstu i nie wygląda jak przycisk.
+        Sam rysunek - bez tła, bez krawędzi, bez wyglądu wciśnięcia; pod myszą (i wciśnięty) rysunek
+        jaśnieje z przygaszonego do podstawowego. Obszar trafiania to cała wysokość wnętrza pola
+        i wcięcie do krawędzi (tło przezroczyste). Nie przyjmuje fokusu - fokus zostaje w polu;
+        kursor strzałka. Wyłączenie niesie pole w całości (DungeonDisabledOpacity pola).
+    -->
+    <ControlTheme x:Key="DungeonFieldGlyphButton" TargetType="Button">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="4,0,12,0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+    </ControlTheme>
+
     <ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -322,8 +361,12 @@
         <!-- Ikona na początku: odstęp od krawędzi DungeonSpacingMd, kolor tekstu przygaszonego.
              Rozmiar ikony nadaje styl "TextBox controls|ForegroundIcon" w BuiltInControls.axaml -
              ControlTheme nie dopuszcza selektora potomka (wyjątek przy pierwszym użyciu pola). -->
+        <!-- Wcięcie jest częścią obszaru ikony (Padding, tło przezroczyste do trafiania myszą), nie
+             pola: od krawędzi do końca ikony strzałka; wciśnięcie zatrzymuje Themes/FieldIconPointer.cs. -->
         <Style Selector="^ /template/ ContentPresenter#PART_InnerLeftContent">
-            <Setter Property="Margin" Value="12,0,0,0" />
+            <Setter Property="Padding" Value="12,0,0,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Arrow" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
 
@@ -333,9 +376,10 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
 
-        <!-- Wyszukiwania: lupa z szablonu; przycisk czyszczenia - cichy ikonowy, wysoki jak wnętrze
-             pola, zaokrąglony jak prawy koniec pola. Nie przyjmuje fokusu, więc po kliknięciu fokus
-             zostaje w polu. Widoczny tylko przy niepustym polu. -->
+        <!-- Wyszukiwania: lupa z szablonu; przycisk czyszczenia - sam rysunek (motyw
+             DungeonFieldGlyphButton), wysoki jak wnętrze pola, rysunek 12 px od prawej krawędzi jak
+             lupa od lewej. Nie przyjmuje fokusu, więc po kliknięciu fokus zostaje w polu. Widoczny
+             tylko przy niepustym polu. -->
         <Style Selector="^.search">
             <Setter Property="InnerLeftContent">
                 <Template>
@@ -344,12 +388,7 @@
             </Setter>
             <Setter Property="InnerRightContent">
                 <Template>
-                    <Button Classes="subtle icon"
-                            Focusable="False"
-                            Height="NaN"
-                            Width="{Binding $self.Bounds.Height}"
-                            VerticalAlignment="Stretch"
-                            CornerRadius="0,4,4,0"
+                    <Button Theme="{StaticResource DungeonFieldGlyphButton}"
                             Command="{Binding $parent[TextBox].Clear}"
                             IsVisible="{Binding $parent[TextBox].Text, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                             ToolTip.Tip="Wyczyść">
@@ -389,7 +428,8 @@
         wewnętrzne pole jest bez krawędzi i tła, więc jego własne stany są niewidoczne.
         Wartość krojem o stałej szerokości (DungeonMonoFont). Strzałki góra/dół po prawej wewnątrz
         pola, jedna nad drugą, w kolorze tekstu przygaszonego, pod myszą w kolorze tekstu
-        podstawowego; nie przyjmują fokusu, kursor strzałka. Szerokość z motywu
+        podstawowego, sam rysunek bez tła; nie przyjmują fokusu i nie zabierają go polu, nie
+        zaznaczają tekstu, kursor strzałka. Szerokość z motywu
         (DungeonNumericInputWidth), nie z wartości.
     -->
     <StreamGeometry x:Key="DungeonSpinnerIncreaseGeometry">M0,9 L10,0 20,9 19,10 10,2 1,10 z</StreamGeometry>
@@ -487,9 +527,15 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <!-- Fokus przyjmuje tylko wewnętrzne pole. Kliknięcie strzałki (nie przyjmuje fokusu) oddaje
+             fokus najbliższemu przodkowi, który go przyjmuje; gdyby to było pole liczbowe albo
+             ButtonSpinner, pole liczbowe przekazałoby go wewnętrznemu polu z zaznaczeniem tekstu.
+             Tak strzałka zmienia wartość i zostawia fokus tam, gdzie był. -->
+        <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
                 <ButtonSpinner Name="PART_Spinner"
+                               Focusable="False"
                                IsTabStop="False"
                                AllowSpin="{TemplateBinding AllowSpin}"
                                ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
