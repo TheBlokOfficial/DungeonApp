@@ -11,11 +11,7 @@
         </Style>
     </UserControl.Styles>
 
-    <!-- The frame-wide ScrollViewer style keeps a permanent bar; the gallery shows one only when its
-         column is taller than the workspace. -->
-    <ScrollViewer Background="{DynamicResource DungeonBackstageBrush}"
-                  VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+    <ScrollViewer Background="{DynamicResource DungeonBackstageBrush}">
         <!-- One line per section, in display order: a new section is one view in Sections/ (its
              heading uses the display-md class) and one line here. -->
         <StackPanel Margin="{DynamicResource DungeonPaddingXxl}"
@@ -26,6 +22,7 @@
             <sections:SurfacesSection />
             <sections:ButtonsSection />
             <sections:TextFieldsSection />
+            <sections:ScrollingSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

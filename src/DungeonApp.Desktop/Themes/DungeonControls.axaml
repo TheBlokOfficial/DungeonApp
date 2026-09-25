@@ -228,8 +228,9 @@
                             w polu;
           AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
                             DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
-                            tylko przy potrzebie; pasek zajmuje własne miejsce (AllowAutoHide=False),
-                            więc tekst zawija się przed nim, a nie pod nim.
+                            tylko przy potrzebie; pasek zajmuje własne miejsce (motyw ScrollViewer
+                            ramy nigdy nie kładzie paska na treści), więc tekst zawija się przed
+                            nim, a nie pod nim.
     -->
     <!--
         Przycisk-rysunek w polu (czyszczenie x): stoi obok obszaru tekstu i nie wygląda jak przycisk.
@@ -291,7 +292,6 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-        <Setter Property="ScrollViewer.AllowAutoHide" Value="True" />
         <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
         <Setter Property="ContextFlyout" Value="{DynamicResource DefaultTextBoxContextFlyout}" />
         <Setter Property="Template">
@@ -314,7 +314,6 @@
                                       HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
                                       VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
                                       IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
-                                      AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
                                       BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
                             <Panel>
                                 <TextBlock Name="PART_Placeholder"
@@ -415,7 +414,6 @@
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
-            <Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
         </Style>
         <Style Selector="^[AcceptsReturn=True] /template/ ContentPresenter#PART_InnerLeftContent">
             <Setter Property="VerticalAlignment" Value="Top" />
@@ -575,6 +573,186 @@
                 </ButtonSpinner>
             </ControlTemplate>
         </Setter>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- PRZEWIJANIE                                                         -->
+    <!-- =================================================================== -->
+
+    <!--
+        Obszar przewijania (ScrollViewer) i pasek przewijania (ScrollBar). Szablony wycięte
+        z ScrollViewer.xaml i ScrollBar.xaml Fluenta (Avalonia 12.0.5, MIT): zostały prezenter treści
+        z gestem przewijania (PART_ContentPresenter), paski (PART_HorizontalScrollBar,
+        PART_VerticalScrollBar) i ścieżka z uchwytem (Track, PART_PageUpButton/PART_PageDownButton -
+        kliknięcie w pas poza uchwytem przewija stroną); wypadły przyciski krokowe, tor, separator
+        pasków i animacje rozwijania.
+        Pas pokazuje się wyłącznie, gdy jest co przewijać: domyślnie w pionie Auto, w poziomie
+        Disabled; gdy treść się mieści, pas jest niewidoczny i nie zajmuje miejsca. Pas stoi
+        w osobnej kolumnie (wierszu) obok treści i nigdy jej nie przykrywa - AllowAutoHide nie ma
+        tu znaczenia (szablon go nie czyta), paski się nie chowają.
+        Pas ma szerokość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
+        pośrodku, zaokrąglony (DungeonScrollThumbCornerRadius).
+        Stany:
+          spoczynek  - uchwyt DungeonScrollThumbSize, kolor DungeonScrollThumbBrush (mocna krawędź);
+          najechanie - mysz nad pasem (nie tylko nad uchwytem): uchwyt DungeonScrollThumbHoverSize,
+                       kolor DungeonScrollThumbHoverBrush; poszerza się w obrębie pasa, więc układ
+                       nie skacze;
+          przeciąganie - jak najechanie, także gdy mysz zjedzie z pasa (Thumb:pressed);
+          wyłączenie - DungeonDisabledOpacity.
+        Pasek nie przyjmuje fokusu (FocusAdorner pusty, przyciski ścieżki Focusable=False); kursor
+        strzałka.
+    -->
+    <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="AllowAutoHide" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                    <ScrollContentPresenter Name="PART_ContentPresenter"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Background="{TemplateBinding Background}"
+                                            HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                                            VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                            HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                                            VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                                            Padding="{TemplateBinding Padding}"
+                                            ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                        <ScrollContentPresenter.GestureRecognizers>
+                            <ScrollGestureRecognizer CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                                     CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                                     IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
+                        </ScrollContentPresenter.GestureRecognizers>
+                    </ScrollContentPresenter>
+                    <ScrollBar Name="PART_HorizontalScrollBar"
+                               Orientation="Horizontal"
+                               Grid.Row="1" />
+                    <ScrollBar Name="PART_VerticalScrollBar"
+                               Orientation="Vertical"
+                               Grid.Column="1" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="DungeonScrollBarThumb" TargetType="Thumb">
+        <Setter Property="Background" Value="{DynamicResource DungeonScrollThumbBrush}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonScrollThumbCornerRadius}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="DungeonScrollBarPageButton" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ScrollBar}" TargetType="ScrollBar">
+        <Setter Property="AllowAutoHide" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+
+        <Style Selector="^:vertical">
+            <Setter Property="Width" Value="{DynamicResource DungeonScrollBarSize}" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}">
+                        <Track Minimum="{TemplateBinding Minimum}"
+                               Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}"
+                               DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                               ViewportSize="{TemplateBinding ViewportSize}"
+                               Orientation="{TemplateBinding Orientation}"
+                               IsDirectionReversed="True">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_PageUpButton"
+                                              Classes="largeIncrease"
+                                              Theme="{StaticResource DungeonScrollBarPageButton}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_PageDownButton"
+                                              Classes="largeIncrease"
+                                              Theme="{StaticResource DungeonScrollBarPageButton}" />
+                            </Track.IncreaseButton>
+                            <Thumb Theme="{StaticResource DungeonScrollBarThumb}"
+                                   HorizontalAlignment="Center"
+                                   MinHeight="{DynamicResource DungeonScrollThumbMinLength}" />
+                        </Track>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:vertical /template/ Thumb">
+            <Setter Property="Width" Value="{DynamicResource DungeonScrollThumbSize}" />
+        </Style>
+        <Style Selector="^:vertical:pointerover /template/ Thumb,
+                       ^:vertical /template/ Thumb:pressed">
+            <Setter Property="Width" Value="{DynamicResource DungeonScrollThumbHoverSize}" />
+        </Style>
+
+        <Style Selector="^:horizontal">
+            <Setter Property="Height" Value="{DynamicResource DungeonScrollBarSize}" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}">
+                        <Track Minimum="{TemplateBinding Minimum}"
+                               Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}"
+                               DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                               ViewportSize="{TemplateBinding ViewportSize}"
+                               Orientation="{TemplateBinding Orientation}">
+                            <Track.DecreaseButton>
+                                <RepeatButton Name="PART_PageUpButton"
+                                              Classes="largeIncrease"
+                                              Theme="{StaticResource DungeonScrollBarPageButton}" />
+                            </Track.DecreaseButton>
+                            <Track.IncreaseButton>
+                                <RepeatButton Name="PART_PageDownButton"
+                                              Classes="largeIncrease"
+                                              Theme="{StaticResource DungeonScrollBarPageButton}" />
+                            </Track.IncreaseButton>
+                            <Thumb Theme="{StaticResource DungeonScrollBarThumb}"
+                                   VerticalAlignment="Center"
+                                   MinWidth="{DynamicResource DungeonScrollThumbMinLength}" />
+                        </Track>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^:horizontal /template/ Thumb">
+            <Setter Property="Height" Value="{DynamicResource DungeonScrollThumbSize}" />
+        </Style>
+        <Style Selector="^:horizontal:pointerover /template/ Thumb,
+                       ^:horizontal /template/ Thumb:pressed">
+            <Setter Property="Height" Value="{DynamicResource DungeonScrollThumbHoverSize}" />
+        </Style>
+
+        <Style Selector="^:pointerover /template/ Thumb,
+                       ^ /template/ Thumb:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonScrollThumbHoverBrush}" />
+        </Style>
+
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>

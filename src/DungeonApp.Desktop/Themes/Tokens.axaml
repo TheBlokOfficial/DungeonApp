@@ -149,6 +149,13 @@
              odcieniem daleko od niebieskiego zaznaczenia i od szarości wyróżnienia. Tekst podstawowy na
              niej 7,57:1 na tle pola (#151412). -->
         <SolidColorBrush x:Key="DungeonSearchMatchBrush" Color="#5984A98B" />
+        <!-- ScrollThumb: uchwyt przewijania - tu jest więcej treści, niż widać; przeciągnij. Kolor mocnej
+             krawędzi (BorderStrong #413C36): widoczny, ale nie woła o uwagę. -->
+        <SolidColorBrush x:Key="DungeonScrollThumbBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <!-- ScrollThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Jaśniejszy od
+             spoczynku o ok. 10 punktów jasności (#5E5750, HSL 30°, 8 %, 34 %), wciąż neutralny,
+             nie akcent. -->
+        <SolidColorBrush x:Key="DungeonScrollThumbHoverBrush" Color="#5E5750" />
 
         <!--
             Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
@@ -215,6 +222,16 @@
         <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
         <!-- Pole liczbowe: miejsce na kilka cyfr krojem o stałej szerokości i strzałki; nie zależy od wartości. -->
         <x:Double x:Key="DungeonNumericInputWidth">96</x:Double>
+        <!-- Pasek przewijania: pas zajmuje własne miejsce obok treści (nie przykrywa jej); uchwyt stoi
+             pośrodku pasa. Pod myszą uchwyt się poszerza w obrębie pasa - pas nie zmienia szerokości,
+             więc układ nie skacze. -->
+        <x:Double x:Key="DungeonScrollBarSize">10</x:Double>
+        <x:Double x:Key="DungeonScrollThumbSize">6</x:Double>
+        <x:Double x:Key="DungeonScrollThumbHoverSize">8</x:Double>
+        <!-- Najkrótszy uchwyt przy bardzo długiej treści - wciąż do chwycenia myszą. -->
+        <x:Double x:Key="DungeonScrollThumbMinLength">24</x:Double>
+        <!-- Uchwyt zaokrąglony w pełni (pigułka) przy każdej szerokości. -->
+        <CornerRadius x:Key="DungeonScrollThumbCornerRadius">999</CornerRadius>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->

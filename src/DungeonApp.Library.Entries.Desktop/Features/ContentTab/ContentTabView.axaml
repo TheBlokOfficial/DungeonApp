@@ -159,16 +159,6 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
 
-        <!-- krok 10, brief A2: list/detail scrollbar thumb per the mockup's own
-             .list-scroll::-webkit-scrollbar-thumb / .detail-panel::-webkit-scrollbar-thumb
-             (background: the mockup's own border-strong token) - scoped to this view only, not the app-wide
-             ScrollBar style (BuiltInControls.axaml), which paints the thumb in the accent color
-             instead. Width is left at the app-wide default: the mockup's own 6px/7px split has no
-             matching Avalonia ScrollBar property found within this step's budget (see the report). -->
-        <Style Selector="ScrollBar">
-            <Setter Property="Foreground" Value="{DynamicResource DungeonBorderStrongBrush}" />
-        </Style>
-
         <!-- krok 10, brief A11: a filter chip's dropdown - bordered like the search box, its rows in
              the list rows' own font, the selected option on the dim-accent background
              (ContentSelectedRowBrush - see its own remarks on the DungeonAccentDimColor token gap). -->

@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ScrollingSection">
+    <!-- The frame's ScrollViewer and ScrollBar themes (Themes/DungeonControls.axaml), live: two areas
+         of the same fixed size, one with more text than fits (the bar shows, beside the text, never
+         over it) and one with less (no bar, no reserved strip). Nothing here restyles a scroll
+         area - the only local values are the areas' size and frame. -->
+    <UserControl.Styles>
+        <Style Selector="Border.scroll-sample">
+            <Setter Property="Width" Value="240" />
+            <Setter Property="Height" Value="120" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        </Style>
+        <Style Selector="Border.scroll-sample TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingSm}" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Przewijanie" />
+        <TextBlock Classes="caption muted" Text="Pasek pokazuje się tylko, gdy jest co przewijać, i stoi obok treści. Najedź na pasek, żeby zobaczyć uchwyt pod myszą." />
+
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Treść dłuższa niż obszar" />
+                <Border Classes="scroll-sample">
+                    <ScrollViewer>
+                        <TextBlock Text="Drużyna zeszła do kopalni o zmierzchu. Korytarze pachniały wilgocią i starym dymem, a echo kroków wracało z opóźnieniem, jakby ktoś szedł za nimi. Na trzecim poziomie znaleźli porzucony obóz: wygasłe ognisko, rozcięte worki i mapę, na której ktoś zaznaczył przejście pod rzeką. Mapa była świeża - atrament jeszcze nie zdążył wyblaknąć. Dalej korytarz rozwidlał się na trzy strony, a z najwęższego dochodził miarowy stukot, jak młot o kamień." />
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Treść mieści się - bez paska" />
+                <Border Classes="scroll-sample">
+                    <ScrollViewer>
+                        <TextBlock Text="Drużyna zeszła do kopalni o zmierzchu." />
+                    </ScrollViewer>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

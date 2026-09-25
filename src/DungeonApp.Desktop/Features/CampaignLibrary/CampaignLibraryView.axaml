@@ -139,8 +139,6 @@
                               Height="{DynamicResource DungeonCampaignListViewportHeight}"
                               VerticalAlignment="Top"
                               HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Hidden"
-                              AllowAutoHide="True"
                               IsVisible="{Binding HasCampaigns}">
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
