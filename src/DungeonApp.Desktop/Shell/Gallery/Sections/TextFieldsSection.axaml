@@ -38,7 +38,7 @@
             </StackPanel>
 
             <!-- Z ikoną na początku -->
-            <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Z ikoną · InnerLeftContent" />
+            <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Z ikoną" />
             <StackPanel Grid.Row="1" Grid.Column="1" Classes="field-row">
                 <TextBox PlaceholderText="Nazwa nowej kampanii">
                     <TextBox.InnerLeftContent>
@@ -63,7 +63,7 @@
             </StackPanel>
 
             <!-- Wyszukiwania -->
-            <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Wyszukiwania · search" />
+            <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Wyszukiwania" />
             <StackPanel Grid.Row="2" Grid.Column="1" Classes="field-row">
                 <TextBox Classes="search" PlaceholderText="Szukaj po nazwie…" />
                 <TextBox Classes="search" Text="goblin" />
@@ -72,7 +72,7 @@
             </StackPanel>
 
             <!-- Wielowierszowe -->
-            <TextBlock Grid.Row="3" Classes="caption muted row-label" VerticalAlignment="Top" Text="Wielowierszowe · AcceptsReturn" />
+            <TextBlock Grid.Row="3" Classes="caption muted row-label" VerticalAlignment="Top" Text="Wielowierszowe" />
             <StackPanel Grid.Row="3" Grid.Column="1" Classes="field-row">
                 <TextBox AcceptsReturn="True" PlaceholderText="Notatka Mistrza Gry" />
                 <TextBox AcceptsReturn="True" Text="Drużyna dotarła do Phandalin o zmierzchu." />
@@ -81,7 +81,7 @@
             </StackPanel>
 
             <!-- Liczbowe -->
-            <TextBlock Grid.Row="4" Classes="caption muted row-label" Text="Liczbowe · NumericUpDown" />
+            <TextBlock Grid.Row="4" Classes="caption muted row-label" Text="Liczbowe" />
             <StackPanel Grid.Row="4" Grid.Column="1" Classes="field-row">
                 <NumericUpDown PlaceholderText="PZ" Minimum="0" />
                 <NumericUpDown Value="27" Minimum="0" />
@@ -91,12 +91,12 @@
 
             <!-- Tekst do zaznaczenia -->
             <TextBlock Grid.Row="5" Classes="caption muted row-label" VerticalAlignment="Top" Text="Tekst do zaznaczenia" />
-            <SelectableTextBlock Grid.Row="5" Grid.Column="1" MaxWidth="560" TextWrapping="Wrap"
+            <SelectableTextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" MaxWidth="560" TextWrapping="Wrap"
                                  Text="Zaznacz fragment myszą i skopiuj Ctrl+C. Kliknięcie obok zdejmuje zaznaczenie. Tak zachowuje się dłuższa treść kart - opisy, akcje, cechy - i komunikaty błędów." />
 
             <!-- Zakreślenie -->
             <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Zakreślenie" VerticalAlignment="Top" />
-            <SelectableTextBlock Grid.Row="6" Grid.Column="1" MaxWidth="560" TextWrapping="Wrap">
+            <SelectableTextBlock Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" MaxWidth="560" TextWrapping="Wrap">
                 <Run Text="Goblin ma wyzwanie " /><Run Classes="highlight" Text="1/4" /><Run Text=", a szukany " /><Run Classes="search-match" Text="gob" /><Run Text="lin stoi na liście jako trafienie wyszukiwania. Zaznacz zdanie, żeby porównać oba z zaznaczeniem." />
             </SelectableTextBlock>
         </Grid>

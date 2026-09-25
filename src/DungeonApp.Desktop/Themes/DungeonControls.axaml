@@ -213,7 +213,9 @@
         wyglądu (FocusAdorner pusty). Kliknięcie obok i Escape zdejmują fokus z pola - rama,
         Themes/EditFocusRelease.cs.
         Pole jednowierszowe ma wysokość DungeonControlHeight; za długi tekst przewija się w środku,
-        pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem.
+        pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem;
+        tekst zastępczy ma krój, stopień i grubość (Regular) tekstu pola - wiązane w szablonie, więc
+        żaden styl TextBlocka z widoku ich nie zmieni - i różni się wyłącznie kolorem.
         Ikona na początku pola: InnerLeftContent (np. ForegroundIcon) - motyw nadaje jej odstęp od
         krawędzi i kolor tekstu przygaszonego; tekst zaczyna się za nią o zwykłe wcięcie pola. Ikona
         nie reaguje na mysz: bez najechania, kliknięcie w nią nie robi nic.
@@ -226,7 +228,8 @@
                             w polu;
           AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
                             DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
-                            tylko przy potrzebie.
+                            tylko przy potrzebie; pasek zajmuje własne miejsce (AllowAutoHide=False),
+                            więc tekst zawija się przed nim, a nie pod nim.
     -->
     <!--
         Przycisk-rysunek w polu (czyszczenie x): stoi obok obszaru tekstu i nie wygląda jak przycisk.
@@ -315,6 +318,10 @@
                                       BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
                             <Panel>
                                 <TextBlock Name="PART_Placeholder"
+                                           FontFamily="{TemplateBinding FontFamily}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           FontWeight="{TemplateBinding FontWeight}"
+                                           FontStyle="{TemplateBinding FontStyle}"
                                            Foreground="{TemplateBinding PlaceholderForeground}"
                                            Text="{TemplateBinding PlaceholderText}"
                                            TextAlignment="{TemplateBinding TextAlignment}"
@@ -408,6 +415,7 @@
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.AllowAutoHide" Value="False" />
         </Style>
         <Style Selector="^[AcceptsReturn=True] /template/ ContentPresenter#PART_InnerLeftContent">
             <Setter Property="VerticalAlignment" Value="Top" />
@@ -426,7 +434,8 @@
         zamienia strzałki klawiatury i przyciski w zmianę wartości) i wewnętrzne pole PART_TextBox;
         wypadły DataValidationErrors i przyciski obok siebie. Ramkę i tło rysuje ButtonSpinner;
         wewnętrzne pole jest bez krawędzi i tła, więc jego własne stany są niewidoczne.
-        Wartość krojem o stałej szerokości (DungeonMonoFont). Strzałki góra/dół po prawej wewnątrz
+        Wartość krojem o stałej szerokości (DungeonMonoFont), domyślnie jako liczba całkowita
+        (FormatString "0", Increment 1). Strzałki góra/dół po prawej wewnątrz
         pola, jedna nad drugą, w kolorze tekstu przygaszonego, pod myszą w kolorze tekstu
         podstawowego, sam rysunek bez tła; nie przyjmują fokusu i nie zabierają go polu, nie
         zaznaczają tekstu, kursor strzałka. Szerokość z motywu
@@ -524,6 +533,10 @@
         <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <!-- Liczba całkowita domyślnie: bez części ułamkowej ("27", nie "27,0") i krok 1 bez miejsca
+             po przecinku. Pole, które chce ułamków, ustawia FormatString i Increment jawnie. -->
+        <Setter Property="FormatString" Value="0" />
+        <Setter Property="Increment" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
