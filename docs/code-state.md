@@ -149,6 +149,9 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 * **Okno potwierdzenia i powiadomienie szukają warstwy `WindowOverlay` przez okno elementu wywołującego**
   (`MainWindow.axaml`) — element w okienku wysuwanym (menu, lista rozwijana) ma własny korzeń, warstwy
   nie znajdzie i wywołanie rzuca wyjątkiem.
+* **Rama nie może nazywać rodzajów wpisu — także w danych przykładowych galerii.** Test architektury
+  (`CoreEntryKindIndependenceTests`) odrzuca w `DungeonApp.Desktop` nazwy typu „monster”; przykład
+  w galerii nazywa się neutralnie (`SampleRow`).
 * **`ScrollViewer.IsScrollChainingEnabled` trzeba ustawić także w motywach, które przekazują ją
   do własnego przewijania** (`ListBox`, `TextBox`) — ich szablon podaje własną wartość i zasłania
   ustawienie z motywu przewijania.

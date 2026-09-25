@@ -155,10 +155,6 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
-* **Kontrast wybranego (motyw ramy, `DungeonControls.axaml`)** — z raportu porcji 8 fundamentu,
-  2026-09-25: tekst akcentu na przygaszonym akcencie ma 4,05:1, reguła wymaga 4,5:1. Wybrana zakładka,
-  wybrany segment i wybrany wiersz listy przechodzą na `DungeonAccentOnDimBrush` (jak odznaka, tag
-  i włączony chip). Zabiera porcja 8b fundamentu.
 * **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
   uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które
   zmienia układ menu:

@@ -264,8 +264,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   przycisk ikony bez wypełnienia, 28 × 28, żeby wiersz został 32) i obramowanie listy. Przy drugim
   użyciu (porcja 10 / zlecenie A) przechodzą do motywu. Odmiana „wpis/wpisy/wpisów” jest w galerii
   świadomym duplikatem funkcji z `Library.Entries.Desktop` (rama nie może się do niej odwołać).
-* Porcja 8b: test architektury zabrania w ramie nazw rodzaju wpisu („monster”) — także w danych
-  przykładowych galerii. Brief ma to podać.
+* Porcja 8b: nazwy rodzaju wpisu w galerii odrzuca test architektury (`code-state.md`, *Pułapki*) —
+  brief z danymi przykładowymi ma to podać.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
