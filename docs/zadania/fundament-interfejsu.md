@@ -14,13 +14,13 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–5 przyjęte przez autora. **Porcja 6 wisi bez śladu:** w kopii
-`.claude/worktrees/agent-a94c3b40b6b071469` (gałąź `worktree-agent-a94c3b40b6b071469`, od `7b52a80`)
-leżą niezatwierdzone zmiany z 25.09, 12:05–12:12 — nowa kontrolka okruszków, tokeny, motywy
-i zmiany w zakładce treści; bez commita, bez raportu, a brief przepadł razem z sesją, która go
-napisała. **Następny krok:** autor mówi, czy ten wykonawca jeszcze gdzieś biegnie; jeśli nie —
-architekt ogląda diff tej kopii (czy to zaczątek porcji 6 i czy wart przejęcia), pisze brief porcji 6
-od nowa, a kopię usuwa albo daje wykonawcy jako punkt wyjścia.
+Porcje 0–5 przyjęte przez autora. **Porcja 6 w toku** (2026-09-25): porzucona praca poprzedniej
+sesji — kontrolka okruszków gotowa z motywem i podpięta w zakładce treści, tokeny zakładek,
+segmentów i sekcji bez motywów — przejęta jako punkt wyjścia (architekt: spójna i zgodna z planem,
+więc szkoda robić od nowa). Zapisana commitem `a638ade` w gałęzi `worktree-agent-a94c3b40b6b071469`
+(kopia `.claude/worktrees/agent-a94c3b40b6b071469` — do usunięcia po scaleniu porcji). Nowy
+wykonawca przenosi ją na `master` i robi resztę porcji — w tle, we własnej kopii. **Następny krok:**
+raport wykonawcy → weryfikacja, scalenie, autor ogląda galerię i aplikację.
 
 ## Zakres i koniec
 
@@ -70,8 +70,8 @@ Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w a
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
 - [x] **0–5** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **6** — zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki. *(zaczęta bez
-  śladu — „Gdzie stoimy")*
+- [ ] **6** — zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki. *(w toku —
+  „Gdzie stoimy"; rozstrzygnięcia architekta w „Ustaleniach")*
 - [ ] **7** — menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
@@ -122,6 +122,22 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie. Autor: aplikacja będzie
   docelowo „keyboard first"; wtedy fokus pokazuje się wyłącznie, gdy użytkownik zaczął używać
   klawiatury. Do zrobienia z obsługą klawiatury, nie w fundamencie.
+* **Porcja 6 — rozstrzygnięcia architekta** (2026-09-25; wiążą rundy porcji):
+  * *Wybrane = akcent przygaszony w tle + akcent w tekście* — zakładka i segment tak samo jak wybrany
+    wiersz; wybrane pod myszą się nie zmienia; wyłączone wybrane traci akcent.
+  * *Zakładki* jak w mockupie (`.type-tab`): bez krawędzi i tła w spoczynku, wysokość 32, pasek od
+    lewej, zawija się; odstęp między zakładkami ze skali (6), nie 3 z mockupu. Ta sama zakładka
+    w `TabControl` (z treścią) i w `TabStrip` (sam pasek — filtr).
+  * *Przełącznik segmentowy* to `ListBox` z nazwanym motywem: pojemnik jak pole, segmenty równej
+    szerokości, wybór zmienia kolor od razu — bez przesuwanej wkładki.
+  * *Kafelek* to `Button` z nazwanym motywem, wymiar podaje układający; pierwszy konsument —
+    zminimalizowane okna biurka (dziś lokalny styl). Kafelek do zaznaczania — przy pierwszym
+    konsumencie.
+  * *Sekcja rozwijana*: strzałka po lewej, w prawo → w dół jak w liście rozwijanej, obrót ruchem;
+    treść pojawia się od razu (bez animacji wysokości), wcięta do napisu nagłówka; rozwija się tylko
+    w dół.
+  * *Okruszki* — kontrolka ramy: odcinki nieklikalne (nie ma dokąd nawigować), przy braku miejsca
+    skraca się ślad, bieżący odcinek na końcu.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
