@@ -15,9 +15,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Porcje 0–8 obejrzane przez autora; porcja 8 przyjęta z uwagami, które idą z porcją 8b bez osobnej
-rundy (*Ustalenia*, *Porcja 8b — propozycja*). Kopii roboczych brak. **Następny krok:** propozycja
-porcji 8b zapisana i pokazana autorowi 2026-09-25 — polecenie ruszenia („lecimy”) jest zielonym
-światłem (`collaboration.md`, *Jak zapadają decyzje*); sesja zamknięta przed nim.
+rundy. **W toku:** porcja 8b ruszyła 2026-09-25 (polecenie autora) — wykonawca w tle, w kopii roboczej
+w `.claude/worktrees/` (gałąź z `81b16cd`); sesja z pracującym wykonawcą nie nadaje się do porzucenia.
+**Następny krok:** weryfikacja raportu, scalenie, obejrzenie przez autora; potem porcja 9.
 
 ## Zakres i koniec
 
@@ -184,7 +184,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     pionowe opcjonalne; komórka z wyrównaniem i tłem wyróżnienia od układającego; nieinteraktywna;
     tekst przycina się, nie zawija. Bez `DataGrid`.
   * Powiadomienia stoją nad paskiem stanu; ruch paska nieokreślonego z pętli renderowania okna.
-* **Porcja 8b — propozycja architekta** (2026-09-25; pokazana autorowi, czeka na „lecimy”):
+* **Porcja 8b — propozycja architekta** (2026-09-25; zielone światło autora tego dnia). Doprecyzowane
+  w briefie: komórki tabeli cech = skrót, wartość, modyfikator; tło odznaki neutralnej — nowy token
+  (biały z małą nieprzezroczystością), to samo dla tagu neutralnego, jeśli ma ten błąd; kontrast
+  wybranego sprawdzony też w `ComboBoxItem`, `DropDownPicker`, `MenuItem`; kompozycje na końcu
+  galerii, licznik z polską odmianą, filtrowanie zachowuje obiekty wierszy, „Cofnij” przywraca wiersz
+  na dawne miejsce, karta bez wyróżnienia modyfikatorów kolorem (kolory skal są tokenami systemu):
   1. *Poprawki po porcji 8:*
      * tag i odznaka wysokości 22 (autor: litery prawie przylegają do krawędzi; 22 zostawia po 5
        w wierszu 32; oba razem, bo stoją obok siebie; 24 zapycha wiersz, pismo 11 odrzucone — tag
