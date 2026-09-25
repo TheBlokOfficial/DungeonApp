@@ -251,6 +251,15 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
   * Czy trzy stany pola wyboru rozróżniać kolorem, nie tylko znakiem? Architekt: nie — zaznaczone
     i pośrednie mają ten sam kolor na wszystkich platformach; pośrednie to „częściowo zaznaczone”,
     ta sama rodzina, a inny kolor sugerowałby inne znaczenie.
+  * Animacje (pytanie autora, 2026-09-25). Architekt: **przełącznik — tak**, gałka jedzie, tło
+    przechodzi w akcent, ok. 120–150 ms z wyhamowaniem (konwencja Windows 11, iOS, Material; ruch
+    mówi, w którą stronę zmienił się stan). **Pole wyboru, przycisk opcji — nie** (nic się nie
+    przemieszcza). **Suwak zmieniający kolor wypełnienia z wartością — nie**: kolor niesie znaczenie,
+    a zwykły suwak nie wie, czy wysoko to dobrze, czy groźnie; znaczenie, jeśli jest, podaje ten, kto
+    układa widok. Proponowana reguła dla całej aplikacji (do `architecture.md` po słowie autora):
+    animacja tylko tam, gdzie coś się przemieszcza albo pojawia; krótka (do 150 ms); nigdy nie
+    opóźnia działania; najechanie i zaznaczenie zmieniają kolor od razu; wyłączone animacje
+    w systemie (Windows „Pokaż animacje") wyłączają je w aplikacji.
 
 ---
 
