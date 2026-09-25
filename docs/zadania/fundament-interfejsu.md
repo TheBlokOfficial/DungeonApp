@@ -15,8 +15,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Porcje 0–7a obejrzane przez autora; uwagi po 7a (układ menu) odłożone przez autora do `tasks.md`,
-*Poprawki czekające na obszar*, bez rundy. Kopii roboczych brak. **Następny krok:** brief porcji
-7b — zabiera z `tasks.md` podwójne przygaszenie treści wyłączonego pojemnika.
+*Poprawki czekające na obszar*, bez rundy. Kopii roboczych brak. **Następny krok:** propozycja
+porcji 7b (*Ustalenia*, *Porcja 7b — propozycja*) przedstawiona autorowi 2026-09-25 i **czeka na
+zielone światło** — sesja zamknięta przed odpowiedzią. Nowa sesja pokazuje ją w skrócie i pyta.
 
 ## Zakres i koniec
 
@@ -148,6 +149,22 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     Pełny napis w podpowiedzi tylko przy rzeczywistym przycięciu; jawna podpowiedź widoku wygrywa.
   * *Zakładka* ma najwyższą szerokość 240 (ok. 30 znaków) — dłuższa się przycina z podpowiedzią.
   * *Pogrubienie wybranego* rezerwuje miejsce tylko dla nagłówka tekstowego.
+* **Porcja 7b — propozycja architekta** (2026-09-25, **bez zielonego światła**):
+  1. Najpierw podwójne przygaszenie (`tasks.md`, *Przygaszenie wyłączonych*) we wszystkich motywach.
+  2. *Okno potwierdzenia* — kontrolka ramy nad oknem aplikacji: karta na środku, reszta przyciemniona;
+     tytuł, jedno–dwa zdania, przyciski w prawym dolnym rogu: „Anuluj” + akcja (główna albo
+     `danger`). Escape anuluje; kliknięcie obok nie zamyka; przy akcji niszczącej Enter nie
+     potwierdza. Pojawia się wyłonieniem (≤ 150 ms), przy wyłączonych animacjach od razu.
+  3. *Powiadomienie* — dymek w prawym dolnym rogu okna, kilka jeden nad drugim; odmiany informacja,
+     ostrzeżenie, błąd; informacja i ostrzeżenie znikają po kilku sekundach, błąd zostaje do
+     zamknięcia; krzyżyk i najwyżej jeden odnośnik akcji.
+  4. *Wskaźnik postępu* — cienki pasek, określony i nieokreślony; kolor wypełnienia z właściwości
+     (domyślnie akcent), styl `ProgressBar` z `BuiltInControls.axaml` przechodzi do motywu, pasek
+     ładowania przy starcie (`MainWindow.axaml`) na nowy wygląd; nieokreślony przy wyłączonych
+     animacjach — spokojny pasek.
+  5. Galeria — wszystko w każdym stanie, z przyciskami wywołującymi okno i każde powiadomienie.
+  * Poza zakresem: okno potwierdzenia nigdzie nie podpięte — usuwanie kampanii idzie do kosza
+    systemu (odwracalne); pierwszy konsument przyjdzie z akcją nieodwracalną.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
