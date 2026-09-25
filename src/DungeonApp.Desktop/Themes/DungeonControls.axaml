@@ -1681,7 +1681,7 @@
 
     <!--
         Powiadomienie (controls:NotificationToast) - wywołanie i zachowanie w Controls/NotificationToast.cs.
-        Dymek w stosie w prawym dolnym rogu okna (controls:WindowOverlay: odstęp od rogu
+        Dymek w stosie w prawym dolnym rogu okna (controls:WindowOverlay: odstęp od prawej krawędzi i od paska stanu
         DungeonPaddingLg, między dymkami DungeonSpacingSm, najnowszy na dole). Powierzchnia jak
         okienko wysuwane (DungeonBackstageCardBrush, krawędź 1 px InputBorder, DungeonFlyoutShadow,
         DungeonFlyoutCornerRadius), stała szerokość DungeonNotificationWidth, wcięcie
