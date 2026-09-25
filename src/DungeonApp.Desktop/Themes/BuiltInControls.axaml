@@ -24,50 +24,6 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
     </Style>
 
-    <Style Selector="TextBox">
-        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-    </Style>
-    <!-- Fluent paints input states on its inner template border. Override that exact contract so
-         hover/focus never replace the calm background or thicken the frame. -->
-    <Style Selector="TextBox /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputFocusBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style Selector="TextBox:focus:pointerover /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputFocusBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style Selector="TextBox:disabled /template/ Border#PART_BorderElement">
-        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style Selector="TextBox /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
-    </Style>
-    <Style Selector="TextBox:pointerover /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
-    </Style>
-    <Style Selector="TextBox:focus /template/ TextBlock#PART_Watermark">
-        <Setter Property="Foreground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
-    </Style>
-
     <!--
         Kontrolka w linii tekstu (np. odnośnik w zdaniu, Button.link.inline): domyślnie Avalonia
         stawia jej dolną krawędź na linii bazowej zdania, więc tekst w środku - wysoki na całą linię

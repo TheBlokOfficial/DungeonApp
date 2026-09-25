@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!-- =================================================================== -->
     <!-- MOTYWY PRZYCISKÓW                                                   -->
@@ -184,6 +185,176 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- =================================================================== -->
+    <!-- POLA TEKSTOWE                                                       -->
+    <!-- =================================================================== -->
+
+    <!--
+        Pole tekstowe: jeden motyw, odmiany jako klasy. Szablon wycięty z TextBox.xaml Fluenta
+        (Avalonia 12.0.5, MIT): zostały prezenter tekstu, przewijanie, tekst zastępczy i miejsca na
+        treść po lewej (InnerLeftContent) i prawej (InnerRightContent); wypadły DataValidationErrors
+        (w aplikacji nie ma walidacji), pływający tekst zastępczy i przyciski hasła.
+        Stany: spoczynek, najechanie (:pointerover), edycja (:focus - fokus w polu), wyłączenie
+        (:disabled). Nic więcej.
+          spoczynek  - tło InputBackground, krawędź InputBorder;
+          najechanie - krawędź InputHoverBorder;
+          edycja     - krawędź InputEditBorder (akcent), także pod myszą. To stan edycji pola, nie
+                       wskaźnik fokusu klawiatury: pojawia się przy każdym wejściu w pole;
+          wyłączenie - DungeonDisabledOpacity jak przyciski, bez reakcji na mysz.
+        Krawędź ma zawsze 1 px, więc zmiana stanu nie przesuwa układu. Tekst zastępczy
+        (InputPlaceholder) nie zmienia się w żadnym stanie. Kursor myszy tekstowy nad całym polem,
+        strzałka nad przyciskiem w polu (nadaje go motyw przycisku). Fokus klawiatury nie ma własnego
+        wyglądu (FocusAdorner pusty). Kliknięcie obok i Escape zdejmują fokus z pola - rama,
+        Themes/EditFocusRelease.cs.
+        Pole jednowierszowe ma wysokość DungeonControlHeight; za długi tekst przewija się w środku,
+        pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem.
+        Ikona na początku pola: InnerLeftContent (np. ForegroundIcon) - motyw nadaje jej odstęp od
+        krawędzi i kolor tekstu przygaszonego; tekst zaczyna się za nią o zwykłe wcięcie pola.
+        Menu kontekstowe (wytnij/kopiuj/wklej) - domyślne Fluenta, do porcji 7.
+        Odmiany:
+          (brak)          - jednowierszowe;
+          .search         - wyszukiwania: lupa na początku, przycisk czyszczenia (x) na końcu,
+                            widoczny tylko przy niepustym polu; czyszczenie zostawia fokus w polu;
+          AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
+                            DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
+                            tylko przy potrzebie.
+    -->
+    <ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource DungeonTextSelectionBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="ScrollViewer.AllowAutoHide" Value="True" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+        <Setter Property="ContextFlyout" Value="{DynamicResource DefaultTextBoxContextFlyout}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_BorderElement"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <Grid Margin="{TemplateBinding BorderThickness}" ColumnDefinitions="Auto,*,Auto">
+                        <ContentPresenter Name="PART_InnerLeftContent"
+                                          Grid.Column="0"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding InnerLeftContent}"
+                                          IsVisible="{TemplateBinding InnerLeftContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <ScrollViewer Name="PART_ScrollViewer"
+                                      Grid.Column="1"
+                                      Margin="{TemplateBinding Padding}"
+                                      HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                      VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                      IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                      AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                      BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
+                            <Panel>
+                                <TextBlock Name="PART_Placeholder"
+                                           Foreground="{TemplateBinding PlaceholderForeground}"
+                                           Text="{TemplateBinding PlaceholderText}"
+                                           TextAlignment="{TemplateBinding TextAlignment}"
+                                           TextWrapping="{TemplateBinding TextWrapping}"
+                                           TextTrimming="CharacterEllipsis"
+                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                    <TextBlock.IsVisible>
+                                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                            <Binding ElementName="PART_TextPresenter" Path="PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Text" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                                        </MultiBinding>
+                                    </TextBlock.IsVisible>
+                                </TextBlock>
+                                <TextPresenter Name="PART_TextPresenter"
+                                               Text="{TemplateBinding Text, Mode=TwoWay}"
+                                               CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                               CaretIndex="{TemplateBinding CaretIndex}"
+                                               SelectionStart="{TemplateBinding SelectionStart}"
+                                               SelectionEnd="{TemplateBinding SelectionEnd}"
+                                               TextAlignment="{TemplateBinding TextAlignment}"
+                                               TextWrapping="{TemplateBinding TextWrapping}"
+                                               LineHeight="{TemplateBinding LineHeight}"
+                                               LetterSpacing="{TemplateBinding LetterSpacing}"
+                                               PasswordChar="{TemplateBinding PasswordChar}"
+                                               RevealPassword="{TemplateBinding RevealPassword}"
+                                               SelectionBrush="{TemplateBinding SelectionBrush}"
+                                               SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                               CaretBrush="{TemplateBinding CaretBrush}"
+                                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </Panel>
+                        </ScrollViewer>
+                        <ContentPresenter Name="PART_InnerRightContent"
+                                          Grid.Column="2"
+                                          VerticalAlignment="Stretch"
+                                          Content="{TemplateBinding InnerRightContent}"
+                                          IsVisible="{TemplateBinding InnerRightContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </Grid>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Ikona na początku: odstęp od krawędzi DungeonSpacingMd, kolor tekstu przygaszonego,
+             rozmiar ikony akcji. -->
+        <Style Selector="^ /template/ ContentPresenter#PART_InnerLeftContent">
+            <Setter Property="Margin" Value="12,0,0,0" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^ controls|ForegroundIcon">
+            <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
+        </Style>
+
+        <!-- Najechanie, potem edycja: edycja pod myszą wygląda jak edycja. -->
+        <Style Selector="^:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <Style Selector="^:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputEditBorderBrush}" />
+        </Style>
+
+        <!-- Wielowierszowe -->
+        <Style Selector="^[AcceptsReturn=True]">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="MinHeight" Value="{DynamicResource DungeonMultilineInputMinHeight}" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Top" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontalSmVertical}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        </Style>
+        <Style Selector="^[AcceptsReturn=True] /template/ ContentPresenter#PART_InnerLeftContent">
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+            <Setter Property="Cursor" Value="Arrow" />
         </Style>
     </ControlTheme>
 

@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TextFieldsSection">
+    <!-- Every TextBox variant from the frame's ControlTheme (Themes/DungeonControls.axaml), live: one
+         row per kind of field in its states - empty with placeholder, with text, with text longer than
+         the field, disabled. Every field has the same fixed width, so the long text shows it scrolls
+         inside instead of widening the field. Nothing here restyles a field - the only local value is
+         that width. The edit state cannot be shown statically: the caption says to click. -->
+    <UserControl.Styles>
+        <Style Selector="StackPanel.field-row">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Spacing" Value="{DynamicResource DungeonSpacingMd}" />
+        </Style>
+        <Style Selector="StackPanel.field-row > TextBox">
+            <Setter Property="Width" Value="200" />
+        </Style>
+        <Style Selector="TextBlock.row-label">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Pola tekstowe" />
+        <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij, żeby zobaczyć stan edycji. Kliknięcie obok albo Escape kończy edycję." />
+
+        <Grid ColumnDefinitions="140,Auto"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonSpacingLg}"
+              RowSpacing="{DynamicResource DungeonSpacingLg}">
+            <!-- Jednowierszowe -->
+            <TextBlock Grid.Row="0" Classes="caption muted row-label" Text="Jednowierszowe" />
+            <StackPanel Grid.Row="0" Grid.Column="1" Classes="field-row">
+                <TextBox PlaceholderText="Nazwa kampanii" />
+                <TextBox Text="Kopalnia Phandelver" />
+                <TextBox Text="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                <TextBox Text="Wyłączone" IsEnabled="False" />
+            </StackPanel>
+
+            <!-- Z ikoną na początku -->
+            <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Z ikoną · InnerLeftContent" />
+            <StackPanel Grid.Row="1" Grid.Column="1" Classes="field-row">
+                <TextBox PlaceholderText="Nazwa nowej kampanii">
+                    <TextBox.InnerLeftContent>
+                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+                <TextBox Text="Kopalnia Phandelver">
+                    <TextBox.InnerLeftContent>
+                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+                <TextBox Text="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii">
+                    <TextBox.InnerLeftContent>
+                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+                <TextBox Text="Wyłączone" IsEnabled="False">
+                    <TextBox.InnerLeftContent>
+                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

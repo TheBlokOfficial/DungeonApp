@@ -121,11 +121,33 @@
         <x:Double x:Key="DungeonDisabledOpacity">0.48</x:Double>
 
         <!-- PĘDZLE KONTROLEK I PANELI ========================================= -->
+        <!-- InputBackground: pole do pisania - tu się wpisuje; tło wgłębione (tło zaplecza) odróżnia
+             pole od przycisku i od karty, na której stoi. -->
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
+        <!-- InputBorder: krawędź pola w spoczynku - granica miejsca do pisania, spokojna jak linia. -->
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
+        <!-- InputHoverBorder: pole pod myszą - kliknięcie tu zacznie edycję. -->
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-        <SolidColorBrush x:Key="DungeonInputFocusBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
+        <!-- InputEditBorder: pole w edycji - to, co piszesz, trafia tutaj. Akcent, bo to pole jest
+             teraz wybrane; 1 px jak w spoczynku, więc wejście w edycję nie przesuwa układu. -->
+        <SolidColorBrush x:Key="DungeonInputEditBorderBrush" Color="{DynamicResource DungeonAccentColor}" />
+        <!-- InputPlaceholder: tekst zastępczy - podpowiedź, co wpisać; pole jest puste. -->
         <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
+        <!-- TextSelection: zaznaczony tekst - ten fragment jest wybrany (kopiowanie, zastąpienie). Akcent
+             #B8843B o nieprzezroczystości 45 % (#73B8843B) - ten sam znak "wybrane" co wybrany wiersz
+             (16 %), mocniejszy, żeby zaznaczenie w polu było widać od razu. Tekst podstawowy #E8E4DA na
+             nim: 6,96:1 na tle pola (#151412), 6,41:1 na karcie (#1F1D1A). -->
+        <SolidColorBrush x:Key="DungeonTextSelectionBrush" Color="#73B8843B" />
+        <!-- Highlight: zakreślenie wyróżnione - ta wartość jest ważna w zdaniu, ale zostaje tekstem
+             (wyzwanie "1/2" na karcie). Neutralne i jasne, nie akcent: nic tu nie jest wybrane.
+             Pełny kolor #4A443D, więc wygląda tak samo na każdej powierzchni; tekst podstawowy na nim
+             7,57:1. -->
+        <SolidColorBrush x:Key="DungeonHighlightBrush" Color="#4A443D" />
+        <!-- SearchMatch: zakreślenie trafienia wyszukiwania - ten fragment pasuje do tego, czego
+             szukasz. Szałwiowa zieleń (#84A98B, odcień Success) o nieprzezroczystości 35 % (#5984A98B):
+             odcieniem daleko od bursztynu zaznaczenia i od szarości wyróżnienia. Tekst podstawowy na
+             niej 7,57:1 na tle pola (#151412). -->
+        <SolidColorBrush x:Key="DungeonSearchMatchBrush" Color="#5984A98B" />
 
         <!--
             Panel chrome. Semantic aliases rather than direct use of the generic surface tokens, so a
@@ -184,6 +206,12 @@
         <Thickness x:Key="DungeonPaddingXxxl">32</Thickness>
         <!-- Tylko nad i pod - wartość równa DungeonSpacingLg (odstęp separatora .section). -->
         <Thickness x:Key="DungeonPaddingLgVertical">0,16,0,16</Thickness>
+        <!-- Tylko z boków - wartość równa DungeonSpacingMd (wcięcie tekstu w polu jednowierszowym). -->
+        <Thickness x:Key="DungeonPaddingMdHorizontal">12,0,12,0</Thickness>
+        <!-- Z boków DungeonSpacingMd, nad i pod DungeonSpacingSm (wcięcie tekstu w polu wielowierszowym). -->
+        <Thickness x:Key="DungeonPaddingMdHorizontalSmVertical">12,8,12,8</Thickness>
+        <!-- Pole wielowierszowe: trzy linie tekstu 13 px (ok. 17 px każda) + wcięcia 8 + 8 + krawędzie. -->
+        <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
         <!-- Pasek postępu ładowania. -->

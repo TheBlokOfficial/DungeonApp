@@ -25,6 +25,7 @@
             <sections:SpacingSection />
             <sections:SurfacesSection />
             <sections:ButtonsSection />
+            <sections:TextFieldsSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
