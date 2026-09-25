@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `488234f`.** Na starcie sesji: `git log 488234f..master` i `git worktree
+**Stan na: 2026-09-25, po `21026dd`.** Na starcie sesji: `git log 21026dd..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,10 +14,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8 obejrzane przez autora; porcja 8 przyjęta z uwagami, które idą z porcją 8b bez osobnej
-rundy. **W toku:** porcja 8b ruszyła 2026-09-25 (polecenie autora) — wykonawca w tle, w kopii roboczej
-w `.claude/worktrees/` (gałąź z `81b16cd`); sesja z pracującym wykonawcą nie nadaje się do porzucenia.
-**Następny krok:** weryfikacja raportu, scalenie, obejrzenie przez autora; potem porcja 9.
+Porcje 0–8 obejrzane przez autora. Porcja 8b scalona 2026-09-25 (poprawki po 8, sekcja galerii
+„Kompozycje”) — czeka na obejrzenie przez autora. Kopii roboczych brak. **Następny krok:** uwagi autora
+po 8b (runda albo przyjęcie), potem propozycja porcji 9.
 
 ## Zakres i koniec
 
@@ -74,7 +73,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela
   (nagłówek, kolumny z wyrównaniem, wcięcia komórek, obramowanie, wyróżnienie pojedynczej komórki
   kolorem podanym przez układającego — pierwszy konsument: cechy potwora, `tasks.md`, *B*).
-- [ ] **8b** — poprawki po porcji 8; kompozycje przykładowe w galerii (pomysł autora): lista
+- [x] **8b** — poprawki po porcji 8; kompozycje przykładowe w galerii (pomysł autora): lista
   z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą.
 - [ ] **9** — odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie
   0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`).
@@ -100,6 +99,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 7a | poprawki po porcji 6 (rezerwa pogrubienia — kontrolka `BoldTextReserve`; wyłączony pojemnik przygasza całość raz — przygaszenie po własnym `IsEnabled`, kolory po `:disabled`; pusty pasek bez odstępu); podpowiedź z motywem i pełnym napisem przyciętej etykiety (`TrimmedLabelToolTip`); zakładka najwyżej 240; menu z przycisku, kontekstowe, podmenu, separator; ruch menu w `PopupOpenMotion` | scalona 2026-09-25; obejrzana tego dnia bez rundy — uwagi o menu (skrót nie w linii ze strzałką podmenu, podmenu nachodzi na menu) odłożone do *Poprawek czekających na obszar* (autor: nie na teraz) | 42 / 11,3 / 5,4 mln |
 | 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
 | 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; obejrzana tego dnia — szarpanie paska i dymki na pasku stanu naprawione; uwagi (ramka w galerii myli, tabela cech nie jak projekt, tagi ciasne w pionie) i uwagi architekta idą z porcją 8b, bez rundy | 57 / 11,0 / 6,5 mln |
+| 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25 | 52 / 8,4 / 5,4 mln |
 
 ## Ustalenia
 
@@ -256,6 +256,16 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   przed pierwszym briefem. Zapytanie (każde wywołanie narzędzia) kosztuje ok. 10 % kontekstu; nowa sesja
   zwraca się po ok. jednej porcji. Z pomiaru: reguła „odsyłacz do sekcji czyta się jako sekcję”
   przyjęta (`collaboration.md`); budżet długości dokumentu czytanego co sesję — *Do sesji głównej*.
+* Porcja 8b (raport): **odznaka akcentu nie stoi w wierszu listy** (architekt, z wiedzy o interfejsie).
+  Na wybranym wierszu jej tekst ma 4,00:1 (przygaszony akcent na przygaszonym akcencie), a akcent
+  w wierszu i tak konkuruje z samym wyborem. W wierszu — odznaka neutralna, stanu albo kolor systemu;
+  akcent na karcie. Brief zlecenia A i porcji 10 ma to podać.
+* Porcja 8b: elementy zbudowane w galerii jako własne — **przycisk w wierszu listy** (`row-action`:
+  przycisk ikony bez wypełnienia, 28 × 28, żeby wiersz został 32) i obramowanie listy. Przy drugim
+  użyciu (porcja 10 / zlecenie A) przechodzą do motywu. Odmiana „wpis/wpisy/wpisów” jest w galerii
+  świadomym duplikatem funkcji z `Library.Entries.Desktop` (rama nie może się do niej odwołać).
+* Porcja 8b: test architektury zabrania w ramie nazw rodzaju wpisu („monster”) — także w danych
+  przykładowych galerii. Brief ma to podać.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
