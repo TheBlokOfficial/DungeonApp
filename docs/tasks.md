@@ -88,7 +88,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) → 32, po rundzie 1 → 36 (autor: 32 zbyt ściśnięte); `frame-action` zostaje elementem ramy (pełna wysokość paska), nie przyciskiem (architekt) | 1 (autor: ikony niewidoczne na kolorowych przyciskach, wciśnięcie bez własnego koloru, wyłączony główny szary jak przed porcją, wysokość 36; architekt: przycięcie w galerii, odnośnik w zdaniu, grubość napisów); 2 (autor: ikony konturowe, odnośnik w zdaniu nad linią, najechanie akcentu odbarwia, bez wciśnięcia); 3 (autor: najechanie z wypełnieniem = kolor bez zmian + otoczka 3 px, odnośniki samodzielne szare, bez ręki nigdzie — `decisions.md`; poprawka: przycisk przycinał otoczkę); przyjęta | 52 / 8,4 / 6,1 mln + runda 1: 60 / 8,6 / 6,5 mln + runda 2: 50 / 7,9 / 5,3 mln + runda 3: 30 / 4,9 / 2,4 mln + poprawka otoczki (ten sam wykonawca, wznowiony): 14 / 2,2 / 1,7 mln |
      | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt; po rundzie 1 — krawędź z najechania, bez akcentu); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25; poprawka architekta: aplikacja padała po wejściu w system (selektor potomka w motywie pola), test budujący wszystkie motywy; 1 (autor: krawędź edycji i zaznaczenie w akcencie krzykliwe — zaznaczenie niebieskie; ikona, × i strzałki poza obszarem tekstu, bez tła pod myszą; architekt: liczby całkowite z przecinkiem, tekst pod paskiem przewijania, grubość tekstu w polu, wyrównanie galerii); przyjęta 2026-09-25 — drobne uwagi w *Poprawkach czekających na obszar* | 52 / 10,5 / 7,0 mln + runda 1: 39 / 9,1 / 4,1 mln |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania — **ustalenia architekta do briefu niżej**; przygaszony akcent naprawiony (16 %, z kanałem alfa) | scalona 2026-09-25, obejrzana — uwagi autora (przewijanie przechodzi wyżej, najechanie na wybranym) w *Poprawkach czekających na obszar*; wiersz ma wysokość najmniejszą 32, nie stałą, bo panel instancji kampanii ma wiersze z polem liczbowym — panel testowy, do usunięcia (autor), więc bez poprawek | 55 / 9,4 / 7,4 mln |
-     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25, czeka na obejrzenie | 40 / 9,8 / 4,8 mln |
+     | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora w *Poprawkach czekających na obszar* | 40 / 9,8 / 4,8 mln |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
      | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
@@ -240,6 +240,17 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     dostaje własnych poprawek; do odtworzenia błędu wystarczy przykład w galerii.
   * Podpis sekcji „Listy" w galerii mówi „wiersz ma stałą wysokość" — ma najmniejszą (32, patrz
     tabela porcji, porcja 3).
+* **Pole wyboru, przełącznik, suwak (motyw ramy, `DungeonControls.axaml`)** — pytania autora po
+  porcji 4, 2026-09-25, bez zmian na razie; odpowiedź architekta czeka na słowo autora:
+  * Czy pole wyboru i przełącznik mają mieć najechanie? Architekt: tak — konwencja platform
+    i bibliotek; mówi, że klikalna jest też etykieta (długa etykieta nie pokazuje sama, gdzie kończy
+    się pole).
+  * Czy suwak ma mieć najechanie albo podświetlenie przy przeciąganiu, np. otoczkę? Architekt:
+    rozjaśnienie uchwytu wystarcza; otoczka na każdej kontrolce odrzucona przy przyciskach
+    (`decisions.md`).
+  * Czy trzy stany pola wyboru rozróżniać kolorem, nie tylko znakiem? Architekt: nie — zaznaczone
+    i pośrednie mają ten sam kolor na wszystkich platformach; pośrednie to „częściowo zaznaczone”,
+    ta sama rodzina, a inny kolor sugerowałby inne znaczenie.
 
 ---
 
