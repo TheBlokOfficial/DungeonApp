@@ -426,6 +426,13 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   niespójna, więc otwarcie okienka też jest ruchem (wyłania się i dosuwa, ok. 120 ms), a zamknięcie
   natychmiastowe — po wyborze liczy się wynik, nie efekt (rekomendacja architekta, jak Windows 11
   i macOS; odrzucone: animowane zamknięcie, strzałka bez ruchu).
+* **Po zamknięciu kliknięciem otwierający odpoczywa do ponownego wjechania myszą** — autor,
+  2026-09-25, po rundzie 1 porcji 5. Zamykanie drugim kliknięciem migało: po zamknięciu biblioteka
+  przez chwilę nie wie, że mysz stoi nad przyciskiem. Konwencja większości aplikacji to najechanie
+  bez przerwy; autor wybrał spoczynek do ponownego wjechania — kliknięcie zamykające kończy sprawę,
+  więc przycisk nie zaprasza od razu do następnego. Architekt poparł: nie łamie reguły, a nie wymaga
+  odtwarzania stanu myszy, na którym obejście byłoby kruche. Koszt: przy natychmiastowym ponownym
+  otwarciu brak podświetlenia (kliknięcie działa).
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor
