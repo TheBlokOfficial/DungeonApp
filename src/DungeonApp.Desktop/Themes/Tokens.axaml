@@ -373,6 +373,11 @@
         <x:Double x:Key="DungeonSubmenuVerticalOffset">-5</x:Double>
         <!-- Odstęp kolumny skrótu klawiszowego od napisu pozycji menu (DungeonSpacingXxl). -->
         <Thickness x:Key="DungeonMenuGestureMargin">24,0,0,0</Thickness>
+        <!-- Odstęp kolumny ikony od napisu i strzałki podmenu od napisu albo skrótu (DungeonSpacingSm). -->
+        <Thickness x:Key="DungeonMenuIconMargin">0,0,8,0</Thickness>
+        <Thickness x:Key="DungeonMenuChevronMargin">8,0,0,0</Thickness>
+        <!-- Separator w menu: odstęp 4 nad i pod linią. -->
+        <Thickness x:Key="DungeonMenuSeparatorMargin">0,4</Thickness>
         <!-- Okruszki (controls:Breadcrumbs): strzałka między odcinkami 8 px (mockup rejestru,
              .crumb-path svg) - mniejsza niż ikona akcji (16), bo stoi w tekście 12 px i tylko
              rozdziela. Odstęp po obu stronach strzałki DungeonSpacingXs. -->

@@ -1781,7 +1781,7 @@
                                 <Panel Name="PART_IconColumn"
                                        Width="{DynamicResource DungeonActionIconSize}"
                                        Height="{DynamicResource DungeonActionIconSize}"
-                                       Margin="0,0,8,0"
+                                       Margin="{DynamicResource DungeonMenuIconMargin}"
                                        VerticalAlignment="Center"
                                        IsVisible="False">
                                     <ContentPresenter Name="PART_IconPresenter"
@@ -1814,7 +1814,7 @@
                                                          Grid.Column="3"
                                                          Width="{DynamicResource DungeonActionIconSize}"
                                                          Height="{DynamicResource DungeonActionIconSize}"
-                                                         Margin="8,0,0,0"
+                                                         Margin="{DynamicResource DungeonMenuChevronMargin}"
                                                          VerticalAlignment="Center"
                                                          Foreground="{DynamicResource DungeonTextMutedBrush}"
                                                          Source="{DynamicResource DungeonIconChevronRight}" />
