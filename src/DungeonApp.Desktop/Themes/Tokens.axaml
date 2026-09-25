@@ -134,6 +134,10 @@
              opóźnienie. Zamknięcie bez ruchu. -->
         <x:TimeSpan x:Key="DungeonPopupOpenDuration">0:0:0.12</x:TimeSpan>
         <x:Double x:Key="DungeonPopupOpenOffset">4</x:Double>
+        <!-- ProgressSweep: jeden obieg odcinka nieokreślonego wskaźnika postępu (Controls/ProgressSweep.cs)
+             - ruch ciągły w pętli, z przyspieszeniem i wyhamowaniem; nie przejście stanu, więc limit
+             MotionDuration go nie dotyczy. Wyłączone animacje w systemie: bez ruchu. -->
+        <x:TimeSpan x:Key="DungeonProgressSweepDuration">0:0:1.6</x:TimeSpan>
 
         <!-- CIENIE =========================================================== -->
         <!-- FlyoutShadow: okienko wysuwane i rozwinięta lista - lekki cień w dół oddziela je od treści
@@ -306,9 +310,12 @@
         <CornerRadius x:Key="DungeonSliderThumbCornerRadius">7</CornerRadius>
 
         <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
-        <!-- Pasek postępu ładowania. -->
+        <!-- Pasek postępu ładowania (kurtyna startowa): szerokość. -->
         <x:Double x:Key="DungeonLoadingProgressBarWidth">192</x:Double>
-        <x:Double x:Key="DungeonLoadingProgressBarHeight">4</x:Double>
+        <!-- Wskaźnik postępu (ProgressBar): cienki pasek grubości toru suwaka, zaokrąglony w pełni na
+             obu końcach (promień połowa grubości) - spójnie z torem suwaka. -->
+        <x:Double x:Key="DungeonProgressBarThickness">4</x:Double>
+        <CornerRadius x:Key="DungeonProgressBarCornerRadius">2</CornerRadius>
 
         <!-- Stałe wymiary interfejsu. -->
         <x:Double x:Key="DungeonBaseFontSize">13</x:Double>

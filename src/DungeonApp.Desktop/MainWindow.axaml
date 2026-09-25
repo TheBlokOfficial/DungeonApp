@@ -64,7 +64,7 @@
                            Text="DungeonApp" />
 
                 <ProgressBar Width="{DynamicResource DungeonLoadingProgressBarWidth}"
-                             Height="{DynamicResource DungeonLoadingProgressBarHeight}"
+                             Foreground="{DynamicResource DungeonAccentBrightBrush}"
                              HorizontalAlignment="Center"
                              Minimum="0"
                              Maximum="{Binding TotalSteps}"
