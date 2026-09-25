@@ -1,0 +1,159 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.MenusSection">
+    <!-- The frame's MenuFlyoutPresenter, ContextMenu, MenuItem and ToolTip themes, live: a menu from
+         an icon button and from a text button (icons, shortcut, disabled, danger, separator, radio
+         group, check item, two-level submenu, very long label), a menu without icons (no icon
+         column), a context menu under the right mouse button, tooltips short, long (wraps) and on
+         an icon button, and trimmed labels (tab, segment, button) with the full label in a tooltip
+         next to the same labels untrimmed (no tooltip). Nothing here restyles a control. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Menu i podpowiedzi" />
+        <TextBlock Classes="caption muted" Text="Kliknij przycisk, żeby otworzyć menu; najedź, żeby zobaczyć podpowiedź." />
+
+        <TextBlock Classes="overline-sm muted" Text="MENU Z PRZYCISKU" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Ikonowy „⋯”" />
+                <Button Classes="icon" ToolTip.Tip="Więcej">
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             Source="{StaticResource DungeonIconMore}" />
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Edytuj" InputGesture="F2">
+                                <MenuItem.Icon>
+                                    <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Duplikuj" InputGesture="Ctrl+D" />
+                            <MenuItem Header="Przenieś do kampanii" IsEnabled="False" />
+                            <Separator />
+                            <MenuItem Header="Widok">
+                                <MenuItem Header="Lista" ToggleType="Radio" GroupName="GalleryMenuView" IsChecked="True" />
+                                <MenuItem Header="Karty" ToggleType="Radio" GroupName="GalleryMenuView" />
+                                <MenuItem Header="Tabela" ToggleType="Radio" GroupName="GalleryMenuView" />
+                                <Separator />
+                                <MenuItem Header="Sortuj według">
+                                    <MenuItem Header="Nazwy" />
+                                    <MenuItem Header="Skali wyzwania" />
+                                    <MenuItem Header="Daty dodania" />
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Header="Pokaż ukryte rzuty" ToggleType="CheckBox" IsChecked="True" />
+                            <MenuItem Header="Eksportuj kartę potwora razem ze wszystkimi notatkami Mistrza Gry i historią zmian" />
+                            <Separator />
+                            <MenuItem Header="Usuń" Classes="danger" InputGesture="Delete">
+                                <MenuItem.Icon>
+                                    <controls:ForegroundIcon Source="{StaticResource DungeonIconTrash}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Usuń na zawsze" Classes="danger" IsEnabled="False" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Z napisem" />
+                <Button Content="Akcje">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Zapisz" InputGesture="Ctrl+S">
+                                <MenuItem.Icon>
+                                    <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Zapisz jako…" InputGesture="Ctrl+Shift+S" />
+                            <MenuItem Header="Zablokuj edycję" ToggleType="CheckBox" />
+                            <Separator />
+                            <MenuItem Header="Usuń" Classes="danger">
+                                <MenuItem.Icon>
+                                    <controls:ForegroundIcon Source="{StaticResource DungeonIconTrash}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Bez ikon i zaznaczania" />
+                <Button Content="Sortuj">
+                    <Button.Flyout>
+                        <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                            <MenuItem Header="Według nazwy" />
+                            <MenuItem Header="Według skali wyzwania" />
+                            <MenuItem Header="Według daty dodania" IsEnabled="False" />
+                            <Separator />
+                            <MenuItem Header="Odwróć kolejność" InputGesture="Ctrl+R" />
+                        </MenuFlyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="MENU KONTEKSTOWE" />
+        <Border Classes="surface-card" Width="320" HorizontalAlignment="Left">
+            <Border.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Edytuj">
+                        <MenuItem.Icon>
+                            <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Kopiuj" InputGesture="Ctrl+C" />
+                    <MenuItem Header="Wklej" InputGesture="Ctrl+V" IsEnabled="False" />
+                    <MenuItem Header="Przenieś do">
+                        <MenuItem Header="Kampania „Klątwa Strahda”" />
+                        <MenuItem Header="Kampania „Zaginiona kopalnia”" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Usuń" Classes="danger">
+                        <MenuItem.Icon>
+                            <controls:ForegroundIcon Source="{StaticResource DungeonIconTrash}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Border.ContextMenu>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="display-md" Text="Goblin" />
+                <TextBlock Classes="caption muted" Text="Kliknij prawym przyciskiem" />
+            </StackPanel>
+        </Border>
+
+        <TextBlock Classes="overline-sm muted" Text="PODPOWIEDZI" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingLg}">
+            <Button Content="Krótka" ToolTip.Tip="Zapisuje kartę." />
+            <Button Content="Długa"
+                    ToolTip.Tip="Zapisuje kartę potwora razem z notatkami Mistrza Gry, historią zmian i wszystkimi powiązaniami z kampaniami, w których się pojawia - dłuższy tekst zawija się." />
+            <Button Classes="icon" ToolTip.Tip="Ustawienia">
+                <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                         Height="{DynamicResource DungeonActionIconSize}"
+                                         Source="{StaticResource DungeonIconSettings}" />
+            </Button>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="PRZYCIĘTE ETYKIETY (PEŁNY NAPIS W PODPOWIEDZI)" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="520">
+                <TextBlock Classes="caption muted" Text="Zakładka dłuższa niż 240 obok krótkiej" />
+                <TabStrip SelectedIndex="0">
+                    <TabStripItem Content="Bestiariusz" />
+                    <TabStripItem Content="Przedmioty magiczne i artefakty z dawnych epok bohaterów" />
+                </TabStrip>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Segmenty: wąski (200) i z treści" />
+                <ListBox x:Name="NarrowSegments"
+                         Theme="{StaticResource DungeonSegmentedControl}"
+                         Width="200" />
+                <ListBox x:Name="WideSegments" Theme="{StaticResource DungeonSegmentedControl}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Przycisk: wąski (120) i z treści" />
+                <Button Width="120" Content="Eksportuj wszystkie karty" />
+                <Button Content="Eksportuj wszystkie karty" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
