@@ -133,6 +133,11 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   obiekt nie istnieje w nowej liście. Wygląda jak błąd kliknięcia (przycisk „Zapisz" w wierszu
   „odznacza" wiersz), a to przebudowa wierszy po zmianie kampanii (diagnoza z porcji 5, panel
   instancji). Lista z zaznaczeniem zachowuje obiekty wierszy albo przywraca zaznaczenie po kluczu.
+* **Najechanie w motywie ramy to `:pointerover:not(.hover-suppressed)`, nie samo `:pointerover`** —
+  klasę dokłada `Themes/OpenerHoverRest.cs` otwierającemu zamkniętemu kliknięciem w siebie (spoczynek do
+  ponownego wjechania myszą). Nowy motyw otwierającego okienko, który jej nie uwzględni, znów miga.
+  Ruch otwarcia okien wyskakujących żyje w kodzie (`Themes/PopupOpenMotion.cs`), nie w stylu — szablon
+  `ComboBox` nie przechodzi przez style przy każdym otwarciu.
 * **Każde nowe przejście (animacja) w motywie trzeba dopisać do `Themes/ReducedMotion.axaml`** —
   ten plik zdejmuje przejścia, gdy Windows ma wyłączone animacje (`Themes/SystemMotion.cs`, czytane
   raz przy starcie). Przejście, którego tam nie ma, zostaje animowane mimo ustawienia systemu.

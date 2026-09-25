@@ -17,7 +17,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było;
 > 2026-09-23 dokument znów miał 271 linii, z czego trzy czwarte było zamkniętą historią etapów.
 
-Gałąź: `master`. Build bez ostrzeżeń, 361 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 366 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -89,7 +89,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt; po rundzie 1 — krawędź z najechania, bez akcentu); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25; poprawka architekta: aplikacja padała po wejściu w system (selektor potomka w motywie pola), test budujący wszystkie motywy; 1 (autor: krawędź edycji i zaznaczenie w akcencie krzykliwe — zaznaczenie niebieskie; ikona, × i strzałki poza obszarem tekstu, bez tła pod myszą; architekt: liczby całkowite z przecinkiem, tekst pod paskiem przewijania, grubość tekstu w polu, wyrównanie galerii); przyjęta 2026-09-25 — drobne uwagi w *Poprawkach czekających na obszar* | 52 / 10,5 / 7,0 mln + runda 1: 39 / 9,1 / 4,1 mln |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania — **ustalenia architekta do briefu niżej**; przygaszony akcent naprawiony (16 %, z kanałem alfa) | scalona 2026-09-25, obejrzana — uwagi autora (przewijanie przechodzi wyżej, najechanie na wybranym) w *Poprawkach czekających na obszar*; wiersz ma wysokość najmniejszą 32, nie stałą, bo panel instancji kampanii ma wiersze z polem liczbowym — panel testowy, do usunięcia (autor), więc bez poprawek | 55 / 9,4 / 7,4 mln |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora w *Poprawkach czekających na obszar* | 40 / 9,8 / 4,8 mln |
-     | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie) — scalona, czeka na obejrzenie | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln |
+     | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona, czeka na obejrzenie | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
      | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok, np. pasek PZ; tak jak w suwaku z porcji 4) | | |
      | 8 | tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany; kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela | | |
@@ -230,18 +230,6 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
-* **Wiersz listy i okienko (motyw ramy, `DungeonControls.axaml`)** — uwaga autora po porcji 5,
-  2026-09-25, wybrany wariant B z makiety architekta; bez osobnego zlecenia, przy okazji:
-  * Podświetlenia sąsiednich wierszy stykają się zaokrąglonymi rogami (wcięcia na styku). Podświetlenie
-    o 1 px węższe z góry i z dołu — 2 px odstępu między sąsiednimi, wiersz dalej zajmuje 32.
-  * „Ramka w ramce" w okienku i rozwinięciu: wewnętrzne wcięcie okienka mniejsze (4 zamiast 6),
-    zaokrąglenie podświetlenia wyraźnie drobniejsze niż okienka (3 wobec 6) — jedno okienko
-    z podświetleniem w środku, nie pudełko w pudełku. Dotyczy `ListBoxItem`, `ComboBoxItem`, wierszy
-    `DropDownPicker`, `FlyoutPresenter`.
-* **Suwak (motyw ramy, `DungeonControls.axaml`)** — uwaga autora po porcji 4, 2026-09-25: rozjaśnienia
-  uchwytu pod myszą nie widać bez przypatrywania się (spoczynek #E8E4DA, pod myszą #FAF8F3 — już przy
-  bieli nie ma dokąd jaśnieć). Architekt: przyciemnić spoczynek (np. kolor tekstu drugorzędnego), żeby
-  pod myszą było wyraźne przejście do jasnego; bez obwódki (pytania z porcji 4 zamknięte, `decisions.md`).
 
 ---
 
