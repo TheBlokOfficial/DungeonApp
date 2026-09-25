@@ -5,8 +5,9 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Mała tabela w karcie (np. cechy potwora): siatka (<see cref="Grid"/> - kolumny i wiersze zna
-/// widok w czasie kompilacji), której każda pozycja ma <see cref="TableCell"/>. Obramowanie
+/// Mała tabela w karcie (np. cechy: nazwa, wartość, modyfikator): siatka (<see cref="Grid"/> -
+/// kolumny i wiersze zna widok w czasie kompilacji), której każda pozycja ma <see cref="TableCell"/>.
+/// Obramowanie
 /// zewnętrzne 1 px i linie poziome między wierszami rysują komórki; tabela przed pomiarem ustala
 /// każdej komórce grubość krawędzi z jej położenia: górna tylko w pierwszym wierszu, lewa tylko
 /// w pierwszej kolumnie, dolna zawsze, prawa w ostatniej kolumnie - i między kolumnami, gdy

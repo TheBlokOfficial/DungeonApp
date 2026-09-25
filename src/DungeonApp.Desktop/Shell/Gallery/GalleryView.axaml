@@ -29,6 +29,8 @@
             <sections:TabsSection />
             <sections:MenusSection />
             <sections:FeedbackSection />
+            <sections:LabelsSection />
+            <sections:TablesSection />
             <sections:TilesSection />
         </StackPanel>
     </ScrollViewer>
