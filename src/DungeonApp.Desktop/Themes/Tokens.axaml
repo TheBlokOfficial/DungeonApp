@@ -131,11 +131,14 @@
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
         <!-- InputPlaceholder: tekst zastępczy - podpowiedź, co wpisać; pole jest puste. -->
         <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
-        <!-- TextSelection: zaznaczony tekst - ten fragment jest wybrany (kopiowanie, zastąpienie). Akcent
-             #B8843B o nieprzezroczystości 45 % (#73B8843B) - ten sam znak "wybrane" co wybrany wiersz
-             (16 %), mocniejszy, żeby zaznaczenie w polu było widać od razu. Tekst podstawowy #E8E4DA na
-             nim: 6,96:1 na tle pola (#151412), 6,41:1 na karcie (#1F1D1A). -->
-        <SolidColorBrush x:Key="DungeonTextSelectionBrush" Color="#73B8843B" />
+        <!-- TextSelection: zaznaczony tekst - ten fragment jest wybrany (kopiowanie, zastąpienie).
+             Stonowany stalowy niebieski #2E4C68 (HSL 209°, 38 %, 29 %) - konwencja zaznaczenia ciemnych
+             edytorów, przygaszona do ciepłej palety; nie akcent, bo zaznaczenie to nie "wybrana
+             pozycja". Pełny kolor, więc wygląda tak samo w polu i na karcie; tekst podstawowy #E8E4DA
+             na nim 7,04:1. Odcieniem daleko od neutralnego Highlight (#4A443D, ciepła szarość)
+             i szałwiowego SearchMatch (#84A98B na 35 %, na tle pola ok. #3C483C). Ten sam token
+             w polach tekstowych i w SelectableTextBlock. -->
+        <SolidColorBrush x:Key="DungeonTextSelectionBrush" Color="#2E4C68" />
         <!-- Highlight: zakreślenie wyróżnione - ta wartość jest ważna w zdaniu, ale zostaje tekstem
              (wyzwanie "1/2" na karcie). Neutralne i jasne, nie akcent: nic tu nie jest wybrane.
              Pełny kolor #4A443D, więc wygląda tak samo na każdej powierzchni; tekst podstawowy na nim
@@ -143,7 +146,7 @@
         <SolidColorBrush x:Key="DungeonHighlightBrush" Color="#4A443D" />
         <!-- SearchMatch: zakreślenie trafienia wyszukiwania - ten fragment pasuje do tego, czego
              szukasz. Szałwiowa zieleń (#84A98B, odcień Success) o nieprzezroczystości 35 % (#5984A98B):
-             odcieniem daleko od bursztynu zaznaczenia i od szarości wyróżnienia. Tekst podstawowy na
+             odcieniem daleko od niebieskiego zaznaczenia i od szarości wyróżnienia. Tekst podstawowy na
              niej 7,57:1 na tle pola (#151412). -->
         <SolidColorBrush x:Key="DungeonSearchMatchBrush" Color="#5984A98B" />
 
