@@ -167,7 +167,9 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   — mylnie). Kroki szły na szukanie w motywie kolorów, których brief nie nazwał (wyłączone, powierzchnia
   karty) — **brief podaje nazwy pędzli stanów**: wyłączone to przezroczystość `DungeonDisabledOpacity`,
   nie osobny kolor; neutralne wybrane — `DungeonSurfaceActiveBrush`; powierzchnia karty —
-  `DungeonBackstageCardBrush`. Motywy w `DungeonControls.axaml` test budujący obejmuje sam — brief to
+  `DungeonBackstageCardBrush`. Pismo: 13 — `DungeonBaseFontSize`, 12 — `DungeonHelperFontSize`;
+  najechanie bez barwy — pędzel wiersza listy; tekst niebezpieczeństwa — `DungeonDangerTextBrush`
+  (porcja 7a: podane w briefie, wykonawca nie szukał). Motywy w `DungeonControls.axaml` test budujący obejmuje sam — brief to
   mówi, żeby wykonawca nie sprawdzał.
 * Porcja 7a (raport): **położenie `MenuFlyout` pod przyciskiem ustawia widok** — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga (tak samo zwykłe okienko z porcji 5). Brief kompozycji
