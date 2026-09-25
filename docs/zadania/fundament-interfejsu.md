@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `5420c6d`.** Na starcie sesji: `git log 5420c6d..master` i `git worktree
+**Stan na: 2026-09-25, po `a428719`.** Na starcie sesji: `git log a428719..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,11 +14,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–7a obejrzane przez autora; uwagi po 7a (układ menu) odłożone przez autora do `tasks.md`,
-*Poprawki czekające na obszar*, bez rundy. **W toku:** porcja 7b — zielone światło autora
-2026-09-25 (sesja zadania: „lecimy”); wykonawca (Opus 5.5) pracuje w kopii
-`.claude/worktrees/agent-a7b28fac8b03a1701`, gałąź `worktree-agent-a7b28fac8b03a1701`, baza `5420c6d`.
-**Następny krok:** weryfikacja raportu, scalenie, autor ogląda 7b; potem propozycja porcji 8.
+Porcje 0–7a przyjęte; uwagi po 7a (układ menu) odłożone przez autora do `tasks.md`, *Poprawki
+czekające na obszar*. Porcja 7b scalona 2026-09-25 — **czeka na obejrzenie przez autora** (galeria:
+sekcja z postępem, potwierdzeniem i powiadomieniami; wyłączona zakładka i sekcja rozwijana). Kopii
+roboczych brak. **Następny krok:** uwagi autora po 7b (runda albo przyjęcie), potem propozycja
+porcji 8.
 
 ## Zakres i koniec
 
@@ -67,10 +67,8 @@ Tylko gdy potrzeba:
 Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w aplikacji**, bo porcja
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
-- [x] **0–6** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **7a** — poprawki po porcji 6 (`tasks.md`); menu, menu kontekstowe, podpowiedź (także pełny
-  napis przyciętej zakładki, segmentu i przycisku).
-- [ ] **7b** — okno potwierdzenia, powiadomienie, wskaźnik
+- [x] **0–7a** — przyjęte; rundy i pomiar w tabeli niżej.
+- [ ] **7b** — scalona, czeka na obejrzenie — okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
 - [ ] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
@@ -101,6 +99,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
 | 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25; przyjęta 2026-09-25 — uwagi (pogrubienie wybranego zmienia szerokość, wyłączony pojemnik, pusty pasek) idą z porcją 7, bez osobnej rundy (autor) | 65 / 12,0 / 8,0 mln |
 | 7a | poprawki po porcji 6 (rezerwa pogrubienia — kontrolka `BoldTextReserve`; wyłączony pojemnik przygasza całość raz — przygaszenie po własnym `IsEnabled`, kolory po `:disabled`; pusty pasek bez odstępu); podpowiedź z motywem i pełnym napisem przyciętej etykiety (`TrimmedLabelToolTip`); zakładka najwyżej 240; menu z przycisku, kontekstowe, podmenu, separator; ruch menu w `PopupOpenMotion` | scalona 2026-09-25; obejrzana tego dnia bez rundy — uwagi o menu (skrót nie w linii ze strzałką podmenu, podmenu nachodzi na menu) odłożone do *Poprawek czekających na obszar* (autor: nie na teraz) | 42 / 11,3 / 5,4 mln |
+| 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; czeka na obejrzenie | 60 / 11,3 / 6,9 mln |
 
 ## Ustalenia
 
@@ -196,6 +195,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Porcja 7a (raport): **położenie `MenuFlyout` pod przyciskiem ustawia widok** — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga (tak samo zwykłe okienko z porcji 5). Brief kompozycji
   i zleceń A/B ma to podawać.
+* Porcja 7b (raport): **okno potwierdzenia i powiadomienie znajdują warstwę przez okno elementu,
+  z którego je wywołano** — wywołane z elementu wewnątrz okienka wysuwanego (menu, lista rozwijana)
+  rzucą wyjątkiem. Brief zleceń, które wywołają je z menu, ma to podać (wywołanie z elementu okna,
+  nie z pozycji menu) albo zlecić poprawkę.
+* Porcja 7b: nowy ruch da się zrobić w kodzie, sprawdzając `SystemMotion.IsReduced` — wtedy nie
+  dotyka `ReducedMotion.axaml` ani testu jego czterech reguł (`code-state.md`, *Pułapki*).
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 

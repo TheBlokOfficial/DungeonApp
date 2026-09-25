@@ -144,6 +144,11 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   raz przy starcie). Przejście, którego tam nie ma, zostaje animowane mimo ustawienia systemu. Test pilnuje
   dokładnie czterech reguł w tym pliku — nowy selektor dopisuje się do reguły tego samego rodzaju
   (strzałka sekcji rozwijanej stoi przy strzałkach list), nowa reguła wymaga zmiany testu w briefie.
+  Ruch w kodzie (`OverlayAppearMotion`, `ProgressSweep`) sprawdza `SystemMotion.IsReduced` i tego pliku
+  nie dotyczy.
+* **Okno potwierdzenia i powiadomienie szukają warstwy `WindowOverlay` przez okno elementu wywołującego**
+  (`MainWindow.axaml`) — element w okienku wysuwanym (menu, lista rozwijana) ma własny korzeń, warstwy
+  nie znajdzie i wywołanie rzuca wyjątkiem.
 * **`ScrollViewer.IsScrollChainingEnabled` trzeba ustawić także w motywach, które przekazują ją
   do własnego przewijania** (`ListBox`, `TextBox`) — ich szablon podaje własną wartość i zasłania
   ustawienie z motywu przewijania.

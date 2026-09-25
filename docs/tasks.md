@@ -155,16 +155,9 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
-* **Przygaszenie wyłączonych (motyw ramy, `DungeonControls.axaml`)** — z raportu porcji 7a,
-  2026-09-25; zabiera porcja 7b fundamentu:
-  * Kontrolka w treści wyłączonego `TabControl` albo `Expander` (przycisk, pole) przygasa podwójnie:
-    pojemnik przygasza całość, a jej motyw przygasza ją znowu, bo dziecko wyłączonego rodzica też ma
-    `:disabled`. Porcja 7a zrobiła to dobrze dla zakładek i nagłówka: przezroczystość po **własnym**
-    `IsEnabled` kontrolki, kolory stanu wyłączonego dalej po `:disabled`. To samo przestawienie
-    przejść we wszystkich motywach, które przygaszają przezroczystością.
 * **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
   uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które
-  zmienia układ menu (samo przestawienie przygaszenia z porcji 7b się nie liczy):
+  zmienia układ menu:
   * Skrót klawiszowy nie kończy się na tej samej prawej krawędzi co strzałka podmenu — w pozycji bez
     podmenu stoi dalej od prawej, z pustym marginesem po miejscu na strzałkę. Skrót i strzałka mają
     kończyć się w jednej linii przy prawym wcięciu pozycji.
