@@ -367,6 +367,9 @@
              (.type-tab: 8 px + linia 13 px + 8 px) daje ok. 32. Wcięcie poziome 12 (DungeonSpacingMd). -->
         <x:Double x:Key="DungeonTabHeight">32</x:Double>
         <Thickness x:Key="DungeonTabPadding">12,0</Thickness>
+        <!-- Najwyższa szerokość zakładki: ok. 30 znaków pisma 13. Dłuższa nazwa przycina się
+             wielokropkiem i pokazuje pełną w podpowiedzi. -->
+        <x:Double x:Key="DungeonTabMaxWidth">240</x:Double>
         <!-- Odstęp między zakładkami w pasku (w poziomie i między liniami po zawinięciu) idzie ze
              skali: DungeonSpacingXs. Mockup rejestru ma 3 px (.type-tabs gap) - poza skalą. -->
         <!-- Przełącznik segmentowy (ListBox z motywem DungeonSegmentedControl): pojemnik ma wysokość
