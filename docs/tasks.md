@@ -91,7 +91,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora w *Poprawkach czekających na obszar* | 40 / 9,8 / 4,8 mln |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
      | 6 | zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki | | |
-     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu | | |
+     | 7 | menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok, np. pasek PZ; tak jak w suwaku z porcji 4) | | |
      | 8 | tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany; kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela | | |
      | 8b | kompozycje przykładowe w galerii (pomysł autora): lista z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą | | |
      | 9 | odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`) | | |
