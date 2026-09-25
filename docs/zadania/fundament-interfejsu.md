@@ -14,14 +14,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–5 przyjęte przez autora. **Porcja 6 scalona** (2026-09-25; porzucona praca poprzedniej
-sesji przejęta jako punkt wyjścia i dokończona) — czeka na obejrzenie przez autora w galerii i na
-biurku kampanii (kafelki zminimalizowanych okien mają teraz tło karty, nieco jaśniejsze niż dotąd).
-Kopii roboczych brak. **Następny krok:** uwagi autora → runda porcji 6 (nowy wykonawca — kopia
-usunięta, ale da się ją odtworzyć, jeśli poprawka przyjdzie szybko). **Czeka na decyzję autora**
+Porcje 0–6 przyjęte przez autora; uwagi po porcji 6 (skakanie przy pogrubieniu wybranego,
+wyłączony pojemnik, pusty pasek zakładek) czekają w `tasks.md`, *Poprawki czekające na obszar* —
+zabiera je porcja 7 jako pierwszy punkt. Kopii roboczych brak. **Czeka na decyzję autora**
 propozycja architekta: porcje 7 i 8 dwoma wykonawcami jeden po drugim, obejrzane razem (7 i 8
-korzystają z ustalonych zasad, nie ustalają nowych); porcja 6 — osobno, bo ustala „wybrane”. Sesja:
-ta sama do porcji 8, nowa od 8b.
+korzystają z ustalonych zasad, nie ustalają nowych); sesja ta sama do porcji 8, nowa od 8b.
+**Następny krok:** odpowiedź autora → brief porcji 7.
 
 ## Zakres i koniec
 
@@ -70,10 +68,9 @@ Tylko gdy potrzeba:
 Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w aplikacji**, bo porcja
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
-- [x] **0–5** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **6** — zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki. *(scalona, czeka
-  na obejrzenie; rozstrzygnięcia architekta w „Ustaleniach")*
-- [ ] **7** — menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik
+- [x] **0–6** — przyjęte; rundy i pomiar w tabeli niżej.
+- [ ] **7** — najpierw poprawki po porcji 6 (`tasks.md`); potem menu, menu kontekstowe, podpowiedź
+  (także pełny napis przyciętej zakładki, segmentu i przycisku), okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
 - [ ] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
@@ -102,7 +99,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 3 | lista, wiersz listy, pusta lista, pasek przewijania (ustalenia architekta do briefu — w historii `tasks.md` do `7b52a80`); przygaszony akcent naprawiony (16 %, z kanałem alfa) | scalona 2026-09-25, obejrzana — uwagi autora (przewijanie przechodzi wyżej, najechanie na wybranym) poprawione w porcji 5; wiersz ma wysokość najmniejszą 32, nie stałą, bo panel instancji kampanii ma wiersze z polem liczbowym — panel testowy, do usunięcia (autor), więc bez poprawek | 55 / 9,4 / 7,4 mln |
 | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora rozstrzygnięte (`decisions.md`, *Niezmiennik interfejsu*) | 40 / 9,8 / 4,8 mln |
 | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
-| 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25 | 65 / 12,0 / 8,0 mln |
+| 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25; przyjęta 2026-09-25 — uwagi (pogrubienie wybranego zmienia szerokość, wyłączony pojemnik, pusty pasek) idą z porcją 7, bez osobnej rundy (autor) | 65 / 12,0 / 8,0 mln |
 
 ## Ustalenia
 
@@ -126,7 +123,9 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   klawiatury. Do zrobienia z obsługą klawiatury, nie w fundamencie.
 * **Porcja 6 — rozstrzygnięcia architekta** (2026-09-25; wiążą rundy porcji):
   * *Wybrane = akcent przygaszony w tle + akcent w tekście* — zakładka i segment tak samo jak wybrany
-    wiersz; wybrane pod myszą się nie zmienia; wyłączone wybrane traci akcent.
+    wiersz, plus pogrubienie z miejscem zarezerwowanym w każdym stanie (autor po obejrzeniu — reguła
+    w `architecture.md`, *Niezmiennik interfejsu*, *Stany*); wybrane pod myszą się nie zmienia;
+    wyłączone wybrane traci akcent — tło neutralne „aktywne".
   * *Zakładki* jak w mockupie (`.type-tab`): bez krawędzi i tła w spoczynku, wysokość 32, pasek od
     lewej, zawija się; odstęp między zakładkami ze skali (6), nie 3 z mockupu. Ta sama zakładka
     w `TabControl` (z treścią) i w `TabStrip` (sam pasek — filtr).

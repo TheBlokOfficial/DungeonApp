@@ -182,6 +182,17 @@ katalogu wybierane przez dane. Ginie wyłącznie **wybór kontrolki przez dane**
 Konsekwencją jest, że zniknęły parametry w rodzaju `compact` czy `selfDescribing`: zaprojektowany
 widok nie potrzebuje mówić o swoim układzie — on go po prostu ma.
 
+* **Stan nie zmienia wymiarów; pogrubienie wybranego zostaje** — autor, 2026-09-25, po porcji 6.
+  Pogrubiona wybrana zakładka była szersza: sąsiedzi skakali, przełącznik segmentowy z szerokością
+  z treści rozszerzał się przy wyborze najdłuższego segmentu, a przycięty napis tracił litery.
+  Architekt proponował wybór samym tłem i kolorem, jak w wierszu listy; autor zostawił pogrubienie
+  („wygląda ładnie") i oddał sposób architektowi. Rozstrzygnięcie: miejsce zarezerwowane na napis
+  pogrubiony w każdym stanie — to usuwa skakanie. Nie usuwa różnicy przy przycięciu: w tej samej
+  szerokości pogrubiony napis mieści literę–dwie mniej. Przycięcie jest wyjściem awaryjnym (zakładka
+  i przycisk mieszczą swój napis), więc to przyjęty koszt; pełny napis przyciętej kontrolki pokazuje
+  podpowiedź. Odrzucone: przycinanie zwykłego napisu w miejscu pogrubionego — własny pomiar tekstu dla
+  przypadku, który nie powinien się zdarzać.
+
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Dziedziczenie szablonów", „Osadzanie szablonu w szablonie", „Poziomy szablonów jako
 ratunek przed cyklem", „Zagnieżdżanie wartości w polu wpisu — odrzucone trzykrotnie", „Kosmetyczne

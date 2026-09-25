@@ -673,8 +673,12 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   zachowuje kolor i dostaje otoczkę — pas 3 px tej samej barwy z przezroczystością wokół krawędzi;
   wypełnienie nigdy się nie rozjaśnia, nie odbarwia i nie podbija jaskrawości; treść nigdy nie
   przygasa. Otoczka należy do najechania — przyszły wskaźnik fokusu klawiatury musi wyglądać inaczej. Wyłączona kontrolka traci
-  barwę znaczenia (akcent, czerwień): jest szara jak każda wyłączona, bo niczego nie robi. Ikona
+  barwę znaczenia (akcent, czerwień): jest szara jak każda wyłączona, bo niczego nie robi. Pojemnik
+  wyłączony w całości (zakładki z treścią, sekcja rozwijana) przygasza także treść. Ikona
   w kontrolce ma zawsze kolor jej tekstu i swój rysunek (konturowa zostaje konturowa).
+  **Zmiana stanu nie zmienia wymiarów kontrolki ani położenia sąsiadów.** Wybrane może być
+  pogrubione, bo napis ma zarezerwowane miejsce na pogrubienie w każdym stanie — kontrolka mierzy się
+  tak, jakby była pogrubiona zawsze.
 * **Odnośnik w zdaniu** ma stopień i grubość zdania, różni się kolorem i stałym podkreśleniem — sam
   kolor akcentu obok jasnego tekstu nie daje wymaganego kontrastu 3:1. Odnośnik samodzielny (poza
   zdaniem — „Wyczyść filtry”, „Sortuj”) jest szary, bez podkreślenia; po najechaniu jaśnieje

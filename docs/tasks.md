@@ -155,6 +155,13 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
     obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
+* **Zakładki, przełącznik segmentowy, sekcja rozwijana (motyw ramy, `DungeonControls.axaml`)** — uwagi
+  autora po porcji 6, 2026-09-25; zabiera je porcja 7 fundamentu:
+  * Pogrubienie wybranej zakładki (`TabItem`, `TabStripItem`) i segmentu zmienia szerokość — napis
+    ma rezerwować miejsce na pogrubienie w każdym stanie (niewidoczna pogrubiona kopia napisu pod
+    widocznym wyznacza szerokość). Pogrubienie zostaje.
+  * Wyłączony `TabControl` i `Expander` przygaszają tylko nagłówek — treść ma przygasnąć też.
+  * Pusty pasek zakładek w `TabControl` zostawia odstęp nad treścią — pusty pasek nie zajmuje miejsca.
 * **Suwak — tylko notka, bez korekty teraz** (autor, po rundzie 2 porcji 5, 2026-09-25): uchwyt
   w spoczynku (kolor tekstu drugorzędnego) lekko za ciemny. Pomysł autora na później: pod myszą
   obwódka wokół uchwytu zamiast rozjaśnienia — do zderzenia z wpisem o otoczce w `decisions.md`
