@@ -238,10 +238,17 @@ i dopiero wtedy propozycję.
 
 * **zamknięcie wycinka** — w commicie, który dogania dokumenty po scaleniu; raport z wycinka kończy
   się linią „Dokument zadania aktualny — można zamknąć sesję";
-* **decyzja autora w rozmowie** — od razu, bo najdrożej ją zgubić;
+* **decyzje i uwagi autora** — także uwagi po obejrzeniu wyniku — gdy rozmowa o nich się domknie,
+  najpóźniej razem z briefem, który z nich wynika. Nie po każdej turze: rozmowa w toku i tak ma ciąg
+  dalszy (autor, 2026-09-25);
 * **uruchomienie wykonawcy** — w *Gdzie stoimy*: co robi, jego gałąź i kopia. *Skąd:* 2026-09-25,
   przy zakładaniu pierwszego dokumentu, w kopii roboczej leżała zaczęta porcja fundamentu bez
   commita, raportu i żadnego śladu w dokumentach — jej brief przepadł z sesją, która go napisała.
+
+**Sesja z pracującym wykonawcą nie nadaje się do porzucenia** — wykonawca żyje w sesji architekta
+i ginie razem z nią, bez raportu. Gdy autor chce ją zamknąć w takiej chwili, architekt najpierw mówi,
+co przepadnie. Porzucenie zawsze kosztuje też ciepłą pamięć ostatniego wykonawcy: poprawkę po nowej
+sesji robi nowy wykonawca.
 
 **Granica.** Architekt zadania zmienia swobodnie dokument zadania, `code-state.md` i odnośnik
 w `tasks.md`; ustalenie ogólnoprojektowe, które wyszło w zadaniu i które autor zatwierdził, wpisuje
