@@ -59,10 +59,6 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
   oddaje `object`; drugi system pozna wymóg dopiero przez wyciek.
 * **Rozgrzewka kart biegnie zaraz po paczkach**, bo rama uruchamia kroki systemu razem — jej awaria
   zabiera pozostałą rozgrzewkę, która przechodzi wtedy w leniwe wczytywanie. Przyjęte bez weta.
-* **Token „przygaszony akcent" ma wartość zwykłego akcentu** — nazwa obiecuje co innego, niż daje.
-  Zakładka treści używa dlatego własnego przygaszonego tła zaznaczenia; kto sięgnie po token,
-  dostanie pełny pomarańcz. Poprawa wartości przemaluje jego obecnych użytkowników — do obejrzenia
-  z autorem.
 * **Kolory stanów mają zapisane znaczenie, pozostałe kolory motywu — nie.** Reguła z *Niezmiennika
   interfejsu* obowiązuje wszystkie.
 * **Paczek dostarczanych z systemem nie ma w kodzie** — architektura je deklaruje, ale nie istnieje
