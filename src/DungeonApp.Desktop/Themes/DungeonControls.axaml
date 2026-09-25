@@ -195,6 +195,69 @@
         </Style>
     </ControlTheme>
 
+    <!--
+        Kafelek: Button z Theme="{StaticResource DungeonTile}" - przycisk-rzecz (np. zminimalizowany
+        panel na biurku), nie polecenie z napisem. Osobny motyw, nie odmiana przycisku: nie dziedziczy
+        stałej wysokości ani wcięcia zwykłego przycisku. Wymiar wyłącznie od układającego - motyw nie
+        ustawia wysokości, szerokości ani wyrównania; Padding 0, treść wyśrodkowana w obu osiach
+        i przycięta wielokropkiem. Powierzchnia karty (tło BackstageCard - rzecz wyodrębniona z tła,
+        czytana jako całość; krawędź Border 1 px - linia), zaokrąglenie DungeonCornerRadius.
+        Tekst TextPrimary, krój interfejsu 13; ikona w kafelku bierze kolor tekstu (ForegroundIcon).
+        Stany:
+          spoczynek   - tło BackstageCard, krawędź Border;
+          najechanie  - tło SurfaceHover, krawędź BorderStrong; wciśnięcie i otwarte okienko
+                        (:flyout-open) - jak najechanie;
+          wyłączony   - DungeonDisabledOpacity (treść w kolorze wyłączonym), bez reakcji na mysz.
+        Bez przejść i bez transformacji (Fluent skaluje wciśnięty przycisk - tu nie). Fokus bez
+        wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="DungeonTile" TargetType="Button">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Background"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap"
+                                      RecognizesAccessKey="True" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:flyout-open">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
     <!-- =================================================================== -->
     <!-- POLA TEKSTOWE                                                       -->
     <!-- =================================================================== -->
