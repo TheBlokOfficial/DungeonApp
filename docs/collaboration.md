@@ -5,9 +5,10 @@ ten opisuje pracę nad nią. Dlatego nie konkuruje z nimi o fakty i nie ma miejs
 pierwszeństwa — przy rozbieżności o kod wygrywa kod, a ten dokument milczy.
 
 Jest adresowany do asystenta (i do każdego subagenta, któremu ktoś powierzy zadanie w tym
-repozytorium). Powstał 2026-09-12 z notatek, które asystent trzymał dotąd w swojej prywatnej
-pamięci — miejscu, którego autor nie widzi, nie może poprawić i którego nie ma w historii
-repozytorium. Wszystko poniżej pochodzi z realnych korekt albo realnych strat, nie z przewidywań.
+repozytorium). Każda reguła pochodzi z realnej korekty albo realnej straty, nie z przewidywań.
+**Skąd** — incydent, pomiar, wcześniejsze brzmienie — stoi w [decisions.md](decisions.md),
+*Część C — obieg pracy*, pod nazwą reguły. Tamtą część czyta się, gdy reguła jest kwestionowana albo
+ma się zmienić, nie na starcie sesji.
 
 ---
 
@@ -22,13 +23,6 @@ to zapisano — nie co jest do zrobienia dzisiaj. Zanim wykonasz pozycję, spraw
 przesłanka nadal jest prawdziwa, i zgłoś, kiedy nie jest. Pozycja bez wyzwalacza starzeje się po
 cichu: nic nie zmusza do jej ponownego przemyślenia, a sam fakt, że stoi zapisana, zaczyna z czasem
 uchodzić za uzasadnienie. „Dokument tak mówi" nie jest odpowiedzią na pytanie, po co to robimy.
-
-*Skąd to się wzięło:* 2026-09-13 asystent wykonał dwie pozycje z sekcji „Odłożone", nie sprawdziwszy
-przesłanki żadnej z nich. Obie okazały się słabe. Pierwsza opisywała jako niedokończoną pracę, której
-istniejącymi tokenami wykonać się nie dało — i nie dało się już w dniu, w którym ją zapisano. Druga
-chciała zamrozić testami kolejność kroków startowych, z których trzy przygotowują rzeczy oznaczone
-w tych samych dokumentach jako rusztowanie do wymiany. Trzecia rzecz z tamtej sesji, jedyna, która
-się obroniła, nie pochodziła z żadnego dokumentu — wyszła z czytania kodu przy okazji innego zadania.
 
 **Zielone światło jest per etap.** Nie realizuj kilku etapów jednym zamachem, nawet jeśli widzisz
 całą drogę. Proponuj, rekomenduj **jedną** opcję z uzasadnieniem, czekaj.
@@ -58,16 +52,6 @@ nie rozstrzyga.** Decyzja autora z 2026-09-24, dwukrotnie doprecyzowana tego sam
 * **Rób funkcje osiągalnymi** — moduł, którego nie da się otworzyć z działającej aplikacji, jest dla
   autora bezwartościowy.
 
-*Skąd to się wzięło:* reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI
-z własnej inicjatywy" i uczyła wykonawców dosłowności — robili dokładnie to, co brief wymienił,
-a autor wyciągał potem po kolei tekst zastępczy nie na środku pola, migający kursor po kliknięciu
-obok, pasek przewijania przy krótkiej liście, wiersze różnej wysokości zależnie od zawartości.
-Autor: „To, że ja te błędy wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił
-dobrą robotę." Pierwsze przepisanie tego samego dnia („gust autora, rzemiosło wykonawcy") nadal
-zostawiało autorowi kolory, układ i proporcje, a asystent wyprowadzał kontrolki z makiety jednego
-ekranu. Autor sprostował: w kontrolkach profesjonalność, czytelność i intuicyjność idą przed gustem
-i wiernością makiecie, a on sam chce decydować jako klient, nie jako projektant.
-
 **Nowy wygląd powstaje w motywie ramy, nie w widoku.** Widok składa się z kontrolek fundamentu
 i istniejących tokenów, dobranych po znaczeniu zapisanym przy tokenie, nie po barwie (reguła —
 `architecture.md`, *Niezmiennik interfejsu*). Brakujący element albo kolor dochodzi do motywu
@@ -95,17 +79,21 @@ wnosi. Pyta się o to, co zmienia aplikację, dokumenty z decyzjami albo cudzą 
 pracy nie dostaje osobnego zlecenia „w następnej turze" — trafia do `tasks.md`, *Poprawki czekające
 na obszar*, pogrupowana po obszarze kodu. Zabiera ją pierwsze zlecenie, które i tak wchodzi w ten
 obszar; osobny wykonawca dopiero wtedy, gdy uzbiera się ich tyle, że warto. Architekt przy pisaniu
-każdego briefu przegląda tę sekcję. *Dlaczego:* wykonawca, który już zna miejsce, robi poprawkę bez
-szukania go od nowa — osobne zlecenie na jedną drobnostkę płaci za całe wejście w kod.
+każdego briefu przegląda tę sekcję. Wykonawca, który już zna miejsce, robi poprawkę bez szukania go
+od nowa.
 
 **Auto-udoskonalanie: obieg pracy ma tanieć z sesji na sesję.** Decyzja autora z 2026-09-25.
 Asystent zauważa, gdzie praca płaci czas albo tokeny bez potrzeby — lektura, która nic nie wniosła,
 pytanie, które dokument mógł uprzedzić, szukanie, które mógł oszczędzić brief, reguła czytana przy
 każdym starcie, choć potrzebna raz — i zgłasza to autorowi przy najbliższym raporcie, w jednym–dwóch
 zdaniach z propozycją dopisku albo skrótu. Do dokumentów trafia to dopiero po zgodzie autora, jak
-każda zmiana. **Uwaga kończy się pytaniem „czy mogę to wpisać?”** — nie zostaje w rozmowie
-i nie jest zapowiedzią powrotu „później” (autor, tego samego dnia): niezadane pytanie ginie z sesją. Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty,
-tokeny, linie lektury).
+każda zmiana. **Uwaga nie zostaje w samej rozmowie** (autor, tego samego dnia) — rozmowa ginie
+z sesją. Albo kończy się pytaniem „czy mogę to wpisać?”, albo, gdy czeka na potwierdzenie (pomiar
+z kolejnego zlecenia, powtórzenie się zjawiska), zapisuje się ją od razu z wyzwalaczem powrotu —
+w *Notkach* dokumentu zadania, a w sesji głównej w `tasks.md`, *Odłożone* — i mówi autorowi, na co
+czeka. Zapowiedź „wrócę do tego” bez zapisu i bez wyzwalacza się nie liczy.
+Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty, tokeny, linie
+lektury).
 
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
@@ -120,26 +108,13 @@ się tu powierza, są z definicji wykonawcze — brief jest długi i precyzyjny 
 zostało po stronie zlecającego. Model wybiera się jawnie przy uruchomieniu, nie zostawia domyślnego.
 
 **Haiku 4.5 do zadań mechanicznych, Opus 5.5 do zadań z rozstrzygnięciami.** Decyzja autora
-z 2026-09-23 (Haiku), po próbie na drugim zleceniu etapu 4; Opus 5.5 zamiast Sonneta 5 — 2026-09-24. Haiku dostaje zadania, których poprawności
-pilnują build i testy — przeprowadzki, zmiany nazw, poprawki odwołań. Zlecenie wymienia wprost, co
-przenieść, a co usunąć; liczby z raportu architekt przelicza sam. Sonnet dostaje zadania, w których
-w obrębie briefu trzeba coś rozstrzygnąć — kontrakty, diagnozy, interfejs.
-
-*Dlaczego Opus 5.5 zamiast Sonneta (2026-09-24):* koszt długiego zlecenia to niemal wyłącznie ponowne
-czytanie rozmowy przy każdym kroku, a ten odczyt kosztuje u obu tyle samo. Zlecenie poprawek zakładek
-treści na Sonnecie: 362 kroki, 53 minuty, 142 mln tokenów odczytu wobec 0,25 mln napisanych — ta sama
-praca na Opusie kosztowałaby około 12% więcej, więc zwraca się, gdy robi ją w wyraźnie mniej krokach.
-Sonnet stracił połowę czasu na próby bez wyniku (kreska zaznaczenia) i uznał za poprawne coś, co było
-błędne (szczegół wyśrodkowany). **Wyzwalacz powrotu:** pierwsze dwa–trzy zlecenia na Opusie, zmierzone
-tak samo (kroki, czas, odczyt), nie robią wyraźnie mniej kroków na podobnej pracy — albo wychodzi nowy
-Sonnet; wtedy porównanie od nowa. Haiku zostaje: odczyt za połowę ceny, a poprawności jego zadań
-pilnują build i testy.
-
-*Z próby:* Haiku przeniósł dwadzieścia dwa pliki logiki wpisów bez jednej zmiany poza przestrzenią
-nazw, nie tknął wzorcowej kampanii ani asercji i sam zgłosił, czego nie był pewien — za mniej niż
-połowę kosztu Sonneta przy pierwszym zleceniu tego etapu. Zawiódł w dwóch miejscach: policzył
-w raporcie pliki zamiast testów i zgłosił nieistniejący ubytek; kopiował zamiast przenosić,
-a w poprawce zostawił martwą klasę pomocniczą i zracjonalizował resztę. Oba wyłapała weryfikacja.
+z 2026-09-23 (Haiku); Opus 5.5 zamiast Sonneta 5 — 2026-09-24. Haiku dostaje zadania, których
+poprawności pilnują build i testy — przeprowadzki, zmiany nazw, poprawki odwołań. Zlecenie wymienia
+wprost, co przenieść, a co usunąć; liczby z raportu architekt przelicza sam. Opus dostaje zadania,
+w których w obrębie briefu trzeba coś rozstrzygnąć — kontrakty, diagnozy, interfejs.
+**Wyzwalacz powrotu:** pierwsze dwa–trzy zlecenia na Opusie, zmierzone tak samo (kroki, czas, odczyt),
+nie robią wyraźnie mniej kroków na podobnej pracy niż Sonnet — albo wychodzi nowy Sonnet; wtedy
+porównanie od nowa.
 
 **Sesja architektoniczna czyta dokumenty, nie źródła.** Decyzja autora z 2026-09-22. Okno kontekstu
 asystenta prowadzącego sesję jest jej najcenniejszym zasobem, więc asystent projektuje i przegląda,
@@ -182,9 +157,7 @@ zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
 **Architekt po weryfikacji scala, nie buduje.** Decyzja autora z 2026-09-25. Build i liczbę testów
 przynosi raport wykonawcy; architekt nie powtarza ich na `master` po scaleniu, bo autor i tak buduje
-aplikację, zanim ją obejrzy. *Skąd:* tego dnia build po scaleniu porcji 6 odbił się od katalogu
-wyjściowego zablokowanego przez aplikację autora, a testy uruchamiane projekt po projekcie
-potwierdziły tylko to, co raport już podał.
+aplikację, zanim ją obejrzy.
 
 **Wygląd interfejsu sprawdza autor w aplikacji, nie testy.** Decyzja autora z 2026-09-24. Zlecenie
 zmieniające wygląd kończy się zielonym buildem i istniejącymi testami. Nowych testów renderujących
@@ -193,38 +166,20 @@ autor zobaczył **drugi raz**; wtedy przyczyna jest znana i test jest tani. Uwag
 idą następnym krótkim zleceniem. Logika bez okna — bez zmian: poprawka z testem, który przed nią nie
 przechodzi.
 
-*Dlaczego — z zapisów 120 przebiegów subagentów:* do 21.09 typowe zlecenie z kodem trwało 34 kroki
-i 6 minut, od 22.09 — 124 kroki i 17,5 minuty. Piętnaście przebiegów po ponad sto kroków zjadło 70%
-całego zużycia subagentów w projekcie; trzy najdroższe to widoki. Kroki szły na dowodzenie zmiany bez
-ekranu — renderowanie w testach, próbkowanie pikseli, walkę z przycinaniem — a jakość nie rosła:
-2026-09-24 szczegół wyśrodkowany daleko od listy przeszedł test szerokości, a 2026-09-22 etap przeszedł
-247 testów i padał po wyborze systemu. Autor łapie takie rzeczy w pierwszej minucie w aplikacji.
-
 **Nowe testy tylko tam, gdzie błędu nie widać w aplikacji albo niszczyłby dane.** Decyzja autora
 z 2026-09-24. Testy granic i testy formatu na wzorcowych paczkach i kampaniach — zawsze. Nowe testy
 logiki — przy zapisie kampanii, drodze zmiany stanu, wczytywaniu paczek i poprawce zgłoszonego błędu
 logiki; nie przy każdej zmianie. Istniejące testy logiki zostają: ich trzymanie nic nie kosztuje,
 dopóki nie zmienia się zachowanie.
 
-*Dlaczego — z tych samych 120 przebiegów:* praca przy testach to co czwarty krok wykonawców.
-Istniejący test zawiódł w trakcie cudzej zmiany 17 razy w całej historii: 9 razy test granic
-i 3 razy testy formatu — za każdym razem realny błąd; 4 razy testy logiki przy zamierzonej zmianie
-zachowania, poprawione razem z kodem; raz test renderujący z powodu środowiska. Poza granicami
-i formatem żaden test napisany przez wykonawcę nie złapał błędu w cudzej zmianie. Tego samego dnia
-usunięto 17 z 28 testów renderujących — te, które utrwalały świeże decyzje o wyglądzie; zostały
-pilnujące błędów, które już raz wracały (pasek boczny, przycisk paska górnego).
-
 **Autor uruchamia wyłącznie `master`.** Decyzja autora z 2026-09-22: pozostałe gałęzie są robocze
 i nie podaje mu się poleceń uruchamiających aplikację z kopii subagenta. Wynik zweryfikowany przez
 architekta trafia więc do `master` **przed** sprawdzeniem przez autora, a to, co w działającej
 aplikacji okaże się złe, naprawia następny commit albo cofnięcie — zgodnie z regułą „koniec kawałka
-pracy = commit". Tego samego dnia autor uruchomił z przyzwyczajenia `master` zamiast podanej mu
-kopii subagenta i sprawdzał wersję bez połowy etapu.
+pracy = commit".
 
 **Etap, który zmienia start albo nawigację, zanim uzna się go za zamknięty, uruchamia autor** — na
-`master`, po scaleniu. Testy nie otwierają okna. 2026-09-22 etap 1 przeszedł build, 247 testów i przegląd styków, a mimo to aplikacja padała po
-wyborze systemu (widok budowany poza wątkiem okna), na pasku brakowało pozycji kampanii, a treść
-skakała przy wejściu. Wszystko to widać w pierwszej minucie działania programu i w żadnym teście.
+`master`, po scaleniu. Testy nie otwierają okna.
 
 **Commit i scalenie robi architekt**, po weryfikacji — subagent zostawia wynik w swojej kopii.
 Dokumenty dogania architekt na końcu etapu: `code-state.md` (stan kodu), `tasks.md` (co dalej).
@@ -235,9 +190,7 @@ Ustalone z autorem 2026-09-25. Duże, wieloetapowe zadanie — kilkanaście zlec
 dni — dostaje własny dokument w `docs/zadania/`. Niesie wszystko, czego architekt potrzebuje, żeby
 prowadzić to zadanie dalej w nowej sesji: gdzie stoimy, plan, ustalenia, notki. **Stan zadania żyje
 w dokumencie, nie w rozmowie** — sesję da się porzucić po każdym zamkniętym wycinku i zacząć nową
-bez strat. *Dlaczego:* kontekst architekta rósł z każdym wykonawcą, `/compact` gubił szczegóły poza
-kontrolą autora, a nowa sesja płaciła za wdrożenie od zera — przegląd dokumentów, rozpoznanie kolejki
-i dopiero wtedy propozycję.
+bez strat.
 
 **Dwa rodzaje sesji — rozpoznaje się je po pierwszym poleceniu autora.**
 
@@ -256,9 +209,11 @@ i dopiero wtedy propozycję.
 * **decyzje i uwagi autora** — także uwagi po obejrzeniu wyniku — gdy rozmowa o nich się domknie,
   najpóźniej razem z briefem, który z nich wynika. Nie po każdej turze: rozmowa w toku i tak ma ciąg
   dalszy (autor, 2026-09-25);
-* **uruchomienie wykonawcy** — w *Gdzie stoimy*: co robi, jego gałąź i kopia. *Skąd:* 2026-09-25,
-  przy zakładaniu pierwszego dokumentu, w kopii roboczej leżała zaczęta porcja fundamentu bez
-  commita, raportu i żadnego śladu w dokumentach — jej brief przepadł z sesją, która go napisała.
+* **uruchomienie wykonawcy** — w *Gdzie stoimy*: co robi, jego gałąź i kopia.
+
+**Każdy commit, który zmienia dokument zadania, przesuwa commit w jego nagłówku** na ostatni, który
+stan uwzględnia (autor, 2026-09-25). Inaczej nowa sesja przegląda w `git log` zmiany, które dokument
+już opisuje.
 
 **Sesja z pracującym wykonawcą nie nadaje się do porzucenia** — wykonawca żyje w sesji architekta
 i ginie razem z nią, bez raportu. Gdy autor chce ją zamknąć w takiej chwili, architekt najpierw mówi,
@@ -333,8 +288,7 @@ do kodu.
 **Raport z etapu implementacyjnego kończy się listą dwóch–czterech rzeczy do sprawdzenia
 w aplikacji.** Asystent nie widzi okna, a to, jak się z aplikacji korzysta, należy do autora.
 
-**Dlaczego:** gęstość referencji nie jest dowodem rzetelności. Jego słowa: „kilkadziesiąt różnych
-linków, definicji kluczy etc potrafi zdezorientować". Raport ma się czytać bez zaglądania do drugiej
+Gęstość referencji nie jest dowodem rzetelności — raport ma się czytać bez zaglądania do drugiej
 warstwy.
 
 ---
@@ -346,21 +300,11 @@ warstwy.
    przed wpisaniem czegokolwiek: czy to zdanie przetrwa przeprojektowanie tej części systemu?
    Jeśli nie, idzie do dokumentu zmienianego świadomie.
 
-   *Skąd to się wzięło:* asystent chciał wpisać moduły (`ICampaignModule`, `ModuleCatalog`) na listę
-   pilnowanych szwów. Autor odrzucił — refaktoryzacja może zmienić kierunek, a wtedy nieaktualna
-   linijka zostaje w najbardziej zaraźliwym pliku w repo. Miał rację; broniony argument („moduł
-   jest centralnym mechanizmem") był prawdziwy *dzisiaj* i właśnie dlatego był problemem.
-
 2. **Nie wpisuj reguły, której nie da się dziś wykonać.** Subagent, który raz odbije się od
    niemożliwego wymogu, przestaje traktować całą listę poważnie.
 
-3. **Odsyłacze do sekcji po nazwie, nie po numerze.** Dwa razy w jednej sesji przenumerowanie
-   zerwało linki, i to cicho: wskaźnik na „§13" o nawigacji po jakimś czasie wskazywał na paczki
-   i bezpieczeństwo, a nic tego nie zgłosiło.
-
-   *Że to nie jest przesada:* przegląd 2026-09-14 znalazł w mapie kodu odsyłacz do „§13" po
-   warstwy i granice, które stoją w architekturze osiem sekcji wcześniej. Dokładnie ten sam błąd,
-   ten sam numer, cicho przez kilka sesji.
+3. **Odsyłacze do sekcji po nazwie, nie po numerze.** Przenumerowanie zrywa linki cicho — nic tego
+   nie zgłasza.
 
 4. **Każdy fakt ma jeden dom — nie streszczaj cudzego.** Zanim wpiszesz uzasadnienie, sprawdź, czy
    nie stoi już tam, gdzie należy: „co obowiązuje" w `architecture.md`, „dlaczego" — za przyjętym,
@@ -368,40 +312,23 @@ warstwy.
    dalej" w `tasks.md`. Odeślij po nazwie sekcji, zamiast powtórzyć. Tabela własności jest
    w `README.md`.
 
-   *Skąd to się wzięło:* przegląd 2026-09-14 znalazł ten sam argument w pięciu dokumentach naraz
-   (dwie flagi jako dowód, że stary format przeciekał układem) i w czterech (zmiana wpisu
-   traktowana jak patchnote). Powtórzenia brały się z dobrej intencji — każdy dokument miał się
-   czytać samodzielnie. Cena była taka, że **żadnego nie dało się bezpiecznie pominąć**, więc
-   koszt wejścia w sesję był sumą wszystkich sześciu.
-
-5. **Architektura deklaruje, rejestr uzasadnia.** Decyzja autora z 2026-09-22. `architecture.md`
+5. **Deklaracja osobno, uzasadnienie osobno.** Decyzja autora z 2026-09-22. `architecture.md`
    zawiera deklaracje i ich konsekwencje, w czasie teraźniejszym. Argumenty, odrzucone warianty
    i historia („wcześniej…", „do dnia…", „obowiązywało…") idą do `decisions.md`, do sekcji o tej
    samej nazwie co sekcja architektury; w architekturze zostaje odsyłacz. Sprawdzian na każdym
    zdaniu: konsekwencja („poprawka w paczce dociera do istniejących kampanii") zostaje, argument
-   („bo zmianę wpisu traktujemy jak patch balansujący grę") idzie do rejestru.
-
-   *Skąd to się wzięło:* autor — wdrożenie się albo nadrobienie zaległości wymagało przeczytania
-   dziesięciu punktów „dlaczego" przy każdej deklaracji. Do tego każda sesja dokładała do
-   architektury zdania „do dnia X obowiązywało…"; sesja, która tę regułę ustanowiła, dołożyła
-   ich pięć, zanim ją ustanowiła.
-
----
+   („bo zmianę wpisu traktujemy jak patch balansujący grę") idzie do rejestru. **Ten dokument
+   podlega tej samej regule** (2026-09-25): reguła tutaj, jej incydent i pomiar — w `decisions.md`,
+   *Część C — obieg pracy*.
 
 6. **Stan kodu niesie sądy, nie opis — i musi na siebie zarabiać.** Decyzja autora z 2026-09-23:
-   dokument, który na siebie nie zarabia, zmienia istotę albo znika. `code-state.md` (do tego dnia
-   `code-map.md`, „mapa kodu") trzyma cztery rzeczy: ocenę stanu, luki w testach, pułapki i punkty
-   rozszerzeń. Każda pozycja ma zmieniać decyzję architekta albo treść briefu. Po etapie usuwa się
-   pozycje rozwiązane i dopisuje nowe sądy; dogonienie dłuższe niż kilka zdań znaczy, że dokument
-   wrócił do opisywania.
+   dokument, który na siebie nie zarabia, zmienia istotę albo znika. `code-state.md` trzyma cztery
+   rzeczy: ocenę stanu, luki w testach, pułapki i punkty rozszerzeń. Każda pozycja ma zmieniać
+   decyzję architekta albo treść briefu. Po etapie usuwa się pozycje rozwiązane i dopisuje nowe sądy;
+   dogonienie dłuższe niż kilka zdań znaczy, że dokument wrócił do opisywania. Nawigację po kodzie
+   niesie **brief**, nie ten dokument.
 
-   *Skąd to się wzięło:* 2026-09-22 aktualizacja mapy zjadła dziesiątą część budżetu sesji i wypadł
-   z niej spis plików. 2026-09-23 sesja, która zamknęła etap 4, nie użyła mapy do żadnej decyzji —
-   konkret z kodu przychodził taniej z historii gita, celowanego przeszukania i raportów wykonawców,
-   a jedyny wykonawca, któremu brief ją wskazał, potknął się o nieaktualną nazwę. Opis modelu, zapisu
-   i warstwy okienkowej dublował architekturę albo komentarze przy kodzie i gnił po każdym etapie.
-   Obronił się tylko osąd. Nazwa „mapa" zapraszała przy tym do używania dokumentu jako nawigacji —
-   nawigację niesie **brief** (punkty niżej), nie ten dokument.
+---
 
 ## 4. Briefy dla subagentów
 
@@ -413,10 +340,6 @@ baseline'em. Model domyślny obu to Opus 5.5; przy zadaniu mechanicznym zlecenie
 wyboru modelu — sekcja 1). Zmiana zakazu albo formatu raportu idzie do definicji i tutaj naraz:
 definicja jest wersją wykonawczą, ten dokument — uzasadnieniem.
 
-*Dlaczego:* zakazy i format raportu żyły dotąd w każdym briefie z osobna, a ten dokument przypominał,
-że właśnie w długich briefach łatwo pominąć zakaz, który wydaje się oczywisty. Oszczędność tokenów
-jest mała; zysk jest w tym, że zakazu nie da się zapomnieć.
-
 **Diagnoza przechodzi w poprawkę przez raport, nie przez wznowienie.** Decyzja autora
 z 2026-09-23. Domyślnie diagnozuje `zwiadowca`, a poprawkę robi nowy `wykonawca`, którego brief
 niesie gotową diagnozę — raport jest zarazem miejscem, w którym architekt i autor widzą przyczynę,
@@ -425,52 +348,31 @@ niuansów trudnych do zapisania w briefie, albo gdy autor prosi o tego samego ag
 diagnozę dostaje `wykonawca` z poleceniem „najpierw tylko diagnoza, bez zmian", a po raporcie
 kontynuuje poprawkę; jego kopia zostaje (sekcja *Środowisko*).
 
-*Z liczb tego dnia:* diagnoza przycisku paska górnego kosztowała około 158 tys. tokenów, bo szukała
-przyczyny; nowy wykonawca z diagnozą w briefie zrobił poprawkę za około 93 tys., nie szukając jej
-drugi raz. Wznowiony diagnosta niósłby swój kontekst przez każdy krok poprawki.
-
 **Poprawka zaraz po obejrzeniu przez autora idzie do tego samego wykonawcy, jeśli jego pamięć jest
-jeszcze ciepła, a poprawka mała albo średnia.** Ustalone z autorem 2026-09-24, z pomiaru: poprawka
-otoczki w porcji 1 fundamentu, wznowiony wykonawca kilka minut po raporcie — 14 kroków, 2,2 minuty,
-1,7 mln odczytu, wobec 22–50 kroków i 1,5–5,3 mln u nowych wykonawców w rundach tej samej porcji.
-Architekt odtwarza wtedy usuniętą kopię w tym samym miejscu (`git worktree add -b <gałąź>
-<ścieżka kopii> master`) i przekazuje uwagę przez SendMessage. **Nowy wykonawca** dostaje nową
-porcję, rundę zmieniającą zakres albo poprawkę po dłuższej przerwie. Poniżej wcześniejsza reguła
-z tego samego dnia i jej rachunek — ważny, gdy pamięć już wygasła.
-
-*Wcześniej:* runda poprawek po obejrzeniu przez autora szła do nowego wykonawcy, nie do wznowionego.
-Ustalone z autorem 2026-09-24, z pomiaru. Nowy wykonawca startuje od około 47 tys. tokenów kontekstu (instrukcje,
-definicja, brief); wykonawca po porcji kończy ze 100–125 tys., a każdy krok czyta cały kontekst od
-nowa. Pamięć podręczna wykonawców wygasa po 5 minutach, a autor ogląda wynik dłużej — wznowiony
-zapisuje wtedy cały kontekst do pamięci ponownie, drożej niż zwykły odczyt; jego kopia robocza jest
-też już usunięta po scaleniu. Runda 1 porcji 0 fundamentu: nowy wykonawca — 22 kroki, 1,5 mln odczytu;
-wznowiony, szacunkowo, 2,1 mln nawet przy 15 krokach. Wznowienie opłaca się tylko przy poprawce zaraz
-po raporcie (zanim pamięć wygaśnie), po krótkim przebiegu albo przy niuansach trudnych do zapisania
-w briefie — wtedy kopii nie usuwa się przed decyzją (sekcja *Środowisko*).
+jeszcze ciepła, a poprawka mała albo średnia.** Ustalone z autorem 2026-09-24, z pomiaru. Architekt
+odtwarza wtedy usuniętą kopię w tym samym miejscu (`git worktree add -b <gałąź> <ścieżka kopii>
+master`) i przekazuje uwagę przez SendMessage. **Nowy wykonawca** dostaje nową porcję, rundę
+zmieniającą zakres albo poprawkę po dłuższej przerwie: pamięć podręczna wykonawcy wygasa po
+5 minutach, a wznowiony po wygaśnięciu zapisuje cały swój kontekst od nowa — drożej niż nowy
+wykonawca z krótkim briefem.
 
 Zakazy, które niosą definicje — wszystkie pochodzą z incydentów:
 
-1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Subagent ubił działającą instancję
-   aplikacji autora, żeby odblokować `dotnet clean`. Poprawne zachowanie to zgłosić blokadę, nie
-   sprzątnąć cudzy proces — patrz „Środowisko".
+1. **Nie zabijaj procesów** (`Stop-Process`, `taskkill`). Poprawne zachowanie przy blokadzie to
+   zgłosić ją, nie sprzątnąć cudzy proces — patrz „Środowisko".
 2. **Nie przeszukuj `bin/`, `obj/` ani niczego poza repozytorium** — pakietów NuGet, źródeł
-   bibliotek, reszty dysku. Subagent zaczął grepować pliki `.dll` w poszukiwaniu referencji do typów.
-   Skanuj tylko źródła repozytorium; katalogi wyjściowe zawierają kopie i pochodne, więc odpowiedź
-   jest i zaszumiona, i kosztowna. 2026-09-23 inny przeszukiwał cały dysk w poszukiwaniu źródeł
-   kontrolki Avalonii, żeby ustalić, jak rysuje tło względem krawędzi — brief tego nie przesądzał.
-   Gdy biblioteka zachowuje się inaczej, niż zakłada brief: najwyżej dwie próby, potem pomiar do
-   raportu i dalej z resztą zlecenia. Luka, która pcha wykonawcę poza repozytorium albo w serię prób,
-   jest luką briefu. 2026-09-24 osiemdziesiąt siedem kroków prób przy kresce zaznaczenia — połowa
-   najdroższego zlecenia w projekcie — nie dało wyniku.
-4. **Po 20 minutach pracy nic nowego.** Decyzja autora z 2026-09-24. Wykonawca dokańcza bieżącą
-   zmianę, zatwierdza to, co ma (co nie przechodzi buildu — commitem „WIP:”), i zgłasza, na czym
-   stanął. Commit po każdej zamkniętej części briefu, nie na końcu. *Dlaczego:* koszt kroku rośnie
-   z długością pracy, bo każdy krok czyta od nowa całą dotychczasową rozmowę — stąd 142 mln tokenów
-   odczytu w zleceniu, które napisało 0,25 mln. Czas, a nie kroki, bo zegar wykonawca sprawdzi,
-   a własnych kroków wiarygodnie nie policzy.
+   bibliotek, reszty dysku. Katalogi wyjściowe zawierają kopie i pochodne, więc odpowiedź jest
+   i zaszumiona, i kosztowna. Gdy biblioteka zachowuje się inaczej, niż zakłada brief: najwyżej dwie
+   próby, potem pomiar do raportu i dalej z resztą zlecenia. Luka, która pcha wykonawcę poza
+   repozytorium albo w serię prób, jest luką briefu.
 3. **Nie tłum ostrzeżeń** (`#pragma`, `<NoWarn>`, `SuppressMessage`). `TreatWarningsAsErrors` jest
    włączone celowo — kompilator jest tu walidatorem treści. Ostrzeżenie się naprawia u źródła albo
    zgłasza, nigdy nie wycisza.
+4. **Po 20 minutach pracy nic nowego.** Decyzja autora z 2026-09-24. Wykonawca dokańcza bieżącą
+   zmianę, zatwierdza to, co ma (co nie przechodzi buildu — commitem „WIP:”), i zgłasza, na czym
+   stanął. Commit po każdej zamkniętej części briefu, nie na końcu. Koszt kroku rośnie z długością
+   pracy, bo każdy krok czyta od nowa całą dotychczasową rozmowę. Czas, a nie kroki, bo zegar
+   wykonawca sprawdzi, a własnych kroków wiarygodnie nie policzy.
 
 **Subagent implementacyjny pracuje w osobnej kopii repozytorium** (worktree), a do głównej gałęzi
 trafia wynik zweryfikowany. Decyzja z 2026-09-22. Nie potknie się wtedy o niezatwierdzone zmiany
@@ -481,36 +383,26 @@ zrównać z lokalnym `master`; szczegół i powód w tej samej sekcji.
 Co jeszcze się sprawdziło:
 
 * **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`. Bez niej subagent
-  nie wie, czy spadek jest regresją. 2026-09-22 to niezgodna liczba testów zdradziła, że subagent
-  pracował na kodzie sprzed dwudziestu czterech commitów.
-* **Każ osobno wypisać rzeczy rozstrzygnięte samodzielnie.** Tak wyszły dwa realne błędy
-  w briefach.
+  nie wie, czy spadek jest regresją — a niezgodna liczba zdradza kopię na starym kodzie.
+* **Każ osobno wypisać rzeczy rozstrzygnięte samodzielnie.** Tak wychodzą błędy w briefach.
 * **Podawaj warunek zatrzymania jako informację, nie jako przeszkodę.** Gdy brief mówi „jeśli
   referencja okaże się żywa, zatrzymaj się i zgłoś", dopisz, że to właśnie jest wynik, po który
   wysyłasz zadanie. Inaczej subagent traktuje zatrzymanie jako porażkę i próbuje obejść.
 * **Ogranicz długość raportu**, gdy budżet jest niski.
 * **Podawaj w briefie punkty wejścia** — konkretne pliki i typy, od których zacząć, ze stanu kodu,
-  z historii gita albo ze zwiadu. Brief 2 etapu 4 (2026-09-23) niósł akapit „Stan dziś" z nazwami miejsc do zmiany; to jest
-  wzór. Gdy zadanie pasuje do wzorca z sekcji „Punkty rozszerzeń" w `code-state.md`, wskaż tę sekcję z nazwy.
+  z historii gita albo ze zwiadu; wzorem jest akapit „Stan dziś" z nazwami miejsc do zmiany. Gdy
+  zadanie pasuje do wzorca z sekcji „Punkty rozszerzeń" w `code-state.md`, wskaż tę sekcję z nazwy.
   Szukanie, którego brief nie oszczędził, jest kosztem briefu, nie wykonawcy.
-
 * **Poprawka błędu przychodzi z testem, który na starym kodzie nie przechodzi** — w logice zawsze,
   przy wyglądzie tylko wtedy, gdy brief każe (*Wygląd interfejsu sprawdza autor*, sekcja 1). Brief
-  każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt
-  równościami („wypełnia pasek”), nie ograniczeniem („nie wystaje”). 2026-09-23 pierwsza poprawka
-  przycisku paska górnego przyszła z testem zielonym przy błędzie, który autor widział na ekranie:
-  test sprawdzał, że przycisk nie wystaje, a przycisk za niski spełniał to bez trudu. Dopiero drugi
-  przebieg, z wymogiem porażki przed poprawką, dał dowód.
-
+  każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt równościami („wypełnia
+  pasek”), nie ograniczeniem („nie wystaje”) — test ograniczenia potrafi przejść przy błędzie
+  widocznym na ekranie.
 * **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
-  nie tylko wymiar.**
-  2026-09-24 zakładka treści przeszła trzy testy renderujące i w aplikacji miała szczegół
-  wyśrodkowany daleko od listy oraz niewidoczną kreskę zaznaczenia: testy sprawdzały szerokość kolumn
-  i geometrię kreski, a kreskę przycinała krawędź listy. Brief każe więc mierzyć, gdzie element stoi
-  względem sąsiada, i próbkować piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
+  nie tylko wymiar** — i próbkuje piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
 
-**Dlaczego to tu stoi:** briefy w tym repo są długie i precyzyjne, i właśnie dlatego łatwo w nich
-pominąć zakaz, który wydaje się oczywisty.
+Briefy w tym repo są długie i precyzyjne, i właśnie dlatego łatwo w nich pominąć zakaz, który
+wydaje się oczywisty — stąd zakazy w definicjach, nie w briefach.
 
 ---
 
@@ -597,21 +489,16 @@ poleceń. Zgoda udzielona raz nie znosi zakazu z „Briefy dla subagentów".
 
 **Kopię po diagnozie zostaw, dopóki nie zapadnie, kto robi poprawkę.** Reguła „po przeniesieniu
 wyniku usuń kopię i gałąź" dotyczy wyniku scalonego do `master`. Diagnoza nie ma czego scalać,
-a po niej zwykle przychodzi poprawka — 2026-09-23 autor chciał ją powierzyć temu samemu wykonawcy,
-który znał już przyczynę, i nie dało się go wznowić, bo architekt skasował jego kopię zaraz po
-raporcie. Wznowienie wymaga istniejącej kopii; nowy wykonawca zaczyna od zera.
+a po niej zwykle przychodzi poprawka — i wznowienie tego samego wykonawcy wymaga istniejącej kopii;
+nowy wykonawca zaczyna od zera.
 
 **Kopia robocza subagenta startuje z `origin/master`, nie z lokalnego `master`.** Autor nie wypycha
-na bieżąco, więc zdalna gałąź bywa daleko w tyle — 2026-09-22 o dwadzieścia cztery commity, i subagent
-zrobił na niej całe zadanie. **Brief implementacyjny zaczyna się od `git reset --hard master`
-w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. 2026-09-24 system
-uprawnień zablokował wykonawcy `git reset --hard master`; zadziałało `git switch -c <gałąź> master` —
-brief podaje oba, drugi jako zapasowy. Kopie robocze leżą
-w `.claude/worktrees/`, wykluczonym w `.gitignore`; po przeniesieniu wyniku do `master` asystent
-usuwa kopię i gałąź subagenta.
+na bieżąco, więc zdalna gałąź bywa daleko w tyle. **Brief implementacyjny zaczyna się od `git reset
+--hard master` w kopii subagenta** i każe podać w raporcie commit, od którego liczony jest diff. Gdy
+system uprawnień zablokuje reset, działa `git switch -c <gałąź> master` — brief podaje oba, drugi jako
+zapasowy. Kopie robocze leżą w `.claude/worktrees/`, wykluczonym w `.gitignore`; po przeniesieniu
+wyniku do `master` asystent usuwa kopię i gałąź subagenta.
 
-**Zadania redakcyjne na długich dokumentach architekt robi sam; subagentom zostaje kod.** Obserwacja
-z 2026-09-22, nie reguła o przyczynie: czterech subagentów z rzędu (Sonnet) na zadaniu
-przeniesienia tekstu między dokumentami stanęło bez postępu — najpierw jeden na całości, potem trzej
-na fragmentach po około 350 linii — i żaden nie zapisał wyniku. Przyczyny nie ustalono. Architekt
-zrobił to samo zadanie sam w kilka minut, bo stary tekst miał już w kontekście.
+**Zadania redakcyjne na długich dokumentach architekt robi sam; subagentom zostaje kod.** Obserwacja,
+nie reguła o przyczynie: subagenci na zadaniu przeniesienia tekstu między dokumentami stawali bez
+postępu, a architekt, który ma stary tekst w kontekście, robi to w kilka minut.

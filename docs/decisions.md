@@ -7,6 +7,8 @@ działać — to mówi [architecture.md](architecture.md). Mówi, **dlaczego** j
   Sekcje noszą nazwy sekcji architektury, które uzasadniają.
 * **Część B — kierunki odrzucone.** Czego już próbowaliśmy i dlaczego tego nie robimy — po to, żeby
   odrzucony pomysł nie wracał co kilka miesięcy jako nowy.
+* **Część C — obieg pracy.** Skąd wzięły się reguły współpracy z [collaboration.md](collaboration.md)
+  — incydenty, pomiary, wcześniejsze brzmienia.
 
 Do wdrożenia się w projekt ten dokument nie jest potrzebny. Czyta się go **przed** zaproponowaniem
 zmiany, nie po.
@@ -1680,3 +1682,231 @@ utrzymywanych na zapas, nie punktu wejścia.
 
 **Czym to zastąpiono.** Ekran wyboru istnieje od razu — [architecture.md](architecture.md),
 *Nawigacja: ekran wyboru systemu i pasek boczny*.
+
+---
+
+# Część C — obieg pracy
+
+Skąd wzięły się reguły z [collaboration.md](collaboration.md): incydent, pomiar, wcześniejsze
+brzmienie. Nagłówki to nazwy sekcji tamtego dokumentu, a pod nimi — nazwy reguł. Tekst przeniesiono
+stamtąd 2026-09-25 bez przeredagowania, żeby start sesji czytał same reguły. Tę część czyta się, gdy
+reguła jest kwestionowana albo ma się zmienić.
+
+**Pochodzenie dokumentu.** `collaboration.md` powstał 2026-09-12 z notatek, które asystent trzymał
+dotąd w swojej prywatnej pamięci — miejscu, którego autor nie widzi, nie może poprawić i którego nie
+ma w historii repozytorium.
+
+## Jak zapadają decyzje
+
+### Pozycja z kolejki nie jest zleceniem
+
+2026-09-13 asystent wykonał dwie pozycje z sekcji „Odłożone", nie sprawdziwszy przesłanki żadnej
+z nich. Obie okazały się słabe. Pierwsza opisywała jako niedokończoną pracę, której istniejącymi
+tokenami wykonać się nie dało — i nie dało się już w dniu, w którym ją zapisano. Druga chciała
+zamrozić testami kolejność kroków startowych, z których trzy przygotowują rzeczy oznaczone w tych
+samych dokumentach jako rusztowanie do wymiany. Trzecia rzecz z tamtej sesji, jedyna, która się
+obroniła, nie pochodziła z żadnego dokumentu — wyszła z czytania kodu przy okazji innego zadania.
+
+### W interfejsie asystent decyduje o tym, co rozstrzyga wiedza o interfejsach
+
+Reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI z własnej inicjatywy"
+i uczyła wykonawców dosłowności — robili dokładnie to, co brief wymienił, a autor wyciągał potem po
+kolei tekst zastępczy nie na środku pola, migający kursor po kliknięciu obok, pasek przewijania przy
+krótkiej liście, wiersze różnej wysokości zależnie od zawartości. Autor: „To, że ja te błędy
+wyciągam, nie znaczy, że musiałem je wcześniej mówić, aby ktoś zrobił dobrą robotę." Pierwsze
+przepisanie tego samego dnia („gust autora, rzemiosło wykonawcy") nadal zostawiało autorowi kolory,
+układ i proporcje, a asystent wyprowadzał kontrolki z makiety jednego ekranu. Autor sprostował:
+w kontrolkach profesjonalność, czytelność i intuicyjność idą przed gustem i wiernością makiecie, a on
+sam chce decydować jako klient, nie jako projektant.
+
+### Drobne poprawki czekają na swój obszar
+
+Osobne zlecenie na jedną drobnostkę płaci za całe wejście w kod.
+
+### Haiku 4.5 do zadań mechanicznych, Opus 5.5 do zadań z rozstrzygnięciami
+
+*Dlaczego Opus 5.5 zamiast Sonneta (2026-09-24):* koszt długiego zlecenia to niemal wyłącznie ponowne
+czytanie rozmowy przy każdym kroku, a ten odczyt kosztuje u obu tyle samo. Zlecenie poprawek zakładek
+treści na Sonnecie: 362 kroki, 53 minuty, 142 mln tokenów odczytu wobec 0,25 mln napisanych — ta sama
+praca na Opusie kosztowałaby około 12% więcej, więc zwraca się, gdy robi ją w wyraźnie mniej krokach.
+Sonnet stracił połowę czasu na próby bez wyniku (kreska zaznaczenia) i uznał za poprawne coś, co było
+błędne (szczegół wyśrodkowany). Haiku zostaje: odczyt za połowę ceny, a poprawności jego zadań
+pilnują build i testy.
+
+*Z próby Haiku (2026-09-23, drugie zlecenie etapu 4):* Haiku przeniósł dwadzieścia dwa pliki logiki
+wpisów bez jednej zmiany poza przestrzenią nazw, nie tknął wzorcowej kampanii ani asercji i sam
+zgłosił, czego nie był pewien — za mniej niż połowę kosztu Sonneta przy pierwszym zleceniu tego
+etapu. Zawiódł w dwóch miejscach: policzył w raporcie pliki zamiast testów i zgłosił nieistniejący
+ubytek; kopiował zamiast przenosić, a w poprawce zostawił martwą klasę pomocniczą i zracjonalizował
+resztę. Oba wyłapała weryfikacja.
+
+### Architekt po weryfikacji scala, nie buduje
+
+2026-09-25 build po scaleniu porcji 6 odbił się od katalogu wyjściowego zablokowanego przez aplikację
+autora, a testy uruchamiane projekt po projekcie potwierdziły tylko to, co raport już podał.
+
+### Wygląd interfejsu sprawdza autor w aplikacji, nie testy
+
+Z zapisów 120 przebiegów subagentów: do 21.09 typowe zlecenie z kodem trwało 34 kroki i 6 minut, od
+22.09 — 124 kroki i 17,5 minuty. Piętnaście przebiegów po ponad sto kroków zjadło 70% całego zużycia
+subagentów w projekcie; trzy najdroższe to widoki. Kroki szły na dowodzenie zmiany bez ekranu —
+renderowanie w testach, próbkowanie pikseli, walkę z przycinaniem — a jakość nie rosła: 2026-09-24
+szczegół wyśrodkowany daleko od listy przeszedł test szerokości, a 2026-09-22 etap przeszedł 247
+testów i padał po wyborze systemu. Autor łapie takie rzeczy w pierwszej minucie w aplikacji.
+
+### Nowe testy tylko tam, gdzie błędu nie widać w aplikacji albo niszczyłby dane
+
+Z tych samych 120 przebiegów: praca przy testach to co czwarty krok wykonawców. Istniejący test
+zawiódł w trakcie cudzej zmiany 17 razy w całej historii: 9 razy test granic i 3 razy testy formatu —
+za każdym razem realny błąd; 4 razy testy logiki przy zamierzonej zmianie zachowania, poprawione
+razem z kodem; raz test renderujący z powodu środowiska. Poza granicami i formatem żaden test
+napisany przez wykonawcę nie złapał błędu w cudzej zmianie. Tego samego dnia usunięto 17 z 28 testów
+renderujących — te, które utrwalały świeże decyzje o wyglądzie; zostały pilnujące błędów, które już
+raz wracały (pasek boczny, przycisk paska górnego).
+
+### Autor uruchamia wyłącznie `master`
+
+2026-09-22 autor uruchomił z przyzwyczajenia `master` zamiast podanej mu kopii subagenta i sprawdzał
+wersję bez połowy etapu.
+
+### Etap, który zmienia start albo nawigację, uruchamia autor
+
+2026-09-22 etap 1 przeszedł build, 247 testów i przegląd styków, a mimo to aplikacja padała po
+wyborze systemu (widok budowany poza wątkiem okna), na pasku brakowało pozycji kampanii, a treść
+skakała przy wejściu. Wszystko to widać w pierwszej minucie działania programu i w żadnym teście.
+
+### Dokument zadania
+
+Kontekst architekta rósł z każdym wykonawcą, `/compact` gubił szczegóły poza kontrolą autora, a nowa
+sesja płaciła za wdrożenie od zera — przegląd dokumentów, rozpoznanie kolejki i dopiero wtedy
+propozycję.
+
+*Aktualizacja przy uruchomieniu wykonawcy:* 2026-09-25, przy zakładaniu pierwszego dokumentu,
+w kopii roboczej leżała zaczęta porcja fundamentu bez commita, raportu i żadnego śladu
+w dokumentach — jej brief przepadł z sesją, która go napisała.
+
+*Commit w nagłówku:* 2026-09-25 nagłówek dokumentu fundamentu wskazywał commit sprzed dwóch
+późniejszych poprawek tego dokumentu, więc nowa sesja przeglądała w `git log` zmiany, które dokument
+już opisywał.
+
+## Jak raportować
+
+Autor: „kilkadziesiąt różnych linków, definicji kluczy etc potrafi zdezorientować". Gęstość
+referencji nie jest dowodem rzetelności.
+
+## Jak pisać dokumenty tego repozytorium
+
+### `CLAUDE.md` nazywa własności, nie dzisiejsze mechanizmy
+
+Asystent chciał wpisać moduły (`ICampaignModule`, `ModuleCatalog`) na listę pilnowanych szwów. Autor
+odrzucił — refaktoryzacja może zmienić kierunek, a wtedy nieaktualna linijka zostaje w najbardziej
+zaraźliwym pliku w repo. Miał rację; broniony argument („moduł jest centralnym mechanizmem") był
+prawdziwy *dzisiaj* i właśnie dlatego był problemem.
+
+### Odsyłacze do sekcji po nazwie, nie po numerze
+
+Dwa razy w jednej sesji przenumerowanie zerwało linki, i to cicho: wskaźnik na „§13" o nawigacji po
+jakimś czasie wskazywał na paczki i bezpieczeństwo, a nic tego nie zgłosiło. Przegląd 2026-09-14
+znalazł w mapie kodu odsyłacz do „§13" po warstwy i granice, które stoją w architekturze osiem sekcji
+wcześniej. Dokładnie ten sam błąd, ten sam numer, cicho przez kilka sesji.
+
+### Każdy fakt ma jeden dom
+
+Przegląd 2026-09-14 znalazł ten sam argument w pięciu dokumentach naraz (dwie flagi jako dowód, że
+stary format przeciekał układem) i w czterech (zmiana wpisu traktowana jak patchnote). Powtórzenia
+brały się z dobrej intencji — każdy dokument miał się czytać samodzielnie. Cena była taka, że
+**żadnego nie dało się bezpiecznie pominąć**, więc koszt wejścia w sesję był sumą wszystkich sześciu.
+
+### Deklaracja osobno, uzasadnienie osobno
+
+Do 2026-09-25 reguła nazywała się „Architektura deklaruje, rejestr uzasadnia". Autor — wdrożenie się
+albo nadrobienie zaległości wymagało przeczytania dziesięciu punktów „dlaczego" przy każdej
+deklaracji. Do tego każda sesja dokładała do architektury zdania „do dnia X obowiązywało…"; sesja,
+która tę regułę ustanowiła, dołożyła ich pięć, zanim ją ustanowiła. 2026-09-25 regułę rozciągnięto na
+`collaboration.md`: czytany w całości na starcie każdej sesji, miał ponad 600 linii, z czego około
+dwudziestu fragmentów było historią tego rodzaju — stąd ta część.
+
+### Stan kodu niesie sądy, nie opis
+
+`code-state.md` nazywał się do 2026-09-23 `code-map.md`, „mapa kodu". 2026-09-22 aktualizacja mapy
+zjadła dziesiątą część budżetu sesji i wypadł z niej spis plików. 2026-09-23 sesja, która zamknęła
+etap 4, nie użyła mapy do żadnej decyzji — konkret z kodu przychodził taniej z historii gita,
+celowanego przeszukania i raportów wykonawców, a jedyny wykonawca, któremu brief ją wskazał, potknął
+się o nieaktualną nazwę. Opis modelu, zapisu i warstwy okienkowej dublował architekturę albo
+komentarze przy kodzie i gnił po każdym etapie. Obronił się tylko osąd. Nazwa „mapa" zapraszała przy
+tym do używania dokumentu jako nawigacji.
+
+## Briefy dla subagentów
+
+### Dwa własne rodzaje subagentów
+
+Zakazy i format raportu żyły dotąd w każdym briefie z osobna, a zasady przypominały, że właśnie
+w długich briefach łatwo pominąć zakaz, który wydaje się oczywisty. Oszczędność tokenów jest mała;
+zysk jest w tym, że zakazu nie da się zapomnieć.
+
+### Diagnoza przechodzi w poprawkę przez raport, nie przez wznowienie
+
+2026-09-23: diagnoza przycisku paska górnego kosztowała około 158 tys. tokenów, bo szukała przyczyny;
+nowy wykonawca z diagnozą w briefie zrobił poprawkę za około 93 tys., nie szukając jej drugi raz.
+Wznowiony diagnosta niósłby swój kontekst przez każdy krok poprawki.
+
+### Poprawka zaraz po obejrzeniu — do tego samego wykonawcy
+
+Pomiar 2026-09-24: poprawka otoczki w porcji 1 fundamentu, wznowiony wykonawca kilka minut po
+raporcie — 14 kroków, 2,2 minuty, 1,7 mln odczytu, wobec 22–50 kroków i 1,5–5,3 mln u nowych
+wykonawców w rundach tej samej porcji.
+
+*Wcześniej (tego samego dnia):* runda poprawek po obejrzeniu przez autora szła do nowego wykonawcy,
+nie do wznowionego. Nowy wykonawca startuje od około 47 tys. tokenów kontekstu (instrukcje,
+definicja, brief); wykonawca po porcji kończy ze 100–125 tys., a każdy krok czyta cały kontekst od
+nowa. Pamięć podręczna wykonawców wygasa po 5 minutach, a autor ogląda wynik dłużej — wznowiony
+zapisuje wtedy cały kontekst do pamięci ponownie, drożej niż zwykły odczyt; jego kopia robocza jest
+też już usunięta po scaleniu. Runda 1 porcji 0 fundamentu: nowy wykonawca — 22 kroki, 1,5 mln
+odczytu; wznowiony, szacunkowo, 2,1 mln nawet przy 15 krokach. Ten rachunek nadal rozstrzyga, gdy
+pamięć już wygasła.
+
+### Zakazy
+
+* *Nie zabijaj procesów:* subagent ubił działającą instancję aplikacji autora, żeby odblokować
+  `dotnet clean`.
+* *Nie przeszukuj poza repozytorium:* subagent zaczął grepować pliki `.dll` w poszukiwaniu referencji
+  do typów. 2026-09-23 inny przeszukiwał cały dysk w poszukiwaniu źródeł kontrolki Avalonii, żeby
+  ustalić, jak rysuje tło względem krawędzi — brief tego nie przesądzał. 2026-09-24 osiemdziesiąt
+  siedem kroków prób przy kresce zaznaczenia — połowa najdroższego zlecenia w projekcie — nie dało
+  wyniku.
+* *20 minut:* stąd 142 mln tokenów odczytu w zleceniu, które napisało 0,25 mln.
+
+### Co jeszcze się sprawdziło
+
+* *Baseline liczby testów:* 2026-09-22 to niezgodna liczba testów zdradziła, że subagent pracował na
+  kodzie sprzed dwudziestu czterech commitów.
+* *Rzeczy rozstrzygnięte samodzielnie:* tak wyszły dwa realne błędy w briefach.
+* *Punkty wejścia:* wzorem był brief 2 etapu 4 (2026-09-23) z akapitem „Stan dziś".
+* *Test, który na starym kodzie nie przechodzi:* 2026-09-23 pierwsza poprawka przycisku paska
+  górnego przyszła z testem zielonym przy błędzie, który autor widział na ekranie: test sprawdzał, że
+  przycisk nie wystaje, a przycisk za niski spełniał to bez trudu. Dopiero drugi przebieg, z wymogiem
+  porażki przed poprawką, dał dowód.
+* *Test renderujący mierzy położenie i widoczność:* 2026-09-24 zakładka treści przeszła trzy testy
+  renderujące i w aplikacji miała szczegół wyśrodkowany daleko od listy oraz niewidoczną kreskę
+  zaznaczenia: testy sprawdzały szerokość kolumn i geometrię kreski, a kreskę przycinała krawędź
+  listy.
+
+## Środowisko
+
+### Kopię po diagnozie zostaw
+
+2026-09-23 autor chciał powierzyć poprawkę temu samemu wykonawcy, który znał już przyczynę, i nie
+dało się go wznowić, bo architekt skasował jego kopię zaraz po raporcie.
+
+### Kopia robocza subagenta startuje z `origin/master`
+
+2026-09-22 zdalna gałąź była w tyle o dwadzieścia cztery commity, i subagent zrobił na niej całe
+zadanie. 2026-09-24 system uprawnień zablokował wykonawcy `git reset --hard master`; zadziałało
+`git switch -c <gałąź> master`.
+
+### Zadania redakcyjne na długich dokumentach
+
+2026-09-22 czterech subagentów z rzędu (Sonnet) na zadaniu przeniesienia tekstu między dokumentami
+stanęło bez postępu — najpierw jeden na całości, potem trzej na fragmentach po około 350 linii —
+i żaden nie zapisał wyniku. Przyczyny nie ustalono. Architekt zrobił to samo zadanie sam w kilka
+minut, bo stary tekst miał już w kontekście.
