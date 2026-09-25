@@ -1155,4 +1155,130 @@
         </Style>
     </ControlTheme>
 
+    <!--
+        Przełącznik (ToggleSwitch). Szablon wycięty z ToggleSwitch.xaml Fluenta (Avalonia 12.0.5, MIT):
+        zostały części, po których kontrolka przesuwa gałkę - PART_SwitchKnob (Canvas, pole gałki) i
+        PART_MovingKnobs (to, co przesuwa, także przeciąganiem) - oraz prezenter etykiety
+        (PART_ContentPresenter). Wypadły napisy "On/Off" (OnContent/OffContent puste, bez
+        prezenterów) i nagłówek nad torem: etykieta (Content) stoi po prawej stronie toru, jak przy
+        polu wyboru - ten sam układ, wysokość najmniej DungeonControlHeight, tor wyśrodkowany
+        z pierwszą linią etykiety, długa etykieta zawija się w dół.
+        Tor DungeonToggleTrackWidth x DungeonToggleTrackHeight, zaokrąglony w pełni; gałka
+        DungeonToggleKnobSize w polu gałki (kwadrat o boku wysokości toru). Kontrolka stawia pole
+        gałki na Canvas.Left = 0 albo szerokość pola, więc tor ma dwa pola szerokości - jak w Fluencie.
+        Gałka przeskakuje bez animacji (KnobTransitions puste). Klikalny cały element z etykietą,
+        kursor strzałka.
+        Właściwości kontrolki niosą wygląd toru: Background - wypełnienie, BorderBrush - krawędź
+        (zawsze 1 px); gałka ma kolor ze stylu stanu.
+        Stany - nic więcej:
+          wyłączony (spoczynek) - tor: tło InputBackground, krawędź InputBorder; gałka po lewej,
+                                  TextMuted;
+          najechanie            - (wyłączony) krawędź InputHoverBorder, gałka TextRegular - jaśnieje;
+          włączony              - tor: wypełnienie i krawędź Accent; gałka po prawej, OnAccent; pod
+                                  myszą bez zmian - bez otoczki i bez zmiany koloru;
+          wciśnięcie            - wygląda jak najechanie (włączony - jak włączony);
+          wyłączenie kontrolki  - DungeonDisabledOpacity na całości, bez reakcji na mysz; włączony
+                                  traci akcent: tor neutralny, gałka po prawej w kolorze tekstu
+                                  podstawowego.
+        Fokus nie ma własnego wyglądu (FocusAdorner pusty).
+    -->
+    <ControlTheme x:Key="{x:Type ToggleSwitch}" TargetType="ToggleSwitch">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonChoiceLabelPadding}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="KnobTransitions" Value="{x:Null}" />
+        <Setter Property="OnContent" Value="{x:Null}" />
+        <Setter Property="OffContent" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*">
+                    <Panel Height="{DynamicResource DungeonControlHeight}" VerticalAlignment="Top">
+                        <Grid Width="{DynamicResource DungeonToggleTrackWidth}"
+                              Height="{DynamicResource DungeonToggleTrackHeight}"
+                              VerticalAlignment="Center">
+                            <Border Name="PART_Track"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="{DynamicResource DungeonToggleTrackCornerRadius}" />
+                            <Canvas Name="PART_SwitchKnob"
+                                    Width="{DynamicResource DungeonToggleTrackHeight}"
+                                    Height="{DynamicResource DungeonToggleTrackHeight}"
+                                    HorizontalAlignment="Left">
+                                <Grid Name="PART_MovingKnobs"
+                                      Width="{DynamicResource DungeonToggleTrackHeight}"
+                                      Height="{DynamicResource DungeonToggleTrackHeight}">
+                                    <Ellipse Name="PART_Knob"
+                                             Width="{DynamicResource DungeonToggleKnobSize}"
+                                             Height="{DynamicResource DungeonToggleKnobSize}"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Fill="{DynamicResource DungeonTextMutedBrush}" />
+                                </Grid>
+                            </Canvas>
+                        </Grid>
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Grid.Column="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      TextWrapping="Wrap"
+                                      RecognizesAccessKey="True" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <Style Selector="^:pointerover /template/ Ellipse#PART_Knob,
+                       ^:pressed /template/ Ellipse#PART_Knob">
+            <Setter Property="Fill" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+
+        <!-- Włączony - pod myszą bez zmian (style stoją po najechaniu). -->
+        <Style Selector="^:checked">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#PART_Knob">
+            <Setter Property="Fill" Value="{DynamicResource DungeonOnAccentBrush}" />
+        </Style>
+
+        <!-- Wyłączenie kontrolki: bez akcentu - tor neutralny; gałka włączonego w kolorze tekstu
+             podstawowego, wyłączonego jak w spoczynku. -->
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Ellipse#PART_Knob">
+            <Setter Property="Fill" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^:disabled:checked /template/ Ellipse#PART_Knob">
+            <Setter Property="Fill" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+    </ControlTheme>
+
 </ResourceDictionary>

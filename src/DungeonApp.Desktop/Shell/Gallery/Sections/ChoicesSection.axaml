@@ -1,11 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ChoicesSection">
-    <!-- The frame's CheckBox and RadioButton themes (Themes/DungeonControls.axaml), live: every static
-         state (unchecked, checked, indeterminate, disabled in each), a label longer than its column
-         (it wraps, the mark stays by the first line), a mark without a label and a group of three
-         radio buttons. Hover is checked with the mouse. Nothing here restyles a control - the only
-         local values are the long label's column width and the group name. -->
+    <!-- The frame's CheckBox, RadioButton and ToggleSwitch themes (Themes/DungeonControls.axaml), live:
+         every static state (unchecked, checked, indeterminate, disabled in each), a label longer than
+         its column (it wraps, the mark stays by the first line), a mark without a label and a group of
+         three radio buttons. Hover is checked with the mouse. Nothing here restyles a control - the
+         only local values are the long label's column width and the group name. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Pola wyboru" />
         <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij znacznik albo etykietę, żeby zmienić stan. Zaznaczone pod myszą się nie zmienia." />
@@ -53,6 +53,30 @@
                     <TextBox Width="120" Text="Goblin" />
                     <CheckBox Content="Ukryty" />
                     <Button Content="Dodaj" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="PRZEŁĄCZNIK" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Stany" />
+                <StackPanel>
+                    <ToggleSwitch Content="Wyłączony" />
+                    <ToggleSwitch Content="Włączony" IsChecked="True" />
+                    <ToggleSwitch Content="Wyłączony, kontrolka wyłączona" IsEnabled="False" />
+                    <ToggleSwitch Content="Włączony, kontrolka wyłączona" IsChecked="True" IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Długa etykieta (kolumna 240)" />
+                <StackPanel Width="240">
+                    <ToggleSwitch Content="Pokazuj graczom punkty życia potworów na wspólnym ekranie przy stole" />
+                </StackPanel>
+                <TextBlock Classes="caption muted" Text="Bez etykiety" />
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <ToggleSwitch />
+                    <ToggleSwitch IsChecked="True" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
