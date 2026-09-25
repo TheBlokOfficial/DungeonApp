@@ -231,6 +231,14 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     widoczna tylko pod myszą i na wybranym wierszu, miejsce zarezerwowane (przezroczystość, nie
     zwijanie). `row-action` z galerii przechodzi do motywu — lista kampanii to drugie użycie.
     Zbadać, czemu `.subtle` w wierszu nie ma najechania, i poprawić u źródła.
+    Dopisane po zrzucie listy kampanii (autor): nad i pod koszem jest pas wiersza, więc ruch myszy
+    w pionie po koszu przełącza podświetlenie wiersza i kosza; zaokrąglone tło pod koszem wygląda
+    obco w wierszu. Rozstrzygnięcie architekta: **obszar trafienia akcji w wierszu = cały pas pełnej
+    wysokości wiersza** (kolumna na końcu wiersza), wiersz nie podświetla się, gdy mysz jest w tym
+    pasie; **pod myszą jaśnieje sam rysunek, bez tła** — jak ikony w polach (`architecture.md`,
+    *Pole do pisania*). Kolor pod myszą: rekomendacja — jasny, nie czerwony, bo czerwień znaczy
+    „nieodwracalne”, a kampania idzie do kosza systemu; **autor chciał czerwieni — czeka na jego
+    słowo** (czerwień tu = zmiana znaczenia koloru, wpisać wtedy do `architecture.md`).
   * *Wyzwanie to zakreślenie, nie odznaka* (architekt, po sprawdzeniu `decisions.md`, *Zakreślenie
     a odznaka* — decyzja autora z 2026-09-24): wyzwanie w liście i na karcie → styl `.highlight`
     (`Typography.axaml`). **Ustalenie porcji 8 „odznaka = wartość (liczba, „1/2”)” było z tą decyzją
