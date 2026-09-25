@@ -368,8 +368,21 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
 * **Zaznaczanie tekstu tam, gdzie się go kopiuje, nie wszędzie.** MG przenosi fragment opisu albo
   akcji do notatek; komunikat błędu kopiuje się, żeby go komuś pokazać. W wierszach i nagłówkach
   przeciągnięcie myszą kłóciłoby się z kliknięciem.
-* **Kolor zaznaczenia z akcentu**, bo „zaznaczone" i „wybrane" to dla użytkownika to samo; mocniejszy
-  niż tło wybranego wiersza, bo zaznaczenie w tekście musi być widoczne na każdej literze.
+* **Kolor zaznaczenia: stonowany niebieski** — autor, 2026-09-25, po porcji 2: zaznaczenie w akcencie
+  „za bardzo krzykliwe”, wolałby szare albo niebieskie. Szare odpada, bo neutralne tło ma już
+  zakreślenie „wyróżnione” — zaznaczone zdanie z wyzwaniem zlałoby się z nim. Niebieski to
+  powszechna konwencja zaznaczenia tekstu, więc czyta się bez nauki; stonowany, żeby nie odstawał od
+  ciepłej palety. Wcześniej: **zaznaczenie z akcentu** (architekt, 2026-09-24), bo „zaznaczone”
+  i „wybrane” to dla użytkownika to samo — na ekranie akcent rozlany na całe zdanie krzyczał.
+* **Pisanie w polu bez krawędzi w akcencie** — autor, 2026-09-25, po porcji 2: pomarańczowa krawędź
+  pola w edycji „za bardzo krzykliwa”, wystarczy najechanie i karetka. Architekt przyjął i dołożył
+  jedno: krawędź z najechania zostaje przez całą edycję, bo po zjechaniu myszą karetka jest jedynym
+  znakiem, gdzie się pisze, a przy kilku polach obok siebie migająca kreska to słaby sygnał. Akcent
+  wypadł; nic nowego nie doszło. Wcześniej (architekt, brief porcji 2): krawędź w akcencie 1 px.
+* **Ikona, czyszczenie i strzałki obok obszaru tekstu** — autor, 2026-09-25: ikona pola nie powinna
+  należeć do jego części interaktywnej, a strzałki pola liczbowego zaznaczały tekst, jakby leżały
+  w polu pisania; przycisk czyszczenia z tłem pod myszą wychodził poza krawędź pola. Konwencja
+  platformy jest ta sama: przycisk w polu to osobna kontrolka, nie część tekstu.
 * **Siedem stopni pisma zamiast dwunastu z mockupu.** Mockup miał pary różniące się o pół piksela
   (13 i 13,5, 12 i 12,5, 11 i 11,5, 10,5 i 11) — w galerii nie do odróżnienia. Stopień, którego nie
   widać, nie niesie informacji, a każe wybierać. Role zostały; łączą się tylko ich stopnie. Wysokość

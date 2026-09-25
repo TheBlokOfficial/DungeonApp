@@ -664,8 +664,8 @@ kolorów znaczeń z motywu ramy.
 **Konwencje interakcji** — należą do szablonów kontrolek w motywie ramy, nie do widoków. Kontrolka
 idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 
-* **Kursor:** kursor tekstowy w polach do pisania i nad tekstem do zaznaczenia; strzałka wszędzie
-  indziej, także nad odnośnikami. Klikalność pokazuje stan najechania. Ręki nie ma — wróci dopiero
+* **Kursor:** kursor tekstowy nad obszarem tekstu w polach do pisania i nad tekstem do zaznaczenia;
+  strzałka wszędzie indziej, także nad odnośnikami. Klikalność pokazuje stan najechania. Ręki nie ma — wróci dopiero
   z odnośnikiem, który wyprowadza poza aplikację (np. strona w przeglądarce).
 * **Stany:** spoczynek, najechanie, wybrane (wiersz, zakładka, przełącznik) i wyłączone mają własny
   wygląd. Wciśnięcie nie ma własnego wyglądu: kontrolka wygląda jak pod myszą. Najechanie kontrolki
@@ -679,11 +679,16 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   kolor akcentu obok jasnego tekstu nie daje wymaganego kontrastu 3:1. Odnośnik samodzielny (poza
   zdaniem — „Wyczyść filtry”, „Sortuj”) jest szary, bez podkreślenia; po najechaniu jaśnieje
   i dostaje podkreślenie. Akcent zostaje dla tego, co wybrane albo główne.
+* **Pole do pisania:** pisanie pokazuje karetka, a pole trzyma przez całą edycję krawędź z najechania —
+  neutralną, bez akcentu. Ikona na początku pola, przycisk czyszczenia i strzałki pola liczbowego stoją
+  obok obszaru tekstu, nie w nim: strzałka myszy, kliknięcie nie stawia karetki i nie zaznacza tekstu.
+  Pod myszą jaśnieje sam rysunek, bez tła; ikona na początku pola nie reaguje wcale.
 * **Przycisk mieści swój napis.** Szerokość bierze się z napisu; przycięcie jest wyjściem awaryjnym,
   gdy kontener wymusza wąskie miejsce, nie wyglądem przycisku.
 * **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)
   i w komunikatach błędów. Etykiety, przyciski, wiersze list i nagłówki się nie zaznaczają. Kolor
-  zaznaczenia to akcent z przezroczystością — ten sam znak „wybrane" co zaznaczony wiersz.
+  zaznaczenia to stonowany niebieski — konwencja zaznaczenia tekstu, odróżnialna od obu zakreśleń
+  i od akcentu.
 * **Pismo:** siedem stopni — 11, 12, 13 dla tekstu interfejsu, 15 dla wyróżnionych liczb, 20, 26,
   34 dla kroju nagłówków, który nie schodzi poniżej 20. Style tekstu nazywają role, nie stopnie; nowa rola dostaje jeden z tych stopni.
   Tekst w kontrolce, którą się klika albo w której się pisze, ma co najmniej 12; stopień 11 jest dla
