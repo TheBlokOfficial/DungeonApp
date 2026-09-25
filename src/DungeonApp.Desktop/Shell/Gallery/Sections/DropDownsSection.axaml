@@ -27,5 +27,47 @@
                 </Button.Flyout>
             </Button>
         </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="LISTA ROZWIJANA POJEDYNCZA" />
+        <TextBlock Classes="caption muted" Text="Zamknięta wygląda jak pole; otwarta ma krawędź najechania i chevron w górę. Wybór zamyka listę." />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Pusta" />
+                <ComboBox PlaceholderText="Wybierz rozmiar">
+                    <ComboBoxItem Content="Mały" />
+                    <ComboBoxItem Content="Średni" />
+                    <ComboBoxItem Content="Duży" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Z wybraną pozycją" />
+                <ComboBox SelectedIndex="1">
+                    <ComboBoxItem Content="Mały" />
+                    <ComboBoxItem Content="Średni" />
+                    <ComboBoxItem Content="Duży" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Długi tekst" />
+                <ComboBox SelectedIndex="0">
+                    <ComboBoxItem Content="Zaginiona kopalnia Phandelver i Klątwa Strahda" />
+                    <ComboBoxItem Content="Krótka" />
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Wyłączona" />
+                <ComboBox SelectedIndex="0" IsEnabled="False">
+                    <ComboBoxItem Content="Średni" />
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+            <TextBlock Classes="caption muted" Text="Lista dłuższa niż rozwinięcie, w rzędzie z polem i przyciskiem" />
+            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBox Width="200" PlaceholderText="Nazwa spotkania" />
+                <ComboBox x:Name="LongComboBox" Width="200" PlaceholderText="Wybierz potwora" />
+                <Button Content="Dodaj" />
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </UserControl>

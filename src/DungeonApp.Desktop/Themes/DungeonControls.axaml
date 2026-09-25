@@ -1447,4 +1447,131 @@
         </Setter>
     </ControlTheme>
 
+    <!-- =================================================================== -->
+    <!-- LISTA ROZWIJANA                                                     -->
+    <!-- =================================================================== -->
+
+    <!--
+        Lista rozwijana pojedyncza (ComboBox) i jej wiersz (ComboBoxItem). Szablony wycięte
+        z ComboBox.xaml i ComboBoxItem.xaml Fluenta (Avalonia 12.0.5, MIT): zostały okno wyskakujące
+        (PART_Popup) i prezenter elementów (PART_ItemsPresenter); wypadły DataValidationErrors, pole
+        edycji (IsEditable - lista w ramie się nie edytuje) i podświetlenie fokusu.
+        Zamknięta wygląda jak pole tekstowe: wysokość DungeonControlHeight, tło, krawędź 1 px
+        i zaokrąglenie pola, wcięcie jak w polu; tekst wybranej pozycji wyśrodkowany w pionie,
+        w jednej linii przycięty wielokropkiem; bez wyboru - PlaceholderText kolorem zastępczym pola.
+        Po prawej chevron w dół (DungeonIconChevronDown, rozmiar ikony akcji, kolor tekstu
+        przygaszonego, 12 px od krawędzi jak lupa w polu wyszukiwania), sam rysunek bez tła.
+        Szerokość nadaje układ (rozciąga się jak pole), nie zawartość. Kursor strzałka.
+        Stany:
+          spoczynek  - krawędź InputBorder;
+          najechanie - krawędź InputHoverBorder (jak pole);
+          wciśnięcie - jak najechanie;
+          otwarta    - jak najechanie, także bez myszy nad polem (bez akcentu, jak pole w edycji);
+                       chevron obrócony w górę;
+          wyłączenie - DungeonDisabledOpacity.
+        Fokus nie ma wyglądu (FocusAdorner pusty); bez animacji otwierania.
+        Rozwinięta lista: powierzchnia okienka wysuwanego (ten sam motyw FlyoutPresenter - tło,
+        krawędź, wcięcie, cień, najwyższa wysokość DungeonFlyoutMaxHeight, przewijanie w środku),
+        co najmniej tak szeroka jak pole, DungeonFlyoutOffset pod nim. Zamyka ją wybór, kliknięcie
+        obok albo Escape (zachowanie ComboBox).
+        Wiersz (ComboBoxItem) to motyw wiersza listy (BasedOn ListBoxItem): te same wysokość,
+        wcięcia, najechanie, wybrany = AccentDim bez najechania, wyłączenie.
+    -->
+    <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="MaxDropDownHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Border Name="PART_BorderElement"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <TextBlock Name="PART_Placeholder"
+                               Grid.Column="0"
+                               Margin="{TemplateBinding Padding}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               Text="{TemplateBinding PlaceholderText}"
+                               Foreground="{TemplateBinding PlaceholderForeground}"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"
+                               IsVisible="{TemplateBinding SelectionBoxItem, Converter={x:Static ObjectConverters.IsNull}}" />
+                    <ContentPresenter Name="PART_SelectionBox"
+                                      Grid.Column="0"
+                                      Margin="{TemplateBinding Padding}"
+                                      Content="{TemplateBinding SelectionBoxItem}"
+                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap" />
+                    <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                             Grid.Column="1"
+                                             Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             Margin="0,0,12,0"
+                                             VerticalAlignment="Center"
+                                             IsHitTestVisible="False"
+                                             Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                             Source="{DynamicResource DungeonIconChevronDown}" />
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                           PlacementTarget="PART_BorderElement"
+                           Placement="Bottom"
+                           VerticalOffset="{DynamicResource DungeonFlyoutOffset}"
+                           IsLightDismissEnabled="True"
+                           InheritsTransform="True">
+                        <FlyoutPresenter Name="PART_DropDown"
+                                         HorizontalAlignment="Stretch"
+                                         MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                            <ItemsPresenter Name="PART_ItemsPresenter"
+                                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        </FlyoutPresenter>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+                       ^:pressed /template/ Border#PART_BorderElement,
+                       ^:dropdownopen /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ComboBoxItem}"
+                  TargetType="ComboBoxItem"
+                  BasedOn="{StaticResource {x:Type ListBoxItem}}" />
+
 </ResourceDictionary>

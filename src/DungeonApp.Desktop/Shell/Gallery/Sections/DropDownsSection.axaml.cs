@@ -17,5 +17,6 @@ public partial class DropDownsSection : UserControl
     {
         InitializeComponent();
         LongFlyoutList.ItemsSource = Monsters;
+        LongComboBox.ItemsSource = Monsters;
     }
 }
