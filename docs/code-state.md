@@ -105,6 +105,11 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   `deck-card`, `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
   usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
   porcje wiersza, kafelka i chipa dadzą im własne motywy.
+* **Błąd w motywie kontrolki kompiluje się i wywraca aplikację przy pierwszym użyciu kontrolki** —
+  wpisy `DungeonControls.axaml` są budowane leniwie. Przykład: `ControlTheme` nie dopuszcza selektora
+  potomka (`^ Typ`) poza szablonem — styl zawartości kontrolki idzie do `BuiltInControls.axaml`.
+  Pilnuje tego test budujący każdy wpis motywów (`ControlThemesBuildTests`); motyw w innym pliku
+  trzeba do niego dopisać.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.

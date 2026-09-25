@@ -1,5 +1,6 @@
  <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:DungeonApp.Desktop.Controls">
     <Style Selector="Window, UserControl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
@@ -19,6 +20,13 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
+    <!-- Ikona w polu tekstowym (ołówek, lupa): rozmiar ikony akcji. Mieszka tu, a nie w motywie pola
+         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka. -->
+    <Style Selector="TextBox controls|ForegroundIcon">
+        <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
+        <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
+    </Style>
+
     <Style Selector="TextBlock.muted">
         <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
