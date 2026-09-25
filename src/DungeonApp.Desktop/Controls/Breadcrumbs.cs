@@ -105,14 +105,20 @@ public sealed class Breadcrumbs : TemplatedControl
         {
             if (index > 0)
             {
-                var separator = new ForegroundIcon
+                // The icon has a fixed size, which layout keeps even when the panel arranges it into an
+                // empty rectangle (a hidden trail); the clipping frame around it is what hides it then.
+                var separator = new Border
                 {
+                    ClipToBounds = true,
                     VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                     IsHitTestVisible = false,
-                    [!ForegroundIcon.SourceProperty] = this[!SeparatorIconProperty],
-                    [!ForegroundIcon.ForegroundProperty] = this[!SeparatorForegroundProperty],
-                    [!WidthProperty] = this[!SeparatorSizeProperty],
-                    [!HeightProperty] = this[!SeparatorSizeProperty],
+                    Child = new ForegroundIcon
+                    {
+                        [!ForegroundIcon.SourceProperty] = this[!SeparatorIconProperty],
+                        [!ForegroundIcon.ForegroundProperty] = this[!SeparatorForegroundProperty],
+                        [!WidthProperty] = this[!SeparatorSizeProperty],
+                        [!HeightProperty] = this[!SeparatorSizeProperty],
+                    },
                 };
                 _panel.Children.Add(separator);
             }
