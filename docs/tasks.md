@@ -86,7 +86,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
      | 0 | galeria (zakładka), skala odstępów, wymiary z mockupu, typografia z krojem liczb | 1 (obcięte ogonki, grubości kroju nagłówków, siedem stopni pisma); przyjęta | 33 / 5,8 / 3,1 mln + runda 1: 22 / 4,0 / 1,5 mln |
      | 0b | powierzchnie i linie: tło, karta, panel, sekcja z obramowaniem; linia pozioma i pionowa, w liście, między sekcjami | 1 (architekt: kontrast przygaszonego tekstu i czerwieni, krój nagłówków od 20; autor: domyślny kolor tekstu); przyjęta — dwa kolory (drugorzędny, ostrzeżenie) przechodzą do porcji 1 | 33 / 6,3 / 2,7 mln + runda 1: 47 / 7,2 / 4,4 mln |
      | 1 | przyciski — sześć odmian; wysokość kontrolki według standardu okienkowego (dziś 38 z makiety) → 32, po rundzie 1 → 36 (autor: 32 zbyt ściśnięte); `frame-action` zostaje elementem ramy (pełna wysokość paska), nie przyciskiem (architekt) | 1 (autor: ikony niewidoczne na kolorowych przyciskach, wciśnięcie bez własnego koloru, wyłączony główny szary jak przed porcją, wysokość 36; architekt: przycięcie w galerii, odnośnik w zdaniu, grubość napisów); 2 (autor: ikony konturowe, odnośnik w zdaniu nad linią, najechanie akcentu odbarwia, bez wciśnięcia); 3 (autor: najechanie z wypełnieniem = kolor bez zmian + otoczka 3 px, odnośniki samodzielne szare, bez ręki nigdzie — `decisions.md`; poprawka: przycisk przycinał otoczkę); przyjęta | 52 / 8,4 / 6,1 mln + runda 1: 60 / 8,6 / 6,5 mln + runda 2: 50 / 7,9 / 5,3 mln + runda 3: 30 / 4,9 / 2,4 mln + poprawka otoczki (ten sam wykonawca, wznowiony): 14 / 2,2 / 1,7 mln |
-     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*` | | |
+     | 2 | pola tekstowe — zwykłe, wyszukiwania, wielowierszowe, liczbowe; kolor zaznaczenia; tekst do zaznaczenia; zakreślenie (styl tekstu na fragmencie, odmiany po znaczeniu: wyróżnione, trafienie wyszukiwania); pole w trakcie pisania ma wyraźną krawędź — to stan edycji, nie wskaźnik fokusu klawiatury (architekt); znaczenia pędzli `Input*`; fokus zdejmowany w ramie raz dla całej aplikacji | scalona 2026-09-25, **czeka na sprawdzenie przez autora** | 52 / 10,5 / 7,0 mln |
      | 3 | lista, wiersz listy, pusta lista, pasek przewijania | | |
      | 4 | pole wyboru, przycisk opcji, przełącznik, suwak | | |
      | 5 | okienko wysuwane; lista rozwijana pojedyncza, wielokrotna, z wyszukiwaniem | | |
@@ -143,8 +143,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   jak pole wyszukiwania, wiersze czcionką wierszy listy. Istniejące testy filtrów dostosować do nowej
   semantyki.
 * „Wyczyść filtry" wygaszone, gdy nie ma czego czyścić.
-* Pole wyszukiwania: tekst zastępczy wyśrodkowany w pionie; kliknięcie poza polem i Escape zdejmują
-  z niego fokus (dziś kursor miga dalej).
+* ~~Pole wyszukiwania: tekst zastępczy wyśrodkowany, fokus zdejmowany kliknięciem obok i Escape~~ —
+  zrobione w porcji 2 fundamentu.
 
 *B. Karta potwora*
 * Wyzwanie — zakreślenie z motywu (porcja 2), samo „1/2"; PD obok, przygaszone. Tagi kategorii
@@ -194,9 +194,7 @@ Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie
 albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
 *Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
 
-* **Narzędzie świata kampanii (Dnd5e, `CampaignInstancesToolView`):** przyciski bez odmiany —
-  „Dodaj"/„Zapisz" do rozważenia jako główny (najwyżej jeden główny w miejscu), „Usuń" jako cichy
-  albo niszczący. Z raportu porcji 1 fundamentu.
+Brak — ostatnią (odmiany przycisków w narzędziu świata kampanii) zabrała porcja 2 fundamentu.
 
 ---
 
