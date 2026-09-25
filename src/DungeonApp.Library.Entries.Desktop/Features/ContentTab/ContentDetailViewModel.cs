@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Avalonia.Controls;
 
 namespace DungeonApp.Library.Entries.Desktop.Features.ContentTab;
@@ -23,17 +22,6 @@ public sealed class ValidContentDetailViewModel(
     : ContentDetailViewModel
 {
     public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
-
-    /// <summary>
-    /// Every breadcrumb but the last, joined with "›" (krok 10, brief A8) - the leading, muted part
-    /// of the trail. Empty when <see cref="Breadcrumbs"/> has only one segment.
-    /// </summary>
-    public string BreadcrumbTrailText { get; } = string.Join(" › ", breadcrumbs.Take(breadcrumbs.Count - 1));
-
-    public bool HasBreadcrumbTrail => BreadcrumbTrailText.Length > 0;
-
-    /// <summary>The breadcrumb trail's last segment - the current entry's own name, shown less muted than the rest of the trail.</summary>
-    public string BreadcrumbCurrent { get; } = breadcrumbs[^1];
 
     public string? Category { get; } = category;
 

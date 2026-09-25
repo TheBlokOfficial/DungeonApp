@@ -165,18 +165,9 @@
     <UserControl.DataTemplates>
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
             <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-                <!-- krok 10, brief A8: "Okruszki w nagłówku szczegółu rozdzielone „›"." Two runs, not
-                     one ItemsControl per segment: the trail (every breadcrumb but the last, already
-                     joined with "›") stays muted, and the current entry's own name - the last segment
-                     - draws less muted, matching the mockup's ".crumb-path .current" - with one more
-                     "›" between the two when there is a trail at all. -->
-                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                    <TextBlock Classes="muted" Text="{Binding BreadcrumbTrailText}" IsVisible="{Binding HasBreadcrumbTrail}" />
-                    <TextBlock Classes="muted" Text="›" IsVisible="{Binding HasBreadcrumbTrail}" />
-                    <TextBlock Text="{Binding BreadcrumbCurrent}"
-                               FontSize="{DynamicResource DungeonHelperFontSize}"
-                               Foreground="{DynamicResource DungeonTextRegularBrush}" />
-                </StackPanel>
+                <!-- krok 10, brief A8: okruszki w nagłówku szczegółu - kontrolka ramy (motyw
+                     controls:Breadcrumbs): ślad przygaszony, bieżący odcinek (nazwa wpisu) drugorzędnym. -->
+                <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
 
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                     <TextBlock Text="{Binding Category}"

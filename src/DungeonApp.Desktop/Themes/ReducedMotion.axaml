@@ -15,7 +15,8 @@
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <Style Selector="ComboBox /template/ controls|ForegroundIcon#PART_DropDownGlyph,
-                     controls|DropDownPicker /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+                     controls|DropDownPicker /template/ controls|ForegroundIcon#PART_DropDownGlyph,
+                     Expander /template/ ToggleButton#ExpanderHeader /template/ controls|ForegroundIcon#PART_Chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <!-- Otwarcie okienka i rozwiniętej listy bez ruchu (Themes/PopupOpenMotion.cs). -->
