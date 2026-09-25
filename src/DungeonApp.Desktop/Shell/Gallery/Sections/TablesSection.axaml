@@ -1,11 +1,14 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TablesSection">
-    <!-- The frame's Table and TableCell themes, live, each on a card: a general table (header, text
-         column on the left, number column on the right, a long label trimmed, column lines on), an
-         abilities table (name, value, modifier - modifier cells highlighted with two sample
-         colours given by the layout, defined here) and the same table disabled. -->
+    <!-- The frame's Table and TableCell themes, live, straight on the section background like every
+         other gallery example (no card around them - the card's frame read as part of the table): a
+         general table (header, text column on the left, number column on the right, a long label
+         trimmed, column lines on), the author's abilities table (AbilityScoresSample - square
+         40 x 40 cells, modifiers not highlighted) and a disabled table whose modifier cells carry
+         two sample highlight colours given by the layout, defined here. -->
     <UserControl.Resources>
         <!-- Kolor podany przez układającego: przykładowe wyróżnienie modyfikatora dodatniego i ujemnego
              (w aplikacji - kolory systemu, nie tokeny stanów ramy). -->
@@ -16,60 +19,35 @@
         <TextBlock Classes="display-md" Text="Tabele" />
 
         <TextBlock Classes="overline-sm muted" Text="TABELA OGÓLNA - NAGŁÓWEK, LINIE PIONOWE, PRZYCINANIE" />
-        <Border Classes="surface-card" HorizontalAlignment="Left" Width="420">
-            <controls:Table ColumnDefinitions="*,80,80" RowDefinitions="Auto,Auto,Auto,Auto" ShowColumnLines="True">
-                <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="header" Content="Przedmiot" />
-                <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="header" HorizontalContentAlignment="Right" Content="Ilość" />
-                <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="header" HorizontalContentAlignment="Right" Content="Waga" />
-                <controls:TableCell Grid.Row="1" Grid.Column="0" Content="Lina konopna (15 m)" />
-                <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="1" />
-                <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="5,0" />
-                <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Pochodnia" />
-                <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="10" />
-                <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="10,0" />
-                <controls:TableCell Grid.Row="3" Grid.Column="0" Content="Bardzo długa nazwa przedmiotu, która nie mieści się w kolumnie" />
-                <controls:TableCell Grid.Row="3" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="2" />
-                <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="12345,5" />
-            </controls:Table>
-        </Border>
+        <controls:Table HorizontalAlignment="Left" Width="420" ColumnDefinitions="*,80,80" RowDefinitions="Auto,Auto,Auto,Auto" ShowColumnLines="True">
+            <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="header" Content="Przedmiot" />
+            <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="header" HorizontalContentAlignment="Right" Content="Ilość" />
+            <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="header" HorizontalContentAlignment="Right" Content="Waga" />
+            <controls:TableCell Grid.Row="1" Grid.Column="0" Content="Lina konopna (15 m)" />
+            <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="1" />
+            <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="5,0" />
+            <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Pochodnia" />
+            <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="10" />
+            <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="10,0" />
+            <controls:TableCell Grid.Row="3" Grid.Column="0" Content="Bardzo długa nazwa przedmiotu, która nie mieści się w kolumnie" />
+            <controls:TableCell Grid.Row="3" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Right" Content="2" />
+            <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="12345,5" />
+        </controls:Table>
 
-        <TextBlock Classes="overline-sm muted" Text="TABELA CECH - WYRÓŻNIENIE: KOLOR PODANY PRZEZ UKŁADAJĄCEGO" />
-        <Border Classes="surface-card" HorizontalAlignment="Left" Width="280">
-            <controls:Table ColumnDefinitions="*,56,56" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-                <controls:TableCell Grid.Row="0" Grid.Column="0" Content="Siła" />
-                <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="8" />
-                <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="-1" Background="{StaticResource GalleryModifierNegativeBrush}" />
-                <controls:TableCell Grid.Row="1" Grid.Column="0" Content="Zręczność" />
-                <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="14" />
-                <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+2" Background="{StaticResource GalleryModifierPositiveBrush}" />
-                <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Kondycja" />
-                <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="10" />
-                <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+0" />
-                <controls:TableCell Grid.Row="3" Grid.Column="0" Content="Inteligencja" />
-                <controls:TableCell Grid.Row="3" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="10" />
-                <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+0" />
-                <controls:TableCell Grid.Row="4" Grid.Column="0" Content="Mądrość" />
-                <controls:TableCell Grid.Row="4" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="8" />
-                <controls:TableCell Grid.Row="4" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="-1" Background="{StaticResource GalleryModifierNegativeBrush}" />
-                <controls:TableCell Grid.Row="5" Grid.Column="0" Content="Charyzma" />
-                <controls:TableCell Grid.Row="5" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="16" />
-                <controls:TableCell Grid.Row="5" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+3" Background="{StaticResource GalleryModifierPositiveBrush}" />
-            </controls:Table>
-        </Border>
+        <TextBlock Classes="overline-sm muted" Text="TABELA CECH - KOMÓRKI 40 × 40, MODYFIKATOR BEZ WYRÓŻNIENIA" />
+        <sections:AbilityScoresSample />
 
         <TextBlock Classes="overline-sm muted" Text="TABELA WYŁĄCZONA" />
-        <Border Classes="surface-card" HorizontalAlignment="Left" Width="280">
-            <controls:Table ColumnDefinitions="*,56,56" RowDefinitions="Auto,Auto,Auto" IsEnabled="False">
-                <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="header" Content="Cecha" />
-                <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="header" HorizontalContentAlignment="Center" Content="Wart." />
-                <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="header" HorizontalContentAlignment="Center" Content="Mod." />
-                <controls:TableCell Grid.Row="1" Grid.Column="0" Content="Siła" />
-                <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="18" />
-                <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+4" Background="{StaticResource GalleryModifierPositiveBrush}" />
-                <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Zręczność" />
-                <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="6" />
-                <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="-2" Background="{StaticResource GalleryModifierNegativeBrush}" />
-            </controls:Table>
-        </Border>
+        <controls:Table HorizontalAlignment="Left" Width="280" ColumnDefinitions="*,56,56" RowDefinitions="Auto,Auto,Auto" IsEnabled="False">
+            <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="header" Content="Cecha" />
+            <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="header" HorizontalContentAlignment="Center" Content="Wart." />
+            <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="header" HorizontalContentAlignment="Center" Content="Mod." />
+            <controls:TableCell Grid.Row="1" Grid.Column="0" Content="Siła" />
+            <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="18" />
+            <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+4" Background="{StaticResource GalleryModifierPositiveBrush}" />
+            <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Zręczność" />
+            <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="6" />
+            <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="-2" Background="{StaticResource GalleryModifierNegativeBrush}" />
+        </controls:Table>
     </StackPanel>
 </UserControl>

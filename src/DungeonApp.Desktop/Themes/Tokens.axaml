@@ -82,6 +82,12 @@
              i 4,9:1 na wierszu. Do tekstu na AccentDim / DangerDim, nie zamiast Accent i DangerText. -->
         <Color x:Key="DungeonAccentOnDimColor">#C89854</Color>
         <Color x:Key="DungeonDangerOnDimColor">#D87C64</Color>
+        <!-- NeutralDim: neutralne tło pojemnika wartości (odznaka neutralna) - biały o nieprzezroczystości
+             ok. 8 % (alfa 0x14), zapisany z kanałem alfa jak kolory *Dim: działa na każdej powierzchni,
+             bo ją przepuszcza i tylko rozjaśnia - na wybranym wierszu (AccentDim) nie jest ciemną
+             dziurą. Tekst drugorzędny (TextRegular) na nim: 7,1:1 na tle, 6,3:1 na karcie, 6,1:1 na
+             wierszu, 5,7:1 na wierszu pod myszą, 4,9:1 na wybranym wierszu. -->
+        <Color x:Key="DungeonNeutralDimColor">#14FFFFFF</Color>
         <!-- TableHeader: wiersz nagłówka tabeli w karcie - neutralnie jaśniejszy od karty
              (BackstageCard #1F1D1A), wyraźniej niż wiersz (#221F1C); nie akcent. Tekst drugorzędny
              na nim ok. 7,4:1. -->
@@ -131,6 +137,7 @@
         <SolidColorBrush x:Key="DungeonTableHeaderBrush" Color="{DynamicResource DungeonTableHeaderColor}" />
         <SolidColorBrush x:Key="DungeonAccentOnDimBrush" Color="{DynamicResource DungeonAccentOnDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
+        <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
 
         <!-- OTOCZKI NAJECHANIA ================================================ -->
         <!-- Pas 3 px na zewnątrz krawędzi, bez przesunięcia i rozmycia, w zaokrągleniu kontrolki
@@ -393,14 +400,14 @@
         <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
              podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
         <CornerRadius x:Key="DungeonListRowHighlightCornerRadius">3</CornerRadius>
-        <!-- Odznaka (wartość) i tag (słowo): jedna wysokość 20 - mieści linię tekstu 12 z oddechem
+        <!-- Odznaka (wartość) i tag (słowo): jedna wysokość 22 - mieści linię tekstu 12 z oddechem 3-4 px
              i stoi na środku wiersza listy (32) i linii tekstu 13. Odznaka to prostokąt o drobnym
              zaokrągleniu 4 (jak nawigacja), tag - pigułka (połowa wysokości). Wcięcie odznaki 8,
              tagu 10: pigułka potrzebuje więcej miejsca, żeby tekst nie dotykał łuku. -->
-        <x:Double x:Key="DungeonBadgeHeight">20</x:Double>
+        <x:Double x:Key="DungeonBadgeHeight">22</x:Double>
         <CornerRadius x:Key="DungeonBadgeCornerRadius">4</CornerRadius>
         <Thickness x:Key="DungeonBadgePadding">8,0</Thickness>
-        <CornerRadius x:Key="DungeonTagCornerRadius">10</CornerRadius>
+        <CornerRadius x:Key="DungeonTagCornerRadius">11</CornerRadius>
         <Thickness x:Key="DungeonTagPadding">10,0</Thickness>
         <!-- Chip filtra: zwarta kontrolka w rzędzie filtrów - niższa od przycisku (36), wcięcie
              poziome 10, zaokrąglenie jak kontrolki (DungeonControlCornerRadius). -->
