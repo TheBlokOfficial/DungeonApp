@@ -42,10 +42,8 @@
 
         <!-- krok 10, brief A4: the dropdown chevron shared by every filter chip and the sort button
              (mockup: .filter-chip svg is 8px, .sort-btn svg is 9px - unified to one size here rather
-             than carrying two near-identical literals for a difference this small). Search icon size
-             matches the mockup's own .search svg (13px). -->
+             than carrying two near-identical literals for a difference this small). -->
         <x:Double x:Key="ContentChevronIconSize">9</x:Double>
-        <x:Double x:Key="ContentSearchIconSize">13</x:Double>
 
         <!-- Selected-row look: two SEPARATE elements, matching mockup's .entry.selected (dim
              background) and .entry.selected::before (an accent stripe) - inset 5px top/bottom,
@@ -135,30 +133,6 @@
              alone too, and the brief only asks for the row bold, not a badge recolor. -->
         <Style Selector="Border.content-row-background.selected TextBlock.row-name">
             <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
-        <!-- krok 10, brief A4: the search field's own outer chrome - what TextBox's app-wide style
-             (BuiltInControls.axaml) already draws, moved out here so the magnifier icon can share
-             the same border instead of sitting outside it. -->
-        <Style Selector="Border.content-search">
-            <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="10,0" />
-        </Style>
-        <Style Selector="TextBox.search-input">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-        <Style Selector="TextBox.search-input /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="TextBox.search-input:pointerover /template/ Border#PART_BorderElement,
-                         TextBox.search-input:focus /template/ Border#PART_BorderElement,
-                         TextBox.search-input:focus:pointerover /template/ Border#PART_BorderElement">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
         </Style>
         <Style Selector="Button.content-row-button">
             <Setter Property="Height" Value="NaN" />
@@ -330,22 +304,11 @@
                 <Grid RowDefinitions="Auto,Auto,*" MinHeight="0">
 
                     <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingMd}">
-                        <!-- krok 10, brief A4: "Lupa w polu wyszukiwania" - the TextBox's own chrome
-                             (border/background/corner radius, BuiltInControls.axaml) is disabled on
-                             this one instance via the "search-input" class below, so the icon and the
-                             input share one outer border instead of the input drawing its own. -->
-                        <Border Classes="content-search">
-                            <Grid ColumnDefinitions="Auto,*">
-                                <Image Grid.Column="0"
-                                       Width="{StaticResource ContentSearchIconSize}"
-                                       Height="{StaticResource ContentSearchIconSize}"
-                                       Margin="0,0,8,0"
-                                       Source="{StaticResource DungeonIconSearch}" />
-                                <TextBox Grid.Column="1" Classes="search-input"
-                                         Text="{Binding Search, Mode=TwoWay}"
-                                         PlaceholderText="Szukaj po nazwie…" />
-                            </Grid>
-                        </Border>
+                        <!-- Pole wyszukiwania z motywu ramy (TextBox.search, DungeonControls.axaml):
+                             lupa i przycisk czyszczenia należą do szablonu. -->
+                        <TextBox Classes="search"
+                                 Text="{Binding Search, Mode=TwoWay}"
+                                 PlaceholderText="Szukaj po nazwie…" />
 
                         <WrapPanel>
                             <Button Classes="content-chip" Classes.active="{Binding CategoryFilter.IsActive}"

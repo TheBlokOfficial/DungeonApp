@@ -25,7 +25,7 @@
         <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć najechanie; kliknij, żeby zobaczyć stan edycji. Kliknięcie obok albo Escape kończy edycję." />
 
         <Grid ColumnDefinitions="140,Auto"
-              RowDefinitions="Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
             <!-- Jednowierszowe -->
@@ -60,6 +60,15 @@
                         <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
                     </TextBox.InnerLeftContent>
                 </TextBox>
+            </StackPanel>
+
+            <!-- Wyszukiwania -->
+            <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Wyszukiwania · search" />
+            <StackPanel Grid.Row="2" Grid.Column="1" Classes="field-row">
+                <TextBox Classes="search" PlaceholderText="Szukaj po nazwie…" />
+                <TextBox Classes="search" Text="goblin" />
+                <TextBox Classes="search" Text="smok czerwony dorosły z legowiskiem w górach" />
+                <TextBox Classes="search" Text="Wyłączone" IsEnabled="False" />
             </StackPanel>
         </Grid>
     </StackPanel>

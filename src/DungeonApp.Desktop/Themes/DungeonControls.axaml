@@ -337,6 +337,32 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputEditBorderBrush}" />
         </Style>
 
+        <!-- Wyszukiwania: lupa z szablonu; przycisk czyszczenia - cichy ikonowy, wysoki jak wnętrze
+             pola, zaokrąglony jak prawy koniec pola. Nie przyjmuje fokusu, więc po kliknięciu fokus
+             zostaje w polu. Widoczny tylko przy niepustym polu. -->
+        <Style Selector="^.search">
+            <Setter Property="InnerLeftContent">
+                <Template>
+                    <controls:ForegroundIcon Source="{DynamicResource DungeonIconSearch}" />
+                </Template>
+            </Setter>
+            <Setter Property="InnerRightContent">
+                <Template>
+                    <Button Classes="subtle icon"
+                            Focusable="False"
+                            Height="NaN"
+                            Width="{Binding $self.Bounds.Height}"
+                            VerticalAlignment="Stretch"
+                            CornerRadius="0,4,4,0"
+                            Command="{Binding $parent[TextBox].Clear}"
+                            IsVisible="{Binding $parent[TextBox].Text, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            ToolTip.Tip="Wyczyść">
+                        <controls:ForegroundIcon Source="{DynamicResource DungeonIconClear}" />
+                    </Button>
+                </Template>
+            </Setter>
+        </Style>
+
         <!-- Wielowierszowe -->
         <Style Selector="^[AcceptsReturn=True]">
             <Setter Property="Height" Value="NaN" />
