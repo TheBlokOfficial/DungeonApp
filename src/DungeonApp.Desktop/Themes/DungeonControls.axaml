@@ -20,7 +20,9 @@
         :pressed, więc wciśnięty przycisk wygląda dokładnie jak pod myszą - także wciśnięty z
         klawiatury albo gdy mysz zjedzie z wciśniętego. Przycisk z otwartym okienkiem (:flyout-open)
         też wygląda jak pod myszą, w każdej odmianie - dopóki okienko jest otwarte, interakcja trwa,
-        choć mysz jest już nad okienkiem. Nic nie przygasza treści ani jej nie zmniejsza
+        choć mysz jest już nad okienkiem. Po zamknięciu okienka kliknięciem w przycisk przycisk jest
+        w spoczynku, dopóki mysz z niego nie zjedzie (klasa .hover-suppressed, Themes/OpenerHoverRest.cs;
+        to samo w ComboBox i DropDownPicker). Nic nie przygasza treści ani jej nie zmniejsza
         (RenderTransform i Transitions wyzerowane; motyw Fluenta nie działa, bo ten go zastępuje).
         Fokus nie ma własnego wyglądu (FocusAdorner pusty). Kursor jest strzałką w każdej odmianie,
         także w odnośnikach - klikalność pokazuje najechanie.
@@ -89,7 +91,7 @@
         </Setter>
 
         <!-- Zwykły -->
-        <Style Selector="^:pointerover, ^:pressed, ^:flyout-open">
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
@@ -102,11 +104,11 @@
         </Style>
         <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
              styl odmiany stoi po stanach zwykłego. -->
-        <Style Selector="^.primary:pointerover, ^.primary:pressed, ^.primary:flyout-open">
+        <Style Selector="^.primary:pointerover:not(.hover-suppressed), ^.primary:pressed, ^.primary:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.primary:not(:disabled):pointerover /template/ Border#PART_Background,
+        <Style Selector="^.primary:not(:disabled):pointerover:not(.hover-suppressed) /template/ Border#PART_Background,
                        ^.primary:not(:disabled):pressed /template/ Border#PART_Background,
                        ^.primary:not(:disabled):flyout-open /template/ Border#PART_Background">
             <Setter Property="BoxShadow" Value="{DynamicResource DungeonAccentHoverHaloShadow}" />
@@ -117,7 +119,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.subtle:pointerover, ^.subtle:pressed, ^.subtle:flyout-open">
+        <Style Selector="^.subtle:pointerover:not(.hover-suppressed), ^.subtle:pressed, ^.subtle:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
@@ -129,11 +131,11 @@
         </Style>
         <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
              styl odmiany stoi po stanach zwykłego. -->
-        <Style Selector="^.danger:pointerover, ^.danger:pressed, ^.danger:flyout-open">
+        <Style Selector="^.danger:pointerover:not(.hover-suppressed), ^.danger:pressed, ^.danger:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^.danger:not(:disabled):pointerover /template/ Border#PART_Background,
+        <Style Selector="^.danger:not(:disabled):pointerover:not(.hover-suppressed) /template/ Border#PART_Background,
                        ^.danger:not(:disabled):pressed /template/ Border#PART_Background,
                        ^.danger:not(:disabled):flyout-open /template/ Border#PART_Background">
             <Setter Property="BoxShadow" Value="{DynamicResource DungeonDangerHoverHaloShadow}" />
@@ -149,13 +151,13 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
-        <Style Selector="^.link:pointerover, ^.link:pressed, ^.link:flyout-open">
+        <Style Selector="^.link:pointerover:not(.hover-suppressed), ^.link:pressed, ^.link:flyout-open">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
         <!-- Podkreślenie dziedziczy tekst treści przez ContentPresenter. -->
-        <Style Selector="^.link:pointerover /template/ ContentPresenter#PART_ContentPresenter,
+        <Style Selector="^.link:pointerover:not(.hover-suppressed) /template/ ContentPresenter#PART_ContentPresenter,
                        ^.link:pressed /template/ ContentPresenter#PART_ContentPresenter,
                        ^.link:flyout-open /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
@@ -1588,7 +1590,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+        <Style Selector="^:pointerover:not(.hover-suppressed) /template/ Border#PART_BorderElement,
                        ^:pressed /template/ Border#PART_BorderElement,
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
@@ -1731,7 +1733,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+        <Style Selector="^:pointerover:not(.hover-suppressed) /template/ Border#PART_BorderElement,
                        ^:pressed /template/ Border#PART_BorderElement,
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />

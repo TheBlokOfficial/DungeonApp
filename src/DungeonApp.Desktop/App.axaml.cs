@@ -124,6 +124,7 @@ public partial class App : Avalonia.Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             Themes.EditFocusRelease.Register();
+            Themes.OpenerHoverRest.Register();
             Themes.FieldIconPointer.Register();
 
             _shell = new AppShellViewModel(

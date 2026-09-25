@@ -21,6 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <!-- Testy bez ekranu sprawdzają konwencje interakcji ramy (Themes/*.cs) wprost. -->
+      <InternalsVisibleTo Include="DungeonApp.Desktop.RenderingTests" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
     </ItemGroup>
 </Project>
