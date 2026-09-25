@@ -833,7 +833,7 @@
     <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
         <Setter Property="MinHeight" Value="{DynamicResource DungeonListRowHeight}" />
         <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -847,16 +847,23 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="PART_ContentPresenter"
-                                  Background="{TemplateBinding Background}"
-                                  CornerRadius="{TemplateBinding CornerRadius}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  Content="{TemplateBinding Content}"
-                                  Padding="{TemplateBinding Padding}"
-                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                  TextBlock.TextTrimming="CharacterEllipsis"
-                                  TextBlock.TextWrapping="NoWrap" />
+                <!-- Podświetlenie o DungeonListRowHighlightInset węższe z góry i z dołu niż wiersz:
+                     sąsiednie podświetlenia dzieli odstęp, wiersz dalej zajmuje DungeonListRowHeight.
+                     Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie - najechanie nie
+                     gaśnie między wierszami. -->
+                <Border Background="Transparent">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Margin="{DynamicResource DungeonListRowHighlightInset}"
+                                      Background="{TemplateBinding Background}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Content="{TemplateBinding Content}"
+                                      Padding="{TemplateBinding Padding}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap" />
+                </Border>
             </ControlTemplate>
         </Setter>
 
@@ -1424,11 +1431,13 @@
         Okienko wysuwane (FlyoutPresenter - treść Flyout). Szablon wycięty z FlyoutPresenter.xaml
         Fluenta (Avalonia 12.0.5, MIT): zostały obramowanie, obszar przewijania i prezenter treści
         (PART_ContentPresenter); wygląd od nowa z tokenów.
-        Powierzchnia jak pole: tło InputBackground, krawędź InputBorder 1 px, zaokrąglenie kontrolki;
-        wcięcie wewnętrzne DungeonPaddingXs, żeby wiersze listy nie dotykały krawędzi; lekki cień
+        Powierzchnia jak pole: tło InputBackground, krawędź InputBorder 1 px, zaokrąglenie
+        DungeonFlyoutCornerRadius; wcięcie wewnętrzne DungeonFlyoutPadding, żeby wiersze listy nie
+        dotykały krawędzi; lekki cień
         DungeonFlyoutShadow. Wysokość najwyżej DungeonFlyoutMaxHeight - dłuższa treść przewija się
         w środku paskiem ramy (motyw ScrollViewer), pasek tylko przy potrzebie. Szerokość z treści.
-        Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu; bez animacji otwierania.
+        Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu. Otwarcie jest ruchem, zamknięcie
+        natychmiast (Themes/PopupOpenMotion.cs).
         Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout.
         Położenie: pod elementem, który je otworzył, wyrównane do jego lewej krawędzi - miejsce użycia
         ustawia Flyout Placement="BottomEdgeAlignedLeft" (Flyout nie jest kontrolką i motywu nie ma);
@@ -1443,8 +1452,8 @@
         <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonFlyoutCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
         <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
