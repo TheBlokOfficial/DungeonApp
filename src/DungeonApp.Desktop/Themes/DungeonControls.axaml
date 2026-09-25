@@ -2445,7 +2445,7 @@
           spoczynek          - bez tła, tekst TextRegular;
           najechanie         - tło SurfaceHover, tekst TextPrimary;
           wciśnięcie         - jak najechanie;
-          wybrana            - tło AccentDim, tekst Accent, SemiBold; pod myszą bez zmian (styl stoi
+          wybrana            - tło AccentDim, tekst AccentOnDim, SemiBold; pod myszą bez zmian (styl stoi
                                po najechaniu);
           wyłączona          - DungeonDisabledOpacity (tylko zakładka wyłączona sama - w wyłączonym
                                pasku albo TabControl przygasza raz całość), bez tła, tekst
@@ -2488,7 +2488,7 @@
         </Style>
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
         <Style Selector="^:disabled">
@@ -2667,7 +2667,7 @@
         Stany segmentu (zasada wspólna z zakładką):
           spoczynek   - bez tła, tekst TextRegular;
           najechanie  - tło SurfaceHover, tekst TextPrimary; wciśnięcie - jak najechanie;
-          wybrany     - tło AccentDim, tekst Accent, SemiBold; pod myszą bez zmian;
+          wybrany     - tło AccentDim, tekst AccentOnDim, SemiBold; pod myszą bez zmian;
           wyłączony   - DungeonDisabledOpacity, bez tła, tekst TextRegular, bez reakcji na mysz;
                         wybrany wyłączony traci akcent: tło neutralne InputBackground (jak znacznik
                         wyłączonego zaznaczonego pola wyboru - to samo co tło pojemnika, więc
@@ -2719,7 +2719,7 @@
         </Style>
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
         <Style Selector="^:disabled">
@@ -2937,7 +2937,8 @@
         Bez stanów: nie reagują na mysz, nie przyjmują fokusu, kursor strzałka, tekst się nie
         zaznacza. Wyłączone - DungeonDisabledOpacity po własnym IsEnabled.
         Odmiany po znaczeniu (klasy, te same dla obu):
-          (brak)   - neutralna: odznaka - tło BackstageRow, krawędź Border, tekst TextRegular;
+          (brak)   - neutralna: odznaka - tło NeutralDim (półprzezroczyste, na każdej powierzchni),
+                     krawędź Border, tekst TextRegular;
                      tag - bez tła, krawędź BorderStrong, tekst TextRegular;
           .accent  - tło AccentDim, tekst AccentOnDim, bez krawędzi;
           .success - tło SuccessDim, tekst Success, bez krawędzi;
@@ -2956,7 +2957,7 @@
         <Setter Property="Padding" Value="{DynamicResource DungeonBadgePadding}" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonBadgeCornerRadius}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        <Setter Property="Background" Value="{DynamicResource DungeonNeutralDimBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />

@@ -32,6 +32,7 @@
             <sections:LabelsSection />
             <sections:TablesSection />
             <sections:TilesSection />
+            <sections:CompositionsSection />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

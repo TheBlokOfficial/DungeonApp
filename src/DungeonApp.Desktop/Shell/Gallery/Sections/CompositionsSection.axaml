@@ -1,0 +1,138 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.CompositionsSection">
+    <!-- The frame's building blocks side by side, before real tabs use them: spacing between them
+         (only from the DungeonSpacing*/DungeonPadding* scale), vertical alignment in one row, colours
+         next to each other. A: a filtered list (search field, type chips, "Wyczyść filtry" link,
+         entry counter, list rows with tag, badge and delete button, EmptyState when nothing
+         matches). B: deleting a row - confirmation, then a notification whose "Cofnij" puts the row
+         back. C: a card with header, value bar, abilities table and a collapsible description.
+         Sample data in Polish, in memory only, defined here (CompositionsSection.axaml.cs) - nothing
+         reaches a campaign, a system or DungeonApp.Core. Only existing controls and tokens.
+         A and C sit in a WrapPanel: side by side when the window is wide enough for both fixed
+         widths, one under the other otherwise - both blocks keep their own width either way. -->
+    <UserControl.Styles>
+        <!-- List frame: the same area the Lists section puts its samples on (card background, line). -->
+        <Style Selector="Border.composition-list">
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
+        </Style>
+        <!-- Delete button in a list row: the subtle icon button, brought down from the control
+             height (36) to the compact control height (DungeonChipHeight, 28), so the row keeps its
+             own height (DungeonListRowHeight, 32) instead of the button's. -->
+        <Style Selector="Button.row-action">
+            <Setter Property="Width" Value="{DynamicResource DungeonChipHeight}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Kompozycje" />
+        <TextBlock Classes="caption muted" Text="Klocki obok siebie: odstępy ze skali, wyrównanie w jednym rzędzie, kolory obok siebie. Dane przykładowe tylko w pamięci." />
+
+        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXxxl}"
+                   LineSpacing="{DynamicResource DungeonSpacingXxxl}">
+
+            <!-- A + B: lista z filtrami i usuwaniem -->
+            <StackPanel Width="520" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="overline-sm muted" Text="LISTA Z FILTRAMI" />
+                <TextBox Name="SearchBox" Classes="search" PlaceholderText="Szukaj po nazwie…" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingMd}">
+                    <WrapPanel Name="TypeChips"
+                               ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                               LineSpacing="{DynamicResource DungeonSpacingXs}">
+                        <ToggleButton Theme="{StaticResource DungeonChip}" Content="Humanoid" />
+                        <ToggleButton Theme="{StaticResource DungeonChip}" Content="Bestia" />
+                        <ToggleButton Theme="{StaticResource DungeonChip}" Content="Nieumarły" />
+                        <ToggleButton Theme="{StaticResource DungeonChip}" Content="Smok" />
+                    </WrapPanel>
+                    <!-- The link stands on the first line of chips, whatever the chips wrap to. -->
+                    <Panel Grid.Column="1" Height="{DynamicResource DungeonChipHeight}" VerticalAlignment="Top">
+                        <Button Name="ClearFiltersButton" Classes="link" VerticalAlignment="Center" Content="Wyczyść filtry" />
+                    </Panel>
+                </Grid>
+                <TextBlock Name="CountText" Classes="label muted" />
+                <Border Classes="composition-list" Height="360">
+                    <Panel>
+                        <ListBox Name="SampleList" Grid.IsSharedSizeScope="True">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="sections:SampleRow">
+                                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="RowType" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="RowChallenge" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                        <controls:WordTag Grid.Column="1" Content="{Binding Type}" />
+                                        <controls:Badge Grid.Column="2" HorizontalAlignment="Right" Content="{Binding Challenge}" />
+                                        <Button Grid.Column="3" Classes="subtle icon row-action"
+                                                ToolTip.Tip="Usuń" Click="OnDeleteClick">
+                                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                                     Height="{DynamicResource DungeonActionIconSize}"
+                                                                     Source="{StaticResource DungeonIconTrash}" />
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel Name="NoResults" IsVisible="False" Spacing="{DynamicResource DungeonSpacingSm}">
+                            <controls:EmptyState Name="NoResultsMessage" />
+                            <Button Name="NoResultsClearButton" Classes="link" HorizontalAlignment="Center" Content="Wyczyść filtry" />
+                        </StackPanel>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- C: karta -->
+            <StackPanel Width="360" Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="overline-sm muted" Text="KARTA" />
+                <Border Classes="surface-card">
+                    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                            <TextBlock Classes="overline-sm muted" Text="POTWÓR · BESTIARIUSZ" />
+                            <TextBlock Classes="display-md" Text="Goblin" TextTrimming="CharacterEllipsis" />
+                            <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                                       LineSpacing="{DynamicResource DungeonSpacingXs}">
+                                <controls:WordTag Content="Humanoid" />
+                                <controls:WordTag Content="Mały" />
+                            </WrapPanel>
+                        </StackPanel>
+
+                        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingLg}"
+                                   LineSpacing="{DynamicResource DungeonSpacingSm}">
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Classes="label secondary" VerticalAlignment="Center" Text="KP" />
+                                <controls:Badge Content="15" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Classes="label secondary" VerticalAlignment="Center" Text="PW" />
+                                <controls:Badge Content="7" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Classes="label secondary" VerticalAlignment="Center" Text="Szybkość" />
+                                <controls:Badge Content="9 m" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                                <TextBlock Classes="label secondary" VerticalAlignment="Center" Text="Wyzwanie" />
+                                <controls:Badge Classes="accent" Content="1/4" />
+                            </StackPanel>
+                        </WrapPanel>
+
+                        <sections:AbilityScoresSample />
+
+                        <Expander Header="Opis">
+                            <SelectableTextBlock TextWrapping="Wrap"
+                                                 Text="Gobliny to małe, złośliwe humanoidy, które gnieżdżą się w jaskiniach, ruinach i gęstych lasach. W pojedynkę tchórzliwe, w bandzie zuchwałe - napadają na podróżnych i zastawiają pułapki. Chętnie służą silniejszym, dopóki ci płacą łupem." />
+                        </Expander>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </WrapPanel>
+    </StackPanel>
+</UserControl>
