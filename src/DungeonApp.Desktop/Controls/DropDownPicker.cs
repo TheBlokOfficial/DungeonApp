@@ -1,0 +1,305 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using Avalonia;
+using Avalonia.Collections;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+
+namespace DungeonApp.Desktop.Controls;
+
+/// <summary>How many rows a <see cref="DropDownPicker"/> selects.</summary>
+public enum DropDownPickerMode
+{
+    /// <summary>One row (<see cref="DropDownPicker.SelectedItem"/>); a choice closes the list.</summary>
+    Single,
+
+    /// <summary>Any rows (<see cref="DropDownPicker.SelectedItems"/>); the list stays open.</summary>
+    Multiple,
+}
+
+/// <summary>
+/// The frame's drop-down list for what ComboBox does not do: selecting several rows at once and/or
+/// narrowing the rows with a search field. A plain single choice without search stays a ComboBox.
+/// Rows show <c>ToString()</c> of each item. The look belongs to the frame's control theme
+/// (Themes/DungeonControls.axaml). Selection changes only what the user clicked.
+/// </summary>
+[TemplatePart("PART_SearchBox", typeof(TextBox))]
+[PseudoClasses(":dropdownopen")]
+public sealed class DropDownPicker : TemplatedControl
+{
+    public static readonly StyledProperty<IEnumerable?> ItemsSourceProperty =
+        AvaloniaProperty.Register<DropDownPicker, IEnumerable?>(nameof(ItemsSource));
+
+    public static readonly StyledProperty<IList?> SelectedItemsProperty =
+        AvaloniaProperty.Register<DropDownPicker, IList?>(
+            nameof(SelectedItems), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+    public static readonly StyledProperty<object?> SelectedItemProperty =
+        AvaloniaProperty.Register<DropDownPicker, object?>(
+            nameof(SelectedItem), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+    public static readonly StyledProperty<DropDownPickerMode> SelectionModeProperty =
+        AvaloniaProperty.Register<DropDownPicker, DropDownPickerMode>(
+            nameof(SelectionMode), DropDownPickerMode.Multiple);
+
+    public static readonly StyledProperty<bool> IsSearchEnabledProperty =
+        AvaloniaProperty.Register<DropDownPicker, bool>(nameof(IsSearchEnabled));
+
+    public static readonly StyledProperty<string?> PlaceholderTextProperty =
+        AvaloniaProperty.Register<DropDownPicker, string?>(nameof(PlaceholderText));
+
+    public static readonly StyledProperty<bool> IsDropDownOpenProperty =
+        AvaloniaProperty.Register<DropDownPicker, bool>(
+            nameof(IsDropDownOpen), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+    public static readonly StyledProperty<string?> SearchTextProperty =
+        AvaloniaProperty.Register<DropDownPicker, string?>(
+            nameof(SearchText), defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
+
+    public static readonly DirectProperty<DropDownPicker, IReadOnlyList<DropDownPickerRow>> RowsProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, IReadOnlyList<DropDownPickerRow>>(
+            nameof(Rows), picker => picker.Rows);
+
+    public static readonly DirectProperty<DropDownPicker, string> SummaryTextProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, string>(nameof(SummaryText), picker => picker.SummaryText);
+
+    public static readonly DirectProperty<DropDownPicker, bool> HasNoMatchesProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, bool>(nameof(HasNoMatches), picker => picker.HasNoMatches);
+
+    private IReadOnlyList<DropDownPickerRow> _rows = [];
+    private string _summaryText = string.Empty;
+    private bool _hasNoMatches;
+    private INotifyCollectionChanged? _observedSelection;
+    private TextBox? _searchBox;
+
+    public DropDownPicker()
+    {
+        SetCurrentValue(SelectedItemsProperty, new AvaloniaList<object>());
+        AddHandler(PointerReleasedEvent, OnAnyPointerReleased, RoutingStrategies.Bubble, handledEventsToo: true);
+    }
+
+    public IEnumerable? ItemsSource
+    {
+        get => GetValue(ItemsSourceProperty);
+        set => SetValue(ItemsSourceProperty, value);
+    }
+
+    /// <summary>Multiple mode: the selected items. The picker adds and removes in this list.</summary>
+    public IList? SelectedItems
+    {
+        get => GetValue(SelectedItemsProperty);
+        set => SetValue(SelectedItemsProperty, value);
+    }
+
+    /// <summary>Single mode: the selected item.</summary>
+    public object? SelectedItem
+    {
+        get => GetValue(SelectedItemProperty);
+        set => SetValue(SelectedItemProperty, value);
+    }
+
+    public DropDownPickerMode SelectionMode
+    {
+        get => GetValue(SelectionModeProperty);
+        set => SetValue(SelectionModeProperty, value);
+    }
+
+    /// <summary>A search field on top of the open list narrows its rows.</summary>
+    public bool IsSearchEnabled
+    {
+        get => GetValue(IsSearchEnabledProperty);
+        set => SetValue(IsSearchEnabledProperty, value);
+    }
+
+    public string? PlaceholderText
+    {
+        get => GetValue(PlaceholderTextProperty);
+        set => SetValue(PlaceholderTextProperty, value);
+    }
+
+    public bool IsDropDownOpen
+    {
+        get => GetValue(IsDropDownOpenProperty);
+        set => SetValue(IsDropDownOpenProperty, value);
+    }
+
+    public string? SearchText
+    {
+        get => GetValue(SearchTextProperty);
+        set => SetValue(SearchTextProperty, value);
+    }
+
+    /// <summary>The rows the open list shows - the items the search keeps.</summary>
+    public IReadOnlyList<DropDownPickerRow> Rows
+    {
+        get => _rows;
+        private set => SetAndRaise(RowsProperty, ref _rows, value);
+    }
+
+    /// <summary>What the closed picker says (<see cref="DropDownPickerText.Summary"/>).</summary>
+    public string SummaryText
+    {
+        get => _summaryText;
+        private set => SetAndRaise(SummaryTextProperty, ref _summaryText, value);
+    }
+
+    /// <summary>There are items, but the search keeps none of them.</summary>
+    public bool HasNoMatches
+    {
+        get => _hasNoMatches;
+        private set => SetAndRaise(HasNoMatchesProperty, ref _hasNoMatches, value);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _searchBox = e.NameScope.Find<TextBox>("PART_SearchBox");
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == SelectedItemsProperty)
+        {
+            ObserveSelection(change.GetNewValue<IList?>());
+            Refresh();
+        }
+        else if (change.Property == ItemsSourceProperty
+                 || change.Property == SelectedItemProperty
+                 || change.Property == SelectionModeProperty
+                 || change.Property == SearchTextProperty)
+        {
+            Refresh();
+        }
+        else if (change.Property == IsDropDownOpenProperty)
+        {
+            var isOpen = change.GetNewValue<bool>();
+            PseudoClasses.Set(":dropdownopen", isOpen);
+            if (isOpen)
+            {
+                if (IsSearchEnabled && _searchBox is { } searchBox)
+                {
+                    // The popup's content attaches after this change; focus it once it is there.
+                    Dispatcher.UIThread.Post(() => searchBox.Focus(), DispatcherPriority.Loaded);
+                }
+            }
+            else
+            {
+                // Closing forgets the search: the next opening shows every row.
+                SetCurrentValue(SearchTextProperty, null);
+            }
+        }
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.Key == Key.Escape && IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+    }
+
+    private void OnAnyPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton != MouseButton.Left || !IsEnabled || e.Source is not Visual source)
+        {
+            return;
+        }
+
+        if (TopLevel.GetTopLevel(source) == TopLevel.GetTopLevel(this))
+        {
+            // The closed box itself: open or close.
+            SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+            e.Handled = true;
+            return;
+        }
+
+        // Inside the open list: a row toggles wherever it is clicked.
+        var row = source.GetSelfAndVisualAncestors()
+            .OfType<ListBoxItem>()
+            .Select(container => container.DataContext)
+            .OfType<DropDownPickerRow>()
+            .FirstOrDefault();
+        if (row is not null)
+        {
+            Toggle(row);
+            e.Handled = true;
+        }
+    }
+
+    private void Toggle(DropDownPickerRow row)
+    {
+        if (SelectionMode == DropDownPickerMode.Single)
+        {
+            SetCurrentValue(SelectedItemProperty, row.Item);
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            return;
+        }
+
+        if (SelectedItems is not { } selected)
+        {
+            return;
+        }
+
+        if (selected.Contains(row.Item))
+        {
+            selected.Remove(row.Item);
+        }
+        else
+        {
+            selected.Add(row.Item);
+        }
+
+        if (_observedSelection is null)
+        {
+            Refresh();
+        }
+    }
+
+    private void ObserveSelection(IList? selection)
+    {
+        if (_observedSelection is not null)
+        {
+            _observedSelection.CollectionChanged -= OnSelectionCollectionChanged;
+        }
+
+        _observedSelection = selection as INotifyCollectionChanged;
+        if (_observedSelection is not null)
+        {
+            _observedSelection.CollectionChanged += OnSelectionCollectionChanged;
+        }
+    }
+
+    // Notifies the view only: the rows and the closed text are redrawn, nothing is written.
+    private void OnSelectionCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => Refresh();
+
+    private void Refresh()
+    {
+        var items = ItemsSource?.Cast<object>().ToList() ?? [];
+        var isMultiple = SelectionMode == DropDownPickerMode.Multiple;
+
+        bool IsSelected(object item) => isMultiple
+            ? SelectedItems?.Contains(item) == true
+            : Equals(SelectedItem, item);
+
+        Rows = items
+            .Select(item => new DropDownPickerRow(item, item.ToString() ?? string.Empty, IsSelected(item), isMultiple))
+            .Where(row => DropDownPickerText.Matches(row.Text, SearchText))
+            .ToList();
+        HasNoMatches = items.Count > 0 && Rows.Count == 0;
+
+        // In the order of the items, not of clicking - the closed text does not jump.
+        SummaryText = DropDownPickerText.Summary(
+            items.Where(IsSelected).Select(item => item.ToString() ?? string.Empty).ToList());
+    }
+}

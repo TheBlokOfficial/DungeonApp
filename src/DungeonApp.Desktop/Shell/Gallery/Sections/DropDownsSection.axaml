@@ -69,5 +69,45 @@
                 <Button Content="Dodaj" />
             </StackPanel>
         </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="LISTA ROZWIJANA WIELOKROTNA" />
+        <TextBlock Classes="caption muted" Text="Kliknięcie wiersza przełącza pozycję, lista zostaje otwarta; zamyka ją kliknięcie obok albo Escape." />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Nic nie wybrane" />
+                <controls:DropDownPicker x:Name="MultiNone" PlaceholderText="Typ potwora" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Jedna" />
+                <controls:DropDownPicker x:Name="MultiOne" PlaceholderText="Typ potwora" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Kilka" />
+                <controls:DropDownPicker x:Name="MultiSeveral" PlaceholderText="Typ potwora" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Wyłączona" />
+                <controls:DropDownPicker x:Name="MultiDisabled" PlaceholderText="Typ potwora" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Dłuższa niż rozwinięcie" />
+                <controls:DropDownPicker x:Name="MultiLong" PlaceholderText="Wybierz potwory" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="LISTA ROZWIJANA Z WYSZUKIWANIEM" />
+        <TextBlock Classes="caption muted" Text="Po otwarciu kursor stoi w polu wyszukiwania; wpisywanie zawęża pozycje, zamknięcie czyści wyszukiwanie." />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingMd}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Pojedyncza" />
+                <controls:DropDownPicker x:Name="SearchSingle" SelectionMode="Single" IsSearchEnabled="True"
+                                         PlaceholderText="Wybierz potwora" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" Width="200">
+                <TextBlock Classes="caption muted" Text="Wielokrotna" />
+                <controls:DropDownPicker x:Name="SearchMultiple" IsSearchEnabled="True"
+                                         PlaceholderText="Wybierz potwory" />
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </UserControl>

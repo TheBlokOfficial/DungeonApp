@@ -1574,4 +1574,131 @@
                   TargetType="ComboBoxItem"
                   BasedOn="{StaticResource {x:Type ListBoxItem}}" />
 
+    <!--
+        Lista rozwijana ramy (controls:DropDownPicker) - wybór wielokrotny i/lub wyszukiwanie; lista
+        pojedyncza bez wyszukiwania to ComboBox wyżej. Zamknięta wygląda i zachowuje się jak ComboBox
+        (te same wysokość, tło, krawędź, wcięcie, chevron, stany: spoczynek, najechanie, wciśnięcie,
+        otwarta = najechanie i chevron w górę, wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
+        zastępczy; jedna pozycja - jej nazwa; więcej - nazwa pierwszej i "+N"; przycięte wielokropkiem.
+        Rozwinięcie: powierzchnia okienka wysuwanego (motyw FlyoutPresenter), co najmniej tak szerokie
+        jak pole, DungeonFlyoutOffset pod nim. Z wyszukiwaniem (IsSearchEnabled) na górze pole
+        wyszukiwania z lupą (TextBox.search), odstęp DungeonSpacingXs pod nim; brak wyników -
+        EmptyState "Nic nie pasuje.".
+        Wiersz to wiersz listy (ListBoxItem - wysokość, wcięcia, najechanie). Tryb wielokrotny: pole
+        wyboru przed tekstem mówi, że wiersz jest wybrany - bez tła AccentDim; pole wyboru nie przyjmuje
+        kliknięć (klika wiersz), a jego wysokość kontrolki (36) jest ściągnięta ujemnym marginesem do
+        wysokości wiersza, żeby wiersz miał DungeonListRowHeight jak w liście. Tryb pojedynczy: wybrany
+        wiersz ma tło AccentDim jak ComboBoxItem.
+    -->
+    <ControlTheme x:Key="{x:Type controls:DropDownPicker}" TargetType="controls:DropDownPicker">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Border Name="PART_BorderElement"
+                            Grid.ColumnSpan="2"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <TextBlock Name="PART_Placeholder"
+                               Grid.Column="0"
+                               Margin="{TemplateBinding Padding}"
+                               VerticalAlignment="Center"
+                               Text="{TemplateBinding PlaceholderText}"
+                               Foreground="{DynamicResource DungeonInputPlaceholderBrush}"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"
+                               IsVisible="{TemplateBinding SummaryText, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                    <TextBlock Name="PART_Summary"
+                               Grid.Column="0"
+                               Margin="{TemplateBinding Padding}"
+                               VerticalAlignment="Center"
+                               Text="{TemplateBinding SummaryText}"
+                               Foreground="{TemplateBinding Foreground}"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap" />
+                    <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                             Grid.Column="1"
+                                             Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             Margin="0,0,12,0"
+                                             VerticalAlignment="Center"
+                                             IsHitTestVisible="False"
+                                             Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                             Source="{DynamicResource DungeonIconChevronDown}" />
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           PlacementTarget="PART_BorderElement"
+                           Placement="Bottom"
+                           VerticalOffset="{DynamicResource DungeonFlyoutOffset}"
+                           IsLightDismissEnabled="True"
+                           InheritsTransform="True">
+                        <FlyoutPresenter Name="PART_DropDown" HorizontalAlignment="Stretch">
+                            <StackPanel>
+                                <TextBox Name="PART_SearchBox"
+                                         Classes="search"
+                                         Margin="0,0,0,6"
+                                         PlaceholderText="Szukaj"
+                                         Text="{TemplateBinding SearchText, Mode=TwoWay}"
+                                         IsVisible="{TemplateBinding IsSearchEnabled}" />
+                                <controls:EmptyState Message="Nic nie pasuje."
+                                                     IsVisible="{TemplateBinding HasNoMatches}" />
+                                <ItemsControl Name="PART_Rows" ItemsSource="{TemplateBinding Rows}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="controls:DropDownPickerRow">
+                                            <ListBoxItem IsSelected="{Binding ShowsSelectedBackground, Mode=OneWay}">
+                                                <StackPanel Orientation="Horizontal"
+                                                            Spacing="{DynamicResource DungeonSpacingSm}">
+                                                    <CheckBox Margin="0,-2,0,-2"
+                                                              IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                                              IsVisible="{Binding IsMultiple}"
+                                                              IsHitTestVisible="False"
+                                                              Focusable="False" />
+                                                    <TextBlock VerticalAlignment="Center"
+                                                               Text="{Binding Text}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               TextWrapping="NoWrap" />
+                                                </StackPanel>
+                                            </ListBoxItem>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </FlyoutPresenter>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
+                       ^:pressed /template/ Border#PART_BorderElement,
+                       ^:dropdownopen /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(180deg)" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
 </ResourceDictionary>

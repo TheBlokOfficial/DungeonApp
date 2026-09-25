@@ -1,3 +1,4 @@
+using Avalonia.Collections;
 using Avalonia.Controls;
 
 namespace DungeonApp.Desktop.Shell.Gallery.Sections;
@@ -5,7 +6,7 @@ namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 public partial class DropDownsSection : UserControl
 {
     // About thirty names - longer than the flyout's and the drop-down's highest height.
-    private static readonly string[] Monsters =
+    private static readonly string[] LongNames =
     [
         "Aboleth", "Bazyliszek", "Behir", "Bugbear", "Chimera", "Cyklop", "Drider", "Driada",
         "Ettin", "Gargulec", "Ghul", "Gnoll", "Goblin", "Gorgona", "Harpia", "Hobgoblin",
@@ -16,7 +17,19 @@ public partial class DropDownsSection : UserControl
     public DropDownsSection()
     {
         InitializeComponent();
-        LongFlyoutList.ItemsSource = Monsters;
-        LongComboBox.ItemsSource = Monsters;
+        LongFlyoutList.ItemsSource = LongNames;
+        LongComboBox.ItemsSource = LongNames;
+
+        string[] types = ["Aberracja", "Bestia", "Humanoid", "Nieumarły", "Smok"];
+        MultiNone.ItemsSource = types;
+        MultiOne.ItemsSource = types;
+        MultiOne.SelectedItems = new AvaloniaList<object> { "Humanoid" };
+        MultiSeveral.ItemsSource = types;
+        MultiSeveral.SelectedItems = new AvaloniaList<object> { "Humanoid", "Nieumarły", "Smok" };
+        MultiDisabled.ItemsSource = types;
+        MultiDisabled.SelectedItems = new AvaloniaList<object> { "Bestia" };
+        MultiLong.ItemsSource = LongNames;
+        SearchSingle.ItemsSource = LongNames;
+        SearchMultiple.ItemsSource = LongNames;
     }
 }
