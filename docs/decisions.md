@@ -1707,6 +1707,19 @@ zamrozić testami kolejność kroków startowych, z których trzy przygotowują 
 samych dokumentach jako rusztowanie do wymiany. Trzecia rzecz z tamtej sesji, jedyna, która się
 obroniła, nie pochodziła z żadnego dokumentu — wyszła z czytania kodu przy okazji innego zadania.
 
+### Polecenie ruszenia z etapem jest zielonym światłem dla jego zapisanej propozycji
+
+2026-09-25 dokument zadania kazał nowej sesji pokazać zapisaną propozycję porcji i zapytać o zgodę.
+Autor otworzył sesję poleceniem „lecimy z kolejnymi porcjami”, zanim ją zobaczył — pytanie o zgodę
+już udzieloną kosztowałoby turę rozmowy na każdy etap. Propozycja z tej sesji, przyjęta przez autora.
+
+### Auto-udoskonalanie: propozycje uniwersalne
+
+Autor, 2026-09-25, przy przyjęciu pierwszej propozycji z reguły auto-udoskonalania: uproszczenia mają
+być agnostyczne co do zadania i treści, nieść uniwersalną oszczędność — „nie w stylu »nie czytaj x,
+bo go teraz nie potrzebowałem«”. Skrót wyprowadzony z jednej sesji wycina lekturę, która w następnym
+zadaniu będzie potrzebna, a obieg pracy robi się zbiorem wyjątków.
+
 ### W interfejsie asystent decyduje o tym, co rozstrzyga wiedza o interfejsach
 
 Reguła brzmiała do 2026-09-24 „interfejs to jego rzemiosło, nie dopracowuj UI z własnej inicjatywy"

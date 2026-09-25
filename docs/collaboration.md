@@ -27,6 +27,12 @@ uchodzić za uzasadnienie. „Dokument tak mówi" nie jest odpowiedzią na pytan
 **Zielone światło jest per etap.** Nie realizuj kilku etapów jednym zamachem, nawet jeśli widzisz
 całą drogę. Proponuj, rekomenduj **jedną** opcję z uzasadnieniem, czekaj.
 
+**Polecenie ruszenia z etapem jest zielonym światłem dla jego zapisanej propozycji.** Decyzja autora
+z 2026-09-25. Gdy autor każe ruszyć z etapem, którego propozycja stoi w dokumentach, architekt nie
+pyta o zgodę drugi raz: uruchamia wykonawcę i równolegle pokazuje skrót propozycji wraz z tym, co
+rozstrzygnął sam przy briefie. Weto przychodzi w trakcie — idzie do wykonawcy wiadomością albo
+następną rundą. Etap bez zapisanej propozycji czeka na zgodę jak dotąd.
+
 **Wypisuj osobno to, co rozstrzygnąłeś sam**, bo brief czy polecenie tego nie przesądzało. Ta
 lista jest miejscem, w którym autor zakłada weto — bez niej musiałby czytać cały diff, żeby
 znaleźć założenia, których nie robił.
@@ -94,6 +100,10 @@ w *Notkach* dokumentu zadania, a w sesji głównej w `tasks.md`, *Odłożone* �
 czeka. Zapowiedź „wrócę do tego” bez zapisu i bez wyzwalacza się nie liczy.
 Pomiar wygrywa z wrażeniem: gdzie się da, propozycja podaje liczbę (kroki, minuty, tokeny, linie
 lektury).
+**Propozycja jest uniwersalna** (autor, 2026-09-25): upraszcza obieg każdej pracy, nie tej jednej —
+nazywa rodzaj sytuacji i regułę, którą da się zastosować w dowolnym zadaniu, przy dowolnej treści.
+„Nie czytaj X, bo tym razem nie był potrzebny” to obserwacja z jednej sesji, nie uproszczenie; staje
+się propozycją dopiero jako reguła o tym, **kiedy** taka lektura jest potrzebna.
 
 **Subagentów uruchamiaj w tle.** Blokowanie się na subagencie zabiera mu czas, który wolałby spędzić
 na rozmowie o kolejnych decyzjach.
