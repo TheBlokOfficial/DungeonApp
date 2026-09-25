@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `a428719`.** Na starcie sesji: `git log a428719..master` i `git worktree
+**Stan na: 2026-09-25, po `c37942a`.** Na starcie sesji: `git log c37942a..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,11 +14,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–7a przyjęte; uwagi po 7a (układ menu) odłożone przez autora do `tasks.md`, *Poprawki
-czekające na obszar*. Porcja 7b scalona 2026-09-25 — **czeka na obejrzenie przez autora** (galeria:
-sekcja z postępem, potwierdzeniem i powiadomieniami; wyłączona zakładka i sekcja rozwijana). Kopii
-roboczych brak. **Następny krok:** uwagi autora po 7b (runda albo przyjęcie), potem propozycja
-porcji 8.
+Porcje 0–7b obejrzane przez autora; dwie uwagi po 7b (powiadomienia na pasku stanu, klatkowany
+pasek nieokreślony — „marginalne”) idą z porcją 8, bez osobnej rundy. **W toku:** porcja 8 — zielone
+światło autora 2026-09-25 („możemy jechać z porcją 8”); wykonawca (Opus 5.5) w kopii
+`.claude/worktrees/agent-ac67fed7810cd1405`, gałąź `worktree-agent-ac67fed7810cd1405`, baza `c37942a`.
+**Następny krok:** weryfikacja raportu, scalenie, autor ogląda 8; potem propozycja porcji 8b.
 
 ## Zakres i koniec
 
@@ -68,7 +68,7 @@ Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w a
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
 - [x] **0–7a** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **7b** — scalona, czeka na obejrzenie — okno potwierdzenia, powiadomienie, wskaźnik
+- [x] **7b** — okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
 - [ ] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
@@ -99,7 +99,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
 | 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25; przyjęta 2026-09-25 — uwagi (pogrubienie wybranego zmienia szerokość, wyłączony pojemnik, pusty pasek) idą z porcją 7, bez osobnej rundy (autor) | 65 / 12,0 / 8,0 mln |
 | 7a | poprawki po porcji 6 (rezerwa pogrubienia — kontrolka `BoldTextReserve`; wyłączony pojemnik przygasza całość raz — przygaszenie po własnym `IsEnabled`, kolory po `:disabled`; pusty pasek bez odstępu); podpowiedź z motywem i pełnym napisem przyciętej etykiety (`TrimmedLabelToolTip`); zakładka najwyżej 240; menu z przycisku, kontekstowe, podmenu, separator; ruch menu w `PopupOpenMotion` | scalona 2026-09-25; obejrzana tego dnia bez rundy — uwagi o menu (skrót nie w linii ze strzałką podmenu, podmenu nachodzi na menu) odłożone do *Poprawek czekających na obszar* (autor: nie na teraz) | 42 / 11,3 / 5,4 mln |
-| 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; czeka na obejrzenie | 60 / 11,3 / 6,9 mln |
+| 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
 
 ## Ustalenia
 
@@ -171,6 +171,19 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     akcencie.
   * Poza zakresem: okno potwierdzenia nigdzie nie podpięte — usuwanie kampanii idzie do kosza
     systemu (odwracalne); pierwszy konsument przyjdzie z akcją nieodwracalną.
+* **Porcja 8 — rozstrzygnięcia architekta** (2026-09-25; propozycja niezapisana, zielone światło
+  autora na zakres z planu — rozstrzygnięcia z wiedzy o interfejsie, pokazane autorowi przy starcie):
+  * *Odznaka a tag — po tym, czym jest treść:* odznaka = wartość (liczba, „1/2”) — zaokrąglony
+    prostokąt, krój liczb; tag = słowo (kategoria, typ, rzadkość) — pigułka, pismo interfejsu. Obie
+    wysokości ok. 20, pismo 12, nieklikalne, przycinane z podpowiedzią.
+  * *Odmiany obu:* neutralna, akcent, sukces / ostrzeżenie / niebezpieczeństwo (tło — nowe
+    przygaszone kolory stanów, 16 %), kolor podany przez układającego (skale systemu).
+  * *Chip* = przełącznik filtra (`ToggleButton`), wysokość 28 — zwarta kontrolka w rzędzie filtrów;
+    włączony = przygaszony akcent jak `.filter-chip.on`; bez strzałki i listy (porcja 11).
+  * *Tabela* — panel ramy z liniami między wierszami, ostre narożniki, opcjonalny nagłówek, linie
+    pionowe opcjonalne; komórka z wyrównaniem i tłem wyróżnienia od układającego; nieinteraktywna;
+    tekst przycina się, nie zawija. Bez `DataGrid`.
+  * Powiadomienia stoją nad paskiem stanu; ruch paska nieokreślonego z pętli renderowania okna.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
