@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="using:DungeonApp.Desktop.Shell"
+        xmlns:controls="using:DungeonApp.Desktop.Controls"
         x:Class="DungeonApp.Desktop.MainWindow"
         x:DataType="shell:AppShellViewModel"
         Width="1280"
@@ -75,5 +76,9 @@
                            Text="{Binding StartupMessage}" />
             </StackPanel>
         </Border>
+
+        <!-- Warstwa nad całym oknem: dymki powiadomień i okno potwierdzenia (Controls/WindowOverlay.cs).
+             Pusta nie łapie myszy. -->
+        <controls:WindowOverlay />
     </Panel>
 </Window>
