@@ -98,9 +98,10 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 * **Każdy przycisk dostaje stałą wysokość — z motywu przycisku** (`Themes/DungeonControls.axaml`,
   od porcji 1 fundamentu). `Button` użyty jako wiersz, karta, chip albo pozycja nawigacji (dziś:
   `nav-button`, `campaign-open`, `system-option-open`, `content-row-button`, `content-chip`,
-  `deck-card`, `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
+  `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
   usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
-  porcje wiersza, kafelka i chipa dadzą im własne motywy.
+  porcje wiersza i chipa dadzą im własne motywy. Kafelek ma już własny motyw (`DungeonTile`) bez
+  wysokości — wymiar podaje układający.
 * **Błąd w motywie kontrolki kompiluje się i wywraca aplikację przy pierwszym użyciu kontrolki** —
   wpisy `DungeonControls.axaml` są budowane leniwie. Przykład: `ControlTheme` nie dopuszcza selektora
   potomka (`^ Typ`) poza szablonem — styl zawartości kontrolki idzie do `BuiltInControls.axaml`.
@@ -140,7 +141,9 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   `ComboBox` nie przechodzi przez style przy każdym otwarciu.
 * **Każde nowe przejście (animacja) w motywie trzeba dopisać do `Themes/ReducedMotion.axaml`** —
   ten plik zdejmuje przejścia, gdy Windows ma wyłączone animacje (`Themes/SystemMotion.cs`, czytane
-  raz przy starcie). Przejście, którego tam nie ma, zostaje animowane mimo ustawienia systemu.
+  raz przy starcie). Przejście, którego tam nie ma, zostaje animowane mimo ustawienia systemu. Test pilnuje
+  dokładnie czterech reguł w tym pliku — nowy selektor dopisuje się do reguły tego samego rodzaju
+  (strzałka sekcji rozwijanej stoi przy strzałkach list), nowa reguła wymaga zmiany testu w briefie.
 * **`ScrollViewer.IsScrollChainingEnabled` trzeba ustawić także w motywach, które przekazują ją
   do własnego przewijania** (`ListBox`, `TextBox`) — ich szablon podaje własną wartość i zasłania
   ustawienie z motywu przewijania.

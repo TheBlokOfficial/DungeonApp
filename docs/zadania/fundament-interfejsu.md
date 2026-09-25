@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `7b52a80`.** Na starcie sesji: `git log 7b52a80..master` i `git worktree
+**Stan na: 2026-09-25, po `28c21bc`.** Na starcie sesji: `git log 28c21bc..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,13 +14,14 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–5 przyjęte przez autora. **Porcja 6 w toku** (2026-09-25): porzucona praca poprzedniej
-sesji — kontrolka okruszków gotowa z motywem i podpięta w zakładce treści, tokeny zakładek,
-segmentów i sekcji bez motywów — przejęta jako punkt wyjścia (architekt: spójna i zgodna z planem,
-więc szkoda robić od nowa). Zapisana commitem `a638ade` w gałęzi `worktree-agent-a94c3b40b6b071469`
-(kopia `.claude/worktrees/agent-a94c3b40b6b071469` — do usunięcia po scaleniu porcji). Nowy
-wykonawca przenosi ją na `master` i robi resztę porcji — w tle, we własnej kopii. **Następny krok:**
-raport wykonawcy → weryfikacja, scalenie, autor ogląda galerię i aplikację.
+Porcje 0–5 przyjęte przez autora. **Porcja 6 scalona** (2026-09-25; porzucona praca poprzedniej
+sesji przejęta jako punkt wyjścia i dokończona) — czeka na obejrzenie przez autora w galerii i na
+biurku kampanii (kafelki zminimalizowanych okien mają teraz tło karty, nieco jaśniejsze niż dotąd).
+Kopii roboczych brak. **Następny krok:** uwagi autora → runda porcji 6 (nowy wykonawca — kopia
+usunięta, ale da się ją odtworzyć, jeśli poprawka przyjdzie szybko). **Czeka na decyzję autora**
+propozycja architekta: porcje 7 i 8 dwoma wykonawcami jeden po drugim, obejrzane razem (7 i 8
+korzystają z ustalonych zasad, nie ustalają nowych); porcja 6 — osobno, bo ustala „wybrane”. Sesja:
+ta sama do porcji 8, nowa od 8b.
 
 ## Zakres i koniec
 
@@ -70,8 +71,8 @@ Porcja = jeden wykonawca w 20 minutach. Autor sprawdza każdą w galerii **i w a
 od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji.
 
 - [x] **0–5** — przyjęte; rundy i pomiar w tabeli niżej.
-- [ ] **6** — zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki. *(w toku —
-  „Gdzie stoimy"; rozstrzygnięcia architekta w „Ustaleniach")*
+- [ ] **6** — zakładki, przełącznik segmentowy, kafelek, sekcja rozwijana, okruszki. *(scalona, czeka
+  na obejrzenie; rozstrzygnięcia architekta w „Ustaleniach")*
 - [ ] **7** — menu, menu kontekstowe, podpowiedź, okno potwierdzenia, powiadomienie, wskaźnik
   postępu (kolor wypełnienia z właściwości kontrolki, domyślnie akcent — podaje go układający widok,
   np. pasek PZ; tak jak w suwaku z porcji 4).
@@ -101,6 +102,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 3 | lista, wiersz listy, pusta lista, pasek przewijania (ustalenia architekta do briefu — w historii `tasks.md` do `7b52a80`); przygaszony akcent naprawiony (16 %, z kanałem alfa) | scalona 2026-09-25, obejrzana — uwagi autora (przewijanie przechodzi wyżej, najechanie na wybranym) poprawione w porcji 5; wiersz ma wysokość najmniejszą 32, nie stałą, bo panel instancji kampanii ma wiersze z polem liczbowym — panel testowy, do usunięcia (autor), więc bez poprawek | 55 / 9,4 / 7,4 mln |
 | 4 | pole wyboru, przycisk opcji, przełącznik, suwak — to, co wypełnione akcentem, pod myszą się nie zmienia; wyłączone zaznaczone traci akcent; tor przełącznika 36×18; suwak tylko poziomy | scalona 2026-09-25; przyjęta 2026-09-25 bez rund — pytania autora rozstrzygnięte (`decisions.md`, *Niezmiennik interfejsu*) | 40 / 9,8 / 4,8 mln |
 | 5 | okienko wysuwane; lista rozwijana pojedyncza (`ComboBox`), wielokrotna i z wyszukiwaniem (kontrolka ramy `DropDownPicker`); poprawki list z porcji 3 (kółko nie przechodzi wyżej, wybrany bez najechania). Diagnoza „przycisk w wierszu odznacza wiersz": to nie motyw — model widoku panelu instancji przebudowuje wiersze nowymi obiektami, a lista gubi zaznaczenie przy podmianie źródła; panel testowy, bez poprawki (`code-state.md`) | scalona 2026-09-25; 1 (autor: okienko wyśrodkowane, otwierający traci najechanie, mignięcia, strzałka „teleportuje się”, lista otwarta w górę nachodzi na pole; decyzje: strzałka w prawo → w dół, reguła „Ruch” — `architecture.md`; przełącznik z ruchem, wyłączone animacje w systemie); 2 (autor: mignięcie przy zamykaniu kliknięciem — decyzja: otwierający odpoczywa do ponownego wjechania myszą; strzałka wskazuje kierunek otwarcia; okienko wjeżdża ruchem; z kolejki: wariant B wiersza i okienka, uchwyt suwaka) — scalona; przyjęta 2026-09-25 | 55 / 11,4 / 6,4 mln + runda 1: 44 / 8,2 / 4,8 mln + runda 2: 68 / 12,8 / 7,2 mln |
+| 6 | zakładki (`TabControl`/`TabStrip`, wspólna podstawa), przełącznik segmentowy (`ListBox` z nazwanym motywem), kafelek (`DungeonTile`, pierwszy konsument — kafelki biurka), sekcja rozwijana, okruszki (kontrolka ramy, przejęta z porzuconej sesji); wyłączone wybrane — tło neutralne „aktywne” (architekt, po raporcie: segment zlewał się z pojemnikiem) | scalona 2026-09-25 | 65 / 12,0 / 8,0 mln |
 
 ## Ustalenia
 
@@ -146,6 +148,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Porcje trwają zwykle 40–68 kroków i 8–13 minut na przebieg; rundy poprawek — mniej. Poprawka zaraz
   po obejrzeniu idzie do wznowionego wykonawcy, jeśli jego pamięć jest ciepła (`collaboration.md`,
   *Briefy dla subagentów*).
+* Porcja 6: pięć kontrolek zmieściło się w 12 minutach (architekt przewidywał przekroczenie limitu
+  — mylnie). Kroki szły na szukanie w motywie kolorów, których brief nie nazwał (wyłączone, powierzchnia
+  karty) — **brief podaje nazwy pędzli stanów**: wyłączone to przezroczystość `DungeonDisabledOpacity`,
+  nie osobny kolor; neutralne wybrane — `DungeonSurfaceActiveBrush`; powierzchnia karty —
+  `DungeonBackstageCardBrush`. Motywy w `DungeonControls.axaml` test budujący obejmuje sam — brief to
+  mówi, żeby wykonawca nie sprawdzał.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 

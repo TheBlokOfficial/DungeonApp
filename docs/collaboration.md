@@ -171,6 +171,12 @@ dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-
 kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
 zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
 
+**Architekt po weryfikacji scala, nie buduje.** Decyzja autora z 2026-09-25. Build i liczbę testów
+przynosi raport wykonawcy; architekt nie powtarza ich na `master` po scaleniu, bo autor i tak buduje
+aplikację, zanim ją obejrzy. *Skąd:* tego dnia build po scaleniu porcji 6 odbił się od katalogu
+wyjściowego zablokowanego przez aplikację autora, a testy uruchamiane projekt po projekcie
+potwierdziły tylko to, co raport już podał.
+
 **Wygląd interfejsu sprawdza autor w aplikacji, nie testy.** Decyzja autora z 2026-09-24. Zlecenie
 zmieniające wygląd kończy się zielonym buildem i istniejącymi testami. Nowych testów renderujących
 wykonawca nie pisze, chyba że brief każe wprost — a brief każe dopiero przy błędzie widocznym, który
