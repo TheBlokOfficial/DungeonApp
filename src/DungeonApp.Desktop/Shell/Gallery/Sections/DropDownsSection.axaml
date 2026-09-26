@@ -68,29 +68,53 @@
                     </Flyout>
                 </Button.Flyout>
             </Button>
-            <!-- Docelowy filtr: chip otwierający listę wartości z polami wyboru - wielokrotny wybór na
-                 obiektach, nazwa pozycji z wiązania. Złożony z istniejących klocków: lista ramy
-                 w trybie przełączania i pole wyboru w wierszu. -->
-            <Button Theme="{StaticResource DungeonChipOpener}" Content="Wartości" Margin="0,0,6,6">
-                <Button.Flyout>
-                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
-                        <ListBox x:Name="ChipCheckList" SelectionMode="Multiple,Toggle">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="sections:GalleryOption">
-                                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                                        <CheckBox Margin="0,-2,0,-2"
-                                                  IsChecked="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
-                                                  IsHitTestVisible="False"
-                                                  Focusable="False" />
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Flyout>
-                </Button.Flyout>
-            </Button>
         </WrapPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ WIELOKROTNĄ" />
+        <TextBlock Classes="caption muted" Text="DropDownPicker z motywem DungeonChipPicker: zawsze nazwa filtra, a gdy coś wybrane - liczba wybranych w odznace i przygaszony akcent z ramką akcentu. Wiersze z polem wyboru: stan niesie pole, wybrany wiersz nie ma tła akcentu." />
+        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                   LineSpacing="{DynamicResource DungeonSpacingXs}">
+            <controls:DropDownPicker x:Name="ChipPickerNone" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Nic nie wybrane" />
+            <controls:DropDownPicker x:Name="ChipPickerSeveral" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Kilka wybranych" />
+            <controls:DropDownPicker x:Name="ChipPickerDisabled" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Wyłączony" IsEnabled="False" />
+            <controls:DropDownPicker x:Name="ChipPickerDisabledSelected" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Wyłączony z wyborem" IsEnabled="False" />
+            <controls:DropDownPicker x:Name="ChipPickerLong" Theme="{StaticResource DungeonChipPicker}"
+                                     MaxWidth="180"
+                                     PlaceholderText="Bardzo długa nazwa filtra, która się nie mieści" />
+        </WrapPanel>
+        <TextBlock Classes="caption muted" Text="Rząd filtrów: chipy obok siebie, ta sama wysokość z wyborem i bez; wartości to obiekty z nazwą z wiązania." />
+        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                   LineSpacing="{DynamicResource DungeonSpacingXs}">
+            <controls:DropDownPicker x:Name="FilterType" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Typ" IsSearchEnabled="True" />
+            <controls:DropDownPicker x:Name="FilterSize" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Rozmiar" />
+            <controls:DropDownPicker x:Name="FilterSource" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Źródło"
+                                     DisplayMemberBinding="{Binding Name, DataType=sections:GalleryOption}" />
+            <controls:DropDownPicker x:Name="FilterValues" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Wartości" />
+        </WrapPanel>
+        <TextBlock Classes="caption muted" Text="Lista z polami wyboru (ListBox z motywem DungeonCheckList, przełączanie): ten sam wygląd wierszy co w liście rozwijanej wielokrotnej." />
+        <ListBox x:Name="CheckListSample" Theme="{StaticResource DungeonCheckList}"
+                 SelectionMode="Multiple,Toggle" Width="200" HorizontalAlignment="Left">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="sections:GalleryOption">
+                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                        <CheckBox Margin="0,-2,0,-2"
+                                  IsChecked="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
+                                  IsHitTestVisible="False"
+                                  Focusable="False" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
         <TextBlock Classes="caption muted" Text="Lista rozwijana wielokrotna na obiektach: nazwa pozycji z wiązania (DisplayMemberBinding), nie z ToString()." />
         <controls:DropDownPicker x:Name="ObjectPicker" Width="200" HorizontalAlignment="Left"
                                  PlaceholderText="Wybierz wartości"

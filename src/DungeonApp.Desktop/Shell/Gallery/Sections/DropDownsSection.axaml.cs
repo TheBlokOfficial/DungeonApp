@@ -43,7 +43,22 @@ public partial class DropDownsSection : UserControl
         ChipActiveList.ItemsSource = chipValues;
         ChipLongList.ItemsSource = LongNames;
         GalleryOption[] options = [new("Pierwsza"), new("Druga"), new("Trzecia"), new("Czwarta")];
-        ChipCheckList.ItemsSource = options;
+        CheckListSample.ItemsSource = options;
+        CheckListSample.SelectedItems?.Add(options[1]);
+
+        ChipPickerNone.ItemsSource = types;
+        ChipPickerSeveral.ItemsSource = types;
+        ChipPickerSeveral.SelectedItems = new AvaloniaList<object> { "Bestia", "Humanoid", "Smok" };
+        ChipPickerDisabled.ItemsSource = types;
+        ChipPickerDisabledSelected.ItemsSource = types;
+        ChipPickerDisabledSelected.SelectedItems = new AvaloniaList<object> { "Bestia" };
+        ChipPickerLong.ItemsSource = types;
+        ChipPickerLong.SelectedItems = new AvaloniaList<object> { "Smok" };
+        FilterType.ItemsSource = LongNames;
+        FilterType.SelectedItems = new AvaloniaList<object> { "Goblin", "Ork" };
+        FilterSize.ItemsSource = new[] { "Mały", "Średni", "Duży" };
+        FilterSource.ItemsSource = new GalleryOption[] { new("Podręcznik"), new("Dodatek"), new("Własne") };
+        FilterValues.ItemsSource = chipValues;
         ObjectPicker.ItemsSource = options;
         ObjectPicker.SelectedItems = new AvaloniaList<object> { options[1] };
     }
