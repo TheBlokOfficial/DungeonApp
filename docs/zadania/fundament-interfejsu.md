@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `f66e266`.** Na starcie sesji: `git log f66e266..master` i `git worktree
+**Stan na: 2026-09-26, po `8b1815c`.** Na starcie sesji: `git log 8b1815c..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -18,7 +18,10 @@ Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi auto
 dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
 i lista wyboru), 1b (wiersze, przewijanie, menu), 1c (odnośniki, sortowanie, chipy z listą), 9a, 9b.
 Przebiegi 1a i 1b scalone 2026-09-26; 1b czeka na obejrzenie przez autora (jego uwagi — dopisać do
-zakresu 1c albo do rundy). Kopii roboczych brak. **Następny krok (nowa sesja): brief przebiegu 1c** —
+zakresu 1c albo do rundy). Kopii roboczych brak. **Najpierw regresja z 1b** (autor, 2026-09-26, po
+obejrzeniu: w liście wpisów i na pasku bocznym zniknęła kreska zaznaczenia, a tło wiersza pod myszą
+i wybranego to ściśnięty pasek) — diagnoza i poprawka w *Notkach* (*Regresja 1b*), krótki przebieg
+przed 1c. Pozostałych punktów 1b autor jeszcze nie obejrzał. **Potem brief przebiegu 1c** —
 zakres w *Planie* (runda 1c), szczegóły w *Notkach* (*Przebieg 1c*); wszystko przyjęte przez autora,
 więc polecenie ruszenia jest zielonym światłem. Potem 9a, 9b.
 
@@ -424,6 +427,17 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   (odnośniki — sekcja przycisków/odnośników), sortowanie i chipy zakładki treści —
   `Library.Entries.Desktop/Features/ContentTab/ContentTabView.axaml`; ruch — `Themes/PopupOpenMotion.cs`
   (`Appear`), `SystemMotion.IsReduced`.
+* **Regresja 1b** (architekt, z odczytu kodu, 2026-09-26): styl `controls|ListRow > Grid > :is(Control)`
+  → `VerticalAlignment=Center` w `BuiltInControls.axaml` (poprawka tytułu o piksel wyżej) trafia nie
+  tylko w siatkę treści wiersza, ale i w **korzeń szablonu** `ListRow` (`Grid ColumnDefinitions="Auto,*"`
+  w motywie w `DungeonControls.axaml`) — jego dzieci (pas kreski, tło `PART_Highlight`) wyśrodkowują się
+  zamiast rozciągać: tło kurczy się do treści, kreska bez wysokości znika. Poprawka: zawęzić selektor
+  do treści (np. klasa albo nazwa na korzeniu szablonu i `:not(...)`, albo selektor przez
+  `/template/ ContentPresenter`); sprawdzić tymczasowym pomiarem bez okna wysokość tła (= wiersz)
+  i widoczność kreski w liście wpisów, na pasku bocznym i w liście kampanii, a tytuł nadal na jednej
+  wysokości z odznaką i bez. Wykonawca 1b mierzył tylko położenie tytułu — brief pomiaru ma zawsze
+  obejmować sąsiadów zmienianego elementu (`collaboration.md`, *Briefy*: test mierzy położenie względem
+  sąsiadów i widoczność).
 * Runda 1b (raport): **niesprawdzone, czy podmenu otwierane w lewo** (brak miejsca po prawej) stoi
   z odstępem, a nie nachodzi — do obejrzenia przez autora; jeśli nachodzi — do 1c.
 * Runda 1b: kosz w rekordzie kampanii zostaje z lokalnym stylem — rekord to własny `Border` z `ListRow`
