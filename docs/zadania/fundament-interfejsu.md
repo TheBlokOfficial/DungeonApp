@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `793446c`.** Na starcie sesji: `git log 793446c..master` i `git worktree
+**Stan na: 2026-09-26, po `ba766e4`.** Na starcie sesji: `git log ba766e4..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,13 +14,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone 2026-09-26; duża runda
-obejrzana (*Ustalenia*, *Duża runda*). Kopii roboczych brak. Poprawki po dużej rundzie autor zatwierdził
-2026-09-26 (w tym kciuk paska zachodzący 2 px na tło wiersza); otwarte zostają dwa błędy okienek
-widoczne tylko w aplikacji — autor przynosi pomiar z punktu 6 listy w *Notkach*. **Następny krok: porcja 9a** (autor, 2026-09-26: porcja 9 w następnej sesji),
-potem 9b. Dwa błędy okienek widoczne tylko w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — po 9a,
-która zmienia wygląd pod każdą kontrolką, autor sprawdza, czy są nadal; jeśli tak — diagnoza w działającej
-aplikacji. Szerokość pola — do rozstrzygnięcia w briefie 9a (*Notki*, *Szerokość pola*).
+Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone i przyjęte 2026-09-26.
+**W toku: porcja 9a** — wykonawca (Opus) w kopii w `.claude/worktrees/`, gałąź `fundament-9a`; brief
+i rozstrzygnięcia w *Ustaleniach*, *Porcja 9a*. Potem 9b (Haiku). Dwa błędy okienek widoczne tylko
+w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — po 9a autor sprawdza, czy są nadal (pomiar z punktu 6
+listy w *Notkach*); jeśli tak — diagnoza w działającej aplikacji.
 
 ## Zakres i koniec
 
@@ -380,6 +378,20 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
      najpierw przyczyna w warunkach jak w aplikacji (przewijanie realnie realizujące wiersze), potem
      poprawka.
   * Podpowiedź znika po kliknięciu (także prawym) — konwencja platformy, bez zmian (architekt).
+* **Porcja 9a — rozstrzygnięcia architekta** (2026-09-26; zielone światło autora na porcję 9):
+  * Najpierw inwentarz: gdzie motyw domyślny jest włączony (aplikacja **i aplikacja testowa** — testy
+    widzą to, co aplikacja), które wbudowane kontrolki z szablonem aplikacja używa i czy mają motyw ramy
+    (także infrastruktura: `Window`, hosty okienek, `ToolTip`, `DataValidationErrors`…), które klucze
+    zasobów Fluenta są użyte. Pakiet Fluenta usunięty, jeśli nic go nie używa.
+  * Luki: szablon Fluenta przejęty z repozytorium Avalonii (tag wersji pakietu, `src/Avalonia.Themes.Fluent/
+    Controls/`), zasoby Fluenta → tokeny ramy. `Window` daje domyślne pismo i kolor tekstu z tokenów.
+  * *Szerokość pola:* najmniejsza szerokość pola tekstowego z motywu = 64 (konwencja WinUI); `IconField`
+    — obszar tekstu co najmniej tyle, całość 64 + pasy ikon. Szerokość właściwą nadaje kontener; widoki,
+    w których pole mierzy się do zawartości, dostają szerokość z układu.
+  * Pomiar bez okna przed/po: galeria i widoki do PNG, porównanie pikseli — każda różnica zamierzona albo
+    wyjaśniona. Test: każdy używany wbudowany typ ma motyw ramy z szablonem (lista jawna).
+  * Zatrzymanie po inwentarzu, gdy widocznych kontrolek bez motywu jest więcej niż ok. 10 albo wygląd
+    wymaga decyzji spoza tokenów i *Niezmiennika*.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
@@ -597,7 +609,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * **Szerokość pola** (duża runda, raport — przesłanka briefu była fałszywa): zwykłe pole nie ma szerokości
   w motywie (`MinWidth 0`); 200 w galerii daje styl galerii. Poza nią pole mierzy się do zawartości (puste
   26, z ikoną 54) i rośnie przy pisaniu — wbrew rzemiosłu „układ niezależny od zawartości”. Do
-  rozstrzygnięcia przez architekta w briefie 9a (odcina motyw domyślny, który dawał polu najmniejszą
+  rozstrzygnięcia przez architekta w briefie 9a — rozstrzygnięte (*Ustalenia*, *Porcja 9a*). (9a odcina motyw domyślny, który dawał polu najmniejszą
   szerokość): zasób motywu z szerokością najmniejszą dla `TextBox` i `IconField`, wartość z konwencji.
 
 ## Do sesji głównej
