@@ -64,11 +64,16 @@
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
         <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
         <Color x:Key="DungeonWarningColor">#D6B84F</Color>
-        <!-- Niebezpieczeństwo: coś jest zepsute albo akcja jest nieodwracalna. -->
+        <!-- Niebezpieczeństwo: coś jest zepsute, akcja usuwa albo jest nieodwracalna. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
-        <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger, odmiana czytelna jako tekst;
-             Danger zostaje dla teł i ikon. -->
+        <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger (coś jest zepsute, akcja usuwa albo
+             jest nieodwracalna), odmiana czytelna jako tekst i sam rysunek bez tła (kosz w wierszu);
+             Danger zostaje dla teł. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
+        <!-- Niebezpieczeństwo (tekst) pod myszą: rysunek akcji niszczącej bez tła (kosz w wierszu)
+             jaśnieje zamiast dostać tło. Ten sam odcień co DangerText, jaśniejszy. Kontrast rysunku: 6,4:1 na karcie, 6,3:1 na wierszu,
+             5,8:1 na wierszu pod myszą, 5,1:1 na wybranym wierszu (AccentDim na karcie). -->
+        <Color x:Key="DungeonDangerHoverTextColor">#E08A72</Color>
         <!-- Przygaszone kolory stanów: tło pod krótką treścią w kolorze stanu (odznaka, tag). Jak
              AccentDim - kolor stanu o nieprzezroczystości 16 % (alfa 0x29), zapisany z kanałem alfa,
              żeby na karcie, wierszu i zapleczu wyglądał jak ta sama przygaszona barwa. Nie do linii
@@ -131,6 +136,7 @@
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
         <SolidColorBrush x:Key="DungeonDangerTextBrush" Color="{DynamicResource DungeonDangerTextColor}" />
+        <SolidColorBrush x:Key="DungeonDangerHoverTextBrush" Color="{DynamicResource DungeonDangerHoverTextColor}" />
         <SolidColorBrush x:Key="DungeonSuccessDimBrush" Color="{DynamicResource DungeonSuccessDimColor}" />
         <SolidColorBrush x:Key="DungeonWarningDimBrush" Color="{DynamicResource DungeonWarningDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerDimBrush" Color="{DynamicResource DungeonDangerDimColor}" />
@@ -397,6 +403,10 @@
              dzieli 2 px odstępu zamiast stykania się zaokrąglonymi rogami; wiersz dalej zajmuje
              DungeonListRowHeight. -->
         <Thickness x:Key="DungeonListRowHighlightInset">0,1</Thickness>
+        <!-- Akcja w wierszu listy (kosz, DungeonRowAction): pas na pełnej wysokości wiersza i do jego
+             prawej krawędzi - wychodzi przez odstęp podświetlenia (1 z góry i z dołu) i prawe wcięcie
+             wiersza (DungeonPaddingMdHorizontal, 12). -->
+        <Thickness x:Key="DungeonListRowActionMargin">0,-1,-12,-1</Thickness>
         <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
              podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
         <CornerRadius x:Key="DungeonListRowHighlightCornerRadius">3</CornerRadius>

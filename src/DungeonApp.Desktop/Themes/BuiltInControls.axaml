@@ -1,6 +1,7 @@
  <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="using:DungeonApp.Desktop.Controls">
+        xmlns:controls="using:DungeonApp.Desktop.Controls"
+        xmlns:themes="using:DungeonApp.Desktop.Themes">
     <Style Selector="Window, UserControl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
@@ -47,5 +48,37 @@
          ControlTheme nie dopuszcza selektora potomka. -->
     <Style Selector="MenuFlyoutPresenter > Separator, ContextMenu > Separator, MenuItem > Separator">
         <Setter Property="Margin" Value="{DynamicResource DungeonMenuSeparatorMargin}" />
+    </Style>
+
+    <!--
+        Akcja w wierszu listy (motyw DungeonRowAction, DungeonControls.axaml). Mieszka tu, a nie
+        w motywie akcji, bo ControlTheme nie dopuszcza selektora potomka.
+        Pas akcji na pełnej wysokości wiersza i do jego krawędzi: w ListBoxItem wychodzi przez odstęp
+        podświetlenia (DungeonListRowHighlightInset) i prawe wcięcie wiersza (DungeonListRowActionMargin);
+        w wierszu z klasą list-row (Border z krawędzią 1 px) - przez krawędź w pionie. Wiersz zostaje
+        wysoki jak był: ujemny margines zdejmuje z wymiaru akcji dokładnie to, o co wychodzi.
+        Widoczność: tylko pod myszą nad wierszem i na wybranym wierszu; miejsce zarezerwowane zawsze
+        (przezroczystość, nie zwijanie). Wyłączona akcja - przezroczystość wyłączenia.
+    -->
+    <Style Selector="ListBoxItem Button[(themes|RowActionHover.IsEnabled)=True]">
+        <Setter Property="Margin" Value="{DynamicResource DungeonListRowActionMargin}" />
+        <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
+    </Style>
+    <Style Selector=".list-row Button[(themes|RowActionHover.IsEnabled)=True]">
+        <Setter Property="Margin" Value="0,-1" />
+    </Style>
+    <Style Selector="ListBoxItem Button[(themes|RowActionHover.IsEnabled)=True],
+                     .list-row Button[(themes|RowActionHover.IsEnabled)=True]">
+        <Setter Property="Opacity" Value="0" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover Button[(themes|RowActionHover.IsEnabled)=True],
+                     ListBoxItem:selected Button[(themes|RowActionHover.IsEnabled)=True],
+                     .list-row:pointerover Button[(themes|RowActionHover.IsEnabled)=True]">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+    <Style Selector="ListBoxItem:pointerover Button[(themes|RowActionHover.IsEnabled)=True]:disabled,
+                     ListBoxItem:selected Button[(themes|RowActionHover.IsEnabled)=True]:disabled,
+                     .list-row:pointerover Button[(themes|RowActionHover.IsEnabled)=True]:disabled">
+        <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
     </Style>
 </Styles>

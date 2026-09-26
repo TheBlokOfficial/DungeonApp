@@ -269,6 +269,63 @@
         </Style>
     </ControlTheme>
 
+    <!--
+        Akcja w wierszu listy: Button z Theme="{StaticResource DungeonRowAction}" - np. kosz na końcu
+        wiersza. Treść (rysunek, np. ForegroundIcon) daje widok. Osobny motyw, nie odmiana przycisku:
+        nie dziedziczy stałej wysokości przycisku (DungeonControlHeight) - wysokość bierze z wiersza
+        (Height NaN, rozciągnięty w pionie), więc wiersz zostaje wysoki jak wiersz.
+        Obszar trafienia to cały pas na końcu wiersza: kolumna szerokości DungeonListRowHeight
+        (kwadrat wiersza listy), pełnej wysokości wiersza, tło przezroczyste do trafiania myszą.
+        W wierszu ListBoxItem i w wierszu z klasą list-row pas wychodzi przez wcięcie wiersza do jego
+        krawędzi - styl w BuiltInControls.axaml (ControlTheme nie dopuszcza selektora potomka).
+        Sam rysunek, bez tła, bez krawędzi, bez zaokrąglenia i bez otoczki; bez podpowiedzi (znak
+        powszechny mówi sam).
+        Stany:
+          spoczynek   - rysunek DangerText (akcja usuwa);
+          najechanie  - rysunek DangerHoverText (jaśniejszy), bez tła; wciśnięcie jak najechanie;
+                        wiersz pod nim się nie podświetla (Themes/RowActionHover.cs);
+          wyłączenie  - DungeonDisabledOpacity.
+        Widoczność: tylko pod myszą nad wierszem i na wybranym wierszu; miejsce zarezerwowane zawsze
+        (przezroczystość, nie zwijanie) - style w BuiltInControls.axaml. Bez animacji. Fokus bez
+        wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="DungeonRowAction" TargetType="Button">
+        <Setter Property="themes:RowActionHover.IsEnabled" Value="True" />
+        <Setter Property="Width" Value="{DynamicResource DungeonListRowHeight}" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonDangerTextBrush}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerHoverTextBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
     <!-- =================================================================== -->
     <!-- POLA TEKSTOWE                                                       -->
     <!-- =================================================================== -->
@@ -861,7 +918,7 @@
         DungeonNavigationCornerRadius, bez krawędzi. Kursor strzałka.
         Stany:
           spoczynek          - tło przezroczyste;
-          najechanie         - tło BackstageRowHover;
+          najechanie         - tło BackstageRowHover; nie w pasie akcji wiersza (DungeonRowAction);
           wybrane            - tło AccentDim, także pod myszą i wciśnięte - wybrany wiersz nie ma
                                najechania (klik w niego nic nie zmienia; styl stoi po najechaniu);
           wciśnięcie         - wygląda jak pod myszą (niewybrany);
@@ -942,7 +999,9 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:pointerover, ^:pressed">
+        <!-- Mysz w pasie akcji wiersza (DungeonRowAction) nie podświetla wiersza - klasa
+             row-action-hover z Themes/RowActionHover.cs. -->
+        <Style Selector="^:pointerover:not(.row-action-hover), ^:pressed:not(.row-action-hover)">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
         <Style Selector="^:selected">

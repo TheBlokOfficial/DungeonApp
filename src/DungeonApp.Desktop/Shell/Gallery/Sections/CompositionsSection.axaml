@@ -21,13 +21,6 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
         </Style>
-        <!-- Delete button in a list row: the subtle icon button, brought down from the control
-             height (36) to the compact control height (DungeonChipHeight, 28), so the row keeps its
-             own height (DungeonListRowHeight, 32) instead of the button's. -->
-        <Style Selector="Button.row-action">
-            <Setter Property="Width" Value="{DynamicResource DungeonChipHeight}" />
-            <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
-        </Style>
     </UserControl.Styles>
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
@@ -71,8 +64,7 @@
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                         <controls:WordTag Grid.Column="1" Content="{Binding Type}" />
                                         <controls:Badge Grid.Column="2" HorizontalAlignment="Right" Content="{Binding Challenge}" />
-                                        <Button Grid.Column="3" Classes="subtle icon row-action"
-                                                ToolTip.Tip="Usuń" Click="OnDeleteClick">
+                                        <Button Grid.Column="3" Theme="{StaticResource DungeonRowAction}" Click="OnDeleteClick">
                                             <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                                                      Height="{DynamicResource DungeonActionIconSize}"
                                                                      Source="{StaticResource DungeonIconTrash}" />

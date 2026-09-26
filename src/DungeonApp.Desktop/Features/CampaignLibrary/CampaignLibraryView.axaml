@@ -19,7 +19,11 @@
             <Setter Property="Margin" Value="0,0,0,3" />
             <Setter Property="Padding" Value="10,0" />
         </Style>
-        <Style Selector="Border.campaign-row:pointerover">
+        <!-- A destructive action owns its hover state: while the pointer is in the trash band
+             (DungeonRowAction, class row-action-hover from Themes/RowActionHover.cs - the row carries
+             list-row for it) the record stays at rest, so opening and deleting never look like one
+             action. -->
+        <Style Selector="Border.campaign-row:pointerover:not(.row-action-hover)">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
         <!-- An unavailable row sits one step back from an available one: the backstage workspace's
@@ -29,13 +33,8 @@
         <Style Selector="Border.campaign-row.unavailable">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
         </Style>
-        <!-- A destructive action owns its hover state. Keep the record at rest while its trash
-             control is hovered, so it never looks like opening and deleting are one action. -->
-        <Style Selector="Border.campaign-row.delete-hover:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
-        </Style>
         <!-- An unavailable row has nothing of its own to react to a hover - the trash control is
-             the only interactive thing left in it, and it already owns its own highlight above. Stays
+             the only interactive thing left in it, and it owns its own hover state. Stays
              at its own (recessed) rest color instead of the available row's rest color. -->
         <Style Selector="Border.campaign-row.unavailable:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
@@ -143,7 +142,7 @@
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
+                                <Border Classes="campaign-row list-row" Classes.unavailable="{Binding !IsAvailable}">
                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
@@ -204,11 +203,8 @@
                                                        Text="{Binding CreatedAt}" />
                                         </Grid>
                                         <Button Grid.Column="3"
-                                                Classes="subtle icon"
-                                                Command="{Binding DeleteCommand}"
-                                                ToolTip.Tip="Usuń kampanię"
-                                                PointerEntered="OnDeletePointerEntered"
-                                                PointerExited="OnDeletePointerExited">
+                                                Theme="{StaticResource DungeonRowAction}"
+                                                Command="{Binding DeleteCommand}">
                                             <controls:ForegroundIcon Width="16"
                                                                      Height="16"
                                                                      Source="{StaticResource DungeonIconTrash}" />
