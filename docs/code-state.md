@@ -162,6 +162,9 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   mierzony (dziś nikt go nie używa); pierwszy taki — do obsłużenia w tym samym miejscu. Okienko `.list-host` nie ma wcięcia — niesie je lista
   w środku, żeby pasek stał 7 od krawędzi jak w każdym okienku. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
   niesie `DungeonMultilineInputContentPadding`.
+* **Motywu domyślnego biblioteki nie ma** (od porcji 9a fundamentu). Wbudowana kontrolka użyta po raz
+  pierwszy bez motywu ramy nie ma szablonu — jest niewidoczna, nic nie zgłasza błędu. Motyw dostaje
+  w `Themes/DungeonControls.axaml`, a typ — do jawnej listy w `BuiltInControlThemesTests`.
 * **Rozmiaru i położenia okienek wysuwanych nie sprawdzi test bez okna.** W testach okienko rysuje się
   w warstwie okna (korzeń szerokości okna), w aplikacji na Windows jest osobnym oknem dopasowanym do
   zawartości — dwa błędy (menu wyśrodkowane, szerokość listy przy przewijaniu) przeszły pomiar bez okna.

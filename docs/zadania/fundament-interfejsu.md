@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `ba766e4`.** Na starcie sesji: `git log ba766e4..master` i `git worktree
+**Stan na: 2026-09-26, po `d5a2e9c`.** Na starcie sesji: `git log d5a2e9c..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,11 +14,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone i przyjęte 2026-09-26.
-**W toku: porcja 9a** — wykonawca (Opus) w kopii w `.claude/worktrees/`, gałąź `fundament-9a`; brief
-i rozstrzygnięcia w *Ustaleniach*, *Porcja 9a*. Potem 9b (Haiku). Dwa błędy okienek widoczne tylko
-w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — po 9a autor sprawdza, czy są nadal (pomiar z punktu 6
-listy w *Notkach*); jeśli tak — diagnoza w działającej aplikacji.
+Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone i przyjęte 2026-09-26;
+porcja 9a scalona 2026-09-26, bez oglądania. **W toku: porcja 9b** — wykonawca (Haiku) w kopii
+w `.claude/worktrees/`. Potem krótkie obejrzenie 9a+9b przez autora (lista w *Notkach*, *Po 9a*) —
+w tym dwa błędy okienek widoczne tylko w aplikacji (*Notki*, *Okienka tylko w aplikacji*): 9a ich nie
+dotknęła (prezentery okienek miały motyw ramy już wcześniej), więc najpewniej są nadal — wtedy
+diagnoza w działającej aplikacji (pomiar z punktu 6 listy w *Notkach*).
 
 ## Zakres i koniec
 
@@ -122,7 +123,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
-  * **9a** (Opus) — odcięcie motywu domyślnego biblioteki.
+  * [x] **9a** (Opus) — odcięcie motywu domyślnego biblioteki; scalona 2026-09-26.
   * **9b** (Haiku) — usunięcie tokenów i stylów bez użycia (lista w raporcie 0b: m.in.
     `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`; z porcji 10+11 —
     *Notki*).
@@ -149,6 +150,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 1c | strefa paska w okienkach tylko przy przepełnieniu (klasa `.no-bar-zone` przy otwarciu — `Themes/PopupOpenLayout.cs`); szerokość okienka `ComboBox`/`DropDownPicker` z napisów całej listy (`TextLayout`), przycięte z podpowiedzią; napis chipa z listą (nazwa / wartość / pierwsza + „+N”, podpowiedź), licznik z 1a usunięty; „Długa lista” w `.list-host` | scalona 2026-09-26, bez oglądania | 55 / 12,1 / 7,6 mln |
 | 1d | najechanie odnośnika w zdaniu (`DungeonAccentTextHover`); klocek sortowania `SortPicker` — odnośnik z menu (`DungeonLinkOpener`, strzałka według reguły list), przycisk kierunku z przewróceniem ikony, kierunek w kolumnie skrótu menu (`MenuItemTrailing`); zakładka treści na klocku, kierunek wygaszony | scalona 2026-09-26, bez oglądania | 65 / 11,4 / 8,4 mln |
 | duża runda | tło `ListRow` z prawym pasem jak lewy (`PART_EndGutter`); pole z ikoną 200 w galerii (tylko galeria — *Notki*); ptaszek menu sortowania po ponownym kliknięciu (`SortPickerMenuTests`); `DropDownPicker.AllowsDeselect` w chipie (`DropDownPickerDeselectTests`); menu wyśrodkowane i szerokość okienka — nieodtworzone | scalona 2026-09-26 | 64 / 11,7 / 8,2 mln |
+| 9a | Fluent odcięty (aplikacja i pakiet); motywy ramy dla `Window`, `PopupRoot`, `OverlayPopupHost`, `ItemsControl`, `TransitioningContentControl`, `PathIcon`, `SelectableTextBlock` (szablony Avalonii 12.0.5), polskie menu podręczne pola i tekstu do zaznaczenia; `DungeonInputMinWidth` 64; test `BuiltInControlThemesTests` (32 typy); pomiar przed/po: 21 z 22 obrazów identycznych, różnica tylko w animacji paska | scalona 2026-09-26, bez oglądania | 62 / 11,2 / 6,5 mln |
 
 ## Ustalenia
 
@@ -611,6 +613,17 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   26, z ikoną 54) i rośnie przy pisaniu — wbrew rzemiosłu „układ niezależny od zawartości”. Do
   rozstrzygnięcia przez architekta w briefie 9a — rozstrzygnięte (*Ustalenia*, *Porcja 9a*). (9a odcina motyw domyślny, który dawał polu najmniejszą
   szerokość): zasób motywu z szerokością najmniejszą dla `TextBox` i `IconField`, wartość z konwencji.
+
+* **Po 9a** (raport, 2026-09-26) — do obejrzenia: (1) cała aplikacja i galeria — było: pod spodem motyw
+  biblioteki; jest: tylko motyw ramy; patrzeć: nic nie zniknęło ani nie zmieniło wyglądu (pomiar bez okna
+  nie objął okienek, podpowiedzi, menu, paska górnego i bocznego). (2) Okienka i menu — tekst bez
+  własnego rozmiaru ma teraz 13 zamiast 14 z motywu biblioteki; patrzeć: czy coś w okienku zmalało.
+  (3) Prawy klik w polu tekstowym i w tekście do zaznaczenia — było: menu biblioteki; jest: „Wytnij /
+  Kopiuj / Wklej” i „Kopiuj” po polsku, wygaszone, gdy nie ma czego zrobić.
+  *Rozstrzygnięte samodzielnie (wykonawca):* domyślne tło okna `DungeonFrameBrush` (było czarne, niewidoczne
+  — `MainWindow` ma własne); pole wewnątrz pola liczbowego bez najmniejszej szerokości 64 — pole liczbowe
+  dostaje szerokość z układu (architekt: tak zostaje, liczba ma kilka znaków); `PathIcon` bez domyślnego
+  rozmiaru. Poza galerią żadne pole nie mierzyło się do zawartości — widoki bez zmian.
 
 ## Do sesji głównej
 
