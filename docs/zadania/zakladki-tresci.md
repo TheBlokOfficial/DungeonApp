@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `698ddd6`.** Na starcie sesji: `git log 698ddd6..master` i `git worktree
+**Stan na: 2026-09-26, po `ea293c6`.** Na starcie sesji: `git log ea293c6..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -18,8 +18,7 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Zadanie założone 2026-09-26; nic jeszcze nie ruszyło. Fundament interfejsu przyjęty i zamknięty
 tego dnia (jego reguły — `architecture.md`, *Niezmiennik interfejsu*; pomiar — `decisions.md`, pozycja
-39). Kopii roboczych brak (katalog `.claude/worktrees/agent-a26e9fa261f37de51` mógł zostać zablokowany
-przez proces — usunąć, gdy się zwolni). **Następny krok: wycinek 1 planu (dane D&D 5e)** — najpierw
+39). Kopii roboczych brak. **Następny krok: wycinek 1 planu (dane D&D 5e)** — najpierw
 potwierdzić z autorem dwie sprawy z *Do sesji głównej* i *Ustaleń* („instancje” = wpisy; zaklęcia
 a drugi zakaz), bo zmieniają zakres zwiadu.
 
