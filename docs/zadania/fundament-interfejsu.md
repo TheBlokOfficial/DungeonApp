@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `03389ef`.** Na starcie sesji: `git log 03389ef..master` i `git worktree
+**Stan na: 2026-09-26, po `777c038`.** Na starcie sesji: `git log 777c038..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -20,7 +20,8 @@ Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pom
 1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
 przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
 samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
-Runda 1c scalona 2026-09-26. **W toku:** runda 1d — wykonawca uruchomiony 2026-09-26.
+Rundy 1c i 1d scalone 2026-09-26. **Następny krok: duża runda autora** — raport zbiorczy
+z *Listy do dużej rundy* (*Notki*); po poprawkach z niej — 9a, 9b.
 
 ## Zakres i koniec
 
@@ -114,7 +115,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     zniknie najdłuższa pozycja — wirtualizacja mierzy tylko widoczne): szerokość ustala się przy
     otwarciu z najdłuższej pozycji **całej** listy (nie mniej niż otwierający) i nie zmienia się, dopóki
     okienko jest otwarte — także przy filtrowaniu wyszukiwaniem. `ComboBox` i `DropDownPicker`.
-  * [ ] **Runda 1d** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
+  * [x] **Runda 1d** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
     najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
     kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
     odwracanie działa od zlecenia A.
@@ -148,6 +149,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26; 1b (kolumny `ListRow` wyśrodkowane niezależnie — styl w `BuiltInControls.axaml`; skrót i strzałka podmenu w jednej kolumnie; podmenu obok menu — `DungeonSubmenuHorizontalOffset` 11; ramka aktywnego chipa `DungeonAccentEdge` 40 %; najechanie `.subtle` nakładką `DungeonHoverOverlay`; pas ikony w polu; strefa paska od krawędzi — lista wpisów 35 → 25, okienka i menu 32 → 28, pasek w `.list-host` 11 → 7 od krawędzi; kosz kampanii — styl lokalny zostaje) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln + 1b (z dokończeniem po zatrzymaniu, ten sam wykonawca): 69 / 14,3 / 8,3 mln |
 | po 1b | regresja wiersza (selektor kolumn `ListRow` łapał korzeń szablonu — `PART_Root`); kciuk paska przy prawej krawędzi pasa (odstęp 7/7/7 w okienkach, było 9/7/7); pole z ikoną — kontrolka `IconField` owijająca `TextBox` widoku, × w ramce, `FieldIconPointer` usunięty; przeszły: wyszukiwarka treści, pole nowej kampanii, wyszukiwarka `DropDownPicker`, galeria | scalona 2026-09-26, bez oglądania (*Oglądanie zbiorcze*) | 44 / 9,4 / 4,8 mln |
 | 1c | strefa paska w okienkach tylko przy przepełnieniu (klasa `.no-bar-zone` przy otwarciu — `Themes/PopupOpenLayout.cs`); szerokość okienka `ComboBox`/`DropDownPicker` z napisów całej listy (`TextLayout`), przycięte z podpowiedzią; napis chipa z listą (nazwa / wartość / pierwsza + „+N”, podpowiedź), licznik z 1a usunięty; „Długa lista” w `.list-host` | scalona 2026-09-26, bez oglądania | 55 / 12,1 / 7,6 mln |
+| 1d | najechanie odnośnika w zdaniu (`DungeonAccentTextHover`); klocek sortowania `SortPicker` — odnośnik z menu (`DungeonLinkOpener`, strzałka według reguły list), przycisk kierunku z przewróceniem ikony, kierunek w kolumnie skrótu menu (`MenuItemTrailing`); zakładka treści na klocku, kierunek wygaszony | scalona 2026-09-26, bez oglądania | 65 / 11,4 / 8,4 mln |
 
 ## Ustalenia
 
@@ -533,6 +535,20 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     „Humanoid” + odznakę „+2” zamiast tekstu „Humanoid +2” i ma tę samą podpowiedź — jedne reguły dla
     obu wyglądów; okienko nie wychodzi poza okno aplikacji (6 od prawej krawędzi), dłuższe pozycje
     przycinają się z podpowiedzią.
+  * *Po 1d* — (1) galeria *Przyciski*, rząd „Link”, „pokaż szczegóły” — było: pod myszą bez zmiany;
+    jest: kolor jaśnieje; patrzeć: różnica widoczna, zdanie nie drga. (2) Galeria *Przyciski*,
+    *Sortowanie*, „Sortuj: Nazwa” — było: okienko z listą; jest: menu z ptaszkiem i „A–Z” po prawej;
+    patrzeć: odstęp menu, strzałka w prawo → w dół. (3) Tamże przycisk kierunku — było: brak; jest:
+    ikona przewraca się, podpowiedź i napis w menu się zmieniają („Waga”: rosnąco/malejąco); patrzeć:
+    płynność, czytelność rysunku 16 px. (4) Tamże przykład z wygaszonym kierunkiem i wyłączony —
+    patrzeć: czy wygaszony czyta się jako wyłączony. (5) Zakładka treści, „Sortuj: …” nad listą — było:
+    okienko z listą, strzałka 9 px stale w dół; jest: menu, strzałka 16 px według reguły, kierunek
+    wygaszony; patrzeć: wybór pola sortuje, rząd z „Wyczyść filtry” stoi jak przedtem. (6) Najechanie
+    przycisku kierunku — tło wystaje 4 px nad i pod rząd tekstu; patrzeć: czy nie dotyka chipów.
+  * *Po 1d — rozstrzygnięte samodzielnie:* rysunek ikony (kreski malejące + strzałka w dół) znaczy
+    „malejąco”, „rosnąco” — ten sam przewrócony; przy nieznanym rodzaju pól podpowiedź „rosnąco/
+    malejąco”, menu bez kierunku (zakładka treści do zlecenia A); strzałka odnośnika 16 px jak w chipie
+    (była 9); przycisk kierunku 24 × 24 z ujemnym marginesem, żeby nie podwyższał rzędu.
   * *Po 1b — rozstrzygnięte samodzielnie:* × widoczny tylko przy niepustym polu; klik w ikonę, ×
     i krawędź ramki nie kończy edycji (cała ramka to pole); kursor nad krawędzią i odstępem za ikoną —
     strzałka.

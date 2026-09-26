@@ -88,6 +88,12 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   jak pole wyszukiwania, wiersze czcionką wierszy listy. Istniejące testy filtrów dostosować do nowej
   semantyki.
 * „Wyczyść filtry" wygaszone, gdy nie ma czego czyścić.
+* **Chipy filtrów na chip z listą** (`DropDownPicker` w stroju chipa — fundament, runda 1c): jedne
+  reguły napisu (nazwa filtra / wartość / pierwsza + „+N”); pismo chipów z `ContentChipFontSize` (11,5
+  — poza skalą pisma) na motyw.
+* **Odwracanie sortowania** — klocek `SortPicker` (fundament, runda 1d) stoi w zakładce treści
+  z wygaszonym przyciskiem kierunku (`CanReverse=False`): model widoku dostaje kierunek i rodzaj pól
+  (`NumericOptions` — napis „A–Z” / „rosnąco” w menu i podpowiedzi).
 * ~~Pole wyszukiwania: tekst zastępczy wyśrodkowany, fokus zdejmowany kliknięciem obok i Escape~~ —
   zrobione w porcji 2 fundamentu.
 
