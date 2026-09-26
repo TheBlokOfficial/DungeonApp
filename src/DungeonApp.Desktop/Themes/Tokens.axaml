@@ -476,9 +476,13 @@
         <!-- Podmenu stoi górnym wierszem na wysokości pozycji-rodzica: przesunięte w górę o wcięcie
              powierzchni menu (DungeonFlyoutPadding, 4) i jej krawędź (1). -->
         <x:Double x:Key="DungeonSubmenuVerticalOffset">-5</x:Double>
+        <!-- Podmenu stoi obok menu, z którego wyszło, nie na nim: pozycja-rodzic kończy się przed
+             prawą krawędzią menu o jego wcięcie (DungeonFlyoutPadding, 4) i krawędź (1), a za krawędzią
+             jest odstęp okienka od otwierającego (DungeonFlyoutMargin, 6) - razem 4 + 1 + 6. -->
+        <x:Double x:Key="DungeonSubmenuHorizontalOffset">11</x:Double>
         <!-- Odstęp kolumny skrótu klawiszowego od napisu pozycji menu (DungeonSpacingXxl). -->
         <Thickness x:Key="DungeonMenuGestureMargin">24,0,0,0</Thickness>
-        <!-- Odstęp kolumny ikony od napisu i strzałki podmenu od napisu albo skrótu (DungeonSpacingSm). -->
+        <!-- Odstęp kolumny ikony od napisu i strzałki podmenu od napisu (DungeonSpacingSm). -->
         <Thickness x:Key="DungeonMenuIconMargin">0,0,8,0</Thickness>
         <Thickness x:Key="DungeonMenuChevronMargin">8,0,0,0</Thickness>
         <!-- Separator w menu: odstęp 4 nad i pod linią. -->

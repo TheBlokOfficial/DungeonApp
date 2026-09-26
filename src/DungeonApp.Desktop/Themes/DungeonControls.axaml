@@ -2112,7 +2112,8 @@
         Położenie: menu z przycisku jak okienko (widok ustawia MenuFlyout Placement=
         "BottomEdgeAlignedLeft" - MenuFlyout nie jest kontrolką i motywu nie ma; margines
         DungeonFlyoutMargin, odwrócone nad przycisk, gdy brak miejsca); menu kontekstowe przy
-        wskaźniku (zachowanie biblioteki); podmenu w prawo, górnym wierszem na wysokości pozycji
+        wskaźniku (zachowanie biblioteki); podmenu w prawo, obok krawędzi menu z odstępem okienka
+        (DungeonSubmenuHorizontalOffset - nie nachodzi na menu), górnym wierszem na wysokości pozycji
         (DungeonSubmenuVerticalOffset), w lewo, gdy brak miejsca. Otwarcie ruchem
         (Themes/PopupOpenMotion.cs): menu z przycisku od strony przycisku, menu kontekstowe i podmenu
         samym wyłonieniem; zamknięcie natychmiast.
@@ -2120,7 +2121,8 @@
         BackstageRowHover, wcięcie DungeonListRowHighlightInset, zaokrąglenie
         DungeonListRowHighlightCornerRadius) sięga pod pasek przewijania; wcięcie tekstu 12, po prawej
         większe o strefę paska (DungeonScrollBarZone). Kolumny wspólne dla menu
-        (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót] [strzałka podmenu]; kolumna ikony ma
+        (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót albo strzałka podmenu - jedna kolumna przy
+        prawym wcięciu, pozycja z podmenu nie ma skrótu]; kolumna ikony ma
         szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
         TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) do prawej,
         12, TextMuted, odstęp DungeonMenuGestureMargin. Ikona i ptaszek kolorem tekstu pozycji.
@@ -2234,8 +2236,9 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemGesture" />
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemChevron" />
+                                    <!-- Skrót i strzałka podmenu dzielą jedną kolumnę przy prawym wcięciu
+                                         (pozycja z podmenu nie ma skrótu) - oba kończą się w jednej linii. -->
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemTrailing" />
                                 </Grid.ColumnDefinitions>
                                 <Panel Name="PART_IconColumn"
                                        Width="{DynamicResource DungeonActionIconSize}"
@@ -2263,6 +2266,7 @@
                                 <TextBlock Name="PART_InputGestureText"
                                            Grid.Column="2"
                                            Margin="{DynamicResource DungeonMenuGestureMargin}"
+                                           HorizontalAlignment="Right"
                                            VerticalAlignment="Center"
                                            FontSize="{DynamicResource DungeonHelperFontSize}"
                                            Foreground="{DynamicResource DungeonTextMutedBrush}"
@@ -2270,7 +2274,8 @@
                                            IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                            Text="{TemplateBinding InputGesture, Converter={StaticResource DungeonKeyGestureConverter}}" />
                                 <controls:ForegroundIcon Name="PART_Chevron"
-                                                         Grid.Column="3"
+                                                         Grid.Column="2"
+                                                         HorizontalAlignment="Right"
                                                          Width="{DynamicResource DungeonActionIconSize}"
                                                          Height="{DynamicResource DungeonActionIconSize}"
                                                          Margin="{DynamicResource DungeonMenuChevronMargin}"
@@ -2283,6 +2288,7 @@
                     <Popup Name="PART_Popup"
                            WindowManagerAddShadowHint="False"
                            Placement="RightEdgeAlignedTop"
+                           HorizontalOffset="{DynamicResource DungeonSubmenuHorizontalOffset}"
                            VerticalOffset="{DynamicResource DungeonSubmenuVerticalOffset}"
                            IsLightDismissEnabled="False"
                            IsOpen="{TemplateBinding IsSubMenuOpen, Mode=TwoWay}">
