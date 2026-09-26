@@ -14,9 +14,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b obejrzane; rundy 1 i 2 porcji 8b scalone 2026-09-26 — runda 2 (pasek nakładką, kosz
-szary → czerwony, wyzwanie bez zakreślenia) czeka na obejrzenie. Kopii roboczych brak. **Następny
-krok:** uwagi autora po rundzie 2; po przyjęciu — porcja 9.
+Porcje 0–8b przyjęte (8b po rundzie 2, 2026-09-26). Kolejność zmieniona (autor, tego dnia): porcje
+10 i 11 razem, porcja 9 na końcu. **W toku:** porcje 10+11 — wykonawca (Opus 5.5) w tle, kopia
+w `.claude/worktrees/`; najpierw wiersz, potem chip (chip przechodzi dalej, jeśli zabraknie czasu).
+**Następny krok:** weryfikacja i scalenie, obejrzenie; potem porcja 9 — ostatnia.
 
 ## Zakres i koniec
 
@@ -34,7 +35,7 @@ skali. Z założenia oryginalne, poza motywem: karty treści (projektowane per t
 pasek boczny, ekrany jednorazowe. Zlecenia A i B z kolejki (lista i filtry, karta potwora) — to już
 składanie z fundamentu, osobny etap.
 
-**Koniec:** porcje 6–11 (z 8b i 9) przyjęte przez autora. Wtedy ten dokument umiera, a kolejka
+**Koniec:** porcje 6–11 (z 8b i 9) przyjęte przez autora; porcja 9 idzie ostatnia. Wtedy ten dokument umiera, a kolejka
 przechodzi do zleceń A i B i punktu kontrolnego (`tasks.md`).
 
 ## Do przeczytania
@@ -75,13 +76,17 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   kolorem podanym przez układającego — pierwszy konsument: cechy potwora, `tasks.md`, *B*).
 - [x] **8b** — poprawki po porcji 8; kompozycje przykładowe w galerii (pomysł autora): lista
   z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą.
-- [ ] **9** — odcięcie motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie
-  0b: m.in. `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`).
-- [ ] **10** — klocek: wiersz listy z kreską zaznaczenia. Obejmuje wiersze zrobione dziś z `Button`
-  (`content-row-button`, lista kampanii, pasek boczny) — razem ze zleceniem A.
-- [ ] **11** — klocek: chip z listą wyboru — chip dostaje najechanie i stan otwarcia (dziś lokalny
-  styl chipa przykrywa najechanie z motywu, więc otwarty chip wygląda jak w spoczynku; po rundzie 1
-  porcji 5); strzałka jak w liście rozwijanej.
+- [ ] **10 + 11 razem** (autor, 2026-09-26: oba klocki dla listy z filtrami, ten sam obszar kodu;
+  jeden wykonawca, chip przechodzi dalej, jeśli zabraknie czasu):
+  * **10** — klocek: wiersz listy z kreską zaznaczenia. Obejmuje wiersze zrobione dziś z `Button`
+    (`content-row-button`, lista kampanii, pasek boczny).
+  * **11** — klocek: chip z listą wyboru — chip dostaje najechanie i stan otwarcia (dziś lokalny
+    styl chipa przykrywa najechanie z motywu, więc otwarty chip wygląda jak w spoczynku; po rundzie 1
+    porcji 5); strzałka jak w liście rozwijanej.
+- [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
+  istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz) — odcięcie
+  motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in.
+  `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`).
 
 **Pomiar porcji** — materiał do punktu kontrolnego. „Rundy" to poprawki od autora, „pomiar" — kroki
 / minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
@@ -262,6 +267,23 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     treść przed nim; pasek widoczny zawsze przy przepełnieniu (architekt). Wyjątek menu znika.
   * *Kosz* widoczny zawsze, szary jak strzałka i data (`DungeonTextMutedBrush`), czerwony pod myszą;
     wiersz podświetlony także nad koszem — mechanizm tłumienia podświetlenia wiersza znika (autor).
+* **Porcje 10 + 11 — rozstrzygnięcia architekta** (2026-09-26; zielone światło autora na połączenie
+  tego dnia):
+  * *Wiersz listy* — kontrolka ramy na `Button` z właściwością „wybrany”: wiersz tych list jest
+    poleceniem (wybór wpisu, otwarcie kampanii, nawigacja), więc listy zostają `ItemsControl`, bez
+    zmian w modelach widoków — zamiana na `ListBox` zmieniłaby wybór i klawiaturę, to nie fundament.
+    Stany wyglądają dokładnie jak wiersz `ListBoxItem` (te same pędzle).
+  * *Kreska zaznaczenia* — opcjonalna, we wcięciu listy obok wiersza: wiersz ma po lewej pas
+    wcięcia, tło zaczyna się za nim; bez ujemnych marginesów (`code-state.md`, *Pułapki* —
+    przycinanie). Odstęp jak mockup: lista treści 10, pasek boczny 12; grubość 3 zamiast 2,5 (całe
+    piksele — ostra krawędź), wcięcie od góry i dołu jak mockup (5 / 6), zaokrąglona.
+  * Wysokość wiersza z motywu (32); inną podaje układający na poziomie listy, nigdy zawartość.
+    Lista kampanii — bez wyboru i kreski; kosz bez lokalnego stylu wymiarów.
+  * *Chip z listą* — nazwany motyw otwierającego: wygląd chipa z porcji 8, strzałka jak w liście
+    rozwijanej, otwarty wygląda jak pod myszą, spoczynek po zamknięciu kliknięciem, filtr aktywny —
+    przygaszony akcent. W aplikacji chipy filtrów zakładki treści przechodzą na motyw bez zmiany
+    semantyki filtrów (ta należy do zlecenia A). W galerii — lista wartości z polami wyboru
+    (docelowy filtr zlecenia A); `DropDownPicker` dostaje nazwę pozycji z wiązania (`tasks.md`).
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 

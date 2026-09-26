@@ -80,7 +80,7 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
 * Kreska zaznaczenia wpisu **przed** wierszem, w odstępie (mockup: `left: -10px`) — lista ma wcięcie,
   kontener wiersza pełnej szerokości, kreska w wcięciu; bez ujemnych marginesów. Na pasku bocznym
   odstęp jak w mockupie (`left: -12px`) — dziś kilkakrotnie za mały.
-* Pasek przewijania tylko, gdy jest co przewijać — dziś stały szary pas przy liście.
+* ~~Pasek przewijania tylko, gdy jest co przewijać~~ — zrobione w fundamencie (porcja 8b: nakładka).
 * **Wysokość i szerokość wiersza nadaje biblioteka**, nie zawartość — dziś przedmioty (pigułka
   rzadkości) mają wyższe wiersze niż potwory.
 * **Filtr = lista wartości z polami wyboru**, bez pozycji „Wszystkie"; nic nie zaznaczone = wszystko.
@@ -93,7 +93,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
   zrobione w porcji 2 fundamentu.
 
 *B. Karta potwora*
-* Wyzwanie — zakreślenie z motywu (porcja 2), samo „1/2"; PD obok, przygaszone. Tagi kategorii
+* Wyzwanie — zwykły tekst krojem liczb, samo „1/2" (bez zakreślenia — `decisions.md`, *Wyzwanie bez
+  zakreślenia*); PD obok, przygaszone. Tagi kategorii
   („Humanoid") — odznaka/tag z porcji 8. Reguła: `architecture.md`, *Konwencje interakcji*.
 * Opisy, akcje i cechy szczególne stylem tekstu do zaznaczenia (porcja 2); powód błędu w miejscu karty
   także — *Konwencje interakcji* w `architecture.md`.
