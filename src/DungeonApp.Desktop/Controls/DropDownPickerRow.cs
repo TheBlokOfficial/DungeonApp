@@ -30,13 +30,9 @@ public sealed class DropDownPickerRow(object item, string text, bool isSelected,
 
             _isSelected = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ShowsSelectedBackground)));
         }
     }
 
     /// <summary>Multiple mode: a check box before the text says the row is selected.</summary>
     public bool IsMultiple { get; } = isMultiple;
-
-    /// <summary>Single mode only: the selected row has the dim accent background of a list row.</summary>
-    public bool ShowsSelectedBackground => IsSelected && !IsMultiple;
 }

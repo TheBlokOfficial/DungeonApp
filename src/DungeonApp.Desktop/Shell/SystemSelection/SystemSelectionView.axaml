@@ -6,10 +6,6 @@
              x:DataType="selection:SystemSelectionViewModel">
 
     <UserControl.Styles>
-        <!-- A system option reuses the shelf's campaign-row rhythm (docs/tasks.md, "interfejs bez
-             fajerwerków": existing tokens only) - a full-row button rather than a list plus a
-             separate open action, since there is nothing else to do with a system option but choose
-             it. -->
         <Style Selector="Border.system-option">
             <Setter Property="Height" Value="{DynamicResource DungeonCampaignRowHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />

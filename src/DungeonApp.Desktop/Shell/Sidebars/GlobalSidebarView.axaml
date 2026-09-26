@@ -30,7 +30,7 @@
                               IsSelected="{Binding IsActive}"
                               Command="{Binding SelectCommand}"
                               IsEnabled="{Binding IsEnabled}">
-                <Grid Classes="nav-content" ColumnDefinitions="40,*">
+                <Grid ColumnDefinitions="40,*">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            HorizontalAlignment="Center"

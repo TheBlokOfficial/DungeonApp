@@ -36,7 +36,6 @@ public sealed class DropDownPickerRowsTests
         picker.SelectedItem = "Duży";
 
         Assert.Same(rowsBefore, picker.Rows);
-        Assert.Equal([false, true], picker.Rows.Select(row => row.ShowsSelectedBackground));
     }
 
     [Fact]
