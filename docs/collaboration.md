@@ -423,6 +423,10 @@ Co jeszcze się sprawdziło:
   każe to sprawdzić i podać w raporcie. Asercje opisują zamierzony kształt równościami („wypełnia
   pasek”), nie ograniczeniem („nie wystaje”) — test ograniczenia potrafi przejść przy błędzie
   widocznym na ekranie.
+* **Zadanie „znajdź wszystkie X, które…” przychodzi z poleceniem, które daje tę listę.** Decyzja autora
+  z 2026-09-26. Brief podaje wykonawcy gotowe polecenie wyszukiwania (albo każe je napisać i wkleić do
+  raportu), a architekt przy weryfikacji uruchamia je jeszcze raz na gałęzi wykonawcy. Zdanie „reszta
+  jest w użyciu” w raporcie nie jest dowodem kompletności — polecenie jest.
 * **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
   nie tylko wymiar** — i próbkuje piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
 

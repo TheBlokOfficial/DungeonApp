@@ -1980,6 +1980,10 @@ pamięć już wygasła.
   zaznaczenia: testy sprawdzały szerokość kolumn i geometrię kreski, a kreskę przycinała krawędź
   listy.
 
+* *Polecenie, które daje listę:* 2026-09-26, porcja 9b fundamentu (Haiku): raport stwierdzał, że poza
+  usuniętymi wszystkie zasoby motywu są w użyciu; jedno polecenie architekta liczące odwołania do
+  każdego klucza znalazło cztery kolejne bez użycia.
+
 
 ### Pliki robocze poza repozytorium
 
