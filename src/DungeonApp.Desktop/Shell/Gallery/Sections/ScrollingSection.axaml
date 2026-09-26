@@ -3,7 +3,7 @@
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ScrollingSection">
     <!-- The frame's ScrollViewer and ScrollBar themes (Themes/DungeonControls.axaml), live: two areas
          of the same fixed size, one with more text than fits (the bar shows, beside the text, never
-         over it) and one with less (no bar, no reserved strip). Nothing here restyles a scroll
+         over it) and one with less (no bar, but its strip stays reserved - the text wraps at the same width in both). Nothing here restyles a scroll
          area - the only local values are the areas' size and frame. -->
     <UserControl.Styles>
         <Style Selector="Border.scroll-sample">
@@ -21,7 +21,7 @@
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Przewijanie" />
-        <TextBlock Classes="caption muted" Text="Pasek pokazuje się tylko, gdy jest co przewijać, i stoi obok treści. Najedź na pasek, żeby zobaczyć uchwyt pod myszą." />
+        <TextBlock Classes="caption muted" Text="Pasek pokazuje się tylko, gdy jest co przewijać, i stoi obok treści; jego pas jest zarezerwowany zawsze. Najedź na pasek, żeby zobaczyć uchwyt pod myszą." />
 
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">

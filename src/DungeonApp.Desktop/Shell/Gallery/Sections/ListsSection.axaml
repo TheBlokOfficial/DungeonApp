@@ -5,17 +5,26 @@
     <!-- The frame's ListBox and ListBoxItem themes (Themes/DungeonControls.axaml), live: one list with
          a row in every static state (rest, selected, disabled) and a row whose text is longer than the
          list, and one list longer than its area (it scrolls with the frame's bar). Hover is checked
-         with the mouse. Nothing here restyles a list - the only local values are the lists' size and
+         with the mouse. Nothing here restyles a list - the only local values are the lists' size and inset, and
          the card they lie on. Below: the empty list (controls:EmptyState) with a message alone and
          with a message and a hint, each in a list-sized area so its place at the top shows. -->
     <UserControl.Styles>
+        <!-- The card has no padding of its own: the inset belongs to what it holds - the list's
+             Padding (inside the scrolled content) and the empty state's Margin - so a scroll bar
+             stands at the card's edge and rows end before its strip with the same gap as from the
+             left edge. -->
         <Style Selector="Border.list-sample">
             <Setter Property="Width" Value="240" />
-            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
             <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="Border.list-sample > ListBox">
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
+        </Style>
+        <Style Selector="Border.list-sample > controls|EmptyState">
+            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingXs}" />
         </Style>
     </UserControl.Styles>
 

@@ -728,10 +728,14 @@
         PART_VerticalScrollBar) i ścieżka z uchwytem (Track, PART_PageUpButton/PART_PageDownButton -
         kliknięcie w pas poza uchwytem przewija stroną); wypadły przyciski krokowe, tor, separator
         pasków i animacje rozwijania.
-        Pas pokazuje się wyłącznie, gdy jest co przewijać: domyślnie w pionie Auto, w poziomie
-        Disabled; gdy treść się mieści, pas jest niewidoczny i nie zajmuje miejsca. Pas stoi
-        w osobnej kolumnie (wierszu) obok treści i nigdy jej nie przykrywa - AllowAutoHide nie ma
-        tu znaczenia (szablon go nie czyta), paski się nie chowają.
+        Pasek pokazuje się wyłącznie, gdy jest co przewijać (domyślnie w pionie Auto, w poziomie
+        Disabled), ale jego pas przy Auto i Visible jest zarezerwowany zawsze - pojawienie się ani
+        zniknięcie paska nie zmienia szerokości treści. Przy Disabled i Hidden pasa nie ma. Pas stoi
+        w osobnej kolumnie (wierszu) obok treści, przy krawędzi obszaru, i nigdy treści nie przykrywa -
+        AllowAutoHide nie ma tu znaczenia (szablon go nie czyta), paski się nie chowają. Wcięcie
+        pojemnika należy do przewijanej treści (np. Padding listy - margines ItemsPresenter), nie
+        dookoła obszaru przewijania: treść kończy się przed pasem z tym samym odstępem co od
+        przeciwnej krawędzi.
         Pas ma szerokość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
         pośrodku, zaokrąglony (DungeonScrollThumbCornerRadius).
         Stany:
@@ -771,15 +775,31 @@
                                                      IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                    <ScrollBar Name="PART_HorizontalScrollBar"
-                               Orientation="Horizontal"
-                               Grid.Row="1" />
-                    <ScrollBar Name="PART_VerticalScrollBar"
-                               Orientation="Vertical"
-                               Grid.Column="1" />
+                    <!-- Pas paska: stoi zawsze (przy Auto i Visible), pasek w nim chowa się sam, gdy nie
+                         ma czego przewijać - szerokość treści się nie zmienia. -->
+                    <Panel Name="PART_HorizontalScrollBarLane"
+                           Grid.Row="1"
+                           Height="{DynamicResource DungeonScrollBarSize}">
+                        <ScrollBar Name="PART_HorizontalScrollBar"
+                                   Orientation="Horizontal" />
+                    </Panel>
+                    <Panel Name="PART_VerticalScrollBarLane"
+                           Grid.Column="1"
+                           Width="{DynamicResource DungeonScrollBarSize}">
+                        <ScrollBar Name="PART_VerticalScrollBar"
+                                   Orientation="Vertical" />
+                    </Panel>
                 </Grid>
             </ControlTemplate>
         </Setter>
+
+        <!-- Disabled i Hidden: bez pasa, treść na całą szerokość (wysokość). -->
+        <Style Selector="^[HorizontalScrollBarVisibility=Disabled] /template/ Panel#PART_HorizontalScrollBarLane,
+                       ^[HorizontalScrollBarVisibility=Hidden] /template/ Panel#PART_HorizontalScrollBarLane,
+                       ^[VerticalScrollBarVisibility=Disabled] /template/ Panel#PART_VerticalScrollBarLane,
+                       ^[VerticalScrollBarVisibility=Hidden] /template/ Panel#PART_VerticalScrollBarLane">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
     </ControlTheme>
 
     <ControlTheme x:Key="DungeonScrollBarThumb" TargetType="Thumb">
