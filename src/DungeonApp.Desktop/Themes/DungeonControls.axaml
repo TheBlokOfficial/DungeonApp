@@ -1132,7 +1132,9 @@
         Wysokość DungeonListRowHeight ustawiona jawnie - należy do wiersza, nie do zawartości; inną
         podaje układający stylem listy w widoku.
         Kreska zaznaczenia (ShowsSelectionStripe, domyślnie wyłączona): pas wcięcia po lewej szerokości
-        DungeonListRowStripeGutter, tło wiersza zaczyna się za nim; w pasie, przy jego lewej krawędzi,
+        DungeonListRowStripeGutter, tło wiersza zaczyna się za nim i kończy przed takim samym pasem
+        po prawej (tło w równym odstępie od obu krawędzi listy; pasek przewijania leży nad prawym
+        końcem tła, treść kończy się przed strefą paska liczoną od krawędzi wiersza); w pasie, przy jego lewej krawędzi,
         kreska akcentu grubości DungeonListRowStripeWidth, zaokrąglona, wcięta z góry i z dołu o
         DungeonListRowStripeInset - widoczna tylko przy IsSelected. Pas leży w granicach wiersza (nie
         ujemny margines), więc lista z przewijaniem go nie przycina. Szerokość pasa i wcięcie podaje
@@ -1169,7 +1171,7 @@
             <ControlTemplate>
                 <!-- Przezroczyste tło zewnętrznej siatki łapie mysz także w odstępie podświetlenia i w
                      pasie kreski - najechanie nie gaśnie między wierszami. -->
-                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*">
+                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*,Auto">
                     <Panel Name="PART_StripeGutter"
                            Width="{DynamicResource DungeonListRowStripeGutter}"
                            IsVisible="{TemplateBinding ShowsSelectionStripe}">
@@ -1181,11 +1183,23 @@
                                 Background="{DynamicResource DungeonAccentBrush}"
                                 IsVisible="{TemplateBinding IsSelected}" />
                     </Panel>
+                    <!-- Pas po prawej tej samej szerokości co pas kreski: tło wiersza kończy się w tym
+                         samym odstępie od prawej krawędzi, w jakim zaczyna się od lewej. -->
+                    <Panel Name="PART_EndGutter"
+                           Grid.Column="2"
+                           Width="{DynamicResource DungeonListRowStripeGutter}"
+                           IsVisible="{TemplateBinding ShowsSelectionStripe}" />
                     <Border Name="PART_Highlight"
                             Grid.Column="1"
                             Margin="{DynamicResource DungeonListRowHighlightInset}"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <!-- Treść leży nad tłem i prawym pasem: kończy się przed strefą paska liczoną od
+                         prawej krawędzi wiersza (DungeonScrollBarZone), niezależnie od prawego pasa. -->
+                    <Border Name="PART_ContentZone"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            Margin="{DynamicResource DungeonListRowHighlightInset}"
                             Padding="{DynamicResource DungeonScrollBarZone}">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"

@@ -15,10 +15,11 @@
 
         <!-- Pas kreski zaznaczenia wierszy nawigacji (ListRow): odstęp kreski od tła wiersza 12,
              wcięcie z góry i z dołu 6 (mockup .sidebar-item.active::before: left -12, top/bottom 6).
-             Pasek nie ma przewijania: wiersz nie zostawia strefy paska (DungeonScrollBarZone 0). -->
+             Pasek nie ma przewijania: strefa paska w wierszu to tylko prawy pas wiersza (12, szerokość
+             pasa kreski) - treść kończy się tam, gdzie tło, jak przed wprowadzeniem prawego pasa. -->
         <x:Double x:Key="DungeonListRowStripeGutter">12</x:Double>
         <Thickness x:Key="DungeonListRowStripeInset">0,6</Thickness>
-        <Thickness x:Key="DungeonScrollBarZone">0</Thickness>
+        <Thickness x:Key="DungeonScrollBarZone">0,0,12,0</Thickness>
         <!-- Shared by every row in every category - the campaign position, a Campaign-category tab,
              a System-category tab, and "Zmień system" alike - so a row's category never shows in its
              own visual shape, only in which group on the page it sits in. -->
@@ -65,12 +66,11 @@
 
     <UserControl.Styles>
         <!-- Wymiary wierszy nawigacji (styl listy): wysokość 40 zamiast wysokości wiersza listy ramy,
-             bez wcięcia treści (kolumny siatki wiersza dają położenie ikony i etykiety), prawy odstęp
-             12 - tło wiersza stoi symetrycznie między pasem kreski a krawędzią paska. -->
+             bez wcięcia treści (kolumny siatki wiersza dają położenie ikony i etykiety). Tło wiersza
+             stoi symetrycznie między pasem kreski a krawędzią paska - prawy pas (12) niesie motyw wiersza. -->
         <Style Selector="controls|ListRow">
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0,0,12,0" />
         </Style>
         <Style Selector="TextBlock.nav-label.locked">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
