@@ -126,6 +126,7 @@ public partial class App : Avalonia.Application
             Themes.EditFocusRelease.Register();
             Themes.OpenerHoverRest.Register();
             Themes.PopupOpenMotion.Register();
+            Themes.ExpanderContentMotion.Register();
             Themes.FieldIconPointer.Register();
 
             _shell = new AppShellViewModel(

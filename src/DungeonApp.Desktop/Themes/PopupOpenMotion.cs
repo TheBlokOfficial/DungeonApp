@@ -94,20 +94,35 @@ internal static class PopupOpenMotion
 
     private static void Run(Control presenter, bool opensUp, double? offset)
     {
-        var duration = presenter.TryFindResource("DungeonPopupOpenDuration", out var d) && d is TimeSpan span
+        offset ??= Offset(presenter);
+
+        // Otwarte w dół - z góry (ujemne przesunięcie), otwarte w górę - z dołu.
+        Appear(presenter, opensUp ? offset.Value : -offset.Value);
+    }
+
+    /// <summary>DungeonPopupOpenOffset - o ile powierzchnia dosuwa się od strony otwierającego.</summary>
+    internal static double Offset(Control control) =>
+        control.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
+
+    /// <summary>
+    /// Ruch wyłonienia wspólny dla okienka i treści rozwiniętej sekcji (Themes/ExpanderContentMotion.cs):
+    /// z przezroczystości i z przesunięcia <paramref name="fromY"/> do położenia w
+    /// DungeonPopupOpenDuration, z wyhamowaniem. Nic nie blokuje - treść jest klikalna od pierwszej
+    /// klatki, ruch tylko dogania stan.
+    /// </summary>
+    internal static void Appear(Control target, double fromY)
+    {
+        var duration = target.TryFindResource("DungeonPopupOpenDuration", out var d) && d is TimeSpan span
             ? span
             : TimeSpan.FromMilliseconds(120);
-        offset ??= presenter.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
 
         // Animacja przesunięcia działa na TranslateTransform w RenderTransform (animator przekształceń
         // Avalonii 12 nie animuje RenderTransform zapisanego jako TransformOperations).
-        if (presenter.RenderTransform is not TranslateTransform)
+        if (target.RenderTransform is not TranslateTransform)
         {
-            presenter.RenderTransform = new TranslateTransform();
+            target.RenderTransform = new TranslateTransform();
         }
 
-        // Otwarte w dół - z góry (ujemne przesunięcie), otwarte w górę - z dołu.
-        var from = opensUp ? offset.Value : -offset.Value;
         var animation = new Animation
         {
             Duration = duration,
@@ -121,7 +136,7 @@ internal static class PopupOpenMotion
                     Setters =
                     {
                         new Setter(Visual.OpacityProperty, 0d),
-                        new Setter(TranslateTransform.YProperty, from),
+                        new Setter(TranslateTransform.YProperty, fromY),
                     },
                 },
                 new KeyFrame
@@ -136,6 +151,6 @@ internal static class PopupOpenMotion
             },
         };
 
-        _ = animation.RunAsync(presenter);
+        _ = animation.RunAsync(target);
     }
 }

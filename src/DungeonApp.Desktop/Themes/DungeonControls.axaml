@@ -3082,8 +3082,9 @@
           najechanie  - tło SurfaceHover; wciśnięcie - jak najechanie;
           rozwinięta  - bez osobnego wyglądu, zmienia się tylko strzałka;
           wyłączona   - cała sekcja (nagłówek i treść) DungeonDisabledOpacity raz, bez reakcji na mysz.
-        Treść: wcięcie DungeonExpanderContentPadding (równo z napisem nagłówka), pojawia się i znika
-        od razu - bez animacji wysokości i bez ContentTransition.
+        Treść: wcięcie DungeonExpanderContentPadding (równo z napisem nagłówka). Po rozwinięciu
+        wyłania się jak okienko - z przezroczystości, dosuwając się z góry (Themes/ExpanderContentMotion.cs);
+        wysokość się nie animuje, zwinięcie natychmiastowe, bez ContentTransition.
     -->
     <ControlTheme x:Key="DungeonExpanderHeader" TargetType="ToggleButton">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
