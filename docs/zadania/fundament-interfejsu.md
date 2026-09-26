@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `777c038`.** Na starcie sesji: `git log 777c038..master` i `git worktree
+**Stan na: 2026-09-26, po `793446c`.** Na starcie sesji: `git log 793446c..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,14 +14,13 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b przyjęte; 10+11 z rundami 1a i 1b scalone, 1b obejrzane przez autora 2026-09-26.
-Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pomiędzy — poprawki po 1b
-(regresja kreski i tła wiersza, symetria suwaka, pole z ikoną), runda 1c (okienka list i chip), runda
-1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
-przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
-samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
-Rundy 1c i 1d scalone, duża runda obejrzana 2026-09-26. **W toku:** poprawki po dużej rundzie
-(*Ustalenia*, *Duża runda*) — wykonawca uruchomiony 2026-09-26. Potem krótkie obejrzenie, 9a, 9b.
+Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone 2026-09-26; duża runda
+obejrzana (*Ustalenia*, *Duża runda*). Kopii roboczych brak. Poprawek po dużej rundzie autor jeszcze nie
+oglądał — lista w *Notkach* (*Po poprawkach dużej rundy — do sprawdzenia*); jego uwagi rozstrzyga się na
+starcie następnej sesji. **Następny krok: porcja 9a** (autor, 2026-09-26: porcja 9 w następnej sesji),
+potem 9b. Dwa błędy okienek widoczne tylko w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — po 9a,
+która zmienia wygląd pod każdą kontrolką, autor sprawdza, czy są nadal; jeśli tak — diagnoza w działającej
+aplikacji. Szerokość pola — do rozstrzygnięcia w briefie 9a (*Notki*, *Szerokość pola*).
 
 ## Zakres i koniec
 
@@ -120,7 +119,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
     odwracanie działa od zlecenia A.
   * [x] **Duża runda autora** — obejrzana 2026-09-26; uwagi w *Ustaleniach* (*Duża runda*).
-  * [ ] **Poprawki po dużej rundzie** — pięć spraw z *Ustaleń* (*Duża runda*), jeden wykonawca.
+  * [x] **Poprawki po dużej rundzie** — scalone 2026-09-26; dwie sprawy nieodtworzone bez okna
+    (*Notki*, *Okienka tylko w aplikacji*) i jedna do rozstrzygnięcia (*Notki*, *Szerokość pola*).
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
@@ -150,6 +150,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | po 1b | regresja wiersza (selektor kolumn `ListRow` łapał korzeń szablonu — `PART_Root`); kciuk paska przy prawej krawędzi pasa (odstęp 7/7/7 w okienkach, było 9/7/7); pole z ikoną — kontrolka `IconField` owijająca `TextBox` widoku, × w ramce, `FieldIconPointer` usunięty; przeszły: wyszukiwarka treści, pole nowej kampanii, wyszukiwarka `DropDownPicker`, galeria | scalona 2026-09-26, bez oglądania (*Oglądanie zbiorcze*) | 44 / 9,4 / 4,8 mln |
 | 1c | strefa paska w okienkach tylko przy przepełnieniu (klasa `.no-bar-zone` przy otwarciu — `Themes/PopupOpenLayout.cs`); szerokość okienka `ComboBox`/`DropDownPicker` z napisów całej listy (`TextLayout`), przycięte z podpowiedzią; napis chipa z listą (nazwa / wartość / pierwsza + „+N”, podpowiedź), licznik z 1a usunięty; „Długa lista” w `.list-host` | scalona 2026-09-26, bez oglądania | 55 / 12,1 / 7,6 mln |
 | 1d | najechanie odnośnika w zdaniu (`DungeonAccentTextHover`); klocek sortowania `SortPicker` — odnośnik z menu (`DungeonLinkOpener`, strzałka według reguły list), przycisk kierunku z przewróceniem ikony, kierunek w kolumnie skrótu menu (`MenuItemTrailing`); zakładka treści na klocku, kierunek wygaszony | scalona 2026-09-26, bez oglądania | 65 / 11,4 / 8,4 mln |
+| duża runda | tło `ListRow` z prawym pasem jak lewy (`PART_EndGutter`); pole z ikoną 200 w galerii (tylko galeria — *Notki*); ptaszek menu sortowania po ponownym kliknięciu (`SortPickerMenuTests`); `DropDownPicker.AllowsDeselect` w chipie (`DropDownPickerDeselectTests`); menu wyśrodkowane i szerokość okienka — nieodtworzone | scalona 2026-09-26 | 64 / 11,7 / 8,2 mln |
 
 ## Ustalenia
 
@@ -569,6 +570,34 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   * *Po 1b — rozstrzygnięte samodzielnie:* × widoczny tylko przy niepustym polu; klik w ikonę, ×
     i krawędź ramki nie kończy edycji (cała ramka to pole); kursor nad krawędzią i odstępem za ikoną —
     strzałka.
+
+* **Po poprawkach dużej rundy — do sprawdzenia** (autor jeszcze nie oglądał): (1) zakładka treści,
+  lista wpisów, najechanie/wybór — było: tło do linii podziału; jest: kończy się 10 przed nią, jak
+  z lewej; patrzeć: tekst i odznaka kończą się przed paskiem; kciuk paska (6–12 od krawędzi) zachodzi
+  2 px na tło — decyzja architekta: symetria tła wygrywa, pasek jest nakładką. (2) Pasek boczny,
+  rozwinięty i zwinięty — bez zmian 12/12; patrzeć: ikona na środku, etykieta nie wychodzi poza tło.
+  (3) Galeria *Pola tekstowe* — pola z ikoną 200 jak zwykłe. (4) „Sortuj: …”, wybrać „Wyzwanie”, kliknąć
+  je ponownie, otworzyć znowu — było: ptaszek znikał (to był brak ptaszka ze zrzutu); jest: zostaje.
+  (5) Galeria, chip „Rozmiar” z wybraną wartością — kliknąć ją: odznacza, zamyka, chip wraca do nazwy;
+  zwykła lista pojedyncza trzyma wybór. (6) Menu sortowania i szerokość długiej listy — bez zmian
+  (*Okienka tylko w aplikacji*): czy menu wciąż wyśrodkowane (podać skalę ekranu Windows), o ile zmienia
+  się szerokość „Listy dłuższej niż rozwinięcie” po przewinięciu na dół.
+* **Okienka tylko w aplikacji** (duża runda, raport): menu sortowania wyśrodkowane pod odnośnikiem i okienko
+  listy zmieniające szerokość przy przewijaniu **nie odtwarzają się bez okna** — w testach okienka rysują
+  się w warstwie okna (korzeń szerokości okna), w aplikacji na Windows są osobnym oknem dopasowanym do
+  zawartości; pismo też inne. Pomiar bez okna: menu wyrównane do lewej przy menu węższym i szerszym od
+  odnośnika, prawy = lewy = 17; szerokość okienka stała przed i po przewinięciu. Dalszy krok: pomiar
+  w działającej aplikacji — `FlyoutPresenter.Width` i `Bounds` korzenia okienka przy otwarciu i po
+  przewinięciu, czy `FixListWidth` w `PopupOpenLayout` nie kończy się wcześnie (nie znalazł wiersza albo
+  napisu), położenie menu względem odnośnika — np. tymczasowy zapis do pliku, który autor wywoła jednym
+  otwarciem. Duży prawy margines menu w zakładce treści to najpewniej najmniejsza szerokość menu (160) przy
+  krótkich nazwach. Chip „Kolor” (`DungeonChipOpener` z `ListBox`) nie odznacza — zostaje do zlecenia A
+  (przejście na `DropDownPicker`).
+* **Szerokość pola** (duża runda, raport — przesłanka briefu była fałszywa): zwykłe pole nie ma szerokości
+  w motywie (`MinWidth 0`); 200 w galerii daje styl galerii. Poza nią pole mierzy się do zawartości (puste
+  26, z ikoną 54) i rośnie przy pisaniu — wbrew rzemiosłu „układ niezależny od zawartości”. Do
+  rozstrzygnięcia przez architekta w briefie 9a (odcina motyw domyślny, który dawał polu najmniejszą
+  szerokość): zasób motywu z szerokością najmniejszą dla `TextBox` i `IconField`, wartość z konwencji.
 
 ## Do sesji głównej
 

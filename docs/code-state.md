@@ -162,6 +162,11 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   mierzony (dziś nikt go nie używa); pierwszy taki — do obsłużenia w tym samym miejscu. Okienko `.list-host` nie ma wcięcia — niesie je lista
   w środku, żeby pasek stał 7 od krawędzi jak w każdym okienku. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
   niesie `DungeonMultilineInputContentPadding`.
+* **Rozmiaru i położenia okienek wysuwanych nie sprawdzi test bez okna.** W testach okienko rysuje się
+  w warstwie okna (korzeń szerokości okna), w aplikacji na Windows jest osobnym oknem dopasowanym do
+  zawartości — dwa błędy (menu wyśrodkowane, szerokość listy przy przewijaniu) przeszły pomiar bez okna.
+  Test okienka musi też sam zarejestrować `PopupOpenLayout` i `PopupOpenMotion` — aplikacja włącza je
+  tylko przy desktopowym cyklu życia.
 * **Przewija jedna warstwa.** Lista w owijającym `ScrollViewer` albo w okienku wysuwanym, które samo
   przewija, daje dwa paski; w okienku z samą listą — `FlyoutPresenterClasses="list-host"`. Galeria,
   „Długa lista” w `DropDownsSection`, wciąż tak stoi.
