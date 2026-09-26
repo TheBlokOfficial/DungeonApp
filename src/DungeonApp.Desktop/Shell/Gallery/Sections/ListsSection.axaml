@@ -10,9 +10,9 @@
          with a message and a hint, each in a list-sized area so its place at the top shows. -->
     <UserControl.Styles>
         <!-- The card has no padding of its own: the inset belongs to what it holds - the list's
-             Padding (inside the scrolled content) and the empty state's Margin - so a scroll bar
-             stands at the card's edge and rows end before its strip with the same gap as from the
-             left edge. -->
+             Padding (inside the scrolled content) and the empty state's Margin - so the scroll bar
+             (an overlay) stands at the card's edge, row backgrounds reach under it and row text ends
+             before its zone (the row theme's DungeonScrollBarZone). -->
         <Style Selector="Border.list-sample">
             <Setter Property="Width" Value="240" />
             <Setter Property="BorderThickness" Value="1" />

@@ -148,7 +148,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
                                 <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
-                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
                                              click-through, so only the delete control intercepts it.
@@ -215,9 +215,13 @@
                                                                      Height="16"
                                                                      Source="{StaticResource DungeonIconTrash}" />
                                         </Button>
+                                        <!-- The record reaches under the scroll bar; its content
+                                             ends before the bar's zone (DungeonScrollBarZone after
+                                             the arrow), so the open target still spans the record. -->
                                         <Image Grid.Column="4"
                                                Width="16"
                                                Height="16"
+                                               Margin="{DynamicResource DungeonScrollBarZone}"
                                                VerticalAlignment="Center"
                                                Classes="campaign-dim"
                                                IsEnabled="{Binding IsAvailable}"

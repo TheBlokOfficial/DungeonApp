@@ -2,9 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ScrollingSection">
     <!-- The frame's ScrollViewer and ScrollBar themes (Themes/DungeonControls.axaml), live: two areas
-         of the same fixed size, one with more text than fits (the bar shows, beside the text, never
-         over it) and one with less (no bar, but its strip stays reserved - the text wraps at the same width in both). Nothing here restyles a scroll
-         area - the only local values are the areas' size and frame. -->
+         of the same fixed size, one with more text than fits (the bar shows as an overlay at the
+         area's edge; the text ends before the bar's zone, DungeonScrollBarZone, so it is never under
+         the bar) and one with less (no bar - the text wraps at the same width in both). Nothing here
+         restyles a scroll area - the only local values are the areas' size, frame and text inset. -->
     <UserControl.Styles>
         <Style Selector="Border.scroll-sample">
             <Setter Property="Width" Value="240" />
@@ -21,14 +22,16 @@
 
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Przewijanie" />
-        <TextBlock Classes="caption muted" Text="Pasek pokazuje się tylko, gdy jest co przewijać, i stoi obok treści; jego pas jest zarezerwowany zawsze. Najedź na pasek, żeby zobaczyć uchwyt pod myszą." />
+        <TextBlock Classes="caption muted" Text="Pasek pokazuje się tylko, gdy jest co przewijać, i leży nad treścią przy krawędzi, nie zabierając jej miejsca; tekst kończy się przed nim. Najedź na pasek, żeby zobaczyć uchwyt pod myszą." />
 
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="caption muted" Text="Treść dłuższa niż obszar" />
                 <Border Classes="scroll-sample">
                     <ScrollViewer>
+                        <Border Padding="{DynamicResource DungeonScrollBarZone}">
                         <TextBlock Text="Drużyna zeszła do kopalni o zmierzchu. Korytarze pachniały wilgocią i starym dymem, a echo kroków wracało z opóźnieniem, jakby ktoś szedł za nimi. Na trzecim poziomie znaleźli porzucony obóz: wygasłe ognisko, rozcięte worki i mapę, na której ktoś zaznaczył przejście pod rzeką. Mapa była świeża - atrament jeszcze nie zdążył wyblaknąć. Dalej korytarz rozwidlał się na trzy strony, a z najwęższego dochodził miarowy stukot, jak młot o kamień." />
+                        </Border>
                     </ScrollViewer>
                 </Border>
             </StackPanel>
@@ -36,7 +39,9 @@
                 <TextBlock Classes="caption muted" Text="Treść mieści się - bez paska" />
                 <Border Classes="scroll-sample">
                     <ScrollViewer>
-                        <TextBlock Text="Drużyna zeszła do kopalni o zmierzchu." />
+                        <Border Padding="{DynamicResource DungeonScrollBarZone}">
+                            <TextBlock Text="Drużyna zeszła do kopalni o zmierzchu." />
+                        </Border>
                     </ScrollViewer>
                 </Border>
             </StackPanel>

@@ -16,8 +16,9 @@
     <UserControl.Styles>
         <!-- List frame: the same area the Lists section puts its samples on (card background, line).
              No padding of its own: the inset belongs to the scrolled content (the ListBox's Padding,
-             the empty state's Margin), so the scroll bar stands at the frame's edge and the rows end
-             before its strip with the same gap as from the left edge. -->
+             the empty state's Margin), so the scroll bar (an overlay) stands at the frame's edge, row
+             backgrounds reach under it and row content, the trash band included, ends before its
+             zone. -->
         <Style Selector="Border.composition-list">
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />

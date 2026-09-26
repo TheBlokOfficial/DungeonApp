@@ -14,7 +14,7 @@
               MinHeight="0">
             <TextBlock Classes="eyebrow" Text="INSTANCJE W TEJ KAMPANII" />
 
-            <!-- The list scrolls itself (its own ScrollViewer, one bar strip) - no outer scroll area. -->
+            <!-- The list scrolls itself (its own ScrollViewer, one scroll bar) - no outer scroll area. -->
             <ListBox Grid.Row="1"
                      IsVisible="{Binding HasInstances}"
                      ItemsSource="{Binding Instances}">

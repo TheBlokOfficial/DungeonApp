@@ -368,9 +368,9 @@
                             w polu;
           AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
                             DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
-                            tylko przy potrzebie; pasek zajmuje własne miejsce (motyw ScrollViewer
-                            ramy nigdy nie kładzie paska na treści), więc tekst zawija się przed
-                            nim, a nie pod nim.
+                            tylko przy potrzebie; pasek to nakładka ramy przy krawędzi pola, a tekst
+                            ma po jego stronie wcięcie większe o strefę paska, więc zawija się
+                            przed nim, a nie pod nim.
     -->
     <!--
         Przycisk-rysunek w polu (czyszczenie x): stoi obok obszaru tekstu i nie wygląda jak przycisk.
@@ -455,7 +455,7 @@
                                       VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
                                       IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
                                       BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
-                            <Panel>
+                            <Panel Name="PART_ContentInset">
                                 <TextBlock Name="PART_Placeholder"
                                            FontFamily="{TemplateBinding FontFamily}"
                                            FontSize="{TemplateBinding FontSize}"
@@ -543,16 +543,24 @@
             </Setter>
         </Style>
 
-        <!-- Wielowierszowe -->
+        <!-- Wielowierszowe. Wcięcie tekstu należy do przewijanej treści (PART_ContentInset), nie do
+             obszaru przewijania: pasek stoi przy krawędzi pola, a tekst kończy się przed jego strefą
+             (DungeonMultilineInputContentPadding - wcięcie pola z prawym większym o DungeonScrollBarZone).
+             Padding pola nie działa w tej odmianie. -->
         <Style Selector="^[AcceptsReturn=True]">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="MinHeight" Value="{DynamicResource DungeonMultilineInputMinHeight}" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Top" />
-            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontalSmVertical}" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        </Style>
+        <Style Selector="^[AcceptsReturn=True] /template/ ScrollViewer#PART_ScrollViewer">
+            <Setter Property="Margin" Value="0" />
+        </Style>
+        <Style Selector="^[AcceptsReturn=True] /template/ Panel#PART_ContentInset">
+            <Setter Property="Margin" Value="{DynamicResource DungeonMultilineInputContentPadding}" />
         </Style>
         <Style Selector="^[AcceptsReturn=True] /template/ ContentPresenter#PART_InnerLeftContent">
             <Setter Property="VerticalAlignment" Value="Top" />
@@ -730,15 +738,18 @@
         PART_VerticalScrollBar) i ścieżka z uchwytem (Track, PART_PageUpButton/PART_PageDownButton -
         kliknięcie w pas poza uchwytem przewija stroną); wypadły przyciski krokowe, tor, separator
         pasków i animacje rozwijania.
-        Pasek pokazuje się wyłącznie, gdy jest co przewijać (domyślnie w pionie Auto, w poziomie
-        Disabled), ale jego pas przy Auto i Visible jest zarezerwowany zawsze - pojawienie się ani
-        zniknięcie paska nie zmienia szerokości treści. Przy Disabled i Hidden pasa nie ma. Pas stoi
-        w osobnej kolumnie (wierszu) obok treści, przy krawędzi obszaru, i nigdy treści nie przykrywa -
-        AllowAutoHide nie ma tu znaczenia (szablon go nie czyta), paski się nie chowają. Wcięcie
-        pojemnika należy do przewijanej treści (np. Padding listy - margines ItemsPresenter), nie
-        dookoła obszaru przewijania: treść kończy się przed pasem z tym samym odstępem co od
-        przeciwnej krawędzi.
-        Pas ma szerokość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
+        Pasek jest nakładką nad treścią: nie zabiera jej miejsca, więc pojawienie się ani zniknięcie
+        paska nie zmienia układu. Widoczny zawsze, gdy treść się nie mieści (domyślnie w pionie Auto,
+        w poziomie Disabled), niewidoczny, gdy się mieści; przy Disabled i Hidden nie ma go wcale.
+        Nie chowa się sam (AllowAutoHide wyłączone). Stoi przy krawędzi obszaru z jednakowym odstępem
+        od niej i od obu swoich końców (DungeonScrollBarInset); oba paski naraz nie zachodzą na siebie
+        (pionowy kończy się nad wierszem poziomego). Kliknięcia przyjmuje tylko w swoim pasie - warstwa
+        pasków nie ma tła, więc poza paskiem mysz trafia w treść pod spodem.
+        Treść nie wchodzi pod pasek, tło wierszy tak: wiersz sięga na całą szerokość, a jego treść ma
+        po stronie paska wcięcie większe o strefę paska (DungeonScrollBarZone = grubość + odstęp).
+        To niesie pojemnik przewijanej treści (motyw wiersza listy, pozycji menu, pole wielowierszowe,
+        widok z własnymi wierszami), nie obszar przewijania.
+        Pasek ma grubość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
         pośrodku, zaokrąglony (DungeonScrollThumbCornerRadius).
         Stany:
           spoczynek  - uchwyt DungeonScrollThumbSize, kolor DungeonScrollThumbBrush (mocna krawędź);
@@ -760,10 +771,8 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                <Panel>
                     <ScrollContentPresenter Name="PART_ContentPresenter"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
                                             Background="{TemplateBinding Background}"
                                             HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
                                             VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
@@ -777,41 +786,22 @@
                                                      IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                    <!-- Pas paska: stoi zawsze (przy Auto i Visible), pasek w nim chowa się sam, gdy nie
-                         ma czego przewijać - szerokość treści się nie zmienia. -->
-                    <Panel Name="PART_HorizontalScrollBarLane"
-                           Grid.Row="1"
-                           Height="{DynamicResource DungeonScrollBarSize}">
+                    <!-- Warstwa pasków nad treścią, bez tła: trafia ją mysz tylko w samym pasku. Kolumna
+                         i wiersz Auto mają wymiar paska z odstępami, gdy pasek jest widoczny, i zero,
+                         gdy się schował - wtedy drugi pasek sięga do końca obszaru. -->
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
                         <ScrollBar Name="PART_HorizontalScrollBar"
+                                   Grid.Row="1"
+                                   Margin="{DynamicResource DungeonScrollBarInset}"
                                    Orientation="Horizontal" />
-                    </Panel>
-                    <Panel Name="PART_VerticalScrollBarLane"
-                           Grid.Column="1"
-                           Width="{DynamicResource DungeonScrollBarSize}">
                         <ScrollBar Name="PART_VerticalScrollBar"
+                                   Grid.Column="1"
+                                   Margin="{DynamicResource DungeonScrollBarInset}"
                                    Orientation="Vertical" />
-                    </Panel>
-                </Grid>
+                    </Grid>
+                </Panel>
             </ControlTemplate>
         </Setter>
-
-        <!-- Disabled i Hidden: bez pasa, treść na całą szerokość (wysokość). -->
-        <Style Selector="^[HorizontalScrollBarVisibility=Disabled] /template/ Panel#PART_HorizontalScrollBarLane,
-                       ^[HorizontalScrollBarVisibility=Hidden] /template/ Panel#PART_HorizontalScrollBarLane,
-                       ^[VerticalScrollBarVisibility=Disabled] /template/ Panel#PART_VerticalScrollBarLane,
-                       ^[VerticalScrollBarVisibility=Hidden] /template/ Panel#PART_VerticalScrollBarLane">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <!-- .bar-on-demand: pas tylko przy potrzebie - szerokość (wysokość) pasa bierze się z paska,
-             a ukryty pasek ma zero. Dla treści, która się nie zmienia, gdy jest widoczna (menu z
-             przycisku, kontekstowe, podmenu): nic nie przeskakuje, a stały pusty pas psułby
-             symetrię pozycji. Listy rozwijane, okienka wysuwane i pola zostają z pasem zawsze. -->
-        <Style Selector="^.bar-on-demand /template/ Panel#PART_VerticalScrollBarLane">
-            <Setter Property="Width" Value="NaN" />
-        </Style>
-        <Style Selector="^.bar-on-demand /template/ Panel#PART_HorizontalScrollBarLane">
-            <Setter Property="Height" Value="NaN" />
-        </Style>
     </ControlTheme>
 
     <ControlTheme x:Key="DungeonScrollBarThumb" TargetType="Thumb">
@@ -944,7 +934,9 @@
         wewnętrznego wcięcia. Nie ma własnych stanów; fokus bez wyglądu (FocusAdorner pusty).
         Wiersz: wysokość najmniej DungeonListRowHeight - jedna linia tekstu albo ikona nie zmienia
         jej ani o piksel; wyższy jest tylko wiersz, którego szablon składa się z kilku kontrolek (np.
-        świat kampanii). Wcięcie poziome DungeonSpacingMd, treść wyśrodkowana w pionie z założenia,
+        świat kampanii). Wcięcie poziome DungeonSpacingMd, po prawej większe o strefę paska
+        przewijania (DungeonScrollBarZone) - tło wiersza sięga pod pasek, treść nie; treść wyśrodkowana
+        w pionie z założenia,
         tekst w jednej linii przycięty wielokropkiem (szablon wiersza może to jawnie zmienić), stopień
         i grubość tekstu interfejsu (Normal) w każdym stanie. Zaokrąglenie wyróżnienia
         DungeonNavigationCornerRadius, bez krawędzi. Kursor strzałka.
@@ -1014,19 +1006,24 @@
                 <!-- Podświetlenie o DungeonListRowHighlightInset węższe z góry i z dołu niż wiersz:
                      sąsiednie podświetlenia dzieli odstęp, wiersz dalej zajmuje DungeonListRowHeight.
                      Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie - najechanie nie
-                     gaśnie między wierszami. -->
+                     gaśnie między wierszami. Podświetlenie sięga na całą szerokość wiersza, także pod
+                     pasek przewijania; treść kończy się przed strefą paska (DungeonScrollBarZone
+                     dokładane do wcięcia wiersza). -->
                 <Border Background="Transparent">
-                    <ContentPresenter Name="PART_ContentPresenter"
-                                      Margin="{DynamicResource DungeonListRowHighlightInset}"
-                                      Background="{TemplateBinding Background}"
-                                      CornerRadius="{TemplateBinding CornerRadius}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      Content="{TemplateBinding Content}"
-                                      Padding="{TemplateBinding Padding}"
-                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      TextBlock.TextTrimming="CharacterEllipsis"
-                                      TextBlock.TextWrapping="NoWrap" />
+                    <Border Name="PART_Highlight"
+                            Margin="{DynamicResource DungeonListRowHighlightInset}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{DynamicResource DungeonScrollBarZone}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap" />
+                    </Border>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -1998,7 +1995,7 @@
         Powierzchnia (menu i podmenu): jak okienko wysuwane (FlyoutPresenter) - tło InputBackground,
         krawędź InputBorder 1 px, zaokrąglenie DungeonFlyoutCornerRadius, wcięcie DungeonFlyoutPadding,
         cień DungeonFlyoutShadow, najwyższa wysokość DungeonFlyoutMaxHeight z przewijaniem w środku
-        (pasek tylko przy potrzebie). Szerokość z najdłuższej pozycji, od DungeonMenuMinWidth do
+        (pasek - nakładka ramy - tylko przy potrzebie). Szerokość z najdłuższej pozycji, od DungeonMenuMinWidth do
         DungeonMenuMaxWidth.
         Położenie: menu z przycisku jak okienko (widok ustawia MenuFlyout Placement=
         "BottomEdgeAlignedLeft" - MenuFlyout nie jest kontrolką i motywu nie ma; margines
@@ -2009,7 +2006,8 @@
         samym wyłonieniem; zamknięcie natychmiast.
         Pozycja: wysokość DungeonListRowHeight, podświetlenie jak wiersz listy (pędzel
         BackstageRowHover, wcięcie DungeonListRowHighlightInset, zaokrąglenie
-        DungeonListRowHighlightCornerRadius), wcięcie tekstu 12. Kolumny wspólne dla menu
+        DungeonListRowHighlightCornerRadius) sięga pod pasek przewijania; wcięcie tekstu 12, po prawej
+        większe o strefę paska (DungeonScrollBarZone). Kolumny wspólne dla menu
         (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót] [strzałka podmenu]; kolumna ikony ma
         szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
         TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) do prawej,
@@ -2046,8 +2044,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                         ClipToBounds="True">
-                    <ScrollViewer Classes="bar-on-demand"
-                                  HorizontalScrollBarVisibility="Disabled"
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                   VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -2084,8 +2081,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                         ClipToBounds="True">
-                    <ScrollViewer Classes="bar-on-demand"
-                                  HorizontalScrollBarVisibility="Disabled"
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                   VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -2121,7 +2117,8 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 Padding="{TemplateBinding Padding}">
-                            <Grid>
+                            <!-- Podświetlenie pod paskiem przewijania menu, treść przed jego strefą. -->
+                            <Grid Margin="{DynamicResource DungeonScrollBarZone}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
                                     <ColumnDefinition Width="*" />
@@ -2187,8 +2184,7 @@
                                 CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
                                 BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                                 ClipToBounds="True">
-                            <ScrollViewer Classes="bar-on-demand"
-                                          HorizontalScrollBarVisibility="Disabled"
+                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                           VerticalScrollBarVisibility="Auto">
                                 <ItemsPresenter Name="PART_ItemsPresenter"
                                                 ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -2455,12 +2451,16 @@
                            InheritsTransform="True">
                         <FlyoutPresenter Name="PART_DropDown" HorizontalAlignment="Stretch">
                             <StackPanel>
-                                <TextBox Name="PART_SearchBox"
-                                         Classes="search"
-                                         Margin="0,0,0,6"
-                                         PlaceholderText="Szukaj"
-                                         Text="{TemplateBinding SearchText, Mode=TwoWay}"
-                                         IsVisible="{TemplateBinding IsSearchEnabled}" />
+                                <!-- Pole wyszukiwania przewija się z wierszami - kończy się przed strefą
+                                     paska przewijania jak treść wierszy. -->
+                                <Panel Margin="{DynamicResource DungeonScrollBarZone}"
+                                       IsVisible="{TemplateBinding IsSearchEnabled}">
+                                    <TextBox Name="PART_SearchBox"
+                                             Classes="search"
+                                             Margin="0,0,0,6"
+                                             PlaceholderText="Szukaj"
+                                             Text="{TemplateBinding SearchText, Mode=TwoWay}" />
+                                </Panel>
                                 <controls:EmptyState Message="Nic nie pasuje."
                                                      IsVisible="{TemplateBinding HasNoMatches}" />
                                 <ItemsControl Name="PART_Rows" ItemsSource="{TemplateBinding Rows}">

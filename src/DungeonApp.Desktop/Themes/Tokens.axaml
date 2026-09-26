@@ -304,14 +304,29 @@
         <Thickness x:Key="DungeonPaddingMdHorizontal">12,0,12,0</Thickness>
         <!-- Z boków DungeonSpacingMd, nad i pod DungeonSpacingSm (wcięcie tekstu w polu wielowierszowym). -->
         <Thickness x:Key="DungeonPaddingMdHorizontalSmVertical">12,8,12,8</Thickness>
+        <!-- Wcięcie tekstu w polu wielowierszowym po stronie treści przewijanej: DungeonPaddingMdHorizontalSmVertical
+             (12, 8, 12, 8) z prawym wcięciem większym o strefę paska (DungeonScrollBarZone, 16) - tekst
+             zawija się przed paskiem, a pasek stoi przy krawędzi pola. -->
+        <Thickness x:Key="DungeonMultilineInputContentPadding">12,8,28,8</Thickness>
         <!-- Pole wielowierszowe: trzy linie tekstu 13 px (ok. 17 px każda) + wcięcia 8 + 8 + krawędzie. -->
         <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
         <!-- Pole liczbowe: miejsce na kilka cyfr krojem o stałej szerokości i strzałki; nie zależy od wartości. -->
         <x:Double x:Key="DungeonNumericInputWidth">96</x:Double>
-        <!-- Pasek przewijania: pas zajmuje własne miejsce obok treści (nie przykrywa jej); uchwyt stoi
-             pośrodku pasa. Pod myszą uchwyt się poszerza w obrębie pasa - pas nie zmienia szerokości,
-             więc układ nie skacze. -->
+        <!-- Pasek przewijania: nakładka nad treścią (nie zabiera jej miejsca); uchwyt stoi pośrodku
+             paska. Pod myszą uchwyt się poszerza w obrębie paska - pasek nie zmienia grubości, więc
+             nic nie skacze. -->
         <x:Double x:Key="DungeonScrollBarSize">10</x:Double>
+        <!-- Odstęp paska od krawędzi obszaru przewijania i od obu jego końców - jednakowy, równy
+             DungeonSpacingXs (6): pasek nie dotyka zaokrąglonych rogów listy ani okienka (promień 6)
+             i nie wygląda, jakby z nich wyjeżdżał. Po stronie odwrotnej od krawędzi nie działa (pasek
+             ma stałą grubość i stoi przy krawędzi). -->
+        <Thickness x:Key="DungeonScrollBarInset">6</Thickness>
+        <!-- Strefa paska: grubość paska i jego odstęp od krawędzi (10 + 6 = 16) - o tyle treść
+             przewijanego pojemnika kończy się wcześniej po stronie pionowego paska, żeby pasek nie
+             stanął na napisie; tło wierszy sięga pod pasek. Dokładana do wcięcia pojemnika (jako
+             dodatkowy margines albo wcięcie wewnątrz wiersza), nie zamiast niego. Tylko po prawej:
+             poziomy pasek jest w ramie wyłączony (Disabled) w każdej liście i polu. -->
+        <Thickness x:Key="DungeonScrollBarZone">0,0,16,0</Thickness>
         <x:Double x:Key="DungeonScrollThumbSize">6</x:Double>
         <x:Double x:Key="DungeonScrollThumbHoverSize">8</x:Double>
         <!-- Najkrótszy uchwyt przy bardzo długiej treści - wciąż do chwycenia myszą. -->
@@ -399,9 +414,10 @@
              dzieli 2 px odstępu zamiast stykania się zaokrąglonymi rogami; wiersz dalej zajmuje
              DungeonListRowHeight. -->
         <Thickness x:Key="DungeonListRowHighlightInset">0,1</Thickness>
-        <!-- Akcja w wierszu listy (kosz, DungeonRowAction): pas na pełnej wysokości wiersza i do jego
-             prawej krawędzi - wychodzi przez odstęp podświetlenia (1 z góry i z dołu) i prawe wcięcie
-             wiersza (DungeonPaddingMdHorizontal, 12). -->
+        <!-- Akcja w wierszu listy (kosz, DungeonRowAction): pas na pełnej wysokości wiersza i do końca
+             jego treści - wychodzi przez odstęp podświetlenia (1 z góry i z dołu) i prawe wcięcie
+             wiersza (DungeonPaddingMdHorizontal, 12); strefy paska przewijania (DungeonScrollBarZone)
+             nie zajmuje - pas kończy się przed nią. -->
         <Thickness x:Key="DungeonListRowActionMargin">0,-1,-12,-1</Thickness>
         <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
              podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
