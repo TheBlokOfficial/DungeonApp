@@ -21,7 +21,7 @@ Przebiegi 1a i 1b scalone 2026-09-26; 1b czeka na obejrzenie przez autora (jego 
 zakresu 1c albo do rundy). Kopii roboczych brak. **Najpierw regresja z 1b** (autor, 2026-09-26, po
 obejrzeniu: w liście wpisów i na pasku bocznym zniknęła kreska zaznaczenia, a tło wiersza pod myszą
 i wybranego to ściśnięty pasek) — diagnoza i poprawka w *Notkach* (*Regresja 1b*), krótki przebieg
-przed 1c, razem z dwiema uwagami autora po 1b (*Notki*, *Po obejrzeniu 1b*). Resztę 1b autor
+przed 1c, razem z trzema uwagami autora po 1b (*Notki*, *Po obejrzeniu 1b*). Resztę 1b autor
 obejrzał i przyjął. **Potem brief przebiegu 1c** —
 zakres w *Planie* (runda 1c), szczegóły w *Notkach* (*Przebieg 1c*); wszystko przyjęte przez autora,
 więc polecenie ruszenia jest zielonym światłem. Potem 9a, 9b.
@@ -453,6 +453,16 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     (`ScrollBar`, 10), a rysowany suwak jest węższy i nie leży na środku pasa albo przy jego prawej
     krawędzi. Zmierzyć **rysowany prostokąt suwaka**, nie pas; widoczny odstęp od prawej = od góry =
     od dołu. Wzór dla wszystkich pasków (motyw `ScrollBar`), nie tylko okienek.
+  * *Pas ikony w polu wciąż przepuszcza* (autor): nad lupą, pod nią i z lewej da się trafić w krawędź,
+    która zaznacza pole. Poprawka z 1b łata obszar pola obsługą myszy (`FieldIconPointer`), a
+    `TextBox` reaguje na kliknięcie w każdym miejscu swoich granic — szczeliny zostają. **Propozycja
+    autora, przyjęta przez architekta: pole zaczyna się jawnie na prawo od ikony** — ikona nie leży
+    w polu, więc nie ma czego przykrywać. Kształt: kontrolka ramy „pole z ikoną” — obramowanie pola
+    (tło, krawędź, stany) z ikoną na początku i `TextBox` bez własnej krawędzi i tła w środku; najechanie
+    ramki z `:pointerover` całości, krawędź edycji z `:focus-within`; `FieldIconPointer` znika. Ikona nie
+    reaguje (reguła *Pole do pisania*). Sprawdzić też przycisk czyszczenia × i strzałki pola liczbowego
+    — jeśli mają te same szczeliny, na zewnątrz pola tak samo. Widoki z ikoną w polu (wyszukiwarka
+    zakładki treści, galeria `TextFieldsSection`, pole w `DropDownPicker`) przechodzą na nową kontrolkę.
 * Runda 1b (raport): niesprawdzone, czy podmenu otwierane w lewo stoi z odstępem — autor obejrzał 1b
   bez uwag o tym (2026-09-26); wraca tylko, jeśli ktoś zobaczy nachodzenie.
 * Runda 1b: kosz w rekordzie kampanii zostaje z lokalnym stylem — rekord to własny `Border` z `ListRow`
