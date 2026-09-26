@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `4ff0c43`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
+**Stan na: 2026-09-26, po `3da24df`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,12 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi autora rozstrzygnięte tego
 dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
-i lista wyboru), 1b (wiersze, przewijanie, menu), 9a, 9b. **Przebieg 1a scalony 2026-09-26**, czeka
-na obejrzenie. Kopii roboczych brak. Autor zgłosił przed obejrzeniem trzy sprawy (szerokość listy
-po wyborze, sortowanie, odnośnik w zdaniu bez najechania) — odpowiedź i propozycja przebiegu 1c
-(odnośniki) pokazane autorowi, **czeka na zgodę i na pytanie: kierunek sortowania w zakładkach
-treści teraz czy w zleceniu A** (*Notki*, *Przebieg 1c — propozycja*). Następny krok: uwagi po 1a,
-potem brief 1b.
+i lista wyboru), 1b (wiersze, przewijanie, menu), 1c (odnośniki, sortowanie), 9a, 9b. Przebieg 1a
+scalony i obejrzany (uwaga: ramka aktywnego chipa za wyrazista — idzie z 1b). Przebieg 1c przyjęty
+przez autora w kształcie z *Notek* (odwracanie w zakładkach — zlecenie A). **W toku: przebieg 1b** —
+wykonawca w tle, gałąź `fundament-10-11-r1b`, kopia `.claude/worktrees/fundament-10-11-r1b`.
 
 ## Zakres i koniec
 
@@ -92,8 +90,13 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     sekcji rozwijanej (ten sam ruch co okienko).
   * **Runda 1b** — wiersze, przewijanie, menu, w kolejności ważności: tytuł wiersza o piksel wyżej;
     strefa paska w listach i menu; skrót w linii ze strzałką podmenu; podmenu bez nachodzenia;
-    najechanie `.subtle` w wierszu; pas ikony w polu tekstowym. Menu i pole zabiera z `tasks.md`,
-    *Poprawki czekające na obszar* — skreślić tam przy briefie.
+    najechanie `.subtle` w wierszu; pas ikony w polu tekstowym; ramka aktywnego chipa łagodniejsza
+    (autor po 1a: pełny akcent za wyrazisty — wypełnienie wygląda jak półprzezroczyste złoto na
+    szarym). Menu i pole zabrane z `tasks.md`.
+  * **Runda 1c** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
+    najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
+    kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
+    odwracanie działa od zlecenia A.
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
@@ -403,7 +406,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Runda 1a (raport) → porcja 9b: `DropDownPickerRow.ShowsSelectedBackground` bez użycia w XAML —
   usunąć razem z asercją w `DropDownPickerRowsTests`. Do zlecenia A: `ContentChipFontSize` = 11,5
   w `ContentTabView` — poza skalą pisma (siedem stopni).
-* **Przebieg 1c — propozycja** (architekt, 2026-09-26, po trzech sprawach autora; czeka na zgodę):
+* **Przebieg 1c** (architekt, 2026-09-26, po trzech sprawach autora; przyjęty przez autora tego dnia,
+  z odwracaniem w zakładkach w zleceniu A):
   * *Szerokość listy po wyborze* — odpowiedź, bez zmian: w rzędzie filtrów chip rośnie z treścią
     (konwencja), a chip z licznikiem (1a) nie przejmuje nazwy wartości; w formularzu szerokość
     nadaje układ, wartość się przycina.
@@ -415,8 +419,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     (spłaszczenie i rozłożenie, ≤ 150 ms, bez ruchu przy wyłączonych animacjach) — życzenie autora;
     napis w menu „A–Z / Z–A” przy nazwie, „rosnąco / malejąco” przy liczbach. Odrzucone: podwojone
     pozycje menu, odwracanie ponownym kliknięciem pozycji (ukryte).
-  * Zakładka treści dostaje nowy wygląd; działające odwracanie — rekomendacja: zlecenie A (przycisk
-    wygaszony do tego czasu). Pytanie do autora otwarte.
+  * Zakładka treści dostaje nowy wygląd; działające odwracanie — zlecenie A (przycisk wygaszony do
+    tego czasu; `tasks.md`, *A*, przy zamknięciu 1c).
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 

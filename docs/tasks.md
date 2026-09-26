@@ -142,21 +142,10 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
 
 * **Pola tekstowe (motyw ramy, `DungeonControls.axaml`, `FieldIconPointer.cs`)** — uwagi autora po
   rundzie 1 porcji 2, 2026-09-25:
-  * Ikona na początku pola (ołówek, lupa) tylko przykrywa obszar tekstu, nie odcina go: nad ikoną,
-    obok niej, nad nią i pod nią da się złapać kursor tekstowy. Obszar tekstu ma zaczynać się za
-    ikoną — cały pas od krawędzi pola do tekstu, na pełnej wysokości, to strefa ikony ze strzałką.
   * Zaznaczanie jak w przeglądarce: przeciągnięcie **rozpoczęte obok tekstu** (np. w pustym miejscu
     karty) i przeprowadzone nad tekstem do zaznaczenia ma go zaznaczać — dziś trzeba trafić w sam
     tekst. **Zabiera zlecenie B** (autor, 2026-09-26) i tam rozstrzyga zasięg (obszar wokół jednego
     bloku tekstu czy cała karta; zaznaczenie przez kilka bloków naraz to osobna, większa rzecz).
-* **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
-  uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które
-  zmienia układ menu:
-  * Skrót klawiszowy nie kończy się na tej samej prawej krawędzi co strzałka podmenu — w pozycji bez
-    podmenu stoi dalej od prawej, z pustym marginesem po miejscu na strzałkę. Skrót i strzałka mają
-    kończyć się w jednej linii przy prawym wcięciu pozycji.
-  * Podmenu nachodzi na menu, z którego wyszło (przesunięcie w poziomie `-5`). Ma stać obok jego
-    krawędzi z małym odstępem, jak okienko od otwierającego — bez nachodzenia.
 * **Suwak — tylko notka, bez korekty teraz** (autor, po rundzie 2 porcji 5, 2026-09-25): uchwyt
   w spoczynku (kolor tekstu drugorzędnego) lekko za ciemny. Pomysł autora na później: pod myszą
   obwódka wokół uchwytu zamiast rozjaśnienia — do zderzenia z wpisem o otoczce w `decisions.md`
