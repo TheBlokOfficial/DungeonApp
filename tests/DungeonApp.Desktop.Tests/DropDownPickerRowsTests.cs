@@ -23,7 +23,7 @@ public sealed class DropDownPickerRowsTests
     }
 
     [Fact]
-    public void Selecting_in_single_mode_keeps_the_rows_and_moves_the_selected_background()
+    public void Selecting_in_single_mode_keeps_the_rows()
     {
         var picker = new DropDownPicker
         {
