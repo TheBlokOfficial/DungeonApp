@@ -35,6 +35,11 @@
         <Color x:Key="DungeonSurfaceActiveColor">#282522</Color>
         <!-- SurfaceHover: najechanie - to reaguje na mysz. -->
         <Color x:Key="DungeonSurfaceHoverColor">#221F1C</Color>
+        <!-- HoverOverlay: najechanie na cichej kontrolce (przycisk .subtle) - biały o nieprzezroczystości
+             8 % (#14FFFFFF), z kanałem alfa: rozjaśnia to, na czym leży, więc najechanie widać na każdej
+             powierzchni, także na wierszu listy pod myszą (BackstageRowHover). Na zapleczu (#151412)
+             daje ok. #272522 - tyle co kryjący SurfaceActive, którego używał wcześniej. -->
+        <Color x:Key="DungeonHoverOverlayColor">#14FFFFFF</Color>
         <!-- Border: linia - dzieli, nie wyróżnia; krawędź powierzchni i separator. -->
         <Color x:Key="DungeonBorderColor">#302C28</Color>
         <!-- BorderStrong: obramowanie wyraźne - krawędź, na którą ma paść wzrok: kontrolka pod myszą,
@@ -125,6 +130,7 @@
         <SolidColorBrush x:Key="DungeonBackstageRowHoverBrush" Color="{DynamicResource DungeonBackstageRowHoverColor}" />
         <SolidColorBrush x:Key="DungeonDeskBrush" Color="{DynamicResource DungeonDeskColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceActiveBrush" Color="{DynamicResource DungeonSurfaceActiveColor}" />
+        <SolidColorBrush x:Key="DungeonHoverOverlayBrush" Color="{DynamicResource DungeonHoverOverlayColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceHoverBrush" Color="{DynamicResource DungeonSurfaceHoverColor}" />
         <SolidColorBrush x:Key="DungeonBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
         <SolidColorBrush x:Key="DungeonBorderStrongBrush" Color="{DynamicResource DungeonBorderStrongColor}" />

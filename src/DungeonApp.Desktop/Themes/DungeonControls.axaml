@@ -38,7 +38,8 @@
         Odmiany:
           (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
           .primary - główny: tło Accent, tekst OnAccent, krawędź przezroczysta;
-          .subtle  - cichy: bez tła, krawędź przezroczysta;
+          .subtle  - cichy: bez tła, krawędź przezroczysta; pod myszą, wciśnięty i z otwartym okienkiem
+                     tło HoverOverlay (półprzezroczysta jasna nakładka - widać ją na każdej powierzchni);
           .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
           .link    - odnośnik samodzielny (polecenie poza zdaniem): bez tła i krawędzi, wysokość
                      z treści, tekst TextRegular bez podkreślenia; pod myszą TextPrimary
@@ -130,7 +131,7 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
         <Style Selector="^.subtle:pointerover:not(.hover-suppressed), ^.subtle:pressed, ^.subtle:flyout-open">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonHoverOverlayBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
