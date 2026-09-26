@@ -20,9 +20,10 @@
                     </Flyout>
                 </Button.Flyout>
             </Button>
+            <!-- Lista w okienku .list-host: przewija sama lista, okienko nie - jeden pasek. -->
             <Button Content="Długa lista">
                 <Button.Flyout>
-                    <Flyout Placement="BottomEdgeAlignedLeft">
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                         <ListBox x:Name="LongFlyoutList" Width="200" />
                     </Flyout>
                 </Button.Flyout>
