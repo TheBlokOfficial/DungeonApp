@@ -758,12 +758,15 @@
         To niesie pojemnik przewijanej treści (motyw wiersza listy, pozycji menu, pole wielowierszowe,
         widok z własnymi wierszami), nie obszar przewijania.
         Pasek ma grubość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
-        pośrodku, zaokrąglony (DungeonScrollThumbCornerRadius).
+        zaokrąglony (DungeonScrollThumbCornerRadius), przy zewnętrznej krawędzi pasa (pionowy - przy
+        prawej, poziomy - przy dolnej): rysowany uchwyt stoi od krawędzi obszaru dokładnie o
+        DungeonScrollBarInset, tyle co od obu końców. Obszar trafienia to cały pas (szerszy niż
+        rysunek).
         Stany:
           spoczynek  - uchwyt DungeonScrollThumbSize, kolor DungeonScrollThumbBrush (mocna krawędź);
           najechanie - mysz nad pasem (nie tylko nad uchwytem): uchwyt DungeonScrollThumbHoverSize,
-                       kolor DungeonScrollThumbHoverBrush; poszerza się w obrębie pasa, więc układ
-                       nie skacze;
+                       kolor DungeonScrollThumbHoverBrush; poszerza się w obrębie pasa w stronę
+                       treści (odstęp od krawędzi się nie zmienia), więc układ nie skacze;
           przeciąganie - jak najechanie, także gdy mysz zjedzie z pasa (Thumb:pressed);
           wyłączenie - DungeonDisabledOpacity.
         Pasek nie przyjmuje fokusu (FocusAdorner pusty, przyciski ścieżki Focusable=False); kursor
@@ -866,7 +869,7 @@
                                               Theme="{StaticResource DungeonScrollBarPageButton}" />
                             </Track.IncreaseButton>
                             <Thumb Theme="{StaticResource DungeonScrollBarThumb}"
-                                   HorizontalAlignment="Center"
+                                   HorizontalAlignment="Right"
                                    MinHeight="{DynamicResource DungeonScrollThumbMinLength}" />
                         </Track>
                     </Border>
@@ -904,7 +907,7 @@
                                               Theme="{StaticResource DungeonScrollBarPageButton}" />
                             </Track.IncreaseButton>
                             <Thumb Theme="{StaticResource DungeonScrollBarThumb}"
-                                   VerticalAlignment="Center"
+                                   VerticalAlignment="Bottom"
                                    MinWidth="{DynamicResource DungeonScrollThumbMinLength}" />
                         </Track>
                     </Border>

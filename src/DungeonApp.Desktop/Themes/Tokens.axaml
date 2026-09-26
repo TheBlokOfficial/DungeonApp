@@ -329,9 +329,9 @@
         <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
         <!-- Pole liczbowe: miejsce na kilka cyfr krojem o stałej szerokości i strzałki; nie zależy od wartości. -->
         <x:Double x:Key="DungeonNumericInputWidth">96</x:Double>
-        <!-- Pasek przewijania: nakładka nad treścią (nie zabiera jej miejsca); uchwyt stoi pośrodku
-             paska. Pod myszą uchwyt się poszerza w obrębie paska - pasek nie zmienia grubości, więc
-             nic nie skacze. -->
+        <!-- Pasek przewijania: nakładka nad treścią (nie zabiera jej miejsca); uchwyt stoi przy
+             zewnętrznej krawędzi paska. Pod myszą uchwyt się poszerza w obrębie paska w stronę treści -
+             pasek nie zmienia grubości, odstęp uchwytu od krawędzi też nie, więc nic nie skacze. -->
         <x:Double x:Key="DungeonScrollBarSize">10</x:Double>
         <!-- Odstęp paska od krawędzi obszaru przewijania i od obu jego końców - jednakowy, równy
              DungeonSpacingXs (6): pasek nie dotyka zaokrąglonych rogów listy ani okienka (promień 6)
