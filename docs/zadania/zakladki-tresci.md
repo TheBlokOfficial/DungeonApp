@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `6216a1a`.** Na starcie sesji: `git log 6216a1a..master` i `git worktree
+**Stan na: 2026-09-26, po `e6b07c0`.** Na starcie sesji: `git log e6b07c0..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -18,8 +18,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Wycinek 1 (dane D&D 5e) zamknięty 2026-09-26: rekordy potwora, przedmiotu i zaklęcia przyjęte
 (*Ustalenia*, *Rekordy*); wpisy przykładowe idą do paczki dostarczanej z systemem (*Ustalenia*).
-Kopii roboczych brak. **Następny krok: wycinek 2 — projekt listy i kart z makietą** do obejrzenia
-przez autora przed kodem.
+Kopii roboczych brak. Decyzje o projekcie zapadły tego dnia (*Ustalenia*, *Projekt*).
+**Następny krok: wycinek 2 — projekt szkieletu i kart na piśmie**, do przyjęcia przez autora przed
+kodem.
 
 ## Zakres i koniec
 
@@ -79,8 +80,8 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
-- [ ] **2 — projekt** (architekt): lista i karty per typ, z makietą do obejrzenia przez autora przed
-  kodem. Wynik dzieli się na porcje wykonawcze.
+- [ ] **2 — projekt** (architekt): szkielet zakładki i karty per typ, na piśmie do przyjęcia przez
+  autora przed kodem (*Ustalenia*, *Projekt*). Wynik dzieli się na porcje wykonawcze.
 - [ ] **3 — lista i filtry** (*Ustalenia*, *A*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
@@ -153,6 +154,33 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   w `architecture.md`, *Paczki, wczytywanie, bezpieczeństwo* — obok programu, tylko do odczytu, ten sam
   loader i rejestr, logika nie rozróżnia źródła. W kodzie go nie ma (`code-state.md`, *Dług*) — porcja
   3b. Paczka niesie przypisanie SRD (CC-BY 4.0).
+* **SRD to wyłącznie dane testowe** (autor, 2026-09-26) — źródło wpisów przykładowych, nie treść
+  traktowana na stałe ani wzorzec dla rekordów.
+* **Projekt — decyzje autora z 2026-09-26** (część na rekomendację architekta, przyjęte w całości):
+  * **Szkielet zakładki też przechodzi przeprojektowanie** — lista, filtry, nagłówek szczegółu.
+    Szkielet należy do biblioteki i nie wie nic o D&D.
+  * **Karta bez ramy, o stałej szerokości** z biblioteki wpisów, z wysokością z treści. Rama,
+    przewijanie i najmniejsza wysokość należą do tego, kto kartę pokazuje (reguła — `architecture.md`,
+    *Zakładki treści*). Szerokość ustala projekt z wycinka 2. Karta ma być czytelna w okienku podglądu
+    w kampanii, nie tylko w zakładce.
+  * **Obrazek:** przedmiot — kwadratowe pole w lewym górnym rogu; potwór — pole portretowe (pionowy
+    prostokąt); zaklęcie — bez obrazka. Bez pliku pole pokazuje ramkę zastępczą z dużą wyszarzoną
+    ikoną typu. Ramka jest wspólnym klockiem kart (dwa użycia od początku). Pole rekordu `image`
+    (opcjonalne) u potwora i przedmiotu wskazuje plik względem katalogu paczki. Ścieżka poza paczkę
+    lub bezwzględna odrzuca wpis z powodem. Brak pliku daje ramkę zastępczą z informacją o brakującym
+    pliku w kolorze niebezpieczeństwa. Formaty: PNG, JPG, WebP. Wpisy przykładowe są bez obrazków.
+  * **Ikony zastępcze** z zestawu ikon motywu, a gdy go brak — z zestawu na licencji niewymagającej
+    przypisania (MIT, ISC). Jedna ikona na typ treści.
+  * **Kontrolki na karcie — tylko widokowe.** Sekcje rozwijane tam, gdzie treść jest długa (akcje,
+    akcje legendarne, opis, rzucanie czarów). Domyślnie rozwinięte, stan niezapisywany; zaznaczanie
+    tekstu jak dotąd. Nic na karcie nie zapisuje.
+  * **Bez makiety HTML** — od razu w aplikacji. Przed kodem architekt daje autorowi projekt na piśmie:
+    co gdzie stoi, co wyróżnione, szkic układu tekstem. Autor przyjmuje, wykonawca składa z klocków.
+  * **Projektant nie ogląda obecnych widoków zakładki ani kart** — ani kodu, ani opisu ich wyglądu.
+    Materiał projektu: `mockup_rejestr.png`/`.html` (luźna inspiracja — „wygląda ładnie i dobrze”),
+    klocki fundamentu (galeria kontrolek, *Kompozycje*), *Niezmiennik interfejsu*, *Rekordy*,
+    wymagania z *A* i *B* niżej. Brief wykonawcy: stary widok jest do zastąpienia, nie do
+    przerabiania.
 * **Treść przykładowa z SRD albo własna** (architekt, 2026-09-26): SRD 5.1/5.2 jest na licencji CC-BY
   4.0 — paczka niesie przypisanie autorstwa; nazwy i opisy tłumaczymy sami. Nie przepisujemy potworów
   ani przedmiotów spoza SRD.

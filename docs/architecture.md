@@ -506,7 +506,8 @@ Nigdzie nie ma rozgałęzienia „jeśli system to D&D".
 
 ## 13. Paczki, wczytywanie, bezpieczeństwo
 
-Paczka to katalog z manifestem, niosący wpisy i dokumenty. Nie niesie typów treści.
+Paczka to katalog z manifestem, niosący wpisy i dokumenty, a także pliki obrazów, na które wskazują
+wpisy. Nie niesie typów treści.
 
 * **Paczka daje** przestrzeń nazw dla id, jednostkę instalacji i deinstalacji oraz wersję, którą
   kampania deklaruje.
@@ -926,6 +927,15 @@ wszystkich jest rejestr.
   filtr po paczce i wyszukiwanie po nazwie.
 * **Paczki wczytuje się od nowa przyciskiem w nagłówku zakładki treści**, bez restartu. Nowy stan
   rejestru dociera do wszystkich zakładek treści i do biurka otwartej kampanii.
+* **Karta wpisu nie ma ramy.** Ma stałą szerokość, wspólną dla wszystkich kart i ustaloną przez
+  bibliotekę wpisów, a wysokość bierze z treści. Nie ma własnego tła, obramowania ani przewijania.
+  Ramę, odstępy, przewijanie i najmniejszą wysokość daje ten, kto kartę pokazuje: zakładka treści,
+  okienko podglądu w kampanii. Ta sama karta stoi w każdym z tych miejsc bez zmian.
+* **Karta może mieć kontrolki, które zmieniają tylko jej widok** — np. sekcje rozwijane. Stan widoku
+  nie jest zapisywany, a nic na karcie nie zmienia stanu kampanii ani treści.
+* **Obrazek wpisu to plik w jego paczce.** Wpis wskazuje go polem z typu treści, ścieżką względną
+  wewnątrz paczki. Ścieżka wychodząca poza paczkę odrzuca wpis z powodem. Brak pliku nie psuje wpisu:
+  karta pokazuje ramkę zastępczą z informacją o brakującym pliku.
 * **Tworzenie, edycja i usuwanie treści w zakładkach treści są poza pierwszą wersją.**
 
 **Dlaczego →** [decisions.md](decisions.md), *Nawigacja: ekran wyboru systemu i pasek boczny*.

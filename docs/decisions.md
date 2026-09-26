@@ -678,6 +678,15 @@ niedbałej, a poprawka działająca tylko na ekranie rozjeżdża się z tym, co 
 **Przycisk wczytania od nowa w nagłówku zakładki, nie w pasku górnym** — pasek górny należy do ramy,
 a rama nie wie, że paczki istnieją.
 
+**Karta bez ramy, o stałej szerokości** — autor, 2026-09-26. Tę samą kartę ma pokazać okienko
+podglądu w kampanii, np. przedmiotu. Gdyby karta niosła własną ramę albo płynęła do szerokości
+kontenera, każde nowe miejsce wymagałoby osobnego projektu. Stała szerokość daje układ
+zaprojektowany, jak statblok, zamiast układu, który trzeba sprawdzać przy każdej szerokości.
+Najmniejsza wysokość należy do ramy: w zakładce rama i tak wypełnia kolumnę.
+**Obrazek jako pole wskazujące plik w paczce** — autor, tego samego dnia, na rekomendację
+architekta. Odrzucona konwencja „plik o nazwie wpisu” zgaduje, zamiast wskazywać, i nie pozwala
+jednemu obrazkowi służyć kilku wpisom.
+
 **Odrzucone w tym temacie:** „Kontekstowy sidebar", „Nawigacja o zawartości pochodzącej z danych",
 „Rejestr jako miejsce wewnątrz kampanii", „Ekran wyboru systemu odłożony do drugiego systemu",
 „Otwórz plik przy wpisie".
