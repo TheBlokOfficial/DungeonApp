@@ -276,7 +276,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft">
+                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                         <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
                                                  SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -300,7 +300,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                             </StackPanel>
                                             <Button.Flyout>
-                                                <Flyout Placement="BottomEdgeAlignedLeft">
+                                                <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                                     <ListBox ItemsSource="{Binding FlyoutItems}"
                                                              SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
                                                 </Flyout>
@@ -319,7 +319,7 @@
                                            Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft">
+                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                         <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
                                                  SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
                                     </Flyout>
@@ -335,7 +335,7 @@
                                                        Source="{StaticResource DungeonIconChevronDown}" />
                                 </StackPanel>
                                 <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft">
+                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                         <ListBox ItemsSource="{Binding SortOptions}"
                                                  SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
                                     </Flyout>
@@ -401,8 +401,9 @@
                  the Border: a MaxWidth-capped element left at Stretch is centered in its wider slot,
                  which is what put the detail far from the list, and HorizontalAlignment="Left" would
                  shrink it to its content. A capped star column fills up to the cap and leaves the rest
-                 empty on the right. When a vertical scrollbar shows at the narrowest width, the cap
-                 shrinks by its width - nothing else moves. -->
+                 empty on the right. The scrollbar's strip is always reserved (frame ScrollViewer
+                 theme), so the capped column's width never changes when the bar appears or
+                 disappears. -->
             <ScrollViewer x:Name="PART_DetailColumn"
                           Grid.Column="1"
                           HorizontalScrollBarVisibility="Disabled">

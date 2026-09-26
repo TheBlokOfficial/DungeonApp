@@ -800,6 +800,16 @@
                        ^[VerticalScrollBarVisibility=Hidden] /template/ Panel#PART_VerticalScrollBarLane">
             <Setter Property="IsVisible" Value="False" />
         </Style>
+        <!-- .bar-on-demand: pas tylko przy potrzebie - szerokość (wysokość) pasa bierze się z paska,
+             a ukryty pasek ma zero. Dla treści, która się nie zmienia, gdy jest widoczna (menu z
+             przycisku, kontekstowe, podmenu): nic nie przeskakuje, a stały pusty pas psułby
+             symetrię pozycji. Listy rozwijane, okienka wysuwane i pola zostają z pasem zawsze. -->
+        <Style Selector="^.bar-on-demand /template/ Panel#PART_VerticalScrollBarLane">
+            <Setter Property="Width" Value="NaN" />
+        </Style>
+        <Style Selector="^.bar-on-demand /template/ Panel#PART_HorizontalScrollBarLane">
+            <Setter Property="Height" Value="NaN" />
+        </Style>
     </ControlTheme>
 
     <ControlTheme x:Key="DungeonScrollBarThumb" TargetType="Thumb">
@@ -1921,6 +1931,12 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+        <!-- .list-host (Flyout FlyoutPresenterClasses="list-host"): treścią okienka jest lista, która
+             przewija się sama - okienko nie przewija, więc jest jeden pas paska, przy liście. Lista
+             dostaje skończoną wysokość (DungeonFlyoutMaxHeight). -->
+        <Style Selector="^.list-host">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+        </Style>
     </ControlTheme>
 
     <!-- =================================================================== -->
@@ -2030,7 +2046,8 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                         ClipToBounds="True">
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                    <ScrollViewer Classes="bar-on-demand"
+                                  HorizontalScrollBarVisibility="Disabled"
                                   VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -2067,7 +2084,8 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                         ClipToBounds="True">
-                    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                    <ScrollViewer Classes="bar-on-demand"
+                                  HorizontalScrollBarVisibility="Disabled"
                                   VerticalScrollBarVisibility="Auto">
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -2169,7 +2187,8 @@
                                 CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
                                 BoxShadow="{DynamicResource DungeonFlyoutShadow}"
                                 ClipToBounds="True">
-                            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                            <ScrollViewer Classes="bar-on-demand"
+                                          HorizontalScrollBarVisibility="Disabled"
                                           VerticalScrollBarVisibility="Auto">
                                 <ItemsPresenter Name="PART_ItemsPresenter"
                                                 ItemsPanel="{TemplateBinding ItemsPanel}"

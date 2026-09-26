@@ -14,9 +14,10 @@
               MinHeight="0">
             <TextBlock Classes="eyebrow" Text="INSTANCJE W TEJ KAMPANII" />
 
-            <ScrollViewer Grid.Row="1"
-                          IsVisible="{Binding HasInstances}">
-                <ListBox ItemsSource="{Binding Instances}">
+            <!-- The list scrolls itself (its own ScrollViewer, one bar strip) - no outer scroll area. -->
+            <ListBox Grid.Row="1"
+                     IsVisible="{Binding HasInstances}"
+                     ItemsSource="{Binding Instances}">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="dnd:InstanceRowViewModel">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
@@ -62,7 +63,6 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </ScrollViewer>
 
             <controls:EmptyState Grid.Row="1"
                                  IsVisible="{Binding !HasInstances}"
