@@ -19,11 +19,9 @@
             <Setter Property="Margin" Value="0,0,0,3" />
             <Setter Property="Padding" Value="10,0" />
         </Style>
-        <!-- A destructive action owns its hover state: while the pointer is in the trash band
-             (DungeonRowAction, class row-action-hover from Themes/RowActionHover.cs - the row carries
-             list-row for it) the record stays at rest, so opening and deleting never look like one
-             action. -->
-        <Style Selector="Border.campaign-row:pointerover:not(.row-action-hover)">
+        <!-- The trash band belongs to the row: the record stays highlighted while the pointer is
+             over it. -->
+        <Style Selector="Border.campaign-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
         <!-- An unavailable row sits one step back from an available one: the backstage workspace's
@@ -34,7 +32,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
         </Style>
         <!-- An unavailable row has nothing of its own to react to a hover - the trash control is
-             the only interactive thing left in it, and it owns its own hover state. Stays
+             the only interactive thing left in it, and it shows its own hover. Stays
              at its own (recessed) rest color instead of the available row's rest color. -->
         <Style Selector="Border.campaign-row.unavailable:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
@@ -51,7 +49,7 @@
         <Style Selector="StackPanel.campaign-dim:disabled, TextBlock.campaign-dim:disabled, Image.campaign-dim:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
-        <!-- A full-record click target, not a button of its own (the list-row portion replaces it).
+        <!-- A full-record click target, not a button of its own.
              Height is reset to auto so VerticalAlignment="Stretch" fills the record: the Button
              ControlTheme (DungeonControls.axaml) gives every button DungeonControlHeight. -->
         <Style Selector="Button.campaign-open">
@@ -62,6 +60,13 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
+        </Style>
+        <!-- The trash band (DungeonRowAction) spans the record's full height: out through the
+             record's 1 px border vertically; its own height from the record, not the frame's list
+             row. -->
+        <Style Selector="Button.campaign-delete">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Margin" Value="0,-1" />
         </Style>
     </UserControl.Styles>
 
@@ -142,7 +147,7 @@
                     <ItemsControl ItemsSource="{Binding Campaigns}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="library:CampaignRowViewModel">
-                                <Border Classes="campaign-row list-row" Classes.unavailable="{Binding !IsAvailable}">
+                                <Border Classes="campaign-row" Classes.unavailable="{Binding !IsAvailable}">
                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto,16" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                                         <!-- A sibling, full-row button avoids nesting a destructive
                                              button inside an open button. The visual content is made
@@ -203,6 +208,7 @@
                                                        Text="{Binding CreatedAt}" />
                                         </Grid>
                                         <Button Grid.Column="3"
+                                                Classes="campaign-delete"
                                                 Theme="{StaticResource DungeonRowAction}"
                                                 Command="{Binding DeleteCommand}">
                                             <controls:ForegroundIcon Width="16"

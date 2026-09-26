@@ -6,7 +6,7 @@
     <!-- The frame's building blocks side by side, before real tabs use them: spacing between them
          (only from the DungeonSpacing*/DungeonPadding* scale), vertical alignment in one row, colours
          next to each other. A: a filtered list (search field, type chips, "Wyczyść filtry" link,
-         entry counter, list rows with tag, highlighted challenge and delete band, EmptyState when nothing
+         entry counter, list rows with tag, challenge value and delete band, EmptyState when nothing
          matches). B: deleting a row - confirmation, then a notification whose "Cofnij" puts the row
          back. C: a card with header, value bar, abilities table and a collapsible description.
          Sample data in Polish, in memory only, defined here (CompositionsSection.axaml.cs) - nothing
@@ -65,10 +65,10 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                         <controls:WordTag Grid.Column="1" Content="{Binding Type}" />
-                                        <!-- Wyzwanie to wartość z karty: zakreślenie, nie odznaka. -->
-                                        <TextBlock Grid.Column="2" Classes="mono" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                            <Run Classes="highlight" Text="{Binding Challenge}" />
-                                        </TextBlock>
+                                        <!-- Wyzwanie to pojedyncza wartość w kolumnie: zwykły tekst krojem
+                                             liczb, kolorem nazwy w wierszu - bez zakreślenia i bez odznaki. -->
+                                        <TextBlock Grid.Column="2" Classes="mono" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Text="{Binding Challenge}" />
                                         <Button Grid.Column="3" Theme="{StaticResource DungeonRowAction}" Click="OnDeleteClick">
                                             <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                                                      Height="{DynamicResource DungeonActionIconSize}"
@@ -102,8 +102,8 @@
                         </StackPanel>
 
                         <!-- Pasek wartości: pary etykieta - wartość w stałej siatce po dwie w rzędzie;
-                             wartość zwykłym tekstem krojem liczb, Wyzwanie zakreśleniem. Bez odznak -
-                             to wartości z karty, nie liczniki. -->
+                             wartość zwykłym tekstem krojem liczb, także Wyzwanie. Bez odznak i bez
+                             zakreśleń - to wartości z karty, nie liczniki. -->
                         <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto"
                               ColumnSpacing="{DynamicResource DungeonSpacingSm}"
                               RowSpacing="{DynamicResource DungeonSpacingXs}">
@@ -114,9 +114,7 @@
                             <TextBlock Grid.Row="1" Classes="label secondary" VerticalAlignment="Center" Text="Szybkość" />
                             <TextBlock Grid.Row="1" Grid.Column="1" Classes="mono" VerticalAlignment="Center" Text="9 m" />
                             <TextBlock Grid.Row="1" Grid.Column="2" Classes="label secondary" VerticalAlignment="Center" Text="Wyzwanie" />
-                            <TextBlock Grid.Row="1" Grid.Column="3" Classes="mono" VerticalAlignment="Center">
-                                <Run Classes="highlight" Text="1/4" />
-                            </TextBlock>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Classes="mono" VerticalAlignment="Center" Text="1/4" />
                         </Grid>
 
                         <sections:AbilityScoresSample />
