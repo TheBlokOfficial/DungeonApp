@@ -986,6 +986,17 @@
         </Setter>
     </ControlTheme>
 
+    <!--
+        Lista z polami wyboru (ListBox z Theme="{StaticResource DungeonCheckList}", zwykle
+        SelectionMode="Multiple,Toggle", wiersz z CheckBox związanym z IsSelected wiersza): stan wiersza
+        niesie samo pole wyboru - wybrany wiersz nie dostaje tła AccentDim, najechanie jak w zwykłym
+        wierszu. Ten sam wygląd mają wiersze DropDownPicker wielokrotnego - oba biorą go z motywu
+        ListBoxItem przez znacznik themes:CheckList.IsCheckList.
+    -->
+    <ControlTheme x:Key="DungeonCheckList" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Setter Property="themes:CheckList.IsCheckList" Value="True" />
+    </ControlTheme>
+
     <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -1033,6 +1044,15 @@
         </Style>
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <!-- Lista z polami wyboru (themes:CheckList.IsCheckList - motyw DungeonCheckList, wiersze
+             DropDownPicker wielokrotnego): stan niesie pole, wybrany wiersz wygląda jak niewybrany. -->
+        <Style Selector="^[(themes|CheckList.IsCheckList)=True]:selected">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^[(themes|CheckList.IsCheckList)=True]:selected:pointerover,
+                       ^[(themes|CheckList.IsCheckList)=True]:selected:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
@@ -2478,7 +2498,8 @@
         wyszukiwania z lupą (TextBox.search), odstęp DungeonSpacingXs pod nim; brak wyników -
         EmptyState "Nic nie pasuje.".
         Wiersz to wiersz listy (ListBoxItem - wysokość, wcięcia, najechanie). Tryb wielokrotny: pole
-        wyboru przed tekstem mówi, że wiersz jest wybrany - bez tła AccentDim; pole wyboru nie przyjmuje
+        wyboru przed tekstem mówi, że wiersz jest wybrany - bez tła AccentDim, wygląd listy z polami
+        wyboru z motywu ListBoxItem (themes:CheckList.IsCheckList, jak DungeonCheckList); pole wyboru nie przyjmuje
         kliknięć (klika wiersz), a jego wysokość kontrolki (36) jest ściągnięta ujemnym marginesem do
         wysokości wiersza, żeby wiersz miał DungeonListRowHeight jak w liście. Tryb pojedynczy: wybrany
         wiersz ma tło AccentDim jak ComboBoxItem.
@@ -2572,7 +2593,8 @@
                                 <ItemsControl Name="PART_Rows" ItemsSource="{TemplateBinding Rows}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="controls:DropDownPickerRow">
-                                            <ListBoxItem IsSelected="{Binding ShowsSelectedBackground, Mode=OneWay}">
+                                            <ListBoxItem IsSelected="{Binding IsSelected, Mode=OneWay}"
+                                                         themes:CheckList.IsCheckList="{Binding IsMultiple}">
                                                 <StackPanel Orientation="Horizontal"
                                                             Spacing="{DynamicResource DungeonSpacingSm}">
                                                     <CheckBox Margin="0,-2,0,-2"
