@@ -2779,7 +2779,8 @@
         DungeonControlCornerRadius, wcięcie DungeonChipPadding, pismo interfejsu 12 Medium, krawędź
         zawsze 1 px, strzałka w kolorze tekstu, odstęp przed nią DungeonSpacingXs.
         Treść zamkniętego - reguły DropDownPicker, jednakowe dla wyboru pojedynczego i wielokrotnego: nic
-        nie wybrane - nazwa filtra (PlaceholderText, kolorem tekstu chipa); jedna - ta wartość; więcej
+        nie wybrane - nazwa filtra (PlaceholderText, kolorem tekstu chipa); jedna - ta wartość (w wyborze
+        pojedynczym ponowne kliknięcie wybranej wartości ją odznacza - AllowsDeselect); więcej
         (wielokrotny) - pierwsza wybrana w kolejności listy i odznaka neutralna "+N", podpowiedź "Nazwa:
         wszystkie wybrane". Szerokość z treści, najwyżej DungeonTabMaxWidth (240, jak zakładka) - dłuższy
         napis przycina się wielokropkiem z podpowiedzią pełnego (podpowiedź z "+N" wygrywa); odznaka
@@ -2799,6 +2800,9 @@
     <ControlTheme x:Key="DungeonChipPicker"
                   TargetType="controls:DropDownPicker"
                   BasedOn="{StaticResource {x:Type controls:DropDownPicker}}">
+        <!-- Filtr: nic wybrane = wszystko, więc ponowne kliknięcie wybranej wartości (wybór pojedynczy)
+             ją odznacza i zamyka okienko - chip wraca do nazwy filtra. -->
+        <Setter Property="AllowsDeselect" Value="True" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
         <Setter Property="MinHeight" Value="0" />

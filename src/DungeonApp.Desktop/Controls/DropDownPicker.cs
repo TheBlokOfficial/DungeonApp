@@ -56,6 +56,14 @@ public sealed class DropDownPicker : TemplatedControl
     public static readonly StyledProperty<BindingBase?> DisplayMemberBindingProperty =
         AvaloniaProperty.Register<DropDownPicker, BindingBase?>(nameof(DisplayMemberBinding));
 
+    /// <summary>
+    /// Single mode: clicking the selected row again clears the choice (a filter chip, where nothing
+    /// chosen means everything). Set by the chip's theme (DungeonChipPicker), not by a view; a plain
+    /// single list in a form keeps its choice.
+    /// </summary>
+    public static readonly StyledProperty<bool> AllowsDeselectProperty =
+        AvaloniaProperty.Register<DropDownPicker, bool>(nameof(AllowsDeselect));
+
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         AvaloniaProperty.Register<DropDownPicker, bool>(nameof(IsSearchEnabled));
 
@@ -154,6 +162,12 @@ public sealed class DropDownPicker : TemplatedControl
     {
         get => GetValue(DisplayMemberBindingProperty);
         set => SetValue(DisplayMemberBindingProperty, value);
+    }
+
+    public bool AllowsDeselect
+    {
+        get => GetValue(AllowsDeselectProperty);
+        set => SetValue(AllowsDeselectProperty, value);
     }
 
     public DropDownPickerMode SelectionMode
@@ -361,8 +375,7 @@ public sealed class DropDownPicker : TemplatedControl
     {
         if (SelectionMode == DropDownPickerMode.Single)
         {
-            SetCurrentValue(SelectedItemProperty, row.Item);
-            SetCurrentValue(IsDropDownOpenProperty, false);
+            ChooseSingle(row.Item);
             return;
         }
 
@@ -384,6 +397,17 @@ public sealed class DropDownPicker : TemplatedControl
         {
             UpdateSelection();
         }
+    }
+
+    /// <summary>
+    /// Single mode: the clicked row becomes the choice and the list closes; with
+    /// <see cref="AllowsDeselect"/> a click on the row already chosen clears the choice instead.
+    /// </summary>
+    internal void ChooseSingle(object? item)
+    {
+        var deselect = AllowsDeselect && SelectedItem is not null && Equals(SelectedItem, item);
+        SetCurrentValue(SelectedItemProperty, deselect ? null : item);
+        SetCurrentValue(IsDropDownOpenProperty, false);
     }
 
     private void ObserveSelection(IList? selection)
