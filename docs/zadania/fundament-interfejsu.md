@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `d5a2e9c`.** Na starcie sesji: `git log d5a2e9c..master` i `git worktree
+**Stan na: 2026-09-26, po `fe8e68c`.** Na starcie sesji: `git log fe8e68c..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,12 +14,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone i przyjęte 2026-09-26;
-porcja 9a scalona 2026-09-26, bez oglądania. **W toku: porcja 9b** — wykonawca (Haiku) w kopii
-w `.claude/worktrees/`. Potem krótkie obejrzenie 9a+9b przez autora (lista w *Notkach*, *Po 9a*) —
-w tym dwa błędy okienek widoczne tylko w aplikacji (*Notki*, *Okienka tylko w aplikacji*): 9a ich nie
-dotknęła (prezentery okienek miały motyw ramy już wcześniej), więc najpewniej są nadal — wtedy
-diagnoza w działającej aplikacji (pomiar z punktu 6 listy w *Notkach*).
+Wszystkie porcje scalone; 9a i 9b 2026-09-26, bez oglądania. Kopii roboczych brak (katalog po 9b
+w `.claude/worktrees/` mógł zostać zablokowany przez proces — do usunięcia, gdy się zwolni). **Następny
+krok: krótkie obejrzenie 9a+9b przez autora** (*Notki*, *Po 9a*); w tym dwa błędy okienek widoczne tylko
+w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — 9a ich nie dotknęła, więc najpewniej są nadal; wtedy
+diagnoza w działającej aplikacji (pomiar z punktu 6 listy w *Notkach*). Po przyjęciu — kryterium końca
+spełnione: zamknięcie dokumentu w sesji głównej (*Przy zamknięciu*).
 
 ## Zakres i koniec
 
@@ -120,11 +120,11 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   * [x] **Duża runda autora** — obejrzana 2026-09-26; uwagi w *Ustaleniach* (*Duża runda*).
   * [x] **Poprawki po dużej rundzie** — scalone 2026-09-26; dwie sprawy nieodtworzone bez okna
     (*Notki*, *Okienka tylko w aplikacji*) i jedna do rozstrzygnięcia (*Notki*, *Szerokość pola*).
-- [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
+- [x] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
   * [x] **9a** (Opus) — odcięcie motywu domyślnego biblioteki; scalona 2026-09-26.
-  * **9b** (Haiku) — usunięcie tokenów i stylów bez użycia (lista w raporcie 0b: m.in.
+  * [x] **9b** (Haiku) — scalona 2026-09-26. Usunięcie tokenów i stylów bez użycia (lista w raporcie 0b: m.in.
     `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`; z porcji 10+11 —
     *Notki*).
 
@@ -151,6 +151,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 1d | najechanie odnośnika w zdaniu (`DungeonAccentTextHover`); klocek sortowania `SortPicker` — odnośnik z menu (`DungeonLinkOpener`, strzałka według reguły list), przycisk kierunku z przewróceniem ikony, kierunek w kolumnie skrótu menu (`MenuItemTrailing`); zakładka treści na klocku, kierunek wygaszony | scalona 2026-09-26, bez oglądania | 65 / 11,4 / 8,4 mln |
 | duża runda | tło `ListRow` z prawym pasem jak lewy (`PART_EndGutter`); pole z ikoną 200 w galerii (tylko galeria — *Notki*); ptaszek menu sortowania po ponownym kliknięciu (`SortPickerMenuTests`); `DropDownPicker.AllowsDeselect` w chipie (`DropDownPickerDeselectTests`); menu wyśrodkowane i szerokość okienka — nieodtworzone | scalona 2026-09-26 | 64 / 11,7 / 8,2 mln |
 | 9a | Fluent odcięty (aplikacja i pakiet); motywy ramy dla `Window`, `PopupRoot`, `OverlayPopupHost`, `ItemsControl`, `TransitioningContentControl`, `PathIcon`, `SelectableTextBlock` (szablony Avalonii 12.0.5), polskie menu podręczne pola i tekstu do zaznaczenia; `DungeonInputMinWidth` 64; test `BuiltInControlThemesTests` (32 typy); pomiar przed/po: 21 z 22 obrazów identycznych, różnica tylko w animacji paska | scalona 2026-09-26, bez oglądania | 62 / 11,2 / 6,5 mln |
+| 9b | usunięte bez użycia: 7 tokenów (`DungeonPaddingXl`, `DungeonPaddingXxxl`, `DungeonNavigationRowHeight`, `DungeonNavigationFontSize`, `DungeonWorkspaceHeaderHeight`, `DungeonCampaignListMaxHeight`, `DungeonDeckCardSpacing` — cztery ostatnie dopisał architekt, wykonawca ich nie znalazł), 4 ikony, `nav-content`, `ShowsSelectedBackground`; `DungeonSuccessBrush` zostaje (używany) | scalona 2026-09-26 | 57 / 6,3 / 4,6 mln |
 
 ## Ustalenia
 
@@ -469,7 +470,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   zdjęcie lokalnego stylu — runda 1b.
 * Porcje 10+11: pasek boczny wziął stany wiersza listy — pod myszą tło wiersza listy, aktywna pozycja
   w przygaszonym akcencie (było neutralne „aktywne”), wyłączone przygaszone jak wszędzie.
-* Porcje 10+11 → porcja 9 (nieużywane): `DungeonNavigationFontSize`; klasa `nav-content` w szablonie
+* ~~Porcje 10+11 → porcja 9 (nieużywane):~~ zrobione w 9b. `DungeonNavigationFontSize`; klasa `nav-content` w szablonie
   paska bocznego bez stylu; komentarz „campaign-row rhythm” w `SystemSelectionView.axaml` nieaktualny.
 * Punkty wejścia briefu 1c: `Controls/DropDownPicker.cs` (+ `DropDownPickerRow.cs`, `DropDownPickerText.cs`;
   właściwości z 1a: `ShowsSelectionCount`, `SelectedCount`, `:has-selection`), motyw `DungeonChipPicker`
@@ -519,8 +520,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   pod spodem jako tłem, kosz nie leży w treści wiersza; zdjęcie wymaga przebudowy rekordu na `ListRow`
   z zawartością (zlecenie, które zmieni listę kampanii). Brief z wzorem strefy paska liczonym „od
   lewej + pas” był błędny — wzór to strefa od krawędzi obszaru przewijania (`code-state.md`, *Pułapki*).
-* Runda 1a (raport) → porcja 9b: `DropDownPickerRow.ShowsSelectedBackground` bez użycia w XAML —
-  usunąć razem z asercją w `DropDownPickerRowsTests`. Do zlecenia A: `ContentChipFontSize` = 11,5
+* Runda 1a (raport) → porcja 9b: ~~`DropDownPickerRow.ShowsSelectedBackground`~~ usunięta w 9b. Do zlecenia A: `ContentChipFontSize` = 11,5
   w `ContentTabView` — poza skalą pisma (siedem stopni).
 * **Przebieg 1c** (architekt, 2026-09-26, po trzech sprawach autora; przyjęty przez autora tego dnia,
   z odwracaniem w zakładkach w zleceniu A):
@@ -624,6 +624,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   — `MainWindow` ma własne); pole wewnątrz pola liczbowego bez najmniejszej szerokości 64 — pole liczbowe
   dostaje szerokość z układu (architekt: tak zostaje, liczba ma kilka znaków); `PathIcon` bez domyślnego
   rozmiaru. Poza galerią żadne pole nie mierzyło się do zawartości — widoki bez zmian.
+  *Po 9b* — nic widocznego (usunięte rzeczy nie miały użycia); build i 374 testy zielone.
 
 ## Do sesji głównej
 
