@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `e6b07c0`.** Na starcie sesji: `git log e6b07c0..master` i `git worktree
+**Stan na: 2026-09-26, po `256c297`.** Na starcie sesji: `git log 256c297..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -212,9 +212,11 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     ikonki przy KP, PZ, szybkości — punkt wyjścia, projekt z wycinka 2 może to zmienić.
   * **Wyzwanie i PD to osobne pola w paczce** (autor, 2026-09-24) — dziś jeden napis „1/2 (100 PD)";
     odznaka i chip pokazują samo wyzwanie. Autor przerabia swoje paczki po zmianie.
-  * **Cechy potwora — projekt autora 2026-09-24:** kwadratowa tabela z klocka tabeli, trzy kolumny,
-    sześć wierszy, ostre narożniki (wzór: galeria, `AbilityScoresSample`); komórka modyfikatora
-    malowana: dodatni — zielone tło, ujemny — czerwone. Kolory **nie** z tokenów stanów — system
+  * **Cechy potwora — projekt autora 2026-09-24, doprecyzowany 2026-09-26:** dwie tabele z klocka
+    tabeli obok siebie z odstępem: SIŁ, ZRC, KON — INT, MDR, CHA. Każda ma trzy wiersze i trzy kolumny:
+    skrót cechy, wartość (np. 20), modyfikator (np. +5). Wszystkie komórki kwadratowe (szerokość =
+    wysokość), ostre narożniki (wzór: galeria, `AbilityScoresSample`). Komórka modyfikatora dodatniego
+    ma zielone tło, ujemnego czerwone. Pozostałe komórki, także modyfikator +0, mają neutralne szare. Kolory **nie** z tokenów stanów — system
     dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym znaczeniem. Malowanie
     to prezentacja w kodzie karty, nie wyrażenie w danych — pierwszego zakazu nie dotyczy.
 
