@@ -1032,8 +1032,7 @@
                     <Border Name="PART_Highlight"
                             Margin="{DynamicResource DungeonListRowHighlightInset}"
                             Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            Padding="{DynamicResource DungeonScrollBarZone}">
+                            CornerRadius="{TemplateBinding CornerRadius}">
                         <ContentPresenter Name="PART_ContentPresenter"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Content="{TemplateBinding Content}"
@@ -1047,6 +1046,11 @@
             </ControlTemplate>
         </Setter>
 
+        <!-- Strefa paska stylem, nie wartością w szablonie: wiersz w okienku wysuwanym (ComboBoxItem,
+             wiersze w FlyoutPresenter - BuiltInControls.axaml) nadpisuje ją DungeonScrollBarZoneInFlyout. -->
+        <Style Selector="^ /template/ Border#PART_Highlight">
+            <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZone}" />
+        </Style>
         <Style Selector="^:pointerover, ^:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
         </Style>
@@ -2050,9 +2054,13 @@
         </Setter>
         <!-- .list-host (Flyout FlyoutPresenterClasses="list-host"): treścią okienka jest lista, która
              przewija się sama - okienko nie przewija, więc jest jeden pas paska, przy liście. Lista
-             dostaje skończoną wysokość (DungeonFlyoutMaxHeight). -->
+             dostaje skończoną wysokość (DungeonFlyoutMaxHeight). Okienko nie ma własnego wcięcia -
+             wcięcie niesie lista wewnątrz przewijanej treści (styl "FlyoutPresenter.list-host > ListBox"
+             w BuiltInControls.axaml), więc obszar przewijania listy sięga krawędzi okienka i pasek stoi
+             w tym samym miejscu co w każdym innym okienku (DungeonScrollBarInset od krawędzi, góry i dołu). -->
         <Style Selector="^.list-host">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="Padding" Value="0" />
         </Style>
     </ControlTheme>
 
@@ -2128,7 +2136,8 @@
         Pozycja: wysokość DungeonListRowHeight, podświetlenie jak wiersz listy (pędzel
         BackstageRowHover, wcięcie DungeonListRowHighlightInset, zaokrąglenie
         DungeonListRowHighlightCornerRadius) sięga pod pasek przewijania; wcięcie tekstu 12, po prawej
-        większe o strefę paska (DungeonScrollBarZone). Kolumny wspólne dla menu
+        większe o resztę pasa paska liczonego od krawędzi obszaru przewijania (DungeonScrollBarZoneInFlyout
+        - pozycja stoi o wcięcie menu od tej krawędzi). Kolumny wspólne dla menu
         (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót albo strzałka podmenu - jedna kolumna przy
         prawym wcięciu, pozycja z podmenu nie ma skrótu]; kolumna ikony ma
         szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
@@ -2239,8 +2248,9 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 Padding="{TemplateBinding Padding}">
-                            <!-- Podświetlenie pod paskiem przewijania menu, treść przed jego strefą. -->
-                            <Grid Margin="{DynamicResource DungeonScrollBarZone}">
+                            <!-- Podświetlenie pod paskiem przewijania menu, treść przed jego strefą
+                                 (liczoną od krawędzi obszaru przewijania - DungeonScrollBarZoneInFlyout). -->
+                            <Grid Margin="{DynamicResource DungeonScrollBarZoneInFlyout}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
                                     <ColumnDefinition Width="*" />
@@ -2496,7 +2506,12 @@
 
     <ControlTheme x:Key="{x:Type ComboBoxItem}"
                   TargetType="ComboBoxItem"
-                  BasedOn="{StaticResource {x:Type ListBoxItem}}" />
+                  BasedOn="{StaticResource {x:Type ListBoxItem}}">
+        <!-- Wiersz w okienku: strefa paska liczona od krawędzi obszaru przewijania okienka. -->
+        <Style Selector="^ /template/ Border#PART_Highlight">
+            <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
+        </Style>
+    </ControlTheme>
 
     <!--
         Lista rozwijana ramy (controls:DropDownPicker) - wybór wielokrotny i/lub wyszukiwanie; lista
@@ -2594,7 +2609,7 @@
                             <StackPanel>
                                 <!-- Pole wyszukiwania przewija się z wierszami - kończy się przed strefą
                                      paska przewijania jak treść wierszy. -->
-                                <Panel Margin="{DynamicResource DungeonScrollBarZone}"
+                                <Panel Margin="{DynamicResource DungeonScrollBarZoneInFlyout}"
                                        IsVisible="{TemplateBinding IsSearchEnabled}">
                                     <TextBox Name="PART_SearchBox"
                                              Classes="search"

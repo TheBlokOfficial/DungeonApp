@@ -36,6 +36,19 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <!-- Lista w okienku .list-host: wcięcie okienka (DungeonFlyoutPadding) niesie lista wewnątrz
+         przewijanej treści - okienko .list-host nie ma własnego (motyw FlyoutPresenter), więc pasek
+         listy stoi przy krawędzi okienka jak w każdym innym okienku. -->
+    <Style Selector="FlyoutPresenter.list-host > ListBox">
+        <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
+    </Style>
+    <!-- Wiersz listy w okienku wysuwanym (lista w .list-host, wiersze DropDownPicker): stoi o wcięcie
+         okienka od krawędzi obszaru przewijania, więc strefa paska w wierszu to reszta pasa
+         (DungeonScrollBarZoneInFlyout). ComboBoxItem ma to we własnym motywie. -->
+    <Style Selector="FlyoutPresenter ListBoxItem /template/ Border#PART_Highlight">
+        <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
+    </Style>
+
     <Style Selector="TextBlock.muted">
         <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />

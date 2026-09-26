@@ -30,7 +30,10 @@
 
         <!-- Paddings with no matching frame token (mockup: .entry, .list-scroll, .detail-inner, .group-label, .entry-badge.pill, .tag). -->
         <Thickness x:Key="ContentRowPadding">9,0</Thickness>
-        <Thickness x:Key="ContentListScrollPadding">0,8,10,24</Thickness>
+        <!-- Right 0: the row background reaches the scroll area's right edge, so the overlay scroll bar
+             (DungeonScrollBarInset..DungeonScrollBarZone from the edge) lies wholly on it; the row theme's
+             bar zone (16) is counted from that edge - row content ends 16 + 9 from it. -->
+        <Thickness x:Key="ContentListScrollPadding">0,8,0,24</Thickness>
         <Thickness x:Key="ContentDetailInnerPadding">40,30,40,70</Thickness>
         <Thickness x:Key="ContentSectionHeaderPadding">18,12,8,5</Thickness>
         <Thickness x:Key="ContentBadgePillPadding">7,2</Thickness>

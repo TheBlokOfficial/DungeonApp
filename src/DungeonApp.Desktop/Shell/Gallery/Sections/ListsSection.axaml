@@ -8,6 +8,11 @@
          with the mouse. Nothing here restyles a list - the only local values are the lists' size and inset, and
          the card they lie on. Below: the empty list (controls:EmptyState) with a message alone and
          with a message and a hint, each in a list-sized area so its place at the top shows. -->
+    <!-- The bar zone is counted from the scroll area's edge: the lists here are inset by
+         DungeonPaddingXs (6) inside it, so a row adds the rest of the bar lane, 16 - 6. -->
+    <UserControl.Resources>
+        <Thickness x:Key="DungeonScrollBarZone">0,0,10,0</Thickness>
+    </UserControl.Resources>
     <UserControl.Styles>
         <!-- The card has no padding of its own: the inset belongs to what it holds - the list's
              Padding (inside the scrolled content) and the empty state's Margin - so the scroll bar
