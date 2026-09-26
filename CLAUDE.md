@@ -21,9 +21,11 @@ osobno, zamiast jednego zdania o intencji.
    arytmetyka i są dozwolone. Cokolwiek o kształcie „jeżeli / gdy / o ile",
    predykat, wartość strzeżona flagą — nie.
 
-2. **Żaden typ nie niesie czasu.** Nigdzie nie ma pola oznaczającego czas
-   trwania, rundę, turę, wygaśnięcie, początek ani koniec obowiązywania. Czas
-   w treści jest tekstem na karcie, a nie polem, po którym cokolwiek liczy.
+2. **Żaden typ nie niesie czasu.** Nigdzie nie ma wartości, z której cokolwiek
+   odczytuje czas trwania, rundę, turę, wygaśnięcie, początek albo koniec
+   obowiązywania. Czas w treści jest tekstem na karcie: może stać w polu rekordu
+   („Koncentracja, do 1 minuty”), ale poza kartą nic go nie czyta — nie
+   rozbiera, nie liczy, nie filtruje, nie sortuje.
 
 3. **Wkłady do pola sumują się bezwarunkowo.** Nie ma priorytetu, kolejności
    rozstrzygania, reguły „to się nie kumuluje" ani odrzucania duplikatów po

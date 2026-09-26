@@ -1332,6 +1332,25 @@ wyjątkiem". Wykluczone pozostaje to, co było sednem tej pozycji: aplikacja wyb
 sama (obszar, „wszyscy"), kaskady zmian, dialogi potwierdzeń, cofanie zmian wywołanych regułą.
 Uzasadnienie — pozycja „Czwarty zakaz w brzmieniu «operacja zmienia to, na czym ją wywołano»".
 
+### 40. Drugi zakaz w brzmieniu „nigdzie nie ma pola oznaczającego czas trwania"
+
+**Co proponowano.** Brzmienie obowiązujące do 2026-09-26: nigdzie nie ma pola oznaczającego czas
+trwania, rundę, turę, wygaśnięcie, początek ani koniec obowiązywania; czas w treści jest tekstem na
+karcie. Dosłownie zabraniało to pola „czas trwania” w rekordzie nawet jako zwykłego napisu.
+
+**Dlaczego odrzucone.** Wyszło przy projektowaniu rekordu zaklęcia. Nagłówek zaklęcia D&D 5e
+to czas rzucania, zasięg i czas trwania. Czas pojawia się też przy potworach i przedmiotach: „3/dzień”,
+„odnawia się o świcie”, akcje legendarne na turę. Według litery karta mogłaby to pokazać tylko jako
+jeden wolny tekst bez nazwanych pól. Traci na tym układ karty, a nic nie zyskuje granica. Intencja
+zakazu była węższa, jak przy czwartym (*Lekcja dla asystenta*, `collaboration.md`): czas nie jest
+niczyim wejściem. Napis, który czyta tylko karta, niczego nie wykonuje.
+
+**Czym to zastąpiono.** Brzmienie w [CLAUDE.md](../CLAUDE.md): nigdzie nie ma wartości, z której
+cokolwiek odczytuje czas; napis o czasie może stać w polu rekordu, ale poza kartą nic go nie czyta
+— nie rozbiera, nie liczy, nie filtruje, nie sortuje. To ta sama granica co przy liczniku rund
+w narzędziu (*Runda, zegar świata i kronika*, `architecture.md`). Przyjęte przez autora 2026-09-26.
+Koncentracja i rytuał zaklęcia są tagami — to właściwości zaklęcia, nie odmierzanie czasu.
+
 ## Model danych
 
 ### 17. Warstwa scen jako byt

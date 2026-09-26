@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `86fefa5`.** Na starcie sesji: `git log 86fefa5..master` i `git worktree
+**Stan na: 2026-09-26, po `529bb50`.** Na starcie sesji: `git log 529bb50..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -17,8 +17,7 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Wycinek 1 (dane D&D 5e) w toku. Autor 2026-09-26 potwierdził „instancje” = wpisy i odczyt
-drugiego zakazu według intencji (*Ustalenia*). Brzmienie dopisku do zakazu w `CLAUDE.md` czeka na
-akceptację autora. `zwiadowca` (bez kopii roboczej, tylko odczyt) zbiera, co dziś trzymają
+drugiego zakazu według intencji; nowe brzmienie zakazu w `CLAUDE.md` (*Ustalenia*). `zwiadowca` (bez kopii roboczej, tylko odczyt) zbiera, co dziś trzymają
 rekordy systemu, paczki wzorcowe i paczki autora (z jego zgody — jedyny katalog poza repozytorium).
 Architekt równolegle spisuje, co trzyma SRD. **Następny krok:** z raportu zwiadu i SRD — luki
 i propozycja zmian rekordów sprawdzona z zakazami, do zgody autora.
@@ -130,8 +129,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   rzucania, zasięg, czas trwania, „3/dzień”, „odnawia się o świcie” mogą być polami rekordu, ale
   wyłącznie jako napisy, które pokazuje karta. Nic ich nie rozbiera, nie liczy, nie filtruje ani nie
   sortuje. Filtry i sortowanie zaklęć — po poziomie i szkole. **Koncentracja i rytuał to tagi
-  zaklęcia** (właściwości, nie odmierzanie czasu). Dopisek do brzmienia zakazu w `CLAUDE.md` —
-  po akceptacji brzmienia przez autora; uzasadnienie → `decisions.md`, *Granica automatyzacji*.
+  zaklęcia** (właściwości, nie odmierzanie czasu). Brzmienie zakazu w `CLAUDE.md` zmienione
+  tego dnia za zgodą autora; uzasadnienie — `decisions.md`, pozycja 40.
 * **Treść przykładowa z SRD albo własna** (architekt, 2026-09-26): SRD 5.1/5.2 jest na licencji CC-BY
   4.0 — paczka niesie przypisanie autorstwa; nazwy i opisy tłumaczymy sami. Nie przepisujemy potworów
   ani przedmiotów spoza SRD.
