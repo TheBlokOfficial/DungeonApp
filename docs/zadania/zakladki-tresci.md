@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `ea293c6`.** Na starcie sesji: `git log ea293c6..master` i `git worktree
+**Stan na: 2026-09-26, po `86fefa5`.** Na starcie sesji: `git log 86fefa5..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Zadanie założone 2026-09-26; nic jeszcze nie ruszyło. Fundament interfejsu przyjęty i zamknięty
-tego dnia (jego reguły — `architecture.md`, *Niezmiennik interfejsu*; pomiar — `decisions.md`, pozycja
-39). Kopii roboczych brak. **Następny krok: wycinek 1 planu (dane D&D 5e)** — najpierw
-potwierdzić z autorem dwie sprawy z *Do sesji głównej* i *Ustaleń* („instancje” = wpisy; zaklęcia
-a drugi zakaz), bo zmieniają zakres zwiadu.
+Wycinek 1 (dane D&D 5e) w toku. Autor 2026-09-26 potwierdził „instancje” = wpisy i odczyt
+drugiego zakazu według intencji (*Ustalenia*). Brzmienie dopisku do zakazu w `CLAUDE.md` czeka na
+akceptację autora. `zwiadowca` (bez kopii roboczej, tylko odczyt) zbiera, co dziś trzymają
+rekordy systemu, paczki wzorcowe i paczki autora (z jego zgody — jedyny katalog poza repozytorium).
+Architekt równolegle spisuje, co trzyma SRD. **Następny krok:** z raportu zwiadu i SRD — luki
+i propozycja zmian rekordów sprawdzona z zakazami, do zgody autora.
 
 ## Zakres i koniec
 
@@ -39,8 +40,8 @@ a drugi zakaz), bo zmieniają zakres zwiadu.
 * **Wpisy przykładowe:** kilka–kilkanaście na zakładkę, każdy pokazuje kartę z innej strony (np. potwór
   z czarami, z akcjami legendarnymi, z odpornościami, bez akcji; przedmiot magiczny z ładunkami, zwykły
   ekwipunek, broń).
-* **Zaklęcia — „ewentualnie”** (autor): nowy typ treści i zakładka; decyzja przy etapie (*Notki*,
-  *Zaklęcia a drugi zakaz*).
+* **Zaklęcia — „ewentualnie”** (autor): nowy typ treści i zakładka; decyzja przy etapie; odczyt drugiego
+  zakazu dla zaklęć — *Ustalenia*.
 * **Punkt kontrolny o Avalonii** (*Ustalenia*).
 
 **Nie wchodzi:** tworzenie, edycja, kopiowanie, usuwanie wpisów; NPC; filtr po typie treści (bez
@@ -123,8 +124,14 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Projektuje architekt, buduje wykonawca** (architekt, 2026-09-26; `collaboration.md`, *Deleguj kod,
   nie decyzje*): układ list i kart to decyzja — architekt proponuje ją z makietą, autor przyjmuje,
   wykonawca składa z klocków. Swoboda twórcza (autor) dotyczy projektu, nie pominięcia zgody na etap.
-* **„Instancje” z polecenia autora to wpisy** (architekt, 2026-09-26 — do potwierdzenia przez autora):
-  pozycje w paczce, nie egzemplarze w kampanii (`architecture.md`, *Słownik*).
+* **„Instancje” z polecenia autora to wpisy** (autor, 2026-09-26): pozycje w paczce, nie egzemplarze
+  w kampanii (`architecture.md`, *Słownik*).
+* **Drugi zakaz czyta się według intencji** (autor, 2026-09-26, na propozycję architekta): czas
+  rzucania, zasięg, czas trwania, „3/dzień”, „odnawia się o świcie” mogą być polami rekordu, ale
+  wyłącznie jako napisy, które pokazuje karta. Nic ich nie rozbiera, nie liczy, nie filtruje ani nie
+  sortuje. Filtry i sortowanie zaklęć — po poziomie i szkole. **Koncentracja i rytuał to tagi
+  zaklęcia** (właściwości, nie odmierzanie czasu). Dopisek do brzmienia zakazu w `CLAUDE.md` —
+  po akceptacji brzmienia przez autora; uzasadnienie → `decisions.md`, *Granica automatyzacji*.
 * **Treść przykładowa z SRD albo własna** (architekt, 2026-09-26): SRD 5.1/5.2 jest na licencji CC-BY
   4.0 — paczka niesie przypisanie autorstwa; nazwy i opisy tłumaczymy sami. Nie przepisujemy potworów
   ani przedmiotów spoza SRD.
@@ -164,11 +171,6 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 ## Notki
 
-* **Zaklęcia a drugi zakaz** (architekt, 2026-09-26): zaklęcie niesie czas rzucania, czas trwania,
-  koncentrację i zasięg. Drugi zakaz: „nigdzie nie ma pola oznaczającego czas trwania […] czas w treści
-  jest tekstem na karcie". Litera zabrania pola „czas trwania” nawet jako tekstu; intencja — pola, po
-  którym cokolwiek liczy albo filtruje. Rozjazd zgłosić autorowi przed projektem rekordu zaklęcia
-  (`collaboration.md`, *Lekcja dla asystenta*), nie rozstrzygać samemu — *Do sesji głównej*.
 * **Akcje jako osobne rzeczy to krok 11** (kolejka, 2026-09-24): nazwy akcji, pogrubione premie
   i nagłówki akcji z mockupu wymagają akcji jako osobnych pozycji rekordu, a formuły i sloty przyszły
   po kroku 10. Jeśli projekt z wycinka 2 ich potrzebuje — *Do sesji głównej* (kolejność kolejki).
@@ -201,7 +203,6 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 ## Do sesji głównej
 
-* **Zaklęcia a drugi zakaz** — *Notki*. Dotyka pięciu zakazów: autor rozstrzyga, zanim powstanie rekord.
 * **Akcje jako osobne rzeczy przed krokiem 11?** — tylko jeśli projekt z wycinka 2 ich potrzebuje.
 * **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
   przeniesiona z fundamentu): `collaboration.md` ma ok. 530 linii i jest czytany prawie w całości co
