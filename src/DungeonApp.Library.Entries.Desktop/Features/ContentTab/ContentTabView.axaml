@@ -23,26 +23,24 @@
              Tokens.axaml's own two-parallel-sets remark), not assignable to Margin directly. -->
         <Thickness x:Key="ContentTabDividerMargin">0,16,0,0</Thickness>
 
-        <!-- Typography with no matching frame token (mockup: .title-row h1, h1.entry-name, .filter-chip / .sort-btn). -->
+        <!-- Typography with no matching frame token (mockup: .title-row h1, h1.entry-name, .entry-badge). -->
         <x:Double x:Key="ContentTabTitleFontSize">26</x:Double>
         <x:Double x:Key="ContentDetailNameFontSize">34</x:Double>
         <x:Double x:Key="ContentChipFontSize">11.5</x:Double>
 
-        <!-- Paddings with no matching frame token (mockup: .entry, .list-scroll, .detail-inner, .group-label, .filter-chip, .entry-badge.pill, .tag). -->
+        <!-- Paddings with no matching frame token (mockup: .entry, .list-scroll, .detail-inner, .group-label, .entry-badge.pill, .tag). -->
         <Thickness x:Key="ContentRowPadding">9,0</Thickness>
         <Thickness x:Key="ContentListScrollPadding">0,8,10,24</Thickness>
         <Thickness x:Key="ContentDetailInnerPadding">40,30,40,70</Thickness>
         <Thickness x:Key="ContentSectionHeaderPadding">18,12,8,5</Thickness>
-        <Thickness x:Key="ContentChipPadding">9,6</Thickness>
         <Thickness x:Key="ContentBadgePillPadding">7,2</Thickness>
         <Thickness x:Key="ContentTagPadding">10,3</Thickness>
 
         <!-- Pill shape shared by a colored badge and a detail tag (mockup: border-radius: 999px). -->
         <CornerRadius x:Key="ContentPillCornerRadius">999</CornerRadius>
 
-        <!-- krok 10, brief A4: the dropdown chevron shared by every filter chip and the sort button
-             (mockup: .filter-chip svg is 8px, .sort-btn svg is 9px - unified to one size here rather
-             than carrying two near-identical literals for a difference this small). -->
+        <!-- The sort button's dropdown chevron (mockup: .sort-btn svg is 9px). Filter chips carry the
+             frame's own chevron (DungeonChipOpener). -->
         <x:Double x:Key="ContentChevronIconSize">9</x:Double>
 
         <!-- One row template shared by every entry row AND a rejected pack's own selectable header
@@ -90,21 +88,6 @@
              alone too, and the brief only asks for the row bold, not a badge recolor. -->
         <Style Selector="dc|ListRow:selected TextBlock.row-name">
             <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
-        <Style Selector="Button.content-chip">
-            <Setter Property="Height" Value="NaN" />
-            <Setter Property="Padding" Value="{StaticResource ContentChipPadding}" />
-            <Setter Property="FontSize" Value="{StaticResource ContentChipFontSize}" />
-            <Setter Property="FontWeight" Value="Normal" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
-        </Style>
-        <Style Selector="Button.content-chip.active">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
 
     </UserControl.Styles>
@@ -219,14 +202,10 @@
                                  PlaceholderText="Szukaj po nazwie…" />
 
                         <WrapPanel>
-                            <Button Classes="content-chip" Classes.active="{Binding CategoryFilter.IsActive}"
+                            <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding CategoryFilter.IsActive}"
                                     IsVisible="{Binding CategoryFilter.IsAvailable}"
                                     Margin="0,0,6,6">
-                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                                    <TextBlock Text="{Binding CategoryFilter.ChipText}" />
-                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
-                                           Source="{StaticResource DungeonIconChevronDown}" />
-                                </StackPanel>
+                                <TextBlock Text="{Binding CategoryFilter.ChipText}" />
                                 <Button.Flyout>
                                     <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                         <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
@@ -243,14 +222,10 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
-                                        <Button Classes="content-chip" Classes.active="{Binding IsActive}"
+                                        <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding IsActive}"
                                                 IsVisible="{Binding IsAvailable}"
                                                 Margin="0,0,6,6">
-                                            <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                                                <TextBlock Text="{Binding ChipText}" />
-                                                <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
-                                                       Source="{StaticResource DungeonIconChevronDown}" />
-                                            </StackPanel>
+                                            <TextBlock Text="{Binding ChipText}" />
                                             <Button.Flyout>
                                                 <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                                     <ListBox ItemsSource="{Binding FlyoutItems}"
@@ -262,14 +237,10 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <Button Classes="content-chip" Classes.active="{Binding SourceFilter.IsActive}"
+                            <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding SourceFilter.IsActive}"
                                     IsVisible="{Binding SourceFilter.IsAvailable}"
                                     Margin="0,0,6,6">
-                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                                    <TextBlock Text="{Binding SourceFilter.ChipText}" />
-                                    <Image Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
-                                           Source="{StaticResource DungeonIconChevronDown}" />
-                                </StackPanel>
+                                <TextBlock Text="{Binding SourceFilter.ChipText}" />
                                 <Button.Flyout>
                                     <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                                         <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"

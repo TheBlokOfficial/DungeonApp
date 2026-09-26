@@ -8,7 +8,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Metadata;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 
@@ -27,7 +29,8 @@ public enum DropDownPickerMode
 /// <summary>
 /// The frame's drop-down list for what ComboBox does not do: selecting several rows at once and/or
 /// narrowing the rows with a search field. A plain single choice without search stays a ComboBox.
-/// Rows show <c>ToString()</c> of each item. The look belongs to the frame's control theme
+/// Rows show each item's name: <see cref="DisplayMemberBinding"/> evaluated on the item (like
+/// ItemsControl.DisplayMemberBinding), or <c>ToString()</c> without it. The look belongs to the frame's control theme
 /// (Themes/DungeonControls.axaml). Selection changes only what the user clicked.
 /// </summary>
 [TemplatePart("PART_SearchBox", typeof(TextBox))]
@@ -48,6 +51,9 @@ public sealed class DropDownPicker : TemplatedControl
     public static readonly StyledProperty<DropDownPickerMode> SelectionModeProperty =
         AvaloniaProperty.Register<DropDownPicker, DropDownPickerMode>(
             nameof(SelectionMode), DropDownPickerMode.Multiple);
+
+    public static readonly StyledProperty<BindingBase?> DisplayMemberBindingProperty =
+        AvaloniaProperty.Register<DropDownPicker, BindingBase?>(nameof(DisplayMemberBinding));
 
     public static readonly StyledProperty<bool> IsSearchEnabledProperty =
         AvaloniaProperty.Register<DropDownPicker, bool>(nameof(IsSearchEnabled));
@@ -79,6 +85,11 @@ public sealed class DropDownPicker : TemplatedControl
     private INotifyCollectionChanged? _observedSelection;
     private TextBox? _searchBox;
 
+    // Evaluates DisplayMemberBinding on one item at a time: the binding is applied once, the item
+    // is set as its DataContext and the name read back - the binding itself resolves the path (a
+    // compiled binding in XAML; no reflection here).
+    private TextBlock? _nameEvaluator;
+
     public DropDownPicker()
     {
         SetCurrentValue(SelectedItemsProperty, new AvaloniaList<object>());
@@ -103,6 +114,18 @@ public sealed class DropDownPicker : TemplatedControl
     {
         get => GetValue(SelectedItemProperty);
         set => SetValue(SelectedItemProperty, value);
+    }
+
+    /// <summary>
+    /// The binding that gives an item's name in the rows and the closed text, when items are objects
+    /// rather than strings (e.g. <c>{Binding Name}</c>). Without it, rows show <c>ToString()</c>.
+    /// </summary>
+    [AssignBinding]
+    [InheritDataTypeFromItems(nameof(ItemsSource))]
+    public BindingBase? DisplayMemberBinding
+    {
+        get => GetValue(DisplayMemberBindingProperty);
+        set => SetValue(DisplayMemberBindingProperty, value);
     }
 
     public DropDownPickerMode SelectionMode
@@ -175,6 +198,11 @@ public sealed class DropDownPicker : TemplatedControl
         else if (change.Property == SelectedItemProperty)
         {
             UpdateSelection();
+        }
+        else if (change.Property == DisplayMemberBindingProperty)
+        {
+            _nameEvaluator = null;
+            RebuildRows();
         }
         else if (change.Property == ItemsSourceProperty
                  || change.Property == SelectionModeProperty
@@ -295,7 +323,7 @@ public sealed class DropDownPicker : TemplatedControl
         var isMultiple = SelectionMode == DropDownPickerMode.Multiple;
 
         Rows = items
-            .Select(item => new DropDownPickerRow(item, item.ToString() ?? string.Empty, IsSelected(item), isMultiple))
+            .Select(item => new DropDownPickerRow(item, NameOf(item), IsSelected(item), isMultiple))
             .Where(row => DropDownPickerText.Matches(row.Text, SearchText))
             .ToList();
         HasNoMatches = items.Count > 0 && Rows.Count == 0;
@@ -316,7 +344,24 @@ public sealed class DropDownPicker : TemplatedControl
     // In the order of the items, not of clicking - the closed text does not jump.
     private void UpdateSummary(List<object> items) =>
         SummaryText = DropDownPickerText.Summary(
-            items.Where(IsSelected).Select(item => item.ToString() ?? string.Empty).ToList());
+            items.Where(IsSelected).Select(NameOf).ToList());
+
+    private string NameOf(object item)
+    {
+        if (DisplayMemberBinding is not { } binding)
+        {
+            return item.ToString() ?? string.Empty;
+        }
+
+        if (_nameEvaluator is null)
+        {
+            _nameEvaluator = new TextBlock();
+            _nameEvaluator.Bind(TextBlock.TextProperty, binding);
+        }
+
+        _nameEvaluator.DataContext = item;
+        return _nameEvaluator.Text ?? string.Empty;
+    }
 
     private List<object> Items() => ItemsSource?.Cast<object>().ToList() ?? [];
 

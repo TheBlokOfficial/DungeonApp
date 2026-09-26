@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.DropDownsSection">
     <!-- The frame's FlyoutPresenter theme (Themes/DungeonControls.axaml), live: one flyout with short
          content and one with a list longer than the flyout's highest height (it scrolls inside with
@@ -27,6 +28,73 @@
                 </Button.Flyout>
             </Button>
         </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ WYBORU" />
+        <TextBlock Classes="caption muted" Text="Button z okienkiem i motywem DungeonChipOpener. Najedź, żeby zobaczyć najechanie; kliknij, żeby otworzyć - otwarty wygląda jak pod myszą, strzałka obraca się z prawej w dół. Aktywny filtr ma przygaszony akcent." />
+        <WrapPanel>
+            <Button Theme="{StaticResource DungeonChipOpener}" Content="Spoczynek" Margin="0,0,6,6">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox x:Name="ChipRestList" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button Theme="{StaticResource DungeonChipOpener}" Classes="active" Content="Aktywny: Druga" Margin="0,0,6,6">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox x:Name="ChipActiveList" SelectedIndex="1" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button Theme="{StaticResource DungeonChipOpener}" Content="Wyłączony" IsEnabled="False" Margin="0,0,6,6">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button Theme="{StaticResource DungeonChipOpener}" Classes="active" Content="Aktywny wyłączony" IsEnabled="False" Margin="0,0,6,6">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <Button Theme="{StaticResource DungeonChipOpener}" MaxWidth="160" Margin="0,0,6,6"
+                    Content="Bardzo długi napis chipa, który się nie mieści">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox x:Name="ChipLongList" />
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+            <!-- Docelowy filtr: chip otwierający listę wartości z polami wyboru - wielokrotny wybór na
+                 obiektach, nazwa pozycji z wiązania. Złożony z istniejących klocków: lista ramy
+                 w trybie przełączania i pole wyboru w wierszu. -->
+            <Button Theme="{StaticResource DungeonChipOpener}" Content="Wartości" Margin="0,0,6,6">
+                <Button.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
+                        <ListBox x:Name="ChipCheckList" SelectionMode="Multiple,Toggle">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="sections:GalleryOption">
+                                    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                                        <CheckBox Margin="0,-2,0,-2"
+                                                  IsChecked="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
+                                                  IsHitTestVisible="False"
+                                                  Focusable="False" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </WrapPanel>
+        <TextBlock Classes="caption muted" Text="Lista rozwijana wielokrotna na obiektach: nazwa pozycji z wiązania (DisplayMemberBinding), nie z ToString()." />
+        <controls:DropDownPicker x:Name="ObjectPicker" Width="200" HorizontalAlignment="Left"
+                                 PlaceholderText="Wybierz wartości"
+                                 DisplayMemberBinding="{Binding Name, DataType=sections:GalleryOption}" />
 
         <TextBlock Classes="overline-sm muted" Text="LISTA ROZWIJANA POJEDYNCZA" />
         <TextBlock Classes="caption muted" Text="Zamknięta wygląda jak pole; otwarta ma krawędź najechania, a chevron obraca się z prawej w dół. Wybór zamyka listę." />

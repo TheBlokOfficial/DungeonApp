@@ -3,6 +3,12 @@ using Avalonia.Controls;
 
 namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 
+/// <summary>A gallery sample item that is an object with a name, not a string.</summary>
+public sealed class GalleryOption(string name)
+{
+    public string Name { get; } = name;
+}
+
 public partial class DropDownsSection : UserControl
 {
     // About thirty names - longer than the flyout's and the drop-down's highest height.
@@ -31,5 +37,14 @@ public partial class DropDownsSection : UserControl
         MultiLong.ItemsSource = LongNames;
         SearchSingle.ItemsSource = LongNames;
         SearchMultiple.ItemsSource = LongNames;
+
+        string[] chipValues = ["Pierwsza", "Druga", "Trzecia", "Czwarta"];
+        ChipRestList.ItemsSource = chipValues;
+        ChipActiveList.ItemsSource = chipValues;
+        ChipLongList.ItemsSource = LongNames;
+        GalleryOption[] options = [new("Pierwsza"), new("Druga"), new("Trzecia"), new("Czwarta")];
+        ChipCheckList.ItemsSource = options;
+        ObjectPicker.ItemsSource = options;
+        ObjectPicker.SelectedItems = new AvaloniaList<object> { options[1] };
     }
 }
