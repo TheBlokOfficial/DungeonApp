@@ -27,6 +27,15 @@
         <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
     </Style>
 
+    <!-- Wiersz listy z kolumnami (controls:ListRow z Grid jako treścią, np. nazwa wpisu i odznaka):
+         każda kolumna wyśrodkowana w pionie niezależnie. Siatka wiersza ma wysokość najwyższej
+         kolumny, a rozciągnięty TextBlock rysuje tekst u góry swojego pola - bez tego wyższa odznaka
+         w sąsiedniej kolumnie przesuwała tytuł w górę. Mieszka tu, a nie w motywie wiersza
+         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka. -->
+    <Style Selector="controls|ListRow > Grid > :is(Control)">
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.muted">
         <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
