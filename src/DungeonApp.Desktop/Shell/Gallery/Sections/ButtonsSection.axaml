@@ -23,7 +23,7 @@
         <TextBlock Classes="caption muted" Text="Najedź, żeby zobaczyć stany. Wciśnięty wygląda jak pod myszą." />
 
         <Grid ColumnDefinitions="140,Auto"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
             <!-- Zwykły -->
@@ -91,14 +91,6 @@
             <StackPanel Grid.Row="4" Grid.Column="1" Spacing="{DynamicResource DungeonSpacingMd}">
                 <StackPanel Classes="button-row">
                     <Button Classes="link" VerticalAlignment="Center" Content="Wyczyść filtry" />
-                    <Button Classes="link" VerticalAlignment="Center">
-                        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                            <TextBlock Text="Sortuj: nazwa" />
-                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
-                                   Height="{DynamicResource DungeonActionIconSize}"
-                                   Source="{StaticResource DungeonIconChevronDown}" />
-                        </StackPanel>
-                    </Button>
                     <Button Classes="link" VerticalAlignment="Center" Content="Wyłączony" IsEnabled="False" />
                 </StackPanel>
                 <TextBlock>
@@ -106,9 +98,18 @@
                 </TextBlock>
             </StackPanel>
 
-            <!-- Ikonowy -->
-            <TextBlock Grid.Row="5" Classes="caption muted row-label" Text="Ikonowy · icon" />
+            <!-- Sortowanie: odnośnik otwierający menu pól i przycisk kierunku (controls:SortPicker).
+                 Pola i ich rodzaje ustawia ButtonsSection.axaml.cs - przykładowe, neutralne. -->
+            <TextBlock Grid.Row="5" Classes="caption muted row-label" Text="Sortowanie" />
             <StackPanel Grid.Row="5" Grid.Column="1" Classes="button-row">
+                <controls:SortPicker x:Name="SortSample" />
+                <controls:SortPicker x:Name="SortSampleFixedDirection" CanReverse="False" />
+                <controls:SortPicker x:Name="SortSampleDisabled" IsEnabled="False" />
+            </StackPanel>
+
+            <!-- Ikonowy -->
+            <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Ikonowy · icon" />
+            <StackPanel Grid.Row="6" Grid.Column="1" Classes="button-row">
                 <Button Classes="icon" ToolTip.Tip="Ustawienia">
                     <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
@@ -132,9 +133,9 @@
             </StackPanel>
 
             <!-- Przycięcie: wyjście awaryjne, gdy kontener wymusza wąskie miejsce. -->
-            <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Gdy brakuje miejsca" />
+            <TextBlock Grid.Row="7" Classes="caption muted row-label" Text="Gdy brakuje miejsca" />
             <!-- Local on purpose: the narrow container that forces the trim. -->
-            <Border Grid.Row="6" Grid.Column="1" Width="120" HorizontalAlignment="Left">
+            <Border Grid.Row="7" Grid.Column="1" Width="120" HorizontalAlignment="Left">
                 <Button Content="Zamknij kampanię i wróć do biblioteki" />
             </Border>
         </Grid>

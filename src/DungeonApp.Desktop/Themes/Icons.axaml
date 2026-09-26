@@ -167,6 +167,12 @@
     <DrawingImage x:Key="DungeonIconMore" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,11.2 L5,12.8 M12,11.2 L12,12.8 M19,11.2 L19,12.8" Pen="{StaticResource DungeonIconPrimaryPen}" />
     </DrawingImage>
+    <!-- Kierunek sortowania: strzałka w dół (po lewej) i trzy kreski o malejącej długości (po prawej) -
+         od najdłuższej u góry do najkrótszej na dole. Tak narysowana znaczy "malejąco"; "rosnąco" to
+         ten sam rysunek przewrócony przez oś poziomą (SortPicker, skala w pionie -1). -->
+    <DrawingImage x:Key="DungeonIconSortDirection" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M7,5 L7,19 M4,16 L7,19 L10,16 M13,7 L20,7 M13,12 L18,12 M13,17 L16,17" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
     <DrawingImage x:Key="DungeonIconChevronDown" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,9 L12,16 L19,9" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>

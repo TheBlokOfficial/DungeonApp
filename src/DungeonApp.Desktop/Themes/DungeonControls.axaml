@@ -2189,7 +2189,8 @@
         (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót albo strzałka podmenu - jedna kolumna przy
         prawym wcięciu, pozycja z podmenu nie ma skrótu]; kolumna ikony ma
         szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
-        TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) do prawej,
+        TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) albo krótki
+        napis pozycji (controls:MenuItemTrailing.Text, np. kierunek sortowania) do prawej,
         12, TextMuted, odstęp DungeonMenuGestureMargin. Ikona i ptaszek kolorem tekstu pozycji.
         Stany pozycji:
           spoczynek   - bez tła;
@@ -2339,6 +2340,18 @@
                                            TextWrapping="NoWrap"
                                            IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                            Text="{TemplateBinding InputGesture, Converter={StaticResource DungeonKeyGestureConverter}}" />
+                                <!-- Napis w kolumnie skrótu (controls:MenuItemTrailing.Text, np. kierunek
+                                     sortowania) - wygląd skrótu; pozycja nie ma naraz obu. -->
+                                <TextBlock Name="PART_TrailingText"
+                                           Grid.Column="2"
+                                           Margin="{DynamicResource DungeonMenuGestureMargin}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"
+                                           FontSize="{DynamicResource DungeonHelperFontSize}"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                           TextWrapping="NoWrap"
+                                           IsVisible="{TemplateBinding (controls:MenuItemTrailing.Text), Converter={x:Static ObjectConverters.IsNotNull}}"
+                                           Text="{TemplateBinding (controls:MenuItemTrailing.Text)}" />
                                 <controls:ForegroundIcon Name="PART_Chevron"
                                                          Grid.Column="2"
                                                          HorizontalAlignment="Right"
@@ -3674,6 +3687,125 @@
         </Style>
         <Style Selector="^:flyout-open.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Odnośnik otwierający: Button z okienkiem wysuwanym (Flyout) i Theme="{StaticResource
+        DungeonLinkOpener}" razem z Classes="link" - odnośnik samodzielny ("Sortuj: nazwa"), który
+        otwiera menu albo listę. Wygląd i stany odnośnika samodzielnego z motywu Button (.link:
+        TextRegular bez podkreślenia; pod myszą, wciśnięty i otwarty TextPrimary z podkreśleniem;
+        po zamknięciu kliknięciem w siebie spoczynek do ponownego wjechania - Themes/OpenerHoverRest.cs).
+        Za napisem strzałka jak w liście rozwijanej: DungeonIconChevronDown, DungeonActionIconSize,
+        w kolorze tekstu, bez podkreślenia, odstęp DungeonSpacingXs; zamknięta w prawo, otwarta
+        wskazuje kierunek otwarcia (w dół albo w górę - klasa .opens-up z Themes/PopupOpenMotion.cs),
+        obrót ruchem (DungeonMotionDuration, z wyhamowaniem; ReducedMotion.axaml go zdejmuje - reguła
+        strzałek list obejmuje każdy Button z PART_DropDownGlyph). Napis w jednej linii, zbyt długi
+        przycina się wielokropkiem z podpowiedzią. Fokus bez wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="DungeonLinkOpener" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Background"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          VerticalAlignment="Center"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap"
+                                          RecognizesAccessKey="True"
+                                          themes:TrimmedLabelToolTip.IsEnabled="True" />
+                        <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                                 Grid.Column="1"
+                                                 Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 VerticalAlignment="Center"
+                                                 IsHitTestVisible="False"
+                                                 Foreground="{TemplateBinding Foreground}"
+                                                 Source="{DynamicResource DungeonIconChevronDown}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:flyout-open /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <Style Selector="^:flyout-open.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-180deg)" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Klocek sortowania (controls:SortPicker): w jednym rzędzie odnośnik otwierający "Sortuj: {pole}"
+        (DungeonLinkOpener z .link) i tuż za nim, w odstępie DungeonSpacingXs, przycisk kierunku -
+        przycisk ikony bez wypełnienia (.subtle: pod myszą, wciśnięty tło HoverOverlay), kwadrat
+        DungeonInlineIconButtonSize z ikoną DungeonIconSortDirection (DungeonActionIconSize, kolor
+        tekstu przycisku - TextRegular, pod myszą TextPrimary). Przycisk nie podwyższa rzędu: jego
+        wysokość jest ściągnięta ujemnym marginesem pionowym (DungeonInlineIconButtonOverhang) do
+        wysokości ikony, obszar trafienia zostaje pełny. Środki odnośnika, strzałki i przycisku leżą na
+        jednej linii (VerticalAlignment Center). Podpowiedź przycisku - kierunek ("Kierunek: A–Z").
+        Menu pól - menu z motywu ramy, pod odnośnikiem. Przycisk wyłączony (CanReverse=False) -
+        DungeonDisabledOpacity; cały klocek wyłączony - DungeonDisabledOpacity raz, na klocku.
+        Fokus bez wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="{x:Type controls:SortPicker}" TargetType="controls:SortPicker">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+                    <Button Name="PART_FieldButton"
+                            Theme="{StaticResource DungeonLinkOpener}"
+                            Classes="link"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{TemplateBinding FieldText}" />
+                    </Button>
+                    <Button Name="PART_DirectionButton"
+                            Classes="subtle"
+                            Width="{DynamicResource DungeonInlineIconButtonSize}"
+                            Height="{DynamicResource DungeonInlineIconButtonSize}"
+                            Margin="{DynamicResource DungeonInlineIconButtonOverhang}"
+                            Padding="0"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource DungeonTextRegularBrush}"
+                            IsEnabled="{TemplateBinding CanReverse}"
+                            ToolTip.Tip="{TemplateBinding DirectionToolTip}">
+                        <controls:ForegroundIcon Name="PART_DirectionGlyph"
+                                                 Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 RenderTransformOrigin="50%,50%"
+                                                 Foreground="{Binding $parent[Button].Foreground}"
+                                                 Source="{DynamicResource DungeonIconSortDirection}" />
+                    </Button>
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ Button#PART_DirectionButton:pointerover:not(.hover-suppressed),
+                         ^ /template/ Button#PART_DirectionButton:pressed">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
 
