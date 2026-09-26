@@ -2668,7 +2668,7 @@
                              (:pointerover:not(.hover-suppressed)); wciśnięcie - jak najechanie;
           otwarty          - jak najechanie (:dropdownopen); po zamknięciu kliknięciem w siebie spoczynek,
                              dopóki mysz nie zjedzie (Themes/OpenerHoverRest.cs);
-          coś wybrane (:has-selection) - tło AccentDim, krawędź Accent, tekst i strzałka AccentOnDim; pod
+          coś wybrane (:has-selection) - tło AccentDim, krawędź AccentEdge, tekst i strzałka AccentOnDim; pod
                              myszą, wciśnięty i otwarty bez zmian;
           wyłączony        - DungeonDisabledOpacity, wygląd spoczynku; z wyborem traci akcent (tło
                              SurfaceActive, krawędź Border, tekst TextRegular).
@@ -2702,7 +2702,7 @@
         <!-- Coś wybrane: w każdym stanie myszy i otwarcia ten sam - jawnie, nie przez kolejność stylów. -->
         <Style Selector="^:has-selection, ^:has-selection:pointerover, ^:has-selection:pressed, ^:has-selection:dropdownopen">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
             <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
             <Setter Property="GlyphForeground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
@@ -3393,7 +3393,7 @@
         Stany:
           spoczynek          - tło BackstageRow, krawędź Border, tekst TextRegular;
           najechanie         - krawędź BorderStrong, tekst TextPrimary; wciśnięcie - jak najechanie;
-          włączony (:checked) - tło AccentDim, krawędź Accent, tekst AccentOnDim; pod myszą i wciśnięty
+          włączony (:checked) - tło AccentDim, krawędź AccentEdge, tekst AccentOnDim; pod myszą i wciśnięty
                                bez zmian;
           wyłączony          - DungeonDisabledOpacity po własnym IsEnabled, wygląd spoczynku;
           włączony wyłączony - traci akcent: tło SurfaceActive, krawędź Border, tekst TextRegular.
@@ -3447,7 +3447,7 @@
         <!-- Włączony: w każdym stanie myszy ten sam - jawnie, nie przez kolejność stylów. -->
         <Style Selector="^:checked, ^:checked:pointerover, ^:checked:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
         </Style>
         <Style Selector="^:disabled">
@@ -3482,7 +3482,7 @@
                              wciśnięcie - jak najechanie;
           otwarty          - jak najechanie (:flyout-open); po zamknięciu kliknięciem w siebie spoczynek,
                              dopóki mysz nie zjedzie (Themes/OpenerHoverRest.cs);
-          aktywny (.active - filtr zawęża listę) - tło AccentDim, krawędź Accent, tekst i strzałka
+          aktywny (.active - filtr zawęża listę) - tło AccentDim, krawędź AccentEdge, tekst i strzałka
                              AccentOnDim; pod myszą, wciśnięty i otwarty bez zmian (jak włączony DungeonChip);
           wyłączony        - DungeonDisabledOpacity, wygląd spoczynku; aktywny wyłączony traci akcent
                              (tło SurfaceActive, krawędź Border).
@@ -3547,7 +3547,7 @@
         <!-- Aktywny: w każdym stanie myszy i otwarcia ten sam - jawnie, nie przez kolejność stylów. -->
         <Style Selector="^.active, ^.active:pointerover, ^.active:pressed, ^.active:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
         </Style>
         <Style Selector="^:disabled">

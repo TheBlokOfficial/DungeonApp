@@ -59,6 +59,12 @@
              przygaszona barwa, bez szwu. Tekst podstawowy na nim na tle zaplecza (ok. #2F2619)
              ok. 12:1. Nie do linii ani rysunku - na to jest za słaby; tam idzie Accent. -->
         <Color x:Key="DungeonAccentDimColor">#29B8843B</Color>
+        <!-- AccentEdge: krawędź tego, co aktywne na przygaszonym akcencie (włączony chip, aktywny filtr,
+             chip-lista z wyborem) - Accent #B8843B o nieprzezroczystości 40 % (#66B8843B), z kanałem alfa
+             z tego samego powodu co AccentDim. Wyraźnie jaśniejsza od wypełnienia AccentDim (16 %), ale
+             nie krzyczy: pełny Accent przy przygaszonym wypełnieniu robił z niego półprzezroczyste złoto
+             na szarym. Tylko krawędź - nie tekst ani rysunek. -->
+        <Color x:Key="DungeonAccentEdgeColor">#66B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
@@ -128,6 +134,7 @@
         <SolidColorBrush x:Key="DungeonAccentBrush" Color="{DynamicResource DungeonAccentColor}" />
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
+        <SolidColorBrush x:Key="DungeonAccentEdgeBrush" Color="{DynamicResource DungeonAccentEdgeColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
