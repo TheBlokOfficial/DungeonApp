@@ -201,7 +201,15 @@ public sealed class SortPicker : TemplatedControl
         foreach (var option in Options ?? [])
         {
             var item = new MenuItem { Header = option, ToggleType = MenuItemToggleType.CheckBox };
-            item.Click += (_, _) => SelectedOption = option;
+
+            // Pozycja do zaznaczania przełącza swój ptaszek sama, zanim dojdzie tu kliknięcie - ponowne
+            // kliknięcie wybranego pola zdjęłoby ptaszek bez zmiany wyboru. Ptaszek należy do wyboru,
+            // więc po kliknięciu stan pozycji ustala się od nowa.
+            item.Click += (_, _) =>
+            {
+                SelectedOption = option;
+                RefreshMenu();
+            };
             _menu.Items.Add(item);
         }
 
