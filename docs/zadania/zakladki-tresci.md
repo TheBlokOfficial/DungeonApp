@@ -1,12 +1,12 @@
 # Zadanie: zakładki treści
 
 Zakładki potworów i przedmiotów (i być może zaklęć) dostają nowy wygląd lista–szczegół złożony
-z klocków fundamentu interfejsu: listę z filtrami i karty projektowane per typ treści, oparte na tym, co
-D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przykładowa dostaje
-kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
-jawnym werdyktem o Avalonii.
+z klocków fundamentu interfejsu: przeprojektowany szkielet zakładki z biblioteki wpisów i karty
+projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. Paczka dostarczana
+z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
+Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `256c297`.** Na starcie sesji: `git log 256c297..master` i `git worktree
+**Stan na: 2026-09-26, po `89ec5b9`.** Na starcie sesji: `git log 89ec5b9..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -34,8 +34,8 @@ kodem.
   i twórcza — pełna swoboda w obrębie koncepcji aplikacji i sensu treści; mockup rejestru
   (`docs/images/mockup_rejestr.png`, `mockup_rejestr.html`) jako luźne odniesienie; składane z klocków
   fundamentu.
-* **Sprawdzenie, co D&D 5e przechowuje** przy potworze, przedmiocie i zaklęciu — podstawa kart
-  i ewentualnych zmian rekordów systemu.
+* **Sprawdzenie, co D&D 5e przechowuje** przy potworze, przedmiocie i zaklęciu — zrobione
+  (wycinek 1, *Ustalenia*, *Rekordy*).
 * **Wpisy przykładowe:** kilka–kilkanaście na zakładkę, każdy pokazuje kartę z innej strony (np. potwór
   z czarami, z akcjami legendarnymi, z odpornościami, bez akcji; przedmiot magiczny z ładunkami, zwykły
   ekwipunek, broń).
@@ -56,9 +56,16 @@ Na starcie:
 * [architecture.md](../architecture.md), *Zakładki treści* — docelowy kształt zakładek.
 * [architecture.md](../architecture.md), *Niezmiennik interfejsu* — reguły, którym podlega każdy widok.
 
-Przed wycinkiem danych i przed zmianą rekordu systemu:
+Przed projektem (wycinek 2) — materiał projektanta, nic poza nim (*Ustalenia*, *Projekt*):
+* `docs/images/mockup_rejestr.html` (wymiary) i `mockup_rejestr.png` — luźna inspiracja.
+* Galeria kontrolek — klocki fundamentu: `src/DungeonApp.Desktop/Shell/Gallery/Sections/`, wzór listy
+  z filtrami i karty w `CompositionsSection.axaml`. **Nie** widoki zakładki treści ani kart systemu.
+
+Przed briefem zmieniającym rekord (porcje 4, 5, 8) i przed porcją 3b:
 * [architecture.md](../architecture.md), *Deklaracja treści* i *Granica automatyzacji* — co wolno
   w rekordzie; pięć zakazów w `CLAUDE.md`.
+* [architecture.md](../architecture.md), *Paczki, wczytywanie, bezpieczeństwo* — paczka dostarczana,
+  pliki obrazów w paczce (porcja 3b i pole `image`).
 * [code-state.md](../code-state.md), *Punkty rozszerzeń*, *Nowy typ treści* i *Nowa zakładka systemu*
   (zaklęcia).
 
@@ -70,7 +77,6 @@ Przed każdym briefem:
 Tylko gdy potrzeba:
 * [decisions.md](../decisions.md), *Nawigacja i interfejs* (część B) i *Niezmiennik interfejsu* —
   zanim zaproponujesz zmianę konwencji.
-* Galeria kontrolek, sekcja „Kompozycje” — wzór listy z filtrami i karty złożonych z klocków.
 
 **Na starcie nie czytaj** całej architektury, rejestru decyzji ani reszty kolejki.
 
@@ -121,7 +127,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     jednej zakładce. Otwarte błędy okienek widoczne tylko w aplikacji (fundament) wchodzą do werdyktu,
     jeśli okażą się ograniczeniem biblioteki, nie naszym błędem.
 * **Projektuje architekt, buduje wykonawca** (architekt, 2026-09-26; `collaboration.md`, *Deleguj kod,
-  nie decyzje*): układ list i kart to decyzja — architekt proponuje ją z makietą, autor przyjmuje,
+  nie decyzje*): układ list i kart to decyzja — architekt proponuje ją na piśmie, autor przyjmuje,
   wykonawca składa z klocków. Swoboda twórcza (autor) dotyczy projektu, nie pominięcia zgody na etap.
 * **„Instancje” z polecenia autora to wpisy** (autor, 2026-09-26): pozycje w paczce, nie egzemplarze
   w kampanii (`architecture.md`, *Słownik*).
@@ -146,6 +152,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     (napis; filtr wymaga / nie wymaga), cena (napis), waga z ułamkami (dziś liczba całkowita),
     obrażenia i właściwości broni (napisy), KP zbroi (napis), wymagana Siła, utrudnienie do Ukrywania
     się, ładunki (liczba) i odnawianie (napis). Sekcje broni i zbroi na karcie — gdy pola wypełnione.
+  * **Obrazek** (`image`) u potwora i przedmiotu — *Projekt*.
   * **Zaklęcie** (jeśli wejdzie): poziom (0 = sztuczka), szkoła, czas rzucania, zasięg, komponenty,
     materiały, czas trwania, opis, na wyższych poziomach, klasy (napis); tagi koncentracja i rytuał;
     filtry poziom i szkoła; sortowanie nazwa i poziom. Filtr po klasie — decyzja o formacie przy
@@ -186,8 +193,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   ani przedmiotów spoza SRD.
 * **Wymiary z `docs/images/mockup_rejestr.html`**, nie z obrazka — tam, gdzie projekt z wycinka 2
   bierze coś z mockupu. Pasek tytułu okna w mockupie nie jest projektem paska górnego. **Mockup jest
-  prawie kwadratowy** — na ekranie 16:9 lista trzyma szerokość z mockupu, treść szczegółu swoją
-  największą szerokość, wyrównana do listy.
+  prawie kwadratowy** — na ekranie 16:9 lista trzyma szerokość z mockupu, karta swoją stałą
+  szerokość (*Projekt*), wyrównana do listy.
 * **Kolory po znaczeniu:** treść niewczytana bierze kolor „niebezpieczeństwa"; kolory rzadkości
   i modyfikatorów — własne tokeny w systemie.
 * **A. Lista i filtry** (z kolejki; część zrobił fundament):
@@ -216,8 +223,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     tabeli obok siebie z odstępem: SIŁ, ZRC, KON — INT, MDR, CHA. Każda ma trzy wiersze i trzy kolumny:
     skrót cechy, wartość (np. 20), modyfikator (np. +5). Wszystkie komórki kwadratowe (szerokość =
     wysokość), ostre narożniki (wzór: galeria, `AbilityScoresSample`). Komórka modyfikatora dodatniego
-    ma zielone tło, ujemnego czerwone. Pozostałe komórki, także modyfikator +0, mają neutralne szare. Kolory **nie** z tokenów stanów — system
-    dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym znaczeniem. Malowanie
+    ma zielone tło, ujemnego czerwone. Pozostałe komórki, także modyfikator +0, mają neutralne szare.
+    Kolory **nie** z tokenów stanów — system dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym znaczeniem. Malowanie
     to prezentacja w kodzie karty, nie wyrażenie w danych — pierwszego zakazu nie dotyczy.
 
 ## Notki
