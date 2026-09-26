@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `1592b31`.** Na starcie sesji: `git log 1592b31..master` i `git worktree
+**Stan na: 2026-09-26, po `2253dbe`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,9 +14,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 — czekają na obejrzenie; brak z nich: lista
-rozwijana ramy w stroju chipa (*Notki*). Kopii roboczych brak. **Następny krok:** uwagi autora po
-10+11 razem z dokończeniem chipa; potem porcja 9 — ostatnia.
+Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane — uwagi autora zapisane
+w *Ustaleniach* (*Porcje 10+11 — uwagi autora*), nierozstrzygnięte; brak z porcji: lista rozwijana
+ramy w stroju chipa (*Notki*). Kopii roboczych brak. **Następny krok (nowa sesja):** rozstrzygnąć
+uwagi z autorem i napisać brief rundy 1 porcji 10+11 — uwagi + dokończenie chipa (strój chipa dla
+`DropDownPicker`, jeden wygląd listy z polami wyboru, zamknięty chip: nazwa filtra + licznik
+zaznaczonych — propozycja architekta pokazana autorowi, bez sprzeciwu); potem porcja 9 — ostatnia.
 
 ## Zakres i koniec
 
@@ -284,6 +287,21 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     przygaszony akcent. W aplikacji chipy filtrów zakładki treści przechodzą na motyw bez zmiany
     semantyki filtrów (ta należy do zlecenia A). W galerii — lista wartości z polami wyboru
     (docelowy filtr zlecenia A); `DropDownPicker` dostaje nazwę pozycji z wiązania (`tasks.md`).
+* **Porcje 10+11 — uwagi autora** (2026-09-26, po obejrzeniu; „do rozpatrzenia”, nie rozstrzygnięte):
+  * *Tytuł wiersza wpisu stoi o piksel wyżej w Przedmiotach niż w Potworach* — autor podejrzewa
+    odznakę/tag w wierszu przedmiotu wobec zwykłego tekstu w potworach. Do diagnozy: wyśrodkowanie
+    w pionie nie może zależeć od zawartości sąsiedniej kolumny.
+  * *Wartość wyzwania (potwory) i odznaka (przedmioty) nie przylegają do prawej* — margines po prawej
+    dużo większy, niż się wydaje, że powinien. Do sprawdzenia: prawdopodobnie `DungeonScrollBarZone`
+    doliczana zawsze (także gdy lista się mieści) plus wcięcie wiersza — ocenić, czy strefa paska
+    ma być tylko przy przepełnieniu, czy mniejsza.
+  * *Sekcja rozwijana bez ruchu* — autor: listy rozwijane wyłaniają się ruchem, sekcja nie; ujednolicić.
+    **Sprzeczne z ustaleniem porcji 6** (treść od razu, bez animacji wysokości) — do rozstrzygnięcia;
+    wyłonienie treści (przezroczystość + dosunięcie, jak okienko) nie jest animacją wysokości
+    i mieści się w regule *Ruch* (`architecture.md`).
+  * *Chip aktywny traci ramkę i wygląda na mniejszy* — spoczynek: szare tło i jaśniejsza szara ramka;
+    aktywny: tło akcentu bez ramki. Ramka ma zostać w każdym stanie (np. w barwie akcentu albo tła),
+    żeby wymiar wizualny się nie zmieniał — reguła *Stany*: zmiana stanu nie zmienia wymiarów.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
