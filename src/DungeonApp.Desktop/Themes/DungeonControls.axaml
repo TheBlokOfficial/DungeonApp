@@ -2554,6 +2554,11 @@
         <Style Selector="^ /template/ Border#PART_Highlight">
             <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
         </Style>
+        <!-- Pozycja dłuższa niż okienko (szerokość ustalona przy otwarciu - Themes/PopupOpenLayout.cs)
+             przycina się i pokazuje pełny napis w podpowiedzi. -->
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="themes:TrimmedLabelToolTip.IsEnabled" Value="True" />
+        </Style>
     </ControlTheme>
 
     <!--
@@ -2668,18 +2673,24 @@
                                         <DataTemplate x:DataType="controls:DropDownPickerRow">
                                             <ListBoxItem IsSelected="{Binding IsSelected, Mode=OneWay}"
                                                          themes:CheckList.IsCheckList="{Binding IsMultiple}">
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="{DynamicResource DungeonSpacingSm}">
-                                                    <CheckBox Margin="0,-2,0,-2"
+                                                <!-- Siatka, nie poziomy stos: napis dostaje resztę szerokości
+                                                     wiersza i przycina się, gdy okienko jest węższe od niego
+                                                     (szerokość ustalona przy otwarciu). Odstęp za polem
+                                                     wyboru (DungeonSpacingSm, 8) w jego marginesie - ukryte
+                                                     pole nie zostawia odstępu. -->
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <CheckBox Margin="0,-2,8,-2"
                                                               IsChecked="{Binding IsSelected, Mode=OneWay}"
                                                               IsVisible="{Binding IsMultiple}"
                                                               IsHitTestVisible="False"
                                                               Focusable="False" />
-                                                    <TextBlock VerticalAlignment="Center"
+                                                    <TextBlock Grid.Column="1"
+                                                               VerticalAlignment="Center"
                                                                Text="{Binding Text}"
                                                                TextTrimming="CharacterEllipsis"
-                                                               TextWrapping="NoWrap" />
-                                                </StackPanel>
+                                                               TextWrapping="NoWrap"
+                                                               themes:TrimmedLabelToolTip.IsEnabled="True" />
+                                                </Grid>
                                             </ListBoxItem>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

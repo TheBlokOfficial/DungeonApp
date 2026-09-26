@@ -463,6 +463,9 @@ public sealed class DropDownPicker : TemplatedControl
         return _nameEvaluator.Text ?? string.Empty;
     }
 
+    /// <summary>The names of all items, whatever the search keeps - the open list's width comes from them.</summary>
+    internal IEnumerable<string> ItemNames() => Items().Select(NameOf).ToList();
+
     private List<object> Items() => ItemsSource?.Cast<object>().ToList() ?? [];
 
     private bool IsSelected(object item) => SelectionMode == DropDownPickerMode.Multiple

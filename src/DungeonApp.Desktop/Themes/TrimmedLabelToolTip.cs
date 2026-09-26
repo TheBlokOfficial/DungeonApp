@@ -19,7 +19,7 @@ namespace DungeonApp.Desktop.Themes;
 internal static class TrimmedLabelToolTip
 {
     public static readonly AttachedProperty<bool> IsEnabledProperty =
-        AvaloniaProperty.RegisterAttached<ContentPresenter, bool>("IsEnabled", typeof(TrimmedLabelToolTip));
+        AvaloniaProperty.RegisterAttached<Control, bool>("IsEnabled", typeof(TrimmedLabelToolTip));
 
     // Napis, który zachowanie samo wstawiło w ToolTip.Tip - odróżnia własną podpowiedź od jawnej.
     private static readonly AttachedProperty<string?> OwnTipProperty =
@@ -27,14 +27,14 @@ internal static class TrimmedLabelToolTip
 
     static TrimmedLabelToolTip()
     {
-        IsEnabledProperty.Changed.AddClassHandler<ContentPresenter>(OnIsEnabledChanged);
+        IsEnabledProperty.Changed.AddClassHandler<Control>(OnIsEnabledChanged);
     }
 
-    public static bool GetIsEnabled(ContentPresenter presenter) => presenter.GetValue(IsEnabledProperty);
+    public static bool GetIsEnabled(Control presenter) => presenter.GetValue(IsEnabledProperty);
 
-    public static void SetIsEnabled(ContentPresenter presenter, bool value) => presenter.SetValue(IsEnabledProperty, value);
+    public static void SetIsEnabled(Control presenter, bool value) => presenter.SetValue(IsEnabledProperty, value);
 
-    private static void OnIsEnabledChanged(ContentPresenter presenter, AvaloniaPropertyChangedEventArgs e)
+    private static void OnIsEnabledChanged(Control presenter, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.NewValue is true)
         {
@@ -48,12 +48,20 @@ internal static class TrimmedLabelToolTip
 
     private static void OnLayoutUpdated(object? sender, EventArgs e)
     {
-        if (sender is not ContentPresenter { TemplatedParent: Control host } presenter)
+        // Prezenter treści w szablonie: podpowiedź na kontrolce. Sam napis (wiersz w szablonie danych,
+        // np. pozycja DropDownPicker): podpowiedź na nim.
+        var (host, label) = sender switch
+        {
+            ContentPresenter { TemplatedParent: Control parent } presenter => (parent, presenter.Child as TextBlock),
+            TextBlock textBlock => ((Control)textBlock, textBlock),
+            _ => (null, null),
+        };
+        if (host is null)
         {
             return;
         }
 
-        var text = presenter.Child is TextBlock textBlock && IsTrimmed(textBlock) ? textBlock.Text : null;
+        var text = label is not null && IsTrimmed(label) ? label.Text : null;
         var ownTip = host.GetValue(OwnTipProperty);
         var currentTip = ToolTip.GetTip(host);
 

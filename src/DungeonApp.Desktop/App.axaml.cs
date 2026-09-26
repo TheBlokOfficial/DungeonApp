@@ -126,7 +126,7 @@ public partial class App : Avalonia.Application
             Themes.EditFocusRelease.Register();
             Themes.OpenerHoverRest.Register();
             Themes.PopupOpenMotion.Register();
-            Themes.PopupScrollBarZone.Register();
+            Themes.PopupOpenLayout.Register();
             Themes.ExpanderContentMotion.Register();
 
             _shell = new AppShellViewModel(

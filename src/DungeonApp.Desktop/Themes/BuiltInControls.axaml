@@ -60,7 +60,7 @@
         <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
     </Style>
     <!-- Okienko, którego treść mieści się bez przewijania (klasa .no-bar-zone ustawiana przy otwarciu
-         przez Themes/PopupScrollBarZone.cs i trzymana do zamknięcia): wiersze nie zostawiają strefy
+         przez Themes/PopupOpenLayout.cs i trzymana do zamknięcia): wiersze nie zostawiają strefy
          paska - treść kończy się tak samo daleko od prawej krawędzi, jak zaczyna od lewej. Klasa stoi
          na powierzchni okienka, a przy ComboBox i podmenu także na kontrolce, której dziećmi
          logicznymi są wiersze. -->
