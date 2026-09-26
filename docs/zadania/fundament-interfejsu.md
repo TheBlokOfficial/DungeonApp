@@ -21,7 +21,8 @@ Przebiegi 1a i 1b scalone 2026-09-26; 1b czeka na obejrzenie przez autora (jego 
 zakresu 1c albo do rundy). Kopii roboczych brak. **Najpierw regresja z 1b** (autor, 2026-09-26, po
 obejrzeniu: w liście wpisów i na pasku bocznym zniknęła kreska zaznaczenia, a tło wiersza pod myszą
 i wybranego to ściśnięty pasek) — diagnoza i poprawka w *Notkach* (*Regresja 1b*), krótki przebieg
-przed 1c. Pozostałych punktów 1b autor jeszcze nie obejrzał. **Potem brief przebiegu 1c** —
+przed 1c, razem z dwiema uwagami autora po 1b (*Notki*, *Po obejrzeniu 1b*). Resztę 1b autor
+obejrzał i przyjął. **Potem brief przebiegu 1c** —
 zakres w *Planie* (runda 1c), szczegóły w *Notkach* (*Przebieg 1c*); wszystko przyjęte przez autora,
 więc polecenie ruszenia jest zielonym światłem. Potem 9a, 9b.
 
@@ -438,8 +439,22 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   wysokości z odznaką i bez. Wykonawca 1b mierzył tylko położenie tytułu — brief pomiaru ma zawsze
   obejmować sąsiadów zmienianego elementu (`collaboration.md`, *Briefy*: test mierzy położenie względem
   sąsiadów i widoczność).
-* Runda 1b (raport): **niesprawdzone, czy podmenu otwierane w lewo** (brak miejsca po prawej) stoi
-  z odstępem, a nie nachodzi — do obejrzenia przez autora; jeśli nachodzi — do 1c.
+* **Po obejrzeniu 1b** (autor, 2026-09-26; idą z poprawką regresji — ten sam obszar):
+  * *Menu bez przewijania ma wciąż za duży prawy margines* (skrót i strzałka 28 od krawędzi, napis
+    z lewej 16). Rozstrzygnięcie architekta: **w okienkach (menu, `ComboBox`, `DropDownPicker`,
+    `.list-host`) strefa paska tylko przy przepełnieniu, ustalana przy otwarciu** i niezmienna, dopóki
+    okienko jest otwarte — treść okienka nie zmienia się w trakcie tak jak lista wpisów (usuwanie), więc
+    nic nie skacze; z wyszukiwaniem: gdy filtr skróci listę, strefa zostaje do zamknięcia (spójne
+    z ustaleniem o stałej szerokości okienka z 1c). Menu bez przewijania: prawo = lewo = 16. Lista wpisów
+    i inne listy w widoku — strefa zawsze, bez zmian. Wpisać do `architecture.md`, *Pasek przewijania
+    jest nakładką*, przy briefie.
+  * *Pasek w okienku nie wygląda na symetryczny* (odstęp od prawej krawędzi większy niż od góry
+    i dołu), choć raport 1b zmierzył 7 / 7 / 7. Podejrzenie architekta: pomiar objął pas paska
+    (`ScrollBar`, 10), a rysowany suwak jest węższy i nie leży na środku pasa albo przy jego prawej
+    krawędzi. Zmierzyć **rysowany prostokąt suwaka**, nie pas; widoczny odstęp od prawej = od góry =
+    od dołu. Wzór dla wszystkich pasków (motyw `ScrollBar`), nie tylko okienek.
+* Runda 1b (raport): niesprawdzone, czy podmenu otwierane w lewo stoi z odstępem — autor obejrzał 1b
+  bez uwag o tym (2026-09-26); wraca tylko, jeśli ktoś zobaczy nachodzenie.
 * Runda 1b: kosz w rekordzie kampanii zostaje z lokalnym stylem — rekord to własny `Border` z `ListRow`
   pod spodem jako tłem, kosz nie leży w treści wiersza; zdjęcie wymaga przebudowy rekordu na `ListRow`
   z zawartością (zlecenie, które zmieni listę kampanii). Brief z wzorem strefy paska liczonym „od
