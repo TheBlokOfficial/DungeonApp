@@ -10,6 +10,12 @@ repozytorium). Każda reguła pochodzi z realnej korekty albo realnej straty, ni
 *Część C — obieg pracy*, pod nazwą reguły. Tamtą część czyta się, gdy reguła jest kwestionowana albo
 ma się zmienić, nie na starcie sesji.
 
+**Na starcie sesji czyta się ten dokument bez dwóch sekcji czytanych przed czynnością:** *Jak pisać
+dokumenty tego repozytorium* — przed pierwszą zmianą dokumentu w sesji; *Briefy dla subagentów* —
+przed pierwszym briefem albo uruchomieniem subagenta. Decyzja autora z 2026-09-26. Reguła ogólna:
+część dokumentu, która służy jednej czynności, czyta się przed tą czynnością, nie na starcie. Granice
+sekcji z numerami linii daje `grep -n '^## '`.
+
 ---
 
 ## 1. Jak zapadają decyzje

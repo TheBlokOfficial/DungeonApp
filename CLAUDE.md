@@ -43,5 +43,6 @@ osobno, zamiast jednego zdania o intencji.
 
 Jak prowadzić tę pracę — zielone światło per etap, styl raportowania, zakazy
 obowiązujące subagentów, rozstrzygnięcia, które wracają — jest w
-`docs/collaboration.md`. Przeczytaj go na początku sesji; tamte zakazy nie są
+`docs/collaboration.md`. Na początku sesji przeczytaj z niego to, co wskazuje jego
+wstęp; tamte zakazy nie są
 powtarzane w każdym poleceniu z osobna.

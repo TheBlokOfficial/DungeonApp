@@ -1742,6 +1742,14 @@ reguła jest kwestionowana albo ma się zmienić.
 dotąd w swojej prywatnej pamięci — miejscu, którego autor nie widzi, nie może poprawić i którego nie
 ma w historii repozytorium.
 
+**Co czyta się na starcie.** Pomiar z 2026-09-26, z rozmiaru pliku: `collaboration.md` czytany w całości
+na starcie każdej sesji to ok. 36 tys. znaków (szac. 9 tys. tokenów) — piętnaście razy więcej niż
+`CLAUDE.md`. Sekcje o pisaniu dokumentów i o briefach to razem ok. 8 tys. znaków (szac. 2 tys.
+tokenów), potrzebne tylko w sesjach, które piszą dokument albo brief. Lektura na starcie kosztuje przy
+każdym wywołaniu narzędzia do końca sesji (*Odsyłacz do sekcji czyta się jako sekcję*), a czytanie
+w dwóch kawałkach — jedno wywołanie więcej, raz. Propozycja asystenta z przeglądu konfiguracji,
+przyjęta przez autora.
+
 ## Jak zapadają decyzje
 
 ### Pozycja z kolejki nie jest zleceniem
