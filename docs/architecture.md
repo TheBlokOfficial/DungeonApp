@@ -735,6 +735,18 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   zamknięcie natychmiast. Strzałka listy rozwijanej: zamknięta w prawo, otwarta wskazuje, gdzie
   lista się pojawiła (w dół albo w górę), obrót ruchem.
 
+**Motyw ramy jest kompletny** — każda kontrolka, której aplikacja używa, ma w nim własny szablon;
+motywu domyślnego biblioteki pod spodem nie ma.
+
+* **Galeria kontrolek** — zakładka ramy w kategorii Aplikacja, nad „Ustawieniami”: każda kontrolka
+  motywu w każdym stanie (zwykła, wyłączona, zaznaczona, długi tekst, pusta) i kompozycje z klocków.
+  Zostaje na stałe; jest konsumentem kontrolki, zanim użyje jej widok (*Pytania otwarte i reguła „nic
+  bez konsumenta"*).
+* **Element spoza zestawu** powstaje w widoku jawnie jako własny; przy drugim użyciu przechodzi do
+  motywu ramy. Szablon domyślny Avalonii (MIT) przejmuje się raz i świadomie, wskazany w briefie.
+* **Fokus** nie ma dziś widocznego wyglądu. Z obsługą klawiatury pokaże się wyłącznie wtedy, gdy
+  użytkownik zaczął używać klawiatury — razem ze strzałkami po wierszach list rozwijanych ramy.
+
 **Dlaczego →** [decisions.md](decisions.md), *Niezmiennik interfejsu*.
 
 ## 16. Poziomy logiki i formuły

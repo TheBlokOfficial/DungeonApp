@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `6afc89f`.** Na starcie sesji: `git log 6afc89f..master` i `git worktree
+**Stan na: 2026-09-26, po `698ddd6`.** Na starcie sesji: `git log 698ddd6..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Zadanie założone 2026-09-26 (sesja fundamentu, na polecenie autora); nic jeszcze nie ruszyło. **Fundament
-interfejsu czeka na obejrzenie 9a+9b przez autora** ([fundament-interfejsu.md](fundament-interfejsu.md),
-*Notki*, *Po 9a*). **Następny krok:** na starcie sesji zapytać autora o wynik obejrzenia; po przyjęciu —
-zamknąć fundament według jego *Przy zamknięciu* (autor pozwolił zrobić to w sesji tego zadania,
-2026-09-26), uwagi — poprawka w fundamencie. Potem wycinek 1 planu (dane D&D 5e).
+Zadanie założone 2026-09-26; nic jeszcze nie ruszyło. Fundament interfejsu przyjęty i zamknięty
+tego dnia (jego reguły — `architecture.md`, *Niezmiennik interfejsu*; pomiar — `decisions.md`, pozycja
+39). Kopii roboczych brak (katalog `.claude/worktrees/agent-a26e9fa261f37de51` mógł zostać zablokowany
+przez proces — usunąć, gdy się zwolni). **Następny krok: wycinek 1 planu (dane D&D 5e)** — najpierw
+potwierdzić z autorem dwie sprawy z *Do sesji głównej* i *Ustaleń* („instancje” = wpisy; zaklęcia
+a drugi zakaz), bo zmieniają zakres zwiadu.
 
 ## Zakres i koniec
 
@@ -78,7 +79,7 @@ Tylko gdy potrzeba:
 
 Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 20 minut.
 
-- [ ] **0** — obejrzenie i zamknięcie fundamentu (*Gdzie stoimy*).
+- [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [ ] **1 — dane D&D 5e** (architekt; zwiad kodu — `zwiadowca`): co SRD 5.1/5.2 trzyma przy potworze,
   przedmiocie (magicznym i zwykłym) i zaklęciu; co dziś trzymają rekordy systemu i paczki autora;
   luki i propozycja zmian rekordów — sprawdzona z pięcioma zakazami.
@@ -115,7 +116,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     kroków, 17,5–18,1 minuty; trzy najdroższe przebiegi w historii to widoki (najdroższy: 362 kroki,
     53 minuty, 142 mln odczytu). Fundament: przebiegi 40–70 kroków, 6–14 minut — **ale** porcje są celowo
     małe (limit 20 minut od 2026-09-24), więc spadek na przebieg nie jest sam dowodem; tabela fundamentu
-    rund nie dzieli na R i W.
+    (`decisions.md`, pozycja 39, *Pomiar fundamentu*) rund nie dzieli na R i W.
   * Wynik → `decisions.md`, wpis o interfejsie w HTML-u (część B, *Nawigacja i interfejs*): **uznany** —
     Avalonia zostaje z uzasadnieniem z liczb; **odrzucony** — wyzwalacz próby z interfejsem w HTML-u na
     jednej zakładce. Otwarte błędy okienek widoczne tylko w aplikacji (fundament) wchodzą do werdyktu,
@@ -181,6 +182,15 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Czeka na autora** (z kolejki, 2026-09-24): ręczne przeniesienie kampanii do
   `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs` i `Campaigns` nie są czytane); dopisanie
   `group` potworom.
+* **Okienka tylko w aplikacji** (fundament, duża runda; nieodtworzone bez okna): menu sortowania
+  wyśrodkowane pod odnośnikiem i okienko listy zmieniające szerokość przy przewijaniu. Porcja 9a ich nie
+  dotknęła; czy są nadal — autor nie zgłosił przy przyjęciu porcji 9. Przy porcji listy (wycinek 3)
+  zapytać; jeśli są — diagnoza w działającej aplikacji: `FlyoutPresenter.Width` i `Bounds` korzenia
+  okienka przy otwarciu i po przewinięciu, czy `FixListWidth` w `Themes/PopupOpenLayout.cs` nie kończy
+  się wcześnie, położenie menu względem odnośnika — np. tymczasowy zapis do pliku wywołany jednym
+  otwarciem; autor podaje skalę ekranu Windows. Duży prawy margines menu w zakładce to najpewniej
+  najmniejsza szerokość menu (160) przy krótkich nazwach. Wchodzi do werdyktu, jeśli to ograniczenie
+  biblioteki.
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
@@ -194,6 +204,12 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 * **Zaklęcia a drugi zakaz** — *Notki*. Dotyka pięciu zakazów: autor rozstrzyga, zanim powstanie rekord.
 * **Akcje jako osobne rzeczy przed krokiem 11?** — tylko jeśli projekt z wycinka 2 ich potrzebuje.
+* **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
+  przeniesiona z fundamentu): `collaboration.md` ma ok. 530 linii i jest czytany prawie w całości co
+  sesję (start sesji: ok. 55 tys. tokenów sama rama, +28 tys. `collaboration.md` z dokumentem zadania).
+  Propozycja: limit długości dla dokumentów czytanych zawsze, rzadko potrzebne — do części czytanej
+  „gdy potrzeba”. Limit ustalić po przejrzeniu, co sesja rzeczywiście używa na starcie. Autor: omówić
+  w sesji głównej (przebudowuje dokument wspólny dla wszystkich zadań).
 
 ## Przy zamknięciu
 

@@ -68,7 +68,7 @@ nie rozstrzyga.** Decyzja autora z 2026-09-24, dwukrotnie doprecyzowana tego sam
 i istniejących tokenów, dobranych po znaczeniu zapisanym przy tokenie, nie po barwie (reguła —
 `architecture.md`, *Niezmiennik interfejsu*). Brakujący element albo kolor dochodzi do motywu
 osobnym zleceniem, a element spoza zestawu powstaje w widoku jawnie jako własny i przechodzi do
-motywu przy drugim użyciu (`zadania/fundament-interfejsu.md`, *Ustalenia*). Cel: wszystko, co autor będzie chciał
+motywu przy drugim użyciu (`architecture.md`, *Niezmiennik interfejsu*). Cel: wszystko, co autor będzie chciał
 zmienić, leży w jednym oczywistym miejscu.
 
 **Koniec kawałka pracy = commit. Bez pytania i bez czekania na polecenie.** Decyzja autora

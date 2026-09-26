@@ -25,8 +25,8 @@ Gałąź: `master`. Build bez ostrzeżeń, 374 testy zielone (w tym testy render
 
 ## Następne: krok 10 — zakładki treści zamiast zakładki rejestru
 
-1. **Fundament interfejsu** — [zadania/fundament-interfejsu.md](zadania/fundament-interfejsu.md);
-   czeka na obejrzenie ostatniej porcji przez autora, potem zamknięcie.
+1. ~~Fundament interfejsu~~ — zamknięty 2026-09-26 (reguły w `architecture.md`, *Niezmiennik
+   interfejsu*; pomiar w `decisions.md`, pozycja 39).
 2. **Zakładki treści** — [zadania/zakladki-tresci.md](zadania/zakladki-tresci.md): nowy wygląd listy
    i kart potworów i przedmiotów (dawne zlecenia A i B, karta przedmiotu), dane D&D 5e, wpisy
    przykładowe, ewentualnie zaklęcia, wczytanie paczek od nowa i punkt kontrolny o Avalonii.
