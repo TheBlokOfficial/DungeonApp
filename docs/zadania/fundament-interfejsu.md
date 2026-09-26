@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `8b1815c`.** Na starcie sesji: `git log 8b1815c..master` i `git worktree
+**Stan na: 2026-09-26, po `42fd682`.** Na starcie sesji: `git log 42fd682..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,17 +14,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi autora rozstrzygnięte tego
-dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
-i lista wyboru), 1b (wiersze, przewijanie, menu), 1c (odnośniki, sortowanie, chipy z listą), 9a, 9b.
-Przebiegi 1a i 1b scalone 2026-09-26; 1b czeka na obejrzenie przez autora (jego uwagi — dopisać do
-zakresu 1c albo do rundy). Kopii roboczych brak. **Najpierw regresja z 1b** (autor, 2026-09-26, po
-obejrzeniu: w liście wpisów i na pasku bocznym zniknęła kreska zaznaczenia, a tło wiersza pod myszą
-i wybranego to ściśnięty pasek) — diagnoza i poprawka w *Notkach* (*Regresja 1b*), krótki przebieg
-przed 1c, razem z trzema uwagami autora po 1b (*Notki*, *Po obejrzeniu 1b*). Resztę 1b autor
-obejrzał i przyjął. **Potem brief przebiegu 1c** —
-zakres w *Planie* (runda 1c), szczegóły w *Notkach* (*Przebieg 1c*); wszystko przyjęte przez autora,
-więc polecenie ruszenia jest zielonym światłem. Potem 9a, 9b.
+Porcje 0–8b przyjęte; 10+11 z rundami 1a i 1b scalone, 1b obejrzane przez autora 2026-09-26.
+Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pomiędzy — poprawki po 1b
+(regresja kreski i tła wiersza, symetria suwaka, pole z ikoną), runda 1c (okienka list i chip), runda
+1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
+przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
+samodzielne do listy końcowej. **W toku:** poprawki po 1b — wykonawca uruchamiany 2026-09-26.
 
 ## Zakres i koniec
 
@@ -98,10 +93,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     najechanie `.subtle` w wierszu; pas ikony w polu tekstowym; ramka aktywnego chipa łagodniejsza
     (autor po 1a: pełny akcent za wyrazisty — wypełnienie wygląda jak półprzezroczyste złoto na
     szarym). Menu i pole zabrane z `tasks.md`.
-  * [ ] **Runda 1c** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
-    najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
-    kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
-    odwracanie działa od zlecenia A. Dochodzi **napis chipa z listą wielokrotną** (autor po 1a,
+  * [ ] **Poprawki po 1b** — regresja kreski i tła wiersza (*Notki*, *Regresja 1b*); symetria
+    rysowanego suwaka i pole z ikoną (*Notki*, *Po obejrzeniu 1b*).
+  * [ ] **Runda 1c** — okienka list i chip (architekt, 2026-09-26: dawna 1c podzielona na dwa przebiegi
+    po obszarze kodu; treść bez zmian). **Strefa paska w okienkach tylko przy przepełnieniu**
+    (*Notki*, *Po obejrzeniu 1b*) — ten sam mechanizm „ustalone przy otwarciu” co szerokość okienka
+    niżej, więc w tym przebiegu. Dochodzi **napis chipa z listą wielokrotną** (autor po 1a,
     2026-09-26 — wolał dawny sposób): nic nie wybrane → nazwa filtra; jedna wartość → ta wartość;
     więcej → pierwsza wybrana w kolejności listy + odznaka neutralna „+N”; przy „+N” podpowiedź
     z nazwą filtra i wszystkimi wybranymi. W galerii realne nazwy filtrów zamiast „Nic nie wybrane”.
@@ -116,6 +113,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     zniknie najdłuższa pozycja — wirtualizacja mierzy tylko widoczne): szerokość ustala się przy
     otwarciu z najdłuższej pozycji **całej** listy (nie mniej niż otwierający) i nie zmienia się, dopóki
     okienko jest otwarte — także przy filtrowaniu wyszukiwaniem. `ComboBox` i `DropDownPicker`.
+  * [ ] **Runda 1d** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
+    najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
+    kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
+    odwracanie działa od zlecenia A.
+  * [ ] **Duża runda autora** — obejrzenie poprawek po 1b, 1c i 1d naraz (*Ustalenia*, *Oglądanie
+    zbiorcze*), potem poprawki.
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
@@ -345,6 +348,15 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   * *Zaznaczanie tekstu przeciągnięciem rozpoczętym obok tekstu* (`tasks.md`, pola tekstowe) — do
     zlecenia B (karta potwora), tam rozstrzyga się zasięg.
   * *Suwak* — zostaje notką w `tasks.md`.
+* **Oglądanie zbiorcze** (autor, 2026-09-26; zastępuje „porcje osobno, każda oglądana od razu”
+  z *Notek*): poprawki po 1b, 1c i 1d idą po kolei bez oglądania pomiędzy; autor ogląda wszystko
+  naraz w dużej rundzie. Architekt: 9a i 9b dopiero po dużej rundzie — 9a zmienia wygląd pod każdą
+  kontrolką i zmieszana z trzema przebiegami nie dałaby się oddzielić przy błędzie; 9b sprząta raz,
+  po tym, co runda zwolni albo przywróci. 9a i 9b też po kolei, potem krótkie obejrzenie. Zabezpieczenia:
+  każdy brief każe zmierzyć bez okna także sąsiadów zmienianego elementu; architekt sprawdza raporty
+  dokładniej; sprawę autora (nie wiedzy o interfejsie) architekt rozstrzyga domyślnie i wpisuje na
+  listę końcową do weta, zamiast wstrzymywać pracę. Lista końcowa — wzór w `collaboration.md`, *Jak
+  raportować*.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
@@ -353,8 +365,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Porcje trwają zwykle 40–68 kroków i 8–13 minut na przebieg; rundy poprawek — mniej. Poprawka zaraz
   po obejrzeniu idzie do wznowionego wykonawcy, jeśli jego pamięć jest ciepła (`collaboration.md`,
   *Briefy dla subagentów*).
-* **Porcje osobno, każda oglądana od razu** — autor, 2026-09-25 (odrzucił łączenie 7 i 8 we wspólne
-  oglądanie). Porcja 7 podzielona na 7a i 7b przez architekta: z poprawkami po porcji 6 i podpowiedzią
+* ~~**Porcje osobno, każda oglądana od razu**~~ — autor, 2026-09-25 (odrzucił łączenie 7 i 8 we wspólne
+  oglądanie); od 2026-09-26 nieaktualne — *Ustalenia*, *Oglądanie zbiorcze*. Porcja 7 podzielona na 7a i 7b przez architekta: z poprawkami po porcji 6 i podpowiedzią
   przyciętych napisów nie mieściła się w jednym wykonawcy.
 * Sesja zadania z jedną porcją, raportem i rozmową o uwagach doszła do ok. 170 tys. tokenów historii —
   autor zamknął ją po porcji 6; nowa sesja od porcji 7a.
@@ -439,7 +451,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   wysokości z odznaką i bez. Wykonawca 1b mierzył tylko położenie tytułu — brief pomiaru ma zawsze
   obejmować sąsiadów zmienianego elementu (`collaboration.md`, *Briefy*: test mierzy położenie względem
   sąsiadów i widoczność).
-* **Po obejrzeniu 1b** (autor, 2026-09-26; idą z poprawką regresji — ten sam obszar):
+* **Po obejrzeniu 1b** (autor, 2026-09-26; idą z poprawką regresji — ten sam obszar; strefa paska
+  w okienkach przeniesiona do rundy 1c, *Plan*):
   * *Menu bez przewijania ma wciąż za duży prawy margines* (skrót i strzałka 28 od krawędzi, napis
     z lewej 16). Rozstrzygnięcie architekta: **w okienkach (menu, `ComboBox`, `DropDownPicker`,
     `.list-host`) strefa paska tylko przy przepełnieniu, ustalana przy otwarciu** i niezmienna, dopóki
@@ -491,11 +504,6 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
 ## Do sesji głównej
-
-* **Rzeczy do sprawdzenia w raporcie podają miejsce i czynność** (propozycja architekta, 2026-09-26,
-  czeka na odpowiedź autora): autor nie znalazł dwóch z czterech punktów po rundzie 1a, bo raport
-  mówił, co sprawdzić, ale nie gdzie. Dopisek do `collaboration.md`, *Jak raportować*: każda rzecz do
-  sprawdzenia podaje zakładkę aplikacji albo sekcję galerii i co kliknąć. Briefy już tego wymagają.
 
 * **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
   z pomiaru w *Notkach*): `collaboration.md` ma ok. 500 linii i jest czytany w całości co sesję.

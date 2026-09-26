@@ -308,6 +308,10 @@ do kodu.
 
 **Raport z etapu implementacyjnego kończy się listą dwóch–czterech rzeczy do sprawdzenia
 w aplikacji.** Asystent nie widzi okna, a to, jak się z aplikacji korzysta, należy do autora.
+Każda rzecz podaje **gdzie** (zakładka aplikacji albo sekcja galerii i co kliknąć), **jak było**,
+**jak jest teraz** i **na co patrzeć** — jednym zdaniem każde. Raport zbiorczy z kilku przebiegów
+(autor ogląda dopiero na końcu) ma tę samą listę, dłuższą, pogrupowaną po miejscu w aplikacji,
+a pod nią osobno rzeczy rozstrzygnięte samodzielnie.
 
 Gęstość referencji nie jest dowodem rzetelności — raport ma się czytać bez zaglądania do drugiej
 warstwy.

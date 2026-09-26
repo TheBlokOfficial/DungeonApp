@@ -1869,6 +1869,11 @@ już opisywał.
 Autor: „kilkadziesiąt różnych linków, definicji kluczy etc potrafi zdezorientować". Gęstość
 referencji nie jest dowodem rzetelności.
 
+**Gdzie, jak było, jak jest, na co patrzeć.** 2026-09-26, po rundzie 1a fundamentu interfejsu, autor
+nie znalazł dwóch z czterech rzeczy do sprawdzenia: raport mówił, co sprawdzić, ale nie gdzie.
+Tego samego dnia autor przeszedł na oglądanie kilku przebiegów naraz, na końcu, i zażądał do każdej
+rzeczy miejsca, stanu przed i stanu po — bez tego nie odtworzy, na co patrzy, kilka zmian później.
+
 ## Jak pisać dokumenty tego repozytorium
 
 ### `CLAUDE.md` nazywa własności, nie dzisiejsze mechanizmy
