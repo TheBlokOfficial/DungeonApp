@@ -453,6 +453,22 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   otwarciu brak podświetlenia (kliknięcie działa).
   **Furtka (autor, po obejrzeniu rundy 2):** do rozważenia powrót do konwencji — bez mignięcia,
   a gdy mysz zostaje nad otwierającym, najechanie zostaje. Nie teraz; wariant działa.
+* **Pas paska przewijania zarezerwowany zawsze** — autor, 2026-09-25, po porcji 8b: po usunięciu kilku
+  wierszy pasek znikał, a wiersze przeskakiwały w prawo. Do tego dnia rzemiosło mówiło „pasek tylko przy
+  potrzebie — nie ma stałego pasa przy liście, która się mieści” (z 2026-09-24, gdy pasek stał przy
+  krótkiej liście). Obie uwagi autora godzi reguła jak `scrollbar-gutter: stable` w przeglądarkach:
+  rysunek paska tylko przy potrzebie, pas zawsze. Koszt: lista, która się mieści, ma po prawej pusty
+  pas szerokości paska. **Pasek przy krawędzi pojemnika** — architekt, tego samego dnia, na pytanie
+  autora o wyśrodkowanie paska w jego pasie: konwencja okienkowa; pasek należy do pojemnika, nie do
+  treści, a przy krawędzi łatwiej go trafić. Odrzucone: pasek wyśrodkowany między treścią a krawędzią.
+* **Znaki powszechne bez podpowiedzi** — autor, 2026-09-25: krzyżyk w polu wyszukiwania (po rundzie 1
+  porcji 2), kosz w wierszu (po porcji 8b, „niepotrzebna podpowiedź”). Znak, który każdy zna, niczego
+  nie zyskuje na podpowiedzi, a ona wyskakuje przy każdym najechaniu.
+* **Akcja w wierszu: pas pełnej wysokości, rysunek bez tła** — architekt, 2026-09-25, po zrzucie listy
+  kampanii. Przycisk 28 × 28 zostawiał nad i pod sobą pas wiersza, więc ruch myszy w pionie po koszu
+  przełączał podświetlenie wiersza i kosza, a zaokrąglone tło pod koszem wyglądało w wierszu obco. To
+  samo rozwiązanie co ikony w polach do pisania. Widoczność tylko pod myszą i na wybranym — żeby lista
+  nie była kolumną koszy; miejsce zarezerwowane, żeby tekst wiersza nie skakał.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor

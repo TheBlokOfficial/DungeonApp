@@ -687,6 +687,15 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   neutralną, bez akcentu. Ikona na początku pola, przycisk czyszczenia i strzałki pola liczbowego stoją
   obok obszaru tekstu, nie w nim: strzałka myszy, kliknięcie nie stawia karetki i nie zaznacza tekstu.
   Pod myszą jaśnieje sam rysunek, bez tła; ikona na początku pola nie reaguje wcale.
+* **Akcja w wierszu listy** (kosz): widoczna tylko pod myszą i na wybranym wierszu, a jej miejsce jest
+  zarezerwowane zawsze. Obszar trafienia to cały pas na końcu wiersza, na jego pełnej wysokości;
+  gdy mysz jest w tym pasie, wiersz się nie podświetla. Pod myszą jaśnieje sam rysunek, bez tła.
+* **Znaki powszechne nie mają podpowiedzi** — kosz, krzyżyk zamykający i czyszczący. Podpowiedź
+  dostaje to, czego znak nie mówi sam.
+* **Pasek przewijania** pokazuje się tylko wtedy, gdy treść się nie mieści, ale jego pas jest
+  zarezerwowany zawsze — pojawienie się ani zniknięcie paska nie zmienia szerokości treści. Pasek stoi
+  przy krawędzi pojemnika; treść kończy się przed jego pasem z tym samym odstępem co od przeciwnej
+  krawędzi.
 * **Przycisk mieści swój napis.** Szerokość bierze się z napisu; przycięcie jest wyjściem awaryjnym,
   gdy kontener wymusza wąskie miejsce, nie wyglądem przycisku.
 * **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)

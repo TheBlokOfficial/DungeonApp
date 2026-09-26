@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-25, po `dd0b7d6`.** Na starcie sesji: `git log dd0b7d6..master` i `git worktree
+**Stan na: 2026-09-26, po `c3ae6b4`.** Na starcie sesji: `git log c3ae6b4..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,10 +14,13 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b obejrzane przez autora. Po 8b uwagi autora i architekta zebrane w *Ustaleniach*
-(*Porcja 8b — runda 1*); brief jeszcze nie napisany — sesja zamknięta przed nim (budżet). Kopii
-roboczych brak. **Następny krok:** otwarte pytanie autora o cel kompozycji (niżej), potem brief rundy 1
-dla nowego wykonawcy; po niej porcja 9.
+Porcje 0–8b obejrzane przez autora. Pytanie o cel kompozycji rozstrzygnięte (autor potwierdził
+odpowiedź architekta, 2026-09-26). Reguły z rundy 1 wpisane do `architecture.md` i `decisions.md`
+(pas paska przewijania, akcja w wierszu, znaki bez podpowiedzi). **W toku:** runda 1 porcji 8b —
+wykonawca (Opus 5.5) w tle, gałąź `fundament-8b-r1`, kopia `.claude/worktrees/fundament-8b-r1`;
+kolejność: kosz w wierszu → kompozycje → pasek przewijania (ten przechodzi dalej, jeśli zabraknie
+czasu). Zabiera z `tasks.md` poprawkę „× bez podpowiedzi” — przy scaleniu usunąć ją stamtąd.
+**Następny krok:** weryfikacja i scalenie rundy, potem porcja 9.
 
 ## Zakres i koniec
 
@@ -250,8 +253,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     pary etykieta–wartość w stałej siatce (dwie w rzędzie) — dziś „Wyzwanie” spada do drugiej linii
     przypadkiem, bo w rzędzie zabrakło miejsca.
   * *Minus w modyfikatorach* — znak „−” (U+2212), nie łącznik.
-  * **Otwarte pytanie autora:** czy kompozycje mają być ładne, czy tylko pokazywać zestaw. Odpowiedź
-    architekta (do potwierdzenia): mają być poprawnie złożone z klocków — odstępy, wyrównanie,
+  * **Pytanie autora:** czy kompozycje mają być ładne, czy tylko pokazywać zestaw. Odpowiedź
+    architekta (potwierdzona przez autora 2026-09-26): mają być poprawnie złożone z klocków — odstępy, wyrównanie,
     znaczenie kolorów — bo te same błędy powtórzyłyby się w zleceniach A i B; nie są projektem ekranu
     (ten przyjdzie z A i B). Gdy autor uzna je za brzydkie — dopytać, co konkretnie, i ocenić, czy to
     wada klocka (poprawka w motywie), czy tylko układu galerii.

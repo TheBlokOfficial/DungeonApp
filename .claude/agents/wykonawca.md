@@ -65,11 +65,13 @@ o nim milczy. Każda kontrolka, którą dodajesz albo zmieniasz, spełnia:
 - **Fokus zdejmowany kliknięciem obok i klawiszem Escape** — po wyjściu z pola kursor nie miga dalej.
 - **Układ niezależny od zawartości:** wysokość i szerokość wiersza, przycisku, pola nadaje kontener
   albo motyw, nie tekst ani ikona w środku; dłuższy tekst się przycina, nie rozpycha.
-- **Pasek przewijania tylko przy potrzebie** — nie ma stałego pasa przy liście, która się mieści.
+- **Pasek przewijania tylko przy potrzebie, jego pas zawsze** — pojawienie się paska nie zmienia
+  szerokości treści; pasek stoi przy krawędzi pojemnika.
 - **Tekst wyrównany w polu** — także tekst zastępczy; w pionie na środku z założenia.
 - **Przycisk bez działania wygaszony** — gdy nie ma czego zrobić, jest wyłączony, nie martwy.
-- **Kursor:** ręka wyłącznie nad odnośnikiem (przycisk „link", klikalny tekst); kursor tekstowy w polu
-  do pisania; strzałka wszędzie indziej. Nadaje go szablon kontrolki, nie widok.
+- **Kursor:** kursor tekstowy w polu do pisania i nad tekstem do zaznaczenia; strzałka wszędzie
+  indziej, także nad odnośnikami — ręki nie ma (`architecture.md`, *Niezmiennik interfejsu*). Nadaje
+  go szablon kontrolki, nie widok.
 - **Tekst w kontrolce, którą się klika albo w której się pisze, ma co najmniej 12.**
 - **Konwencja platformy i czytelność przed wiernością makiecie** — mockup rejestru jest odniesieniem
   dla zakładek treści, nie specyfikacją kontrolek. Gdy makieta każe coś nieczytelnego albo
