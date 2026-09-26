@@ -2567,8 +2567,10 @@
         przed strzałką to właściwości kontrolki (PlaceholderForeground, GlyphForeground, GlyphSpacing),
         które ustawia motyw - strój chipa (DungeonChipPicker niżej) bierze ten sam szablon. Zamknięta wygląda i zachowuje się jak ComboBox
         (te same wysokość, tło, krawędź, wcięcie, chevron, stany: spoczynek, najechanie, wciśnięcie,
-        otwarta = najechanie i chevron w dół, zamknięta - w prawo, obrót ruchem; wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
-        zastępczy; jedna pozycja - jej nazwa; więcej - nazwa pierwszej i "+N"; przycięte wielokropkiem.
+        otwarta = najechanie i chevron w dół, zamknięta - w prawo, obrót ruchem; wyłączenie). Treść zamkniętej
+        (DropDownPickerText): nic nie wybrane - tekst zastępczy; jedna pozycja - jej nazwa; więcej - nazwa
+        pierwszej w kolejności listy i odznaka neutralna "+N" (nie przycina się), podpowiedź z tekstem
+        zastępczym i wszystkimi wybranymi; napis przycięty wielokropkiem z podpowiedzią pełnego.
         Rozwinięcie: powierzchnia okienka wysuwanego (motyw FlyoutPresenter), co najmniej tak szerokie
         jak pole, położone jak w ComboBox (pod polem od lewej krawędzi, nad nim przy braku miejsca).
         Z wyszukiwaniem (IsSearchEnabled) na górze pole
@@ -2604,12 +2606,15 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
+                    <!-- Kilka wybranych: podpowiedź z nazwą filtra i wszystkimi wybranymi na polu - wygrywa
+                         z podpowiedzią przyciętego napisu (ta stoi na kontrolce), bo mówi więcej. -->
                     <Border Name="PART_BorderElement"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}"
-                            Padding="{TemplateBinding Padding}">
+                            Padding="{TemplateBinding Padding}"
+                            ToolTip.Tip="{TemplateBinding SelectionToolTipText}">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{TemplateBinding GlyphSpacing}">
                             <ContentPresenter Name="PART_Placeholder"
                                               VerticalAlignment="Center"
@@ -2620,21 +2625,24 @@
                                               TextBlock.TextWrapping="NoWrap"
                                               IsVisible="{TemplateBinding IsPlaceholderShown}"
                                               themes:TrimmedLabelToolTip.IsEnabled="True" />
-                            <TextBlock Name="PART_Summary"
-                                       VerticalAlignment="Center"
-                                       Text="{TemplateBinding SummaryText}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       TextTrimming="CharacterEllipsis"
-                                       TextWrapping="NoWrap"
-                                       IsVisible="{TemplateBinding ShowsSelectionCount, Converter={x:Static BoolConverters.Not}}" />
-                            <!-- Za nazwą: odznaka z liczbą wybranych (tylko w stroju chipa) i strzałka;
-                                 niewidoczna odznaka nie zostawia odstępu. -->
+                            <ContentPresenter Name="PART_Label"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding LabelText}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              TextBlock.TextTrimming="CharacterEllipsis"
+                                              TextBlock.TextWrapping="NoWrap"
+                                              IsVisible="{TemplateBinding IsPlaceholderShown, Converter={x:Static BoolConverters.Not}}"
+                                              themes:TrimmedLabelToolTip.IsEnabled="True" />
+                            <!-- Za napisem: odznaka "+N" (więcej niż jedna wybrana; nie przycina się)
+                                 i strzałka; niewidoczna odznaka nie zostawia odstępu. -->
                             <StackPanel Grid.Column="1"
                                         Orientation="Horizontal"
                                         Spacing="{TemplateBinding GlyphSpacing}">
-                                <controls:Badge Name="PART_SelectionCount"
-                                                Content="{TemplateBinding SelectedCount}"
-                                                IsVisible="{TemplateBinding IsSelectionCountShown}" />
+                                <controls:Badge Name="PART_MoreSelected"
+                                                VerticalAlignment="Center"
+                                                Content="{TemplateBinding MoreBadgeText}"
+                                                IsVisible="{TemplateBinding HasMoreSelected}" />
                                 <controls:ForegroundIcon Name="PART_DropDownGlyph"
                                                          Width="{DynamicResource DungeonActionIconSize}"
                                                          Height="{DynamicResource DungeonActionIconSize}"
@@ -2738,8 +2746,12 @@
         DungeonChipOpener): wysokość DungeonChipHeight (28, jawnie), zaokrąglenie
         DungeonControlCornerRadius, wcięcie DungeonChipPadding, pismo interfejsu 12 Medium, krawędź
         zawsze 1 px, strzałka w kolorze tekstu, odstęp przed nią DungeonSpacingXs.
-        Treść zamkniętego: zawsze nazwa filtra (PlaceholderText), przycięta wielokropkiem z podpowiedzią;
-        gdy coś wybrane - za nazwą liczba wybranych w odznace neutralnej (Badge), przy zerze bez odznaki.
+        Treść zamkniętego - reguły DropDownPicker, jednakowe dla wyboru pojedynczego i wielokrotnego: nic
+        nie wybrane - nazwa filtra (PlaceholderText, kolorem tekstu chipa); jedna - ta wartość; więcej
+        (wielokrotny) - pierwsza wybrana w kolejności listy i odznaka neutralna "+N", podpowiedź "Nazwa:
+        wszystkie wybrane". Szerokość z treści, najwyżej DungeonTabMaxWidth (240, jak zakładka) - dłuższy
+        napis przycina się wielokropkiem z podpowiedzią pełnego (podpowiedź z "+N" wygrywa); odznaka
+        się nie przycina.
         Stany (jak DungeonChipOpener):
           spoczynek        - tło BackstageRow, krawędź Border, tekst i strzałka TextRegular;
           najechanie       - krawędź BorderStrong, tekst i strzałka TextPrimary
@@ -2769,7 +2781,7 @@
         <Setter Property="GlyphSpacing" Value="{DynamicResource DungeonSpacingXs}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
         <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="ShowsSelectionCount" Value="True" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonTabMaxWidth}" />
 
         <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:dropdownopen">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />

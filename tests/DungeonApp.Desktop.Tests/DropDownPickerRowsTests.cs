@@ -19,7 +19,7 @@ public sealed class DropDownPickerRowsTests
 
         Assert.Same(rowsBefore, picker.Rows);
         Assert.Equal([false, true], picker.Rows.Select(row => row.IsSelected));
-        Assert.Equal("Smok", picker.SummaryText);
+        Assert.Equal("Smok", picker.LabelText);
     }
 
     [Fact]
@@ -47,5 +47,48 @@ public sealed class DropDownPickerRowsTests
         picker.SearchText = "smo";
 
         Assert.Equal(["Smok"], picker.Rows.Select(row => row.Text));
+    }
+
+    [Fact]
+    public void Chip_label_follows_the_order_of_the_list_not_of_clicking()
+    {
+        var selected = new AvaloniaList<object>();
+        var picker = new DropDownPicker
+        {
+            PlaceholderText = "Rzadkość",
+            ItemsSource = new[] { "Pospolity", "Rzadki", "Bardzo rzadki", "Legendarny" },
+            SelectedItems = selected,
+        };
+        Assert.Equal("Rzadkość", picker.LabelText);
+        Assert.False(picker.HasMoreSelected);
+
+        selected.Add("Legendarny");
+        selected.Add("Bardzo rzadki");
+        selected.Add("Rzadki");
+
+        Assert.Equal("Rzadki", picker.LabelText);
+        Assert.Equal("+2", picker.MoreBadgeText);
+        Assert.True(picker.HasMoreSelected);
+        Assert.Equal("Rzadkość: Rzadki, Bardzo rzadki, Legendarny", picker.SelectionToolTipText);
+    }
+
+    [Fact]
+    public void Chip_label_in_single_mode_is_the_filter_name_then_the_selected_value()
+    {
+        var picker = new DropDownPicker
+        {
+            SelectionMode = DropDownPickerMode.Single,
+            PlaceholderText = "Rozmiar",
+            ItemsSource = new[] { "Mały", "Duży" },
+        };
+        Assert.Equal("Rozmiar", picker.LabelText);
+        Assert.True(picker.IsPlaceholderShown);
+
+        picker.SelectedItem = "Duży";
+
+        Assert.Equal("Duży", picker.LabelText);
+        Assert.False(picker.IsPlaceholderShown);
+        Assert.False(picker.HasMoreSelected);
+        Assert.Null(picker.SelectionToolTipText);
     }
 }

@@ -46,14 +46,23 @@ public partial class DropDownsSection : UserControl
         CheckListSample.ItemsSource = options;
         CheckListSample.SelectedItems?.Add(options[1]);
 
-        ChipPickerNone.ItemsSource = types;
-        ChipPickerSeveral.ItemsSource = types;
-        ChipPickerSeveral.SelectedItems = new AvaloniaList<object> { "Bestia", "Humanoid", "Smok" };
-        ChipPickerDisabled.ItemsSource = types;
-        ChipPickerDisabledSelected.ItemsSource = types;
-        ChipPickerDisabledSelected.SelectedItems = new AvaloniaList<object> { "Bestia" };
-        ChipPickerLong.ItemsSource = types;
-        ChipPickerLong.SelectedItems = new AvaloniaList<object> { "Smok" };
+        string[] rarities = ["Pospolity", "Niepospolity", "Rzadki", "Bardzo rzadki", "Legendarny"];
+        string[] colors = ["Czerwony", "Zielony", "Niebieski"];
+        string[] sizes = ["Mały", "Średni", "Duży"];
+        ChipPickerNone.ItemsSource = rarities;
+        ChipPickerOne.ItemsSource = rarities;
+        ChipPickerOne.SelectedItems = new AvaloniaList<object> { "Rzadki" };
+        ChipPickerSeveral.ItemsSource = rarities;
+        // Kliknięte w innej kolejności niż na liście - napis bierze pierwszą z listy.
+        ChipPickerSeveral.SelectedItems = new AvaloniaList<object> { "Legendarny", "Rzadki", "Bardzo rzadki" };
+        ChipPickerDisabled.ItemsSource = colors;
+        ChipPickerDisabledSelected.ItemsSource = colors;
+        ChipPickerDisabledSelected.SelectedItems = new AvaloniaList<object> { "Zielony" };
+        ChipPickerLong.ItemsSource = new[] { "Bardzo długa wartość filtra, która nie mieści się w chipie", "Krótka" };
+        ChipPickerLong.SelectedItems = new AvaloniaList<object> { "Bardzo długa wartość filtra, która nie mieści się w chipie" };
+        ChipSingleNone.ItemsSource = sizes;
+        ChipSingleOne.ItemsSource = sizes;
+        ChipSingleOne.SelectedItem = "Duży";
         FilterType.ItemsSource = LongNames;
         FilterType.SelectedItems = new AvaloniaList<object> { "Goblin", "Ork" };
         FilterSize.ItemsSource = new[] { "Mały", "Średni", "Duży" };

@@ -31,6 +31,7 @@ public sealed class DropDownPickerDisplayMemberTests
         };
 
         Assert.Equal(["Pierwsza", "Druga", "Trzecia"], picker.Rows.Select(row => row.Text));
-        Assert.Equal(DropDownPickerText.Summary(["Pierwsza", "Trzecia"]), picker.SummaryText);
+        Assert.Equal("Pierwsza", picker.LabelText);
+        Assert.Equal("+1", picker.MoreBadgeText);
     }
 }

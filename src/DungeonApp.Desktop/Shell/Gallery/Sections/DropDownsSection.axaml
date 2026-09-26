@@ -32,14 +32,17 @@
         <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ WYBORU" />
         <TextBlock Classes="caption muted" Text="Button z okienkiem i motywem DungeonChipOpener. Najedź, żeby zobaczyć najechanie; kliknij, żeby otworzyć - otwarty wygląda jak pod myszą, strzałka obraca się z prawej w dół. Aktywny filtr ma przygaszony akcent." />
         <WrapPanel>
-            <Button Theme="{StaticResource DungeonChipOpener}" Content="Spoczynek" Margin="0,0,6,6">
+            <!-- Napis chipa: wybrana wartość, a bez wyboru nazwa filtra. -->
+            <Button Theme="{StaticResource DungeonChipOpener}" Margin="0,0,6,6"
+                    Content="{Binding #ChipRestList.SelectedItem, TargetNullValue=Kolor, FallbackValue=Kolor}">
                 <Button.Flyout>
                     <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                         <ListBox x:Name="ChipRestList" />
                     </Flyout>
                 </Button.Flyout>
             </Button>
-            <Button Theme="{StaticResource DungeonChipOpener}" Classes="active" Content="Aktywny: Druga" Margin="0,0,6,6">
+            <Button Theme="{StaticResource DungeonChipOpener}" Classes="active" Margin="0,0,6,6"
+                    Content="{Binding #ChipActiveList.SelectedItem, TargetNullValue=Kolor, FallbackValue=Kolor}">
                 <Button.Flyout>
                     <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
                         <ListBox x:Name="ChipActiveList" SelectedIndex="1" />
@@ -70,21 +73,31 @@
             </Button>
         </WrapPanel>
 
-        <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ WIELOKROTNĄ" />
-        <TextBlock Classes="caption muted" Text="DropDownPicker z motywem DungeonChipPicker: zawsze nazwa filtra, a gdy coś wybrane - liczba wybranych w odznace i przygaszony akcent z ramką akcentu. Wiersze z polem wyboru: stan niesie pole, wybrany wiersz nie ma tła akcentu." />
+        <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ (DROPDOWNPICKER W STROJU CHIPA)" />
+        <TextBlock Classes="caption muted" Text="DropDownPicker z motywem DungeonChipPicker. Nic nie wybrane - nazwa filtra; jedna wartość - ta wartość i przygaszony akcent z ramką akcentu; kilka (lista wielokrotna) - pierwsza wybrana w kolejności listy i odznaka +N, a podpowiedź wymienia wszystkie. Chip rośnie z napisem do 240; dłuższy przycina się z podpowiedzią. Wiersze z polem wyboru: stan niesie pole, wybrany wiersz nie ma tła akcentu." />
+        <TextBlock Classes="caption muted" Text="Wielokrotna: nic, jedna, kilka, wyłączony, wyłączony z wyborem, długa wartość." />
         <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
                    LineSpacing="{DynamicResource DungeonSpacingXs}">
             <controls:DropDownPicker x:Name="ChipPickerNone" Theme="{StaticResource DungeonChipPicker}"
-                                     PlaceholderText="Nic nie wybrane" />
+                                     PlaceholderText="Rzadkość" />
+            <controls:DropDownPicker x:Name="ChipPickerOne" Theme="{StaticResource DungeonChipPicker}"
+                                     PlaceholderText="Rzadkość" />
             <controls:DropDownPicker x:Name="ChipPickerSeveral" Theme="{StaticResource DungeonChipPicker}"
-                                     PlaceholderText="Kilka wybranych" />
+                                     PlaceholderText="Rzadkość" />
             <controls:DropDownPicker x:Name="ChipPickerDisabled" Theme="{StaticResource DungeonChipPicker}"
-                                     PlaceholderText="Wyłączony" IsEnabled="False" />
+                                     PlaceholderText="Kolor" IsEnabled="False" />
             <controls:DropDownPicker x:Name="ChipPickerDisabledSelected" Theme="{StaticResource DungeonChipPicker}"
-                                     PlaceholderText="Wyłączony z wyborem" IsEnabled="False" />
+                                     PlaceholderText="Kolor" IsEnabled="False" />
             <controls:DropDownPicker x:Name="ChipPickerLong" Theme="{StaticResource DungeonChipPicker}"
-                                     MaxWidth="180"
-                                     PlaceholderText="Bardzo długa nazwa filtra, która się nie mieści" />
+                                     PlaceholderText="Opis" />
+        </WrapPanel>
+        <TextBlock Classes="caption muted" Text="Pojedyncza: nic, jedna." />
+        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                   LineSpacing="{DynamicResource DungeonSpacingXs}">
+            <controls:DropDownPicker x:Name="ChipSingleNone" Theme="{StaticResource DungeonChipPicker}"
+                                     SelectionMode="Single" PlaceholderText="Rozmiar" />
+            <controls:DropDownPicker x:Name="ChipSingleOne" Theme="{StaticResource DungeonChipPicker}"
+                                     SelectionMode="Single" PlaceholderText="Rozmiar" />
         </WrapPanel>
         <TextBlock Classes="caption muted" Text="Rząd filtrów: chipy obok siebie, ta sama wysokość z wyborem i bez; wartości to obiekty z nazwą z wiązania." />
         <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"

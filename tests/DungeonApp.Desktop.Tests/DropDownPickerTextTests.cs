@@ -5,16 +5,30 @@ namespace DungeonApp.Desktop.Tests;
 public sealed class DropDownPickerTextTests
 {
     [Fact]
-    public void Summary_of_nothing_selected_is_empty_so_the_placeholder_shows() =>
-        Assert.Equal(string.Empty, DropDownPickerText.Summary([]));
+    public void Nothing_selected_says_the_filter_name_without_a_badge_or_tip()
+    {
+        Assert.Equal("Rzadkość", DropDownPickerText.Label("Rzadkość", []));
+        Assert.Equal(string.Empty, DropDownPickerText.MoreBadge([]));
+        Assert.Null(DropDownPickerText.SelectionToolTip("Rzadkość", []));
+    }
 
     [Fact]
-    public void Summary_of_one_selected_is_its_name() =>
-        Assert.Equal("Humanoid", DropDownPickerText.Summary(["Humanoid"]));
+    public void One_selected_says_its_name_without_a_badge_or_tip()
+    {
+        Assert.Equal("Rzadki", DropDownPickerText.Label("Rzadkość", ["Rzadki"]));
+        Assert.Equal(string.Empty, DropDownPickerText.MoreBadge(["Rzadki"]));
+        Assert.Null(DropDownPickerText.SelectionToolTip("Rzadkość", ["Rzadki"]));
+    }
 
     [Fact]
-    public void Summary_of_three_selected_is_the_first_name_and_the_count_of_the_rest() =>
-        Assert.Equal("Humanoid +2", DropDownPickerText.Summary(["Humanoid", "Nieumarły", "Smok"]));
+    public void Three_selected_say_the_first_name_the_count_of_the_rest_and_all_in_the_tip()
+    {
+        string[] selected = ["Rzadki", "Bardzo rzadki", "Legendarny"];
+
+        Assert.Equal("Rzadki", DropDownPickerText.Label("Rzadkość", selected));
+        Assert.Equal("+2", DropDownPickerText.MoreBadge(selected));
+        Assert.Equal("Rzadkość: Rzadki, Bardzo rzadki, Legendarny", DropDownPickerText.SelectionToolTip("Rzadkość", selected));
+    }
 
     [Theory]
     [InlineData("Żywiołak ziemi", "żywioł", true)]

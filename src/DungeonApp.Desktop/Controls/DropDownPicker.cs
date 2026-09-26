@@ -74,14 +74,21 @@ public sealed class DropDownPicker : TemplatedControl
         AvaloniaProperty.RegisterDirect<DropDownPicker, IReadOnlyList<DropDownPickerRow>>(
             nameof(Rows), picker => picker.Rows);
 
-    public static readonly DirectProperty<DropDownPicker, string> SummaryTextProperty =
-        AvaloniaProperty.RegisterDirect<DropDownPicker, string>(nameof(SummaryText), picker => picker.SummaryText);
-
     public static readonly DirectProperty<DropDownPicker, bool> HasNoMatchesProperty =
         AvaloniaProperty.RegisterDirect<DropDownPicker, bool>(nameof(HasNoMatches), picker => picker.HasNoMatches);
 
-    public static readonly StyledProperty<bool> ShowsSelectionCountProperty =
-        AvaloniaProperty.Register<DropDownPicker, bool>(nameof(ShowsSelectionCount));
+    public static readonly DirectProperty<DropDownPicker, string> LabelTextProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, string>(nameof(LabelText), picker => picker.LabelText);
+
+    public static readonly DirectProperty<DropDownPicker, string> MoreBadgeTextProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, string>(nameof(MoreBadgeText), picker => picker.MoreBadgeText);
+
+    public static readonly DirectProperty<DropDownPicker, bool> HasMoreSelectedProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, bool>(nameof(HasMoreSelected), picker => picker.HasMoreSelected);
+
+    public static readonly DirectProperty<DropDownPicker, string?> SelectionToolTipTextProperty =
+        AvaloniaProperty.RegisterDirect<DropDownPicker, string?>(
+            nameof(SelectionToolTipText), picker => picker.SelectionToolTipText);
 
     public static readonly StyledProperty<IBrush?> PlaceholderForegroundProperty =
         AvaloniaProperty.Register<DropDownPicker, IBrush?>(nameof(PlaceholderForeground));
@@ -92,23 +99,17 @@ public sealed class DropDownPicker : TemplatedControl
     public static readonly StyledProperty<double> GlyphSpacingProperty =
         AvaloniaProperty.Register<DropDownPicker, double>(nameof(GlyphSpacing));
 
-    public static readonly DirectProperty<DropDownPicker, int> SelectedCountProperty =
-        AvaloniaProperty.RegisterDirect<DropDownPicker, int>(nameof(SelectedCount), picker => picker.SelectedCount);
-
     public static readonly DirectProperty<DropDownPicker, bool> IsPlaceholderShownProperty =
         AvaloniaProperty.RegisterDirect<DropDownPicker, bool>(
             nameof(IsPlaceholderShown), picker => picker.IsPlaceholderShown);
 
-    public static readonly DirectProperty<DropDownPicker, bool> IsSelectionCountShownProperty =
-        AvaloniaProperty.RegisterDirect<DropDownPicker, bool>(
-            nameof(IsSelectionCountShown), picker => picker.IsSelectionCountShown);
-
     private IReadOnlyList<DropDownPickerRow> _rows = [];
-    private string _summaryText = string.Empty;
     private bool _hasNoMatches;
-    private int _selectedCount;
+    private string _labelText = string.Empty;
+    private string _moreBadgeText = string.Empty;
+    private bool _hasMoreSelected;
     private bool _isPlaceholderShown = true;
-    private bool _isSelectionCountShown;
+    private string? _selectionToolTipText;
     private INotifyCollectionChanged? _observedSelection;
     private TextBox? _searchBox;
 
@@ -193,13 +194,6 @@ public sealed class DropDownPicker : TemplatedControl
         private set => SetAndRaise(RowsProperty, ref _rows, value);
     }
 
-    /// <summary>What the closed picker says (<see cref="DropDownPickerText.Summary"/>).</summary>
-    public string SummaryText
-    {
-        get => _summaryText;
-        private set => SetAndRaise(SummaryTextProperty, ref _summaryText, value);
-    }
-
     /// <summary>There are items, but the search keeps none of them.</summary>
     public bool HasNoMatches
     {
@@ -208,14 +202,39 @@ public sealed class DropDownPicker : TemplatedControl
     }
 
     /// <summary>
-    /// The look of a filter chip (the frame's DungeonChipPicker theme): the closed picker always says
-    /// its <see cref="PlaceholderText"/> - the filter's name - and, when something is selected, the
-    /// number of selected items in a badge after it, instead of the selected names.
+    /// What the closed picker - also in the filter chip look (DungeonChipPicker) - says (<see cref="DropDownPickerText.Label"/>):
+    /// the filter's name (<see cref="PlaceholderText"/>) while nothing is selected, otherwise the first
+    /// selected name in the order of the list.
     /// </summary>
-    public bool ShowsSelectionCount
+    public string LabelText
     {
-        get => GetValue(ShowsSelectionCountProperty);
-        set => SetValue(ShowsSelectionCountProperty, value);
+        get => _labelText;
+        private set => SetAndRaise(LabelTextProperty, ref _labelText, value);
+    }
+
+    /// <summary>"+N" for the selected items after the first (<see cref="DropDownPickerText.MoreBadge"/>).</summary>
+    public string MoreBadgeText
+    {
+        get => _moreBadgeText;
+        private set => SetAndRaise(MoreBadgeTextProperty, ref _moreBadgeText, value);
+    }
+
+    /// <summary>More than one item is selected - the chip shows the "+N" badge.</summary>
+    public bool HasMoreSelected
+    {
+        get => _hasMoreSelected;
+        private set => SetAndRaise(HasMoreSelectedProperty, ref _hasMoreSelected, value);
+    }
+
+    /// <summary>
+    /// Several selected: the filter's name and every selected name
+    /// (<see cref="DropDownPickerText.SelectionToolTip"/>) - the theme shows it as the closed box's tip,
+    /// which wins over a trimmed label's own tip because it says more.
+    /// </summary>
+    public string? SelectionToolTipText
+    {
+        get => _selectionToolTipText;
+        private set => SetAndRaise(SelectionToolTipTextProperty, ref _selectionToolTipText, value);
     }
 
     /// <summary>The colour of the placeholder text; set by the control theme.</summary>
@@ -232,35 +251,18 @@ public sealed class DropDownPicker : TemplatedControl
         set => SetValue(GlyphForegroundProperty, value);
     }
 
-    /// <summary>The gap before the drop-down arrow (and before the count badge); set by the control theme.</summary>
+    /// <summary>The gap before the drop-down arrow (and before the "+N" badge); set by the control theme.</summary>
     public double GlyphSpacing
     {
         get => GetValue(GlyphSpacingProperty);
         set => SetValue(GlyphSpacingProperty, value);
     }
 
-    /// <summary>How many items are selected.</summary>
-    public int SelectedCount
-    {
-        get => _selectedCount;
-        private set => SetAndRaise(SelectedCountProperty, ref _selectedCount, value);
-    }
-
-    /// <summary>
-    /// The closed picker shows the placeholder: always with <see cref="ShowsSelectionCount"/> (the
-    /// filter's name), otherwise while nothing is selected.
-    /// </summary>
+    /// <summary>The closed picker shows the placeholder: nothing is selected.</summary>
     public bool IsPlaceholderShown
     {
         get => _isPlaceholderShown;
         private set => SetAndRaise(IsPlaceholderShownProperty, ref _isPlaceholderShown, value);
-    }
-
-    /// <summary>The count badge is shown: <see cref="ShowsSelectionCount"/> and something selected.</summary>
-    public bool IsSelectionCountShown
-    {
-        get => _isSelectionCountShown;
-        private set => SetAndRaise(IsSelectionCountShownProperty, ref _isSelectionCountShown, value);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -282,9 +284,9 @@ public sealed class DropDownPicker : TemplatedControl
         {
             UpdateSelection();
         }
-        else if (change.Property == ShowsSelectionCountProperty)
+        else if (change.Property == PlaceholderTextProperty)
         {
-            UpdateClosedLook();
+            UpdateSummary(Items());
         }
         else if (change.Property == DisplayMemberBindingProperty)
         {
@@ -428,23 +430,20 @@ public sealed class DropDownPicker : TemplatedControl
         UpdateSummary(Items());
     }
 
-    // In the order of the items, not of clicking - the closed text does not jump.
+    // In the order of the items, not of clicking - the closed text does not jump. What the closed
+    // picker shows follows the selection; nothing is written.
     private void UpdateSummary(List<object> items)
     {
         var selectedNames = items.Where(IsSelected).Select(NameOf).ToList();
-        SummaryText = DropDownPickerText.Summary(selectedNames);
-        SelectedCount = selectedNames.Count;
-        UpdateClosedLook();
+        LabelText = DropDownPickerText.Label(PlaceholderText, selectedNames);
+        MoreBadgeText = DropDownPickerText.MoreBadge(selectedNames);
+        HasMoreSelected = MoreBadgeText.Length > 0;
+        IsPlaceholderShown = selectedNames.Count == 0;
+        PseudoClasses.Set(":has-selection", selectedNames.Count > 0);
+        SelectionToolTipText = DropDownPickerText.SelectionToolTip(PlaceholderText, selectedNames);
     }
 
-    // What the closed picker shows follows the selection and the chip look; nothing is written.
-    private void UpdateClosedLook()
-    {
-        var hasSelection = SelectedCount > 0;
-        PseudoClasses.Set(":has-selection", hasSelection);
-        IsPlaceholderShown = ShowsSelectionCount || !hasSelection;
-        IsSelectionCountShown = ShowsSelectionCount && hasSelection;
-    }
+
 
     private string NameOf(object item)
     {

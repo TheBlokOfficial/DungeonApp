@@ -10,18 +10,36 @@ namespace DungeonApp.Desktop.Controls;
 public static class DropDownPickerText
 {
     /// <summary>
-    /// Nothing selected - empty (the picker shows its placeholder); one - its name; more - the first
-    /// name and "+N" for the rest, e.g. "Humanoid +2".
+    /// What the closed picker (and a filter chip) says: nothing selected - the filter's name; otherwise the first selected
+    /// name (in the order of the list). The rest is <see cref="MoreBadge"/>.
     /// </summary>
-    public static string Summary(IReadOnlyList<string> selectedNames)
+    public static string Label(string? filterName, IReadOnlyList<string> selectedNames)
     {
         ArgumentNullException.ThrowIfNull(selectedNames);
-        return selectedNames.Count switch
+        return selectedNames.Count == 0 ? filterName ?? string.Empty : selectedNames[0];
+    }
+
+    /// <summary>More than one selected - "+N" for the rest after the first; otherwise empty (no badge).</summary>
+    public static string MoreBadge(IReadOnlyList<string> selectedNames)
+    {
+        ArgumentNullException.ThrowIfNull(selectedNames);
+        return selectedNames.Count > 1 ? $"+{selectedNames.Count - 1}" : string.Empty;
+    }
+
+    /// <summary>
+    /// More than one selected - the filter's name and every selected name, e.g. "Rzadkość: Rzadki,
+    /// Bardzo rzadki, Legendarny"; otherwise none (a trimmed label shows its own full text).
+    /// </summary>
+    public static string? SelectionToolTip(string? filterName, IReadOnlyList<string> selectedNames)
+    {
+        ArgumentNullException.ThrowIfNull(selectedNames);
+        if (selectedNames.Count < 2)
         {
-            0 => string.Empty,
-            1 => selectedNames[0],
-            _ => $"{selectedNames[0]} +{selectedNames.Count - 1}",
-        };
+            return null;
+        }
+
+        var names = string.Join(", ", selectedNames);
+        return string.IsNullOrEmpty(filterName) ? names : $"{filterName}: {names}";
     }
 
     /// <summary>
