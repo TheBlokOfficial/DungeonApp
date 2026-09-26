@@ -152,13 +152,14 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 * **Rama nie może nazywać rodzajów wpisu — także w danych przykładowych galerii.** Test architektury
   (`CoreEntryKindIndependenceTests`) odrzuca w `DungeonApp.Desktop` nazwy typu „monster”; przykład
   w galerii nazywa się neutralnie (`SampleRow`).
-* **Pas paska przewijania jest zarezerwowany zawsze** (motyw `ScrollViewer`, widoczność `Auto`), więc
-  przewijany obszar wewnątrz drugiego daje dwa puste pasy. Lista przewija sama: bez owijającego
-  `ScrollViewer`, a w okienku wysuwanym z samą listą — `FlyoutPresenterClasses="list-host"`. Menu
-  mają pas tylko przy potrzebie (klasa `.bar-on-demand` na `ScrollViewer` w ich szablonach).
-* **Akcja w wierszu (`DungeonRowAction`) tłumi podświetlenie wiersza przez `Themes/RowActionHover.cs`** —
-  wiersz to `ListBoxItem` albo kontrolka z klasą `list-row`; wiersz innego rodzaju bez tej klasy
-  podświetla się dalej pod koszem.
+* **Pasek przewijania leży nad treścią** (motyw `ScrollViewer`) — treść sama musi skończyć się przed
+  nim: kontener przewijany dokłada po prawej `DungeonScrollBarZone` do swojego wcięcia. Wiersz listy
+  (`ListBoxItem`, więc też `ComboBoxItem` i `DropDownPicker`) i `MenuItem` robią to w motywie; nowy
+  przewijany kontener spoza nich — jawnie. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
+  niesie `DungeonMultilineInputContentPadding`.
+* **Przewija jedna warstwa.** Lista w owijającym `ScrollViewer` albo w okienku wysuwanym, które samo
+  przewija, daje dwa paski; w okienku z samą listą — `FlyoutPresenterClasses="list-host"`. Galeria,
+  „Długa lista” w `DropDownsSection`, wciąż tak stoi.
 * **`ScrollViewer.IsScrollChainingEnabled` trzeba ustawić także w motywach, które przekazują ją
   do własnego przewijania** (`ListBox`, `TextBox`) — ich szablon podaje własną wartość i zasłania
   ustawienie z motywu przewijania.
