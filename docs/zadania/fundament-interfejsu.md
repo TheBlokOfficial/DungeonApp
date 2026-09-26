@@ -15,9 +15,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Porcje 0–8b, 10+11 z rundami 1a–1d i poprawki po dużej rundzie scalone 2026-09-26; duża runda
-obejrzana (*Ustalenia*, *Duża runda*). Kopii roboczych brak. Poprawek po dużej rundzie autor jeszcze nie
-oglądał — lista w *Notkach* (*Po poprawkach dużej rundy — do sprawdzenia*); jego uwagi rozstrzyga się na
-starcie następnej sesji. **Następny krok: porcja 9a** (autor, 2026-09-26: porcja 9 w następnej sesji),
+obejrzana (*Ustalenia*, *Duża runda*). Kopii roboczych brak. Poprawki po dużej rundzie autor zatwierdził
+2026-09-26 (w tym kciuk paska zachodzący 2 px na tło wiersza); otwarte zostają dwa błędy okienek
+widoczne tylko w aplikacji — autor przynosi pomiar z punktu 6 listy w *Notkach*. **Następny krok: porcja 9a** (autor, 2026-09-26: porcja 9 w następnej sesji),
 potem 9b. Dwa błędy okienek widoczne tylko w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — po 9a,
 która zmienia wygląd pod każdą kontrolką, autor sprawdza, czy są nadal; jeśli tak — diagnoza w działającej
 aplikacji. Szerokość pola — do rozstrzygnięcia w briefie 9a (*Notki*, *Szerokość pola*).
@@ -571,7 +571,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     i krawędź ramki nie kończy edycji (cała ramka to pole); kursor nad krawędzią i odstępem za ikoną —
     strzałka.
 
-* **Po poprawkach dużej rundy — do sprawdzenia** (autor jeszcze nie oglądał): (1) zakładka treści,
+* **Po poprawkach dużej rundy — do sprawdzenia** (punkty 1–5 zatwierdzone przez autora 2026-09-26;
+  punkt 6 — pomiar autora do następnej sesji): (1) zakładka treści,
   lista wpisów, najechanie/wybór — było: tło do linii podziału; jest: kończy się 10 przed nią, jak
   z lewej; patrzeć: tekst i odznaka kończą się przed paskiem; kciuk paska (6–12 od krawędzi) zachodzi
   2 px na tło — decyzja architekta: symetria tła wygrywa, pasek jest nakładką. (2) Pasek boczny,
