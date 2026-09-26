@@ -156,7 +156,10 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   nie obok: kontener z wcięciem nadpisuje `DungeonScrollBarZone` na 16 minus wcięcie (okienka —
   `DungeonScrollBarZoneInFlyout` = 12; galeria `ListsSection` — 10; pasek boczny — 0). Wiersz listy
   (`ListBoxItem`, więc też `ComboBoxItem` i `DropDownPicker`) i `MenuItem` robią to w motywie; nowy
-  przewijany kontener spoza nich — jawnie. Okienko `.list-host` nie ma wcięcia — niesie je lista
+  przewijany kontener spoza nich — jawnie. W okienkach strefa jest tylko przy przepełnieniu: `Themes/PopupOpenLayout.cs`
+  przy otwarciu daje klasę `.no-bar-zone`, style w `BuiltInControls.axaml` zerują przy niej strefę. Ten
+  sam plik ustala szerokość okienka listy z napisów pozycji — `ComboBox` z `ItemTemplate` nie jest
+  mierzony (dziś nikt go nie używa); pierwszy taki — do obsłużenia w tym samym miejscu. Okienko `.list-host` nie ma wcięcia — niesie je lista
   w środku, żeby pasek stał 7 od krawędzi jak w każdym okienku. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
   niesie `DungeonMultilineInputContentPadding`.
 * **Przewija jedna warstwa.** Lista w owijającym `ScrollViewer` albo w okienku wysuwanym, które samo

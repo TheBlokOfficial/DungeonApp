@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `fc567d1`.** Na starcie sesji: `git log fc567d1..master` i `git worktree
+**Stan na: 2026-09-26, po `03389ef`.** Na starcie sesji: `git log 03389ef..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -20,8 +20,7 @@ Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pom
 1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
 przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
 samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
-**W toku:** runda 1c — wykonawca uruchomiony 2026-09-26 (reguła odstępu paska i szerokości okienka już
-w `architecture.md`, *Pasek przewijania jest nakładką*).
+Runda 1c scalona 2026-09-26. **Następny krok:** brief rundy 1d.
 
 ## Zakres i koniec
 
@@ -97,7 +96,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     szarym). Menu i pole zabrane z `tasks.md`.
   * [x] **Poprawki po 1b** — regresja kreski i tła wiersza (*Notki*, *Regresja 1b*); symetria
     rysowanego suwaka i pole z ikoną (*Notki*, *Po obejrzeniu 1b*).
-  * [ ] **Runda 1c** — okienka list i chip (architekt, 2026-09-26: dawna 1c podzielona na dwa przebiegi
+  * [x] **Runda 1c** — okienka list i chip (architekt, 2026-09-26: dawna 1c podzielona na dwa przebiegi
     po obszarze kodu; treść bez zmian). **Strefa paska w okienkach tylko przy przepełnieniu**
     (*Notki*, *Po obejrzeniu 1b*) — ten sam mechanizm „ustalone przy otwarciu” co szerokość okienka
     niżej, więc w tym przebiegu. Dochodzi **napis chipa z listą wielokrotną** (autor po 1a,
@@ -148,6 +147,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25; 1 (autor: pas paska zawsze i przy krawędzi, kosz w wierszu — motyw `DungeonRowAction`, pas pełnej wysokości, czerwony, bez tła i podpowiedzi; architekt: wyzwanie zakreśleniem, pasek wartości w siatce, minus U+2212, jedna warstwa przewijania, menu z pasem przy potrzebie) — scalona 2026-09-26; 2 (autor: pasek nakładką z odstępem od krawędzi, góry i dołu — stały pas zostawiał pusty margines; kosz zawsze widoczny, szary, czerwony pod myszą, wiersz podświetlony nad koszem; wyzwanie bez zakreślenia) — scalona 2026-09-26 | 52 / 8,4 / 5,4 mln + runda 1: 70 / 11,7 / 10,6 mln (z poprawką podwójnych pasów po raporcie, ten sam wykonawca) + runda 2: 40 / 9,1 / 5,8 mln |
 | 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26; 1b (kolumny `ListRow` wyśrodkowane niezależnie — styl w `BuiltInControls.axaml`; skrót i strzałka podmenu w jednej kolumnie; podmenu obok menu — `DungeonSubmenuHorizontalOffset` 11; ramka aktywnego chipa `DungeonAccentEdge` 40 %; najechanie `.subtle` nakładką `DungeonHoverOverlay`; pas ikony w polu; strefa paska od krawędzi — lista wpisów 35 → 25, okienka i menu 32 → 28, pasek w `.list-host` 11 → 7 od krawędzi; kosz kampanii — styl lokalny zostaje) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln + 1b (z dokończeniem po zatrzymaniu, ten sam wykonawca): 69 / 14,3 / 8,3 mln |
 | po 1b | regresja wiersza (selektor kolumn `ListRow` łapał korzeń szablonu — `PART_Root`); kciuk paska przy prawej krawędzi pasa (odstęp 7/7/7 w okienkach, było 9/7/7); pole z ikoną — kontrolka `IconField` owijająca `TextBox` widoku, × w ramce, `FieldIconPointer` usunięty; przeszły: wyszukiwarka treści, pole nowej kampanii, wyszukiwarka `DropDownPicker`, galeria | scalona 2026-09-26, bez oglądania (*Oglądanie zbiorcze*) | 44 / 9,4 / 4,8 mln |
+| 1c | strefa paska w okienkach tylko przy przepełnieniu (klasa `.no-bar-zone` przy otwarciu — `Themes/PopupOpenLayout.cs`); szerokość okienka `ComboBox`/`DropDownPicker` z napisów całej listy (`TextLayout`), przycięte z podpowiedzią; napis chipa z listą (nazwa / wartość / pierwsza + „+N”, podpowiedź), licznik z 1a usunięty; „Długa lista” w `.list-host` | scalona 2026-09-26, bez oglądania | 55 / 12,1 / 7,6 mln |
 
 ## Ustalenia
 
@@ -519,6 +519,20 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     (6) Galeria *Pola tekstowe*, wyłączone z ikoną — patrzeć: nie ciemniejsze niż zwykłe wyłączone.
     (7) Wyszukiwarka `DropDownPicker` w galerii — patrzeć: klik w lupę nie kończy edycji, filtr działa.
     (8) Pole liczbowe — bez zmian; patrzeć: klik tuż nad i pod strzałką nie stawia karetki.
+  * *Po 1c* — (1) menu krótkie (galeria, sekcja menu, dowolne menu z przycisku) — było: skrót
+    i strzałka podmenu 28 od prawej; jest: 16, jak napis od lewej; patrzeć: nic nie dotyka krawędzi.
+    (2) Galeria *Okienka i listy rozwijane*, „Z wyszukiwaniem → Wielokrotna”, wpisać „ork” — było:
+    okienko się zwężało; jest: szerokość i prawy odstęp stałe; patrzeć: nic nie skacze przy otwarciu
+    (także przy wyłączonych animacjach w Windows — niezmierzone). (3) „Lista dłuższa niż rozwinięcie”,
+    przewinąć — było: zwężała się; jest: stała; patrzeć: najdłuższa nazwa się mieści. (4) „Chip
+    z listą”, Rzadkość nic / jedna / kilka — było: nazwa + licznik; jest: nazwa, wartość albo pierwsza
+    wybrana + „+2”; patrzeć: podpowiedź „Rzadkość: …” na chipie z +2. (5) Chip z długą wartością —
+    jest: przycięty do ok. 240 z wielokropkiem i podpowiedzią. (6) Chip otwierający „Kolor” — było:
+    „Spoczynek” mimo wyboru; jest: wybrana wartość. (7) „Długa lista” — były dwa paski, jest jeden.
+  * *Po 1c — rozstrzygnięte samodzielnie:* zwykła lista rozwijana wielokrotna (nie chip) też pokazuje
+    „Humanoid” + odznakę „+2” zamiast tekstu „Humanoid +2” i ma tę samą podpowiedź — jedne reguły dla
+    obu wyglądów; okienko nie wychodzi poza okno aplikacji (6 od prawej krawędzi), dłuższe pozycje
+    przycinają się z podpowiedzią.
   * *Po 1b — rozstrzygnięte samodzielnie:* × widoczny tylko przy niepustym polu; klik w ikonę, ×
     i krawędź ramki nie kończy edycji (cała ramka to pole); kursor nad krawędzią i odstępem za ikoną —
     strzałka.
