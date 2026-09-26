@@ -142,7 +142,6 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
 
 * **Pola tekstowe (motyw ramy, `DungeonControls.axaml`, `FieldIconPointer.cs`)** — uwagi autora po
   rundzie 1 porcji 2, 2026-09-25:
-  * Przycisk × w polu wyszukiwania bez podpowiedzi „Wyczyść" — sam krzyżyk jest czytelny.
   * Ikona na początku pola (ołówek, lupa) tylko przykrywa obszar tekstu, nie odcina go: nad ikoną,
     obok niej, nad nią i pod nią da się złapać kursor tekstowy. Obszar tekstu ma zaczynać się za
     ikoną — cały pas od krawędzi pola do tekstu, na pełnej wysokości, to strefa ikony ze strzałką.

@@ -695,7 +695,8 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 * **Pasek przewijania** pokazuje się tylko wtedy, gdy treść się nie mieści, ale jego pas jest
   zarezerwowany zawsze — pojawienie się ani zniknięcie paska nie zmienia szerokości treści. Pasek stoi
   przy krawędzi pojemnika; treść kończy się przed jego pasem z tym samym odstępem co od przeciwnej
-  krawędzi.
+  krawędzi. Wyjątek: menu — treść otwartego menu się nie zmienia, więc pas jest tylko przy potrzebie.
+  Przewija jedna warstwa: lista nie stoi w drugim przewijanym obszarze.
 * **Przycisk mieści swój napis.** Szerokość bierze się z napisu; przycięcie jest wyjściem awaryjnym,
   gdy kontener wymusza wąskie miejsce, nie wyglądem przycisku.
 * **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)
