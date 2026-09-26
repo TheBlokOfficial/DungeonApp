@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `08320f3`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
+**Stan na: 2026-09-26, po `4ff0c43`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,8 +16,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi autora rozstrzygnięte tego
 dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
-i lista wyboru), 1b (wiersze, przewijanie, menu), 9a, 9b. **W toku: przebieg 1a** — wykonawca
-w tle, gałąź `fundament-10-11-r1a`, kopia `.claude/worktrees/fundament-10-11-r1a`.
+i lista wyboru), 1b (wiersze, przewijanie, menu), 9a, 9b. **Przebieg 1a scalony 2026-09-26**, czeka
+na obejrzenie. Kopii roboczych brak. Autor zgłosił przed obejrzeniem trzy sprawy (szerokość listy
+po wyborze, sortowanie, odnośnik w zdaniu bez najechania) — odpowiedź i propozycja przebiegu 1c
+(odnośniki) pokazane autorowi, **czeka na zgodę i na pytanie: kierunek sortowania w zakładkach
+treści teraz czy w zleceniu A** (*Notki*, *Przebieg 1c — propozycja*). Następny krok: uwagi po 1a,
+potem brief 1b.
 
 ## Zakres i koniec
 
@@ -115,7 +119,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
 | 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; obejrzana tego dnia — szarpanie paska i dymki na pasku stanu naprawione; uwagi (ramka w galerii myli, tabela cech nie jak projekt, tagi ciasne w pionie) i uwagi architekta idą z porcją 8b, bez rundy | 57 / 11,0 / 6,5 mln |
 | 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25; 1 (autor: pas paska zawsze i przy krawędzi, kosz w wierszu — motyw `DungeonRowAction`, pas pełnej wysokości, czerwony, bez tła i podpowiedzi; architekt: wyzwanie zakreśleniem, pasek wartości w siatce, minus U+2212, jedna warstwa przewijania, menu z pasem przy potrzebie) — scalona 2026-09-26; 2 (autor: pasek nakładką z odstępem od krawędzi, góry i dołu — stały pas zostawiał pusty margines; kosz zawsze widoczny, szary, czerwony pod myszą, wiersz podświetlony nad koszem; wyzwanie bez zakreślenia) — scalona 2026-09-26 | 52 / 8,4 / 5,4 mln + runda 1: 70 / 11,7 / 10,6 mln (z poprawką podwójnych pasów po raporcie, ten sam wykonawca) + runda 2: 40 / 9,1 / 5,8 mln |
-| 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26 | 68 / 12,2 / 8,7 mln |
+| 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln |
 
 ## Ustalenia
 
@@ -396,6 +400,23 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   w przygaszonym akcencie (było neutralne „aktywne”), wyłączone przygaszone jak wszędzie.
 * Porcje 10+11 → porcja 9 (nieużywane): `DungeonNavigationFontSize`; klasa `nav-content` w szablonie
   paska bocznego bez stylu; komentarz „campaign-row rhythm” w `SystemSelectionView.axaml` nieaktualny.
+* Runda 1a (raport) → porcja 9b: `DropDownPickerRow.ShowsSelectedBackground` bez użycia w XAML —
+  usunąć razem z asercją w `DropDownPickerRowsTests`. Do zlecenia A: `ContentChipFontSize` = 11,5
+  w `ContentTabView` — poza skalą pisma (siedem stopni).
+* **Przebieg 1c — propozycja** (architekt, 2026-09-26, po trzech sprawach autora; czeka na zgodę):
+  * *Szerokość listy po wyborze* — odpowiedź, bez zmian: w rzędzie filtrów chip rośnie z treścią
+    (konwencja), a chip z licznikiem (1a) nie przejmuje nazwy wartości; w formularzu szerokość
+    nadaje układ, wartość się przycina.
+  * *Odnośnik w zdaniu bez najechania* (błąd wobec reguły *Kursor*: klikalność pokazuje najechanie) —
+    pod myszą kolor jaśnieje, podkreślenie zostaje.
+  * *Sortowanie* — odnośnik „Sortuj: pole” otwiera menu ze strzałką według reguły list (w prawo →
+    w dół; dziś stale w dół); **osobny przycisk kierunku** tuż za nim: ikona sortowania (strzałka
+    z kreskami, nie chevron), kliknięcie odwraca; zmiana kierunku = przewrócenie przez oś poziomą
+    (spłaszczenie i rozłożenie, ≤ 150 ms, bez ruchu przy wyłączonych animacjach) — życzenie autora;
+    napis w menu „A–Z / Z–A” przy nazwie, „rosnąco / malejąco” przy liczbach. Odrzucone: podwojone
+    pozycje menu, odwracanie ponownym kliknięciem pozycji (ukryte).
+  * Zakładka treści dostaje nowy wygląd; działające odwracanie — rekomendacja: zlecenie A (przycisk
+    wygaszony do tego czasu). Pytanie do autora otwarte.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
