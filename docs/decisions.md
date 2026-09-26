@@ -2030,6 +2030,10 @@ pamięć już wygasła.
 * *Polecenie, które daje listę:* 2026-09-26, porcja 9b fundamentu (Haiku): raport stwierdzał, że poza
   usuniętymi wszystkie zasoby motywu są w użyciu; jedno polecenie architekta liczące odwołania do
   każdego klucza znalazło cztery kolejne bez użycia.
+* *Zwiad pyta o to, czego dokumenty nie mówią:* 2026-09-26, wycinek 1 zakładek treści: z siedmiu pytań
+  zwiadu trzy (zachowanie nieznanych pól, miejsce paczek, kolory rzadkości) miały odpowiedź
+  w sekcjach, które dokument zadania kazał przeczytać przed wycinkiem — architekt przeczytał je po
+  wysłaniu briefu. Autor to wychwycił; reguła za jego zgodą tego dnia.
 
 
 ### Pliki robocze poza repozytorium

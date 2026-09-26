@@ -6,7 +6,7 @@ D&D 5e naprawdę przechowuje przy potworze, przedmiocie i zaklęciu. Paczka przy
 kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony. Zadanie kończy się
 jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `529bb50`.** Na starcie sesji: `git log 529bb50..master` i `git worktree
+**Stan na: 2026-09-26, po `6216a1a`.** Na starcie sesji: `git log 6216a1a..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Wycinek 1 (dane D&D 5e) w toku. Autor 2026-09-26 potwierdził „instancje” = wpisy i odczyt
-drugiego zakazu według intencji; nowe brzmienie zakazu w `CLAUDE.md` (*Ustalenia*). `zwiadowca` (bez kopii roboczej, tylko odczyt) zbiera, co dziś trzymają
-rekordy systemu, paczki wzorcowe i paczki autora (z jego zgody — jedyny katalog poza repozytorium).
-Architekt równolegle spisuje, co trzyma SRD. **Następny krok:** z raportu zwiadu i SRD — luki
-i propozycja zmian rekordów sprawdzona z zakazami, do zgody autora.
+Wycinek 1 (dane D&D 5e) zamknięty 2026-09-26: rekordy potwora, przedmiotu i zaklęcia przyjęte
+(*Ustalenia*, *Rekordy*); wpisy przykładowe idą do paczki dostarczanej z systemem (*Ustalenia*).
+Kopii roboczych brak. **Następny krok: wycinek 2 — projekt listy i kart z makietą** do obejrzenia
+przez autora przed kodem.
 
 ## Zakres i koniec
 
@@ -79,16 +78,16 @@ Tylko gdy potrzeba:
 Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 20 minut.
 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
-- [ ] **1 — dane D&D 5e** (architekt; zwiad kodu — `zwiadowca`): co SRD 5.1/5.2 trzyma przy potworze,
-  przedmiocie (magicznym i zwykłym) i zaklęciu; co dziś trzymają rekordy systemu i paczki autora;
-  luki i propozycja zmian rekordów — sprawdzona z pięcioma zakazami.
+- [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
 - [ ] **2 — projekt** (architekt): lista i karty per typ, z makietą do obejrzenia przez autora przed
   kodem. Wynik dzieli się na porcje wykonawcze.
 - [ ] **3 — lista i filtry** (*Ustalenia*, *A*).
-- [ ] **4 — karta potwora** (*Ustalenia*, *B*).
-- [ ] **5 — karta przedmiotu** (dawniej „po kroku 10”, według mockupu — teraz według projektu z 2).
-- [ ] **6 — wpisy przykładowe** — może iść razem z 4 i 5 (wpis pokazuje wariant karty, który porcja
-  buduje); miejsce paczki — *Notki*.
+- [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
+  paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
+- [ ] **4 — karta potwora** (*Ustalenia*, *B*) — z polami potwora z *Rekordów*.
+- [ ] **5 — karta przedmiotu** (według projektu z 2) — z polami przedmiotu z *Rekordów*.
+- [ ] **6 — wpisy przykładowe** w paczce dostarczanej — może iść razem z 4 i 5 (wpis pokazuje
+  wariant karty, który porcja buduje).
 - [ ] **7 — wczytanie paczek od nowa**: zwiad, jak żyje rejestr (kto go trzyma, kto dostaje przy
   zakładkach i biurku), potem zlecenie. Przesłankę sprawdzić przed zwiadem.
 - [ ] **8 — zaklęcia** (decyzja przy etapie).
@@ -131,6 +130,29 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   sortuje. Filtry i sortowanie zaklęć — po poziomie i szkole. **Koncentracja i rytuał to tagi
   zaklęcia** (właściwości, nie odmierzanie czasu). Brzmienie zakazu w `CLAUDE.md` zmienione
   tego dnia za zgodą autora; uzasadnienie — `decisions.md`, pozycja 40.
+* **Wierność D&D 5e nie jest celem** (autor, 2026-09-26): SRD to punkt wyjścia, nie wzorzec 1:1 —
+  pole wchodzi, gdy pomaga MG. Przykład autora: **każdy przedmiot ma rzadkość** (miara elitarności
+  i cenności), także zwykły ekwipunek — rzadkość zostaje wymagana.
+* **Rekordy** (architekt, przyjęte przez autora 2026-09-26). Wszystko addytywne: nowe pola
+  opcjonalne, nic usuniętego ani przemianowanego, bez podniesienia wersji typu (`architecture.md`,
+  *Wersjonowanie*); wszystko płaskie — napisy, liczby, znaczniki (`decisions.md`, pozycja 7). Pola
+  wchodzą z porcją karty, która je pokazuje. Czas — wyłącznie napis czytany przez kartę.
+  * **Potwór:** `xp` (liczba; wyzwanie zostaje samym napisem „1/2”); rzuty obronne; podatności,
+    odporności, niewrażliwości na obrażenia i na stany; akcje dodatkowe, reakcje, akcje legendarne
+    („3 na turę” w tekście); rzucanie czarów — osobne bloki prozy.
+  * **Przedmiot — jeden typ dla zwykłego i magicznego:** kategoria (filtr kategorii listy: „Broń”,
+    „Zbroja”, „Mikstura”, „Cudowny przedmiot”, „Ekwipunek”…), podtyp („dowolny miecz”), dostrojenie
+    (napis; filtr wymaga / nie wymaga), cena (napis), waga z ułamkami (dziś liczba całkowita),
+    obrażenia i właściwości broni (napisy), KP zbroi (napis), wymagana Siła, utrudnienie do Ukrywania
+    się, ładunki (liczba) i odnawianie (napis). Sekcje broni i zbroi na karcie — gdy pola wypełnione.
+  * **Zaklęcie** (jeśli wejdzie): poziom (0 = sztuczka), szkoła, czas rzucania, zasięg, komponenty,
+    materiały, czas trwania, opis, na wyższych poziomach, klasy (napis); tagi koncentracja i rytuał;
+    filtry poziom i szkoła; sortowanie nazwa i poziom. Filtr po klasie — decyzja o formacie przy
+    etapie 8.
+* **Wpisy przykładowe w paczce dostarczanej z systemem** (autor, 2026-09-26): mechanizm zadeklarowany
+  w `architecture.md`, *Paczki, wczytywanie, bezpieczeństwo* — obok programu, tylko do odczytu, ten sam
+  loader i rejestr, logika nie rozróżnia źródła. W kodzie go nie ma (`code-state.md`, *Dług*) — porcja
+  3b. Paczka niesie przypisanie SRD (CC-BY 4.0).
 * **Treść przykładowa z SRD albo własna** (architekt, 2026-09-26): SRD 5.1/5.2 jest na licencji CC-BY
   4.0 — paczka niesie przypisanie autorstwa; nazwy i opisy tłumaczymy sami. Nie przepisujemy potworów
   ani przedmiotów spoza SRD.
@@ -176,9 +198,18 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Wpis JSON nie zmienia formatu ani o znak** (`collaboration.md`, *Warstwa treści*): koperta wpisu
   stoi; zmieniają się najwyżej pola `values` rekordu typu (tak jak wyzwanie i PD). Sprawdzić
   z *Deklaracją treści* przed propozycją zmian.
-* **Gdzie mieszkają wpisy przykładowe — do ustalenia w wycinku 1.** Paczek dostarczanych z systemem nie
-  ma w kodzie (`code-state.md`, *Dług*); paczki autora leżą w jego katalogu dokumentów, poza
-  repozytorium. Testy formatu działają na paczkach wzorcowych w repozytorium.
+* **Zwiad danych, 2026-09-26** (39 kroków, 4 min) — do briefów porcji 3b–5:
+  * Deserializacja `values` ścisła, ale **`"rarity": null` przechodzi** (brak `RespectNullableAnnotations`);
+    podejrzenie, niemierzone: wysypie zakładkę przy kolorze odznaki. Porcja z rekordami potwierdza
+    testem i poprawia.
+  * Nowe pole `required` psuje kompilację testów budujących `new Monster{…}`/`new Gear{…}`
+    (`ContentTabsTests`, `CampaignInstancesToolViewModelTests`) — dlatego pola opcjonalne.
+  * Komentarz `Monster.cs:11` wskazuje nieistniejący plik szablonu — poprawić przy okazji.
+  * Kolory rzadkości to pędzle w kodzie systemu (`Dnd5eSystem`), nie tokeny motywu — zgodnie
+    z *Kolorami po znaczeniu*.
+  * Paczki autora = kopia paczki testowej `dnd5e` (hobgoblin, eliksir) plus nieczytany katalog
+    `templates/` ze starego formatu. **Id paczki dostarczanej nie może być `dnd5e`** — zderzyłoby się
+    z kopią u autora; zachowanie loadera przy powtórzonym id paczki sprawdzić w porcji 3b.
 * **Czeka na autora** (z kolejki, 2026-09-24): ręczne przeniesienie kampanii do
   `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs` i `Campaigns` nie są czytane); dopisanie
   `group` potworom.
@@ -215,4 +246,6 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * Werdykt o Avalonii → `decisions.md` (*Ustalenia*, *Punkt kontrolny*); tabela *Pomiar porcji* razem
   z nim.
 * Rozstrzygnięcia o kartach i liście, które przeżywają zadanie → `architecture.md`, *Zakładki treści*.
+* Zasada „wierność D&D 5e nie jest celem” → `architecture.md`, jeśli autor uzna ją za ogólną dla
+  systemu (zapytać przy zamknięciu).
 * Odnośnik w `tasks.md` znika; kolejka przechodzi do kroku 11.

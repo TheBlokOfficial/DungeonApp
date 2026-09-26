@@ -206,7 +206,7 @@ Wzorzec: `SystemTabs` / `CampaignTabs` w `Dnd5eSystem`.
 2. **Fabryka oddaje `ITabContent`** — gotowy `Control` plus `IDisposable`; bez własnego sprzątania
    przez `DelegateTabContent`.
 3. **Zakładka ze szkieletu biblioteki** — system składa ją sam z widoku biblioteki i własnych danych;
-   wzór: zakładka rejestru z `RegistryViewModel` (`DungeonApp.Library.Entries.Desktop`) z rejestrem
+   wzór: zakładka rejestru z `ContentTabViewModel` (`DungeonApp.Library.Entries.Desktop`, `Features/ContentTab/`) z rejestrem
    i prezentacją kart systemu.
 4. **Zwalnianie** zakładek jest sprawą ramy (`ActiveSystemSession`), nie systemu.
 

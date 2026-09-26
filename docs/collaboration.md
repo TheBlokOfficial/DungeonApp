@@ -427,6 +427,9 @@ Co jeszcze się sprawdziło:
   z 2026-09-26. Brief podaje wykonawcy gotowe polecenie wyszukiwania (albo każe je napisać i wkleić do
   raportu), a architekt przy weryfikacji uruchamia je jeszcze raz na gałęzi wykonawcy. Zdanie „reszta
   jest w użyciu” w raporcie nie jest dowodem kompletności — polecenie jest.
+* **Brief zwiadu pyta tylko o to, czego dokumenty nie mówią.** Decyzja autora z 2026-09-26. Przed
+  briefem każde pytanie sprawdza się w dokumentach wskazanych dla etapu. To, co mówią, brief podaje
+  jako założenie do potwierdzenia jednym zdaniem, nie jako pytanie do zbadania.
 * **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
   nie tylko wymiar** — i próbkuje piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
 
