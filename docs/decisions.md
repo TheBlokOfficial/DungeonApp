@@ -409,7 +409,12 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   „biały czy szary mi nie pasuje”. Architekt proponował szary kosz jaśniejący pod myszą, bo czerwień
   znaczyła „zepsute albo nieodwracalne”, a kampania idzie do kosza systemu. Autor rozszerzył znaczenie
   czerwieni o „usuwa” — konwencja wielu aplikacji; kosz i tak widać tylko pod myszą i na wybranym
-  wierszu, więc lista nie czerwienieje.
+  wierszu, więc lista nie czerwienieje. Po rundzie 1 (2026-09-26) kosz widać zawsze, więc jest szary
+  w spoczynku i czerwony pod myszą — lista nadal nie czerwienieje.
+* **Wyzwanie bez zakreślenia** — autor, 2026-09-26, po rundzie 1 porcji 8b: zakreślenie kończy się
+  dokładnie na literach i pojedyncza wartość w kolumnie nie ma oddechu. Zakreślenie zostaje dla
+  fragmentu w zdaniu (trafienie wyszukiwania); wartość w kolumnie i w parze etykieta–wartość jest
+  zwykłym tekstem krojem liczb. Wcześniejsza decyzja — wyzwanie nie jest odznaką — obowiązuje dalej.
 * **Czytelność z pomiaru, nie z oka** — architekt, 2026-09-24, po obejrzeniu galerii powierzchni.
   Przygaszony tekst miał 3,1–3,4:1, a norma WCAG AA dla małego tekstu to 4,5:1 — i właśnie ten kolor
   niosą najmniejsze napisy. Czerwień „niebezpieczeństwa" jako tekst: 2,6–2,9:1, a malowała nazwy wpisów
@@ -461,6 +466,16 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   pas szerokości paska. **Pasek przy krawędzi pojemnika** — architekt, tego samego dnia, na pytanie
   autora o wyśrodkowanie paska w jego pasie: konwencja okienkowa; pasek należy do pojemnika, nie do
   treści, a przy krawędzi łatwiej go trafić. Odrzucone: pasek wyśrodkowany między treścią a krawędzią.
+  **Zastąpione nakładką** (niżej) po rundzie 1: stały pas zostawiał pusty margines w krótkich listach
+  rozwijanych, a pasek w nim nie był wyśrodkowany.
+* **Pasek przewijania jako nakładka** — autor, 2026-09-26, po rundzie 1 porcji 8b; architekt poparł.
+  Stały pas (wyżej) usunął skakanie wierszy, ale zostawił pusty margines w listach, które się mieszczą,
+  a pasek bez odstępu od góry i dołu wyglądał, jakby wyjeżdżał poza zaokrąglone rogi. Nakładka —
+  konwencja Windows 11 i macOS — godzi wszystko: nic nie skacze, nic nie zostaje puste. Warunek
+  architekta: treść nie wchodzi pod pasek (większy odstęp wewnętrzny po jego stronie), sięga tam tylko
+  tło wiersza. Pasek widoczny zawsze przy przepełnieniu, nie tylko pod myszą (architekt) — sam jego
+  widok mówi, że jest więcej pozycji. Odrzucone: pas zarezerwowany zawsze; pas tylko przy potrzebie
+  (wiersze przeskakują).
 * **Znaki powszechne bez podpowiedzi** — autor, 2026-09-25: krzyżyk w polu wyszukiwania (po rundzie 1
   porcji 2), kosz w wierszu (po porcji 8b, „niepotrzebna podpowiedź”). Znak, który każdy zna, niczego
   nie zyskuje na podpowiedzi, a ona wyskakuje przy każdym najechaniu.
@@ -469,6 +484,12 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   przełączał podświetlenie wiersza i kosza, a zaokrąglone tło pod koszem wyglądało w wierszu obco. To
   samo rozwiązanie co ikony w polach do pisania. Widoczność tylko pod myszą i na wybranym — żeby lista
   nie była kolumną koszy; miejsce zarezerwowane, żeby tekst wiersza nie skakał.
+  **Zmienione po rundzie 1** (autor, 2026-09-26): kosz widoczny zawsze — w spoczynku szary jak strzałka
+  i data wiersza, czerwony pod myszą; wiersz zostaje podświetlony nad koszem, bo kosz należy do wiersza
+  (wyłączenie podświetlenia miało chronić przed miganiem, którego pas pełnej wysokości i tak już nie
+  daje). Czerwień w spoczynku odrzucona (architekt): kolumna czerwonych ikon zrobiłaby z ostrzeżenia
+  tło listy; poświata ikony — obca aplikacjom okienkowym. Jaśniejsza czerwień pod myszą była za słabą
+  zmianą — szary → czerwony jest wyraźna.
 
 **Odrzucone w tym temacie:** „Generyczne prymitywy UI dla danych", „Jedna uniwersalna forma
 pośrednia", „Karta składana z listy elementów podanej przez dane", „Interfejs w HTML-u (Blazor

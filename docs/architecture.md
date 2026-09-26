@@ -687,15 +687,16 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   neutralną, bez akcentu. Ikona na początku pola, przycisk czyszczenia i strzałki pola liczbowego stoją
   obok obszaru tekstu, nie w nim: strzałka myszy, kliknięcie nie stawia karetki i nie zaznacza tekstu.
   Pod myszą jaśnieje sam rysunek, bez tła; ikona na początku pola nie reaguje wcale.
-* **Akcja w wierszu listy** (kosz): widoczna tylko pod myszą i na wybranym wierszu, a jej miejsce jest
-  zarezerwowane zawsze. Obszar trafienia to cały pas na końcu wiersza, na jego pełnej wysokości;
-  gdy mysz jest w tym pasie, wiersz się nie podświetla. Pod myszą jaśnieje sam rysunek, bez tła.
+* **Akcja w wierszu listy** (kosz): widoczna zawsze, w spoczynku kolorem przygaszonym jak inne znaki
+  wiersza (strzałka, data); pod myszą przyjmuje barwę swojego znaczenia (kosz — czerwień), bez tła.
+  Obszar trafienia to cały pas na końcu wiersza, na jego pełnej wysokości. Akcja należy do wiersza:
+  wiersz zostaje podświetlony, gdy mysz jest nad nią.
 * **Znaki powszechne nie mają podpowiedzi** — kosz, krzyżyk zamykający i czyszczący. Podpowiedź
   dostaje to, czego znak nie mówi sam.
-* **Pasek przewijania** pokazuje się tylko wtedy, gdy treść się nie mieści, ale jego pas jest
-  zarezerwowany zawsze — pojawienie się ani zniknięcie paska nie zmienia szerokości treści. Pasek stoi
-  przy krawędzi pojemnika; treść kończy się przed jego pasem z tym samym odstępem co od przeciwnej
-  krawędzi. Wyjątek: menu — treść otwartego menu się nie zmienia, więc pas jest tylko przy potrzebie.
+* **Pasek przewijania jest nakładką**: widoczny zawsze, gdy treść się nie mieści, i nie zabiera jej
+  miejsca — pojawienie się ani zniknięcie paska nie zmienia układu. Stoi przy krawędzi pojemnika
+  z jednakowym odstępem od niej i od obu końców. Tło wierszy sięga pod pasek; treść (napisy, odznaki,
+  akcje) kończy się przed nim, bo pojemnik ma po stronie paska odpowiednio większy odstęp wewnętrzny.
   Przewija jedna warstwa: lista nie stoi w drugim przewijanym obszarze.
 * **Przycisk mieści swój napis.** Szerokość bierze się z napisu; przycięcie jest wyjściem awaryjnym,
   gdy kontener wymusza wąskie miejsce, nie wyglądem przycisku.
@@ -710,9 +711,10 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 * **Kolor tekstu:** domyślnie podstawowy (jasny); drugorzędny i przygaszony nadaje się jawnie. Każdy
   kolor tekstu ma kontrast co najmniej 4,5:1 na każdej powierzchni, na której stoi. Kolor stanu, który
   jako tło tego nie spełnia, ma osobną, jaśniejszą odmianę do tekstu — o tym samym znaczeniu.
-* **Zakreślenie a odznaka — po tym, czym rzecz jest.** Wartość, która pozostaje tekstem (wyzwanie
-  „1/2", trafienie wyszukiwania), dostaje zakreślenie: styl tekstu jak pogrubienie, tło przylega do
-  liter i płynie z tekstem. Rzecz sama w sobie — kategoria, przynależność, typ („Humanoid") — dostaje
+* **Zakreślenie a odznaka — po tym, czym rzecz jest.** Fragment tekstu wyróżniony w zdaniu (trafienie
+  wyszukiwania) dostaje zakreślenie: styl tekstu jak pogrubienie, tło przylega do liter i płynie
+  z tekstem. Pojedyncza wartość — w kolumnie listy albo w parze etykieta–wartość (wyzwanie „1/2") — jest
+  zwykłym tekstem, bez zakreślenia. Rzecz sama w sobie — kategoria, przynależność, typ („Humanoid") — dostaje
   odznakę albo tag: pojemnik z wcięciem, zaokrągleniem i wysokością z motywu.
   Liczby idą krojem o stałej szerokości, nigdy krojem nagłówków.
 * **Ruch:** animacja tylko tam, gdzie coś się przemieszcza, obraca albo pojawia (gałka przełącznika,

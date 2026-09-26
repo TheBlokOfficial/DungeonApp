@@ -14,9 +14,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b obejrzane przez autora; runda 1 porcji 8b scalona 2026-09-26 (kosz w wierszu jako motyw
-ramy, kompozycje poprawione, pas paska przewijania zarezerwowany zawsze) — czeka na obejrzenie.
-Kopii roboczych brak. **Następny krok:** uwagi autora po rundzie 1; po przyjęciu — porcja 9.
+Porcje 0–8b obejrzane; runda 1 porcji 8b scalona i obejrzana 2026-09-26 — uwagi w *Ustaleniach*
+(*Porcja 8b — runda 2*). **W toku:** runda 2 — nowy wykonawca (Opus 5.5) w tle, kopia w
+`.claude/worktrees/`. **Następny krok:** weryfikacja i scalenie rundy 2, obejrzenie; po przyjęciu —
+porcja 9.
 
 ## Zakres i koniec
 
@@ -254,6 +255,14 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     znaczenie kolorów — bo te same błędy powtórzyłyby się w zleceniach A i B; nie są projektem ekranu
     (ten przyjdzie z A i B). Gdy autor uzna je za brzydkie — dopytać, co konkretnie, i ocenić, czy to
     wada klocka (poprawka w motywie), czy tylko układu galerii.
+* **Porcja 8b — runda 2** (2026-09-26; uwagi autora po rundzie 1, zielone światło tego dnia; reguły
+  i uzasadnienia już w `architecture.md` i `decisions.md`):
+  * *Wyzwanie* zwykłym tekstem krojem liczb, bez zakreślenia — w liście i na karcie (autor).
+  * *Pasek przewijania jako nakładka* (autor, architekt poparł): nic nie skacze, brak pustego pasa
+    w krótkich listach; jednakowy odstęp paska od krawędzi, góry i dołu; tło wierszy pod paskiem,
+    treść przed nim; pasek widoczny zawsze przy przepełnieniu (architekt). Wyjątek menu znika.
+  * *Kosz* widoczny zawsze, szary jak strzałka i data (`DungeonTextMutedBrush`), czerwony pod myszą;
+    wiersz podświetlony także nad koszem — mechanizm tłumienia podświetlenia wiersza znika (autor).
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
