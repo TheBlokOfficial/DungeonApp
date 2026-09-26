@@ -140,7 +140,7 @@ Drobne poprawki nie dostają własnego zlecenia. Czekają, aż wykonawca będzie
 albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collaboration.md](collaboration.md),
 *Jak zapadają decyzje*. Zlecenie, które wchodzi w dany obszar, zabiera stąd wszystko, co do niego należy.
 
-* **Pola tekstowe (motyw ramy, `DungeonControls.axaml`, `FieldIconPointer.cs`)** — uwagi autora po
+* **Pola tekstowe (motyw ramy, `DungeonControls.axaml`, `Controls/IconField.cs`)** — uwagi autora po
   rundzie 1 porcji 2, 2026-09-25:
   * Zaznaczanie jak w przeglądarce: przeciągnięcie **rozpoczęte obok tekstu** (np. w pustym miejscu
     karty) i przeprowadzone nad tekstem do zaznaczenia ma go zaznaczać — dziś trzeba trafić w sam

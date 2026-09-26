@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `42fd682`.** Na starcie sesji: `git log 42fd682..master` i `git worktree
+**Stan na: 2026-09-26, po `fc567d1`.** Na starcie sesji: `git log fc567d1..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -19,7 +19,8 @@ Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pom
 (regresja kreski i tła wiersza, symetria suwaka, pole z ikoną), runda 1c (okienka list i chip), runda
 1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
 przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
-samodzielne do listy końcowej. **W toku:** poprawki po 1b — wykonawca uruchamiany 2026-09-26.
+samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
+**Następny krok:** brief rundy 1c.
 
 ## Zakres i koniec
 
@@ -93,7 +94,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     najechanie `.subtle` w wierszu; pas ikony w polu tekstowym; ramka aktywnego chipa łagodniejsza
     (autor po 1a: pełny akcent za wyrazisty — wypełnienie wygląda jak półprzezroczyste złoto na
     szarym). Menu i pole zabrane z `tasks.md`.
-  * [ ] **Poprawki po 1b** — regresja kreski i tła wiersza (*Notki*, *Regresja 1b*); symetria
+  * [x] **Poprawki po 1b** — regresja kreski i tła wiersza (*Notki*, *Regresja 1b*); symetria
     rysowanego suwaka i pole z ikoną (*Notki*, *Po obejrzeniu 1b*).
   * [ ] **Runda 1c** — okienka list i chip (architekt, 2026-09-26: dawna 1c podzielona na dwa przebiegi
     po obszarze kodu; treść bez zmian). **Strefa paska w okienkach tylko przy przepełnieniu**
@@ -145,6 +146,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; obejrzana tego dnia — szarpanie paska i dymki na pasku stanu naprawione; uwagi (ramka w galerii myli, tabela cech nie jak projekt, tagi ciasne w pionie) i uwagi architekta idą z porcją 8b, bez rundy | 57 / 11,0 / 6,5 mln |
 | 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25; 1 (autor: pas paska zawsze i przy krawędzi, kosz w wierszu — motyw `DungeonRowAction`, pas pełnej wysokości, czerwony, bez tła i podpowiedzi; architekt: wyzwanie zakreśleniem, pasek wartości w siatce, minus U+2212, jedna warstwa przewijania, menu z pasem przy potrzebie) — scalona 2026-09-26; 2 (autor: pasek nakładką z odstępem od krawędzi, góry i dołu — stały pas zostawiał pusty margines; kosz zawsze widoczny, szary, czerwony pod myszą, wiersz podświetlony nad koszem; wyzwanie bez zakreślenia) — scalona 2026-09-26 | 52 / 8,4 / 5,4 mln + runda 1: 70 / 11,7 / 10,6 mln (z poprawką podwójnych pasów po raporcie, ten sam wykonawca) + runda 2: 40 / 9,1 / 5,8 mln |
 | 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26; 1b (kolumny `ListRow` wyśrodkowane niezależnie — styl w `BuiltInControls.axaml`; skrót i strzałka podmenu w jednej kolumnie; podmenu obok menu — `DungeonSubmenuHorizontalOffset` 11; ramka aktywnego chipa `DungeonAccentEdge` 40 %; najechanie `.subtle` nakładką `DungeonHoverOverlay`; pas ikony w polu; strefa paska od krawędzi — lista wpisów 35 → 25, okienka i menu 32 → 28, pasek w `.list-host` 11 → 7 od krawędzi; kosz kampanii — styl lokalny zostaje) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln + 1b (z dokończeniem po zatrzymaniu, ten sam wykonawca): 69 / 14,3 / 8,3 mln |
+| po 1b | regresja wiersza (selektor kolumn `ListRow` łapał korzeń szablonu — `PART_Root`); kciuk paska przy prawej krawędzi pasa (odstęp 7/7/7 w okienkach, było 9/7/7); pole z ikoną — kontrolka `IconField` owijająca `TextBox` widoku, × w ramce, `FieldIconPointer` usunięty; przeszły: wyszukiwarka treści, pole nowej kampanii, wyszukiwarka `DropDownPicker`, galeria | scalona 2026-09-26, bez oglądania (*Oglądanie zbiorcze*) | 44 / 9,4 / 4,8 mln |
 
 ## Ustalenia
 
@@ -502,6 +504,23 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     tego czasu; `tasks.md`, *A*, przy zamknięciu 1c).
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
+
+* **Lista do dużej rundy** (dopisywana po każdym przebiegu; w raporcie końcowym — pełny wzór z
+  `collaboration.md`, *Jak raportować*):
+  * *Po 1b* — (1) wiersze z kreską: lista wpisów, pasek boczny, lista kampanii, galeria *Listy* — było:
+    tło ściśnięte, bez kreski; jest: tło na pełną wysokość, kreska przy wybranym; patrzeć: tytuł
+    z odznaką równo z tytułem bez. (2) Pasek przewijania: długa lista w galerii *Listy rozwijane*,
+    menu z przewijaniem, lista wpisów — było: kciuk dalej od prawej niż od góry i dołu; jest: 7/7/7;
+    patrzeć: kciuk pod myszą poszerza się w lewo. (3) Wyszukiwarka zakładki treści — było: klik nad,
+    pod i obok lupy stawiał karetkę; jest: nie reaguje; patrzeć: położenie lupy i tekstu bez zmian,
+    krawędź pod myszą i w edycji. (4) × w wyszukiwarce — jest w ramce, nie w polu; patrzeć: czyści,
+    karetka zostaje. (5) Pole nowej kampanii (Kampanie, ołówek) — patrzeć: Enter tworzy kampanię.
+    (6) Galeria *Pola tekstowe*, wyłączone z ikoną — patrzeć: nie ciemniejsze niż zwykłe wyłączone.
+    (7) Wyszukiwarka `DropDownPicker` w galerii — patrzeć: klik w lupę nie kończy edycji, filtr działa.
+    (8) Pole liczbowe — bez zmian; patrzeć: klik tuż nad i pod strzałką nie stawia karetki.
+  * *Po 1b — rozstrzygnięte samodzielnie:* × widoczny tylko przy niepustym polu; klik w ikonę, ×
+    i krawędź ramki nie kończy edycji (cała ramka to pole); kursor nad krawędzią i odstępem za ikoną —
+    strzałka.
 
 ## Do sesji głównej
 
