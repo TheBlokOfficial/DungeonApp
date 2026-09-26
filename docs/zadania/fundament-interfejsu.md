@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `b57f232`.** Na starcie sesji: `git log b57f232..master` i `git worktree
+**Stan na: 2026-09-26, po `1592b31`.** Na starcie sesji: `git log 1592b31..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,10 +14,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b przyjęte (8b po rundzie 2, 2026-09-26). Kolejność zmieniona (autor, tego dnia): porcje
-10 i 11 razem, porcja 9 na końcu. **W toku:** porcje 10+11 — wykonawca (Opus 5.5) w tle, kopia
-w `.claude/worktrees/`; najpierw wiersz, potem chip (chip przechodzi dalej, jeśli zabraknie czasu).
-**Następny krok:** weryfikacja i scalenie, obejrzenie; potem porcja 9 — ostatnia.
+Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 — czekają na obejrzenie; brak z nich: lista
+rozwijana ramy w stroju chipa (*Notki*). Kopii roboczych brak. **Następny krok:** uwagi autora po
+10+11 razem z dokończeniem chipa; potem porcja 9 — ostatnia.
 
 ## Zakres i koniec
 
@@ -105,6 +104,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
 | 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; obejrzana tego dnia — szarpanie paska i dymki na pasku stanu naprawione; uwagi (ramka w galerii myli, tabela cech nie jak projekt, tagi ciasne w pionie) i uwagi architekta idą z porcją 8b, bez rundy | 57 / 11,0 / 6,5 mln |
 | 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25; 1 (autor: pas paska zawsze i przy krawędzi, kosz w wierszu — motyw `DungeonRowAction`, pas pełnej wysokości, czerwony, bez tła i podpowiedzi; architekt: wyzwanie zakreśleniem, pasek wartości w siatce, minus U+2212, jedna warstwa przewijania, menu z pasem przy potrzebie) — scalona 2026-09-26; 2 (autor: pasek nakładką z odstępem od krawędzi, góry i dołu — stały pas zostawiał pusty margines; kosz zawsze widoczny, szary, czerwony pod myszą, wiersz podświetlony nad koszem; wyzwanie bez zakreślenia) — scalona 2026-09-26 | 52 / 8,4 / 5,4 mln + runda 1: 70 / 11,7 / 10,6 mln (z poprawką podwójnych pasów po raporcie, ten sam wykonawca) + runda 2: 40 / 9,1 / 5,8 mln |
+| 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26 | 68 / 12,2 / 8,7 mln |
 
 ## Ustalenia
 
@@ -350,6 +350,16 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 * Porcja 8b, runda 2: kosz w wierszu kampanii dostaje wymiary lokalnym stylem widoku
   (`Button.campaign-delete`), bo motyw akcji niesie wymiary wiersza `ListBoxItem`. Porcja 10 (wiersz
   listy jako klocek) ma to zdjąć.
+* Porcje 10+11 (raport): **`DropDownPicker` nie ma stroju chipa** — kolory strzałki i tekstu
+  zastępczego są wpisane w jego szablon; trzeba je sparametryzować zamiast kopiować szablon z okienkiem.
+  Galeria pokazuje zastępczo chip + `ListBox` wielokrotny z polami wyboru, a tam wybrany wiersz ma
+  jeszcze tło akcentu — w `DropDownPicker` nie. **Lista z polami wyboru ma mieć jeden wygląd.**
+* Porcje 10+11: kosz w rekordzie kampanii zostaje z lokalnym `Button.campaign-delete` (`Margin 0,-1`),
+  bo za koszem stoi strzałka otwarcia — rozstrzyga układ rekordu (uwaga autora albo zlecenie).
+* Porcje 10+11: pasek boczny wziął stany wiersza listy — pod myszą tło wiersza listy, aktywna pozycja
+  w przygaszonym akcencie (było neutralne „aktywne”), wyłączone przygaszone jak wszędzie.
+* Porcje 10+11 → porcja 9 (nieużywane): `DungeonNavigationFontSize`; klasa `nav-content` w szablonie
+  paska bocznego bez stylu; komentarz „campaign-row rhythm” w `SystemSelectionView.axaml` nieaktualny.
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 

@@ -19,7 +19,7 @@ zmusza do jej przeliczenia, a sam fakt, że stoi zapisana, z czasem zaczyna ucho
 > sesyjna kronika na dziewięćdziesiąt linii, wbrew temu zdaniu, które w tym dokumencie już wtedy było;
 > 2026-09-23 dokument znów miał 271 linii, z czego trzy czwarte było zamkniętą historią etapów.
 
-Gałąź: `master`. Build bez ostrzeżeń, 366 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
+Gałąź: `master`. Build bez ostrzeżeń, 367 testów zielonych (w tym testy renderujące okno bez ekranu, `DungeonApp.Desktop.RenderingTests`).
 
 ---
 
@@ -77,9 +77,8 @@ Docelowy kształt — [architecture.md](architecture.md), *Zakładki treści*; w
    fundamentów rozwiązało problem".
 
 *A. Lista i filtry*
-* Kreska zaznaczenia wpisu **przed** wierszem, w odstępie (mockup: `left: -10px`) — lista ma wcięcie,
-  kontener wiersza pełnej szerokości, kreska w wcięciu; bez ujemnych marginesów. Na pasku bocznym
-  odstęp jak w mockupie (`left: -12px`) — dziś kilkakrotnie za mały.
+* ~~Kreska zaznaczenia wpisu przed wierszem, w odstępie~~ — zrobione w fundamencie (porcja 10:
+  `ListRow` na liście wpisów i pasku bocznym).
 * ~~Pasek przewijania tylko, gdy jest co przewijać~~ — zrobione w fundamencie (porcja 8b: nakładka).
 * **Wysokość i szerokość wiersza nadaje biblioteka**, nie zawartość — dziś przedmioty (pigułka
   rzadkości) mają wyższe wiersze niż potwory.
@@ -151,9 +150,6 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     tekst. Do rozstrzygnięcia przy zleceniu: zasięg (obszar wokół jednego bloku tekstu czy cała
     karta; zaznaczenie przez kilka bloków naraz to osobna, większa rzecz).
 * **Lista rozwijana ramy (`DropDownPicker`)** — po porcji 5, 2026-09-25:
-  * Nazwa pozycji to zawsze `ToString()` — brak odpowiednika `DisplayMemberBinding` (wykonawca bał
-    się ostrzeżeń analizatora przycinania przy refleksji). Potrzebne, gdy pierwszy konsument poda
-    obiekty zamiast napisów (filtr z polami wyboru, porcja 11).
   * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
 * **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
   uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które

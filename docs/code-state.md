@@ -96,12 +96,11 @@ Czego nie pilnuje nic — to sprawdza się ręcznie albo w aplikacji:
 Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 
 * **Każdy przycisk dostaje stałą wysokość — z motywu przycisku** (`Themes/DungeonControls.axaml`,
-  od porcji 1 fundamentu). `Button` użyty jako wiersz, karta, chip albo pozycja nawigacji (dziś:
-  `nav-button`, `campaign-open`, `system-option-open`, `content-row-button`, `content-chip`,
-  `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
-  usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Znikną, gdy
-  porcje wiersza i chipa dadzą im własne motywy. Kafelek ma już własny motyw (`DungeonTile`) bez
-  wysokości — wymiar podaje układający.
+  od porcji 1 fundamentu). `Button` użyty jako wiersz, karta albo element ramy (dziś:
+  `system-option-open`, `frame-action`) musi jawnie ustawić wysokość albo ją znieść (`Height = NaN`) —
+  usunięcie własnej wysokości odsłania wysokość kontrolki, nie daje rozciągania. Wiersz listy ma
+  własną kontrolkę (`ListRow`, wysokość z motywu, inną podaje lista stylem), chip z okienkiem — motyw
+  `DungeonChipOpener`, kafelek — `DungeonTile` (wymiar podaje układający).
 * **Błąd w motywie kontrolki kompiluje się i wywraca aplikację przy pierwszym użyciu kontrolki** —
   wpisy `DungeonControls.axaml` są budowane leniwie. Przykład: `ControlTheme` nie dopuszcza selektora
   potomka (`^ Typ`) poza szablonem — styl zawartości kontrolki idzie do `BuiltInControls.axaml`.
