@@ -600,7 +600,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
-        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinWidth" Value="{DynamicResource DungeonInputMinWidth}" />
         <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -758,6 +758,9 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <!-- Najmniejszą szerokość wyznacza zawartość: pole tekstowe w środku ma co najmniej
+             DungeonInputMinWidth (jak zwykłe pole), więc całość to ta wartość plus pasy ikony
+             i czyszczenia. -->
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -943,8 +946,11 @@
                                AllowSpin="{TemplateBinding AllowSpin}"
                                ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
                                ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
+                    <!-- MinWidth 0: szerokość pola liczby ustala jego motyw, nie najmniejsza szerokość
+                         zwykłego pola tekstowego (DungeonInputMinWidth). -->
                     <TextBox Name="PART_TextBox"
                              Height="NaN"
+                             MinWidth="0"
                              VerticalAlignment="Stretch"
                              Background="Transparent"
                              BorderThickness="0"

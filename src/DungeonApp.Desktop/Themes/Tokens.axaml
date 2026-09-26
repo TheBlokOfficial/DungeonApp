@@ -438,6 +438,11 @@
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonWorkspaceHeaderHeight">68</x:Double>
         <x:Double x:Key="DungeonControlHeight">36</x:Double>
+        <!-- Najmniejsza szerokość pola tekstowego (TextBox; w polu z ikoną - obszaru tekstu, więc
+             całość to ta wartość plus pasy ikony i czyszczenia). Konwencja WinUI
+             (TextControlThemeMinWidth). Szerokość właściwą nadaje kontener: pole rozciągnięte albo
+             z szerokością z układu, nigdy mierzone do wpisanego tekstu. -->
+        <x:Double x:Key="DungeonInputMinWidth">64</x:Double>
         <x:Double x:Key="DungeonNavigationRowHeight">38</x:Double>
         <!-- Wiersz listy (ListBoxItem): gęściej niż kontrolka (36) - lista to wiele pozycji jedna pod
              drugą, a wiersz niesie jedną linię tekstu 13 px. -->
