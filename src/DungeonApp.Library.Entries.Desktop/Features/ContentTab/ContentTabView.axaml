@@ -42,10 +42,6 @@
         <!-- Pill shape shared by a colored badge and a detail tag (mockup: border-radius: 999px). -->
         <CornerRadius x:Key="ContentPillCornerRadius">999</CornerRadius>
 
-        <!-- The sort button's dropdown chevron (mockup: .sort-btn svg is 9px). Filter chips carry the
-             frame's own chevron (DungeonChipOpener). -->
-        <x:Double x:Key="ContentChevronIconSize">9</x:Double>
-
         <!-- One row template shared by every entry row AND a rejected pack's own selectable header
              (docs/architecture.md, "Zakładki treści": "Odrzucona paczka... wybieralny jak wiersz") -
              both are the same ContentRowViewModel shape, so this is the one place either is drawn. -->
@@ -255,19 +251,13 @@
                         </WrapPanel>
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <Button Grid.Column="0" Classes="link" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
-                                    <TextBlock Text="{Binding SelectedSort, StringFormat='Sortuj: {0}'}" />
-                                    <dc:ForegroundIcon Width="{StaticResource ContentChevronIconSize}" Height="{StaticResource ContentChevronIconSize}"
-                                                       Source="{StaticResource DungeonIconChevronDown}" />
-                                </StackPanel>
-                                <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
-                                        <ListBox ItemsSource="{Binding SortOptions}"
-                                                 SelectedItem="{Binding SelectedSort, Mode=TwoWay}" />
-                                    </Flyout>
-                                </Button.Flyout>
-                            </Button>
+                            <!-- Klocek sortowania ramy (dc:SortPicker): menu pól i przycisk kierunku.
+                                 Kierunek wygaszony - model widoku go jeszcze nie ma; rodzaju pól (tekst /
+                                 liczba) też nie, więc menu nie pokazuje napisu kierunku. -->
+                            <dc:SortPicker Grid.Column="0"
+                                           Options="{Binding SortOptions}"
+                                           SelectedOption="{Binding SelectedSort, Mode=TwoWay}"
+                                           CanReverse="False" />
                             <Button Grid.Column="1" Classes="link" HorizontalAlignment="Right"
                                     Command="{Binding ClearFiltersCommand}"
                                     Content="Wyczyść filtry" />
