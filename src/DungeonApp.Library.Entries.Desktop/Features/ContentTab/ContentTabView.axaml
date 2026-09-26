@@ -198,11 +198,12 @@
                 <Grid RowDefinitions="Auto,Auto,*" MinHeight="0">
 
                     <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingMd}">
-                        <!-- Pole wyszukiwania z motywu ramy (TextBox.search, DungeonControls.axaml):
-                             lupa i przycisk czyszczenia należą do szablonu. -->
-                        <TextBox Classes="search"
-                                 Text="{Binding Search, Mode=TwoWay}"
-                                 PlaceholderText="Szukaj po nazwie…" />
+                        <!-- Pole wyszukiwania z motywu ramy (dc:IconField.search, DungeonControls.axaml):
+                             lupa i przycisk czyszczenia należą do ramki pola, nie do pola tekstowego. -->
+                        <dc:IconField Classes="search">
+                            <TextBox Text="{Binding Search, Mode=TwoWay}"
+                                     PlaceholderText="Szukaj po nazwie…" />
+                        </dc:IconField>
 
                         <WrapPanel>
                             <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding CategoryFilter.IsActive}"

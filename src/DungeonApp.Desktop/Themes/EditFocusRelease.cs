@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using DungeonApp.Desktop.Controls;
 
 namespace DungeonApp.Desktop.Themes;
 
@@ -41,7 +42,11 @@ internal static class EditFocusRelease
         // Kliknięcie wciąż w tym samym polu (także w przycisku wewnątrz pola, np. czyszczenia) nie
         // przerywa edycji. Pole złożone z szablonu kontrolki (np. pole liczbowe ze strzałkami) liczy
         // się w całości - granicą jest kontrolka, której szablon je zawiera.
-        var field = (focused as StyledElement)?.TemplatedParent as Visual ?? (Visual)focused;
+        // Pole z ikoną (IconField) liczy się w całości: ikona, krawędź ramki i przycisk czyszczenia
+        // należą do pola, choć leżą poza polem tekstowym.
+        var field = ((Visual)focused).FindAncestorOfType<IconField>()
+                    ?? (focused as StyledElement)?.TemplatedParent as Visual
+                    ?? (Visual)focused;
         if (e.Source is Visual source && IsInside(source, field))
         {
             return;

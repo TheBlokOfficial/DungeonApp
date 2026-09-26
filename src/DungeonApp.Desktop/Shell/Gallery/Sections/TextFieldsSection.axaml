@@ -40,35 +40,35 @@
             <!-- Z ikoną na początku -->
             <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Z ikoną" />
             <StackPanel Grid.Row="1" Grid.Column="1" Classes="field-row">
-                <TextBox PlaceholderText="Nazwa nowej kampanii">
-                    <TextBox.InnerLeftContent>
-                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
-                    </TextBox.InnerLeftContent>
-                </TextBox>
-                <TextBox Text="Kopalnia Phandelver">
-                    <TextBox.InnerLeftContent>
-                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
-                    </TextBox.InnerLeftContent>
-                </TextBox>
-                <TextBox Text="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii">
-                    <TextBox.InnerLeftContent>
-                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
-                    </TextBox.InnerLeftContent>
-                </TextBox>
-                <TextBox Text="Wyłączone" IsEnabled="False">
-                    <TextBox.InnerLeftContent>
-                        <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
-                    </TextBox.InnerLeftContent>
-                </TextBox>
+                <controls:IconField Icon="{StaticResource DungeonIconPencil}">
+                    <TextBox PlaceholderText="Nazwa nowej kampanii" />
+                </controls:IconField>
+                <controls:IconField Icon="{StaticResource DungeonIconPencil}">
+                    <TextBox Text="Kopalnia Phandelver" />
+                </controls:IconField>
+                <controls:IconField Icon="{StaticResource DungeonIconPencil}">
+                    <TextBox Text="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                </controls:IconField>
+                <controls:IconField Icon="{StaticResource DungeonIconPencil}" IsEnabled="False">
+                    <TextBox Text="Wyłączone" />
+                </controls:IconField>
             </StackPanel>
 
             <!-- Wyszukiwania -->
             <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Wyszukiwania" />
             <StackPanel Grid.Row="2" Grid.Column="1" Classes="field-row">
-                <TextBox Classes="search" PlaceholderText="Szukaj po nazwie…" />
-                <TextBox Classes="search" Text="goblin" />
-                <TextBox Classes="search" Text="smok czerwony dorosły z legowiskiem w górach" />
-                <TextBox Classes="search" Text="Wyłączone" IsEnabled="False" />
+                <controls:IconField Classes="search">
+                    <TextBox PlaceholderText="Szukaj po nazwie…" />
+                </controls:IconField>
+                <controls:IconField Classes="search">
+                    <TextBox Text="goblin" />
+                </controls:IconField>
+                <controls:IconField Classes="search">
+                    <TextBox Text="smok czerwony dorosły z legowiskiem w górach" />
+                </controls:IconField>
+                <controls:IconField Classes="search" IsEnabled="False">
+                    <TextBox Text="Wyłączone" />
+                </controls:IconField>
             </StackPanel>
 
             <!-- Wielowierszowe -->

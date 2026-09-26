@@ -36,7 +36,9 @@
             <!-- A + B: lista z filtrami i usuwaniem -->
             <StackPanel Width="520" Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="overline-sm muted" Text="LISTA Z FILTRAMI" />
-                <TextBox Name="SearchBox" Classes="search" PlaceholderText="Szukaj po nazwie…" />
+                <controls:IconField Classes="search">
+                    <TextBox Name="SearchBox" PlaceholderText="Szukaj po nazwie…" />
+                </controls:IconField>
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingMd}">
                     <WrapPanel Name="TypeChips"
                                ItemSpacing="{DynamicResource DungeonSpacingXs}"

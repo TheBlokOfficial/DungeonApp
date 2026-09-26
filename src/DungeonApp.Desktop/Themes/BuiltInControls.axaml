@@ -20,11 +20,20 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
-    <!-- Ikona w polu tekstowym (ołówek, lupa): rozmiar ikony akcji. Mieszka tu, a nie w motywie pola
-         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka. -->
-    <Style Selector="TextBox controls|ForegroundIcon">
-        <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
-        <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
+    <!-- Pole tekstowe w polu z ikoną (controls:IconField): ramkę, tło, wysokość i przygaszenie niesie
+         ramka pola z ikoną, więc pole tekstowe w środku jest bez krawędzi i tła, wypełnia wnętrze
+         ramki na pełnej wysokości, nie przygasza się drugi raz (Opacity 1 także wyłączone), a tekst
+         zaczyna się tuż za odstępem ikony (DungeonInputTextAfterIconMargin). Mieszka tu, a nie
+         w motywie pola z ikoną (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora
+         potomka. -->
+    <Style Selector="controls|IconField > TextBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonInputTextAfterIconMargin}" />
+        <Setter Property="Opacity" Value="1" />
     </Style>
 
     <!-- Wiersz listy z kolumnami (controls:ListRow z Grid jako treścią, np. nazwa wpisu i odznaka):

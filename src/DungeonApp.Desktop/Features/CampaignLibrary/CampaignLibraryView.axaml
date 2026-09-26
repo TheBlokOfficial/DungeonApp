@@ -101,15 +101,14 @@
                 <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                     <TextBlock Classes="eyebrow" Text="NOWA KAMPANIA" />
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
-                        <TextBox PlaceholderText="Nazwa nowej kampanii"
-                                 Text="{Binding NewCampaignName, Mode=TwoWay}">
-                            <TextBox.InnerLeftContent>
-                                <controls:ForegroundIcon Source="{StaticResource DungeonIconPencil}" />
-                            </TextBox.InnerLeftContent>
-                            <TextBox.KeyBindings>
-                                <KeyBinding Gesture="Enter" Command="{Binding CreateCommand}" />
-                            </TextBox.KeyBindings>
-                        </TextBox>
+                        <controls:IconField Icon="{StaticResource DungeonIconPencil}">
+                            <TextBox PlaceholderText="Nazwa nowej kampanii"
+                                     Text="{Binding NewCampaignName, Mode=TwoWay}">
+                                <TextBox.KeyBindings>
+                                    <KeyBinding Gesture="Enter" Command="{Binding CreateCommand}" />
+                                </TextBox.KeyBindings>
+                            </TextBox>
+                        </controls:IconField>
                         <Button Grid.Column="1"
                                 Classes="primary"
                                 Content="+  Utwórz"
