@@ -2466,7 +2466,9 @@
 
     <!--
         Lista rozwijana ramy (controls:DropDownPicker) - wybór wielokrotny i/lub wyszukiwanie; lista
-        pojedyncza bez wyszukiwania to ComboBox wyżej. Zamknięta wygląda i zachowuje się jak ComboBox
+        pojedyncza bez wyszukiwania to ComboBox wyżej. Kolory tekstu zastępczego i strzałki oraz odstęp
+        przed strzałką to właściwości kontrolki (PlaceholderForeground, GlyphForeground, GlyphSpacing),
+        które ustawia motyw - strój chipa (DungeonChipPicker niżej) bierze ten sam szablon. Zamknięta wygląda i zachowuje się jak ComboBox
         (te same wysokość, tło, krawędź, wcięcie, chevron, stany: spoczynek, najechanie, wciśnięcie,
         otwarta = najechanie i chevron w dół, zamknięta - w prawo, obrót ruchem; wyłączenie). Treść zamkniętej: nic nie wybrane - tekst
         zastępczy; jedna pozycja - jej nazwa; więcej - nazwa pierwszej i "+N"; przycięte wielokropkiem.
@@ -2498,41 +2500,53 @@
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Focusable" Value="True" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+        <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        <Setter Property="GlyphSpacing" Value="{DynamicResource DungeonSpacingMd}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,Auto">
+                <Panel>
                     <Border Name="PART_BorderElement"
-                            Grid.ColumnSpan="2"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}" />
-                    <TextBlock Name="PART_Placeholder"
-                               Grid.Column="0"
-                               Margin="{TemplateBinding Padding}"
-                               VerticalAlignment="Center"
-                               Text="{TemplateBinding PlaceholderText}"
-                               Foreground="{DynamicResource DungeonInputPlaceholderBrush}"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap"
-                               IsVisible="{TemplateBinding SummaryText, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
-                    <TextBlock Name="PART_Summary"
-                               Grid.Column="0"
-                               Margin="{TemplateBinding Padding}"
-                               VerticalAlignment="Center"
-                               Text="{TemplateBinding SummaryText}"
-                               Foreground="{TemplateBinding Foreground}"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap" />
-                    <controls:ForegroundIcon Name="PART_DropDownGlyph"
-                                             Grid.Column="1"
-                                             Width="{DynamicResource DungeonActionIconSize}"
-                                             Height="{DynamicResource DungeonActionIconSize}"
-                                             Margin="0,0,12,0"
-                                             VerticalAlignment="Center"
-                                             IsHitTestVisible="False"
-                                             Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                             Source="{DynamicResource DungeonIconChevronDown}" />
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{TemplateBinding GlyphSpacing}">
+                            <ContentPresenter Name="PART_Placeholder"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding PlaceholderText}"
+                                              Foreground="{TemplateBinding PlaceholderForeground}"
+                                              TextBlock.TextTrimming="CharacterEllipsis"
+                                              TextBlock.TextWrapping="NoWrap"
+                                              IsVisible="{TemplateBinding IsPlaceholderShown}"
+                                              themes:TrimmedLabelToolTip.IsEnabled="True" />
+                            <TextBlock Name="PART_Summary"
+                                       VerticalAlignment="Center"
+                                       Text="{TemplateBinding SummaryText}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       IsVisible="{TemplateBinding ShowsSelectionCount, Converter={x:Static BoolConverters.Not}}" />
+                            <!-- Za nazwą: odznaka z liczbą wybranych (tylko w stroju chipa) i strzałka;
+                                 niewidoczna odznaka nie zostawia odstępu. -->
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="{TemplateBinding GlyphSpacing}">
+                                <controls:Badge Name="PART_SelectionCount"
+                                                Content="{TemplateBinding SelectedCount}"
+                                                IsVisible="{TemplateBinding IsSelectionCountShown}" />
+                                <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                                         Width="{DynamicResource DungeonActionIconSize}"
+                                                         Height="{DynamicResource DungeonActionIconSize}"
+                                                         VerticalAlignment="Center"
+                                                         IsHitTestVisible="False"
+                                                         Foreground="{TemplateBinding GlyphForeground}"
+                                                         Source="{DynamicResource DungeonIconChevronDown}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                     <Popup Name="PART_Popup"
                            WindowManagerAddShadowHint="False"
                            IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
@@ -2578,13 +2592,11 @@
                             </StackPanel>
                         </FlyoutPresenter>
                     </Popup>
-                </Grid>
+                </Panel>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:pointerover:not(.hover-suppressed) /template/ Border#PART_BorderElement,
-                       ^:pressed /template/ Border#PART_BorderElement,
-                       ^:dropdownopen /template/ Border#PART_BorderElement">
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:dropdownopen">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
         <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę (tam, gdzie lista się pojawiła); obrót ruchem (DungeonMotionDuration,
@@ -2609,6 +2621,73 @@
         </Style>
         <Style Selector="^[IsEnabled=False]">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Lista rozwijana w stroju chipa filtra (controls:DropDownPicker z
+        Theme="{StaticResource DungeonChipPicker}"): rząd filtrów, w którym każdy filtr wybiera z listy.
+        Ten sam szablon co DropDownPicker wyżej (okienko, wiersze, wyszukiwanie, ruch otwarcia,
+        strzałka) - motyw ustawia tylko wygląd zamkniętego z zasobów chipa (DungeonChip,
+        DungeonChipOpener): wysokość DungeonChipHeight (28, jawnie), zaokrąglenie
+        DungeonControlCornerRadius, wcięcie DungeonChipPadding, pismo interfejsu 12 Medium, krawędź
+        zawsze 1 px, strzałka w kolorze tekstu, odstęp przed nią DungeonSpacingXs.
+        Treść zamkniętego: zawsze nazwa filtra (PlaceholderText), przycięta wielokropkiem z podpowiedzią;
+        gdy coś wybrane - za nazwą liczba wybranych w odznace neutralnej (Badge), przy zerze bez odznaki.
+        Stany (jak DungeonChipOpener):
+          spoczynek        - tło BackstageRow, krawędź Border, tekst i strzałka TextRegular;
+          najechanie       - krawędź BorderStrong, tekst i strzałka TextPrimary
+                             (:pointerover:not(.hover-suppressed)); wciśnięcie - jak najechanie;
+          otwarty          - jak najechanie (:dropdownopen); po zamknięciu kliknięciem w siebie spoczynek,
+                             dopóki mysz nie zjedzie (Themes/OpenerHoverRest.cs);
+          coś wybrane (:has-selection) - tło AccentDim, krawędź Accent, tekst i strzałka AccentOnDim; pod
+                             myszą, wciśnięty i otwarty bez zmian;
+          wyłączony        - DungeonDisabledOpacity, wygląd spoczynku; z wyborem traci akcent (tło
+                             SurfaceActive, krawędź Border, tekst TextRegular).
+        Fokus bez wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="DungeonChipPicker"
+                  TargetType="controls:DropDownPicker"
+                  BasedOn="{StaticResource {x:Type controls:DropDownPicker}}">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonChipPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="GlyphSpacing" Value="{DynamicResource DungeonSpacingXs}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="ShowsSelectionCount" Value="True" />
+
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:dropdownopen">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+            <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+            <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <!-- Coś wybrane: w każdym stanie myszy i otwarcia ten sam - jawnie, nie przez kolejność stylów. -->
+        <Style Selector="^:has-selection, ^:has-selection:pointerover, ^:has-selection:pressed, ^:has-selection:dropdownopen">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+            <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+            <Setter Property="GlyphForeground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+            <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonTextRegularBrush}" />
+            <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^:has-selection:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
         </Style>
     </ControlTheme>
 
