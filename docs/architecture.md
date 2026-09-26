@@ -720,7 +720,8 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
 * **Ruch:** animacja tylko tam, gdzie coś się przemieszcza, obraca albo pojawia (gałka przełącznika,
   strzałka listy rozwijanej, rozwijanie sekcji); najwyżej 150 ms, z wyhamowaniem; stan zmienia się
   od razu, animacja tylko go dogania — nic nie czeka na ruch. Najechanie i zaznaczenie zmieniają kolor
-  od razu. Wyłączone animacje w systemie wyłączają je w aplikacji.
+  od razu. Treść rozwiniętej sekcji wyłania się jak okienko (niżej); wysokość się nie animuje — to,
+  co pod sekcją, przesuwa się od razu. Wyłączone animacje w systemie wyłączają je w aplikacji.
 * **Okienko i lista rozwijana:** wysuwa się pod tym, co je otworzyło, wyrównane do jego lewej
   krawędzi, z małym odstępem; gdy pod spodem brak miejsca — nad nim, z tym samym odstępem, nigdy na
   nim. Co je otworzyło, wygląda jak pod myszą, dopóki okienko jest otwarte; zamknięte kliknięciem

@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `2253dbe`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
+**Stan na: 2026-09-26, po `08320f3`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -14,12 +14,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane — uwagi autora zapisane
-w *Ustaleniach* (*Porcje 10+11 — uwagi autora*), nierozstrzygnięte; brak z porcji: lista rozwijana
-ramy w stroju chipa (*Notki*). Kopii roboczych brak. **Następny krok (nowa sesja):** rozstrzygnąć
-uwagi z autorem i napisać brief rundy 1 porcji 10+11 — uwagi + dokończenie chipa (strój chipa dla
-`DropDownPicker`, jeden wygląd listy z polami wyboru, zamknięty chip: nazwa filtra + licznik
-zaznaczonych — propozycja architekta pokazana autorowi, bez sprzeciwu); potem porcja 9 — ostatnia.
+Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi autora rozstrzygnięte tego
+dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
+i lista wyboru), 1b (wiersze, przewijanie, menu), 9a, 9b. **W toku: przebieg 1a** — wykonawca
+w tle, gałąź `fundament-10-11-r1a`, kopia `.claude/worktrees/fundament-10-11-r1a`.
 
 ## Zakres i koniec
 
@@ -85,10 +83,20 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   * **11** — klocek: chip z listą wyboru — chip dostaje najechanie i stan otwarcia (dziś lokalny
     styl chipa przykrywa najechanie z motywu, więc otwarty chip wygląda jak w spoczynku; po rundzie 1
     porcji 5); strzałka jak w liście rozwijanej.
+  * **Runda 1a** — chip i lista wyboru: `DropDownPicker` w stroju chipa, jeden wygląd listy z polami
+    wyboru, zamknięty chip z nazwą filtra i licznikiem; ramka aktywnego chipa; wyłonienie treści
+    sekcji rozwijanej (ten sam ruch co okienko).
+  * **Runda 1b** — wiersze, przewijanie, menu, w kolejności ważności: tytuł wiersza o piksel wyżej;
+    strefa paska w listach i menu; skrót w linii ze strzałką podmenu; podmenu bez nachodzenia;
+    najechanie `.subtle` w wierszu; pas ikony w polu tekstowym. Menu i pole zabiera z `tasks.md`,
+    *Poprawki czekające na obszar* — skreślić tam przy briefie.
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
-  istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz) — odcięcie
-  motywu domyślnego biblioteki; usunięcie tokenów bez użycia (lista w raporcie 0b: m.in.
-  `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`).
+  istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
+  (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
+  * **9a** (Opus) — odcięcie motywu domyślnego biblioteki.
+  * **9b** (Haiku) — usunięcie tokenów i stylów bez użycia (lista w raporcie 0b: m.in.
+    `DungeonSuccessBrush`, `DungeonPaddingXl`, `DungeonNavigationRowHeight`; z porcji 10+11 —
+    *Notki*).
 
 **Pomiar porcji** — materiał do punktu kontrolnego. „Rundy" to poprawki od autora, „pomiar" — kroki
 / minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
@@ -128,7 +136,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   i skąd. To nie jest grzebanie w bibliotekach, którego zabrania definicja wykonawcy.
 * **Fokus: dziś żadnego widocznego** — tylko najechanie i zaznaczenie. Autor: aplikacja będzie
   docelowo „keyboard first"; wtedy fokus pokazuje się wyłącznie, gdy użytkownik zaczął używać
-  klawiatury. Do zrobienia z obsługą klawiatury, nie w fundamencie.
+  klawiatury. Do zrobienia z obsługą klawiatury, nie w fundamencie — tak samo strzałki po wierszach
+  listy rozwijanej ramy (autor, 2026-09-26).
 * **Porcja 6 — rozstrzygnięcia architekta** (2026-09-25; wiążą rundy porcji):
   * *Wybrane = akcent przygaszony w tle + akcent w tekście* — zakładka i segment tak samo jak wybrany
     wiersz, plus pogrubienie z miejscem zarezerwowanym w każdym stanie (autor po obejrzeniu — reguła
@@ -143,8 +152,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     zminimalizowane okna biurka (dziś lokalny styl). Kafelek do zaznaczania — przy pierwszym
     konsumencie.
   * *Sekcja rozwijana*: strzałka po lewej, w prawo → w dół jak w liście rozwijanej, obrót ruchem;
-    treść pojawia się od razu (bez animacji wysokości), wcięta do napisu nagłówka; rozwija się tylko
-    w dół.
+    treść wyłania się ruchem okienka (bez animacji wysokości — zmienione w rundzie 1 porcji 10+11),
+    wcięta do napisu nagłówka; rozwija się tylko w dół.
   * *Okruszki* — kontrolka ramy: odcinki nieklikalne (nie ma dokąd nawigować), przy braku miejsca
     skraca się ślad, bieżący odcinek na końcu.
 * **Porcja 7a — rozstrzygnięcia architekta** (2026-09-25):
@@ -287,21 +296,29 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     przygaszony akcent. W aplikacji chipy filtrów zakładki treści przechodzą na motyw bez zmiany
     semantyki filtrów (ta należy do zlecenia A). W galerii — lista wartości z polami wyboru
     (docelowy filtr zlecenia A); `DropDownPicker` dostaje nazwę pozycji z wiązania (`tasks.md`).
-* **Porcje 10+11 — uwagi autora** (2026-09-26, po obejrzeniu; „do rozpatrzenia”, nie rozstrzygnięte):
-  * *Tytuł wiersza wpisu stoi o piksel wyżej w Przedmiotach niż w Potworach* — autor podejrzewa
-    odznakę/tag w wierszu przedmiotu wobec zwykłego tekstu w potworach. Do diagnozy: wyśrodkowanie
-    w pionie nie może zależeć od zawartości sąsiedniej kolumny.
-  * *Wartość wyzwania (potwory) i odznaka (przedmioty) nie przylegają do prawej* — margines po prawej
-    dużo większy, niż się wydaje, że powinien. Do sprawdzenia: prawdopodobnie `DungeonScrollBarZone`
-    doliczana zawsze (także gdy lista się mieści) plus wcięcie wiersza — ocenić, czy strefa paska
-    ma być tylko przy przepełnieniu, czy mniejsza.
-  * *Sekcja rozwijana bez ruchu* — autor: listy rozwijane wyłaniają się ruchem, sekcja nie; ujednolicić.
-    **Sprzeczne z ustaleniem porcji 6** (treść od razu, bez animacji wysokości) — do rozstrzygnięcia;
-    wyłonienie treści (przezroczystość + dosunięcie, jak okienko) nie jest animacją wysokości
-    i mieści się w regule *Ruch* (`architecture.md`).
-  * *Chip aktywny traci ramkę i wygląda na mniejszy* — spoczynek: szare tło i jaśniejsza szara ramka;
-    aktywny: tło akcentu bez ramki. Ramka ma zostać w każdym stanie (np. w barwie akcentu albo tła),
-    żeby wymiar wizualny się nie zmieniał — reguła *Stany*: zmiana stanu nie zmienia wymiarów.
+* **Porcje 10+11 — runda 1** (2026-09-26; uwagi autora po obejrzeniu, rekomendacje architekta
+  przyjęte przez autora w całości tego dnia):
+  * *Tytuł wiersza wpisu stoi o piksel wyżej w Przedmiotach niż w Potworach* (odznaka/tag w wierszu
+    przedmiotu wobec zwykłego tekstu) — najpierw przyczyna, potem poprawka: każda kolumna wiersza
+    wyśrodkowana w pionie niezależnie, zawartość sąsiedniej kolumny nie przesuwa tytułu.
+  * *Za duży margines po prawej* (wyzwanie, odznaka) — strefa paska **zostaje zawsze** (strefa tylko
+    przy przepełnieniu przesuwałaby treść po usunięciu wiersza albo zmianie filtra — wbrew „nic nie
+    skacze” z 8b), ale najmniejsza: szerokość paska + jego odstęp od krawędzi, bez dublowania
+    z wcięciem wiersza. Najpierw pomiar składników do raportu. **To samo w menu** (strefa 16 stała).
+  * *Sekcja rozwijana* — treść wyłania się ruchem okienka; zastępuje ustalenie porcji 6 („treść od
+    razu”); reguła w `architecture.md`, *Ruch*, uzasadnienie w `decisions.md`.
+  * *Aktywny chip* — ramka w każdym stanie, ta sama grubość; aktywna w barwie akcentu (jaśniejsza od
+    wypełnienia, jak w spoczynku ramka jaśniejsza od szarego tła).
+  * *Dokończenie chipa:* `DropDownPicker` w stroju chipa; lista z polami wyboru ma jeden wygląd —
+    stan niesie pole, wiersz bez tła akcentu; zamknięty chip: nazwa filtra + liczba zaznaczonych
+    w odznace neutralnej.
+  * *Klawiatura w liście rozwijanej ramy* (strzałki po wierszach) — nie w fundamencie: przyszła obsługa
+    klawiatury, razem z widocznym fokusem (ustalenie *Fokus* wyżej).
+  * *Kosz w rekordzie kampanii* zostaje przed strzałką otwarcia — strzałka dotyczy całego wiersza
+    i stoi na końcu; lokalny styl wymiarów kosza zdjąć w rundzie 1b, jeśli się da.
+  * *Zaznaczanie tekstu przeciągnięciem rozpoczętym obok tekstu* (`tasks.md`, pola tekstowe) — do
+    zlecenia B (karta potwora), tam rozstrzyga się zasięg.
+  * *Suwak* — zostaje notką w `tasks.md`.
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 
@@ -373,7 +390,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   Galeria pokazuje zastępczo chip + `ListBox` wielokrotny z polami wyboru, a tam wybrany wiersz ma
   jeszcze tło akcentu — w `DropDownPicker` nie. **Lista z polami wyboru ma mieć jeden wygląd.**
 * Porcje 10+11: kosz w rekordzie kampanii zostaje z lokalnym `Button.campaign-delete` (`Margin 0,-1`),
-  bo za koszem stoi strzałka otwarcia — rozstrzyga układ rekordu (uwaga autora albo zlecenie).
+  bo za koszem stoi strzałka otwarcia — układ rozstrzygnięty (kosz przed strzałką, *Ustalenia*);
+  zdjęcie lokalnego stylu — runda 1b.
 * Porcje 10+11: pasek boczny wziął stany wiersza listy — pod myszą tło wiersza listy, aktywna pozycja
   w przygaszonym akcencie (było neutralne „aktywne”), wyłączone przygaszone jak wszędzie.
 * Porcje 10+11 → porcja 9 (nieużywane): `DungeonNavigationFontSize`; klasa `nav-content` w szablonie

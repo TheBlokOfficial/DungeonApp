@@ -147,10 +147,8 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
     ikoną — cały pas od krawędzi pola do tekstu, na pełnej wysokości, to strefa ikony ze strzałką.
   * Zaznaczanie jak w przeglądarce: przeciągnięcie **rozpoczęte obok tekstu** (np. w pustym miejscu
     karty) i przeprowadzone nad tekstem do zaznaczenia ma go zaznaczać — dziś trzeba trafić w sam
-    tekst. Do rozstrzygnięcia przy zleceniu: zasięg (obszar wokół jednego bloku tekstu czy cała
-    karta; zaznaczenie przez kilka bloków naraz to osobna, większa rzecz).
-* **Lista rozwijana ramy (`DropDownPicker`)** — po porcji 5, 2026-09-25:
-  * Strzałki klawiatury nie chodzą po wierszach; Escape zamyka.
+    tekst. **Zabiera zlecenie B** (autor, 2026-09-26) i tam rozstrzyga zasięg (obszar wokół jednego
+    bloku tekstu czy cała karta; zaznaczenie przez kilka bloków naraz to osobna, większa rzecz).
 * **Menu (motyw ramy, `DungeonControls.axaml`: `MenuItem`, `MenuFlyoutPresenter`, `ContextMenu`)** —
   uwagi autora po porcji 7a, 2026-09-25; **nie na teraz** (autor) — zabiera pierwsze zlecenie, które
   zmienia układ menu:

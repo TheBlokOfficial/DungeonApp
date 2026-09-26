@@ -439,6 +439,10 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   ociężałość. Górna granica 150 ms i zasada „stan od razu, animacja dogania", bo przy stole liczy się
   szybkość, a nie efekt. Zgoda z systemowym wyłączeniem animacji — niektórym ruch przeszkadza. Kolor
   suwaka z wartością odrzucony: zwykły suwak nie wie, czy wysoko to dobrze; znaczenie podaje widok.
+  Po porcjach 10+11 (autor, 2026-09-26): treść sekcji rozwijanej wyłania się jak okienko — pojawiała
+  się bez ruchu, choć listy rozwijane obok wyłaniają się, i autor odebrał to jako niespójność.
+  Animacja wysokości odrzucona (architekt): przez cały czas trwania przesuwa wszystko pod sekcją,
+  więc stan nie zmienia się od razu.
 * **Strzałka listy rozwijanej: w prawo → w dół** — autor, 2026-09-25, po porcji 5. Architekt
   rekomendował w dół → w górę: na wszystkich platformach strzałka w dół mówi „rozwinie się lista pod
   spodem", a w prawo to znak sekcji rozwijanej albo podmenu. Autor wybrał w prawo → w dół — jego gust
