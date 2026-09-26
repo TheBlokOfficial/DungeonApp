@@ -47,7 +47,7 @@
             <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="+4" Background="{StaticResource GalleryModifierPositiveBrush}" />
             <controls:TableCell Grid.Row="2" Grid.Column="0" Content="Zręczność" />
             <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" HorizontalContentAlignment="Center" Content="6" />
-            <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="-2" Background="{StaticResource GalleryModifierNegativeBrush}" />
+            <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Center" Content="−2" Background="{StaticResource GalleryModifierNegativeBrush}" />
         </controls:Table>
     </StackPanel>
 </UserControl>

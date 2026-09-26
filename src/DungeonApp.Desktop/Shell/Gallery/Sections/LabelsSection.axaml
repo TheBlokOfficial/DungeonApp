@@ -20,18 +20,20 @@
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Odznaki, tagi, chipy" />
 
-        <TextBlock Classes="overline-sm muted" Text="ODZNAKA - WARTOŚĆ" />
+        <!-- Odznaka niesie licznik przypięty do czegoś (liczba wpisów przy filtrze, nieprzeczytane),
+             nie wartość z karty - wartość z karty zostaje tekstem (wyzwanie: zakreślenie). -->
+        <TextBlock Classes="overline-sm muted" Text="ODZNAKA - LICZNIK" />
         <WrapPanel Classes="label-row">
             <controls:Badge Content="12" />
-            <controls:Badge Classes="accent" Content="1/2" />
-            <controls:Badge Classes="success" Content="+3" />
-            <controls:Badge Classes="warning" Content="2/3" />
-            <controls:Badge Classes="danger" Content="-2" />
-            <controls:Badge Classes="custom" Content="CR 5"
+            <controls:Badge Classes="accent" Content="3" />
+            <controls:Badge Classes="success" Content="5" />
+            <controls:Badge Classes="warning" Content="2" />
+            <controls:Badge Classes="danger" Content="1" />
+            <controls:Badge Classes="custom" Content="4"
                             Background="{StaticResource GalleryRareBackgroundBrush}"
                             Foreground="{StaticResource GalleryRareTextBrush}" />
             <controls:Badge Content="7" IsEnabled="False" />
-            <controls:Badge Classes="accent" Content="1/2" IsEnabled="False" />
+            <controls:Badge Classes="accent" Content="3" IsEnabled="False" />
         </WrapPanel>
 
         <TextBlock Classes="overline-sm muted" Text="TAG - SŁOWO" />
@@ -49,18 +51,20 @@
 
         <TextBlock Classes="caption muted" Text="Długi napis w wąskim kontenerze (120) - wielokropek, pełny w podpowiedzi" />
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-            <controls:Badge MaxWidth="120" Content="1234567890 / 9876543210" />
+            <controls:Badge MaxWidth="120" Content="1234567890 wpisów" />
             <controls:WordTag MaxWidth="120" Content="Nieumarły konstrukt żywiołu" />
             <controls:WordTag MaxWidth="120" Classes="accent" Content="Bardzo długa kategoria wpisu" />
         </StackPanel>
 
+        <!-- W wierszu listy odznaka jest neutralna, stanu albo w kolorze systemu - nie akcentu (akcent
+             to wybrany wiersz). -->
         <TextBlock Classes="caption muted" Text="W wierszu listy obok nazwy i obok tekstu 13" />
         <ListBox Width="360" SelectedIndex="1" HorizontalAlignment="Left">
             <ListBoxItem>
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
                         <controls:WordTag Content="Humanoid" />
-                        <controls:Badge Classes="accent" Content="1/4" />
+                        <controls:Badge Content="12" />
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Goblin" />
                 </DockPanel>
@@ -71,15 +75,15 @@
                         <controls:WordTag Classes="custom" Content="Rzadki"
                                           Background="{StaticResource GalleryRareBackgroundBrush}"
                                           Foreground="{StaticResource GalleryRareTextBrush}" />
-                        <controls:Badge Content="+1" />
+                        <controls:Badge Classes="warning" Content="2" />
                     </StackPanel>
                     <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Miecz płomieni" />
                 </DockPanel>
             </ListBoxItem>
         </ListBox>
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-            <TextBlock VerticalAlignment="Center" Text="Wyzwanie" />
-            <controls:Badge Classes="accent" Content="1/2" />
+            <TextBlock VerticalAlignment="Center" Text="Humanoid" />
+            <controls:Badge Content="4" />
             <TextBlock VerticalAlignment="Center" Text="typ" />
             <controls:WordTag Content="Bestia" />
         </StackPanel>

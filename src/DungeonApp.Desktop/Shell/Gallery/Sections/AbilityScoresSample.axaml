@@ -24,7 +24,7 @@
     <controls:Table ColumnDefinitions="40,40,40" RowDefinitions="40,40,40,40,40,40">
         <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="abbreviation" Content="SIŁ" />
         <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="mono" Content="-1" />
+        <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="mono" Content="−1" />
         <controls:TableCell Grid.Row="1" Grid.Column="0" Classes="abbreviation" Content="ZRC" />
         <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" Content="14" />
         <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" Content="+2" />
@@ -36,9 +36,9 @@
         <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" Content="+0" />
         <controls:TableCell Grid.Row="4" Grid.Column="0" Classes="abbreviation" Content="MDR" />
         <controls:TableCell Grid.Row="4" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="4" Grid.Column="2" Classes="mono" Content="-1" />
+        <controls:TableCell Grid.Row="4" Grid.Column="2" Classes="mono" Content="−1" />
         <controls:TableCell Grid.Row="5" Grid.Column="0" Classes="abbreviation" Content="CHA" />
         <controls:TableCell Grid.Row="5" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="5" Grid.Column="2" Classes="mono" Content="-1" />
+        <controls:TableCell Grid.Row="5" Grid.Column="2" Classes="mono" Content="−1" />
     </controls:Table>
 </UserControl>
