@@ -31,8 +31,10 @@
          każda kolumna wyśrodkowana w pionie niezależnie. Siatka wiersza ma wysokość najwyższej
          kolumny, a rozciągnięty TextBlock rysuje tekst u góry swojego pola - bez tego wyższa odznaka
          w sąsiedniej kolumnie przesuwała tytuł w górę. Mieszka tu, a nie w motywie wiersza
-         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka. -->
-    <Style Selector="controls|ListRow > Grid > :is(Control)">
+         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka.
+         Korzeń szablonu wiersza (Grid PART_Root) też jest logicznym dzieckiem wiersza - wyłączony
+         z selektora, bo pas kreski i tło PART_Highlight mają się rozciągać na wysokość wiersza. -->
+    <Style Selector="controls|ListRow > Grid:not(#PART_Root) > :is(Control)">
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

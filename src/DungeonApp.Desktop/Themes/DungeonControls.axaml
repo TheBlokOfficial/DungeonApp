@@ -1121,7 +1121,7 @@
             <ControlTemplate>
                 <!-- Przezroczyste tło zewnętrznej siatki łapie mysz także w odstępie podświetlenia i w
                      pasie kreski - najechanie nie gaśnie między wierszami. -->
-                <Grid Background="Transparent" ColumnDefinitions="Auto,*">
+                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*">
                     <Panel Name="PART_StripeGutter"
                            Width="{DynamicResource DungeonListRowStripeGutter}"
                            IsVisible="{TemplateBinding ShowsSelectionStripe}">
