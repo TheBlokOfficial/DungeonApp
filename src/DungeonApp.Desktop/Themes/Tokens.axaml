@@ -351,7 +351,8 @@
              wysuwanym (menu, podmenu, ComboBox, DropDownPicker, lista w okienku .list-host) stoi
              o wcięcie okienka (DungeonFlyoutPadding, 4) od krawędzi obszaru przewijania - dokłada
              16 - 4 = 12. Tekst kończy się wtedy 16 + wcięcie wiersza od krawędzi, jak w liście bez
-             wcięcia. -->
+             wcięcia. Okienko, którego treść mieści się bez przewijania, strefy nie ma (klasa .no-bar-zone
+             z Themes/PopupScrollBarZone.cs, ustalana przy otwarciu). -->
         <Thickness x:Key="DungeonScrollBarZoneInFlyout">0,0,12,0</Thickness>
         <x:Double x:Key="DungeonScrollThumbSize">6</x:Double>
         <x:Double x:Key="DungeonScrollThumbHoverSize">8</x:Double>

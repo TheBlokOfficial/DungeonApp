@@ -2293,7 +2293,7 @@
                                 Padding="{TemplateBinding Padding}">
                             <!-- Podświetlenie pod paskiem przewijania menu, treść przed jego strefą
                                  (liczoną od krawędzi obszaru przewijania - DungeonScrollBarZoneInFlyout). -->
-                            <Grid Margin="{DynamicResource DungeonScrollBarZoneInFlyout}">
+                            <Grid Name="ItemContent" Margin="{DynamicResource DungeonScrollBarZoneInFlyout}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
                                     <ColumnDefinition Width="*" />
@@ -2652,7 +2652,8 @@
                             <StackPanel>
                                 <!-- Pole wyszukiwania przewija się z wierszami - kończy się przed strefą
                                      paska przewijania jak treść wierszy. -->
-                                <Panel Margin="{DynamicResource DungeonScrollBarZoneInFlyout}"
+                                <Panel Name="SearchRow"
+                                       Margin="{DynamicResource DungeonScrollBarZoneInFlyout}"
                                        IsVisible="{TemplateBinding IsSearchEnabled}">
                                     <controls:IconField Classes="search" Margin="0,0,0,6">
                                         <TextBox Name="PART_SearchBox"
