@@ -12,7 +12,9 @@
             <Setter Property="Orientation" Value="Horizontal" />
             <Setter Property="Spacing" Value="{DynamicResource DungeonSpacingMd}" />
         </Style>
-        <Style Selector="StackPanel.field-row > TextBox">
+        <!-- Pole z ikoną (IconField) dostaje tę samą szerokość co pole tekstowe - bez niej, w poziomym
+             StackPanel, mierzyło się do zawartości i puste ściskało się do samej ikony. -->
+        <Style Selector="StackPanel.field-row > TextBox, StackPanel.field-row > controls|IconField">
             <Setter Property="Width" Value="200" />
         </Style>
         <Style Selector="TextBlock.row-label">
