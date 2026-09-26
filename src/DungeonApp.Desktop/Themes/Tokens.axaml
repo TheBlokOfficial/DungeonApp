@@ -422,6 +422,15 @@
         <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
              podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
         <CornerRadius x:Key="DungeonListRowHighlightCornerRadius">3</CornerRadius>
+        <!-- Kreska zaznaczenia wiersza listy (ListRow z ShowsSelectionStripe): kolor akcentu, grubość 3,
+             zaokrąglona. Stoi w pasie wcięcia po lewej stronie wiersza (tło wiersza zaczyna się za
+             pasem), przy lewej krawędzi pasa - odstęp od krawędzi tła to szerokość pasa. Szerokość pasa
+             i wcięcia pionowe kreski podaje układający listę (zasoby na poziomie listy); tu wartości
+             listy treści (mockup .entry.selected::before: left -10, top/bottom 5). -->
+        <x:Double x:Key="DungeonListRowStripeWidth">3</x:Double>
+        <CornerRadius x:Key="DungeonListRowStripeCornerRadius">1.5</CornerRadius>
+        <x:Double x:Key="DungeonListRowStripeGutter">10</x:Double>
+        <Thickness x:Key="DungeonListRowStripeInset">0,5</Thickness>
         <!-- Odznaka (wartość) i tag (słowo): jedna wysokość 22 - mieści linię tekstu 12 z oddechem 3-4 px
              i stoi na środku wiersza listy (32) i linii tekstu 13. Odznaka to prostokąt o drobnym
              zaokrągleniu 4 (jak nawigacja), tag - pigułka (połowa wysokości). Wcięcie odznaki 8,

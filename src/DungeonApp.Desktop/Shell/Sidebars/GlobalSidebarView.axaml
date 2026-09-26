@@ -13,26 +13,23 @@
     <UserControl.Resources>
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
 
-        <!-- krok 10, brief B1: the active row's own accent stripe - a separate element, offset left
-             of the row's own background pill (which sits at Margin "8,0", ContentTabView.axaml's
-             row's own gutter reasoning does not apply here: this list has no ScrollViewer, so there
-             is no viewport clip to run into), shorter than the row, rounded - matching the mockup's
-             own ".sidebar-item.active::before" (left:-12px; top:6px; bottom:6px; width:2.5px;
-             border-radius:2px), scaled to this row's own 40px height. -->
-        <x:Double x:Key="SidebarActiveStripeWidth">2.5</x:Double>
-        <Thickness x:Key="SidebarActiveStripeMargin">3,6,0,6</Thickness>
-        <CornerRadius x:Key="SidebarActiveStripeCornerRadius">2</CornerRadius>
+        <!-- Pas kreski zaznaczenia wierszy nawigacji (ListRow): odstęp kreski od tła wiersza 12,
+             wcięcie z góry i z dołu 6 (mockup .sidebar-item.active::before: left -12, top/bottom 6).
+             Pasek nie ma przewijania: wiersz nie zostawia strefy paska (DungeonScrollBarZone 0). -->
+        <x:Double x:Key="DungeonListRowStripeGutter">12</x:Double>
+        <Thickness x:Key="DungeonListRowStripeInset">0,6</Thickness>
+        <Thickness x:Key="DungeonScrollBarZone">0</Thickness>
         <!-- Shared by every row in every category - the campaign position, a Campaign-category tab,
              a System-category tab, and "Zmień system" alike - so a row's category never shows in its
              own visual shape, only in which group on the page it sits in. -->
         <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
-            <Button Classes="nav-button"
-                    Classes.active="{Binding IsActive}"
-                    Command="{Binding SelectCommand}"
-                    IsEnabled="{Binding IsEnabled}"
-                    RenderTransform="{x:Null}"
-                    Transitions="{x:Null}">
-                <Grid Classes="nav-content" ColumnDefinitions="64,*">
+            <!-- Wiersz ramy (ListRow) z kreską; aktywna pozycja = wybrana. Ikona na środku kolumny 40
+                 za pasem kreski (12) - na środku zwiniętego paska (64), tło wiersza kwadratem 40. -->
+            <controls:ListRow ShowsSelectionStripe="True"
+                              IsSelected="{Binding IsActive}"
+                              Command="{Binding SelectCommand}"
+                              IsEnabled="{Binding IsEnabled}">
+                <Grid Classes="nav-content" ColumnDefinitions="40,*">
                     <Image Width="{DynamicResource DungeonActionIconSize}"
                            Height="{DynamicResource DungeonActionIconSize}"
                            HorizontalAlignment="Center"
@@ -41,7 +38,7 @@
                     <TextBlock Grid.Column="1"
                                Classes="nav-label"
                                Classes.locked="{Binding IsLocked}"
-                               Margin="-8,0,12,0"
+                               Margin="4,0,4,0"
                                Opacity="{Binding LabelOpacity}"
                                VerticalAlignment="Center"
                                TextTrimming="CharacterEllipsis"
@@ -62,72 +59,18 @@
                         </TextBlock.RenderTransform>
                     </TextBlock>
                 </Grid>
-            </Button>
+            </controls:ListRow>
         </DataTemplate>
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- Fully custom and transition-free: navigation feedback changes immediately. Explicit
-             transparent black also prevents a future brush transition from interpolating through
-             Avalonia's named Transparent color, whose RGB channels are white. -->
-        <Style Selector="Button.nav-button">
+        <!-- Wymiary wierszy nawigacji (styl listy): wysokość 40 zamiast wysokości wiersza listy ramy,
+             bez wcięcia treści (kolumny siatki wiersza dają położenie ikony i etykiety), prawy odstęp
+             12 - tło wiersza stoi symetrycznie między pasem kreski a krawędzią paska. -->
+        <Style Selector="controls|ListRow">
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
-            <Setter Property="Background" Value="#00000000" />
-            <Setter Property="BorderBrush" Value="#00000000" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="FontSize" Value="{DynamicResource DungeonNavigationFontSize}" />
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <!-- Pasek akcentu jest nakładką o stałej szerokości, nie wcięciem
-                         przez BorderThickness: BorderThickness zmniejsza obszar wypełnienia
-                         tła, więc obramowanie przezroczyste (hover) i nieprzezroczyste
-                         (aktywny) pokrywałyby różne szerokości. Wypełnienie zawsze na pełnych
-                         granicach, a pasek warstwą na wierzchu — dzięki temu hover i stan
-                         aktywny są identyczne co do piksela poza samym paskiem. -->
-                    <Grid ClipToBounds="False">
-                        <Border Margin="8,0"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}" />
-                        <!-- krok 10, brief B1: a separate, shorter, rounded stripe offset to the left
-                             of the row's own background pill (SidebarActiveStripeMargin/Width/
-                             CornerRadius, this file's own Resources) - not a same-height overlay on
-                             its own left edge, per the mockup's ".sidebar-item.active::before". Same
-                             TemplateBinding BorderBrush carrier as before: transparent while inactive
-                             (Button.nav-button's own Background/BorderBrush setters), the accent color
-                             only once Button.nav-button.active applies. -->
-                        <Border Classes="nav-active-stripe"
-                                Width="{StaticResource SidebarActiveStripeWidth}"
-                                Margin="{StaticResource SidebarActiveStripeMargin}"
-                                HorizontalAlignment="Left"
-                                CornerRadius="{StaticResource SidebarActiveStripeCornerRadius}"
-                                Background="{TemplateBinding BorderBrush}" />
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          Padding="{TemplateBinding Padding}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter>
-        </Style>
-        <Style Selector="Button.nav-button:pointerover">
-            <Setter Property="Background" Value="{DynamicResource DungeonFrameHoverBrush}" />
-        </Style>
-        <!-- .active is hit-test-disabled (see the Button in NavigationItemTemplate), so it never
-             receives pointer events and needs no :pointerover/:pressed override of its own. -->
-        <Style Selector="Button.nav-button.active">
-            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
-        </Style>
-        <!-- A locked Campaign-category tab: greyed out and inert (docs/tasks.md, etap 1: "wyszarzone,
-             z kłódką zamiast ikony, nieklikalne"). IsEnabled="False" on the button already drops
-             pointer feedback; this only has to dim it. -->
-        <Style Selector="Button.nav-button:disabled">
-            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="Margin" Value="0,0,12,0" />
         </Style>
         <Style Selector="TextBlock.nav-label.locked">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />

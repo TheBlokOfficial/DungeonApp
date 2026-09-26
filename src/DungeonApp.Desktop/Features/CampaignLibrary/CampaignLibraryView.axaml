@@ -49,23 +49,16 @@
         <Style Selector="StackPanel.campaign-dim:disabled, TextBlock.campaign-dim:disabled, Image.campaign-dim:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
-        <!-- A full-record click target, not a button of its own.
-             Height is reset to auto so VerticalAlignment="Stretch" fills the record: the Button
-             ControlTheme (DungeonControls.axaml) gives every button DungeonControlHeight. -->
-        <Style Selector="Button.campaign-open">
+        <!-- Wiersz otwarcia (ListRow, bez wyboru i kreski) wypełnia rekord: wysokość z rekordu
+             (DungeonCampaignRowHeight), nie z wiersza listy ramy - styl listy, nie zawartość. -->
+        <Style Selector="ScrollViewer.campaign-list controls|ListRow">
             <Setter Property="Height" Value="NaN" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="0" />
         </Style>
         <!-- The trash band (DungeonRowAction) spans the record's full height: out through the
-             record's 1 px border vertically; its own height from the record, not the frame's list
-             row. -->
+             record's 1 px border vertically. Its right edge stays at its own column - the record's
+             arrow follows it, so the theme's margin out to the row's end does not apply here. -->
         <Style Selector="Button.campaign-delete">
-            <Setter Property="Height" Value="NaN" />
             <Setter Property="Margin" Value="0,-1" />
         </Style>
     </UserControl.Styles>
@@ -156,10 +149,9 @@
                                              rather than relying only on the command wiring - an
                                              unavailable campaign refuses to open at the operation
                                              level too, not only through this disabled button. -->
-                                        <Button Grid.ColumnSpan="5"
-                                                Classes="campaign-open"
-                                                Command="{Binding OpenCommand}"
-                                                IsEnabled="{Binding IsAvailable}" />
+                                        <controls:ListRow Grid.ColumnSpan="5"
+                                                          Command="{Binding OpenCommand}"
+                                                          IsEnabled="{Binding IsAvailable}" />
                                         <Grid Grid.ColumnSpan="3"
                                               ColumnDefinitions="Auto,*,Auto"
                                               ColumnSpacing="{DynamicResource DungeonSpacingSm}"

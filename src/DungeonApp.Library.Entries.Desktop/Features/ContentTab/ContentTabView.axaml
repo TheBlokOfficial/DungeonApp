@@ -29,10 +29,10 @@
         <x:Double x:Key="ContentChipFontSize">11.5</x:Double>
 
         <!-- Paddings with no matching frame token (mockup: .entry, .list-scroll, .detail-inner, .group-label, .filter-chip, .entry-badge.pill, .tag). -->
-        <Thickness x:Key="ContentRowPadding">9,8</Thickness>
-        <Thickness x:Key="ContentListScrollPadding">10,8,10,24</Thickness>
+        <Thickness x:Key="ContentRowPadding">9,0</Thickness>
+        <Thickness x:Key="ContentListScrollPadding">0,8,10,24</Thickness>
         <Thickness x:Key="ContentDetailInnerPadding">40,30,40,70</Thickness>
-        <Thickness x:Key="ContentSectionHeaderPadding">8,12,8,5</Thickness>
+        <Thickness x:Key="ContentSectionHeaderPadding">18,12,8,5</Thickness>
         <Thickness x:Key="ContentChipPadding">9,6</Thickness>
         <Thickness x:Key="ContentBadgePillPadding">7,2</Thickness>
         <Thickness x:Key="ContentTagPadding">10,3</Thickness>
@@ -45,99 +45,51 @@
              than carrying two near-identical literals for a difference this small). -->
         <x:Double x:Key="ContentChevronIconSize">9</x:Double>
 
-        <!-- Selected-row look: two SEPARATE elements, matching mockup's .entry.selected (dim
-             background) and .entry.selected::before (an accent stripe) - inset 5px top/bottom,
-             width 2.5px, radius 2px. The background is the frame's DungeonAccentDimBrush.
-             krok 10, brief A5: the previous session's own attempt (ec09015) placed the stripe OUTSIDE
-             the row via a negative left margin (-10, later found to be -6 too), matching the
-             mockup's own ".sidebar-item.active::before{ left:-12px }" positioning. Measured against
-             the real, rendered pixels (Selected_rows_stripe_renders_a_visible_pixel_at_its_own_center,
-             DungeonApp.Desktop.RenderingTests\ContentTabRenderingTests.cs): ANY negative offset here
-             renders invisible - clipped at exactly the row's own left edge regardless of corner
-             radius, of Padding vs. Margin on the list's own ItemsControl, of ClipToBounds forced
-             false on every ancestor control type between the stripe and the ScrollViewer (Panel,
-             StackPanel, ItemsPresenter, ContentPresenter, ScrollContentPresenter tried individually
-             and all together) - none of it moved the clip edge, which stayed pinned to the row's own
-             bounds. The mechanism was not identified within this step's budget - see the report.
-             Given "musi być widoczna" is the actual requirement, not the exact offset, the stripe
-             sits INSET at the row's own left edge instead (Margin left 0, not negative) - visible
-             plainly, at the cost of the mockup's own "separate element with a gap" look, which this
-             deviation is reported against. -->
-        <Thickness x:Key="ContentRowSelectionStripeMargin">0,5,0,5</Thickness>
-        <x:Double x:Key="ContentRowSelectionStripeWidth">2.5</x:Double>
-        <CornerRadius x:Key="ContentRowSelectionStripeCornerRadius">2</CornerRadius>
-
         <!-- One row template shared by every entry row AND a rejected pack's own selectable header
              (docs/architecture.md, "Zakładki treści": "Odrzucona paczka... wybieralny jak wiersz") -
              both are the same ContentRowViewModel shape, so this is the one place either is drawn. -->
         <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
-            <Panel ClipToBounds="False">
-                <Border Classes="content-row-background" Classes.selected="{Binding IsSelected}">
-                    <Button Classes="content-row-button" Command="{Binding SelectCommand}">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Text="{Binding Name}"
-                                       Classes="row-name"
-                                       IsVisible="{Binding !IsBroken}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource DungeonTextRegularBrush}" />
-                            <TextBlock Grid.Column="0" Text="{Binding Name}"
-                                       Classes="row-name"
-                                       IsVisible="{Binding IsBroken}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Foreground="{DynamicResource DungeonDangerTextBrush}" />
+            <!-- Wiersz ramy (ListRow) z kreską zaznaczenia w pasie wcięcia listy (pas zastępuje lewe
+                 wcięcie listy: ContentListScrollPadding zaczyna się od 0). Wysokość z motywu. -->
+            <dc:ListRow ShowsSelectionStripe="True"
+                        IsSelected="{Binding IsSelected}"
+                        Command="{Binding SelectCommand}"
+                        Padding="{StaticResource ContentRowPadding}">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding Name}"
+                               Classes="row-name"
+                               IsVisible="{Binding !IsBroken}"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                    <TextBlock Grid.Column="0" Text="{Binding Name}"
+                               Classes="row-name"
+                               IsVisible="{Binding IsBroken}"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource DungeonDangerTextBrush}" />
 
-                            <TextBlock Grid.Column="1" Classes="muted" Text="{Binding BadgeText}"
-                                       IsVisible="{Binding HasPlainBadge}"
-                                       VerticalAlignment="Center" />
-                            <Border Grid.Column="1"
-                                    IsVisible="{Binding HasColoredBadge}"
-                                    CornerRadius="{StaticResource ContentPillCornerRadius}"
-                                    Padding="{StaticResource ContentBadgePillPadding}"
-                                    Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}">
-                                <TextBlock Text="{Binding BadgeText}"
-                                           Foreground="{Binding BadgeBrush}"
-                                           FontSize="{StaticResource ContentChipFontSize}" />
-                            </Border>
-                        </Grid>
-                    </Button>
-                </Border>
-                <Border Classes="content-row-stripe" IsVisible="{Binding IsSelected}" />
-            </Panel>
+                    <TextBlock Grid.Column="1" Classes="muted" Text="{Binding BadgeText}"
+                               IsVisible="{Binding HasPlainBadge}"
+                               VerticalAlignment="Center" />
+                    <Border Grid.Column="1"
+                            IsVisible="{Binding HasColoredBadge}"
+                            CornerRadius="{StaticResource ContentPillCornerRadius}"
+                            Padding="{StaticResource ContentBadgePillPadding}"
+                            Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}">
+                        <TextBlock Text="{Binding BadgeText}"
+                                   Foreground="{Binding BadgeBrush}"
+                                   FontSize="{StaticResource ContentChipFontSize}" />
+                    </Border>
+                </Grid>
+            </dc:ListRow>
         </DataTemplate>
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <Style Selector="Border.content-row-background">
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonNavigationCornerRadius}" />
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-        <Style Selector="Border.content-row-background:pointerover:not(.selected)">
-            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
-        </Style>
-        <Style Selector="Border.content-row-background.selected">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-        </Style>
-        <Style Selector="Border.content-row-stripe">
-            <Setter Property="Width" Value="{StaticResource ContentRowSelectionStripeWidth}" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Margin" Value="{StaticResource ContentRowSelectionStripeMargin}" />
-            <Setter Property="CornerRadius" Value="{StaticResource ContentRowSelectionStripeCornerRadius}" />
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
-        </Style>
         <!-- krok 10, brief A5: the selected row's own name draws bolder - mockup's ".entry.selected
              .entry-title{ font-weight:600 }". The badge is untouched: the mockup leaves its color
              alone too, and the brief only asks for the row bold, not a badge recolor. -->
-        <Style Selector="Border.content-row-background.selected TextBlock.row-name">
+        <Style Selector="dc|ListRow:selected TextBlock.row-name">
             <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
-        <Style Selector="Button.content-row-button">
-            <Setter Property="Height" Value="NaN" />
-            <Setter Property="Padding" Value="{StaticResource ContentRowPadding}" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="FontWeight" Value="Normal" />
         </Style>
         <Style Selector="Button.content-chip">
             <Setter Property="Height" Value="NaN" />

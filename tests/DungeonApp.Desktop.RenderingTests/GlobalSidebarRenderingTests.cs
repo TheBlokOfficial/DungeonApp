@@ -11,6 +11,7 @@ using Avalonia.VisualTree;
 using System;
 using System.Runtime.InteropServices;
 using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Shell.Sidebars;
 
 namespace DungeonApp.Desktop.RenderingTests;
@@ -275,9 +276,9 @@ public sealed class GlobalSidebarRenderingTests
         Assert.All(headings, border => Assert.Equal(expected, border.Bounds.Height));
     }
 
-    /// <summary>Every "Button.nav-button" in document order - the four rows this sidebar renders today.</summary>
+    /// <summary>Every navigation row (ListRow) in document order - the four rows this sidebar renders today.</summary>
     private static IReadOnlyList<Button> GetNavButtons(Window window) =>
-        [.. window.GetVisualDescendants().OfType<Button>().Where(b => b.Classes.Contains("nav-button"))];
+        [.. window.GetVisualDescendants().OfType<ListRow>()];
 
     private static void AssertRowDraws(Window window, string label)
     {

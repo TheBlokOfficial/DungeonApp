@@ -275,10 +275,11 @@
         nie dziedziczy stałej wysokości przycisku (DungeonControlHeight).
         Obszar trafienia to cały pas na końcu wiersza: kolumna szerokości DungeonListRowHeight
         (kwadrat wiersza listy), pełnej wysokości wiersza, tło przezroczyste do trafiania myszą.
-        Wymiary dla wiersza listy ramy (ListBoxItem): wysokość DungeonListRowHeight, a margines
+        Wymiary dla wiersza listy ramy (ListBoxItem, ListRow): wysokość najmniej DungeonListRowHeight
+        (w wyższym rekordzie pas rośnie z nim - VerticalAlignment Stretch), a margines
         DungeonListRowActionMargin wyprowadza pas przez odstęp podświetlenia i prawe wcięcie wiersza
         do końca treści wiersza (przed strefą paska przewijania). Wiersz o innej budowie (własny
-        Border w widoku) nadpisuje Margin i Height stylem widoku.
+        Border w widoku) nadpisuje Margin stylem widoku.
         Sam rysunek, bez tła, bez krawędzi, bez zaokrąglenia i bez otoczki; bez podpowiedzi (znak
         powszechny mówi sam). Widoczna zawsze.
         Stany:
@@ -293,10 +294,9 @@
     -->
     <ControlTheme x:Key="DungeonRowAction" TargetType="Button">
         <Setter Property="Width" Value="{DynamicResource DungeonListRowHeight}" />
-        <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
         <Setter Property="Margin" Value="{DynamicResource DungeonListRowActionMargin}" />
         <Setter Property="MinWidth" Value="0" />
-        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonListRowHeight}" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -1025,6 +1025,98 @@
                                           TextBlock.TextWrapping="NoWrap" />
                     </Border>
                 </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^[IsEnabled=False]">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+
+    <!--
+        Wiersz listy, który jest poleceniem (controls:ListRow - Button z IsSelected i opcjonalną kreską
+        zaznaczenia): do list zbudowanych jako ItemsControl, gdzie wybór, otwarcie albo nawigację niesie
+        polecenie modelu widoku. Wygląd i stany dokładnie jak wiersz ListBoxItem wyżej - te same pędzle,
+        pismo, wcięcia, zaokrąglenie i odstęp podświetlenia (DungeonListRowHighlightInset); tło sięga pod
+        pasek przewijania, treść kończy się przed jego strefą (DungeonScrollBarZone), tekst w jednej
+        linii przycięty wielokropkiem.
+        Wysokość DungeonListRowHeight ustawiona jawnie - należy do wiersza, nie do zawartości; inną
+        podaje układający stylem listy w widoku.
+        Kreska zaznaczenia (ShowsSelectionStripe, domyślnie wyłączona): pas wcięcia po lewej szerokości
+        DungeonListRowStripeGutter, tło wiersza zaczyna się za nim; w pasie, przy jego lewej krawędzi,
+        kreska akcentu grubości DungeonListRowStripeWidth, zaokrąglona, wcięta z góry i z dołu o
+        DungeonListRowStripeInset - widoczna tylko przy IsSelected. Pas leży w granicach wiersza (nie
+        ujemny margines), więc lista z przewijaniem go nie przycina. Szerokość pasa i wcięcie podaje
+        układający listy zasobami na poziomie listy.
+        Stany:
+          spoczynek   - tło przezroczyste;
+          najechanie  - tło BackstageRowHover, także nad akcją wiersza (DungeonRowAction);
+          wybrany     - tło AccentDim, także pod myszą (styl stoi po najechaniu), kreska widoczna;
+          wciśnięcie  - bez własnego wyglądu: jak najechanie (niewybrany) albo jak wybrany;
+          wyłączenie  - DungeonDisabledOpacity, tło przezroczyste, bez reakcji na mysz.
+        Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka, bez animacji i bez przesunięcia
+        przy wciśnięciu.
+    -->
+    <ControlTheme x:Key="{x:Type controls:ListRow}" TargetType="controls:ListRow">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+        <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!-- Przezroczyste tło zewnętrznej siatki łapie mysz także w odstępie podświetlenia i w
+                     pasie kreski - najechanie nie gaśnie między wierszami. -->
+                <Grid Background="Transparent" ColumnDefinitions="Auto,*">
+                    <Panel Name="PART_StripeGutter"
+                           Width="{DynamicResource DungeonListRowStripeGutter}"
+                           IsVisible="{TemplateBinding ShowsSelectionStripe}">
+                        <Border Name="PART_Stripe"
+                                Width="{DynamicResource DungeonListRowStripeWidth}"
+                                HorizontalAlignment="Left"
+                                Margin="{DynamicResource DungeonListRowStripeInset}"
+                                CornerRadius="{DynamicResource DungeonListRowStripeCornerRadius}"
+                                Background="{DynamicResource DungeonAccentBrush}"
+                                IsVisible="{TemplateBinding IsSelected}" />
+                    </Panel>
+                    <Border Name="PART_Highlight"
+                            Grid.Column="1"
+                            Margin="{DynamicResource DungeonListRowHighlightInset}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{DynamicResource DungeonScrollBarZone}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap" />
+                    </Border>
+                </Grid>
             </ControlTemplate>
         </Setter>
 

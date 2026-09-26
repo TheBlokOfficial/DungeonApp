@@ -23,6 +23,9 @@
         <Style Selector="Border.list-sample > ListBox">
             <Setter Property="Padding" Value="{DynamicResource DungeonPaddingXs}" />
         </Style>
+        <Style Selector="Border.list-sample > StackPanel.row-list">
+            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingXs}" />
+        </Style>
         <Style Selector="Border.list-sample > controls|EmptyState">
             <Setter Property="Margin" Value="{DynamicResource DungeonPaddingXs}" />
         </Style>
@@ -41,6 +44,14 @@
                         <ListBoxItem Content="Wybrany" />
                         <ListBoxItem Content="Wyłączony" IsEnabled="False" />
                         <ListBoxItem Content="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                        <ListBoxItem>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Z akcją w wierszu" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Theme="{StaticResource DungeonRowAction}">
+                                    <controls:ForegroundIcon Width="16" Height="16" Source="{StaticResource DungeonIconTrash}" />
+                                </Button>
+                            </Grid>
+                        </ListBoxItem>
                     </ListBox>
                 </Border>
             </StackPanel>
@@ -59,6 +70,49 @@
                         <ListBoxItem Content="Zombie" />
                         <ListBoxItem Content="Ghul" />
                     </ListBox>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="WIERSZ-POLECENIE (LISTROW)" />
+        <TextBlock Classes="caption muted" Text="Wiersz listy zbudowanej jako ItemsControl: wybór niesie model widoku, nie lista. Stany jak wiersz listy; najedź na wiersz, żeby zobaczyć najechanie (wybrany pod myszą się nie zmienia). Kreska zaznaczenia stoi w pasie wcięcia obok tła wiersza." />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Z kreską zaznaczenia" />
+                <Border Classes="list-sample">
+                    <StackPanel Classes="row-list">
+                        <controls:ListRow ShowsSelectionStripe="True" Content="Spoczynek" />
+                        <controls:ListRow ShowsSelectionStripe="True" Content="Wybrany" IsSelected="True" />
+                        <controls:ListRow ShowsSelectionStripe="True" Content="Wyłączony" IsEnabled="False" />
+                        <controls:ListRow ShowsSelectionStripe="True" Content="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                        <controls:ListRow ShowsSelectionStripe="True">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Z akcją w wierszu" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Theme="{StaticResource DungeonRowAction}">
+                                    <controls:ForegroundIcon Width="16" Height="16" Source="{StaticResource DungeonIconTrash}" />
+                                </Button>
+                            </Grid>
+                        </controls:ListRow>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Bez kreski" />
+                <Border Classes="list-sample">
+                    <StackPanel Classes="row-list">
+                        <controls:ListRow Content="Spoczynek" />
+                        <controls:ListRow Content="Wybrany" IsSelected="True" />
+                        <controls:ListRow Content="Wyłączony" IsEnabled="False" />
+                        <controls:ListRow Content="Zaginiona kopalnia Phandelver i Klątwa Strahda w jednej kampanii" />
+                        <controls:ListRow>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Z akcją w wierszu" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Theme="{StaticResource DungeonRowAction}">
+                                    <controls:ForegroundIcon Width="16" Height="16" Source="{StaticResource DungeonIconTrash}" />
+                                </Button>
+                            </Grid>
+                        </controls:ListRow>
+                    </StackPanel>
                 </Border>
             </StackPanel>
         </StackPanel>
