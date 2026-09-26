@@ -20,7 +20,8 @@ Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pom
 1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
 przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
 samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
-**Następny krok:** brief rundy 1c.
+**W toku:** runda 1c — wykonawca uruchomiony 2026-09-26 (reguła odstępu paska i szerokości okienka już
+w `architecture.md`, *Pasek przewijania jest nakładką*).
 
 ## Zakres i koniec
 

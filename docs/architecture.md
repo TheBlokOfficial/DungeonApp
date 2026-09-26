@@ -697,7 +697,10 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   miejsca — pojawienie się ani zniknięcie paska nie zmienia układu. Stoi przy krawędzi pojemnika
   z jednakowym odstępem od niej i od obu końców. Tło wierszy sięga pod pasek; treść (napisy, odznaki,
   akcje) kończy się przed nim, bo pojemnik ma po stronie paska odpowiednio większy odstęp wewnętrzny.
-  Przewija jedna warstwa: lista nie stoi w drugim przewijanym obszarze.
+  Przewija jedna warstwa: lista nie stoi w drugim przewijanym obszarze. W listach w widoku odstęp po stronie
+  paska jest stały; w okienkach (menu, lista rozwijana) — tylko gdy treść się nie mieści, ustalony przy
+  otwarciu i niezmienny do zamknięcia, także gdy wyszukiwanie skróci listę. Szerokość okienka listy
+  ustala się przy otwarciu z najdłuższej pozycji całej listy i też nie zmienia się do zamknięcia.
 * **Przycisk mieści swój napis.** Szerokość bierze się z napisu; przycięcie jest wyjściem awaryjnym,
   gdy kontener wymusza wąskie miejsce, nie wyglądem przycisku.
 * **Zaznaczanie tekstu:** wyłącznie w polach do pisania, w dłuższej treści kart (opisy, akcje, cechy)

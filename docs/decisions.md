@@ -480,6 +480,12 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   tło wiersza. Pasek widoczny zawsze przy przepełnieniu, nie tylko pod myszą (architekt) — sam jego
   widok mówi, że jest więcej pozycji. Odrzucone: pas zarezerwowany zawsze; pas tylko przy potrzebie
   (wiersze przeskakują).
+* **Odstęp paska w okienkach tylko przy przepełnieniu; szerokość okienka ustalana przy otwarciu** —
+  autor i architekt, 2026-09-26, po rundzie 1b fundamentu. Autor: menu bez przewijania miało po prawej
+  28, po lewej 16. Stały odstęp w listach w widoku chroni przed skakaniem po usunięciu wiersza albo
+  zmianie filtra; treść okienka w trakcie się nie zmienia, więc tam odstęp może zależeć od
+  przepełnienia — byle ustalony raz, przy otwarciu. Szerokość: autor zobaczył, że przewijana lista
+  zwęża się, gdy z widoku zniknie najdłuższa pozycja (mierzone są tylko widoczne wiersze).
 * **Znaki powszechne bez podpowiedzi** — autor, 2026-09-25: krzyżyk w polu wyszukiwania (po rundzie 1
   porcji 2), kosz w wierszu (po porcji 8b, „niepotrzebna podpowiedź”). Znak, który każdy zna, niczego
   nie zyskuje na podpowiedzi, a ona wyskakuje przy każdym najechaniu.
