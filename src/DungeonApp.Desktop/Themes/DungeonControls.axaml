@@ -446,7 +446,8 @@
                     <Grid Margin="{TemplateBinding BorderThickness}" ColumnDefinitions="Auto,*,Auto">
                         <ContentPresenter Name="PART_InnerLeftContent"
                                           Grid.Column="0"
-                                          VerticalAlignment="Center"
+                                          VerticalAlignment="Stretch"
+                                          VerticalContentAlignment="Center"
                                           Content="{TemplateBinding InnerLeftContent}"
                                           IsVisible="{TemplateBinding InnerLeftContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
                         <ScrollViewer Name="PART_ScrollViewer"
@@ -508,13 +509,19 @@
         <!-- Ikona na początku: odstęp od krawędzi DungeonSpacingMd, kolor tekstu przygaszonego.
              Rozmiar ikony nadaje styl "TextBox controls|ForegroundIcon" w BuiltInControls.axaml -
              ControlTheme nie dopuszcza selektora potomka (wyjątek przy pierwszym użyciu pola). -->
-        <!-- Wcięcie jest częścią obszaru ikony (Padding, tło przezroczyste do trafiania myszą), nie
-             pola: od krawędzi do końca ikony strzałka; wciśnięcie zatrzymuje Themes/FieldIconPointer.cs. -->
+        <!-- Pas ikony: wcięcia z obu stron ikony są częścią obszaru ikony (Padding, tło przezroczyste do
+             trafiania myszą), nie pola - od krawędzi pola do początku tekstu, na pełnej wysokości pola,
+             strzałka; wciśnięcie zatrzymuje Themes/FieldIconPointer.cs. Obszar tekstu zaczyna się za
+             pasem: pole z ikoną (:inner-left, nadaje FieldIconPointer) nie ma lewego wcięcia tekstu. -->
         <Style Selector="^ /template/ ContentPresenter#PART_InnerLeftContent">
-            <Setter Property="Padding" Value="12,0,0,0" />
+            <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Cursor" Value="Arrow" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+
+        <Style Selector="^:inner-left /template/ ScrollViewer#PART_ScrollViewer">
+            <Setter Property="Margin" Value="{DynamicResource DungeonInputTextAfterIconMargin}" />
         </Style>
 
         <!-- Najechanie i edycja: ta sama krawędź; w edycji trzyma się także bez myszy nad polem. -->

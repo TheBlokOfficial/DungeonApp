@@ -315,6 +315,10 @@
         <Thickness x:Key="DungeonPaddingLgVertical">0,16,0,16</Thickness>
         <!-- Tylko z boków - wartość równa DungeonSpacingMd (wcięcie tekstu w polu jednowierszowym). -->
         <Thickness x:Key="DungeonPaddingMdHorizontal">12,0,12,0</Thickness>
+        <!-- Wcięcie tekstu w polu z ikoną na początku (ołówek, lupa): tylko z prawej, DungeonSpacingMd -
+             lewe wcięcie należy do pasa ikony (DungeonPaddingMdHorizontal po obu stronach ikony), więc
+             obszar tekstu zaczyna się za pasem, w tym samym miejscu co dotąd. -->
+        <Thickness x:Key="DungeonInputTextAfterIconMargin">0,0,12,0</Thickness>
         <!-- Z boków DungeonSpacingMd, nad i pod DungeonSpacingSm (wcięcie tekstu w polu wielowierszowym). -->
         <Thickness x:Key="DungeonPaddingMdHorizontalSmVertical">12,8,12,8</Thickness>
         <!-- Wcięcie tekstu w polu wielowierszowym po stronie treści przewijanej: DungeonPaddingMdHorizontalSmVertical
