@@ -46,7 +46,8 @@
                      i podkreślenie; ikona w nim ma kolor tekstu (ForegroundIcon);
           .link.inline - odnośnik w zdaniu (w InlineUIContainer TextBlocka): stopień i grubość
                      otaczającego TextBlocka, tekst Accent, podkreślenie stałe - sam kolor akcentu
-                     obok jasnego tekstu nie daje kontrastu 3:1; na linii bazowej zdania stawia go
+                     obok jasnego tekstu nie daje kontrastu 3:1; pod myszą tekst AccentTextHover
+                     (jaśniejszy akcent), podkreślenie zostaje; na linii bazowej zdania stawia go
                      styl InlineUIContainer w BuiltInControls.axaml;
           .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, treść
                      wyśrodkowana (ikona DungeonActionIconSize nadaje sobie rozmiar sama).
@@ -175,9 +176,13 @@
         </Style>
 
         <!-- Odnośnik w zdaniu: stopień i grubość bierze z TextBlocka, w którego linii stoi; kolor
-             Accent w każdym stanie i stałe podkreślenie. -->
-        <Style Selector="^.link.inline, ^.link.inline:pointerover, ^.link.inline:pressed, ^.link.inline:flyout-open">
+             Accent i stałe podkreślenie. Pod myszą (wciśnięty, z otwartym okienkiem) kolor jaśnieje
+             (AccentTextHover) - podkreślenie stałe, więc najechanie pokazuje sam kolor; wymiary bez zmian. -->
+        <Style Selector="^.link.inline">
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="^.link.inline:pointerover:not(.hover-suppressed), ^.link.inline:pressed, ^.link.inline:flyout-open">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentTextHoverBrush}" />
         </Style>
         <Style Selector="^.link.inline">
             <Setter Property="FontSize" Value="{Binding $parent[TextBlock].FontSize}" />

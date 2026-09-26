@@ -71,6 +71,11 @@
              na szarym. Tylko krawędź - nie tekst ani rysunek. -->
         <Color x:Key="DungeonAccentEdgeColor">#66B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
+        <!-- AccentTextHover: akcent jako tekst pod myszą - odnośnik w zdaniu, na który wskazuje mysz.
+             Ten sam odcień co Accent, jaśniejszy o 10 punktów (HSL 35°, 51%, 58% wobec 48%): najechanie
+             widać po samym kolorze, bo podkreślenie odnośnika w zdaniu jest stałe. Tylko tekst - nie tło
+             i nie zamiast Accent w spoczynku. -->
+        <Color x:Key="DungeonAccentTextHoverColor">#CB9D5D</Color>
         <!-- Sukces: udało się. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
         <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
@@ -142,6 +147,7 @@
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
         <SolidColorBrush x:Key="DungeonAccentEdgeBrush" Color="{DynamicResource DungeonAccentEdgeColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
+        <SolidColorBrush x:Key="DungeonAccentTextHoverBrush" Color="{DynamicResource DungeonAccentTextHoverColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />
         <SolidColorBrush x:Key="DungeonWarningBrush" Color="{DynamicResource DungeonWarningColor}" />
         <SolidColorBrush x:Key="DungeonDangerBrush" Color="{DynamicResource DungeonDangerColor}" />
