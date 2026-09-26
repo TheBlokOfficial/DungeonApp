@@ -152,9 +152,12 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   (`CoreEntryKindIndependenceTests`) odrzuca w `DungeonApp.Desktop` nazwy typu „monster”; przykład
   w galerii nazywa się neutralnie (`SampleRow`).
 * **Pasek przewijania leży nad treścią** (motyw `ScrollViewer`) — treść sama musi skończyć się przed
-  nim: kontener przewijany dokłada po prawej `DungeonScrollBarZone` do swojego wcięcia. Wiersz listy
+  nim. Strefa paska (16) liczy się **od krawędzi obszaru przewijania**, wcięcie kontenera leży w niej,
+  nie obok: kontener z wcięciem nadpisuje `DungeonScrollBarZone` na 16 minus wcięcie (okienka —
+  `DungeonScrollBarZoneInFlyout` = 12; galeria `ListsSection` — 10; pasek boczny — 0). Wiersz listy
   (`ListBoxItem`, więc też `ComboBoxItem` i `DropDownPicker`) i `MenuItem` robią to w motywie; nowy
-  przewijany kontener spoza nich — jawnie. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
+  przewijany kontener spoza nich — jawnie. Okienko `.list-host` nie ma wcięcia — niesie je lista
+  w środku, żeby pasek stał 7 od krawędzi jak w każdym okienku. Wielowierszowy `TextBox` ignoruje `Padding`: wcięcie tekstu
   niesie `DungeonMultilineInputContentPadding`.
 * **Przewija jedna warstwa.** Lista w owijającym `ScrollViewer` albo w okienku wysuwanym, które samo
   przewija, daje dwa paski; w okienku z samą listą — `FlyoutPresenterClasses="list-host"`. Galeria,

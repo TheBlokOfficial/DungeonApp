@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `3da24df`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
+**Stan na: 2026-09-26, po `f66e266`.** Na starcie sesji: `git log 2253dbe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 Porcje 0–8b przyjęte. Porcje 10+11 scalone 2026-09-26 i obejrzane; uwagi autora rozstrzygnięte tego
 dnia (*Ustalenia*, *Porcje 10+11 — runda 1*). Plan do końca — cztery przebiegi po kolei: 1a (chip
-i lista wyboru), 1b (wiersze, przewijanie, menu), 1c (odnośniki, sortowanie), 9a, 9b. Przebieg 1a
-scalony i obejrzany (uwaga: ramka aktywnego chipa za wyrazista — idzie z 1b). Przebieg 1c przyjęty
-przez autora w kształcie z *Notek* (odwracanie w zakładkach — zlecenie A). **W toku: przebieg 1b** —
-wykonawca w tle, gałąź `fundament-10-11-r1b`, kopia `.claude/worktrees/fundament-10-11-r1b`.
+i lista wyboru), 1b (wiersze, przewijanie, menu), 1c (odnośniki, sortowanie, chipy z listą), 9a, 9b.
+Przebiegi 1a i 1b scalone 2026-09-26; 1b czeka na obejrzenie przez autora (jego uwagi — dopisać do
+zakresu 1c albo do rundy). Kopii roboczych brak. **Następny krok (nowa sesja): brief przebiegu 1c** —
+zakres w *Planie* (runda 1c), szczegóły w *Notkach* (*Przebieg 1c*); wszystko przyjęte przez autora,
+więc polecenie ruszenia jest zielonym światłem. Potem 9a, 9b.
 
 ## Zakres i koniec
 
@@ -85,18 +86,32 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   * **11** — klocek: chip z listą wyboru — chip dostaje najechanie i stan otwarcia (dziś lokalny
     styl chipa przykrywa najechanie z motywu, więc otwarty chip wygląda jak w spoczynku; po rundzie 1
     porcji 5); strzałka jak w liście rozwijanej.
-  * **Runda 1a** — chip i lista wyboru: `DropDownPicker` w stroju chipa, jeden wygląd listy z polami
+  * [x] **Runda 1a** — chip i lista wyboru: `DropDownPicker` w stroju chipa, jeden wygląd listy z polami
     wyboru, zamknięty chip z nazwą filtra i licznikiem; ramka aktywnego chipa; wyłonienie treści
     sekcji rozwijanej (ten sam ruch co okienko).
-  * **Runda 1b** — wiersze, przewijanie, menu, w kolejności ważności: tytuł wiersza o piksel wyżej;
+  * [x] **Runda 1b** — wiersze, przewijanie, menu, w kolejności ważności: tytuł wiersza o piksel wyżej;
     strefa paska w listach i menu; skrót w linii ze strzałką podmenu; podmenu bez nachodzenia;
     najechanie `.subtle` w wierszu; pas ikony w polu tekstowym; ramka aktywnego chipa łagodniejsza
     (autor po 1a: pełny akcent za wyrazisty — wypełnienie wygląda jak półprzezroczyste złoto na
     szarym). Menu i pole zabrane z `tasks.md`.
-  * **Runda 1c** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
+  * [ ] **Runda 1c** — odnośniki i sortowanie (*Notki*, *Przebieg 1c*; zgoda autora 2026-09-26):
     najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
     kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
-    odwracanie działa od zlecenia A.
+    odwracanie działa od zlecenia A. Dochodzi **napis chipa z listą wielokrotną** (autor po 1a,
+    2026-09-26 — wolał dawny sposób): nic nie wybrane → nazwa filtra; jedna wartość → ta wartość;
+    więcej → pierwsza wybrana w kolejności listy + odznaka neutralna „+N”; przy „+N” podpowiedź
+    z nazwą filtra i wszystkimi wybranymi. W galerii realne nazwy filtrów zamiast „Nic nie wybrane”.
+    **Chip z listą pojedynczą** tak samo (autor: chip „Spoczynek” w galerii nie pokazuje wybranej
+    „Druga”): pokazuje wybraną wartość, bez wyboru — nazwę filtra. Architekt: chip z listą (pojedynczą
+    i wielokrotną) = `DropDownPicker` w stroju chipa, jedna kontrolka, jedne reguły napisu;
+    `DungeonChipOpener` zostaje dla chipa otwierającego inną treść niż lista. Chipy zakładki treści
+    przechodzą na nową kontrolkę w zleceniu A; w 1c tylko sprawdzić, czy pokazują wybraną wartość —
+    jeśli nie, poprawić sam napis. Przy okazji w `DropDownsSection`: „Długa lista” wciąż stoi
+    w okienku, które samo przewija (`code-state.md`, *Przewija jedna warstwa*) — `list-host`.
+    **Szerokość okienka listy** (autor, 2026-09-26: przy przewijaniu lista zwęża się, gdy z widoku
+    zniknie najdłuższa pozycja — wirtualizacja mierzy tylko widoczne): szerokość ustala się przy
+    otwarciu z najdłuższej pozycji **całej** listy (nie mniej niż otwierający) i nie zmienia się, dopóki
+    okienko jest otwarte — także przy filtrowaniu wyszukiwaniem. `ComboBox` i `DropDownPicker`.
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
@@ -122,7 +137,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 | 7b | przygaszenie wyłączonych raz we wszystkich motywach (po własnym `IsEnabled`); wskaźnik postępu we własnym motywie (nieokreślony rysowany w kodzie); okno potwierdzenia i powiadomienia w warstwie nad oknem (`WindowOverlay`); cały nowy ruch w kodzie, po `SystemMotion.IsReduced` | scalona 2026-09-25; obejrzana tego dnia — uwagi autora (dymki zachodzą na pasek stanu; nieokreślony pasek klatkowany na monitorze 280 Hz) idą z porcją 8, bez rundy | 60 / 11,3 / 6,9 mln |
 | 8 | poprawki po 7b (dymki nad paskiem stanu; pasek nieokreślony z `RequestAnimationFrame` zamiast zegara 16 ms); odznaka (`Badge`), tag (`WordTag` — `Tag` zajęte przez Avalonię), odmiany klasami (`.accent`, `.success`, `.warning`, `.danger`, `.custom`); chip (`DungeonChip` na `ToggleButton`); tabela (`Table` po `Grid`, `TableCell`; linie rysują komórki) | scalona 2026-09-25; obejrzana tego dnia — szarpanie paska i dymki na pasku stanu naprawione; uwagi (ramka w galerii myli, tabela cech nie jak projekt, tagi ciasne w pionie) i uwagi architekta idą z porcją 8b, bez rundy | 57 / 11,0 / 6,5 mln |
 | 8b | poprawki po 8 (tag i odznaka 22; odznaka neutralna na `DungeonNeutralDim` — biały 8 %; wybrana zakładka i segment tekstem `AccentOnDim`; tabela cech 6 × 3 po 40 × 40 — `AbilityScoresSample`; tabele bez karty); sekcja „Kompozycje”: lista z filtrami, usuwanie z potwierdzeniem i „Cofnij”, karta | scalona 2026-09-25; 1 (autor: pas paska zawsze i przy krawędzi, kosz w wierszu — motyw `DungeonRowAction`, pas pełnej wysokości, czerwony, bez tła i podpowiedzi; architekt: wyzwanie zakreśleniem, pasek wartości w siatce, minus U+2212, jedna warstwa przewijania, menu z pasem przy potrzebie) — scalona 2026-09-26; 2 (autor: pasek nakładką z odstępem od krawędzi, góry i dołu — stały pas zostawiał pusty margines; kosz zawsze widoczny, szary, czerwony pod myszą, wiersz podświetlony nad koszem; wyzwanie bez zakreślenia) — scalona 2026-09-26 | 52 / 8,4 / 5,4 mln + runda 1: 70 / 11,7 / 10,6 mln (z poprawką podwójnych pasów po raporcie, ten sam wykonawca) + runda 2: 40 / 9,1 / 5,8 mln |
-| 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln |
+| 10+11 | wiersz listy `ListRow` z kreską w pasie wcięcia (lista wpisów, pasek boczny, lista kampanii); motyw `DungeonChipOpener` (chipy filtrów zakładki treści); nazwa pozycji `DropDownPicker` z wiązania — z testem; `DropDownPicker` w stroju chipa niezrobiony | scalona 2026-09-26; 1a (ramka aktywnego chipa; `DungeonChipPicker` — nazwa + licznik w odznace; lista z polami wyboru bez tła akcentu — `CheckList.IsCheckList`, `DungeonCheckList`; treść sekcji rozwijanej wyłania się — `ExpanderContentMotion`, wspólne `PopupOpenMotion.Appear`) — scalona 2026-09-26; 1b (kolumny `ListRow` wyśrodkowane niezależnie — styl w `BuiltInControls.axaml`; skrót i strzałka podmenu w jednej kolumnie; podmenu obok menu — `DungeonSubmenuHorizontalOffset` 11; ramka aktywnego chipa `DungeonAccentEdge` 40 %; najechanie `.subtle` nakładką `DungeonHoverOverlay`; pas ikony w polu; strefa paska od krawędzi — lista wpisów 35 → 25, okienka i menu 32 → 28, pasek w `.list-host` 11 → 7 od krawędzi; kosz kampanii — styl lokalny zostaje) — scalona 2026-09-26 | 68 / 12,2 / 8,7 mln + 1a: 40 / 9,3 / 4,5 mln + 1b (z dokończeniem po zatrzymaniu, ten sam wykonawca): 69 / 14,3 / 8,3 mln |
 
 ## Ustalenia
 
@@ -403,6 +418,18 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   w przygaszonym akcencie (było neutralne „aktywne”), wyłączone przygaszone jak wszędzie.
 * Porcje 10+11 → porcja 9 (nieużywane): `DungeonNavigationFontSize`; klasa `nav-content` w szablonie
   paska bocznego bez stylu; komentarz „campaign-row rhythm” w `SystemSelectionView.axaml` nieaktualny.
+* Punkty wejścia briefu 1c: `Controls/DropDownPicker.cs` (+ `DropDownPickerRow.cs`, `DropDownPickerText.cs`;
+  właściwości z 1a: `ShowsSelectionCount`, `SelectedCount`, `:has-selection`), motyw `DungeonChipPicker`
+  i `DungeonChipOpener` w `Themes/DungeonControls.axaml`, galeria `Shell/Gallery/Sections/DropDownsSection.axaml`
+  (odnośniki — sekcja przycisków/odnośników), sortowanie i chipy zakładki treści —
+  `Library.Entries.Desktop/Features/ContentTab/ContentTabView.axaml`; ruch — `Themes/PopupOpenMotion.cs`
+  (`Appear`), `SystemMotion.IsReduced`.
+* Runda 1b (raport): **niesprawdzone, czy podmenu otwierane w lewo** (brak miejsca po prawej) stoi
+  z odstępem, a nie nachodzi — do obejrzenia przez autora; jeśli nachodzi — do 1c.
+* Runda 1b: kosz w rekordzie kampanii zostaje z lokalnym stylem — rekord to własny `Border` z `ListRow`
+  pod spodem jako tłem, kosz nie leży w treści wiersza; zdjęcie wymaga przebudowy rekordu na `ListRow`
+  z zawartością (zlecenie, które zmieni listę kampanii). Brief z wzorem strefy paska liczonym „od
+  lewej + pas” był błędny — wzór to strefa od krawędzi obszaru przewijania (`code-state.md`, *Pułapki*).
 * Runda 1a (raport) → porcja 9b: `DropDownPickerRow.ShowsSelectedBackground` bez użycia w XAML —
   usunąć razem z asercją w `DropDownPickerRowsTests`. Do zlecenia A: `ContentChipFontSize` = 11,5
   w `ContentTabView` — poza skalą pisma (siedem stopni).
@@ -425,6 +452,11 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
 
 ## Do sesji głównej
+
+* **Rzeczy do sprawdzenia w raporcie podają miejsce i czynność** (propozycja architekta, 2026-09-26,
+  czeka na odpowiedź autora): autor nie znalazł dwóch z czterech punktów po rundzie 1a, bo raport
+  mówił, co sprawdzić, ale nie gdzie. Dopisek do `collaboration.md`, *Jak raportować*: każda rzecz do
+  sprawdzenia podaje zakładkę aplikacji albo sekcję galerii i co kliknąć. Briefy już tego wymagają.
 
 * **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
   z pomiaru w *Notkach*): `collaboration.md` ma ok. 500 linii i jest czytany w całości co sesję.
