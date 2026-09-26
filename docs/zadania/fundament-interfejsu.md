@@ -4,7 +4,7 @@ Każda kontrolka, której aplikacja używa albo będzie używać, dostaje w moty
 szablon zamiast domyślnego — raz, w jednym miejscu — i jest pokazana w galerii kontrolek we wszystkich
 stanach. Potem widoki składa się z gotowych klocków, a nie poprawia kontrolka po kontrolce.
 
-**Stan na: 2026-09-26, po `fe8e68c`.** Na starcie sesji: `git log fe8e68c..master` i `git worktree
+**Stan na: 2026-09-26, po `6afc89f`.** Na starcie sesji: `git log 6afc89f..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -19,7 +19,8 @@ w `.claude/worktrees/` mógł zostać zablokowany przez proces — do usunięcia
 krok: krótkie obejrzenie 9a+9b przez autora** (*Notki*, *Po 9a*); w tym dwa błędy okienek widoczne tylko
 w aplikacji (*Notki*, *Okienka tylko w aplikacji*) — 9a ich nie dotknęła, więc najpewniej są nadal; wtedy
 diagnoza w działającej aplikacji (pomiar z punktu 6 listy w *Notkach*). Po przyjęciu — kryterium końca
-spełnione: zamknięcie dokumentu w sesji głównej (*Przy zamknięciu*).
+spełnione: zamknięcie dokumentu (*Przy zamknięciu*) — w sesji zadania
+[zakladki-tresci.md](zakladki-tresci.md), które na tym startuje (autor, 2026-09-26).
 
 ## Zakres i koniec
 
@@ -38,7 +39,7 @@ pasek boczny, ekrany jednorazowe. Zlecenia A i B z kolejki (lista i filtry, kart
 składanie z fundamentu, osobny etap.
 
 **Koniec:** porcje 6–11 (z 8b i 9) przyjęte przez autora; porcja 9 idzie ostatnia. Wtedy ten dokument umiera, a kolejka
-przechodzi do zleceń A i B i punktu kontrolnego (`tasks.md`).
+przechodzi do zadania [zakladki-tresci.md](zakladki-tresci.md).
 
 ## Do przeczytania
 
@@ -75,7 +76,7 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 - [x] **8** — tag, chip, odznaka (odmiany po znaczeniu: neutralna, wyróżniona akcentem, stany;
   kolor podany przez system dla jego skal; wnętrze krojem liczb, wymiary z motywu), tabela
   (nagłówek, kolumny z wyrównaniem, wcięcia komórek, obramowanie, wyróżnienie pojedynczej komórki
-  kolorem podanym przez układającego — pierwszy konsument: cechy potwora, `tasks.md`, *B*).
+  kolorem podanym przez układającego — pierwszy konsument: cechy potwora, `zadania/zakladki-tresci.md`, *B*).
 - [x] **8b** — poprawki po porcji 8; kompozycje przykładowe w galerii (pomysł autora): lista
   z filtrami i wyszukiwaniem, karta z tabelą i odznakami, okno potwierdzenia nad listą.
 - [ ] **10 + 11 razem** (autor, 2026-09-26: oba klocki dla listy z filtrami, ten sam obszar kodu;
@@ -416,13 +417,6 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   najechanie bez barwy — pędzel wiersza listy; tekst niebezpieczeństwa — `DungeonDangerTextBrush`
   (porcja 7a: podane w briefie, wykonawca nie szukał). Motywy w `DungeonControls.axaml` test budujący obejmuje sam — brief to
   mówi, żeby wykonawca nie sprawdzał.
-* Porcja 7a (raport): **położenie `MenuFlyout` pod przyciskiem ustawia widok** — okienko wysuwane nie
-  jest kontrolką, motyw go nie dosięga (tak samo zwykłe okienko z porcji 5). Brief kompozycji
-  i zleceń A/B ma to podawać.
-* Porcja 7b (raport): **okno potwierdzenia i powiadomienie znajdują warstwę przez okno elementu,
-  z którego je wywołano** — wywołane z elementu wewnątrz okienka wysuwanego (menu, lista rozwijana)
-  rzucą wyjątkiem. Brief zleceń, które wywołają je z menu, ma to podać (wywołanie z elementu okna,
-  nie z pozycji menu) albo zlecić poprawkę.
 * Porcja 7b: nowy ruch da się zrobić w kodzie, sprawdzając `SystemMotion.IsReduced` — wtedy nie
   dotyka `ReducedMotion.axaml` ani testu jego czterech reguł (`code-state.md`, *Pułapki*).
 * Porcja 8 (raport): tekst akcentu na przygaszonym akcencie ma 4,05:1 — poniżej reguły 4,5:1
@@ -440,10 +434,6 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   przed pierwszym briefem. Zapytanie (każde wywołanie narzędzia) kosztuje ok. 10 % kontekstu; nowa sesja
   zwraca się po ok. jednej porcji. Z pomiaru: reguła „odsyłacz do sekcji czyta się jako sekcję”
   przyjęta (`collaboration.md`); budżet długości dokumentu czytanego co sesję — *Do sesji głównej*.
-* Porcja 8b (raport): **odznaka akcentu nie stoi w wierszu listy** (architekt, z wiedzy o interfejsie).
-  Na wybranym wierszu jej tekst ma 4,00:1 (przygaszony akcent na przygaszonym akcencie), a akcent
-  w wierszu i tak konkuruje z samym wyborem. W wierszu — odznaka neutralna, stanu albo kolor systemu;
-  akcent na karcie. Brief zlecenia A i porcji 10 ma to podać.
 * Porcja 8b: elementy zbudowane w galerii jako własne — **przycisk w wierszu listy** (`row-action`:
   przycisk ikony bez wypełnienia, 28 × 28, żeby wiersz został 32) i obramowanie listy. Przy drugim
   użyciu (porcja 10 / zlecenie A) przechodzą do motywu. Odmiana „wpis/wpisy/wpisów” jest w galerii
@@ -536,9 +526,9 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     napis w menu „A–Z / Z–A” przy nazwie, „rosnąco / malejąco” przy liczbach. Odrzucone: podwojone
     pozycje menu, odwracanie ponownym kliknięciem pozycji (ukryte).
   * Zakładka treści dostaje nowy wygląd; działające odwracanie — zlecenie A (przycisk wygaszony do
-    tego czasu; `tasks.md`, *A*, przy zamknięciu 1c).
+    tego czasu; `zadania/zakladki-tresci.md`, *A*).
 * Tabela jest pierwszym konsumentem „wyróżnienia komórki kolorem podanym przez układającego" —
-  kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`tasks.md`, *B*).
+  kolory modyfikatora dodatniego i ujemnego to tokeny systemu, nie tokeny stanów (`zadania/zakladki-tresci.md`, *B*).
 
 * **Lista do dużej rundy** (dopisywana po każdym przebiegu; w raporcie końcowym — pełny wzór z
   `collaboration.md`, *Jak raportować*):
@@ -636,7 +626,12 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
 
 ## Przy zamknięciu
 
-* Tabela *Pomiar porcji* → `tasks.md`, punkt kontrolny — z niej werdykt o Avalonii.
+* Tabela *Pomiar porcji* → [zakladki-tresci.md](zakladki-tresci.md), *Ustalenia*, *Punkt kontrolny* —
+  jako odniesienie werdyktu o Avalonii (skrót: przebiegi, rundy).
+* *Okienka tylko w aplikacji* — jeśli po obejrzeniu 9a błędy są nadal: do `zakladki-tresci.md`,
+  *Notki* (menu sortowania i listy rozwijane to zakładka treści) z pomiarem autora; wchodzą do werdyktu,
+  jeśli to ograniczenie biblioteki.
+
 * Ustalenia, które przeżywają zadanie — galeria na stałe, element spoza zestawu przechodzi do motywu
   przy drugim użyciu, fokus tylko po użyciu klawiatury — dostają dom w `architecture.md`
   (*Niezmiennik interfejsu*); przepiąć na niego odsyłacze, które dziś wskazują ten dokument

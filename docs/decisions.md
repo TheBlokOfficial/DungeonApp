@@ -1224,7 +1224,7 @@ ekranu. Zmiana technologii przed naprawą procesu nie pozwoliłaby odróżnić, 
 (`collaboration.md`) — i fundament interfejsu: każda kontrolka z własnym, kompletnym szablonem
 w motywie ramy, sprawdzana przez autora w galerii kontrolek (`zadania/fundament-interfejsu.md`).
 
-**Wyzwalacz.** Werdykt punktu kontrolnego po fundamencie (`tasks.md`, punkt kontrolny): przy
+**Wyzwalacz.** Werdykt punktu kontrolnego po fundamencie (`zadania/zakladki-tresci.md`, *Ustalenia*, *Punkt kontrolny*): przy
 naprawionym procesie i gotowym fundamencie interfejs nadal wychodzi fuszerką albo zjada większość
 budżetu. Wtedy próba z HTML-em na jednej zakładce, zanim cokolwiek innego. Werdykt — uznany albo
 odrzucony, z liczbami — dopisuje się tutaj.
