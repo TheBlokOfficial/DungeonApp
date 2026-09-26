@@ -695,8 +695,9 @@ idzie za konwencją platformy i czytelnością, nie za makietą jednego ekranu.
   dostaje to, czego znak nie mówi sam.
 * **Pasek przewijania jest nakładką**: widoczny zawsze, gdy treść się nie mieści, i nie zabiera jej
   miejsca — pojawienie się ani zniknięcie paska nie zmienia układu. Stoi przy krawędzi pojemnika
-  z jednakowym odstępem od niej i od obu końców. Tło wierszy sięga pod pasek; treść (napisy, odznaki,
-  akcje) kończy się przed nim, bo pojemnik ma po stronie paska odpowiednio większy odstęp wewnętrzny.
+  z jednakowym odstępem od niej i od obu końców. Tło wiersza kończy się w tym samym odstępie od prawej
+  krawędzi, w jakim zaczyna się od lewej, a pasek leży nad nim; treść (napisy, odznaki, akcje) kończy się
+  przed paskiem, bo pojemnik ma po stronie paska odpowiednio większy odstęp wewnętrzny.
   Przewija jedna warstwa: lista nie stoi w drugim przewijanym obszarze. W listach w widoku odstęp po stronie
   paska jest stały; w okienkach (menu, lista rozwijana) — tylko gdy treść się nie mieści, ustalony przy
   otwarciu i niezmienny do zamknięcia, także gdy wyszukiwanie skróci listę. Szerokość okienka listy

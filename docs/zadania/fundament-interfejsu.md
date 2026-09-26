@@ -20,8 +20,8 @@ Od tego dnia **oglądanie zbiorcze** (*Ustalenia*): po kolei, bez oglądania pom
 1d (odnośniki i sortowanie); potem duża runda autora, na koniec 9a i 9b. Architekt zbiera po każdym
 przebiegu rzeczy do sprawdzenia (wzór — `collaboration.md`, *Jak raportować*) i rozstrzygnięcia
 samodzielne do listy końcowej (*Notki*, *Lista do dużej rundy*). Poprawki po 1b scalone 2026-09-26.
-Rundy 1c i 1d scalone 2026-09-26. **Następny krok: duża runda autora** — raport zbiorczy
-z *Listy do dużej rundy* (*Notki*); po poprawkach z niej — 9a, 9b.
+Rundy 1c i 1d scalone, duża runda obejrzana 2026-09-26. **W toku:** poprawki po dużej rundzie
+(*Ustalenia*, *Duża runda*) — wykonawca uruchomiony 2026-09-26. Potem krótkie obejrzenie, 9a, 9b.
 
 ## Zakres i koniec
 
@@ -119,8 +119,8 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
     najechanie odnośnika w zdaniu, odnośnik otwierający menu ze strzałką według reguły list, przycisk
     kierunku sortowania z przewróceniem; zakładka treści — nowy wygląd, przycisk kierunku wygaszony,
     odwracanie działa od zlecenia A.
-  * [ ] **Duża runda autora** — obejrzenie poprawek po 1b, 1c i 1d naraz (*Ustalenia*, *Oglądanie
-    zbiorcze*), potem poprawki.
+  * [x] **Duża runda autora** — obejrzana 2026-09-26; uwagi w *Ustaleniach* (*Duża runda*).
+  * [ ] **Poprawki po dużej rundzie** — pięć spraw z *Ustaleń* (*Duża runda*), jeden wykonawca.
 - [ ] **9 — ostatnia** (autor, 2026-09-26: motyw domyślny odcina się raz, gdy wszystkie klocki
   istnieją; 10 i 11 zwalniają kolejne tokeny i style lokalne, więc sprzątanie też raz). Dwa przebiegi
   (architekt, 2026-09-26 — odcięcie wymaga rozstrzygnięć, sprzątanie jest mechaniczne):
@@ -362,6 +362,23 @@ od razu zdejmuje stare poprawki nałożone na swoje kontrolki w całej aplikacji
   dokładniej; sprawę autora (nie wiedzy o interfejsie) architekt rozstrzyga domyślnie i wpisuje na
   listę końcową do weta, zamiast wstrzymywać pracę. Lista końcowa — wzór w `collaboration.md`, *Jak
   raportować*.
+* **Duża runda** (2026-09-26; uwagi autora po obejrzeniu 1b–1d, rozstrzygnięcia architekta tego dnia;
+  reszta obejrzana i przyjęta):
+  1. *Wiersz listy wpisów bez odstępu po prawej* — tło wiersza kończy się w tym samym odstępie od prawej
+     krawędzi listy, w jakim zaczyna się od lewej (pas wcięcia); pasek przewijania leży nad nim
+     (`architecture.md`, *Pasek przewijania jest nakładką*).
+  2. *Pole z ikoną bez tekstu zastępczego ściska się do ikony* (galeria, *Pola tekstowe*) — szerokość
+     pola nie zależy od zawartości: `IconField` ma tę samą szerokość domyślną co zwykłe pole.
+  3. *Menu sortowania* — wyrównane do lewej krawędzi odnośnika, nie wyśrodkowane (błąd widać, gdy
+     menu jest szersze od odnośnika); w zakładce treści brak ptaszka przy wybranym polu, choć kolumna
+     na niego stoi (architekt, ze zrzutu); zbędny prawy margines — pusta kolumna kierunku się zwija.
+  4. *Chip z listą pojedynczą* — ponowne kliknięcie wybranej wartości ją odznacza (powrót do „nic
+     wybrane” = nazwa filtra). Tylko w stroju chipa (filtr, gdzie nic = wszystko); zwykła lista
+     rozwijana w formularzu — bez zmian.
+  5. *Szerokość okienka listy wciąż zależy od widocznych wierszy* — pomiar 1c tego nie złapał;
+     najpierw przyczyna w warunkach jak w aplikacji (przewijanie realnie realizujące wiersze), potem
+     poprawka.
+  * Podpowiedź znika po kliknięciu (także prawym) — konwencja platformy, bez zmian (architekt).
 * **Wyjątek od „nic bez konsumenta"** — konsumentem jest galeria (`decisions.md`, `architecture.md`,
   *Pytania otwarte i reguła „nic bez konsumenta"*).
 

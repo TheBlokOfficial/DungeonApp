@@ -486,6 +486,9 @@ profesjonalne rozwiązanie"), po pytaniu o kursor, zaznaczanie tekstu i ramki.
   zmianie filtra; treść okienka w trakcie się nie zmienia, więc tam odstęp może zależeć od
   przepełnienia — byle ustalony raz, przy otwarciu. Szerokość: autor zobaczył, że przewijana lista
   zwęża się, gdy z widoku zniknie najdłuższa pozycja (mierzone są tylko widoczne wiersze).
+* **Tło wiersza z odstępem po prawej jak po lewej** — autor, 2026-09-26, po dużej rundzie fundamentu:
+  tło sięgające krawędzi listy („brak marginesu z prawej”) wyglądało na ucięte obok wcięcia po lewej.
+  Architekt: symetria wygrywa z „tłem pod paskiem”; pasek nakładka i tak leży nad tłem.
 * **Znaki powszechne bez podpowiedzi** — autor, 2026-09-25: krzyżyk w polu wyszukiwania (po rundzie 1
   porcji 2), kosz w wierszu (po porcji 8b, „niepotrzebna podpowiedź”). Znak, który każdy zna, niczego
   nie zyskuje na podpowiedzi, a ona wyskakuje przy każdym najechaniu.
@@ -1977,6 +1980,13 @@ pamięć już wygasła.
   zaznaczenia: testy sprawdzały szerokość kolumn i geometrię kreski, a kreskę przycinała krawędź
   listy.
 
+
+### Pliki robocze poza repozytorium
+
+2026-09-26, runda 1c fundamentu: wykonawca zatwierdził swoją kopię roboczą pliku galerii (219 linii)
+razem z częścią zlecenia i usunął ją dopiero następnym commitem — plik zostałby w historii. Architekt
+przeniósł commity bez niego. Dopisek do definicji wykonawcy — propozycja architekta, zgoda autora tego
+dnia.
 ## Środowisko
 
 ### Kopię po diagnozie zostaw

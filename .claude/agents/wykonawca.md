@@ -50,6 +50,8 @@ zostało. To pełnoprawny wynik, nie porażka — resztę architekt zleci osobno
 - **Przenosisz, nie kopiujesz** — chyba że brief mówi inaczej. Po przeniesieniu nie zostawiaj
   martwych kopii; sprawdź użycia w całym repozytorium, nie w jednym projekcie.
 - **Commit w swojej gałęzi, z opisem po polsku.** Nie scalaj do `master`, nie wypychaj.
+- **Pliki robocze i tymczasowe trzymasz poza repozytorium** (katalog tymczasowy systemu), a przed
+  każdym commitem sprawdzasz `git status` — commit zawiera wyłącznie pliki zlecenia.
 
 ## Rzemiosło interfejsu — obowiązek, nie inicjatywa
 
