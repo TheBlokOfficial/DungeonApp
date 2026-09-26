@@ -1,7 +1,8 @@
  <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:DungeonApp.Desktop.Controls">
-    <Style Selector="Window, UserControl">
+    <!-- Okno ma pismo i kolor tekstu w swoim motywie (DungeonControls.axaml, Window). -->
+    <Style Selector="UserControl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
