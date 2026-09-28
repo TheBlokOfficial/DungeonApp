@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-26, po `89ec5b9`.** Na starcie sesji: `git log 89ec5b9..master` i `git worktree
+**Stan na: 2026-09-28, po `d2fbd91`.** Na starcie sesji: `git log d2fbd91..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Wycinek 1 (dane D&D 5e) zamknięty 2026-09-26: rekordy potwora, przedmiotu i zaklęcia przyjęte
-(*Ustalenia*, *Rekordy*); wpisy przykładowe idą do paczki dostarczanej z systemem (*Ustalenia*).
-Kopii roboczych brak. Decyzje o projekcie zapadły tego dnia (*Ustalenia*, *Projekt*).
-**Następny krok: wycinek 2 — projekt szkieletu i kart na piśmie**, do przyjęcia przez autora przed
-kodem.
+Wycinek 1 (dane D&D 5e) zamknięty 2026-09-26. Wycinek 2: projekt szkieletu i kart napisany
+2026-09-28 (*Ustalenia*, *C*) — **czeka na przyjęcie albo uwagi autora**; plan dostał porcje 3a i 4a.
+Kopii roboczych brak. **Następny krok:** uwagi autora wpisać do *C*, po przyjęciu — brief porcji 3a
+(lektury „przed każdym briefem” z *Do przeczytania*).
 
 ## Zakres i koniec
 
@@ -87,12 +86,20 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
 - [ ] **2 — projekt** (architekt): szkielet zakładki i karty per typ, na piśmie do przyjęcia przez
-  autora przed kodem (*Ustalenia*, *Projekt*). Wynik dzieli się na porcje wykonawcze.
-- [ ] **3 — lista i filtry** (*Ustalenia*, *A*).
+  autora przed kodem (*Ustalenia*, *Projekt*). Wynik dzieli się na porcje wykonawcze. Propozycja
+  napisana 2026-09-28 (*Ustalenia*, *C*) — czeka na przyjęcie.
+- [ ] **3a — szkielet ekranu** (*C*): nagłówek z licznikiem, panel listy 320 z sekcjami po paczce,
+  wiersz 32 z odznaką, rzeczy zepsute z powodem, puste stany, szczegół wpisu (nagłówek + miejsce
+  karty 560). W miejscu karty do porcji 4 i 5 stoi obecna karta systemu.
+- [ ] **3 — lista i filtry** (*Ustalenia*, *A*, *C*): chipy, nazwa chipa kategorii od systemu,
+  semantyka filtrów, „Wyczyść filtry”, sortowanie z odwracaniem.
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
-- [ ] **4 — karta potwora** (*Ustalenia*, *B*) — z polami potwora z *Rekordów*.
-- [ ] **5 — karta przedmiotu** (według projektu z 2) — z polami przedmiotu z *Rekordów*.
+- [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
+  u potwora i przedmiotu, odrzucenie ścieżki poza paczkę z testem, brak pliku.
+- [ ] **4 — karta potwora** (*Ustalenia*, *B*, *C*) — z polami potwora z *Rekordów*. Jeśli nie zmieści
+  się w porcji: górny blok z cechami i tokenami, potem pary i sekcje z nowymi polami.
+- [ ] **5 — karta przedmiotu** (*C*) — z polami przedmiotu z *Rekordów*.
 - [ ] **6 — wpisy przykładowe** w paczce dostarczanej — może iść razem z 4 i 5 (wpis pokazuje
   wariant karty, który porcja buduje).
 - [ ] **7 — wczytanie paczek od nowa**: zwiad, jak żyje rejestr (kto go trzyma, kto dostaje przy
@@ -226,6 +233,163 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     ma zielone tło, ujemnego czerwone. Pozostałe komórki, także modyfikator +0, mają neutralne szare.
     Kolory **nie** z tokenów stanów — system dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym znaczeniem. Malowanie
     to prezentacja w kodzie karty, nie wyrażenie w danych — pierwszego zakazu nie dotyczy.
+* **C. Projekt szkieletu i kart (wycinek 2)** — propozycja architekta z 2026-09-28, **czeka na
+  przyjęcie przez autora**; po przyjęciu wiąże briefy porcji 3–5 i 8. Wymiary ze skali motywu
+  (odstępy 6, 8, 12, 16, 20, 24, 32), pismo z ról galerii (*Typografia*), klocki z galerii.
+  ```
+  ┌──────────────────────────────────────────────────────────────────────────────────┐
+  │ Potwory  12 z 37 wpisów                                      [⟳ Wczytaj od nowa] │
+  ├───────────────────────────────┬──────────────────────────────────────────────────┤
+  │ [⌕ Szukaj po nazwie…        ] │   GOBLINOIDY · BESTIARIUSZ SRD                   │
+  │ [Grupa ▾] [Typ ▾]             │   Goblin                                         │
+  │ [Wyzwanie ▾] [Paczka ▾]       │   (Mały) (humanoid (goblinoid)) (neutralny zły)  │
+  │ Sortuj: Nazwa A–Z ⇅  Wyczyść… │                                                  │
+  ├───────────────────────────────┤   karta systemu, 560 szerokości,                 │
+  │ BESTIARIUSZ SRD  9            │   wysokość z treści                              │
+  │▌Goblin                   1/4  │                                                  │
+  │ Hobgoblin                1/2  │                                                  │
+  │ zepsuty-wpis.json          ⚠  │                                                  │
+  │ MOJA PACZKA  3                │                                                  │
+  │ …                             │                                                  │
+  │ ⚠ ODRZUCONA PACZKA            │                                                  │
+  │ stara-paczka                  │                                                  │
+  └───────────────────────────────┴──────────────────────────────────────────────────┘
+    320                            32 + 560, reszta szerokości pusta
+  ```
+  * **Nagłówek zakładki** (biblioteka): nazwa zakładki rolą `display-lg`, obok na linii bazowej
+    licznik krojem liczb, przygaszony — „37 wpisów”, przy zawężeniu „12 z 37 wpisów” (odmiana wpis /
+    wpisy / wpisów). Z prawej przycisk „Wczytaj od nowa” z ikoną odświeżania i podpowiedzią „Wczytuje
+    paczki z dysku od nowa” — staje z porcją 7, wcześniej go nie ma. Odstępy 20 u góry, 24 po bokach,
+    16 nad linią oddzielającą nagłówek od ciała. Paska typów z mockupu nie ma — zakładka ma jeden typ.
+  * **Panel listy** — stała szerokość 320, pełna wysokość, pionowa linia od szczegółu.
+    * Kontrolki (odstęp 16 wokół, 8 między rzędami): pole wyszukiwania z ikoną; zawijany rząd chipów
+      z listą; rząd — wybór sortowania z lewej, „Wyczyść filtry” z prawej; pod nimi linia.
+    * Chipy w kolejności: kategoria, filtry systemu, Paczka. **Nazwę chipa kategorii podaje system**:
+      potwór „Grupa” (pole `group`), przedmiot „Kategoria”, zaklęcie „Szkoła”. Filtry systemu: potwór
+      — Typ, Wyzwanie; przedmiot — Rzadkość, Dostrojenie (wymaga / nie wymaga); zaklęcie — Poziom.
+    * „Wyczyść filtry” zeruje chipy **i** wyszukiwanie; wygaszone, gdy nic nie zawęża listy.
+    * Sortowanie: Nazwa (domyślne, A–Z) i klucz systemu — potwór Wyzwanie, przedmiot Rzadkość,
+      zaklęcie Poziom; z odwracaniem. Sortuje wewnątrz sekcji; rzeczy zepsute zawsze na dole sekcji.
+    * Sekcje po paczce, w kolejności nazw paczek, odrzucone na końcu. Nagłówek rolą `overline-sm`,
+      przygaszony, obok liczba wpisów sekcji krojem liczb; 12 nad nagłówkiem (4 nad pierwszym), 6 pod.
+    * Wiersz — wiersz-polecenie z kreską zaznaczenia (galeria, *Listy*), wysokość 32 ze stałej
+      biblioteki, niezależna od odznaki. Nazwa rolą `body`, przycinana wielokropkiem, pełna
+      w podpowiedzi; z prawej odznaka wiersza. Ikony typu z mockupu nie ma — w zakładce jednego typu
+      nic nie mówi.
+    * Odznaka wiersza (podaje system): potwór — wyzwanie, zwykły tekst krojem liczb, przygaszony;
+      przedmiot — odznaka rzadkości w kolorze z systemu; zaklęcie — „Sztuczka” / „Poz. 3” krojem liczb,
+      przygaszone. Kolory rzadkości: 4,5:1 także na tle wybranego wiersza, żaden nie jest akcentem
+      (*Notki*, odznaka akcentu).
+    * Rzeczy zepsute: nazwa (albo nazwa pliku, gdy nazwy nie odczytano) kolorem treści niewczytanej,
+      w miejscu odznaki ikona ostrzeżenia tym samym kolorem. Odrzucona paczka — ostatnia sekcja: jej
+      nagłówek kolorem treści niewczytanej z ikoną ostrzeżenia, pod nim **jeden wiersz** z nazwą
+      katalogu paczki, wybieralny jak każdy — pokazuje powód. Architektura mówi „nagłówek bez wpisów”;
+      wiersz jest potrzebny, bo nagłówek sekcji się nie wybiera, a zamieniony w przycisk łamałby
+      konwencję listy.
+    * Puste stany (klocek pustej listy): brak wpisów tego typu w żadnej paczce — „Żadna paczka nie ma
+      jeszcze potworów.” z podpowiedzią, gdzie leżą paczki; nic nie pasuje — „Nic nie pasuje do
+      wyszukiwania i filtrów.” z odnośnikiem „Wyczyść filtry” (galeria, *Kompozycje*).
+  * **Obszar szczegółu** — przewija się pionowo, jedyna warstwa przewijania po tej stronie; odstęp 32
+    u góry, z lewej i u dołu. Szczegół stoi przy liście; szerszy ekran daje pusty pas z prawej, nie
+    szerszą kartę. Przy najmniejszym oknie mieści się bez przewijania w poziomie: 224 (pasek boczny)
+    + 320 + 32 + 560 + 32 = 1168 z 1280.
+    * Nic nie wybrane — pusty stan „Wybierz wpis z listy.” w miejscu nagłówka. Na starcie zakładki nic
+      nie jest wybrane. Wybrany wpis, który zniknie z listy po zmianie filtra, zdejmuje wybór. Po
+      wczytaniu od nowa wybór zostaje, jeśli wpis o tym id nadal jest.
+  * **Szczegół wpisu = nagłówek biblioteki + karta systemu, jeden klocek biblioteki, 560 szerokości.**
+    Stawia go każdy, kto pokazuje wpis: zakładka treści i przyszłe okienko podglądu w kampanii (560
+    + 2 × 24). Dzięki temu nagłówek rysuje szkielet, a ta sama karta stoi wszędzie razem z nazwą.
+    * Nagłówek: linia `overline-sm` przygaszona „{KATEGORIA} · {PACZKA}” (bez kategorii — sama
+      paczka), nazwa rolą `display-xl`, zawijana, nie przycinana; rząd tagów, zawijany, odstęp 6 —
+      nie ma go, gdy tagów brak. Odstęp 6 wewnątrz nagłówka, 20 do karty. Kategoria nie akcentem, jak
+      w mockupie — akcent jest dla wybranego i głównego.
+    * Tagi: potwór — rozmiar, typ, charakter; przedmiot — brak; zaklęcie — Koncentracja, Rytuał.
+    * Rzecz zepsuta w miejscu karty: linia „WPIS NIEWCZYTANY · {PACZKA}” (odrzucona paczka: „PACZKA
+      ODRZUCONA”) kolorem treści niewczytanej, nazwa jak na liście, pod nią powód tekstem do
+      zaznaczenia i ścieżka pliku rolą `caption`, przygaszona.
+  * **Wspólne klocki kart.** Ramka obrazka — klocek biblioteki wpisów (zna pojęcie obrazka wpisu);
+    ikonę typu podaje system. Rozmiar daje karta; linia motywu, narożnik karty, tło powierzchni sekcji;
+    obrazek wypełnia ramkę przycięty do proporcji, bez zniekształcenia. Bez pliku — duża (48)
+    wyszarzona ikona typu na środku: potwór smok, przedmiot plecak (obie są w motywie). Brak pliku —
+    ta sama ikona, pod nią rolą `caption` kolorem niebezpieczeństwa „Brak pliku” i ścieżka z wpisu.
+    Poza ramką karty składają się z istniejących klocków, bez nowych:
+    * para etykieta–wartość — kolumna etykiet o stałej szerokości podanej przez kartę, etykieta rolą
+      `label`, drugorzędna, wartość `body`, zawijana; 6 między parami; rząd tylko dla wypełnionego pola;
+    * sekcja prozy — sekcja rozwijana z motywu, domyślnie rozwinięta, treść tekstem do zaznaczenia,
+      akapity jak w danych; tylko dla niepustego pola;
+    * linia sekcji (`Separator` odmiany sekcji) między blokami karty, 16 nad i pod.
+  * **Karta potwora.**
+    ```
+    ┌──────────┐  KP          15  skórzana zbroja, tarcza
+    │          │  PZ           7  2k6
+    │ portret  │  Szybkość    9 m, wspinaczka 9 m
+    │ 168×224  │
+    │          │  ┌───┬───┬───┐   ┌───┬───┬───┐
+    │          │  │SIŁ│  8│ −1│   │INT│ 10│ +0│
+    │          │  │ZRC│ 14│ +2│   │MDR│  8│ −1│
+    └──────────┘  │KON│ 10│ +0│   │CHA│  8│ −1│
+                  └───┴───┴───┘   └───┴───┴───┘
+    ─────────────────────────────────────────────────────────
+    Rzuty obronne               Zrc +4, Mdr +2
+    Umiejętności                Skradanie się +6
+    Podatność na obrażenia      …
+    Odporność na obrażenia      …
+    Niewrażliwość na obrażenia  …
+    Niewrażliwość na stany      …
+    Zmysły                      widzenie w ciemności 18 m, bierna Percepcja 9
+    Języki                      wspólny, goblini
+    Wyzwanie                    1/4  50 PD
+    ─────────────────────────────────────────────────────────
+    ▾ Cechy szczególne   ▾ Akcje   ▾ Rzucanie czarów   ▾ Akcje dodatkowe
+    ▾ Reakcje   ▾ Akcje legendarne   ▾ Opis            (jedna pod drugą)
+    ```
+    * Górny blok: portret 168 × 224 (3:4) z lewej, 24 odstępu, prawa kolumna (368) od góry. KP, PZ,
+      szybkość: etykiety `label` w kolumnie 72, wartości rolą `mono-value` (wyróżnione), dopiski
+      (źródło KP, kości PZ) `caption` przygaszone; szybkość to napis i się zawija. Bez ikonek przy KP,
+      PZ, szybkości — etykieta mówi to samo, a obok stoi ikona portretu. Aktualne PZ z nakładki
+      instancji (w kampanii) — „5 / 7”.
+    * Cechy: dwie tabele 3 × 3 z komórek 40 × 40 (*B*), 24 odstępu — razem 264; 16 pod wartościami.
+    * Pary: kolumna etykiet 168 — „Niewrażliwość na obrażenia” mieści się w jednej linii. Kolejność
+      jak na szkicu; Zmysły i Wyzwanie zawsze. Wyzwanie krojem liczb, PD obok, `caption` przygaszone.
+    * Sekcje prozy w kolejności ze szkicu. Kolorowych kresek przy nagłówkach z mockupu nie ma —
+      czerwień przy „Akcjach” mówiłaby „niebezpieczeństwo”.
+    * Opis rolą `display-prose` — kursywa kroju nagłówków, jak w mockupie: u potwora to tekst
+      klimatu, nie zasady.
+  * **Karta przedmiotu.**
+    ```
+    ┌────────┐  Rzadkość       Rzadki                  (kolor rzadkości)
+    │ 128 ×  │  Podtyp         dowolny miecz
+    │ 128    │  Dostrojenie    wymaga dostrojenia przez paladyna
+    └────────┘  Cena           500 sz
+                Waga (lb)      3
+                Ładunki        7  odnawia 1k6+1 o świcie
+    ─────────────────────────────────────────────────────────
+    BROŃ
+    Obrażenia      1k8 cięte
+    Właściwości    uniwersalna (1k10)
+    ─────────────────────────────────────────────────────────
+    ZBROJA
+    KP             14 + mod. Zr (maks. 2)
+    Wymagana Siła  13
+    Ukrywanie się  utrudnienie
+    ─────────────────────────────────────────────────────────
+    ▾ Opis
+    ```
+    * Górny blok: kwadrat 128 × 128 w lewym górnym rogu, 24 odstępu, pary z kolumną etykiet 112;
+      kwadrat od góry, pary mogą być wyższe od niego.
+    * Rzadkość zawsze — `body-strong` tekstową odmianą koloru rzadkości; reszta, gdy wypełniona. Waga
+      z przecinkiem dziesiętnym, jednostka w etykiecie, bo wartość to liczba. Cena i ładunki krojem
+      liczb; odnawianie obok ładunków, `caption` przygaszone, tak jak zapisane.
+    * Broń i Zbroja — gdy któreś z ich pól wypełnione; nagłówek `overline-sm` przygaszony, sekcje
+      nierozwijane, bo krótkie.
+    * Opis — sekcja rozwijana, `body` do zaznaczenia: u przedmiotu to zasady, nie klimat.
+    * Bez tagów: rzadkość i dostrojenie stoją w parach, tag by je powtórzył.
+  * **Karta zaklęcia** (szkic; rozstrzyga etap 8): bez obrazka. Pary z kolumną 112: Poziom
+    („Sztuczka” / „3”), Czas rzucania, Zasięg, Komponenty (materiały pod spodem, `caption`), Czas
+    trwania, Klasy — wszystkie napisami; potem sekcje rozwijane Opis i Na wyższych poziomach (`body`).
+  * **Czego projekt dokłada do motywu i systemu:** ikona odświeżania (porcja 7); w systemie kolory
+    rzadkości w dwóch odmianach (tło odznaki, tekst na karcie) i modyfikatory (*B*). Kolor treści
+    niewczytanej już jest. Akcje jako osobne rzeczy (krok 11) nie są potrzebne — akcje zostają prozą.
 
 ## Notki
 
@@ -271,6 +435,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 ## Do sesji głównej
 
 * **Akcje jako osobne rzeczy przed krokiem 11?** — tylko jeśli projekt z wycinka 2 ich potrzebuje.
+  Propozycja projektu (*C*) ich nie potrzebuje; po jej przyjęciu pozycja znika.
 * **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
   przeniesiona z fundamentu): `collaboration.md` ma ok. 530 linii i jest czytany prawie w całości co
   sesję (start sesji: ok. 55 tys. tokenów sama rama, +28 tys. `collaboration.md` z dokumentem zadania).
