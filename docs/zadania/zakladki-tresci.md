@@ -19,8 +19,7 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 Porcja 3d (filtry jako pola z podpisem) przyjęta przez autora 2026-09-28 bez rund. **W toku:**
 porcja 3b — wykonawca (Opus) w gałęzi `worktree-agent-a4a62d5f2e376b2b0`, kopia
 `.claude/worktrees/agent-a4a62d5f2e376b2b0`. Rozstrzygnięcia architekta do briefu — *Ustalenia*,
-*Paczka dostarczana*. **Otwarte:** menu sortowania — przesunięcia nie odtworzono w osobnym oknie;
-czeka na sprawdzenie przez autora w zakładce i w galerii (*Notki*, *Okienka tylko w aplikacji*).
+*Paczka dostarczana*. Menu sortowania zamknięte (*Notki*, *Okienka tylko w aplikacji*).
 **Następny krok:** weryfikacja 3b; przy scaleniu liczba testów z raportu do nagłówka `tasks.md`
 (dziś jej tam brak).
 
@@ -95,7 +94,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
 - [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
-  — nieodtworzone w osobnym oknie, czeka na pomiar autora (*Notki*, *Okienka tylko w aplikacji*).
+  — wyrównane, zamknięte (*Notki*, *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
@@ -486,6 +485,10 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   sortowania w galerii i w zakładce (po 3d panel listy się zmienił). Tylko w zakładce → ten sam
   program z prawdziwym `ContentTabView` (model jak w `ContentTabViewBuildTests`). Nigdzie → zamknięte.
   Uboczne, niebadane: w wariancie zmaksymalizowanym okienko otwarte drugi raz było po 400 ms zamknięte.
+  **Zamknięte 2026-09-28:** autor otworzył menu po 3d w galerii i w zakładce — w obu miejscach wyrównane
+  do lewej krawędzi odnośnika. Przyczyny nie ustalono; najpewniej zniknęła z przebudową panelu listy
+  w 3d. Do werdyktu nie wchodzi — nie okazało się ograniczeniem biblioteki. Wraca, jeśli autor znów
+  zobaczy przesunięcie; wtedy zaczyna się od programu z prawdziwym `ContentTabView` (wyżej).
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
