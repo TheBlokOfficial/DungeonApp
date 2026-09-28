@@ -110,7 +110,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
-| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
+| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*); **R w widoku** — odznaka rzadkości w wierszu nie na środku w pionie (własna pigułka zamiast klocka z fundamentu; poprawka z porcją 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 
 ## Ustalenia
 
@@ -455,6 +455,13 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * „Wyczyść filtry” wygasza runda W porcji 3a (przeniesione z porcji 3) — logicznie działa, ale
     wygląda na włączone: błąd motywu ramy przy wyłączeniu komendą. Brief porcji 3 zabiera poprawkę
     z `tasks.md`, *Poprawki czekające na obszar*, *Wyłączenie w motywie ramy*.
+  * **Odznaka rzadkości w wierszu nie jest na środku w pionie** (autor, 2026-09-28). Wykonawca 3a
+    zbudował w widoku własną pigułkę (`Border` wysokości 20 z `TextBlock.label`) zamiast klocka
+    z fundamentu: słowo (rzadkość) to `WordTag` w odmianie `.custom` — tło i tekst z kolorów systemu,
+    wysokość i położenie w pionie z motywu. Brief porcji 3 zamienia pigułkę na `WordTag.custom`
+    z tym samym tłem (przygaszony kolor rzadkości) i tekstem; kontrast z tabeli 3a musi się utrzymać.
+    Wskazówka do każdego briefu z widokiem: brief wymienia klocek fundamentu dla każdego elementu,
+    który go ma — „z klocków” nie wystarczyło.
   * Wybór zdjęty przez filtr nie wraca po poszerzeniu filtra — zgodnie z *C*.
   * Niesprawdzone: czy role `body`/`caption` działają na `SelectableTextBlock` (powód i ścieżka
     w szczególe rzeczy zepsutej) — autor ogląda; jeśli nie, poprawka w motywie.
