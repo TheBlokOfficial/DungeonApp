@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ImagesSection">
+    <!-- The frame's picture frame (controls:ImageFrame), live: every one of its three states - a
+         picture, no picture (the placeholder icon), a picture that could not be read (the icon and the
+         message) - in both proportions a frame is placed in, square and portrait. The size comes from
+         here - the frame has none of its own. The picture is a small neutral sample (160 x 100, wider
+         than either frame), so both frames show it cropped, not stretched. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Obrazy" />
+        <TextBlock Classes="caption muted" Text="Ramka obrazka nie reaguje na mysz; rozmiar i proporcje daje miejsce, w którym stoi." />
+
+        <TextBlock Classes="overline-sm muted" Text="RAMKA OBRAZKA: KWADRAT (120 x 120)" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Obrazek" />
+                <controls:ImageFrame x:Name="SquarePicture" Width="120" Height="120"
+                                     Icon="{DynamicResource DungeonIconBackpack}"
+                                     Source="avares://DungeonApp.Desktop/Assets/Gallery/sample.png" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Bez obrazka" />
+                <controls:ImageFrame x:Name="SquarePlaceholder" Width="120" Height="120"
+                                     Icon="{DynamicResource DungeonIconBackpack}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Brak pliku" />
+                <controls:ImageFrame x:Name="SquareError" Width="120" Height="120"
+                                     Icon="{DynamicResource DungeonIconBackpack}"
+                                     Message="Brak pliku"
+                                     Detail="obrazy/plik.png" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Brak pliku: długa ścieżka" />
+                <controls:ImageFrame x:Name="SquareLongError" Width="120" Height="120"
+                                     Icon="{DynamicResource DungeonIconBackpack}"
+                                     Message="Brak pliku"
+                                     Detail="obrazy/podkatalog/bardzo-dluga-nazwa-pliku-bez-spacji-ktora-sie-nie-miesci.webp" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="RAMKA OBRAZKA: PORTRET (150 x 200)" />
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Obrazek" />
+                <controls:ImageFrame x:Name="PortraitPicture" Width="150" Height="200"
+                                     Icon="{DynamicResource DungeonIconDragon}"
+                                     Source="avares://DungeonApp.Desktop/Assets/Gallery/sample.png" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Bez obrazka" />
+                <controls:ImageFrame x:Name="PortraitPlaceholder" Width="150" Height="200"
+                                     Icon="{DynamicResource DungeonIconDragon}" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Brak pliku" />
+                <controls:ImageFrame x:Name="PortraitError" Width="150" Height="200"
+                                     Icon="{DynamicResource DungeonIconDragon}"
+                                     Message="Brak pliku"
+                                     Detail="obrazy/portret.webp" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

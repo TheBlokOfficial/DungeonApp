@@ -15,7 +15,8 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// deserializer (<c>System.Text.Json</c>, driven by <see cref="Monster"/>/<see cref="Gear"/>'s own
 /// <see langword="required"/> members and strict unmapped-member handling) is what rejects bad
 /// content now, with zero bespoke validation code written anywhere in
-/// <see cref="Dnd5eSystem.TryValidate"/>.
+/// <see cref="Dnd5eSystem.TryValidate"/>. The picture tests at the end (porcja 4a) prove the one
+/// thing this system adds to the loader's own picture-path check: that both types declare it.
 /// </summary>
 public sealed class Dnd5eSystemTests
 {
@@ -83,6 +84,44 @@ public sealed class Dnd5eSystemTests
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
         Assert.Contains("actions", entry.UnresolvedDetail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Porcja 4a: both types declare their "image" value as the entry's picture, so the loader checks
+    // its path - a picture reaching outside the pack rejects the entry, a picture in a subdirectory
+    // of the pack reads back as written.
+    [Theory]
+    [InlineData("monster")]
+    [InlineData("gear")]
+    public void Both_content_types_declare_image_as_their_picture(string type)
+    {
+        var reference = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create(type));
+
+        Assert.True(NewSystem().TryGet(reference, out var descriptor));
+        Assert.Equal("image", descriptor.ImageProperty);
+    }
+
+    [Theory]
+    [InlineData("../poza.png", false)]
+    [InlineData("obrazy/mikstura.webp", true)]
+    public async Task A_gear_picture_path_is_checked_when_its_pack_loads(string image, bool resolves)
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", $$"""
+            {
+              "id": "potion",
+              "name": "Mikstura",
+              "template": "dnd5e:gear",
+              "templateVersion": 1,
+              "values": { "rarity": "Pospolity", "image": "{{image}}" }
+            }
+            """);
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Equal(resolves, entry.Unresolved is null);
+        Assert.Equal(image, entry.Entry.Values.Read<Gear>().Image);
     }
 
     private static Task<ContentRegistry> LoadFixturesAsync() =>

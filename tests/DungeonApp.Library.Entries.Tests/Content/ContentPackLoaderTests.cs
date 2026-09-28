@@ -744,4 +744,95 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Null(ok.Unresolved);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, badEntry.Unresolved);
     }
+
+    // ---------------------------------------------------------------------
+    // Picture path - checked through the property the content type declares as its picture.
+    // ---------------------------------------------------------------------
+
+    private static readonly ContentTypeReference PicturedType = new(ContentId.Create("sys"), ContentId.Create("thing"));
+
+    private static FakeContentTypeCatalog PicturedCatalog() =>
+        FakeContentTypeCatalog.Of(new ContentTypeDescriptor(PicturedType, "Thing", 1, "picture"));
+
+    private static string PicturedEntryJson(string picture) =>
+        $$"""
+        {
+          "id": "e1",
+          "name": "Entry One",
+          "template": "sys:thing",
+          "templateVersion": 1,
+          "values": { "picture": {{JsonSerializer.Serialize(picture)}} }
+        }
+        """;
+
+    [Theory]
+    [InlineData("C:/obrazy/a.png", "image path 'C:/obrazy/a.png' must be relative to the pack.")]
+    [InlineData("C:a.png", "image path 'C:a.png' must be relative to the pack.")]
+    [InlineData("/obrazy/a.png", "image path '/obrazy/a.png' must be relative to the pack.")]
+    [InlineData("\\obrazy\\a.png", "image path '\\obrazy\\a.png' must be relative to the pack.")]
+    [InlineData("../a.png", "image path '../a.png' leads outside the pack.")]
+    [InlineData("obrazy/../../a.png", "image path 'obrazy/../../a.png' leads outside the pack.")]
+    [InlineData("obrazy\\..\\..\\a.png", "image path 'obrazy\\..\\..\\a.png' leads outside the pack.")]
+    [InlineData("obrazy/a.gif", "image path 'obrazy/a.gif' is not a PNG, JPEG or WebP file.")]
+    [InlineData("obrazy/a", "image path 'obrazy/a' is not a PNG, JPEG or WebP file.")]
+    [InlineData("", "image path is empty.")]
+    [InlineData("obrazy/..", "image path 'obrazy/..' does not name a file.")]
+    public async Task An_entry_whose_picture_path_is_absolute_leaves_the_pack_or_is_not_an_image_is_unresolved_with_the_reason(
+        string picture, string reason)
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", PicturedEntryJson(picture));
+
+        var registry = await Loader(PicturedCatalog()).LoadAsync();
+
+        var registered = Assert.Single(registry.Entries);
+        Assert.Equal(EntryUnresolvedReason.ValuesRejected, registered.Unresolved);
+        Assert.Equal(reason, registered.UnresolvedDetail);
+    }
+
+    [Theory]
+    [InlineData("a.png")]
+    [InlineData("obrazy/potwory/a.webp")]
+    [InlineData("obrazy\\a.JPG")]
+    [InlineData("./obrazy/../a.jpeg")]
+    public async Task An_entry_whose_picture_path_stays_in_the_pack_resolves_even_when_the_file_is_missing(string picture)
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", PicturedEntryJson(picture));
+
+        var registry = await Loader(PicturedCatalog()).LoadAsync();
+
+        var registered = Assert.Single(registry.Entries);
+        Assert.Null(registered.Unresolved);
+        Assert.Equal(picture, EntryImagePath.Declared(registered));
+    }
+
+    [Fact]
+    public async Task A_picture_path_is_located_inside_the_directory_its_pack_was_read_from()
+    {
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", PicturedEntryJson("obrazy/a.png"));
+
+        var registry = await Loader(PicturedCatalog()).LoadAsync();
+
+        var pack = Assert.Single(registry.Packs);
+        var expected = System.IO.Path.GetFullPath(System.IO.Path.Combine(_packs.Path, "cnt", "obrazy", "a.png"));
+        Assert.Equal(expected, EntryImagePath.Locate(pack, Assert.Single(registry.Entries)));
+    }
+
+    [Fact]
+    public async Task A_picture_property_is_not_read_when_the_type_declares_none()
+    {
+        var types = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(PicturedType, "Thing", 1));
+
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", PicturedEntryJson("../poza.gif"));
+
+        var registry = await Loader(types).LoadAsync();
+
+        var registered = Assert.Single(registry.Entries);
+        Assert.Null(registered.Unresolved);
+        Assert.Null(EntryImagePath.Declared(registered));
+        Assert.Null(EntryImagePath.Locate(Assert.Single(registry.Packs), registered));
+    }
 }

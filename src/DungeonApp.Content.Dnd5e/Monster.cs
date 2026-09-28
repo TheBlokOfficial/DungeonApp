@@ -73,4 +73,11 @@ public sealed record Monster
     public required string Actions { get; init; }
 
     public string? Description { get; init; }
+
+    /// <summary>
+    /// The monster's picture: a PNG, JPEG or WebP file, as a path relative to this entry's pack.
+    /// Shown as an upright portrait. Declared to the loader as this type's picture
+    /// (<see cref="Dnd5eSystem"/>).
+    /// </summary>
+    public string? Image { get; init; }
 }

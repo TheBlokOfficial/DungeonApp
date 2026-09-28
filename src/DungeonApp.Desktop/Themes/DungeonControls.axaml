@@ -1467,6 +1467,90 @@
     </ControlTheme>
 
     <!--
+        Ramka obrazka (controls:ImageFrame): pole na jeden obrazek, bez własnego rozmiaru - rozmiar
+        i proporcje (kwadrat, portret) daje układ, w którym stoi. Tło powierzchni (DungeonSurfaceBrush,
+        żeby puste pole czytało się jako miejsce na obrazek także na tle bez koloru), linia motywu,
+        narożnik karty; treść przycięta do narożnika.
+        Trzy stany, z tego, co ramka dostała: :picture - obrazek wypełnia ramkę (UniformToFill:
+        przycięty do proporcji ramki, bez zniekształcenia), na środku; bez obrazka - ikona zastępcza
+        DungeonImageFrameIconSize na środku, kolorem tekstu przygaszonego; :error - ta sama ikona, pod
+        nią komunikat (rola caption) i szczegół (caption, zawijany także w środku ścieżki bez spacji,
+        najwyżej trzy wiersze, dalej wielokropek) kolorem tekstu niebezpieczeństwa, wyśrodkowane.
+        Nie ma stanów interakcji: nie przyjmuje fokusu, nie reaguje na mysz (kursor tego, na czym
+        leży), tekst się nie zaznacza.
+    -->
+    <ControlTheme x:Key="{x:Type controls:ImageFrame}" TargetType="controls:ImageFrame">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCardCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingSm}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <Panel>
+                        <Image Name="PART_Picture"
+                               Source="{TemplateBinding Source}"
+                               Stretch="UniformToFill"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               IsVisible="False" />
+                        <StackPanel Name="PART_Placeholder"
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Spacing="{DynamicResource DungeonSpacingSm}">
+                            <controls:ForegroundIcon Name="PART_Icon"
+                                                     Width="{DynamicResource DungeonImageFrameIconSize}"
+                                                     Height="{DynamicResource DungeonImageFrameIconSize}"
+                                                     HorizontalAlignment="Center"
+                                                     Source="{TemplateBinding Icon}"
+                                                     Foreground="{TemplateBinding Foreground}" />
+                            <!-- Komunikat i ścieżka bez odstępu: jedna notatka w dwóch wierszach. -->
+                            <StackPanel Name="PART_Error"
+                                        IsVisible="False">
+                                <TextBlock Name="PART_Message"
+                                           Classes="caption"
+                                           Text="{TemplateBinding Message}"
+                                           Foreground="{DynamicResource DungeonDangerTextBrush}"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Name="PART_Detail"
+                                           Classes="caption"
+                                           Text="{TemplateBinding Detail}"
+                                           Foreground="{DynamicResource DungeonDangerTextBrush}"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           MaxLines="3"
+                                           TextTrimming="CharacterEllipsis"
+                                           IsVisible="{TemplateBinding Detail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:picture /template/ Image#PART_Picture">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:picture /template/ StackPanel#PART_Placeholder">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:error /template/ StackPanel#PART_Error">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+
+    <!--
         Okruszki (controls:Breadcrumbs): ścieżka tego, co pokazane, w jednej linii, stopień
         DungeonHelperFontSize (12), krój tekstu interfejsu. Ślad (wszystkie odcinki poza ostatnim) -
         tekst przygaszony; ostatni, bieżący - tekst drugorzędny (mockup rejestru, .crumb-path .current).

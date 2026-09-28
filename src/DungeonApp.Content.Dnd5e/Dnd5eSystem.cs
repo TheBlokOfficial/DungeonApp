@@ -51,6 +51,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
+    /// <summary>The JSON name of <see cref="Monster.Image"/> and <see cref="Gear.Image"/>.</summary>
+    private const string ImagePropertyName = "image";
+
     // Public, not internal: DungeonApp.App/Program.cs - the one place allowed to name a system by
     // name - is a separate assembly, and reads this to compute this system's packs directory from
     // its own identifier (docs/architecture.md, "Gdzie mieszka stan":
@@ -132,8 +135,10 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         Id = SystemId.Create("dnd5e");
         ContentSetId = ContentId.Create("dnd5e");
-        _monster = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(MonsterTypeId)), "Potwór", 1);
-        _gear = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)), "Przedmiot", 1);
+        // Both types declare "image" (Monster.Image, Gear.Image) as their picture, so the loader
+        // checks its path at load time without knowing what either type is.
+        _monster = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(MonsterTypeId)), "Potwór", 1, ImagePropertyName);
+        _gear = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)), "Przedmiot", 1, ImagePropertyName);
 
         _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPaths, this));
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
