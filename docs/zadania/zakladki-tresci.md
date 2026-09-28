@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `d2b124a`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
+**Stan na: 2026-09-28, po `700d28c`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3c przyjęta przez autora 2026-09-28 bez rund. **W toku: porcja 3d** — filtry jako pola
-z podpisem (*C*, *Filtry — pola z podpisem*) i diagnoza położenia menu sortowania w prawdziwym oknie;
-wykonawca w tle, kopia pod `.claude/worktrees/` (nazwa w raporcie). **Następny krok:** weryfikacja
-i scalenie 3d, potem 3b (paczka dostarczana).
+Porcja 3d scalona 2026-09-28: filtry jako pola z podpisem — **czeka na obejrzenie przez autora**;
+menu sortowania w osobnym oknie stoi poprawnie, przesunięcia nie odtworzono (*Notki*, *Okienka tylko
+w aplikacji*). Kopii roboczych brak. **Następny krok:** autor ogląda pola filtrów i sprawdza menu
+sortowania w zakładce i w galerii; potem 3b (paczka dostarczana).
 
 ## Zakres i koniec
 
@@ -91,9 +91,8 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   potwora, „Wyczyść filtry” z wyszukiwaniem (przyjęte 2026-09-28).
 - [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
-- [ ] **3d — pola filtrów i menu sortowania**: chipy w panelu listy zastąpione polami z podpisem
-  (*C*); diagnoza położenia menu w prawdziwym oknie Windows i poprawka, jeśli mała (*Notki*,
-  *Okienka tylko w aplikacji*).
+- [x] **3d — pola filtrów** zamiast chipów (scalone 2026-09-28; czeka na obejrzenie). Menu sortowania
+  — nieodtworzone w osobnym oknie, czeka na pomiar autora (*Notki*, *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
@@ -117,6 +116,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*); **R w widoku** — odznaka rzadkości w wierszu nie na środku w pionie (własna pigułka zamiast klocka z fundamentu; poprawka z porcją 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 | 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
 | 3c | sortowanie, poprawki z 3a | 0 | 51 / 9,5 / 5,1 mln |
+| 3d | pola filtrów (W — decyzja autora), diagnoza menu | — (czeka na obejrzenie) | 32 / 5,2 / 3,0 mln |
 
 ## Ustalenia
 
@@ -469,8 +469,15 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   biblioteki (wtedy do werdyktu). Skalę ekranu zapis odczytuje sam (skalowanie okna i okienka) —
   nie pytać o nią autora (autor, 2026-09-28: poprawka ma działać przy każdej skali). Ekran autora:
   2560×1440, skala 100% (`AppliedDPI` 96, odczyt architekta z rejestru) — pomylenie punktów
-  z pikselami odpada jako przyczyna. Porcja 3d próbuje najpierw diagnozy bez autora: tymczasowy
-  program z prawdziwym oknem Windows otwiera menu sam i zapisuje położenia.
+  z pikselami odpada jako przyczyna.
+  **Pomiar porcji 3d:** tymczasowy program (poza repozytorium) z prawdziwym oknem Windows, motywem
+  ramy, `PopupOpenLayout` i `PopupOpenMotion` — lewa krawędź okna menu równa lewej krawędzi przycisku
+  pola co do piksela, w oknie 500×400 i zmaksymalizowanym, z każdym z tych modułów i bez nich.
+  `PopupOpenLayout` zwęża okno menu (176 → 164) bez ruszania lewej krawędzi. Klocek i motyw są więc
+  czyste; hipoteza — przyczyna w otoczeniu zakładki w powłoce. **Następny krok:** autor otwiera menu
+  sortowania w galerii i w zakładce (po 3d panel listy się zmienił). Tylko w zakładce → ten sam
+  program z prawdziwym `ContentTabView` (model jak w `ContentTabViewBuildTests`). Nigdzie → zamknięte.
+  Uboczne, niebadane: w wariancie zmaksymalizowanym okienko otwarte drugi raz było po 400 ms zamknięte.
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
@@ -520,6 +527,12 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     dziś tylko nazwa z biblioteki. Zaklęcia (etap 8): Poziom — liczbowy, domyślnie.
   * Odznaka rzadkości ma teraz kształt i pismo tagu z motywu (zaokrąglenie tagu zamiast pełnej
     pigułki, 12 Medium) — do obejrzenia.
+
+* **Po porcji 3d** (raport wykonawcy, 2026-09-28):
+  * **Element własny w widoku:** styl `TextBlock.filter-label:disabled` — podpis filtra przygasa
+    razem z wyłączonym polem (nagłówek pola w konwencji Windows). Przy drugim użyciu podpisu pola
+    (karty — pary etykieta–wartość nie są polami, więc raczej formularz) przechodzi do motywu.
+  * Podpis rolą `label` z klasą `secondary`; kolumna podpisów wspólna (`SharedSizeGroup`).
 
 ## Do sesji głównej
 
