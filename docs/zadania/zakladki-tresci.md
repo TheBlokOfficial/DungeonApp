@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `d2fbd91`.** Na starcie sesji: `git log d2fbd91..master` i `git worktree
+**Stan na: 2026-09-28, po `ec5d358`.** Na starcie sesji: `git log ec5d358..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Wycinek 1 (dane D&D 5e) zamknięty 2026-09-26. Wycinek 2: projekt szkieletu i kart napisany
-2026-09-28 (*Ustalenia*, *C*) — **czeka na przyjęcie albo uwagi autora**; plan dostał porcje 3a i 4a.
-Kopii roboczych brak. **Następny krok:** uwagi autora wpisać do *C*, po przyjęciu — brief porcji 3a
-(lektury „przed każdym briefem” z *Do przeczytania*).
+Wycinek 2 (projekt, *Ustalenia*, *C*) przyjęty przez autora w całości 2026-09-28. **W toku: porcja
+3a** — wykonawca (Opus 5.5) w kopii roboczej w `.claude/worktrees/` (gałąź i ścieżka — `git worktree
+list`). Jeśli sesja zginęła z wykonawcą: kopia bez commitów idzie do usunięcia, porcja od nowa z tym
+samym zakresem (*Plan*, *C*, *Rozstrzygnięcia przy briefie 3a*). **Następny krok:** weryfikacja
+raportu, scalenie, autor ogląda; potem brief porcji 3.
 
 ## Zakres i koniec
 
@@ -85,9 +86,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
-- [ ] **2 — projekt** (architekt): szkielet zakładki i karty per typ, na piśmie do przyjęcia przez
-  autora przed kodem (*Ustalenia*, *Projekt*). Wynik dzieli się na porcje wykonawcze. Propozycja
-  napisana 2026-09-28 (*Ustalenia*, *C*) — czeka na przyjęcie.
+- [x] **2** — projekt szkieletu i kart przyjęty 2026-09-28 (*Ustalenia*, *C*).
 - [ ] **3a — szkielet ekranu** (*C*): nagłówek z licznikiem, panel listy 320 z sekcjami po paczce,
   wiersz 32 z odznaką, rzeczy zepsute z powodem, puste stany, szczegół wpisu (nagłówek + miejsce
   karty 560). W miejscu karty do porcji 4 i 5 stoi obecna karta systemu.
@@ -233,8 +232,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     ma zielone tło, ujemnego czerwone. Pozostałe komórki, także modyfikator +0, mają neutralne szare.
     Kolory **nie** z tokenów stanów — system dostaje własne tokeny „modyfikator dodatni"/„modyfikator ujemny" z zapisanym znaczeniem. Malowanie
     to prezentacja w kodzie karty, nie wyrażenie w danych — pierwszego zakazu nie dotyczy.
-* **C. Projekt szkieletu i kart (wycinek 2)** — propozycja architekta z 2026-09-28, **czeka na
-  przyjęcie przez autora**; po przyjęciu wiąże briefy porcji 3–5 i 8. Wymiary ze skali motywu
+* **C. Projekt szkieletu i kart (wycinek 2)** — propozycja architekta z 2026-09-28, **przyjęta przez
+  autora w całości tego dnia** („zobaczymy, jak to wyjdzie” — zmiany po obejrzeniu idą jako rundy W).
+  Wiąże briefy porcji 3–5 i 8. Wymiary ze skali motywu
   (odstępy 6, 8, 12, 16, 20, 24, 32), pismo z ról galerii (*Typografia*), klocki z galerii.
   ```
   ┌──────────────────────────────────────────────────────────────────────────────────┐
@@ -390,6 +390,16 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * **Czego projekt dokłada do motywu i systemu:** ikona odświeżania (porcja 7); w systemie kolory
     rzadkości w dwóch odmianach (tło odznaki, tekst na karcie) i modyfikatory (*B*). Kolor treści
     niewczytanej już jest. Akcje jako osobne rzeczy (krok 11) nie są potrzebne — akcje zostają prozą.
+  * **Rozstrzygnięcia przy briefie 3a** (architekt, 2026-09-28; do weta autora):
+    * Wyszukiwanie, filtry i sortowanie przechodzą w 3a do nowego panelu bez zmiany działania;
+      przeprojektowanie ich — porcja 3.
+    * Licznik zakładki i liczby sekcji liczą wpisy wczytane i zepsute; wiersz odrzuconej paczki nie
+      jest wpisem i się nie liczy.
+    * Zdanie pustego stanu z nazwą typu („Żadna paczka nie ma jeszcze potworów.”) podaje system —
+      biblioteka nie zna nazw typów.
+    * Kontrast odznaki rzadkości sprawdza 3a, bo wiersz należy do niej: tekst odznaki co najmniej
+      4,5:1 na odznace położonej na tle wiersza w spoczynku, pod myszą i wybranego; poprawka
+      w kolorach systemu.
 
 ## Notki
 
@@ -434,8 +444,6 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 ## Do sesji głównej
 
-* **Akcje jako osobne rzeczy przed krokiem 11?** — tylko jeśli projekt z wycinka 2 ich potrzebuje.
-  Propozycja projektu (*C*) ich nie potrzebuje; po jej przyjęciu pozycja znika.
 * **Budżet długości dokumentu czytanego na starcie każdej sesji** (propozycja architekta, 2026-09-25,
   przeniesiona z fundamentu): `collaboration.md` ma ok. 530 linii i jest czytany prawie w całości co
   sesję (start sesji: ok. 55 tys. tokenów sama rama, +28 tys. `collaboration.md` z dokumentem zadania).
