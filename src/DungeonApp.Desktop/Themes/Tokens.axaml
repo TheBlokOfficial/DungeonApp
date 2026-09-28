@@ -548,6 +548,9 @@
         <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListViewportHeight">258</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
+        <!-- Ramka obrazka (controls:ImageFrame): ikona zastępcza w miejscu obrazka - duża, bo stoi
+             sama na środku pustej ramki i mówi, czego tu brakuje. -->
+        <x:Double x:Key="DungeonImageFrameIconSize">48</x:Double>
         <!-- InlineIconButton: przycisk ikony stojący w rzędzie tekstu (przycisk kierunku za odnośnikiem
              sortowania) - kwadrat 24: ikona 16 z pasem 4 na tło najechania i obszar trafienia większy
              od samej ikony. Overhang ściąga jego wysokość w układzie do wysokości ikony (24 - 2 x 4 = 16),
