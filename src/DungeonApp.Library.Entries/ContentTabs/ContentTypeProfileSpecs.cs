@@ -4,6 +4,15 @@ using System.Collections.Generic;
 namespace DungeonApp.Library.Entries;
 
 /// <summary>
+/// A content type's category, as the system declares it: the name its filter chip carries in a
+/// content tab ("Grupa") and compiled code reading the category out of the system's own record
+/// (<typeparamref name="TRecord"/>) - null for a record with no category. A content type with no
+/// category at all declares no spec, and a tab none of whose types declares one has no category
+/// filter.
+/// </summary>
+public sealed record ContentCategorySpec<TRecord>(string Label, Func<TRecord, string?> Value);
+
+/// <summary>
 /// One filterable dimension over a content type's own values, as the system declares it: a label
 /// for the filter, compiled code reading the system's own record (<typeparamref name="TRecord"/>),
 /// and the order its options should list in - the system's choice, never alphabetical by accident

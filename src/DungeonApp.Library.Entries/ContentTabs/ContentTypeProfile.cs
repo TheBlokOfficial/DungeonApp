@@ -20,14 +20,15 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
 
     public ContentTypeProfile(
         ContentTypeReference type,
-        Func<TRecord, string?>? category = null,
+        ContentCategorySpec<TRecord>? category = null,
         Func<TRecord, IReadOnlyList<string>>? tags = null,
         Func<TRecord, ContentBadge>? badge = null,
         IReadOnlyList<ContentValueFilterSpec<TRecord>>? valueFilters = null,
         IReadOnlyList<ContentSortSpec<TRecord>>? sorts = null)
     {
         Type = type;
-        _category = category;
+        _category = category?.Value;
+        CategoryLabel = category?.Label;
         _tags = tags ?? (_ => []);
         _badge = badge;
 
@@ -44,6 +45,8 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
     }
 
     public ContentTypeReference Type { get; }
+
+    public string? CategoryLabel { get; }
 
     public string? Category(Entry entry) => _category?.Invoke(entry.Values.Read<TRecord>());
 

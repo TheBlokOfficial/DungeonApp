@@ -18,9 +18,12 @@ public interface IContentTypeProfile
     ContentTypeReference Type { get; }
 
     /// <summary>
-    /// The entry's category, or null when this content type has none (the "Kategoria" filter is
-    /// then unavailable wherever every content type in a tab answers null).
+    /// The name of this content type's category filter ("Grupa"), or null when the content type has
+    /// no category - a tab none of whose types names one has no category filter at all.
     /// </summary>
+    string? CategoryLabel { get; }
+
+    /// <summary>The entry's category, or null when it has none (or its content type has no category).</summary>
     string? Category(Entry entry);
 
     /// <summary>The entry's tags, shown on its detail header. Never null - an empty list for "none".</summary>

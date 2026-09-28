@@ -32,11 +32,14 @@ public sealed class ContentListModel
 {
     public const string DefaultSortLabel = "Nazwa (A-Z)";
 
+    /// <summary>The name of the filter over a tab's packs - the library's own, never a system's.</summary>
+    public const string PackFilterLabel = "Paczka";
+
     /// <summary>
     /// The order every user-visible list in a content tab sorts by: pl-PL collation, case
     /// insensitive, so "Ł", "Ś", "Ż", "Ć" and friends sort next to their plain Latin neighbours
     /// instead of landing after "z" the way ordinal comparison puts them. Everything a GM actually
-    /// reads as a list - the name sort, broken rows, section headers, "Kategoria" and "Źródło"
+    /// reads as a list - the name sort, broken rows, section headers, the category and "Paczka"
     /// options - goes through this one comparer. Tie-breaking on an address or an already-ordinal
     /// value (an entry's own <see cref="EntryAddress"/>, a value filter's system-declared numeric or
     /// ranked order) is a different question and stays whatever it already was.
@@ -50,8 +53,8 @@ public sealed class ContentListModel
     private readonly IReadOnlyDictionary<ContentId, IReadOnlyList<RegisteredEntry>> _validByPack;
     private readonly IReadOnlyDictionary<ContentId, IReadOnlyList<ContentBrokenRow>> _brokenByPack;
 
-    private readonly ContentFilterOptions _categoryFilter;
-    private readonly ContentFilterOptions _sourceFilter;
+    private readonly ContentFilterOptions? _categoryFilter;
+    private readonly ContentFilterOptions _packFilter;
     private readonly IReadOnlyList<ContentFilterOptions> _valueFilterOptions;
     private readonly IReadOnlyList<string> _sortLabels;
 
@@ -90,9 +93,15 @@ public sealed class ContentListModel
             .GroupBy(row => row.Pack)
             .ToDictionary(group => group.Key, group => (IReadOnlyList<ContentBrokenRow>)group.ToArray());
 
-        _categoryFilter = new ContentFilterOptions(
-            "Kategoria",
-            DistinctSorted(validRows.Select(entry => Profile(entry).Category(entry.Entry)), DisplayOrder));
+        // A tab mixing several content types whose categories carry different names has no consumer
+        // yet: the chip takes the name of the first profile that declares one.
+        var categoryLabel = tab.ContentTypes.Select(profile => profile.CategoryLabel).FirstOrDefault(label => label is not null);
+
+        _categoryFilter = categoryLabel is null
+            ? null
+            : new ContentFilterOptions(
+                categoryLabel,
+                DistinctSorted(validRows.Select(entry => Profile(entry).Category(entry.Entry)), DisplayOrder));
 
         var contributingPackIds = validRows.Select(entry => entry.Address.Pack)
             .Concat(brokenRows.Select(row => row.Pack))
@@ -105,7 +114,7 @@ public sealed class ContentListModel
             .Concat(_rejectedPacks.Select(pack => pack.Location).OrderBy(location => location, DisplayOrder))
             .ToArray();
 
-        _sourceFilter = new ContentFilterOptions("Źródło", sourceOptions);
+        _packFilter = new ContentFilterOptions(PackFilterLabel, sourceOptions);
 
         var valueFilterDefinitions = tab.ContentTypes.SelectMany(profile => profile.ValueFilters).ToArray();
 
@@ -145,7 +154,7 @@ public sealed class ContentListModel
         {
             var profile = Profile(entry);
 
-            if (state.Category is { } category && profile.Category(entry.Entry) != category)
+            if (!Admits(state.Categories, profile.Category(entry.Entry)))
             {
                 return false;
             }
@@ -154,7 +163,7 @@ public sealed class ContentListModel
             {
                 foreach (var definition in profile.ValueFilters)
                 {
-                    if (selections.TryGetValue(definition.Label, out var selected) && definition.Value(entry.Entry) != selected)
+                    if (selections.TryGetValue(definition.Label, out var chosen) && !Admits(chosen, definition.Value(entry.Entry)))
                     {
                         return false;
                     }
@@ -182,12 +191,12 @@ public sealed class ContentListModel
                 return ContentSection.ForPack(pack.Name, valid, broken);
             })
             .Where(section => section.ShownCount > 0)
-            .Where(section => state.Source is null || section.Header == state.Source)
+            .Where(section => Admits(state.Packs, section.Header))
             .OrderBy(section => section.Header, DisplayOrder);
 
         var rejectedSections = _rejectedPacks
             .Select(ContentSection.ForRejectedPack)
-            .Where(section => state.Source is null || section.Header == state.Source)
+            .Where(section => Admits(state.Packs, section.Header))
             .OrderBy(section => section.Header, DisplayOrder);
 
         IReadOnlyList<ContentSection> sections = [.. validSections, .. rejectedSections];
@@ -195,13 +204,21 @@ public sealed class ContentListModel
         return new ContentListResult(
             sections,
             _categoryFilter,
-            _sourceFilter,
+            _packFilter,
             _valueFilterOptions,
             _sortLabels,
             TotalCount,
             ShownCount: sections.Sum(section => section.ValidRows.Count),
             Selection: ResolveSelection(state.Selected, sections));
     }
+
+    /// <summary>
+    /// One filter's test: nothing chosen admits everything, otherwise the value must be one of the
+    /// chosen ones - values within a filter combine with "or". A value the entry does not have
+    /// (null) is never among the chosen ones.
+    /// </summary>
+    private static bool Admits(IReadOnlyCollection<string>? chosen, string? value) =>
+        chosen is not { Count: > 0 } || (value is not null && chosen.Contains(value));
 
     /// <summary>
     /// A broken entry belongs here when its own type is one this tab declares, or - the fallback for

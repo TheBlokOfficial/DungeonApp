@@ -23,7 +23,7 @@ public sealed class ContentListModelTests
 
     private static IContentTypeProfile WidgetProfile() => new ContentTypeProfile<Widget>(
         WidgetType,
-        category: widget => widget.Kind,
+        category: new ContentCategorySpec<Widget>("Rodzaj", widget => widget.Kind),
         tags: widget => [widget.Tier],
         badge: widget => new ContentBadge(widget.Tier, $"tier-{widget.Tier}"),
         valueFilters: [new ContentValueFilterSpec<Widget>("Poziom", widget => widget.Tier, TierOrder)],
@@ -257,7 +257,7 @@ public sealed class ContentListModelTests
             [],
             []);
 
-        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(Category: "kind-a"));
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(Categories: ["kind-a"]));
 
         var section = Assert.Single(result.Sections);
         Assert.Equal(["A"], section.ValidRows.Select(row => row.Entry.Name));
@@ -278,7 +278,7 @@ public sealed class ContentListModelTests
             []);
 
         var result = ModelFor(WidgetTab(), registry).Build(
-            new ContentListState(ValueFilters: new Dictionary<string, string> { ["Poziom"] = "2" }));
+            new ContentListState(ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["2"] }));
 
         var section = Assert.Single(result.Sections);
         Assert.Equal(["B"], section.ValidRows.Select(row => row.Entry.Name));
@@ -311,7 +311,7 @@ public sealed class ContentListModelTests
 
         var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
 
-        Assert.False(result.Category.IsAvailable);
+        Assert.False(result.Category!.IsAvailable);
         Assert.False(result.ValueFilters.Single(filter => filter.Label == "Poziom").IsAvailable);
     }
 
@@ -326,7 +326,7 @@ public sealed class ContentListModelTests
             [],
             [new RejectedPack("gamma-dir", "reason")]);
 
-        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(Source: "Alpha"));
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(Packs: ["Alpha"]));
 
         var section = Assert.Single(result.Sections);
         Assert.Equal("Alpha", section.Header);
@@ -344,22 +344,106 @@ public sealed class ContentListModelTests
 
         var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
 
-        Assert.Equal(["Alpha", "gamma-dir"], result.Source.Options);
+        Assert.Equal(["Alpha", "gamma-dir"], result.Pack.Options);
     }
 
     [Fact]
     public void Clearing_filters_resets_filters_and_search_but_keeps_the_sort()
     {
         var state = new ContentListState(
-            Search: "x", Category: "y", Source: "z", ValueFilters: new Dictionary<string, string> { ["Poziom"] = "1" }, Sort: "Poziom");
+            Search: "x",
+            Categories: ["y"],
+            Packs: ["z"],
+            ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1"] },
+            Sort: "Poziom");
 
         var cleared = state.ClearFilters();
 
         Assert.Equal(string.Empty, cleared.Search);
-        Assert.Null(cleared.Category);
-        Assert.Null(cleared.Source);
+        Assert.Null(cleared.Categories);
+        Assert.Null(cleared.Packs);
         Assert.Null(cleared.ValueFilters);
         Assert.Equal("Poziom", cleared.Sort);
+        Assert.False(cleared.AnyFilterNarrows);
+    }
+
+    [Fact]
+    public void Only_the_search_or_a_chosen_value_narrows_never_the_sort_or_an_empty_choice()
+    {
+        Assert.False(new ContentListState(Sort: "Poziom").AnyFilterNarrows);
+        Assert.False(new ContentListState(
+            Categories: [], Packs: [], ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = [] }).AnyFilterNarrows);
+        Assert.True(new ContentListState(Search: "a").AnyFilterNarrows);
+        Assert.True(new ContentListState(Packs: ["Alpha"]).AnyFilterNarrows);
+        Assert.True(new ContentListState(
+            ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1"] }).AnyFilterNarrows);
+    }
+
+    private static ContentRegistry ThreeTierRegistry() => new(
+        [MakePack("alpha", "Alpha")],
+        [
+            Valid("alpha", "a1", "A", WidgetType, "kind-a", "1"),
+            Valid("alpha", "a2", "B", WidgetType, "kind-b", "2"),
+            Valid("alpha", "a3", "C", WidgetType, "kind-a", "3"),
+        ],
+        [],
+        []);
+
+    private static IReadOnlyList<string> ShownNames(ContentListResult result) =>
+        result.Sections.SelectMany(section => section.ValidRows).Select(row => row.Entry.Name).ToArray();
+
+    [Fact]
+    public void Two_values_of_one_filter_show_their_union()
+    {
+        var result = ModelFor(WidgetTab(), ThreeTierRegistry()).Build(
+            new ContentListState(ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1", "2"] }));
+
+        Assert.Equal(["A", "B"], ShownNames(result));
+    }
+
+    [Fact]
+    public void Two_filters_show_their_intersection()
+    {
+        var result = ModelFor(WidgetTab(), ThreeTierRegistry()).Build(new ContentListState(
+            Categories: ["kind-a"],
+            ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1", "2"] }));
+
+        Assert.Equal(["A"], ShownNames(result));
+    }
+
+    [Fact]
+    public void An_empty_choice_shows_everything()
+    {
+        var result = ModelFor(WidgetTab(), ThreeTierRegistry()).Build(new ContentListState(
+            Categories: [],
+            Packs: [],
+            ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = [] }));
+
+        Assert.Equal(["A", "B", "C"], ShownNames(result));
+    }
+
+    [Fact]
+    public void Filter_options_stay_whole_while_other_filters_narrow_the_list()
+    {
+        var result = ModelFor(WidgetTab(), ThreeTierRegistry()).Build(new ContentListState(
+            Search: "A",
+            Categories: ["kind-a"],
+            ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1"] }));
+
+        Assert.Equal(["1", "2", "3"], result.ValueFilters.Single(filter => filter.Label == "Poziom").Options);
+        Assert.Equal(["kind-a", "kind-b"], result.Category!.Options);
+    }
+
+    [Fact]
+    public void The_category_filter_carries_the_systems_label_and_is_absent_when_no_profile_declares_one()
+    {
+        var withCategory = ModelFor(WidgetTab(), ThreeTierRegistry()).Build(new ContentListState());
+        var withoutCategory = ModelFor(new ContentTabDefinition("Gadżety", [GadgetProfile()]), ThreeTierRegistry())
+            .Build(new ContentListState());
+
+        Assert.Equal("Rodzaj", withCategory.Category!.Label);
+        Assert.Null(withoutCategory.Category);
+        Assert.Equal(ContentListModel.PackFilterLabel, withCategory.Pack.Label);
     }
 
     // -----------------------------------------------------------------------------------------
