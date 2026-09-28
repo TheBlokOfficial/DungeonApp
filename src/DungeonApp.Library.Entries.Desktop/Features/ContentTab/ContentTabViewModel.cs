@@ -25,6 +25,8 @@ public sealed class ContentTabViewModel : ObservableObject
     private readonly int _totalCount;
 
     private ContentListState _state = new();
+    private readonly RelayCommand _clearFiltersCommand;
+    private bool _anyFilterNarrows;
     private string _countText = string.Empty;
     private string _countShownPart = string.Empty;
     private string _countOfPart = string.Empty;
@@ -68,7 +70,7 @@ public sealed class ContentTabViewModel : ObservableObject
             .ToArray();
         SortOptions = firstBuild.Sorts;
 
-        ClearFiltersCommand = new RelayCommand(() => Apply(_state.ClearFilters()));
+        _clearFiltersCommand = new RelayCommand(() => Apply(_state.ClearFilters()), () => _anyFilterNarrows);
 
         ApplyResult(firstBuild);
     }
@@ -102,7 +104,12 @@ public sealed class ContentTabViewModel : ObservableObject
         set => Apply(_state with { Sort = value });
     }
 
-    public System.Windows.Input.ICommand ClearFiltersCommand { get; }
+    /// <summary>
+    /// "Wyczyść filtry": executable only while the search box holds a character or a chip holds a
+    /// value - otherwise there is nothing to clear and the link greys out. The same command backs the
+    /// "Nic nie pasuje…" state's link, which only shows while something narrows the list.
+    /// </summary>
+    public System.Windows.Input.ICommand ClearFiltersCommand => _clearFiltersCommand;
 
     public IReadOnlyList<ContentSectionViewModel> Sections { get; private set; } = [];
 
@@ -231,6 +238,16 @@ public sealed class ContentTabViewModel : ObservableObject
 
         var shown = CountShown(result.Sections);
         SetCount(shown, _totalCount);
+
+        var anyFilterNarrows = _state.Search.Length > 0
+            || _state.Category is not null
+            || _state.Source is not null
+            || _state.ValueFilters is { Count: > 0 };
+        if (anyFilterNarrows != _anyFilterNarrows)
+        {
+            _anyFilterNarrows = anyFilterNarrows;
+            _clearFiltersCommand.RaiseCanExecuteChanged();
+        }
         Detail = BuildDetail(result.Selection);
 
         // Inviting a pick only makes sense when something is currently on screen to pick.

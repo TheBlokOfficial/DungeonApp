@@ -9,21 +9,18 @@ namespace DungeonApp.Library.Entries.Desktop.Features.ContentTab;
 /// frame's own <c>DungeonApp.Desktop.ViewModels</c> (which carries <c>AsyncCommand</c>, the
 /// asynchronous counterpart this mirrors): krok 10, zlecenie 2's brief reserves any change to the
 /// frame beyond <c>Tokens.axaml</c> comments and <c>IGameSystem</c> for a stop-and-report, and this
-/// need is fully met without one. Never raises <see cref="CanExecuteChanged"/> on its own: every
-/// current caller is always executable, so there is nothing to invalidate.
+/// need is fully met without one. Without <c>canExecute</c> the command is always executable; with
+/// it, the owner calls <see cref="RaiseCanExecuteChanged"/> whenever what it reads may have changed,
+/// so a bound button greys out and comes back (runda 3a: "Wyczyść filtry").
 /// </summary>
-internal sealed class RelayCommand(Action execute) : ICommand
+internal sealed class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
 {
-    // Explicit, empty accessors rather than a field-like event: every caller here is always
-    // executable (see this type's own remarks), so there is nothing that would ever raise this -
-    // and a field-like event the class never raises is CS0067, not silence.
-    public event EventHandler? CanExecuteChanged
-    {
-        add { }
-        remove { }
-    }
+    public event EventHandler? CanExecuteChanged;
 
-    public bool CanExecute(object? parameter) => true;
+    public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
 
     public void Execute(object? parameter) => execute();
+
+    /// <summary>Tells bound views to ask <see cref="CanExecute"/> again - a notification, never a mutation.</summary>
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }

@@ -170,6 +170,40 @@ public sealed class ContentTabViewModelTests
         Assert.Equal(["Beta", "Alpha"], AllRowNames(viewModel));
     }
 
+    [Fact]
+    public void Wyczysc_filtry_is_executable_only_while_something_narrows_the_list()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"), MakeEntry("b", "Beta", "high"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "low"), Valid("p", "b", "Beta", "high")], [], []);
+        var viewModel = BuildViewModel(registry);
+        var command = viewModel.ClearFiltersCommand;
+        var raised = 0;
+        command.CanExecuteChanged += (_, _) => raised++;
+
+        Assert.False(command.CanExecute(null));
+
+        viewModel.Search = "A";
+
+        Assert.True(command.CanExecute(null));
+        Assert.Equal(1, raised);
+
+        viewModel.Search = string.Empty;
+
+        Assert.False(command.CanExecute(null));
+        Assert.Equal(2, raised);
+
+        var levelFilter = Assert.Single(viewModel.ValueFilters, f => f.Label == "Poziom");
+        levelFilter.SelectedDisplay = "low";
+
+        Assert.True(command.CanExecute(null));
+        Assert.Equal(3, raised);
+
+        command.Execute(null);
+
+        Assert.False(command.CanExecute(null));
+        Assert.Equal(4, raised);
+    }
+
     // -----------------------------------------------------------------------------------------
     // Selection and detail.
     // -----------------------------------------------------------------------------------------
