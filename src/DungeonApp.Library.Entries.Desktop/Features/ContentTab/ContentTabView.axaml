@@ -95,7 +95,9 @@
 
     <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,Auto,*" MinHeight="0">
 
-        <!-- ===== Nagłówek zakładki: nazwa i licznik na jednej linii bazowej (jeden TextBlock). ===== -->
+        <!-- ===== Nagłówek zakładki: nazwa i licznik na jednej linii bazowej (jeden TextBlock). Licznik:
+             liczby krojem liczb, słowa ("z", "wpisy") pismem interfejsu - ta sama wielkość i kolor.
+             Części licznika stoją bez białych znaków między elementami: odstępy niosą same części. ===== -->
         <TextBlock Grid.Row="0"
                    Margin="{StaticResource ContentTabHeaderMargin}"
                    Classes="display-lg"
@@ -105,8 +107,23 @@
             <Run Text="  "
                  FontFamily="{DynamicResource DungeonMonoFont}"
                  FontSize="{DynamicResource DungeonHelperFontSize}" />
-            <Run Text="{Binding CountText}"
+            <Run Text="{Binding CountShownPart}"
                  FontFamily="{DynamicResource DungeonMonoFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountOfPart}"
+                 FontFamily="{DynamicResource DungeonUiFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountTotalPart}"
+                 FontFamily="{DynamicResource DungeonMonoFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountNounPart}"
+                 FontFamily="{DynamicResource DungeonUiFont}"
                  FontSize="{DynamicResource DungeonHelperFontSize}"
                  FontWeight="Normal"
                  Foreground="{DynamicResource DungeonTextMutedBrush}" />

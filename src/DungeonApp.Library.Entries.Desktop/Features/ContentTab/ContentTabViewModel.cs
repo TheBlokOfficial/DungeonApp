@@ -26,6 +26,10 @@ public sealed class ContentTabViewModel : ObservableObject
 
     private ContentListState _state = new();
     private string _countText = string.Empty;
+    private string _countShownPart = string.Empty;
+    private string _countOfPart = string.Empty;
+    private string _countTotalPart = string.Empty;
+    private string _countNounPart = string.Empty;
     private ContentDetailViewModel? _detail;
     private bool _showSelectionPrompt;
     private bool _hasNoMatches;
@@ -102,10 +106,43 @@ public sealed class ContentTabViewModel : ObservableObject
 
     public IReadOnlyList<ContentSectionViewModel> Sections { get; private set; } = [];
 
+    /// <summary>The whole counter as one sentence - "3 wpisy", "1 z 3 wpisy".</summary>
     public string CountText
     {
         get => _countText;
         private set => SetField(ref _countText, value);
+    }
+
+    // The counter's parts in reading order, so the view can set numbers in the numeral face and
+    // words in the interface face: CountShownPart + CountOfPart + CountTotalPart + CountNounPart
+    // is exactly CountText. The first two are empty when nothing is hidden.
+
+    /// <summary>Rows shown, when a filter or search hides some - empty otherwise.</summary>
+    public string CountShownPart
+    {
+        get => _countShownPart;
+        private set => SetField(ref _countShownPart, value);
+    }
+
+    /// <summary>" z " between the shown and total numbers, when a filter or search hides some - empty otherwise.</summary>
+    public string CountOfPart
+    {
+        get => _countOfPart;
+        private set => SetField(ref _countOfPart, value);
+    }
+
+    /// <summary>The tab's own total.</summary>
+    public string CountTotalPart
+    {
+        get => _countTotalPart;
+        private set => SetField(ref _countTotalPart, value);
+    }
+
+    /// <summary>" wpis", " wpisy" or " wpisów", agreeing with the total.</summary>
+    public string CountNounPart
+    {
+        get => _countNounPart;
+        private set => SetField(ref _countNounPart, value);
     }
 
     /// <summary>The detail column's content - null when nothing is selected.</summary>
@@ -193,7 +230,7 @@ public sealed class ContentTabViewModel : ObservableObject
         RaisePropertyChanged(nameof(Sections));
 
         var shown = CountShown(result.Sections);
-        CountText = BuildCountText(shown, _totalCount);
+        SetCount(shown, _totalCount);
         Detail = BuildDetail(result.Selection);
 
         // Inviting a pick only makes sense when something is currently on screen to pick.
@@ -306,10 +343,18 @@ public sealed class ContentTabViewModel : ObservableObject
     /// Polish plural agreement for "wpis" against a count: "1 wpis", "2 wpisy", "5 wpisów", "12
     /// wpisów", "22 wpisy". "<paramref name="shown"/> z <paramref name="total"/> wpisów" when a
     /// filter hides something - agreeing with <paramref name="total"/>, the second number, exactly
-    /// as docs/architecture.md's "Co ma być na ekranie" describes.
+    /// as docs/architecture.md's "Co ma być na ekranie" describes. Sets the parts and the whole
+    /// sentence together, the whole being the parts joined.
     /// </summary>
-    private static string BuildCountText(int shown, int total) =>
-        shown == total ? $"{total} {Plural(total)}" : $"{shown} z {total} {Plural(total)}";
+    private void SetCount(int shown, int total)
+    {
+        var filtered = shown != total;
+        CountShownPart = filtered ? $"{shown}" : string.Empty;
+        CountOfPart = filtered ? " z " : string.Empty;
+        CountTotalPart = $"{total}";
+        CountNounPart = $" {Plural(total)}";
+        CountText = CountShownPart + CountOfPart + CountTotalPart + CountNounPart;
+    }
 
     private static string Plural(int count)
     {
