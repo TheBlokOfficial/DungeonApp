@@ -9,8 +9,8 @@
              HorizontalAlignment="Left">
 
     <!-- Klocek szczegółu wpisu (krok 10, brief 3a): nagłówek wpisu i karta systemu pod nim, szerokość
-         560. Bez tła, obramowania, przewijania i zewnętrznych odstępów - te daje host (zakładka treści
-         dziś, okienko podglądu w kampanii później). DataContext: ContentDetailViewModel. -->
+         560. Bez tła, obramowania (ramy), przewijania i zewnętrznych odstępów - te daje host (zakładka
+         treści dziś, okienko podglądu w kampanii później). DataContext: ContentDetailViewModel. -->
     <UserControl.Resources>
         <conv:UpperCaseConverter x:Key="UpperCase" />
     </UserControl.Resources>

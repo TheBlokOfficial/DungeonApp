@@ -277,14 +277,23 @@
             <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
                 <Border Margin="{StaticResource ContentDetailMargin}"
                         Padding="{DynamicResource DungeonScrollBarZone}"
-                        HorizontalAlignment="Left">
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
                     <Panel>
                         <TextBlock Classes="body muted"
                                    IsVisible="{Binding ShowSelectionPrompt}"
                                    Text="Wybierz wpis z listy." />
-                        <Panel IsVisible="{Binding HasDetail}">
+                        <!-- Rama szczegółu należy do hosta, nie do klocka (brief runda 3a): tło, linia
+                             i narożnik karty ramy (surface-card, jak karta w galerii Kompozycje),
+                             wcięcie 24 ze wszystkich stron. Szerokość z klocka 560 + 2 x 24 (+ linia),
+                             wysokość z treści; stoi też przy rzeczy zepsutej. -->
+                        <Border Classes="surface-card"
+                                Padding="{DynamicResource DungeonPaddingXxl}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                IsVisible="{Binding HasDetail}">
                             <ctl:EntryDetailView DataContext="{Binding Detail}" />
-                        </Panel>
+                        </Border>
                     </Panel>
                 </Border>
             </ScrollViewer>
