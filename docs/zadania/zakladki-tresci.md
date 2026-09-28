@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `cca53c5`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
+**Stan na: 2026-09-28, po `36a18c7`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3 (filtry) scalona 2026-09-28 — **czeka na obejrzenie przez autora**; przy odbiorze zapytać
-o okienko listy przy przewijaniu (*Notki*, *Okienka tylko w aplikacji*). Kopii roboczych brak.
-**Następny krok:** uwagi autora do 3 albo jej przyjęcie, potem brief 3c (sortowanie i poprawki,
-w nim notki „Po porcji 3”).
+Porcja 3 (filtry) przyjęta przez autora 2026-09-28 bez rund. **W toku: porcja 3c** — wykonawca
+w tle, kopia pod `.claude/worktrees/` (nazwa w raporcie). **Następny krok:** weryfikacja i scalenie
+3c, potem 3d — diagnoza położenia menu sortowania w działającej aplikacji (*Notki*, *Okienka tylko
+w aplikacji*).
 
 ## Zakres i koniec
 
@@ -88,10 +88,12 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **2** — projekt szkieletu i kart przyjęty 2026-09-28 (*Ustalenia*, *C*).
 - [x] **3a** — szkielet ekranu, klocek szczegółu `EntryDetailView` (przyjęte 2026-09-28).
 - [x] **3 — filtry** — chipy z polami wyboru, „lub” / „i”, nazwa kategorii od systemu, filtr Typ
-  potwora, „Wyczyść filtry” z wyszukiwaniem (scalone 2026-09-28; czeka na obejrzenie).
-- [ ] **3c — sortowanie i poprawki**: odwracanie sortowania i napisy kierunku, menu sortowania wyrównane
-  do lewej krawędzi (*Notki*, *Okienka tylko w aplikacji*), przygaszenie wyłączonego komendą w motywie,
-  odznaka rzadkości na `WordTag.custom` (*Notki*, *Po porcji 3a*).
+  potwora, „Wyczyść filtry” z wyszukiwaniem (przyjęte 2026-09-28).
+- [ ] **3c — sortowanie i poprawki**: odwracanie sortowania i napisy kierunku, Rzadkość jako klucz
+  sortowania przedmiotu, przygaszenie wyłączonego komendą w motywie, odznaka rzadkości na
+  `WordTag.custom` (*Notki*, *Po porcji 3a*).
+- [ ] **3d — położenie menu sortowania**: diagnoza w działającej aplikacji, potem poprawka (*Notki*,
+  *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
@@ -113,7 +115,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
 | 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*); **R w widoku** — odznaka rzadkości w wierszu nie na środku w pionie (własna pigułka zamiast klocka z fundamentu; poprawka z porcją 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
-| 3 | filtry | — (czeka na obejrzenie) | 40 / 8,4 / 4,3 mln |
+| 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
 
 ## Ustalenia
 
@@ -446,9 +448,14 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   otwarciem; autor podaje skalę ekranu Windows. Duży prawy margines menu w zakładce to najpewniej
   najmniejsza szerokość menu (160) przy krótkich nazwach. Wchodzi do werdyktu, jeśli to ograniczenie
   biblioteki.
-  **Stan 2026-09-28** (zrzut autora z zakładki przedmiotów): menu sortowania nadal nie jest wyrównane
-  do lewej krawędzi odnośnika — zabiera porcja 3c. Okienko listy przy przewijaniu — autor nie
-  odpowiedział; zapytać przy przyjęciu porcji 3 (chipy to te same okienka list).
+  **Stan 2026-09-28:** okienko listy przy przewijaniu szerokości już nie zmienia (autor, na chipach
+  porcji 3) — błąd zamknięty. Menu sortowania nadal nie jest wyrównane do lewej krawędzi odnośnika
+  (zrzut autora, zakładka przedmiotów: lewa krawędź menu ok. 90 px na prawo od początku „Sortuj”),
+  **choć kod klocka już ustawia** `PlacementMode.BottomEdgeAlignedLeft` na `MenuFlyout` przycisku pola
+  (`Controls/SortPicker.cs`) — więc to nie jest brakujące ustawienie, tylko zjawisko okna. Porcja 3d:
+  wykonawca dokłada tymczasowy zapis położenia (odnośnik i korzeń okienka na ekranie, skala) przy
+  otwarciu, autor otwiera menu raz, wykonawca czyta zapis i poprawia albo zgłasza ograniczenie
+  biblioteki (wtedy do werdyktu). Skala ekranu Windows — od autora przed 3d.
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
@@ -484,9 +491,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Po porcji 3** (raport wykonawcy, 2026-09-28) — do briefu 3c:
   * **Chip „Kolor” nie przeszedł** — brief (za tą notką z *A*) wskazał złą sekcję galerii. Chipy
     „Kolor” z `DungeonChipOpener` i `ListBox` stoją w *Listach rozwijanych* galerii i pokazują sam
-    klocek otwierający; `DungeonChipOpener` nie ma już użycia poza galerią. Rozstrzygnąć przy 3c:
-    zostawić jako klocek chipa z własnym okienkiem albo zdjąć z galerii i motywu (zasoby chipa
-    dzieli z `DungeonChipPicker` — sprawdzić przed usunięciem).
+    klocek otwierający; `DungeonChipOpener` nie ma już użycia poza galerią. **Zostaje** (architekt,
+    2026-09-28): to klocek chipa z dowolną treścią okienka, galeria jest jego konsumentem, a lista
+    w próbce nie jest filtrem — odznaczanie to zadanie `DropDownPicker`, który galeria pokazuje obok.
   * Filtr bez opcji jest widoczny i wygaszony (wcześniej ukryty). Wpis bez wartości nie pasuje do
     żadnego wybranego zbioru.
   * Chip przekazuje wybór do stanu listy, słuchając zmian swojej kolekcji wybranych wartości —
