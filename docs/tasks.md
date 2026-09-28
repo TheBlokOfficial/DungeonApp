@@ -59,7 +59,7 @@ albo aż zbierze się ich tyle, że warto dać im osobnego — reguła w [collab
   wyłącznie przez `IsEnabled="False"`, więc tego nie widać. Poprawka: `:disabled` zamiast
   `[IsEnabled=False]` we wszystkich 30 miejscach (uwaga na podwójne przygaszenie, gdy wyłączony jest
   też rodzic z własnym przygaszeniem); w galerii przykład „wyłączony przez komendę” obok
-  „Wyłączony”. **Zabiera porcja 3** zakładek treści (i tak zmienia motyw — pismo chipów).
+  „Wyłączony”. **Zabiera porcja 3c** zakładek treści (sortowanie i poprawki).
 * **Suwak — tylko notka, bez korekty teraz** (autor, po rundzie 2 porcji 5, 2026-09-25): uchwyt
   w spoczynku (kolor tekstu drugorzędnego) lekko za ciemny. Pomysł autora na później: pod myszą
   obwódka wokół uchwytu zamiast rozjaśnienia — do zderzenia z wpisem o otoczce w `decisions.md`

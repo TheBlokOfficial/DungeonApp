@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `aa513fe`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
+**Stan na: 2026-09-28, po `73ebf28`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3a (szkielet ekranu) z rundą W (rama szczegółu, ścieżka, odstępy, licznik, wygaszanie
-„Wyczyść filtry”) scalona 2026-09-28 — **czeka na obejrzenie przez autora**. Kopii roboczych brak.
-**Następny krok:** uwagi autora (kolejna runda do tabeli *Pomiar porcji*) albo przyjęcie 3a, potem
-brief porcji 3 — w nim notki „Po porcji 3a”.
+Porcja 3a przyjęta przez autora 2026-09-28; jej dwie usterki (wyłączenie komendą, odznaka rzadkości)
+idą z porcją 3c. Porcja 3 podzielona na dwa przebiegi (autor, 2026-09-28): **3 — filtry** (w toku:
+wykonawca w tle, gałąź i kopia pod `.claude/worktrees/` — nazwa w raporcie) i **3c — sortowanie
+i poprawki**. **Następny krok:** weryfikacja i scalenie porcji 3, potem brief 3c.
 
 ## Zakres i koniec
 
@@ -86,10 +86,12 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
 - [x] **2** — projekt szkieletu i kart przyjęty 2026-09-28 (*Ustalenia*, *C*).
-- [x] **3a** — szkielet ekranu, klocek szczegółu `EntryDetailView` (scalone 2026-09-28; czeka na
-  obejrzenie).
-- [ ] **3 — lista i filtry** (*Ustalenia*, *A*, *C*): chipy, nazwa chipa kategorii od systemu,
-  semantyka filtrów, „Wyczyść filtry”, sortowanie z odwracaniem.
+- [x] **3a** — szkielet ekranu, klocek szczegółu `EntryDetailView` (przyjęte 2026-09-28).
+- [ ] **3 — filtry** (*Ustalenia*, *A*, *C*): chipy z listą i polami wyboru, semantyka filtrów, nazwa
+  chipa kategorii od systemu, chip „Kolor” w galerii, „Wyczyść filtry” zeruje też wyszukiwanie.
+- [ ] **3c — sortowanie i poprawki**: odwracanie sortowania i napisy kierunku, menu sortowania wyrównane
+  do lewej krawędzi (*Notki*, *Okienka tylko w aplikacji*), przygaszenie wyłączonego komendą w motywie,
+  odznaka rzadkości na `WordTag.custom` (*Notki*, *Po porcji 3a*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
@@ -403,6 +405,13 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     * Kontrast odznaki rzadkości sprawdza 3a, bo wiersz należy do niej: tekst odznaki co najmniej
       4,5:1 na odznace położonej na tle wiersza w spoczynku, pod myszą i wybranego; poprawka
       w kolorach systemu.
+  * **Rozstrzygnięcia przy briefie 3** (architekt, 2026-09-28; do weta autora):
+    * Przedmiot nie ma dziś pól kategorii ani dostrojenia — chipy „Kategoria” i „Dostrojenie” przedmiotu
+      wchodzą z porcją 5, razem z polami (*Rekordy*: pola wchodzą z kartą, która je pokazuje). W porcji
+      3 przedmiot ma chip Rzadkość i Paczka; szkielet nie pokazuje chipa kategorii, gdy system jej nie
+      podaje.
+    * Potwór dostaje filtr Typ (pole już jest — dziś tylko tag).
+    * Chip paczki nazywa się „Paczka” (dziś „Źródło”) — jak nagłówki sekcji listy.
 
 ## Notki
 
@@ -436,6 +445,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   otwarciem; autor podaje skalę ekranu Windows. Duży prawy margines menu w zakładce to najpewniej
   najmniejsza szerokość menu (160) przy krótkich nazwach. Wchodzi do werdyktu, jeśli to ograniczenie
   biblioteki.
+  **Stan 2026-09-28** (zrzut autora z zakładki przedmiotów): menu sortowania nadal nie jest wyrównane
+  do lewej krawędzi odnośnika — zabiera porcja 3c. Okienko listy przy przewijaniu — autor nie
+  odpowiedział; zapytać przy przyjęciu porcji 3 (chipy to te same okienka list).
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
