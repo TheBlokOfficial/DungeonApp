@@ -38,7 +38,8 @@ public sealed class ContentPackLoaderTests : IDisposable
         """;
 
     // ---------------------------------------------------------------------
-    // Fixture acceptance test - the hand-written packs are the format spec.
+    // Fixture acceptance test - the hand-written packs are the format spec, and the packs shipped
+    // with the program (read alongside them, from the repository sources) are held to it too.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -50,11 +51,15 @@ public sealed class ContentPackLoaderTests : IDisposable
             new ContentTypeDescriptor(monster, "Monster", 1),
             new ContentTypeDescriptor(gear, "Gear", 1));
 
-        var registry = await new ContentPackLoader(RepositoryRoot.PackFixtures, types).LoadAsync();
+        var registry = await new ContentPackLoader(
+            [RepositoryRoot.PackFixtures, RepositoryRoot.Dnd5eBundledPacks], types).LoadAsync();
 
         Assert.Empty(registry.RejectedPacks);
         Assert.Empty(registry.RejectedEntries);
-        Assert.Equal(2, registry.Packs.Count);
+        Assert.Equal(
+            ["dnd5e", "dnd5e-srd", "goblinoids"],
+            registry.Packs.Select(pack => pack.Id.Value).Order(StringComparer.Ordinal));
+        Assert.Equal("SRD 5.1 — wpisy przykładowe", registry.Packs.Single(pack => pack.Id.Value == "dnd5e-srd").Name);
         Assert.Equal(3, registry.Entries.Count);
         Assert.All(registry.Entries, entry => Assert.Null(entry.Unresolved));
 
