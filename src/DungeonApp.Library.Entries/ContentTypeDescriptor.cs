@@ -10,5 +10,17 @@ namespace DungeonApp.Library.Entries;
 /// its zero value instead of forcing every implementation to invent (or null-forgive) a sentinel
 /// reference type instance.
 /// </para>
+/// <para>
+/// <paramref name="ImageProperty"/> is the one piece of shape a type may declare to the engine: the
+/// name of the property in its values that holds the entry's picture - a file path relative to the
+/// entry's own pack (see <see cref="EntryImagePath"/>). It is a name the engine carries without knowing
+/// what it means, exactly like the rest of this record; <see cref="ContentPackLoader"/> uses it to
+/// check that path at load time, and <see cref="EntryImagePath.Locate"/> to find the file when the
+/// picture is shown. <see langword="null"/>: the type has no picture.
+/// </para>
 /// </summary>
-public readonly record struct ContentTypeDescriptor(ContentTypeReference Reference, string Name, int Version);
+public readonly record struct ContentTypeDescriptor(
+    ContentTypeReference Reference,
+    string Name,
+    int Version,
+    string? ImageProperty = null);

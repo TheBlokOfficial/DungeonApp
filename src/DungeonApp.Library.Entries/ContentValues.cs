@@ -183,6 +183,26 @@ public sealed class ContentValues
     /// never have been built. It is not silently tolerated: a store that quietly did nothing with
     /// one would lose an edit without saying so.
     /// </summary>
+    /// <summary>
+    /// Reads one text property by a name the caller was handed - never one this layer writes down
+    /// itself: <see cref="ContentTypeDescriptor.ImageProperty"/> is the only such name. False when the
+    /// envelope has no such property or it is not text; which of the two is the system's business
+    /// (its own <see cref="IContentTypeCatalog.TryValidate"/> rejects a value of the wrong shape).
+    /// </summary>
+    internal bool TryGetString(string property, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out string? value)
+    {
+        if (_raw.ValueKind == JsonValueKind.Object
+            && _raw.TryGetProperty(property, out var element)
+            && element.ValueKind == JsonValueKind.String)
+        {
+            value = element.GetString()!;
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
     private static JsonElement RequireObject(ContentValues values, string operation)
     {
         if (values._raw.ValueKind != JsonValueKind.Object)

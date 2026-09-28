@@ -227,7 +227,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             var entriesDirectory = Path.Combine(directory, EntriesDirectoryName);
             var (entries, rejectedEntries) = await LoadEntriesAsync(entriesDirectory, packId, cancellationToken);
 
-            return new LoadCandidateResult(new Pack(packId, packDto.Name.Trim(), version, entries), rejectedEntries, null);
+            return new LoadCandidateResult(new Pack(packId, packDto.Name.Trim(), version, entries) { Location = directory }, rejectedEntries, null);
         }
         catch (PackRejectedException ex)
         {
@@ -413,6 +413,17 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             if (!types.TryValidate(entry.Type, entry.Values, out var error))
             {
                 yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.ValuesRejected, error);
+                continue;
+            }
+
+            // The picture path is checked here, through the property the type itself declared as its
+            // picture - the loader never knows what kind of entry carries one. Only the path's form is
+            // checked; a file missing from the pack is shown as missing, not rejected (EntryImagePath).
+            if (descriptor.ImageProperty is { } imageProperty
+                && entry.Values.TryGetString(imageProperty, out var imagePath)
+                && !EntryImagePath.TryValidate(imagePath, out var imageError))
+            {
+                yield return RegisteredEntry.CreateUnresolved(address, entry, EntryUnresolvedReason.ValuesRejected, imageError);
                 continue;
             }
 
