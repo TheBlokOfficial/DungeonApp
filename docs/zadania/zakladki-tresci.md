@@ -16,9 +16,11 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3a (szkielet ekranu) scalona do `master` 2026-09-28 — **czeka na obejrzenie przez autora**.
-Kopii roboczych brak. **Następny krok:** uwagi autora z obejrzenia 3a (rundy do tabeli *Pomiar
-porcji*, R albo W), potem brief porcji 3 — w nim notki „Po porcji 3a”.
+Porcja 3a (szkielet ekranu) scalona i obejrzana 2026-09-28. **W toku: runda W porcji 3a** (*C* —
+rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, wygaszanie „Wyczyść filtry”) — wykonawca
+(Opus 5.5) w kopii w `.claude/worktrees/` (`git worktree list`). Jeśli sesja zginęła z wykonawcą:
+kopia bez commitów do usunięcia, runda od nowa. **Następny krok:** weryfikacja, scalenie, autor
+ogląda; potem brief porcji 3 — w nim notki „Po porcji 3a”.
 
 ## Zakres i koniec
 
@@ -109,7 +111,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
-| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); dalsze po obejrzeniu | 49 kroków / 10,3 min / 5,5 mln |
+| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3) | 49 kroków / 10,3 min / 5,5 mln |
 
 ## Ustalenia
 
@@ -255,7 +257,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     320                            32 + 560, reszta szerokości pusta
   ```
   * **Nagłówek zakładki** (biblioteka): nazwa zakładki rolą `display-lg`, obok na linii bazowej
-    licznik krojem liczb, przygaszony — „37 wpisów”, przy zawężeniu „12 z 37 wpisów” (odmiana wpis /
+    licznik, przygaszony — liczby krojem liczb, słowa pismem interfejsu (po obejrzeniu 3a) — „37 wpisów”, przy zawężeniu „12 z 37 wpisów” (odmiana wpis /
     wpisy / wpisów). Z prawej przycisk „Wczytaj od nowa” z ikoną odświeżania i podpowiedzią „Wczytuje
     paczki z dysku od nowa” — staje z porcją 7, wcześniej go nie ma. Odstępy 20 u góry, 24 po bokach,
     16 nad linią oddzielającą nagłówek od ciała. Paska typów z mockupu nie ma — zakładka ma jeden typ.
@@ -269,7 +271,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     * Sortowanie: Nazwa (domyślne, A–Z) i klucz systemu — potwór Wyzwanie, przedmiot Rzadkość,
       zaklęcie Poziom; z odwracaniem. Sortuje wewnątrz sekcji; rzeczy zepsute zawsze na dole sekcji.
     * Sekcje po paczce, w kolejności nazw paczek, odrzucone na końcu. Nagłówek rolą `overline-sm`,
-      przygaszony, obok liczba wpisów sekcji krojem liczb; 12 nad nagłówkiem (4 nad pierwszym), 6 pod.
+      przygaszony, obok liczba wpisów sekcji krojem liczb; 12 nad każdym nagłówkiem,
+      także pierwszym (po obejrzeniu 3a: 4 kleiło go do linii kontrolek), 6 pod.
     * Wiersz — wiersz-polecenie z kreską zaznaczenia (galeria, *Listy*), wysokość 32 ze stałej
       biblioteki, niezależna od odznaki. Nazwa rolą `body`, przycinana wielokropkiem, pełna
       w podpowiedzi; z prawej odznaka wiersza. Ikony typu z mockupu nie ma — w zakładce jednego typu
@@ -289,16 +292,19 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
       wyszukiwania i filtrów.” z odnośnikiem „Wyczyść filtry” (galeria, *Kompozycje*).
   * **Obszar szczegółu** — przewija się pionowo, jedyna warstwa przewijania po tej stronie; odstęp 32
     u góry, z lewej i u dołu. Szczegół stoi przy liście; szerszy ekran daje pusty pas z prawej, nie
-    szerszą kartę. Przy najmniejszym oknie mieści się bez przewijania w poziomie: 224 (pasek boczny)
-    + 320 + 32 + 560 + 32 = 1168 z 1280.
+    szerszą kartę. **Szczegół stoi w ramie zakładki** (autor po obejrzeniu 3a — ramę daje host, a
+    projekt jej nie dał): tło powierzchni, linia motywu, narożnik karty, wcięcie 24 — 608 szerokości,
+    wysokość z treści. Przy najmniejszym oknie mieści się bez przewijania w poziomie: 224 (pasek
+    boczny) + 320 + 32 + 608 + 32 = 1216 z 1280.
     * Nic nie wybrane — pusty stan „Wybierz wpis z listy.” w miejscu nagłówka. Na starcie zakładki nic
       nie jest wybrane. Wybrany wpis, który zniknie z listy po zmianie filtra, zdejmuje wybór. Po
       wczytaniu od nowa wybór zostaje, jeśli wpis o tym id nadal jest.
   * **Szczegół wpisu = nagłówek biblioteki + karta systemu, jeden klocek biblioteki, 560 szerokości.**
     Stawia go każdy, kto pokazuje wpis: zakładka treści i przyszłe okienko podglądu w kampanii (560
     + 2 × 24). Dzięki temu nagłówek rysuje szkielet, a ta sama karta stoi wszędzie razem z nazwą.
-    * Nagłówek: linia `overline-sm` przygaszona „{KATEGORIA} · {PACZKA}” (bez kategorii — sama
-      paczka), nazwa rolą `display-xl`, zawijana, nie przycinana; rząd tagów, zawijany, odstęp 6 —
+    * Nagłówek: **ścieżka** (kontrolka ścieżki z fundamentu) „{Typ} › {Kategoria} › {Nazwa}” — typ to
+      tytuł zakładki, bez kategorii dwa segmenty; paczki w nagłówku nie ma, widać ją w sekcji listy
+      (autor po obejrzeniu 3a, 2026-09-28, zamiast linii „{KATEGORIA} · {PACZKA}”); nazwa rolą `display-xl`, zawijana, nie przycinana; rząd tagów, zawijany, odstęp 6 —
       nie ma go, gdy tagów brak. Odstęp 6 wewnątrz nagłówka, 20 do karty. Kategoria nie akcentem, jak
       w mockupie — akcent jest dla wybranego i głównego.
     * Tagi: potwór — rozmiar, typ, charakter; przedmiot — brak; zaklęcie — Koncentracja, Rytuał.
@@ -447,7 +453,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * Kolory rzadkości w systemie zmieniły odcienie (rzadki był równy akcentowi; pospolity i artefakt
     miały 2,4–3,7:1); dziś to jedna odmiana — tekst na pigułce o kryciu 16%. Odmianę tekstową na kartę
     dokłada porcja 5.
-  * „Wyczyść filtry” jeszcze nie jest wygaszane — porcja 3 (*A*).
+  * „Wyczyść filtry” wygasza runda W porcji 3a (przeniesione z porcji 3).
   * Wybór zdjęty przez filtr nie wraca po poszerzeniu filtra — zgodnie z *C*.
   * Niesprawdzone: czy role `body`/`caption` działają na `SelectableTextBlock` (powód i ścieżka
     w szczególe rzeczy zepsutej) — autor ogląda; jeśli nie, poprawka w motywie.
