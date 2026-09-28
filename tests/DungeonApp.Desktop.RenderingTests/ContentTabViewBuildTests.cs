@@ -1,5 +1,7 @@
 using System.Linq;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
+using DungeonApp.Desktop.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -32,9 +34,14 @@ public sealed class ContentTabViewBuildTests
     {
         var profile = new ContentTypeProfile<Sample>(
             SampleType,
+            category: new ContentCategorySpec<Sample>("Grupa", sample => sample.Tier),
             tags: sample => [sample.Tier],
             badge: sample => new ContentBadge(sample.Tier, "tier-key"),
-            valueFilters: [],
+            valueFilters:
+            [
+                new ContentValueFilterSpec<Sample>("Poziom", sample => sample.Tier, System.StringComparer.Ordinal),
+                new ContentValueFilterSpec<Sample>("Pusty", _ => null, System.StringComparer.Ordinal),
+            ],
             sorts: []);
         return new ContentTabViewModel(
             registry, new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation());
@@ -90,6 +97,33 @@ public sealed class ContentTabViewBuildTests
         }
 
         Assert.Equal(3, viewModel.Sections.SelectMany(section => section.Rows).Count());
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void The_filter_chips_build_through_a_chosen_value_and_wyczysc_filtry()
+    {
+        var viewModel = BuildViewModel(FullRegistry());
+        var window = Show(viewModel);
+
+        var pickers = window.GetVisualDescendants().OfType<DropDownPicker>().ToList();
+        Assert.Equal(["Grupa", "Poziom", "Pusty", "Paczka"], pickers.Select(picker => picker.PlaceholderText));
+        Assert.Equal([true, true, false, true], pickers.Select(picker => picker.IsEnabled));
+
+        var levelChip = viewModel.Filters.Single(filter => filter.Label == "Poziom");
+        levelChip.SelectedValues.Add("1");
+        viewModel.Search = "Al";
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(levelChip.IsActive);
+        Assert.True(viewModel.ClearFiltersCommand.CanExecute(null));
+
+        viewModel.ClearFiltersCommand.Execute(null);
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Empty(levelChip.SelectedValues);
+        Assert.Equal(string.Empty, viewModel.Search);
+        Assert.False(viewModel.ClearFiltersCommand.CanExecute(null));
         window.Close();
     }
 
