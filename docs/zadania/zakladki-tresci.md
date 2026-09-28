@@ -94,7 +94,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
 - [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
-  — wyrównane, zamknięte (*Notki*, *Okienka tylko w aplikacji*).
+  — nigdy nieprzesunięte; przesuwały się okienka chipów, też zamknięte (*Notki*, *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
@@ -457,38 +457,15 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Czeka na autora** (z kolejki, 2026-09-24): ręczne przeniesienie kampanii do
   `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs` i `Campaigns` nie są czytane); dopisanie
   `group` potworom.
-* **Okienka tylko w aplikacji** (fundament, duża runda; nieodtworzone bez okna): menu sortowania
-  wyśrodkowane pod odnośnikiem i okienko listy zmieniające szerokość przy przewijaniu. Porcja 9a ich nie
-  dotknęła; czy są nadal — autor nie zgłosił przy przyjęciu porcji 9. Przy porcji listy (wycinek 3)
-  zapytać; jeśli są — diagnoza w działającej aplikacji: `FlyoutPresenter.Width` i `Bounds` korzenia
-  okienka przy otwarciu i po przewinięciu, czy `FixListWidth` w `Themes/PopupOpenLayout.cs` nie kończy
-  się wcześnie, położenie menu względem odnośnika — np. tymczasowy zapis do pliku wywołany jednym
-  otwarciem; autor podaje skalę ekranu Windows. Duży prawy margines menu w zakładce to najpewniej
-  najmniejsza szerokość menu (160) przy krótkich nazwach. Wchodzi do werdyktu, jeśli to ograniczenie
-  biblioteki.
-  **Stan 2026-09-28:** okienko listy przy przewijaniu szerokości już nie zmienia (autor, na chipach
-  porcji 3) — błąd zamknięty. Menu sortowania nadal nie jest wyrównane do lewej krawędzi odnośnika
-  (zrzut autora, zakładka przedmiotów: lewa krawędź menu ok. 90 px na prawo od początku „Sortuj”),
-  **choć kod klocka już ustawia** `PlacementMode.BottomEdgeAlignedLeft` na `MenuFlyout` przycisku pola
-  (`Controls/SortPicker.cs`) — więc to nie jest brakujące ustawienie, tylko zjawisko okna. Porcja 3d:
-  wykonawca dokłada tymczasowy zapis położenia (odnośnik i korzeń okienka na ekranie, skala) przy
-  otwarciu, autor otwiera menu raz, wykonawca czyta zapis i poprawia albo zgłasza ograniczenie
-  biblioteki (wtedy do werdyktu). Skalę ekranu zapis odczytuje sam (skalowanie okna i okienka) —
-  nie pytać o nią autora (autor, 2026-09-28: poprawka ma działać przy każdej skali). Ekran autora:
-  2560×1440, skala 100% (`AppliedDPI` 96, odczyt architekta z rejestru) — pomylenie punktów
-  z pikselami odpada jako przyczyna.
-  **Pomiar porcji 3d:** tymczasowy program (poza repozytorium) z prawdziwym oknem Windows, motywem
-  ramy, `PopupOpenLayout` i `PopupOpenMotion` — lewa krawędź okna menu równa lewej krawędzi przycisku
-  pola co do piksela, w oknie 500×400 i zmaksymalizowanym, z każdym z tych modułów i bez nich.
-  `PopupOpenLayout` zwęża okno menu (176 → 164) bez ruszania lewej krawędzi. Klocek i motyw są więc
-  czyste; hipoteza — przyczyna w otoczeniu zakładki w powłoce. **Następny krok:** autor otwiera menu
-  sortowania w galerii i w zakładce (po 3d panel listy się zmienił). Tylko w zakładce → ten sam
-  program z prawdziwym `ContentTabView` (model jak w `ContentTabViewBuildTests`). Nigdzie → zamknięte.
-  Uboczne, niebadane: w wariancie zmaksymalizowanym okienko otwarte drugi raz było po 400 ms zamknięte.
-  **Zamknięte 2026-09-28:** autor otworzył menu po 3d w galerii i w zakładce — w obu miejscach wyrównane
-  do lewej krawędzi odnośnika. Przyczyny nie ustalono; najpewniej zniknęła z przebudową panelu listy
-  w 3d. Do werdyktu nie wchodzi — nie okazało się ograniczeniem biblioteki. Wraca, jeśli autor znów
-  zobaczy przesunięcie; wtedy zaczyna się od programu z prawdziwym `ContentTabView` (wyżej).
+* **Okienka tylko w aplikacji** (fundament, duża runda) — **zamknięte 2026-09-28.** Oba zjawiska
+  zniknęły: okienko listy zmieniające szerokość przy przewijaniu (autor, przy porcji 3) i okienko
+  przesunięte w prawo względem swojego odnośnika. Przyczyn nie ustalono; do werdyktu nie wchodzą.
+  **Sprostowanie autora:** przesunięte były wyłącznie okienka **chipów** filtrów — listy rozwijane
+  i menu sortowania nigdy. Dawna notka przypisała przesunięcie menu sortowania, więc porcja 3d
+  mierzyła niewłaściwy klocek: tymczasowy program z prawdziwym oknem Windows pokazał menu sortowania
+  wyrównane co do piksela (to się zgadza z autorem). Chipy zniknęły z zakładki w 3d; w galerii autor
+  sprawdził je po 3d — wyrównane. Uboczne, niebadane: w tamtym programie, w oknie zmaksymalizowanym,
+  okienko otwarte drugi raz zamykało się po 400 ms. Wraca, jeśli autor znów zobaczy przesunięcie.
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
