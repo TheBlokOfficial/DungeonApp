@@ -21,8 +21,5 @@ public sealed class ContentSectionViewModel(string header, int count, bool isRej
 
     public bool IsRejectedPack { get; } = isRejectedPack;
 
-    /// <summary>True for the first section in the list - its header sits closer to the list's top.</summary>
-    public bool IsFirst { get; internal init; }
-
     public IReadOnlyList<ContentRowViewModel> Rows { get; } = rows;
 }

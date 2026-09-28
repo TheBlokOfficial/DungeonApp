@@ -189,7 +189,7 @@ public sealed class ContentTabViewModel : ObservableObject
             _state = _state with { Selected = null };
         }
 
-        Sections = result.Sections.Select((section, index) => BuildSection(section, index == 0)).ToArray();
+        Sections = result.Sections.Select(BuildSection).ToArray();
         RaisePropertyChanged(nameof(Sections));
 
         var shown = CountShown(result.Sections);
@@ -204,23 +204,20 @@ public sealed class ContentTabViewModel : ObservableObject
     private static int CountShown(IEnumerable<ContentSection> sections) =>
         sections.Where(section => !section.IsRejectedPack).Sum(section => section.ShownCount);
 
-    private ContentSectionViewModel BuildSection(ContentSection section, bool isFirst)
+    private ContentSectionViewModel BuildSection(ContentSection section)
     {
         if (section.IsRejectedPack)
         {
             var pack = section.RejectedPack!;
             var row = BuildRow(pack.Location, badgeText: null, badgeBrush: null, isBroken: true, new RejectedPackSelectionKey(pack.Location));
 
-            return new ContentSectionViewModel(section.Header, 0, isRejectedPack: true, [row]) { IsFirst = isFirst };
+            return new ContentSectionViewModel(section.Header, 0, isRejectedPack: true, [row]);
         }
 
         var validRows = section.ValidRows.Select(BuildValidRow);
         var brokenRows = section.BrokenRows.Select(BuildBrokenRow);
 
-        return new ContentSectionViewModel(section.Header, section.ShownCount, isRejectedPack: false, [.. validRows, .. brokenRows])
-        {
-            IsFirst = isFirst,
-        };
+        return new ContentSectionViewModel(section.Header, section.ShownCount, isRejectedPack: false, [.. validRows, .. brokenRows]);
     }
 
     private ContentRowViewModel BuildValidRow(RegisteredEntry entry)

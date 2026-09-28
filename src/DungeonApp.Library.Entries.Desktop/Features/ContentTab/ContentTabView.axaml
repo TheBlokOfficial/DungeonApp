@@ -26,9 +26,8 @@
 
         <!-- Nagłówek sekcji: z lewej tam, gdzie zaczyna się tekst wiersza (pas kreski
              DungeonListRowStripeGutter 10 + wcięcie wiersza DungeonPaddingMdHorizontal 12); 12 nad
-             nagłówkiem (4 nad pierwszym), 6 pod. -->
+             każdym nagłówkiem, także pierwszym, 6 pod. -->
         <Thickness x:Key="ContentSectionHeaderMargin">22,12,16,6</Thickness>
-        <Thickness x:Key="ContentFirstSectionHeaderMargin">22,4,16,6</Thickness>
 
         <!-- Odznaka koloru systemu: wysokość DungeonSpacingXl, wcięcie poziome DungeonSpacingXs. -->
         <Thickness x:Key="ContentBadgePadding">6,0</Thickness>
@@ -224,26 +223,15 @@
                                     <DataTemplate x:DataType="ct:ContentSectionViewModel">
                                         <StackPanel>
                                             <!-- Nagłówek zwykłej paczki: nazwa i liczba wpisów sekcji. -->
-                                            <Panel IsVisible="{Binding !IsRejectedPack}">
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="{DynamicResource DungeonSpacingXs}"
-                                                            Margin="{StaticResource ContentSectionHeaderMargin}"
-                                                            IsVisible="{Binding !IsFirst}">
-                                                    <TextBlock Classes="overline-sm muted" VerticalAlignment="Center"
-                                                               Text="{Binding Header, Converter={StaticResource UpperCase}}" />
-                                                    <TextBlock Classes="mono muted" VerticalAlignment="Center"
-                                                               Text="{Binding Count, StringFormat={}{0}}" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal"
-                                                            Spacing="{DynamicResource DungeonSpacingXs}"
-                                                            Margin="{StaticResource ContentFirstSectionHeaderMargin}"
-                                                            IsVisible="{Binding IsFirst}">
-                                                    <TextBlock Classes="overline-sm muted" VerticalAlignment="Center"
-                                                               Text="{Binding Header, Converter={StaticResource UpperCase}}" />
-                                                    <TextBlock Classes="mono muted" VerticalAlignment="Center"
-                                                               Text="{Binding Count, StringFormat={}{0}}" />
-                                                </StackPanel>
-                                            </Panel>
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="{DynamicResource DungeonSpacingXs}"
+                                                        Margin="{StaticResource ContentSectionHeaderMargin}"
+                                                        IsVisible="{Binding !IsRejectedPack}">
+                                                <TextBlock Classes="overline-sm muted" VerticalAlignment="Center"
+                                                           Text="{Binding Header, Converter={StaticResource UpperCase}}" />
+                                                <TextBlock Classes="mono muted" VerticalAlignment="Center"
+                                                           Text="{Binding Count, StringFormat={}{0}}" />
+                                            </StackPanel>
 
                                             <!-- Nagłówek odrzuconej paczki: kolor treści niewczytanej i ostrzeżenie. -->
                                             <StackPanel Orientation="Horizontal"
