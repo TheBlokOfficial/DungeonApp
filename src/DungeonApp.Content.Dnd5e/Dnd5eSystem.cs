@@ -84,24 +84,26 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// The brush each rarity color key resolves to (<see cref="ResolveBadgeBrush"/>) - this system's
     /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens
     /// (docs/architecture.md, "Niezmiennik interfejsu": "Skale należące do systemu... mają własne
-    /// kolory w systemie i nie pożyczają kolorów znaczeń z motywu ramy"). Four tiers' colors come
-    /// straight from the mockup's own rarity chips; "Legendarny" and "Artefakt" do not appear there,
-    /// so their values are this system's own choice (krok 10, zlecenie 2 report).
+    /// kolory w systemie i nie pożyczają kolorów znaczeń z motywu ramy"). Hues follow the usual
+    /// rarity convention (gray, green, blue, violet, orange, pink) and none is the accent color.
+    /// Each is bright enough for its text to keep at least 4.5:1 against its own dimmed pill
+    /// (the same color at 16%) laid on the list row at rest, under the pointer and selected
+    /// (krok 10, brief 3a - the ratios are in that brief's report).
     /// </summary>
     private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
     {
         // Rzadkość: pospolity.
-        ["rarity-common"] = new SolidColorBrush(Color.Parse("#6C6B66")),
+        ["rarity-common"] = new SolidColorBrush(Color.Parse("#A9A8A1")),
         // Rzadkość: niezwykły.
-        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#84A98B")),
+        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#95BA9C")),
         // Rzadkość: rzadki.
-        ["rarity-rare"] = new SolidColorBrush(Color.Parse("#B8843B")),
+        ["rarity-rare"] = new SolidColorBrush(Color.Parse("#7AAAD6")),
         // Rzadkość: bardzo rzadki.
-        ["rarity-very-rare"] = new SolidColorBrush(Color.Parse("#CF9B55")),
-        // Rzadkość: legendarny. Mockup nie pokazuje tego stopnia - wybór własny (krok 10, zlecenie 2).
-        ["rarity-legendary"] = new SolidColorBrush(Color.Parse("#E08A3C")),
-        // Rzadkość: artefakt. Mockup nie pokazuje tego stopnia - wybór własny (krok 10, zlecenie 2).
-        ["rarity-artifact"] = new SolidColorBrush(Color.Parse("#C1548C")),
+        ["rarity-very-rare"] = new SolidColorBrush(Color.Parse("#BA9EDC")),
+        // Rzadkość: legendarny.
+        ["rarity-legendary"] = new SolidColorBrush(Color.Parse("#E8A060")),
+        // Rzadkość: artefakt.
+        ["rarity-artifact"] = new SolidColorBrush(Color.Parse("#E88AB6")),
     };
 
     private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
@@ -291,12 +293,12 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             valueFilters: [new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder)],
             sorts: [new ContentSortSpec<Monster>("Wyzwanie", (a, b) => ChallengeOrder.Compare(a.Challenge, b.Challenge))]);
 
-        return new ContentTabDefinition("Potwory", [profile]);
+        return new ContentTabDefinition("Potwory", [profile], "Żadna paczka nie ma jeszcze potworów.");
     }
 
     /// <summary>
-    /// "Przedmioty": no category (the "Kategoria" filter is unavailable in this tab); tags =
-    /// rarity; badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
+    /// "Przedmioty": no category (the "Kategoria" filter is unavailable in this tab); no tags
+    /// (krok 10, brief 3a); badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
     /// tier and none for anything else; one value filter, "Rzadkość", ordered by
     /// <see cref="RarityOrder"/>; no extra sort beyond the library's own default (krok 10,
     /// zlecenie 1, część C).
@@ -306,11 +308,11 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         var profile = new ContentTypeProfile<Gear>(
             _gear.Reference,
             category: null,
-            tags: gear => [gear.Rarity],
+            tags: gear => [],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
             valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)]);
 
-        return new ContentTabDefinition("Przedmioty", [profile]);
+        return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");
     }
 
     /// <summary>

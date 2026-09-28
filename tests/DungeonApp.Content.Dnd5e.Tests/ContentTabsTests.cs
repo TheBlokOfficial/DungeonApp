@@ -169,11 +169,11 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void Gears_only_tag_is_its_rarity()
+    public void Gear_has_no_tags()
     {
         var entry = GearEntry("Rzadki");
 
-        Assert.Equal(["Rzadki"], GearProfile().Tags(entry));
+        Assert.Empty(GearProfile().Tags(entry));
     }
 
     [Fact]
