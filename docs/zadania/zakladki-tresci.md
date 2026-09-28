@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `0313b0e`.** Na starcie sesji: `git log 0313b0e..master` i `git worktree
+**Stan na: 2026-09-28, po `c37abc9`.** Na starcie sesji: `git log c37abc9..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,12 +16,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3d (filtry jako pola z podpisem) przyjęta przez autora 2026-09-28 bez rund. **W toku:**
-porcja 3b — wykonawca (Opus) w gałęzi `worktree-agent-a4a62d5f2e376b2b0`, kopia
-`.claude/worktrees/agent-a4a62d5f2e376b2b0`. Rozstrzygnięcia architekta do briefu — *Ustalenia*,
-*Paczka dostarczana*. Menu sortowania zamknięte (*Notki*, *Okienka tylko w aplikacji*).
-**Następny krok:** weryfikacja 3b; przy scaleniu liczba testów z raportu do nagłówka `tasks.md`
-(dziś jej tam brak).
+Porcja 3b (paczka dostarczana, pusta) scalona 2026-09-28, czeka na obejrzenie przez autora. Kopii
+roboczych brak. Menu sortowania zamknięte (*Notki*, *Okienka tylko w aplikacji*).
+**Następny krok:** 4a (obrazek wpisu).
 
 ## Zakres i koniec
 
@@ -95,8 +92,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
 - [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
   — nigdy nieprzesunięte; przesuwały się okienka chipów, też zamknięte (*Notki*, *Okienka tylko w aplikacji*).
-- [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
-  paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
+- [x] **3b — paczka dostarczana** `dnd5e-srd`, pusta, drugie źródło wczytywania (scalone 2026-09-28).
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
   u potwora i przedmiotu, odrzucenie ścieżki poza paczkę z testem, brak pliku.
 - [ ] **4 — karta potwora** (*Ustalenia*, *B*, *C*) — z polami potwora z *Rekordów*. Jeśli nie zmieści
@@ -119,6 +115,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
 | 3c | sortowanie, poprawki z 3a | 0 | 51 / 9,5 / 5,1 mln |
 | 3d | pola filtrów (W — decyzja autora), diagnoza menu | 0 | 32 / 5,2 / 3,0 mln |
+| 3b | paczka dostarczana (bez widoku) | — | 36 / 7,2 / 3,6 mln |
 
 ## Ustalenia
 
@@ -453,7 +450,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     z *Kolorami po znaczeniu*.
   * Paczki autora = kopia paczki testowej `dnd5e` (hobgoblin, eliksir) plus nieczytany katalog
     `templates/` ze starego formatu. **Id paczki dostarczanej nie może być `dnd5e`** — zderzyłoby się
-    z kopią u autora; zachowanie loadera przy powtórzonym id paczki sprawdzić w porcji 3b.
+    z kopią u autora. Powtórzone id paczki — obie odrzucone, także między źródłami (porcja 3b).
 * **Czeka na autora** (z kolejki, 2026-09-24): ręczne przeniesienie kampanii do
   `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs` i `Campaigns` nie są czytane); dopisanie
   `group` potworom.
@@ -521,6 +518,14 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     razem z wyłączonym polem (nagłówek pola w konwencji Windows). Przy drugim użyciu podpisu pola
     (karty — pary etykieta–wartość nie są polami, więc raczej formularz) przechodzi do motywu.
   * Podpis rolą `label` z klasą `secondary`; kolumna podpisów wspólna (`SharedSizeGroup`).
+
+* **Po porcji 3b** (raport wykonawcy, 2026-09-28) — do briefów 4a i 6:
+  * Wpisy przykładowe idą do `src/DungeonApp.Content.Dnd5e/Packs/dnd5e-srd/entries/`; obrazki (4a) —
+    też tam, kopiowanie łapie cały katalog. Jak dołożyć paczkę — `code-state.md`, *Paczka dostarczana
+    z systemem*.
+  * Ten sam katalog podany jako oba źródła (program rozpakowany do `Dokumenty\DungeonApp`) czyta się raz
+    — inaczej każda paczka zderzyłaby się sama ze sobą (wykonawca, bez weta architekta).
+  * Pakiety wyjściowe projektów zależnych (w tym testów D&D 5e) też dostają kopię paczki — nieszkodliwe.
 
 ## Do sesji głównej
 

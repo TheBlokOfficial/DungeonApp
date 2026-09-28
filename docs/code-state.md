@@ -61,9 +61,6 @@ wyłącznie rzeczy, których z kodu nie wyczyta się w rozsądnym czasie.
   zabiera pozostałą rozgrzewkę, która przechodzi wtedy w leniwe wczytywanie. Przyjęte bez weta.
 * **Kolory stanów mają zapisane znaczenie, pozostałe kolory motywu — nie.** Reguła z *Niezmiennika
   interfejsu* obowiązuje wszystkie.
-* **Paczek dostarczanych z systemem nie ma w kodzie** — architektura je deklaruje, ale nie istnieje
-  ani drugie źródło wczytywania, ani kopiowanie paczek do katalogu programu. Kto je wprowadzi,
-  zaczyna od zera; układ katalogu ma być taki jak paczek MG (`<system>\packs\`).
 * **Migracji nie ma** — zbyt nowy format to odmowa odczytu, niezgodna wersja typu treści oznacza
   wpis. Strukturalnie przygotowane, ścieżki brak.
 
@@ -189,6 +186,14 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 ## Punkty rozszerzeń
 
 Wzorce do briefów: od którego miejsca zacząć i czego wykonawca nie może pominąć.
+
+### Paczka dostarczana z systemem
+
+Katalog w `src/<projekt systemu>/Packs/<id paczki>/`; `.csproj` systemu kopiuje go do
+`<wyjście>\<system>\packs\` (wzór: `DungeonApp.Content.Dnd5e.csproj` — nazwa katalogu systemu wpisana
+drugi raz, zgodność z `IdValue` pilnuje `BundledPacksTests`). Test formatu `Loads_the_fixture_packs_cleanly`
+czyta ją razem z paczkami wzorcowymi i wymienia id — nowa paczka dopisuje tam swoje. Powtórzone id paczki,
+także między źródłami, odrzuca obie.
 
 ### Nowy typ treści
 
