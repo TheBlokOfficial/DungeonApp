@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `4f0debd`.** Na starcie sesji: `git log 4f0debd..master` i `git worktree
+**Stan na: 2026-09-28, po `aa513fe`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3a (szkielet ekranu) scalona i obejrzana 2026-09-28. **W toku: runda W porcji 3a** (*C* —
-rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, wygaszanie „Wyczyść filtry”) — wykonawca
-(Opus 5.5) w kopii w `.claude/worktrees/` (`git worktree list`). Jeśli sesja zginęła z wykonawcą:
-kopia bez commitów do usunięcia, runda od nowa. **Następny krok:** weryfikacja, scalenie, autor
-ogląda; potem brief porcji 3 — w nim notki „Po porcji 3a”.
+Porcja 3a (szkielet ekranu) z rundą W (rama szczegółu, ścieżka, odstępy, licznik, wygaszanie
+„Wyczyść filtry”) scalona 2026-09-28 — **czeka na obejrzenie przez autora**. Kopii roboczych brak.
+**Następny krok:** uwagi autora (kolejna runda do tabeli *Pomiar porcji*) albo przyjęcie 3a, potem
+brief porcji 3 — w nim notki „Po porcji 3a”.
 
 ## Zakres i koniec
 
@@ -111,7 +110,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
-| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3) | 49 kroków / 10,3 min / 5,5 mln |
+| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 
 ## Ustalenia
 
@@ -293,9 +292,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * **Obszar szczegółu** — przewija się pionowo, jedyna warstwa przewijania po tej stronie; odstęp 32
     u góry, z lewej i u dołu. Szczegół stoi przy liście; szerszy ekran daje pusty pas z prawej, nie
     szerszą kartę. **Szczegół stoi w ramie zakładki** (autor po obejrzeniu 3a — ramę daje host, a
-    projekt jej nie dał): tło powierzchni, linia motywu, narożnik karty, wcięcie 24 — 608 szerokości,
-    wysokość z treści. Przy najmniejszym oknie mieści się bez przewijania w poziomie: 224 (pasek
-    boczny) + 320 + 32 + 608 + 32 = 1216 z 1280.
+    projekt jej nie dał): tło powierzchni, linia motywu, narożnik karty, wcięcie 24 — szerokość z klocka: 560 + 2 × 24 + linia =
+    610, wysokość z treści. Przy najmniejszym oknie mieści się bez przewijania w poziomie: 224 (pasek
+    boczny) + 320 + 32 + 610 + 32 = 1218 z 1280.
     * Nic nie wybrane — pusty stan „Wybierz wpis z listy.” w miejscu nagłówka. Na starcie zakładki nic
       nie jest wybrane. Wybrany wpis, który zniknie z listy po zmianie filtra, zdejmuje wybór. Po
       wczytaniu od nowa wybór zostaje, jeśli wpis o tym id nadal jest.
