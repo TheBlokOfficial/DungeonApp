@@ -17,8 +17,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 ## Gdzie stoimy
 
 Porcja 3c przyjęta przez autora 2026-09-28 bez rund. Kopii roboczych brak. **Następny krok:** 3d —
-diagnoza położenia menu sortowania (*Notki*, *Okienka tylko w aplikacji*), potrzebna skala ekranu
-Windows od autora; potem 3b (paczka dostarczana).
+diagnoza położenia menu sortowania (*Notki*, *Okienka tylko w aplikacji*); potem 3b (paczka
+dostarczana). **Otwarte:** autor kwestionuje chipy filtrów (2026-09-28) — ocena architekta
+w rozmowie, decyzja autora przed kolejną zmianą panelu listy.
 
 ## Zakres i koniec
 
@@ -454,7 +455,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   (`Controls/SortPicker.cs`) — więc to nie jest brakujące ustawienie, tylko zjawisko okna. Porcja 3d:
   wykonawca dokłada tymczasowy zapis położenia (odnośnik i korzeń okienka na ekranie, skala) przy
   otwarciu, autor otwiera menu raz, wykonawca czyta zapis i poprawia albo zgłasza ograniczenie
-  biblioteki (wtedy do werdyktu). Skala ekranu Windows — od autora przed 3d.
+  biblioteki (wtedy do werdyktu). Skalę ekranu zapis odczytuje sam (skalowanie okna i okienka) —
+  nie pytać o nią autora (autor, 2026-09-28: poprawka ma działać przy każdej skali).
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
