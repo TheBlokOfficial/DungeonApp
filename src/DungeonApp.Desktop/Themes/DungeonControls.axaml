@@ -1514,8 +1514,8 @@
                                                      HorizontalAlignment="Center"
                                                      Source="{TemplateBinding Icon}"
                                                      Foreground="{TemplateBinding Foreground}" />
+                            <!-- Komunikat i ścieżka bez odstępu: jedna notatka w dwóch wierszach. -->
                             <StackPanel Name="PART_Error"
-                                        Spacing="2"
                                         IsVisible="False">
                                 <TextBlock Name="PART_Message"
                                            Classes="caption"
