@@ -108,6 +108,10 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
 
+    /// <summary>The "Typ" filter's option order: alphabetical, Polish collation, case insensitive.</summary>
+    private static readonly IComparer<string> PolishAlphabeticalOrder =
+        StringComparer.Create(new System.Globalization.CultureInfo("pl-PL"), ignoreCase: true);
+
     private readonly WorkspaceLayoutStore _layoutStore;
     private readonly ContentTypeDescriptor _monster;
     private readonly ContentTypeDescriptor _gear;
@@ -278,26 +282,31 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         ContentTabDefinitions.SelectMany(tab => tab.ContentTypes).Select(profile => profile.Type).Distinct().ToArray();
 
     /// <summary>
-    /// "Potwory": category = <see cref="Monster.Group"/> (krok 10, brief A9 - never
+    /// "Potwory": category "Grupa" = <see cref="Monster.Group"/> (krok 10, brief A9 - never
     /// <see cref="Monster.Type"/>; a monster with no declared group has no category, full stop);
-    /// tags = size, type, alignment; badge = challenge, no color key; one value filter and one sort,
-    /// both "Wyzwanie", both ordered by <see cref="ChallengeOrder"/> (krok 10, zlecenie 1, część C).
+    /// tags = size, type, alignment; badge = challenge, no color key; two value filters - "Typ"
+    /// (<see cref="Monster.Type"/>, alphabetical) before "Wyzwanie" (<see cref="ChallengeOrder"/>) -
+    /// and one sort, "Wyzwanie" (krok 10, zlecenie 1, część C; porcja 3 zakładek treści).
     /// </summary>
     private ContentTabDefinition BuildMonsterContentTab()
     {
         var profile = new ContentTypeProfile<Monster>(
             _monster.Reference,
-            category: monster => monster.Group,
+            category: new ContentCategorySpec<Monster>("Grupa", monster => monster.Group),
             tags: monster => [monster.Size, monster.Type, monster.Alignment],
             badge: monster => new ContentBadge(monster.Challenge),
-            valueFilters: [new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder)],
+            valueFilters:
+            [
+                new ContentValueFilterSpec<Monster>("Typ", monster => monster.Type, PolishAlphabeticalOrder),
+                new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder),
+            ],
             sorts: [new ContentSortSpec<Monster>("Wyzwanie", (a, b) => ChallengeOrder.Compare(a.Challenge, b.Challenge))]);
 
         return new ContentTabDefinition("Potwory", [profile], "Żadna paczka nie ma jeszcze potworów.");
     }
 
     /// <summary>
-    /// "Przedmioty": no category (the "Kategoria" filter is unavailable in this tab); no tags
+    /// "Przedmioty": no category (the tab has no category filter); no tags
     /// (krok 10, brief 3a); badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
     /// tier and none for anything else; one value filter, "Rzadkość", ordered by
     /// <see cref="RarityOrder"/>; no extra sort beyond the library's own default (krok 10,

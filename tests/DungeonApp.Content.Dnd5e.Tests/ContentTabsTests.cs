@@ -96,6 +96,26 @@ public sealed class ContentTabsTests
     /// <see cref="Monster.Type"/>.
     /// </summary>
     [Fact]
+    public void The_monster_category_filter_is_named_grupa_and_gear_has_none()
+    {
+        Assert.Equal("Grupa", MonsterProfile().CategoryLabel);
+        Assert.Null(GearProfile().CategoryLabel);
+    }
+
+    [Fact]
+    public void A_monsters_value_filters_are_type_then_challenge_and_type_orders_alphabetically_in_polish()
+    {
+        Assert.Equal(["Typ", "Wyzwanie"], MonsterProfile().ValueFilters.Select(filter => filter.Label));
+
+        var typeFilter = MonsterProfile().ValueFilters[0];
+        var entry = MonsterEntry("1/4 (50 PD)", type: "humanoid (goblinoid)");
+        var sorted = new[] { "żywiołak", "smok", "bestia", "ślimak" }.OrderBy(value => value, typeFilter.OptionOrder);
+
+        Assert.Equal("humanoid (goblinoid)", typeFilter.Value(entry));
+        Assert.Equal(["bestia", "smok", "ślimak", "żywiołak"], sorted);
+    }
+
+    [Fact]
     public void A_monster_with_no_group_has_no_category()
     {
         var entry = MonsterEntry("1/4 (50 PD)", type: "humanoid (goblinoid)", group: null);
