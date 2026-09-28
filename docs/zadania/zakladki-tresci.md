@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `c37abc9`.** Na starcie sesji: `git log c37abc9..master` i `git worktree
+**Stan na: 2026-09-28, po `194f2cf`.** Na starcie sesji: `git log 194f2cf..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3b przyjęta przez autora 2026-09-28 (paczka pusta nie pojawia się w filtrze paczek — zgodnie
-z oczekiwaniem, filtr bierze paczki z wpisów). **W toku:** porcja 4a — wykonawca (Opus) w gałęzi
-`worktree-agent-ac6c1adafe143bd5c`, kopia `.claude/worktrees/agent-ac6c1adafe143bd5c`; pierwsza porcja
-ze swobodą projektową (*Ustalenia*, *Wiąże to, co zdecydował autor*). **Następny krok:** weryfikacja 4a.
+Porcja 4a (obrazek wpisu: pole, walidacja ścieżki, ramka w galerii) scalona 2026-09-28, czeka na
+obejrzenie przez autora (galeria, sekcja „Obrazy”). Kopii roboczych brak. **Następny krok:** 4 — karta
+potwora; brief rozstrzyga, jak karta dostaje paczkę (*Notki*, *Po porcji 4a*).
 
 ## Zakres i koniec
 
@@ -94,8 +93,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
   — nigdy nieprzesunięte; przesuwały się okienka chipów, też zamknięte (*Notki*, *Okienka tylko w aplikacji*).
 - [x] **3b — paczka dostarczana** `dnd5e-srd`, pusta, drugie źródło wczytywania (przyjęte 2026-09-28).
-- [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
-  u potwora i przedmiotu, odrzucenie ścieżki poza paczkę z testem, brak pliku.
+- [x] **4a — obrazek wpisu** — pole `image`, walidacja ścieżki, ramka w galerii (scalone 2026-09-28).
 - [ ] **4 — karta potwora** (*Ustalenia*, *B*, *C*) — z polami potwora z *Rekordów*. Jeśli nie zmieści
   się w porcji: górny blok z cechami i tokenami, potem pary i sekcje z nowymi polami.
 - [ ] **5 — karta przedmiotu** (*C*) — z polami przedmiotu z *Rekordów*.
@@ -116,7 +114,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
 | 3c | sortowanie, poprawki z 3a | 0 | 51 / 9,5 / 5,1 mln |
 | 3d | pola filtrów (W — decyzja autora), diagnoza menu | 0 | 32 / 5,2 / 3,0 mln |
-| 3b | paczka dostarczana (bez widoku) | — | 36 / 7,2 / 3,6 mln |
+| 3b | paczka dostarczana (bez widoku) | 0 | 36 / 7,2 / 3,6 mln |
+| 4a | obrazek wpisu, ramka (pierwsza ze swobodą projektową) | — | 52 / 11,9 / 5,8 mln |
 
 ## Ustalenia
 
@@ -539,6 +538,21 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * Ten sam katalog podany jako oba źródła (program rozpakowany do `Dokumenty\DungeonApp`) czyta się raz
     — inaczej każda paczka zderzyłaby się sama ze sobą (wykonawca, bez weta architekta).
   * Pakiety wyjściowe projektów zależnych (w tym testów D&D 5e) też dostają kopię paczki — nieszkodliwe.
+
+* **Po porcji 4a** (raport wykonawcy, 2026-09-28) — do briefów 4 i 5:
+  * **Karta nie zna paczki:** `IContentPresentation.CreateCard(Entry)` dostaje sam wpis, a obrazek
+    rozwiązuje się względem katalogu paczki (`Pack.Location`). Droga gotowa: karta stawia `ImageFrame`
+    z ikoną systemu (`DungeonIconDragon` / `DungeonIconBackpack`) i woła
+    `EntryPicture.Load(registry, entry).ShowIn(frame)`. Brief 4 rozstrzyga styk: rozszerzyć
+    `CreateCard` albo podać kartom rejestr.
+  * Pole obrazka deklaruje `ContentTypeDescriptor.ImageProperty`; zła ścieżka — `ValuesRejected`
+    z powodem. Plik nieodczytywalny pokazuje się jak brakujący.
+  * Ramka nie reaguje na mysz — obcięta długa ścieżka (ponad 3 wiersze) nie ma podpowiedzi.
+    Architekt: zostaje, ścieżki w paczkach są krótkie; wraca, jeśli autor zobaczy obciętą.
+  * Odstępstwo od punktu wyjścia: tło ramki — powierzchnia (`DungeonSurfaceBrush`), bo klasa
+    sekcji tła nie ma, a pusta ramka bez tła nie czyta się jako miejsce na obrazek.
+  * Dekodowania (WebP, plik uszkodzony) testy nie sprawdzają — tylko aplikacja (`code-state.md`,
+    *Pułapki*).
 
 ## Do sesji głównej
 

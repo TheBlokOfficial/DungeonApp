@@ -169,6 +169,10 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
 * **Motywu domyślnego biblioteki nie ma** (od porcji 9a fundamentu). Wbudowana kontrolka użyta po raz
   pierwszy bez motywu ramy nie ma szablonu — jest niewidoczna, nic nie zgłasza błędu. Motyw dostaje
   w `Themes/DungeonControls.axaml`, a typ — do jawnej listy w `BuiltInControlThemesTests`.
+* **Test bez okna nie dekoduje obrazów** — `new Bitmap(ścieżka)` w oknie bez ekranu nie czyta pliku i nie
+  rzuca przy nieistniejącym. Dekodowanie (WebP, plik uszkodzony) sprawdza tylko aplikacja albo test
+  z zastępczym dekoderem (`EntryPicture.Load` ma wariant z dekoderem); brak pliku sprawdza jawne
+  `File.Exists`.
 * **Rozmiaru i położenia okienek wysuwanych nie sprawdzi test bez okna.** W testach okienko rysuje się
   w warstwie okna (korzeń szerokości okna), w aplikacji na Windows jest osobnym oknem dopasowanym do
   zawartości — dwa błędy (menu wyśrodkowane, szerokość listy przy przewijaniu) przeszły pomiar bez okna.

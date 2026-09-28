@@ -1,6 +1,6 @@
 # DungeonApp — kolejka pracy
 
-**Status: stan na 2026-09-26.** **Testy: 410** (2026-09-28, po porcji 3b zakładek treści) — baseline
+**Status: stan na 2026-09-26.** **Testy: 439** (2026-09-28, po porcji 4a zakładek treści) — baseline
 dla briefów, poprawiany przy każdym scaleniu, które go zmienia. Ten dokument jest jedynym miejscem, które mówi **co dalej**.
 Pozostałe dokumenty go nie dublują: [CLAUDE.md](../CLAUDE.md) mówi, czego nie wolno,
 [architecture.md](architecture.md) jak ma być, [code-state.md](code-state.md) w jakim stanie jest kod,
