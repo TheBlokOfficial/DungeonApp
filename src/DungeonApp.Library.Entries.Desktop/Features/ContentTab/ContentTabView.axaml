@@ -15,7 +15,7 @@
         <conv:UpperCaseConverter x:Key="UpperCase" />
 
         <!-- Szerokość panelu listy (brief 3a). -->
-        <x:Double x:Key="ContentListColumnWidth">320</x:Double>
+        <GridLength x:Key="ContentListColumnWidth">320</GridLength>
 
         <!-- Nagłówek zakładki: 20 u góry, 24 po bokach, 16 nad linią. -->
         <Thickness x:Key="ContentTabHeaderMargin">24,20,24,16</Thickness>
