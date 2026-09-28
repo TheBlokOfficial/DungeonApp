@@ -21,6 +21,8 @@ public sealed class ContentTabViewModel : ObservableObject
     private readonly ContentListModel _model;
     private readonly IContentPresentation _presentation;
     private readonly IReadOnlyDictionary<ContentTypeReference, IContentTypeProfile> _profilesByType;
+    private readonly IReadOnlyDictionary<ContentId, string> _packNames;
+    private readonly int _totalCount;
 
     private ContentListState _state = new();
     private string _countText = string.Empty;
@@ -42,9 +44,15 @@ public sealed class ContentTabViewModel : ObservableObject
         Title = tab.Title;
         _presentation = presentation;
         _profilesByType = tab.ContentTypes.ToDictionary(profile => profile.Type);
+        _packNames = registry.Packs.ToDictionary(pack => pack.Id, pack => pack.Name);
         _model = new ContentListModel(registry, tab, allKnownTypes);
+        EmptyText = tab.EmptyText ?? "Żadna paczka nie ma jeszcze wpisów tego rodzaju.";
 
         var firstBuild = _model.Build(_state);
+
+        // The tab's own total: loaded and broken rows under every pack, with no filter or search -
+        // a rejected pack's row is not an entry and never counts (krok 10, brief 3a).
+        _totalCount = CountShown(firstBuild.Sections);
 
         CategoryFilter = new ContentFilterChipViewModel(
             "Kategoria", firstBuild.Category.Options, value => Apply(_state with { Category = value }));
@@ -61,8 +69,14 @@ public sealed class ContentTabViewModel : ObservableObject
         ApplyResult(firstBuild);
     }
 
-    /// <summary>The tab's own title - "Potwory", "Przedmioty" - shown under the fixed "Biblioteka" eyebrow.</summary>
+    /// <summary>The tab's own title - "Potwory", "Przedmioty".</summary>
     public string Title { get; }
+
+    /// <summary>The system's sentence for a tab no pack fills yet (<see cref="ContentTabDefinition.EmptyText"/>).</summary>
+    public string EmptyText { get; }
+
+    /// <summary>No pack holds a single loaded or broken entry of this tab's types.</summary>
+    public bool HasNoEntries => _totalCount == 0;
 
     public string Search
     {
@@ -168,33 +182,45 @@ public sealed class ContentTabViewModel : ObservableObject
             filter.SyncFromResult(options, selected);
         }
 
-        Sections = result.Sections.Select(BuildSection).ToArray();
+        // A selected row that today's filters or search no longer show drops the selection for good:
+        // widening them again does not bring it back (krok 10, brief 3a).
+        if (_state.Selected is not null && result.Selection is null)
+        {
+            _state = _state with { Selected = null };
+        }
+
+        Sections = result.Sections.Select((section, index) => BuildSection(section, index == 0)).ToArray();
         RaisePropertyChanged(nameof(Sections));
 
-        CountText = BuildCountText(result.ShownCount, result.TotalCount);
+        var shown = CountShown(result.Sections);
+        CountText = BuildCountText(shown, _totalCount);
         Detail = BuildDetail(result.Selection);
 
-        // Inviting a pick only makes sense when something is currently on screen to pick - the same
-        // reasoning the old registry's IsEmpty check made, generalised to "after today's filters",
-        // since content tabs (unlike the old registry) can filter their way down to nothing shown.
+        // Inviting a pick only makes sense when something is currently on screen to pick.
         ShowSelectionPrompt = Detail is null && Sections.Count > 0;
-        HasNoMatches = Sections.Count == 0 && result.TotalCount > 0;
+        HasNoMatches = shown == 0 && _totalCount > 0;
     }
 
-    private ContentSectionViewModel BuildSection(ContentSection section)
+    private static int CountShown(IEnumerable<ContentSection> sections) =>
+        sections.Where(section => !section.IsRejectedPack).Sum(section => section.ShownCount);
+
+    private ContentSectionViewModel BuildSection(ContentSection section, bool isFirst)
     {
         if (section.IsRejectedPack)
         {
             var pack = section.RejectedPack!;
-            var headerRow = BuildRow(pack.Location, badgeText: null, badgeBrush: null, isBroken: true, new RejectedPackSelectionKey(pack.Location));
+            var row = BuildRow(pack.Location, badgeText: null, badgeBrush: null, isBroken: true, new RejectedPackSelectionKey(pack.Location));
 
-            return new ContentSectionViewModel(section.Header, section.ShownCount, headerRow, []);
+            return new ContentSectionViewModel(section.Header, 0, isRejectedPack: true, [row]) { IsFirst = isFirst };
         }
 
         var validRows = section.ValidRows.Select(BuildValidRow);
         var brokenRows = section.BrokenRows.Select(BuildBrokenRow);
 
-        return new ContentSectionViewModel(section.Header, section.ShownCount, headerRow: null, [.. validRows, .. brokenRows]);
+        return new ContentSectionViewModel(section.Header, section.ShownCount, isRejectedPack: false, [.. validRows, .. brokenRows])
+        {
+            IsFirst = isFirst,
+        };
     }
 
     private ContentRowViewModel BuildValidRow(RegisteredEntry entry)
@@ -228,8 +254,9 @@ public sealed class ContentTabViewModel : ObservableObject
     private ContentDetailViewModel? BuildDetail(ContentSelectionDetail? selection) => selection switch
     {
         ValidEntrySelection valid => new ValidContentDetailViewModel(
-            BuildBreadcrumbs(valid.Category, valid.Name),
-            valid.Category,
+            valid.Category is { } category
+                ? $"{category} · {PackName(valid.Entry.Address.Pack)}"
+                : PackName(valid.Entry.Address.Pack),
             valid.Name,
             valid.Tags,
             _presentation.CreateCard(valid.Entry.Entry)),
@@ -237,24 +264,29 @@ public sealed class ContentTabViewModel : ObservableObject
         BrokenRowSelection broken => BuildBrokenDetail(broken.Row),
 
         RejectedPackSelection rejected => new BrokenContentDetailViewModel(
-            rejected.Pack.Location, $"Nie udało się wczytać tej paczki: {rejected.Pack.Reason}"),
+            "Paczka odrzucona",
+            rejected.Pack.Location,
+            $"Nie udało się wczytać tej paczki: {rejected.Pack.Reason}",
+            rejected.Pack.Location),
 
         _ => null,
     };
 
     private BrokenContentDetailViewModel BuildBrokenDetail(ContentBrokenRow row)
     {
+        var overline = $"Wpis niewczytany · {PackName(row.Pack)}";
+
         if (row.UnresolvedEntry is { } entry)
         {
-            return new BrokenContentDetailViewModel(entry.Entry.Name, DescribeUnresolved(entry));
+            return new BrokenContentDetailViewModel(overline, entry.Entry.Name, DescribeUnresolved(entry), path: null);
         }
 
         var file = row.RejectedFile!;
-        return new BrokenContentDetailViewModel(file.Location, $"Nie udało się wczytać tego pliku: {file.Reason}");
+        return new BrokenContentDetailViewModel(
+            overline, file.Location, $"Nie udało się wczytać tego pliku: {file.Reason}", file.Location);
     }
 
-    private IReadOnlyList<string> BuildBreadcrumbs(string? category, string name) =>
-        category is null ? [Title, name] : [Title, category, name];
+    private string PackName(ContentId pack) => _packNames.TryGetValue(pack, out var name) ? name : pack.ToString();
 
     private static string DescribeUnresolved(RegisteredEntry entry)
     {

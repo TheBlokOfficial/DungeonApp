@@ -6,22 +6,23 @@ namespace DungeonApp.Library.Entries.Desktop.Features.ContentTab;
 /// One section of a content tab's list, mirroring <see cref="ContentSection"/>: everything from one
 /// pack, under a header naming that pack and how many rows currently show under it.
 /// <para>
-/// A rejected pack's section carries no <see cref="Rows"/> at all - <see cref="HeaderRow"/> is the
-/// section, drawn like any other row (broken-content color, selectable) rather than a group label
-/// (docs/architecture.md, "Zakładki treści": "Odrzucona paczka — ostatni nagłówek listy, bez
-/// wpisów... wybieralny"). An ordinary pack section is the opposite: <see cref="HeaderRow"/> is null,
-/// and the header is a plain, unselectable group label.
+/// A rejected pack's section is drawn the same way - an unselectable header - but in the
+/// broken-content color with a warning icon, and its <see cref="Rows"/> hold exactly one row: the
+/// pack's own directory, selectable like any other row, whose detail gives the reason
+/// (docs/architecture.md, "Zakładki treści").
 /// </para>
 /// </summary>
-public sealed class ContentSectionViewModel(string header, int count, ContentRowViewModel? headerRow, IReadOnlyList<ContentRowViewModel> rows)
+public sealed class ContentSectionViewModel(string header, int count, bool isRejectedPack, IReadOnlyList<ContentRowViewModel> rows)
 {
     public string Header { get; } = header;
 
+    /// <summary>Loaded and broken rows shown under this header; not shown for a rejected pack.</summary>
     public int Count { get; } = count;
 
-    public bool IsRejectedPack => HeaderRow is not null;
+    public bool IsRejectedPack { get; } = isRejectedPack;
 
-    public ContentRowViewModel? HeaderRow { get; } = headerRow;
+    /// <summary>True for the first section in the list - its header sits closer to the list's top.</summary>
+    public bool IsFirst { get; internal init; }
 
     public IReadOnlyList<ContentRowViewModel> Rows { get; } = rows;
 }

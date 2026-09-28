@@ -186,7 +186,7 @@ public sealed class ContentTabViewModelTests
 
         var detail = Assert.IsType<ValidContentDetailViewModel>(viewModel.Detail);
         Assert.Equal("Alpha", detail.Name);
-        Assert.Equal(["Widgety", "Alpha"], detail.Breadcrumbs);
+        Assert.Equal("Pack", detail.Overline);
         Assert.NotNull(detail.Card);
         Assert.False(viewModel.ShowSelectionPrompt);
     }
@@ -214,8 +214,8 @@ public sealed class ContentTabViewModelTests
         var viewModel = BuildViewModel(registry);
 
         var section = Assert.Single(viewModel.Sections, s => s.IsRejectedPack);
-        Assert.NotNull(section.HeaderRow);
-        section.HeaderRow!.SelectCommand.Execute(null);
+        var packRow = Assert.Single(section.Rows);
+        packRow.SelectCommand.Execute(null);
 
         var detail = Assert.IsType<BrokenContentDetailViewModel>(viewModel.Detail);
         Assert.Equal("bad-dir", detail.Name);
@@ -248,9 +248,13 @@ public sealed class ContentTabViewModelTests
     [InlineData(1, "1 wpis")]
     [InlineData(2, "2 wpisy")]
     [InlineData(5, "5 wpisów")]
+    [InlineData(4, "4 wpisy")]
     [InlineData(12, "12 wpisów")]
+    [InlineData(14, "14 wpisów")]
     [InlineData(21, "21 wpisów")]
     [InlineData(22, "22 wpisy")]
+    [InlineData(24, "24 wpisy")]
+    [InlineData(25, "25 wpisów")]
     public void Count_text_uses_polish_plural_agreement(int count, string expected)
     {
         var entries = Enumerable.Range(0, count).Select(i => MakeEntry($"e{i}", $"Name{i}", "1")).ToArray();
@@ -260,5 +264,72 @@ public sealed class ContentTabViewModelTests
         var viewModel = BuildViewModel(registry);
 
         Assert.Equal(expected, viewModel.CountText);
+    }
+
+    [Fact]
+    public void Count_counts_broken_rows_but_not_a_rejected_packs_row()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "1"), MakeEntry("b", "Beta", "1"));
+        var registry = new ContentRegistry(
+            [pack],
+            [Valid("p", "a", "Alpha", "1"), Valid("p", "b", "Beta", "1"), Broken("p", "z", "Ghost", EntryUnresolvedReason.MissingSet)],
+            [],
+            [new RejectedPack("bad-dir", "manifest is unreadable.")]);
+        var viewModel = BuildViewModel(registry);
+
+        Assert.Equal("3 wpisy", viewModel.CountText);
+
+        viewModel.Search = "Alp";
+
+        Assert.Equal("1 z 3 wpisy", viewModel.CountText);
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // Selection across filter changes.
+    // -----------------------------------------------------------------------------------------
+
+    [Fact]
+    public void Nothing_is_selected_when_the_tab_opens()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "low")], [], []);
+        var viewModel = BuildViewModel(registry);
+
+        Assert.Null(viewModel.Detail);
+        Assert.Equal([false], AllRows(viewModel).Select(row => row.IsSelected));
+        Assert.True(viewModel.ShowSelectionPrompt);
+    }
+
+    [Fact]
+    public void A_selected_entry_hidden_by_search_loses_the_selection_for_good()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"), MakeEntry("b", "Beta", "low"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "low"), Valid("p", "b", "Beta", "low")], [], []);
+        var viewModel = BuildViewModel(registry);
+
+        AllRows(viewModel).Single(row => row.Name == "Alpha").SelectCommand.Execute(null);
+        viewModel.Search = "Bet";
+
+        Assert.Null(viewModel.Detail);
+
+        viewModel.Search = string.Empty;
+
+        Assert.Null(viewModel.Detail);
+        Assert.Equal([false, false], AllRows(viewModel).Select(row => row.IsSelected));
+    }
+
+    [Fact]
+    public void A_selected_entry_still_shown_after_a_filter_stays_selected()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"), MakeEntry("b", "Beta", "high"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "low"), Valid("p", "b", "Beta", "high")], [], []);
+        var viewModel = BuildViewModel(registry);
+
+        AllRows(viewModel).Single(row => row.Name == "Alpha").SelectCommand.Execute(null);
+        viewModel.Search = "Al";
+
+        var detail = Assert.IsType<ValidContentDetailViewModel>(viewModel.Detail);
+        Assert.Equal("Alpha", detail.Name);
+        Assert.Equal([true], AllRows(viewModel).Select(row => row.IsSelected));
     }
 }
