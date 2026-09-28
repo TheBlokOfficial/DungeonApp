@@ -309,8 +309,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// "Przedmioty": no category (the tab has no category filter); no tags
     /// (krok 10, brief 3a); badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
     /// tier and none for anything else; one value filter, "Rzadkość", ordered by
-    /// <see cref="RarityOrder"/>; no extra sort beyond the library's own default (krok 10,
-    /// zlecenie 1, część C).
+    /// <see cref="RarityOrder"/>; one sort, "Rzadkość", in the same <see cref="RarityOrder"/>
+    /// (porcja 3c zakładek treści).
     /// </summary>
     private ContentTabDefinition BuildGearContentTab()
     {
@@ -319,7 +319,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             category: null,
             tags: gear => [],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
-            valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)]);
+            valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)],
+            sorts: [new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity))]);
 
         return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");
     }

@@ -71,6 +71,7 @@ public sealed class ContentTabViewModel : ObservableObject
             .ToArray();
         Filters = [.. CategoryFilter is { } categoryChip ? [categoryChip] : Array.Empty<ContentFilterChipViewModel>(), .. ValueFilters, PackFilter];
         SortOptions = firstBuild.Sorts;
+        NumericSortOptions = firstBuild.NumericSorts;
 
         _clearFiltersCommand = new RelayCommand(ClearFilters, () => _anyFilterNarrows);
 
@@ -106,10 +107,20 @@ public sealed class ContentTabViewModel : ObservableObject
 
     public IReadOnlyList<string> SortOptions { get; }
 
+    /// <summary>The sorts among <see cref="SortOptions"/> with a numeric or ranked key ("rosnąco" / "malejąco").</summary>
+    public IReadOnlyList<string> NumericSortOptions { get; }
+
     public string SelectedSort
     {
         get => _state.Sort;
         set => Apply(_state with { Sort = value });
+    }
+
+    /// <summary>The sort's direction; "Wyczyść filtry" leaves it as it is.</summary>
+    public bool SortDescending
+    {
+        get => _state.SortDescending;
+        set => Apply(_state with { SortDescending = value });
     }
 
     /// <summary>

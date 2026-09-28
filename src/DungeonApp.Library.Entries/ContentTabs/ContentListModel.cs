@@ -30,7 +30,11 @@ namespace DungeonApp.Library.Entries;
 /// </summary>
 public sealed class ContentListModel
 {
-    public const string DefaultSortLabel = "Nazwa (A-Z)";
+    /// <summary>
+    /// The library's own always-available sort, by name. Its direction ("A–Z" / "Z–A") is not part
+    /// of the label: <see cref="ContentListState.SortDescending"/> carries it.
+    /// </summary>
+    public const string DefaultSortLabel = "Nazwa";
 
     /// <summary>The name of the filter over a tab's packs - the library's own, never a system's.</summary>
     public const string PackFilterLabel = "Paczka";
@@ -57,6 +61,7 @@ public sealed class ContentListModel
     private readonly ContentFilterOptions _packFilter;
     private readonly IReadOnlyList<ContentFilterOptions> _valueFilterOptions;
     private readonly IReadOnlyList<string> _sortLabels;
+    private readonly IReadOnlyList<string> _numericSortLabels;
 
     public ContentListModel(
         ContentRegistry registry, ContentTabDefinition tab, IReadOnlyCollection<ContentTypeReference> allKnownTypes)
@@ -135,7 +140,9 @@ public sealed class ContentListModel
             })
             .ToArray();
 
-        _sortLabels = [DefaultSortLabel, .. tab.ContentTypes.SelectMany(profile => profile.Sorts).Select(sort => sort.Label)];
+        var sorts = tab.ContentTypes.SelectMany(profile => profile.Sorts).ToArray();
+        _sortLabels = [DefaultSortLabel, .. sorts.Select(sort => sort.Label)];
+        _numericSortLabels = [.. sorts.Where(sort => !sort.IsTextual).Select(sort => sort.Label)];
     }
 
     /// <summary>Every valid entry this tab holds, independent of any <see cref="ContentListState"/>.</summary>
@@ -173,7 +180,7 @@ public sealed class ContentListModel
             return true;
         }
 
-        var sortCompare = BuildSortComparison(state.Sort);
+        var sortCompare = BuildSortComparison(state.Sort, state.SortDescending);
 
         var validSections = _packsById.Values
             .Select(pack =>
@@ -207,6 +214,7 @@ public sealed class ContentListModel
             _packFilter,
             _valueFilterOptions,
             _sortLabels,
+            _numericSortLabels,
             TotalCount,
             ShownCount: sections.Sum(section => section.ValidRows.Count),
             Selection: ResolveSelection(state.Selected, sections));
@@ -239,25 +247,29 @@ public sealed class ContentListModel
     /// The comparison valid rows within a section sort by: the chosen sort's own comparison first
     /// (zero for every entry it does not apply to, including every entry when
     /// <paramref name="sortLabel"/> is <see cref="DefaultSortLabel"/> or unknown), then name, then
-    /// address - the last two giving the library's own always-available "Nazwa (A-Z)" both its
+    /// address - the last two giving the library's own always-available name sort both its
     /// default behaviour and every other sort's tie-break, in one comparison.
+    /// <paramref name="descending"/> reverses only the chosen key - a system's key when one is
+    /// chosen, otherwise the name; a tie under a reversed system key still falls back to name A–Z.
     /// </summary>
-    private Comparison<RegisteredEntry> BuildSortComparison(string sortLabel)
+    private Comparison<RegisteredEntry> BuildSortComparison(string sortLabel, bool descending)
     {
         var definition = _tab.ContentTypes
             .SelectMany(profile => profile.Sorts)
             .FirstOrDefault(sort => sort.Label == sortLabel);
+        var direction = descending ? -1 : 1;
+        var nameDirection = definition is null ? direction : 1;
 
         return (a, b) =>
         {
-            var primary = definition?.Compare(a.Entry, b.Entry) ?? 0;
+            var primary = direction * (definition?.Compare(a.Entry, b.Entry) ?? 0);
 
             if (primary != 0)
             {
                 return primary;
             }
 
-            var byName = DisplayOrder.Compare(a.Entry.Name, b.Entry.Name);
+            var byName = nameDirection * DisplayOrder.Compare(a.Entry.Name, b.Entry.Name);
 
             return byName != 0 ? byName : string.CompareOrdinal(a.Address.ToString(), b.Address.ToString());
         };

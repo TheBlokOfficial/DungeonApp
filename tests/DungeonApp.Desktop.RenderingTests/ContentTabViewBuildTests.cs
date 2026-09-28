@@ -42,7 +42,7 @@ public sealed class ContentTabViewBuildTests
                 new ContentValueFilterSpec<Sample>("Poziom", sample => sample.Tier, System.StringComparer.Ordinal),
                 new ContentValueFilterSpec<Sample>("Pusty", _ => null, System.StringComparer.Ordinal),
             ],
-            sorts: []);
+            sorts: [new ContentSortSpec<Sample>("Poziom", (a, b) => string.CompareOrdinal(a.Tier, b.Tier))]);
         return new ContentTabViewModel(
             registry, new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation());
     }
@@ -124,6 +124,35 @@ public sealed class ContentTabViewBuildTests
         Assert.Empty(levelChip.SelectedValues);
         Assert.Equal(string.Empty, viewModel.Search);
         Assert.False(viewModel.ClearFiltersCommand.CanExecute(null));
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void The_sort_picker_builds_through_both_directions_of_both_kinds_of_field()
+    {
+        var viewModel = BuildViewModel(FullRegistry());
+        var window = Show(viewModel);
+
+        var picker = window.GetVisualDescendants().OfType<SortPicker>().Single();
+        Assert.True(picker.CanReverse);
+        Assert.Equal(["Poziom"], picker.NumericOptions);
+
+        picker.IsDescending = true;
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(viewModel.SortDescending);
+
+        picker.SelectedOption = "Poziom";
+        Dispatcher.UIThread.RunJobs();
+        Assert.Equal("Poziom", viewModel.SelectedSort);
+
+        picker.IsDescending = false;
+        Dispatcher.UIThread.RunJobs();
+        Assert.False(viewModel.SortDescending);
+
+        viewModel.Search = "Al";
+        viewModel.ClearFiltersCommand.Execute(null);
+        Dispatcher.UIThread.RunJobs();
+        Assert.Equal("Poziom", viewModel.SelectedSort);
         window.Close();
     }
 

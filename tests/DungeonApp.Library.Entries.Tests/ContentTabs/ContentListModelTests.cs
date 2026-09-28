@@ -355,7 +355,8 @@ public sealed class ContentListModelTests
             Categories: ["y"],
             Packs: ["z"],
             ValueFilters: new Dictionary<string, IReadOnlyCollection<string>> { ["Poziom"] = ["1"] },
-            Sort: "Poziom");
+            Sort: "Poziom",
+            SortDescending: true);
 
         var cleared = state.ClearFilters();
 
@@ -364,6 +365,7 @@ public sealed class ContentListModelTests
         Assert.Null(cleared.Packs);
         Assert.Null(cleared.ValueFilters);
         Assert.Equal("Poziom", cleared.Sort);
+        Assert.True(cleared.SortDescending);
         Assert.False(cleared.AnyFilterNarrows);
     }
 
@@ -492,14 +494,25 @@ public sealed class ContentListModelTests
     // -----------------------------------------------------------------------------------------
 
     [Fact]
-    public void The_default_sort_is_name_a_to_z_and_is_always_offered_first()
+    public void The_default_sort_is_by_name_and_is_always_offered_first()
     {
         var registry = new ContentRegistry([], [], [], []);
 
         var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
 
-        Assert.Equal("Nazwa (A-Z)", result.Sorts[0]);
+        Assert.Equal("Nazwa", result.Sorts[0]);
         Assert.Equal(ContentListModel.DefaultSortLabel, result.Sorts[0]);
+    }
+
+    [Fact]
+    public void Only_a_systems_sort_is_numeric_the_name_sort_is_textual()
+    {
+        var registry = new ContentRegistry([], [], [], []);
+
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState());
+
+        Assert.Equal(["Nazwa", "Poziom"], result.Sorts);
+        Assert.Equal(["Poziom"], result.NumericSorts);
     }
 
     [Fact]
@@ -539,6 +552,75 @@ public sealed class ContentListModelTests
 
         var section = Assert.Single(result.Sections);
         Assert.Equal(["Alfa", "Zeta"], section.ValidRows.Select(row => row.Entry.Name));
+    }
+
+    [Fact]
+    public void The_name_sort_reversed_orders_valid_rows_z_to_a()
+    {
+        var pack = MakePack("alpha", "Alpha");
+        var registry = new ContentRegistry(
+            [pack],
+            [
+                Valid("alpha", "a1", "Beta", WidgetType, "k", "1"),
+                Valid("alpha", "a2", "Alfa", WidgetType, "k", "1"),
+                Valid("alpha", "a3", "Zeta", WidgetType, "k", "1"),
+            ],
+            [],
+            []);
+
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(SortDescending: true));
+
+        var section = Assert.Single(result.Sections);
+        Assert.Equal(["Zeta", "Beta", "Alfa"], section.ValidRows.Select(row => row.Entry.Name));
+    }
+
+    [Fact]
+    public void A_reversed_declared_sort_reverses_the_key_but_breaks_ties_by_name_a_to_z()
+    {
+        var pack = MakePack("alpha", "Alpha");
+        var registry = new ContentRegistry(
+            [pack],
+            [
+                Valid("alpha", "a1", "Alfa", WidgetType, "k", "1"),
+                Valid("alpha", "a2", "Zeta", WidgetType, "k", "3"),
+                Valid("alpha", "a3", "Beta", WidgetType, "k", "3"),
+                Valid("alpha", "a4", "Gamma", WidgetType, "k", "2"),
+            ],
+            [],
+            []);
+
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(Sort: "Poziom", SortDescending: true));
+
+        var section = Assert.Single(result.Sections);
+        Assert.Equal(["Beta", "Zeta", "Gamma", "Alfa"], section.ValidRows.Select(row => row.Entry.Name));
+    }
+
+    [Fact]
+    public void A_broken_entry_stays_at_the_bottom_of_its_section_when_the_sort_is_reversed()
+    {
+        var entries = new[]
+        {
+            MakeEntry("a1", "Alfa", WidgetType, new Widget("k", "1")),
+            MakeEntry("b1", "Beta", WidgetType, new Widget("k", "1")),
+            MakeEntry("z1", "Zeta", WidgetType, new Widget("k", "1")),
+        };
+        var registry = new ContentRegistry(
+            [MakePack("alpha", "Alpha", entries), MakePack("beta", "Beta pack")],
+            [
+                Broken("alpha", "z1", "Zeta", WidgetType, EntryUnresolvedReason.ValuesRejected),
+                Valid("alpha", "a1", "Alfa", WidgetType, "k", "1"),
+                Valid("alpha", "b1", "Beta", WidgetType, "k", "1"),
+                Valid("beta", "c1", "Celsus", WidgetType, "k", "1"),
+            ],
+            [],
+            []);
+
+        var result = ModelFor(WidgetTab(), registry).Build(new ContentListState(SortDescending: true));
+
+        Assert.Equal(["Alpha", "Beta pack"], result.Sections.Select(section => section.Header));
+        var alpha = result.Sections[0];
+        Assert.Equal(["Beta", "Alfa"], alpha.ValidRows.Select(row => row.Entry.Name));
+        Assert.Equal(["Zeta"], alpha.BrokenRows.Select(row => row.DisplayName));
     }
 
     /// <summary>

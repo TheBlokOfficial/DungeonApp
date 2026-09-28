@@ -40,7 +40,7 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
             .ToArray();
 
         Sorts = (sorts ?? [])
-            .Select(spec => new ContentSortDefinition(spec.Label, Erase(spec.Compare)))
+            .Select(spec => new ContentSortDefinition(spec.Label, Erase(spec.Compare), spec.IsTextual))
             .ToArray();
     }
 

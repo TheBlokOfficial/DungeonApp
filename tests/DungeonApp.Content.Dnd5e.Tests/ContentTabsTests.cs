@@ -241,8 +241,13 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void Gear_offers_no_sort_beyond_the_librarys_own_default()
+    public void The_rarity_sort_orders_gear_entries_the_same_way_as_the_filter()
     {
-        Assert.Empty(GearProfile().Sorts);
+        var sort = Assert.Single(GearProfile().Sorts);
+
+        Assert.Equal("Rzadkość", sort.Label);
+        Assert.False(sort.IsTextual);
+        Assert.True(sort.Compare(GearEntry("Pospolity"), GearEntry("Rzadki")) < 0);
+        Assert.True(sort.Compare(GearEntry("Rzadki"), GearEntry("Niezwykły")) > 0);
     }
 }

@@ -31,4 +31,9 @@ public sealed record ContentValueFilterSpec<TRecord>(
 /// <see cref="ContentValueFilterSpec{TRecord}"/>'s remarks for why this is typed and where it is
 /// consumed.
 /// </summary>
-public sealed record ContentSortSpec<TRecord>(string Label, Comparison<TRecord> Compare);
+/// <param name="IsTextual">
+/// Whether the key is text ordered alphabetically (its directions read "A–Z" / "Z–A") rather than a
+/// number or a rank (directions read "rosnąco" / "malejąco"). The library's own name sort is the
+/// only textual one today, so a system's sort defaults to numeric or ranked.
+/// </param>
+public sealed record ContentSortSpec<TRecord>(string Label, Comparison<TRecord> Compare, bool IsTextual = false);

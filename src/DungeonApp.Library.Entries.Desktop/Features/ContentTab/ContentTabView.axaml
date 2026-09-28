@@ -170,7 +170,9 @@
                             <dc:SortPicker Grid.Column="0"
                                            Options="{Binding SortOptions}"
                                            SelectedOption="{Binding SelectedSort, Mode=TwoWay}"
-                                           CanReverse="False" />
+                                           NumericOptions="{Binding NumericSortOptions}"
+                                           IsDescending="{Binding SortDescending, Mode=TwoWay}"
+                                           CanReverse="True" />
                             <Button Grid.Column="1" Classes="link" HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
                                     Command="{Binding ClearFiltersCommand}"

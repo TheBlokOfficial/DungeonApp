@@ -54,4 +54,4 @@ public sealed record ContentValueFilterDefinition(
 /// this to compare as equal whenever either side is not its own content type, so it can sit safely
 /// among a mixed tab's other sorts - see its own remarks.
 /// </summary>
-public sealed record ContentSortDefinition(string Label, Comparison<Entry> Compare);
+public sealed record ContentSortDefinition(string Label, Comparison<Entry> Compare, bool IsTextual = false);
