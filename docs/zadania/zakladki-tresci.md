@@ -21,7 +21,8 @@ porcja 3b — wykonawca (Opus) w gałęzi `worktree-agent-a4a62d5f2e376b2b0`, ko
 `.claude/worktrees/agent-a4a62d5f2e376b2b0`. Rozstrzygnięcia architekta do briefu — *Ustalenia*,
 *Paczka dostarczana*. **Otwarte:** menu sortowania — przesunięcia nie odtworzono w osobnym oknie;
 czeka na sprawdzenie przez autora w zakładce i w galerii (*Notki*, *Okienka tylko w aplikacji*).
-**Następny krok:** weryfikacja 3b.
+**Następny krok:** weryfikacja 3b; przy scaleniu liczba testów z raportu do nagłówka `tasks.md`
+(dziś jej tam brak).
 
 ## Zakres i koniec
 

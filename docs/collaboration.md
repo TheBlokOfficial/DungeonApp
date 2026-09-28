@@ -412,7 +412,8 @@ zrównać z lokalnym `master`; szczegół i powód w tej samej sekcji.
 
 Co jeszcze się sprawdziło:
 
-* **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`. Bez niej subagent
+* **Podawaj baseline liczby testów.** Aktualna liczba stoi w nagłówku `tasks.md`; architekt
+  poprawia ją przy każdym scaleniu, które ją zmienia (autor, 2026-09-28). Bez niej subagent
   nie wie, czy spadek jest regresją — a niezgodna liczba zdradza kopię na starym kodzie.
 * **Każ osobno wypisać rzeczy rozstrzygnięte samodzielnie.** Tak wychodzą błędy w briefach.
 * **Podawaj warunek zatrzymania jako informację, nie jako przeszkodę.** Gdy brief mówi „jeśli
