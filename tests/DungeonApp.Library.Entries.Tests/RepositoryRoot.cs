@@ -23,6 +23,13 @@ internal static class RepositoryRoot
     public static string PackFixtures { get; } =
         System.IO.Path.Combine(Path, "tests", "DungeonApp.Library.Entries.Tests", "Packs");
 
+    /// <summary>
+    /// The packs the D&amp;D 5e system ships with the program, as checked in - read by the same
+    /// fixture acceptance test as <see cref="PackFixtures"/>, because they are held to the same format.
+    /// </summary>
+    public static string Dnd5eBundledPacks { get; } =
+        System.IO.Path.Combine(Path, "src", "DungeonApp.Content.Dnd5e", "Packs");
+
     private static string Locate()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

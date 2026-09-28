@@ -95,7 +95,7 @@ public sealed class Dnd5eSystemTests
     /// </summary>
     private static Dnd5eSystem NewSystem() => new(
         new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-{Guid.NewGuid():N}")),
-        Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-packs-{Guid.NewGuid():N}"));
+        [Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-packs-{Guid.NewGuid():N}")]);
 
     private const string PackJson = """
         {

@@ -23,6 +23,16 @@ public sealed class SystemDirectoriesTests
     }
 
     [Fact]
+    public void BundledPacks_sits_under_the_program_directory_in_the_same_system_packs_layout()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "dungeonapp-tests-program");
+
+        var path = SystemDirectories.BundledPacks(root, Dnd5e);
+
+        Assert.Equal(Path.Combine(root, "dnd5e", "packs"), path);
+    }
+
+    [Fact]
     public void Campaigns_sits_under_DungeonApp_and_the_systems_own_campaigns_folder()
     {
         var root = Path.Combine(Path.GetTempPath(), "dungeonapp-tests-documents");
@@ -39,6 +49,7 @@ public sealed class SystemDirectoriesTests
         var other = SystemId.Create("other-system");
 
         Assert.NotEqual(SystemDirectories.GmPacks(root, Dnd5e), SystemDirectories.GmPacks(root, other));
+        Assert.NotEqual(SystemDirectories.BundledPacks(root, Dnd5e), SystemDirectories.BundledPacks(root, other));
         Assert.NotEqual(SystemDirectories.Campaigns(root, Dnd5e), SystemDirectories.Campaigns(root, other));
     }
 }

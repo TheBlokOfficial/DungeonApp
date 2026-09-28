@@ -63,9 +63,18 @@ class Program
         // katalogu leży: SystemDirectories wylicza ten sam układ ramy dla kampanii i paczek, podany
         // tu jednym identyfikatorem, którym ten system przedstawia się ramie (Dnd5eSystem.IdValue),
         // zamiast wpisywać "dnd5e" tu drugi raz.
+        //
+        // Drugie źródło to paczki dostarczane z programem - ten sam układ <system>\packs\, tylko pod
+        // katalogiem programu (AppContext.BaseDirectory), tylko do odczytu. System dostaje obie
+        // ścieżki jedną listą i czyta je jednym skanem do jednego rejestru, nie wiedząc, która skąd.
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var packsPath = SystemDirectories.GmPacks(documentsPath, SystemId.Create(Dnd5eSystem.IdValue));
+        var dnd5e = SystemId.Create(Dnd5eSystem.IdValue);
+        string[] packsPaths =
+        [
+            SystemDirectories.GmPacks(documentsPath, dnd5e),
+            SystemDirectories.BundledPacks(AppContext.BaseDirectory, dnd5e),
+        ];
 
-        return [new Dnd5eSystem(layoutStore, packsPath)];
+        return [new Dnd5eSystem(layoutStore, packsPaths)];
     }
 }

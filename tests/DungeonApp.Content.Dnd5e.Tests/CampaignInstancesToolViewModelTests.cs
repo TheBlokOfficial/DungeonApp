@@ -27,7 +27,7 @@ public sealed class CampaignInstancesToolViewModelTests
     // Dnd5eSystemTests.NewSystem.
     private static readonly Dnd5eSystem Dnd5e = new(
         new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-{Guid.NewGuid():N}")),
-        Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-packs-{Guid.NewGuid():N}"));
+        [Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-packs-{Guid.NewGuid():N}")]);
 
     [Fact]
     public async Task The_instance_list_reflects_every_instance_the_campaign_holds()

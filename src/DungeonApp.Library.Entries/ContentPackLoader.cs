@@ -10,12 +10,20 @@ using System.Threading.Tasks;
 namespace DungeonApp.Library.Entries;
 
 /// <summary>
-/// Scans a directory of installed packs, validates each one, and builds the <see cref="ContentRegistry"/>
-/// the rest of the engine reads from. Takes its path in the constructor the same way
+/// Scans one or more directories of installed packs, validates each one, and builds the one
+/// <see cref="ContentRegistry"/> the rest of the engine reads from. Takes its paths in the constructor the same way
 /// <see cref="Persistence.JsonCampaignRepository"/> does - there is no container here, and this is the
 /// composition root's job to wire up, not something the engine resolves for itself. <paramref
 /// name="types"/> is the engine's only window into content types (see <see cref="IContentTypeCatalog"/>)
 /// - the composition root hands in the aggregate over every installed system.
+/// <para>
+/// Several directories - the GM's own packs and the packs shipped with the program
+/// (docs/architecture.md, "Gdzie mieszka stan") - are one scan, not several: every candidate
+/// directory from every root goes through the same validation into the same registry, and the
+/// pack-id collision rule below spans all of them at once. The loader never knows which root a
+/// pack came from - the list carries paths only, no labels - so no rule here can prefer one source
+/// over another. Every root is only ever read.
+/// </para>
 /// <para>
 /// The governing rule for a pack's own manifest: <b>a pack is rejected whole, and says why.</b> A
 /// malformed <c>pack.json</c> throws the whole directory out - there is no identity to address its
@@ -30,8 +38,14 @@ namespace DungeonApp.Library.Entries;
 /// is.
 /// </para>
 /// </summary>
-public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog types)
+public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContentTypeCatalog types)
 {
+    /// <summary>A single packs directory - the same scan over a one-element list.</summary>
+    public ContentPackLoader(string packsPath, IContentTypeCatalog types)
+        : this([packsPath], types)
+    {
+    }
+
     private const int CurrentFormatVersion = 1;
     private const int MaxFileBytes = 1024 * 1024;
     private const int MaxItemsPerPack = 10_000;
@@ -49,32 +63,38 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
 
     public async Task<ContentRegistry> LoadAsync(CancellationToken cancellationToken = default)
     {
-        if (!Directory.Exists(packsPath))
-        {
-            // The directory name never carries meaning (identity lives in pack.json), so a missing
-            // directory is not "no packs are named yet" - it is simply nothing to scan.
-            return new ContentRegistry([], [], [], []);
-        }
+        var directories = new List<string>();
+        var rejected = new List<RejectedPack>();
 
-        string[] directories;
+        // The same directory named twice - the program unpacked straight into the GM's own
+        // Dokumenty\DungeonApp, say - is scanned once: otherwise every pack in it would collide with
+        // itself below and the whole directory would be rejected for being read twice.
+        foreach (var packsPath in packsPaths.Distinct(DirectoryPathComparer.Instance))
+        {
+            if (!Directory.Exists(packsPath))
+            {
+                // The directory name never carries meaning (identity lives in pack.json), so a missing
+                // directory is not "no packs are named yet" - it is simply nothing to scan.
+                continue;
+            }
 
-        try
-        {
-            // Enumeration is cheap metadata work, so it stays synchronous even though everything below
-            // it becomes real async IO - there is no async directory-listing API to call instead.
-            directories = [.. Directory.EnumerateDirectories(packsPath).OrderBy(d => d, StringComparer.Ordinal)];
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            // The root itself is what could not be scanned, so there is no per-candidate directory to
-            // blame - the whole scan is reported as a single rejection naming packsPath, rather than
-            // silently returning an empty registry (which would look identical to "no packs installed")
-            // or letting the exception reach the caller and crash the app it is starting up for.
-            return new ContentRegistry([], [], [], [new RejectedPack(packsPath, $"could not be scanned: {ex.Message}")]);
+            try
+            {
+                // Enumeration is cheap metadata work, so it stays synchronous even though everything below
+                // it becomes real async IO - there is no async directory-listing API to call instead.
+                directories.AddRange(Directory.EnumerateDirectories(packsPath).OrderBy(d => d, StringComparer.Ordinal));
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // The root itself is what could not be scanned, so there is no per-candidate directory to
+                // blame - that root is reported as a single rejection naming packsPath, rather than
+                // silently contributing nothing (which would look identical to "no packs installed")
+                // or letting the exception reach the caller and crash the app it is starting up for.
+                rejected.Add(new RejectedPack(packsPath, $"could not be scanned: {ex.Message}"));
+            }
         }
 
         var packs = new List<(string Location, Pack Pack, IReadOnlyList<RejectedEntry> RejectedEntries)>();
-        var rejected = new List<RejectedPack>();
 
         foreach (var directory in directories)
         {
@@ -92,8 +112,10 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
             }
         }
 
-        // Two installed packs sharing an id are both rejected. A collision is invisible until every
-        // candidate directory has been read, so it can only be checked here, after the scan.
+        // Two installed packs sharing an id are both rejected - whichever roots they sit in, and in
+        // whatever order those roots were scanned: no pack wins, so neither source outranks the
+        // other. A collision is invisible until every candidate directory has been read, so it can
+        // only be checked here, after the scan.
         var collidingIds = packs
             .Select(entry => entry.Pack.Id)
             .GroupBy(id => id)
@@ -436,6 +458,29 @@ public sealed class ContentPackLoader(string packsPath, IContentTypeCatalog type
         {
             throw new PackRejectedException($"is not valid: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Two spellings of one directory - relative or absolute, with or without a trailing separator,
+    /// in another letter case on Windows - compare equal, so <see cref="LoadAsync"/> never scans the
+    /// same root twice.
+    /// </summary>
+    private sealed class DirectoryPathComparer : IEqualityComparer<string>
+    {
+        public static readonly DirectoryPathComparer Instance = new();
+
+        private static readonly StringComparer PathText =
+            OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
+        public bool Equals(string? x, string? y) =>
+            x is not null && y is not null
+                ? PathText.Equals(Normalize(x), Normalize(y))
+                : x is null && y is null;
+
+        public int GetHashCode(string path) => PathText.GetHashCode(Normalize(path));
+
+        private static string Normalize(string path) =>
+            Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
     }
 
     private static string RelativeLabel(string subDirectoryName, string filePath) =>
