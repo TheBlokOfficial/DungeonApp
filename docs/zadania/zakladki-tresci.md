@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3d scalona 2026-09-28: filtry jako pola z podpisem — **czeka na obejrzenie przez autora**;
-menu sortowania w osobnym oknie stoi poprawnie, przesunięcia nie odtworzono (*Notki*, *Okienka tylko
-w aplikacji*). Kopii roboczych brak. **Następny krok:** autor ogląda pola filtrów i sprawdza menu
-sortowania w zakładce i w galerii; potem 3b (paczka dostarczana).
+Porcja 3d (filtry jako pola z podpisem) przyjęta przez autora 2026-09-28 bez rund. Kopii roboczych
+brak. **Otwarte:** menu sortowania — przesunięcia nie odtworzono w osobnym oknie; czeka na
+sprawdzenie przez autora w zakładce i w galerii (*Notki*, *Okienka tylko w aplikacji*).
+**Następny krok:** 3b (paczka dostarczana).
 
 ## Zakres i koniec
 
@@ -91,7 +91,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   potwora, „Wyczyść filtry” z wyszukiwaniem (przyjęte 2026-09-28).
 - [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
-- [x] **3d — pola filtrów** zamiast chipów (scalone 2026-09-28; czeka na obejrzenie). Menu sortowania
+- [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
   — nieodtworzone w osobnym oknie, czeka na pomiar autora (*Notki*, *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
@@ -116,7 +116,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*); **R w widoku** — odznaka rzadkości w wierszu nie na środku w pionie (własna pigułka zamiast klocka z fundamentu; poprawka z porcją 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 | 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
 | 3c | sortowanie, poprawki z 3a | 0 | 51 / 9,5 / 5,1 mln |
-| 3d | pola filtrów (W — decyzja autora), diagnoza menu | — (czeka na obejrzenie) | 32 / 5,2 / 3,0 mln |
+| 3d | pola filtrów (W — decyzja autora), diagnoza menu | 0 | 32 / 5,2 / 3,0 mln |
 
 ## Ustalenia
 
