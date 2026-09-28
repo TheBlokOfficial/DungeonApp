@@ -117,10 +117,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     private readonly ContentTypeDescriptor _gear;
     private readonly LoadContentPacksStep _loadPacksStep;
 
-    public Dnd5eSystem(WorkspaceLayoutStore layoutStore, string packsPath)
+    /// <param name="layoutStore">Where the desk's layout is kept.</param>
+    /// <param name="packsPaths">
+    /// Every directory this system's packs are read from - the GM's own and the ones shipped with the
+    /// program - as the composition root computed them. Read as one scan into one registry; the order
+    /// and the origin of each path carry no meaning here.
+    /// </param>
+    public Dnd5eSystem(WorkspaceLayoutStore layoutStore, IReadOnlyList<string> packsPaths)
     {
         ArgumentNullException.ThrowIfNull(layoutStore);
-        ArgumentNullException.ThrowIfNull(packsPath);
+        ArgumentNullException.ThrowIfNull(packsPaths);
 
         _layoutStore = layoutStore;
 
@@ -129,7 +135,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         _monster = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(MonsterTypeId)), "Potwór", 1);
         _gear = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)), "Przedmiot", 1);
 
-        _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPath, this));
+        _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPaths, this));
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
         StartupSteps = [_loadPacksStep, warmCardsStep];
 

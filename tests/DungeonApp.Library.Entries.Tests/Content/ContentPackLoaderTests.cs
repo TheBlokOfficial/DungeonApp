@@ -557,6 +557,78 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
+    // Several roots (the GM's packs and the packs shipped with the program) are one scan into one
+    // registry, and the loader never tells them apart.
+    // ---------------------------------------------------------------------
+
+    [Fact]
+    public async Task Two_packs_directories_load_into_one_registry_with_entries_from_both()
+    {
+        using var bundled = new TemporaryPacks();
+        _packs.WritePack("gm", PackJson("gm-pack"), new Dictionary<string, string> { ["entries/e.json"] = ValidEntryJson });
+        bundled.WritePack("shipped", PackJson("shipped-pack"), new Dictionary<string, string> { ["entries/e.json"] = ValidEntryJson });
+
+        var registry = await new ContentPackLoader([_packs.Path, bundled.Path], FakeContentTypeCatalog.Empty()).LoadAsync();
+
+        Assert.Empty(registry.RejectedPacks);
+        Assert.Empty(registry.RejectedEntries);
+        Assert.Equal(["gm-pack", "shipped-pack"], registry.Packs.Select(pack => pack.Id.Value).Order(StringComparer.Ordinal));
+        Assert.Equal(
+            ["gm-pack/e1", "shipped-pack/e1"],
+            registry.Entries.Select(entry => $"{entry.Address.Pack}/{entry.Address.Entry}").Order(StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public async Task A_missing_second_packs_directory_loads_exactly_like_the_first_one_alone()
+    {
+        _packs.WritePack("gm", PackJson("gm-pack"), new Dictionary<string, string> { ["entries/e.json"] = ValidEntryJson });
+        var missing = Path.Combine(_packs.Path, "does-not-exist");
+
+        var alone = await Loader().LoadAsync();
+        var withMissing = await new ContentPackLoader([_packs.Path, missing], FakeContentTypeCatalog.Empty()).LoadAsync();
+
+        Assert.Equal(alone.Packs.Select(pack => pack.Id), withMissing.Packs.Select(pack => pack.Id));
+        Assert.Equal(alone.Entries.Select(entry => entry.Address), withMissing.Entries.Select(entry => entry.Address));
+        Assert.Empty(withMissing.RejectedPacks);
+        Assert.Empty(withMissing.RejectedEntries);
+    }
+
+    // The same rule as two colliding packs in one directory: both are rejected, and the order the
+    // roots are listed in never decides a winner - no source outranks the other.
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Rejects_both_packs_when_two_share_an_id_across_packs_directories(bool bundledFirst)
+    {
+        using var bundled = new TemporaryPacks();
+        _packs.WritePack("gm", PackJson("dup"));
+        bundled.WritePack("shipped", PackJson("dup"));
+        bundled.WritePack("other", PackJson("other"));
+        string[] roots = bundledFirst ? [bundled.Path, _packs.Path] : [_packs.Path, bundled.Path];
+
+        var registry = await new ContentPackLoader(roots, FakeContentTypeCatalog.Empty()).LoadAsync();
+
+        Assert.Equal(["other"], registry.Packs.Select(pack => pack.Id.Value));
+        Assert.Equal(
+            new[] { _packs.PackDirectory("gm"), bundled.PackDirectory("shipped") }.Order(StringComparer.Ordinal),
+            registry.RejectedPacks.Select(rejected => rejected.Location).Order(StringComparer.Ordinal));
+        Assert.All(registry.RejectedPacks, rejected => Assert.Equal("id 'dup' is used by more than one installed pack.", rejected.Reason));
+    }
+
+    // The same directory named twice is one root, not a self-collision.
+    [Fact]
+    public async Task The_same_packs_directory_named_twice_is_scanned_once()
+    {
+        _packs.WritePack("gm", PackJson("gm-pack"));
+
+        var registry = await new ContentPackLoader(
+            [_packs.Path, _packs.Path + Path.DirectorySeparatorChar], FakeContentTypeCatalog.Empty()).LoadAsync();
+
+        Assert.Equal(["gm-pack"], registry.Packs.Select(pack => pack.Id.Value));
+        Assert.Empty(registry.RejectedPacks);
+    }
+
+    // ---------------------------------------------------------------------
     // The one-pass resolution: MissingSet, MissingType, TypeVersionMismatch, ValuesRejected.
     // ---------------------------------------------------------------------
 
