@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `85108db`.** Na starcie sesji: `git log 85108db..master` i `git worktree
+**Stan na: 2026-09-28, po `4f0debd`.** Na starcie sesji: `git log 4f0debd..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -109,7 +109,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
-| 3a | szkielet ekranu | (przed obejrzeniem) | 49 kroków / 10,3 min / 5,5 mln |
+| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); dalsze po obejrzeniu | 49 kroków / 10,3 min / 5,5 mln |
 
 ## Ustalenia
 

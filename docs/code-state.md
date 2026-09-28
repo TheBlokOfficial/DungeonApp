@@ -105,7 +105,10 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   wpisy `DungeonControls.axaml` są budowane leniwie. Przykład: `ControlTheme` nie dopuszcza selektora
   potomka (`^ Typ`) poza szablonem — styl zawartości kontrolki idzie do `BuiltInControls.axaml`.
   Pilnuje tego test budujący każdy wpis motywów (`ControlThemesBuildTests`); motyw w innym pliku
-  trzeba do niego dopisać.
+  trzeba do niego dopisać. To samo w widoku: zasób złego typu (liczba tam, gdzie kolumna siatki chce
+  `GridLength`) kompiluje się i wywraca widok przy utworzeniu — tak zakładka treści nie otwierała się
+  po porcji 3a. Zakładkę treści buduje w oknie `ContentTabViewBuildTests`; widok, którego żaden test
+  nie buduje, dociera do autora niesprawdzony.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.
