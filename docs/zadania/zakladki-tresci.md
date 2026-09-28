@@ -110,7 +110,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
-| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
+| 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 
 ## Ustalenia
 
@@ -452,7 +452,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   * Kolory rzadkości w systemie zmieniły odcienie (rzadki był równy akcentowi; pospolity i artefakt
     miały 2,4–3,7:1); dziś to jedna odmiana — tekst na pigułce o kryciu 16%. Odmianę tekstową na kartę
     dokłada porcja 5.
-  * „Wyczyść filtry” wygasza runda W porcji 3a (przeniesione z porcji 3).
+  * „Wyczyść filtry” wygasza runda W porcji 3a (przeniesione z porcji 3) — logicznie działa, ale
+    wygląda na włączone: błąd motywu ramy przy wyłączeniu komendą. Brief porcji 3 zabiera poprawkę
+    z `tasks.md`, *Poprawki czekające na obszar*, *Wyłączenie w motywie ramy*.
   * Wybór zdjęty przez filtr nie wraca po poszerzeniu filtra — zgodnie z *C*.
   * Niesprawdzone: czy role `body`/`caption` działają na `SelectableTextBlock` (powód i ścieżka
     w szczególe rzeczy zepsutej) — autor ogląda; jeśli nie, poprawka w motywie.
