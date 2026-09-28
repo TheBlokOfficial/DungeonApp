@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `36a18c7`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
+**Stan na: 2026-09-28, po `d2b124a`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3 (filtry) przyjęta przez autora 2026-09-28 bez rund. **W toku: porcja 3c** — wykonawca
-w tle, kopia pod `.claude/worktrees/` (nazwa w raporcie). **Następny krok:** weryfikacja i scalenie
-3c, potem 3d — diagnoza położenia menu sortowania w działającej aplikacji (*Notki*, *Okienka tylko
-w aplikacji*).
+Porcja 3c (sortowanie z odwracaniem, wyłączenie komendą w motywie, odznaka rzadkości na klocku)
+scalona 2026-09-28 — **czeka na obejrzenie przez autora**. Kopii roboczych brak. **Następny krok:**
+uwagi autora do 3c albo jej przyjęcie; 3d — diagnoza położenia menu sortowania (*Notki*, *Okienka
+tylko w aplikacji*), potrzebna skala ekranu Windows od autora.
 
 ## Zakres i koniec
 
@@ -89,9 +89,8 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **3a** — szkielet ekranu, klocek szczegółu `EntryDetailView` (przyjęte 2026-09-28).
 - [x] **3 — filtry** — chipy z polami wyboru, „lub” / „i”, nazwa kategorii od systemu, filtr Typ
   potwora, „Wyczyść filtry” z wyszukiwaniem (przyjęte 2026-09-28).
-- [ ] **3c — sortowanie i poprawki**: odwracanie sortowania i napisy kierunku, Rzadkość jako klucz
-  sortowania przedmiotu, przygaszenie wyłączonego komendą w motywie, odznaka rzadkości na
-  `WordTag.custom` (*Notki*, *Po porcji 3a*).
+- [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
+  odznaka na `WordTag.custom` (scalone 2026-09-28; czeka na obejrzenie).
 - [ ] **3d — położenie menu sortowania**: diagnoza w działającej aplikacji, potem poprawka (*Notki*,
   *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
@@ -116,6 +115,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 |---|---|---|---|
 | 3a | szkielet ekranu | 1 R — zakładka się nie otwierała (zasób złego typu w widoku, nie kontrolka fundamentu; poprawił architekt z testem budującym widok); 1 W — rama szczegółu, ścieżka, odstęp pierwszej sekcji, licznik, „Wyczyść filtry” wygaszane (przeniesione z porcji 3); **błąd R w kontrolce fundamentu** wykryty przy obejrzeniu — przycisk wyłączony komendą nie przygasa (motyw, nie biblioteka; poprawka z porcją 3 — `tasks.md`, *Poprawki czekające na obszar*); **R w widoku** — odznaka rzadkości w wierszu nie na środku w pionie (własna pigułka zamiast klocka z fundamentu; poprawka z porcją 3) | 49 kroków / 10,3 min / 5,5 mln; runda W: 42 / 7,6 / 4,0 mln |
 | 3 | filtry | 0 | 40 / 8,4 / 4,3 mln |
+| 3c | sortowanie, poprawki z 3a | — (czeka na obejrzenie) | 51 / 9,5 / 5,1 mln |
 
 ## Ustalenia
 
@@ -498,8 +498,13 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     żadnego wybranego zbioru.
   * Chip przekazuje wybór do stanu listy, słuchając zmian swojej kolekcji wybranych wartości —
     stan widoku, niezapisywany, więc piątego zakazu nie dotyczy.
-  * Sortowanie przedmiotów ma dziś tylko „Nazwa (A-Z)” — Rzadkość jako klucz systemu dokłada 3c;
-    napis kierunku z *A* („A–Z” z półpauzą, nie „(A-Z)”).
+
+* **Po porcji 3c** (raport wykonawcy, 2026-09-28):
+  * Przygaszenie wyłączonego w motywie — nowy selektor, `code-state.md`, *Pułapki*.
+  * Spec sortowania systemu ma `IsTextual` (domyślnie fałsz — „rosnąco”/„malejąco”); tekstowa jest
+    dziś tylko nazwa z biblioteki. Zaklęcia (etap 8): Poziom — liczbowy, domyślnie.
+  * Odznaka rzadkości ma teraz kształt i pismo tagu z motywu (zaokrąglenie tagu zamiast pełnej
+    pigułki, 12 Medium) — do obejrzenia.
 
 ## Do sesji głównej
 

@@ -109,6 +109,10 @@ Miejsca, w których naturalna zmiana robi co innego, niż się wydaje.
   `GridLength`) kompiluje się i wywraca widok przy utworzeniu — tak zakładka treści nie otwierała się
   po porcji 3a. Zakładkę treści buduje w oknie `ContentTabViewBuildTests`; widok, którego żaden test
   nie buduje, dociera do autora niesprawdzony.
+* **Przygaszenie wyłączonej kontrolki stoi na `^:disabled:not(:disabled :disabled)`, nie na
+  `[IsEnabled=False]`** — komenda z `CanExecute` = fałsz daje tylko pseudoklasę, a sam `:disabled`
+  dziedziczy się w dół i przygasiłby treść wyłączonego pojemnika drugi raz. Nowy motyw kontrolki
+  bierze ten selektor; pilnuje `DisabledOpacityTests`.
 * **Nowa biblioteka musi się nazywać `DungeonApp.Library.*`.** Testy „rama nie referencuje
   biblioteki" i skan słownictwa znajdują biblioteki po tym przedrostku; projekt nazwany inaczej
   wypada spod obu po cichu.
