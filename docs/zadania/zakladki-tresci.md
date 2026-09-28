@@ -16,9 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3b (paczka dostarczana, pusta) scalona 2026-09-28, czeka na obejrzenie przez autora. Kopii
-roboczych brak. Menu sortowania zamknięte (*Notki*, *Okienka tylko w aplikacji*).
-**Następny krok:** 4a (obrazek wpisu).
+Porcja 3b przyjęta przez autora 2026-09-28 (paczka pusta nie pojawia się w filtrze paczek — zgodnie
+z oczekiwaniem, filtr bierze paczki z wpisów). **W toku:** porcja 4a — wykonawca (Opus) w gałęzi
+`worktree-agent-ac6c1adafe143bd5c`, kopia `.claude/worktrees/agent-ac6c1adafe143bd5c`; pierwsza porcja
+ze swobodą projektową (*Ustalenia*, *Wiąże to, co zdecydował autor*). **Następny krok:** weryfikacja 4a.
 
 ## Zakres i koniec
 
@@ -92,7 +93,7 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
 - [x] **3d — pola filtrów** zamiast chipów (przyjęte 2026-09-28). Menu sortowania
   — nigdy nieprzesunięte; przesuwały się okienka chipów, też zamknięte (*Notki*, *Okienka tylko w aplikacji*).
-- [x] **3b — paczka dostarczana** `dnd5e-srd`, pusta, drugie źródło wczytywania (scalone 2026-09-28).
+- [x] **3b — paczka dostarczana** `dnd5e-srd`, pusta, drugie źródło wczytywania (przyjęte 2026-09-28).
 - [ ] **4a — obrazek wpisu** (*Projekt*, *C*): ramka obrazka w bibliotece i w galerii, pole `image`
   u potwora i przedmiotu, odrzucenie ścieżki poza paczkę z testem, brak pliku.
 - [ ] **4 — karta potwora** (*Ustalenia*, *B*, *C*) — z polami potwora z *Rekordów*. Jeśli nie zmieści
@@ -136,9 +137,21 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     Avalonia zostaje z uzasadnieniem z liczb; **odrzucony** — wyzwalacz próby z interfejsem w HTML-u na
     jednej zakładce. Otwarte błędy okienek widoczne tylko w aplikacji (fundament) wchodzą do werdyktu,
     jeśli okażą się ograniczeniem biblioteki, nie naszym błędem.
-* **Projektuje architekt, buduje wykonawca** (architekt, 2026-09-26; `collaboration.md`, *Deleguj kod,
-  nie decyzje*): układ list i kart to decyzja — architekt proponuje ją na piśmie, autor przyjmuje,
-  wykonawca składa z klocków. Swoboda twórcza (autor) dotyczy projektu, nie pominięcia zgody na etap.
+* **Wiąże to, co zdecydował autor; szczegóły projektu to punkt wyjścia wykonawcy** (autor,
+  2026-09-28, na propozycję architekta; zastępuje „projektuje architekt, buduje wykonawca” z 2026-09-26).
+  Przyjęty projekt (*Projekt*, *A*–*C*) dzieli się na dwie warstwy:
+  * **wiążące** — co jest na karcie i w liście, co wyróżnione, kształt obrazka, zachowanie ramki
+    zastępczej, sekcje rozwijane, nic na karcie nie zapisuje, reguły odrzucania;
+  * **punkt wyjścia** — rozmiary, odstępy, szerokości kolumn, układ bloków, role tekstu. Wykonawca
+    zmienia je, gdy wychodzi czytelniej, i wypisuje każde odstępstwo z powodem.
+  Brief kart podaje cel („co MG ma wyczytać z karty w trzy sekundy w walce”), nie rozpiskę. Granica
+  stała: klocki i tokeny motywu; element spoza nich — w raporcie jako własny. Zgoda na etap — bez zmian.
+* **Ramka obrazka w dwóch warstwach** (architekt przy briefie 4a, 2026-09-28; zmienia „klocek biblioteki
+  wpisów” z *C*): wygląd — ogólny klocek fundamentu w ramie (obraz / ikona zastępcza / ikona
+  z komunikatem), bo tylko tak stoi w galerii (rama nie referencjonuje biblioteki); pojęcie obrazka
+  wpisu — rozwiązanie ścieżki i wybór stanu — w bibliotece wpisów. Pole obrazka wskazuje deklaracja typu
+  treści, loader waliduje ścieżkę przez nią. Rozszerzenie spoza PNG/JPG/WebP odrzuca wpis jak ścieżka
+  poza paczkę; brak pliku sprawdza się przy pokazaniu.
 * **„Instancje” z polecenia autora to wpisy** (autor, 2026-09-26): pozycje w paczce, nie egzemplarze
   w kampanii (`architecture.md`, *Słownik*).
 * **Drugi zakaz czyta się według intencji** (autor, 2026-09-26, na propozycję architekta): czas
