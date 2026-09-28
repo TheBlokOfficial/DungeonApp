@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `ec5d358`.** Na starcie sesji: `git log ec5d358..master` i `git worktree
+**Stan na: 2026-09-28, po `85108db`.** Na starcie sesji: `git log 85108db..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,11 +16,9 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Wycinek 2 (projekt, *Ustalenia*, *C*) przyjęty przez autora w całości 2026-09-28. **W toku: porcja
-3a** — wykonawca (Opus 5.5) w kopii roboczej w `.claude/worktrees/` (gałąź i ścieżka — `git worktree
-list`). Jeśli sesja zginęła z wykonawcą: kopia bez commitów idzie do usunięcia, porcja od nowa z tym
-samym zakresem (*Plan*, *C*, *Rozstrzygnięcia przy briefie 3a*). **Następny krok:** weryfikacja
-raportu, scalenie, autor ogląda; potem brief porcji 3.
+Porcja 3a (szkielet ekranu) scalona do `master` 2026-09-28 — **czeka na obejrzenie przez autora**.
+Kopii roboczych brak. **Następny krok:** uwagi autora z obejrzenia 3a (rundy do tabeli *Pomiar
+porcji*, R albo W), potem brief porcji 3 — w nim notki „Po porcji 3a”.
 
 ## Zakres i koniec
 
@@ -87,9 +85,8 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
 - [x] **0** — fundament obejrzany i zamknięty 2026-09-26.
 - [x] **1** — dane D&D 5e: rekordy przyjęte 2026-09-26 (*Ustalenia*, *Rekordy*).
 - [x] **2** — projekt szkieletu i kart przyjęty 2026-09-28 (*Ustalenia*, *C*).
-- [ ] **3a — szkielet ekranu** (*C*): nagłówek z licznikiem, panel listy 320 z sekcjami po paczce,
-  wiersz 32 z odznaką, rzeczy zepsute z powodem, puste stany, szczegół wpisu (nagłówek + miejsce
-  karty 560). W miejscu karty do porcji 4 i 5 stoi obecna karta systemu.
+- [x] **3a** — szkielet ekranu, klocek szczegółu `EntryDetailView` (scalone 2026-09-28; czeka na
+  obejrzenie).
 - [ ] **3 — lista i filtry** (*Ustalenia*, *A*, *C*): chipy, nazwa chipa kategorii od systemu,
   semantyka filtrów, „Wyczyść filtry”, sortowanie z odwracaniem.
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
@@ -112,6 +109,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 
 | # | Porcja | Rundy | Pomiar |
 |---|---|---|---|
+| 3a | szkielet ekranu | (przed obejrzeniem) | 49 kroków / 10,3 min / 5,5 mln |
 
 ## Ustalenia
 
@@ -441,6 +439,20 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 * **Odznaka akcentu nie stoi w wierszu listy** (fundament, porcja 8b): na wybranym wierszu jej tekst ma
   4,00:1, a akcent konkuruje z samym wyborem. W wierszu — odznaka neutralna, stanu albo kolor systemu;
   akcent na karcie. Brief listy ma to podać.
+
+* **Po porcji 3a** (raport wykonawcy, 2026-09-28) — do briefów 3, 5 i 7:
+  * Zdanie pustej zakładki podaje system polem `ContentTabDefinition.EmptyText` (opcjonalne; bez niego
+    zdanie bez nazwy typu). Podpowiedź „gdzie leżą paczki” jest bez ścieżki — zakładka jej nie zna,
+    potrzebny nowy przewód; naturalnie z porcją 7 (rejestr i wczytywanie).
+  * Kolory rzadkości w systemie zmieniły odcienie (rzadki był równy akcentowi; pospolity i artefakt
+    miały 2,4–3,7:1); dziś to jedna odmiana — tekst na pigułce o kryciu 16%. Odmianę tekstową na kartę
+    dokłada porcja 5.
+  * „Wyczyść filtry” jeszcze nie jest wygaszane — porcja 3 (*A*).
+  * Wybór zdjęty przez filtr nie wraca po poszerzeniu filtra — zgodnie z *C*.
+  * Niesprawdzone: czy role `body`/`caption` działają na `SelectableTextBlock` (powód i ścieżka
+    w szczególe rzeczy zepsutej) — autor ogląda; jeśli nie, poprawka w motywie.
+  * Odstęp nazwa zakładki–licznik to dwie spacje krojem liczb (ok. 14, poza skalą) — cena wspólnej
+    linii bazowej.
 
 ## Do sesji głównej
 
