@@ -81,6 +81,10 @@
         <Style Selector="dc|ListRow:selected TextBlock.row-name">
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
+        <!-- Podpis wyłączonego filtra przygasa razem z polem (ta sama przezroczystość wyłączenia). -->
+        <Style Selector="TextBlock.filter-label:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
     </UserControl.Styles>
 
     <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,Auto,*" MinHeight="0">
@@ -142,26 +146,37 @@
                                      PlaceholderText="Szukaj po nazwie…" />
                         </dc:IconField>
 
-                        <!-- Chipy filtrów: kategoria, filtry systemu, "Paczka". Każdy to lista z polami
-                             wyboru (DropDownPicker, wybór wielokrotny, strój DungeonChipPicker) - nic
-                             nie zaznaczone = filtr nie zawęża; nazwa filtra z PlaceholderText. Wybór
-                             trzymany po napisie wartości (SelectedValues). Filtr bez opcji - chip
-                             wyłączony. -->
-                        <ItemsControl ItemsSource="{Binding Filters}">
+                        <!-- Filtry jako pola z podpisem (brief 3d): kategoria, filtry systemu, "Paczka".
+                             Rząd = podpis z lewej (rola label, kolor drugorzędny) i lista rozwijana
+                             wielokrotna w motywie domyślnym na resztę szerokości. Kolumna podpisów wspólna
+                             dla rzędów (SharedSizeGroup), szerokość z najdłuższego podpisu; 12 między
+                             podpisem a polem, 8 między rzędami. Nic nie zaznaczone = filtr nie zawęża
+                             (tekst zastępczy "Wszystkie"); wybór trzymany po napisie wartości
+                             (SelectedValues). Filtr bez opcji - pole wyłączone, podpis przygaszony z nim. -->
+                        <ItemsControl ItemsSource="{Binding Filters}" Grid.IsSharedSizeScope="True">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                               LineSpacing="{DynamicResource DungeonSpacingXs}" />
+                                    <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
-                                    <dc:DropDownPicker Theme="{StaticResource DungeonChipPicker}"
-                                                       SelectionMode="Multiple"
-                                                       PlaceholderText="{Binding Label}"
-                                                       ItemsSource="{Binding Options}"
-                                                       SelectedItems="{Binding SelectedValues, Mode=OneWay}"
-                                                       IsEnabled="{Binding IsAvailable}" />
+                                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingMd}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="ContentFilterLabel" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Classes="label secondary filter-label"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Label}"
+                                                   IsEnabled="{Binding IsAvailable}" />
+                                        <dc:DropDownPicker Grid.Column="1"
+                                                           SelectionMode="Multiple"
+                                                           PlaceholderText="Wszystkie"
+                                                           ItemsSource="{Binding Options}"
+                                                           SelectedItems="{Binding SelectedValues, Mode=OneWay}"
+                                                           IsEnabled="{Binding IsAvailable}" />
+                                    </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

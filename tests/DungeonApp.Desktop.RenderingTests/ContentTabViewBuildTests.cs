@@ -101,13 +101,19 @@ public sealed class ContentTabViewBuildTests
     }
 
     [AvaloniaFact]
-    public void The_filter_chips_build_through_a_chosen_value_and_wyczysc_filtry()
+    public void The_filter_rows_build_through_a_chosen_value_and_wyczysc_filtry()
     {
         var viewModel = BuildViewModel(FullRegistry());
         var window = Show(viewModel);
 
+        var labels = window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(text => text.Classes.Contains("filter-label"))
+            .ToList();
+        Assert.Equal(["Grupa", "Poziom", "Pusty", "Paczka"], labels.Select(label => label.Text));
+        Assert.Equal([true, true, false, true], labels.Select(label => label.IsEnabled));
+
         var pickers = window.GetVisualDescendants().OfType<DropDownPicker>().ToList();
-        Assert.Equal(["Grupa", "Poziom", "Pusty", "Paczka"], pickers.Select(picker => picker.PlaceholderText));
+        Assert.Equal(["Wszystkie", "Wszystkie", "Wszystkie", "Wszystkie"], pickers.Select(picker => picker.PlaceholderText));
         Assert.Equal([true, true, false, true], pickers.Select(picker => picker.IsEnabled));
 
         var levelChip = viewModel.Filters.Single(filter => filter.Label == "Poziom");
