@@ -152,53 +152,29 @@
                                      PlaceholderText="Szukaj po nazwie…" />
                         </dc:IconField>
 
-                        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                   LineSpacing="{DynamicResource DungeonSpacingXs}">
-                            <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding CategoryFilter.IsActive}"
-                                    IsVisible="{Binding CategoryFilter.IsAvailable}">
-                                <TextBlock Text="{Binding CategoryFilter.ChipText}" />
-                                <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
-                                        <ListBox ItemsSource="{Binding CategoryFilter.FlyoutItems}"
-                                                 SelectedItem="{Binding CategoryFilter.SelectedDisplay, Mode=TwoWay}" />
-                                    </Flyout>
-                                </Button.Flyout>
-                            </Button>
-
-                            <ItemsControl ItemsSource="{Binding ValueFilters}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                                   LineSpacing="{DynamicResource DungeonSpacingXs}" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
-                                        <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding IsActive}"
-                                                IsVisible="{Binding IsAvailable}">
-                                            <TextBlock Text="{Binding ChipText}" />
-                                            <Button.Flyout>
-                                                <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
-                                                    <ListBox ItemsSource="{Binding FlyoutItems}"
-                                                             SelectedItem="{Binding SelectedDisplay, Mode=TwoWay}" />
-                                                </Flyout>
-                                            </Button.Flyout>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <Button Theme="{StaticResource DungeonChipOpener}" Classes.active="{Binding SourceFilter.IsActive}"
-                                    IsVisible="{Binding SourceFilter.IsAvailable}">
-                                <TextBlock Text="{Binding SourceFilter.ChipText}" />
-                                <Button.Flyout>
-                                    <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
-                                        <ListBox ItemsSource="{Binding SourceFilter.FlyoutItems}"
-                                                 SelectedItem="{Binding SourceFilter.SelectedDisplay, Mode=TwoWay}" />
-                                    </Flyout>
-                                </Button.Flyout>
-                            </Button>
-                        </WrapPanel>
+                        <!-- Chipy filtrów: kategoria, filtry systemu, "Paczka". Każdy to lista z polami
+                             wyboru (DropDownPicker, wybór wielokrotny, strój DungeonChipPicker) - nic
+                             nie zaznaczone = filtr nie zawęża; nazwa filtra z PlaceholderText. Wybór
+                             trzymany po napisie wartości (SelectedValues). Filtr bez opcji - chip
+                             wyłączony. -->
+                        <ItemsControl ItemsSource="{Binding Filters}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                                               LineSpacing="{DynamicResource DungeonSpacingXs}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
+                                    <dc:DropDownPicker Theme="{StaticResource DungeonChipPicker}"
+                                                       SelectionMode="Multiple"
+                                                       PlaceholderText="{Binding Label}"
+                                                       ItemsSource="{Binding Options}"
+                                                       SelectedItems="{Binding SelectedValues, Mode=OneWay}"
+                                                       IsEnabled="{Binding IsAvailable}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
                         <Grid ColumnDefinitions="*,Auto">
                             <dc:SortPicker Grid.Column="0"

@@ -60,17 +60,19 @@ public sealed class ContentTabViewModel : ObservableObject
         // a rejected pack's row is not an entry and never counts (krok 10, brief 3a).
         _totalCount = CountShown(firstBuild.Sections);
 
-        CategoryFilter = new ContentFilterChipViewModel(
-            "Kategoria", firstBuild.Category.Options, value => Apply(_state with { Category = value }));
-        SourceFilter = new ContentFilterChipViewModel(
-            "Źródło", firstBuild.Source.Options, value => Apply(_state with { Source = value }));
+        CategoryFilter = firstBuild.Category is { } category
+            ? new ContentFilterChipViewModel(category.Label, category.Options, values => Apply(_state with { Categories = values }))
+            : null;
+        PackFilter = new ContentFilterChipViewModel(
+            firstBuild.Pack.Label, firstBuild.Pack.Options, values => Apply(_state with { Packs = values }));
         ValueFilters = firstBuild.ValueFilters
             .Select(filter => new ContentFilterChipViewModel(
-                filter.Label, filter.Options, value => ApplyValueFilter(filter.Label, value)))
+                filter.Label, filter.Options, values => ApplyValueFilter(filter.Label, values)))
             .ToArray();
+        Filters = [.. CategoryFilter is { } categoryChip ? [categoryChip] : Array.Empty<ContentFilterChipViewModel>(), .. ValueFilters, PackFilter];
         SortOptions = firstBuild.Sorts;
 
-        _clearFiltersCommand = new RelayCommand(() => Apply(_state.ClearFilters()), () => _anyFilterNarrows);
+        _clearFiltersCommand = new RelayCommand(ClearFilters, () => _anyFilterNarrows);
 
         ApplyResult(firstBuild);
     }
@@ -90,11 +92,17 @@ public sealed class ContentTabViewModel : ObservableObject
         set => Apply(_state with { Search = value });
     }
 
-    public ContentFilterChipViewModel CategoryFilter { get; }
+    /// <summary>The category chip, named by the system - null when no content type in the tab declares a category.</summary>
+    public ContentFilterChipViewModel? CategoryFilter { get; }
 
-    public ContentFilterChipViewModel SourceFilter { get; }
+    /// <summary>The "Paczka" chip.</summary>
+    public ContentFilterChipViewModel PackFilter { get; }
 
+    /// <summary>The system's own value filter chips, in the order the system declares them.</summary>
     public IReadOnlyList<ContentFilterChipViewModel> ValueFilters { get; }
+
+    /// <summary>Every chip in the order the row shows them: the category, the system's filters, "Paczka".</summary>
+    public IReadOnlyList<ContentFilterChipViewModel> Filters { get; }
 
     public IReadOnlyList<string> SortOptions { get; }
 
@@ -185,22 +193,30 @@ public sealed class ContentTabViewModel : ObservableObject
         private set => SetField(ref _hasNoMatches, value);
     }
 
-    private void ApplyValueFilter(string label, string? value)
+    private void ApplyValueFilter(string label, IReadOnlyCollection<string> values)
     {
         var current = _state.ValueFilters is { } existing
-            ? new Dictionary<string, string>(existing, StringComparer.Ordinal)
-            : new Dictionary<string, string>(StringComparer.Ordinal);
+            ? new Dictionary<string, IReadOnlyCollection<string>>(existing, StringComparer.Ordinal)
+            : new Dictionary<string, IReadOnlyCollection<string>>(StringComparer.Ordinal);
 
-        if (value is null)
+        if (values.Count == 0)
         {
             current.Remove(label);
         }
         else
         {
-            current[label] = value;
+            current[label] = values;
         }
 
         Apply(_state with { ValueFilters = current.Count == 0 ? null : current });
+    }
+
+    // "Wyczyść filtry": every chip and the search box. The search box is bound two-way, so it has
+    // to hear that its text changed from here.
+    private void ClearFilters()
+    {
+        Apply(_state.ClearFilters());
+        RaisePropertyChanged(nameof(Search));
     }
 
     private void Select(ContentSelectionKey key) => Apply(_state with { Selected = key });
@@ -213,14 +229,14 @@ public sealed class ContentTabViewModel : ObservableObject
 
     private void ApplyResult(ContentListResult result)
     {
-        CategoryFilter.SyncFromResult(result.Category.Options, _state.Category);
-        SourceFilter.SyncFromResult(result.Source.Options, _state.Source);
+        CategoryFilter?.SyncFromResult(result.Category?.Options ?? [], _state.Categories);
+        PackFilter.SyncFromResult(result.Pack.Options, _state.Packs);
 
         foreach (var filter in ValueFilters)
         {
             var options = result.ValueFilters.FirstOrDefault(f => f.Label == filter.Label)?.Options ?? [];
-            var selected = _state.ValueFilters is { } selections && selections.TryGetValue(filter.Label, out var value)
-                ? value
+            var selected = _state.ValueFilters is { } selections && selections.TryGetValue(filter.Label, out var values)
+                ? values
                 : null;
 
             filter.SyncFromResult(options, selected);
@@ -239,10 +255,7 @@ public sealed class ContentTabViewModel : ObservableObject
         var shown = CountShown(result.Sections);
         SetCount(shown, _totalCount);
 
-        var anyFilterNarrows = _state.Search.Length > 0
-            || _state.Category is not null
-            || _state.Source is not null
-            || _state.ValueFilters is { Count: > 0 };
+        var anyFilterNarrows = _state.AnyFilterNarrows;
         if (anyFilterNarrows != _anyFilterNarrows)
         {
             _anyFilterNarrows = anyFilterNarrows;

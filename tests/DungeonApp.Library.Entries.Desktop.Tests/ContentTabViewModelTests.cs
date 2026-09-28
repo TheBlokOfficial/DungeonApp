@@ -130,10 +130,42 @@ public sealed class ContentTabViewModelTests
         var viewModel = BuildViewModel(registry);
 
         var levelFilter = Assert.Single(viewModel.ValueFilters, f => f.Label == "Poziom");
-        levelFilter.SelectedDisplay = "high";
+        levelFilter.SelectedValues.Add("high");
 
         Assert.Equal(["Beta"], AllRowNames(viewModel));
         Assert.True(levelFilter.IsActive);
+    }
+
+    [Fact]
+    public void Two_values_in_one_chip_show_both_and_unchecking_them_all_shows_everything()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"), MakeEntry("b", "Beta", "high"), MakeEntry("c", "Gamma", "mid"));
+        var registry = new ContentRegistry(
+            [pack], [Valid("p", "a", "Alpha", "low"), Valid("p", "b", "Beta", "high"), Valid("p", "c", "Gamma", "mid")], [], []);
+        var viewModel = BuildViewModel(registry);
+        var levelFilter = Assert.Single(viewModel.ValueFilters, f => f.Label == "Poziom");
+
+        levelFilter.SelectedValues.Add("low");
+        levelFilter.SelectedValues.Add("high");
+
+        Assert.Equal(["Alpha", "Beta"], AllRowNames(viewModel));
+        Assert.Equal(["high", "low", "mid"], levelFilter.Options);
+
+        levelFilter.SelectedValues.Clear();
+
+        Assert.Equal(["Alpha", "Beta", "Gamma"], AllRowNames(viewModel));
+        Assert.False(viewModel.ClearFiltersCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void Chips_run_category_then_system_filters_then_paczka_and_a_tab_without_a_category_has_no_category_chip()
+    {
+        var pack = MakePack("p", "Pack", MakeEntry("a", "Alpha", "low"));
+        var registry = new ContentRegistry([pack], [Valid("p", "a", "Alpha", "low")], [], []);
+        var viewModel = BuildViewModel(registry);
+
+        Assert.Null(viewModel.CategoryFilter);
+        Assert.Equal(["Poziom", "Paczka"], viewModel.Filters.Select(filter => filter.Label));
     }
 
     [Fact]
@@ -160,12 +192,13 @@ public sealed class ContentTabViewModelTests
         viewModel.Search = "Alp";
         viewModel.SelectedSort = "Poziom";
         var levelFilter = Assert.Single(viewModel.ValueFilters, f => f.Label == "Poziom");
-        levelFilter.SelectedDisplay = "low";
+        levelFilter.SelectedValues.Add("low");
 
         viewModel.ClearFiltersCommand.Execute(null);
 
         Assert.Equal(string.Empty, viewModel.Search);
         Assert.False(levelFilter.IsActive);
+        Assert.Empty(levelFilter.SelectedValues);
         Assert.Equal("Poziom", viewModel.SelectedSort);
         Assert.Equal(["Beta", "Alpha"], AllRowNames(viewModel));
     }
@@ -193,7 +226,7 @@ public sealed class ContentTabViewModelTests
         Assert.Equal(2, raised);
 
         var levelFilter = Assert.Single(viewModel.ValueFilters, f => f.Label == "Poziom");
-        levelFilter.SelectedDisplay = "low";
+        levelFilter.SelectedValues.Add("low");
 
         Assert.True(command.CanExecute(null));
         Assert.Equal(3, raised);
