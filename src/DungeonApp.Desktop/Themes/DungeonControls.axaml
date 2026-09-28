@@ -204,10 +204,11 @@
     <!--
         Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
         wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
-        Przezroczystość wyłączenia w tym i każdym innym motywie ramy idzie po własnym IsEnabled
-        (^[IsEnabled=False]), kolory stanu wyłączonego po :disabled: kontrolka w wyłączonym
-        pojemniku (zakładka, sekcja rozwijana) przygasa raz - przygasza ją pojemnik - a akcent i tak
-        traci.
+        Przezroczystość wyłączenia w tym i każdym innym motywie ramy idzie po :disabled, ale tylko
+        na najwyższej wyłączonej kontrolce (^:disabled:not(:disabled :disabled)) - tak przygasa też
+        przycisk wyłączony komendą (CanExecute fałsz), który IsEnabled zostawia true. Kolory stanu
+        wyłączonego idą po samym :disabled: kontrolka w wyłączonym pojemniku (zakładka, sekcja
+        rozwijana) przygasa raz - przygasza ją pojemnik - a akcent i tak traci.
         Przycisk z wypełnieniem barwą znaczenia (.primary, .danger) pod myszą nie zmienia wypełnienia:
         dostaje otoczkę - pas 3 px na zewnątrz krawędzi, bez rozmycia, w zaokrągleniu przycisku
         (BoxShadow Border tła, tokeny DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
@@ -396,7 +397,7 @@
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
 
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -460,7 +461,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -519,7 +520,7 @@
         <Style Selector="^:pointerover, ^:pressed">
             <Setter Property="Foreground" Value="{DynamicResource DungeonDangerTextBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -722,7 +723,7 @@
         <Style Selector="^:disabled">
             <Setter Property="Cursor" Value="Arrow" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -747,7 +748,7 @@
           spoczynek  - tło InputBackground, krawędź InputBorder;
           najechanie - mysz nad ramką (także nad ikoną i przyciskiem): krawędź InputHoverBorder;
           edycja     - fokus w polu (:focus-within): krawędź InputHoverBorder przez całą edycję;
-          wyłączenie - DungeonDisabledOpacity raz, na ramce (po jej IsEnabled); pole tekstowe w środku
+          wyłączenie - DungeonDisabledOpacity raz, na ramce (najwyższa wyłączona); pole tekstowe w środku
                        nie przygasza drugi raz.
         Odmiany:
           .search    - wyszukiwania: lupa i przycisk czyszczenia.
@@ -815,7 +816,7 @@
         <Style Selector="^:pointerover, ^:focus-within">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -971,7 +972,7 @@
                 </ButtonSpinner>
             </ControlTemplate>
         </Setter>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1168,7 +1169,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonScrollThumbHoverBrush}" />
         </Style>
 
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1313,7 +1314,7 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1419,7 +1420,7 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -1661,7 +1662,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Path">
@@ -1742,7 +1743,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Dot">
@@ -1889,7 +1890,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled /template/ Ellipse#PART_Knob">
@@ -2004,7 +2005,7 @@
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2030,7 +2031,7 @@
           nieokreślony - odcinek 40 % toru w kolorze Foreground przesuwa się w pętli
                          (DungeonProgressSweepDuration); przy wyłączonych animacjach w systemie
                          spokojny: cały tor w przygaszonym akcencie (DungeonAccentDimBrush), bez ruchu;
-          wyłączony    - DungeonDisabledOpacity (po własnym IsEnabled), wypełnienie traci akcent:
+          wyłączony    - DungeonDisabledOpacity (najwyższa wyłączona), wypełnienie traci akcent:
                          tekst przygaszony (TextMuted), neutralne - jak część toru suwaka przed
                          uchwytem; nieokreślony wyłączony stoi (cały tor w TextMuted).
     -->
@@ -2074,7 +2075,7 @@
         <Style Selector="^:disabled /template/ controls|ProgressSweep#PART_Sweep">
             <Setter Property="CalmFill" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2630,7 +2631,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2770,7 +2771,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -2961,7 +2962,7 @@
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3119,7 +3120,7 @@
         </Style>
         <!-- Przygasza tylko zakładka wyłączona sama (IsEnabled="False"); zakładka w wyłączonym pasku
              też jest :disabled, ale przygasza ją raz cały pasek - bez podwójnego przygaszenia. -->
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3205,7 +3206,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3259,8 +3260,8 @@
             <Setter Property="IsVisible" Value="False" />
         </Style>
         <!-- Wyłączony TabControl przygasza całość - pasek i treść - raz; zakładki w nim nie
-             przygaszają się drugi raz (ich przygaszenie idzie po własnym IsEnabled). -->
-        <Style Selector="^[IsEnabled=False]">
+             przygaszają się drugi raz (przygasza tylko najwyższa wyłączona kontrolka). -->
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3345,7 +3346,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <Style Selector="^:disabled:selected">
@@ -3484,7 +3485,7 @@
             <Setter Property="Background" Value="Transparent" />
         </Style>
         <!-- Przygasza tylko nagłówek wyłączony sam; w wyłączonej sekcji przygasza ją raz cała sekcja. -->
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3536,7 +3537,7 @@
         </Setter>
 
         <!-- Wyłączona sekcja przygasza całość - nagłówek i treść - raz. -->
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3555,7 +3556,7 @@
         wielokropkiem z pełnym napisem w podpowiedzi (Themes/TrimmedLabelToolTip.cs). Krawędź zawsze
         1 px (w odmianach bez krawędzi przezroczysta) - odmiana nie zmienia wymiarów.
         Bez stanów: nie reagują na mysz, nie przyjmują fokusu, kursor strzałka, tekst się nie
-        zaznacza. Wyłączone - DungeonDisabledOpacity po własnym IsEnabled.
+        zaznacza. Wyłączone - DungeonDisabledOpacity, gdy nic wyżej nie przygasza.
         Odmiany po znaczeniu (klasy, te same dla obu):
           (brak)   - neutralna: odznaka - tło NeutralDim (półprzezroczyste, na każdej powierzchni),
                      krawędź Border, tekst TextRegular;
@@ -3628,7 +3629,7 @@
         <Style Selector="^.custom">
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3695,7 +3696,7 @@
         <Style Selector="^.custom">
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3717,7 +3718,7 @@
           najechanie         - krawędź BorderStrong, tekst TextPrimary; wciśnięcie - jak najechanie;
           włączony (:checked) - tło AccentDim, krawędź AccentEdge, tekst AccentOnDim; pod myszą i wciśnięty
                                bez zmian;
-          wyłączony          - DungeonDisabledOpacity po własnym IsEnabled, wygląd spoczynku;
+          wyłączony          - DungeonDisabledOpacity, gdy nic wyżej nie przygasza, wygląd spoczynku;
           włączony wyłączony - traci akcent: tło SurfaceActive, krawędź Border, tekst TextRegular.
         Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka, bez strzałki i listy wyboru.
     -->
@@ -3782,7 +3783,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -3882,7 +3883,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
         <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę; obrót ruchem. -->
@@ -4018,7 +4019,7 @@
                          ^ /template/ Button#PART_DirectionButton:pressed">
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>
@@ -4041,12 +4042,12 @@
           .header - wiersz nagłówka: tło TableHeader, tekst TextRegular 12, SemiBold;
           .mono   - liczby krojem DungeonMonoFont.
         Nieinteraktywna: bez najechania i zaznaczania, bez fokusu, kursor strzałka, tekst się nie
-        zaznacza. Wyłączona - DungeonDisabledOpacity raz na całej tabeli (po jej własnym IsEnabled).
+        zaznacza. Wyłączona - DungeonDisabledOpacity raz na całej tabeli (najwyższa wyłączona).
     -->
     <ControlTheme x:Key="{x:Type controls:Table}" TargetType="controls:Table">
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Focusable" Value="False" />
-        <Style Selector="^[IsEnabled=False]">
+        <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
     </ControlTheme>

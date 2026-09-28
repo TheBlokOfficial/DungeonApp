@@ -39,6 +39,8 @@
                     </StackPanel>
                 </Button>
                 <Button Content="Wyłączony" IsEnabled="False" />
+                <!-- Wyłączony przez komendę: CanExecute fałsz, IsEnabled zostaje true - przygasza :disabled. -->
+                <Button x:Name="DisabledByCommandSample" Content="Wyłączony przez komendę" />
             </StackPanel>
 
             <!-- Główny -->
