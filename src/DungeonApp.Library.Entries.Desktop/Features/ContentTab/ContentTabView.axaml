@@ -29,10 +29,6 @@
              każdym nagłówkiem, także pierwszym, 6 pod. -->
         <Thickness x:Key="ContentSectionHeaderMargin">22,12,16,6</Thickness>
 
-        <!-- Odznaka koloru systemu: wysokość DungeonSpacingXl, wcięcie poziome DungeonSpacingXs. -->
-        <Thickness x:Key="ContentBadgePadding">6,0</Thickness>
-        <CornerRadius x:Key="ContentPillCornerRadius">999</CornerRadius>
-
         <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
             <dc:ListRow ShowsSelectionStripe="True"
                         IsSelected="{Binding IsSelected}"
@@ -57,19 +53,13 @@
                                Text="{Binding BadgeText}"
                                IsVisible="{Binding HasPlainBadge}"
                                VerticalAlignment="Center" />
-                    <!-- Odznaka w kolorze systemu (rzadkość): tekst w kolorze, tło to samo przygaszone. -->
-                    <Border Grid.Column="1"
-                            IsVisible="{Binding HasColoredBadge}"
-                            Height="{DynamicResource DungeonSpacingXl}"
-                            VerticalAlignment="Center"
-                            CornerRadius="{StaticResource ContentPillCornerRadius}"
-                            Padding="{StaticResource ContentBadgePadding}"
-                            Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}">
-                        <TextBlock Classes="label"
-                                   Text="{Binding BadgeText}"
-                                   VerticalAlignment="Center"
-                                   Foreground="{Binding BadgeBrush}" />
-                    </Border>
+                    <!-- Odznaka w kolorze systemu (rzadkość): klocek WordTag w odmianie custom - tekst
+                         w kolorze, tło to samo przygaszone; wymiary, pismo i położenie z motywu. -->
+                    <dc:WordTag Grid.Column="1" Classes="custom"
+                                IsVisible="{Binding HasColoredBadge}"
+                                Content="{Binding BadgeText}"
+                                Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}"
+                                Foreground="{Binding BadgeBrush}" />
                     <!-- Rzecz zepsuta: w miejscu odznaki ostrzeżenie kolorem treści niewczytanej. -->
                     <dc:ForegroundIcon Grid.Column="1"
                                        IsVisible="{Binding IsBroken}"
