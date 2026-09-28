@@ -16,10 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3c przyjęta przez autora 2026-09-28 bez rund. Kopii roboczych brak. **Następny krok:** 3d —
-diagnoza położenia menu sortowania (*Notki*, *Okienka tylko w aplikacji*); potem 3b (paczka
-dostarczana). **Otwarte:** autor kwestionuje chipy filtrów (2026-09-28) — ocena architekta
-w rozmowie, decyzja autora przed kolejną zmianą panelu listy.
+Porcja 3c przyjęta przez autora 2026-09-28 bez rund. **W toku: porcja 3d** — filtry jako pola
+z podpisem (*C*, *Filtry — pola z podpisem*) i diagnoza położenia menu sortowania w prawdziwym oknie;
+wykonawca w tle, kopia pod `.claude/worktrees/` (nazwa w raporcie). **Następny krok:** weryfikacja
+i scalenie 3d, potem 3b (paczka dostarczana).
 
 ## Zakres i koniec
 
@@ -91,7 +91,8 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   potwora, „Wyczyść filtry” z wyszukiwaniem (przyjęte 2026-09-28).
 - [x] **3c — sortowanie i poprawki** — odwracanie, Rzadkość przedmiotu, `:disabled` w motywie,
   odznaka na `WordTag.custom` (przyjęte 2026-09-28).
-- [ ] **3d — położenie menu sortowania**: diagnoza w działającej aplikacji, potem poprawka (*Notki*,
+- [ ] **3d — pola filtrów i menu sortowania**: chipy w panelu listy zastąpione polami z podpisem
+  (*C*); diagnoza położenia menu w prawdziwym oknie Windows i poprawka, jeśli mała (*Notki*,
   *Okienka tylko w aplikacji*).
 - [ ] **3b — paczka dostarczana z systemem** (*Ustalenia*): drugie źródło wczytywania, kopiowanie
   paczki obok programu, pusta paczka przykładowa z przypisaniem SRD; test formatu — zero odrzuceń.
@@ -408,6 +409,16 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     * Kontrast odznaki rzadkości sprawdza 3a, bo wiersz należy do niej: tekst odznaki co najmniej
       4,5:1 na odznace położonej na tle wiersza w spoczynku, pod myszą i wybranego; poprawka
       w kolorach systemu.
+  * **Filtry — pola z podpisem, nie chipy** (autor, 2026-09-28, na rekomendację architekta; zastępuje
+    „zawijany rząd chipów z listą” wyżej i chipy z *A*). Powód: chip z wyborem pokazuje wartość
+    zamiast nazwy filtra („Goblin +1” — nie wiadomo, który to filtr), a chipy to konwencja webowa
+    i mobilna, nie desktopowa. Wolne miejsce w poziomie jest na prawo od karty, nie w panelu listy
+    (320), więc pola stoją jedno pod drugim: podpis z lewej (rola `label`, drugorzędny, kolumna
+    wspólna dla wszystkich rzędów, szerokość z najdłuższego podpisu), pole z prawej — pełna lista
+    rozwijana wielokrotna (`DropDownPicker`, motyw domyślny), rozciągnięta; tekst zastępczy
+    „Wszystkie”; 8 między rzędami. Kosztuje ok. 100 wysokości listy (ok. 3 wiersze). Pasek filtrów na
+    całą szerokość nad listą i szczegółem — odrzucony: filtry nad kartą, której nie dotyczą, i zawijanie
+    przy wąskim oknie. Motyw chipa z listą zostaje w galerii.
   * **Rozstrzygnięcia przy briefie 3** (architekt, 2026-09-28; do weta autora):
     * Przedmiot nie ma dziś pól kategorii ani dostrojenia — chipy „Kategoria” i „Dostrojenie” przedmiotu
       wchodzą z porcją 5, razem z polami (*Rekordy*: pola wchodzą z kartą, która je pokazuje). W porcji
@@ -456,7 +467,10 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   wykonawca dokłada tymczasowy zapis położenia (odnośnik i korzeń okienka na ekranie, skala) przy
   otwarciu, autor otwiera menu raz, wykonawca czyta zapis i poprawia albo zgłasza ograniczenie
   biblioteki (wtedy do werdyktu). Skalę ekranu zapis odczytuje sam (skalowanie okna i okienka) —
-  nie pytać o nią autora (autor, 2026-09-28: poprawka ma działać przy każdej skali).
+  nie pytać o nią autora (autor, 2026-09-28: poprawka ma działać przy każdej skali). Ekran autora:
+  2560×1440, skala 100% (`AppliedDPI` 96, odczyt architekta z rejestru) — pomylenie punktów
+  z pikselami odpada jako przyczyna. Porcja 3d próbuje najpierw diagnozy bez autora: tymczasowy
+  program z prawdziwym oknem Windows otwiera menu sam i zapisuje położenia.
 * **Położenie `MenuFlyout` pod przyciskiem ustawia widok** (fundament, porcja 7a) — okienko wysuwane nie
   jest kontrolką, motyw go nie dosięga. Brief ma to podawać.
 * **Okno potwierdzenia i powiadomienie wywołane z pozycji menu rzucą wyjątkiem** (fundament, porcja 7b)
