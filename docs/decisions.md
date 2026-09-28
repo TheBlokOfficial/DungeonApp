@@ -1904,6 +1904,12 @@ napisany przez wykonawcę nie złapał błędu w cudzej zmianie. Tego samego dni
 renderujących — te, które utrwalały świeże decyzje o wyglądzie; zostały pilnujące błędów, które już
 raz wracały (pasek boczny, przycisk paska górnego).
 
+*Wyjątek — test budujący widok* (autor, 2026-09-28, na propozycję architekta): po porcji 3a zakładek
+treści obie zakładki treści nie otwierały się — szerokość kolumny zapisana jako liczba zamiast
+`GridLength`, rzut w chwili utworzenia widoku. Build i 382 testy przeszły, bo żaden test widoku nie
+budował; kosztowało to autora uruchomienie i rundę. Test stawiający widok w oknie (bez asercji
+o wyglądzie) złapał błąd przy pierwszym uruchomieniu na starym kodzie.
+
 ### Autor uruchamia wyłącznie `master`
 
 2026-09-22 autor uruchomił z przyzwyczajenia `master` zamiast podanej mu kopii subagenta i sprawdzał
@@ -2043,6 +2049,14 @@ pamięć już wygasła.
   zwiadu trzy (zachowanie nieznanych pól, miejsce paczek, kolory rzadkości) miały odpowiedź
   w sekcjach, które dokument zadania kazał przeczytać przed wycinkiem — architekt przeczytał je po
   wysłaniu briefu. Autor to wychwycił; reguła za jego zgodą tego dnia.
+* *Klocek fundamentu z nazwy, elementy własne w raporcie, przeszukanie diffu:* 2026-09-28, porcja 3a
+  zakładek treści: odznaka rzadkości w wierszu stała krzywo w pionie. Wykonawca przepisał ze starego
+  widoku własną pigułkę (`Border` + `TextBlock`), choć fundament ma tag w odmianie na kolor systemu,
+  a brief mówił, że stary widok jest do zastąpienia. Odcięcie domyślnego motywu Avalonii tego nie
+  blokuje — proste elementy nie mają motywu. Brief pisał „odznaka rzadkości”, nie wskazując klocka;
+  to, że rzadkość to tag, stało tylko w komentarzu motywu. Twardego zakazu nie ma, bo
+  `architecture.md` dopuszcza element własny do drugiego użycia. Trzy dopiski za zgodą autora tego
+  dnia.
 
 
 ### Pliki robocze poza repozytorium

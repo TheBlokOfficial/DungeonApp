@@ -460,8 +460,8 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     z fundamentu: słowo (rzadkość) to `WordTag` w odmianie `.custom` — tło i tekst z kolorów systemu,
     wysokość i położenie w pionie z motywu. Brief porcji 3 zamienia pigułkę na `WordTag.custom`
     z tym samym tłem (przygaszony kolor rzadkości) i tekstem; kontrast z tabeli 3a musi się utrzymać.
-    Wskazówka do każdego briefu z widokiem: brief wymienia klocek fundamentu dla każdego elementu,
-    który go ma — „z klocków” nie wystarczyło.
+    Reguła, która z tego wyszła (klocek z nazwy w briefie, elementy własne w raporcie) —
+    `collaboration.md`, *Briefy dla subagentów*.
   * Wybór zdjęty przez filtr nie wraca po poszerzeniu filtra — zgodnie z *C*.
   * Niesprawdzone: czy role `body`/`caption` działają na `SelectableTextBlock` (powód i ścieżka
     w szczególe rzeczy zepsutej) — autor ogląda; jeśli nie, poprawka w motywie.

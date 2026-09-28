@@ -171,7 +171,9 @@ Ustalony z autorem 2026-09-22.
 niższa niż baseline; testy granic zielone; lista rzeczy, które subagent rozstrzygnął sam; diff
 **styków** — tego, co rama wystawia systemowi, co zakładka dostaje, referencji między projektami —
 bo styki są architekturą. W środek implementacji architekt zagląda tylko wtedy, gdy raport albo
-testy każą. Drugi subagent, porównujący wynik z briefem i z pięcioma zakazami, idzie wyłącznie do etapów
+testy każą. **Przy zleceniu z widokiem** (autor, 2026-09-28) architekt przeszukuje diff pod kątem
+elementów własnych — `Border` z zaokrągleniem albo tłem, zasoby wymiarów zdefiniowane w samym widoku —
+i sprawdza, że każdy trafiony stoi w raporcie wśród elementów własnych z powodem. Drugi subagent, porównujący wynik z briefem i z pięcioma zakazami, idzie wyłącznie do etapów
 dotykających zapisu stanu albo granicy automatyzacji. Decyzja autora z 2026-09-22: przy pozostałych
 kosztuje tyle co sama implementacja, a architekt sprawdza zakazy celowanym przeszukaniem diffu —
 zapisy wywoływane przez zdarzenia, pola czasu, wybór celów.
@@ -184,7 +186,10 @@ aplikację, zanim ją obejrzy.
 zmieniające wygląd kończy się zielonym buildem i istniejącymi testami. Nowych testów renderujących
 wykonawca nie pisze, chyba że brief każe wprost — a brief każe dopiero przy błędzie widocznym, który
 autor zobaczył **drugi raz**; wtedy przyczyna jest znana i test jest tani. Uwagi autora po obejrzeniu
-idą następnym krótkim zleceniem. Logika bez okna — bez zmian: poprawka z testem, który przed nią nie
+idą następnym krótkim zleceniem. **Wyjątek — test budujący widok** (autor, 2026-09-28): zlecenie, które
+tworzy albo przepisuje widok, kończy się testem stawiającym ten widok w oknie bez ekranu i przechodzącym
+przez jego stany (wybór, stan pusty) — bez asercji o wyglądzie. Widok, który się nie otwiera, nie jest
+sprawą wyglądu, a tylko okno go wyłapie. Logika bez okna — bez zmian: poprawka z testem, który przed nią nie
 przechodzi.
 
 **Nowe testy tylko tam, gdzie błędu nie widać w aplikacji albo niszczyłby dane.** Decyzja autora
@@ -430,6 +435,10 @@ Co jeszcze się sprawdziło:
 * **Brief zwiadu pyta tylko o to, czego dokumenty nie mówią.** Decyzja autora z 2026-09-26. Przed
   briefem każde pytanie sprawdza się w dokumentach wskazanych dla etapu. To, co mówią, brief podaje
   jako założenie do potwierdzenia jednym zdaniem, nie jako pytanie do zbadania.
+* **Brief z widokiem wymienia z nazwy klocek fundamentu dla każdego elementu, który go ma** (autor,
+  2026-09-28) — „składaj z klocków” nie wystarcza, a to, który klocek niesie które znaczenie (odznaka
+  wartości czy tag słowa), stoi w komentarzach motywu, których wykonawca nie czyta. Wykonawca wypisuje
+  w raporcie elementy własne — złożone z prostych elementów zamiast klocka — z powodem.
 * **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
   nie tylko wymiar** — i próbkuje piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
 

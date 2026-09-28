@@ -75,6 +75,10 @@ o nim milczy. Każda kontrolka, którą dodajesz albo zmieniasz, spełnia:
   indziej, także nad odnośnikami — ręki nie ma (`architecture.md`, *Niezmiennik interfejsu*). Nadaje
   go szablon kontrolki, nie widok.
 - **Tekst w kontrolce, którą się klika albo w której się pisze, ma co najmniej 12.**
+- **Z klocków fundamentu, nie z prostych elementów.** Element, który ma klocek w motywie ramy
+  (galeria kontrolek), składasz z tego klocka — także gdy stary widok miał w tym miejscu własny.
+  Własny element (`Border` z tłem albo zaokrągleniem, `TextBlock` udający kontrolkę) tylko z powodem,
+  wypisany w raporcie. Wyglądu ze starego widoku nie przenosisz.
 - **Konwencja platformy i czytelność przed wiernością makiecie** — mockup rejestru jest odniesieniem
   dla zakładek treści, nie specyfikacją kontrolek. Gdy makieta każe coś nieczytelnego albo
   nieintuicyjnego, zgłoś to w raporcie.
@@ -88,6 +92,11 @@ wypisujesz w raporcie wśród rzeczy rozstrzygniętych samodzielnie.
 nie niższa niż baseline z briefu. Testy liczysz jako testy (sumę z wyniku runnera per projekt),
 nie jako pliki.
 
+Widok, który tworzysz albo przepisujesz, ma test stawiający go w oknie bez ekranu
+(`DungeonApp.Desktop.RenderingTests`, wzór `ContentTabViewBuildTests`) i przechodzący przez jego stany
+— bez asercji o wyglądzie. Zasób złego typu w XAML-u kompiluje się i wywraca widok dopiero przy
+utworzeniu. Jeśli taki test już jest, poszerzasz go o nowe stany.
+
 ## Raport
 
 Po polsku, zwięźle, w granicy długości z briefu. Zawsze:
@@ -96,4 +105,6 @@ Po polsku, zwięźle, w granicy długości z briefu. Zawsze:
 2. co zmieniłeś — po zdaniu na punkt briefu,
 3. build i liczba testów per projekt przed i po, z wyjaśnieniem każdej różnicy,
 4. **osobna lista rzeczy rozstrzygniętych samodzielnie**, których brief nie przesądzał,
-5. zatrzymania i blokady, jeśli były.
+5. zatrzymania i blokady, jeśli były,
+6. przy zmianie widoku — **elementy własne**: każdy element złożony z prostych elementów zamiast
+   klocka fundamentu, z powodem (albo „brak”).
