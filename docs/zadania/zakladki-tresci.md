@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `194f2cf`.** Na starcie sesji: `git log 194f2cf..master` i `git worktree
+**Stan na: 2026-09-28, po `fe5d5db`.** Na starcie sesji: `git log fe5d5db..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,9 +16,10 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 4a (obrazek wpisu: pole, walidacja ścieżki, ramka w galerii) scalona 2026-09-28, czeka na
-obejrzenie przez autora (galeria, sekcja „Obrazy”). Kopii roboczych brak. **Następny krok:** 4 — karta
-potwora; brief rozstrzyga, jak karta dostaje paczkę (*Notki*, *Po porcji 4a*).
+Porcja 4a obejrzana przez autora 2026-09-28: jedna runda R (ikony zastępcze, komunikat braku pliku,
+linia ramki, próbka) — poprawki idą z porcją 4b, nie osobno (*Notki*, *Po porcji 4a*). Kopii roboczych
+brak. Porcję 4 autor podzielił na 4b / 4c / 4d (*Plan*). **Następny krok:** 4b — propozycja zapisana
+w *Planie* i przyjęta; polecenie ruszenia = zielone światło, brief od razu.
 
 ## Zakres i koniec
 
@@ -94,8 +95,18 @@ Wycinki w kolejności; każdy z osobnym zielonym światłem. Porcja wykonawcy = 
   — nigdy nieprzesunięte; przesuwały się okienka chipów, też zamknięte (*Notki*, *Okienka tylko w aplikacji*).
 - [x] **3b — paczka dostarczana** `dnd5e-srd`, pusta, drugie źródło wczytywania (przyjęte 2026-09-28).
 - [x] **4a — obrazek wpisu** — pole `image`, walidacja ścieżki, ramka w galerii (scalone 2026-09-28).
-- [ ] **4 — karta potwora** (*Ustalenia*, *B*, *C*) — z polami potwora z *Rekordów*. Jeśli nie zmieści
-  się w porcji: górny blok z cechami i tokenami, potem pary i sekcje z nowymi polami.
+Karta potwora (*Ustalenia*, *B*, *C*; wiąże *Wiąże to, co zdecydował autor* — brief podaje cel, nie
+rozpiskę) — podział przyjęty przez autora 2026-09-28:
+- [ ] **4b — szkielet karty potwora:** poprawki ramki po 4a i ikony z Lucide (*Notki*, *Po porcji 4a*);
+  styk karta–paczka (`CreateCard(Entry)` nie zna paczki); górny blok karty — ramka obrazka (zawsze),
+  nazwa i tagi, cechy i wartości z dzisiejszych pól. Autor ogląda projekt karty przed 4c.
+  Ścieżki ikon Lucide (`skull`, `backpack`) architekt pobiera sam i wkleja do briefu — wykonawca nie
+  sięga poza repozytorium; w repozytorium dopisać licencję ISC Lucide przy ikonach.
+- [ ] **4c — nowe pola potwora** z *Rekordów* (PD, rzuty obronne, podatności/odporności/niewrażliwości,
+  akcje dodatkowe, reakcje, legendarne, rzucanie czarów), pary i sekcje rozwijane, uwagi autora po 4b;
+  razem z pierwszymi wpisami przykładowymi potworów w `dnd5e-srd` (wycinek 6 dla potworów).
+- [ ] **4d — zaznaczanie tekstu na karcie** przeciąganiem rozpoczętym obok tekstu (`tasks.md`,
+  *Poprawki czekające na obszar*, *Pola tekstowe*); zasięg (blok czy cała karta) rozstrzyga brief.
 - [ ] **5 — karta przedmiotu** (*C*) — z polami przedmiotu z *Rekordów*.
 - [ ] **6 — wpisy przykładowe** w paczce dostarczanej — może iść razem z 4 i 5 (wpis pokazuje
   wariant karty, który porcja buduje).
