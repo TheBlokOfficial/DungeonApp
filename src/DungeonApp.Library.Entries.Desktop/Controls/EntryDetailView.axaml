@@ -19,9 +19,9 @@
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
             <StackPanel Spacing="{DynamicResource DungeonSpacingXl}">
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-                    <TextBlock Classes="overline-sm muted"
-                               Text="{Binding Overline, Converter={StaticResource UpperCase}}"
-                               TextWrapping="Wrap" />
+                    <!-- Ścieżka "{Typ} › {Kategoria} › {Nazwa}" - kontrolka ramy (motyw controls:Breadcrumbs):
+                         ślad przygaszony, bieżący odcinek wyróżniony; za wąsko - ślad się skraca. -->
+                    <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
                     <TextBlock Classes="display-xl"
                                Text="{Binding Name}"
                                TextWrapping="Wrap"

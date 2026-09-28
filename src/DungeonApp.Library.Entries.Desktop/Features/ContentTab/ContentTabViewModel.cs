@@ -254,9 +254,7 @@ public sealed class ContentTabViewModel : ObservableObject
     private ContentDetailViewModel? BuildDetail(ContentSelectionDetail? selection) => selection switch
     {
         ValidEntrySelection valid => new ValidContentDetailViewModel(
-            valid.Category is { } category
-                ? $"{category} · {PackName(valid.Entry.Address.Pack)}"
-                : PackName(valid.Entry.Address.Pack),
+            valid.Category is { } category ? [Title, category, valid.Name] : [Title, valid.Name],
             valid.Name,
             valid.Tags,
             _presentation.CreateCard(valid.Entry.Entry)),

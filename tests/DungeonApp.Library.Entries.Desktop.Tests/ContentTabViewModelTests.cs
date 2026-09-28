@@ -186,7 +186,7 @@ public sealed class ContentTabViewModelTests
 
         var detail = Assert.IsType<ValidContentDetailViewModel>(viewModel.Detail);
         Assert.Equal("Alpha", detail.Name);
-        Assert.Equal("Pack", detail.Overline);
+        Assert.Equal(["Widgety", "Alpha"], detail.Breadcrumbs);
         Assert.NotNull(detail.Card);
         Assert.False(viewModel.ShowSelectionPrompt);
     }

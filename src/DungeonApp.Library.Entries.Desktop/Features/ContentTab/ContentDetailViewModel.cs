@@ -11,27 +11,26 @@ namespace DungeonApp.Library.Entries.Desktop.Features.ContentTab;
 /// </summary>
 public abstract class ContentDetailViewModel
 {
-    private protected ContentDetailViewModel(string overline, string name)
+    private protected ContentDetailViewModel(string name)
     {
-        Overline = overline;
         Name = name;
     }
-
-    /// <summary>The small line over the name, as written - the view draws it in capitals.</summary>
-    public string Overline { get; }
 
     public string Name { get; }
 }
 
 /// <summary>
-/// A resolved entry's detail: "{kategoria} · {paczka}" (just the pack when the entry has no
-/// category) over the name, its tags, and the system's own finished card underneath - all drawn by
-/// the library's detail block except the card itself.
+/// A resolved entry's detail: the "{tytuł zakładki} › {kategoria} › {nazwa}" path (the category
+/// segment left out when the entry has none) over the name, its tags, and the system's own finished
+/// card underneath - all drawn by the library's detail block except the card itself.
 /// </summary>
 public sealed class ValidContentDetailViewModel(
-    string overline, string name, IReadOnlyList<string> tags, Control card)
-    : ContentDetailViewModel(overline, name)
+    IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card)
+    : ContentDetailViewModel(name)
 {
+    /// <summary>The path's segments, the last one being the entry itself.</summary>
+    public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
+
     public IReadOnlyList<string> Tags { get; } = tags;
 
     public bool HasTags { get; } = tags.Count > 0;
@@ -45,8 +44,11 @@ public sealed class ValidContentDetailViewModel(
 /// never truncated, never reworded - and the file or directory path when there is one.
 /// </summary>
 public sealed class BrokenContentDetailViewModel(string overline, string name, string reason, string? path)
-    : ContentDetailViewModel(overline, name)
+    : ContentDetailViewModel(name)
 {
+    /// <summary>The small line over the name, as written - the view draws it in capitals.</summary>
+    public string Overline { get; } = overline;
+
     public string Reason { get; } = reason;
 
     public string? Path { get; } = path;
