@@ -2057,6 +2057,10 @@ pamięć już wygasła.
   to, że rzadkość to tag, stało tylko w komentarzu motywu. Twardego zakazu nie ma, bo
   `architecture.md` dopuszcza element własny do drugiego użycia. Trzy dopiski za zgodą autora tego
   dnia.
+* *Potwierdzenie elementu przed diagnozą:* 2026-09-28, porcja 3d zakładek treści: notka zapisała
+  przesunięcie okienka jako błąd menu sortowania, a przesuwały się okienka chipów filtrów. Porcja
+  (32 kroki, 5,2 min łącznie z właściwą pracą) mierzyła w osobnym programie z prawdziwym oknem klocek,
+  który był czysty. Autor sprostował po fakcie; reguła za jego zgodą tego dnia.
 
 
 ### Pliki robocze poza repozytorium

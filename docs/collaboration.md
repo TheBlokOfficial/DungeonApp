@@ -440,6 +440,10 @@ Co jeszcze się sprawdziło:
   2026-09-28) — „składaj z klocków” nie wystarcza, a to, który klocek niesie które znaczenie (odznaka
   wartości czy tag słowa), stoi w komentarzach motywu, których wykonawca nie czyta. Wykonawca wypisuje
   w raporcie elementy własne — złożone z prostych elementów zamiast klocka — z powodem.
+* **Przed diagnozą zjawiska, które widzi tylko autor, potwierdź z nim, o który element ekranu chodzi**
+  (autor, 2026-09-28) — jednym zdaniem: „okienko po kliknięciu X w miejscu Y?”. Notka przepisana
+  z rozmowy albo ze zrzutu potrafi przypisać zjawisko sąsiedniej kontrolce, a diagnoza w oknie jest
+  droga.
 * **Gdy brief każe napisać test renderujący, test mierzy położenie względem sąsiadów i widoczność,
   nie tylko wymiar** — i próbkuje piksele wyrenderowanego obrazu tam, gdzie coś ma być widać.
 
