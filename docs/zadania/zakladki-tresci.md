@@ -6,7 +6,7 @@ projektowane per typ treści, bez ramy, gotowe do pokazania także w kampanii. P
 z systemem dostaje kilkanaście wpisów na zakładkę, z których każdy pokazuje kartę z innej strony.
 Zadanie kończy się jawnym werdyktem o Avalonii.
 
-**Stan na: 2026-09-28, po `700d28c`.** Na starcie sesji: `git log aa513fe..master` i `git worktree
+**Stan na: 2026-09-28, po `0313b0e`.** Na starcie sesji: `git log 0313b0e..master` i `git worktree
 list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło się poza nim.
 
 *Dokument zadania — co to jest, jak go prowadzić i kiedy umiera: [collaboration.md](../collaboration.md),
@@ -16,10 +16,12 @@ list` — wszystko, co tam jest, a czego ten dokument nie wymienia, zdarzyło si
 
 ## Gdzie stoimy
 
-Porcja 3d (filtry jako pola z podpisem) przyjęta przez autora 2026-09-28 bez rund. Kopii roboczych
-brak. **Otwarte:** menu sortowania — przesunięcia nie odtworzono w osobnym oknie; czeka na
-sprawdzenie przez autora w zakładce i w galerii (*Notki*, *Okienka tylko w aplikacji*).
-**Następny krok:** 3b (paczka dostarczana).
+Porcja 3d (filtry jako pola z podpisem) przyjęta przez autora 2026-09-28 bez rund. **W toku:**
+porcja 3b — wykonawca (Opus) w gałęzi `worktree-agent-a4a62d5f2e376b2b0`, kopia
+`.claude/worktrees/agent-a4a62d5f2e376b2b0`. Rozstrzygnięcia architekta do briefu — *Ustalenia*,
+*Paczka dostarczana*. **Otwarte:** menu sortowania — przesunięcia nie odtworzono w osobnym oknie;
+czeka na sprawdzenie przez autora w zakładce i w galerii (*Notki*, *Okienka tylko w aplikacji*).
+**Następny krok:** weryfikacja 3b.
 
 ## Zakres i koniec
 
@@ -172,6 +174,11 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   w `architecture.md`, *Paczki, wczytywanie, bezpieczeństwo* — obok programu, tylko do odczytu, ten sam
   loader i rejestr, logika nie rozróżnia źródła. W kodzie go nie ma (`code-state.md`, *Dług*) — porcja
   3b. Paczka niesie przypisanie SRD (CC-BY 4.0).
+* **Paczka dostarczana** (architekt przy briefie 3b, bez weta autora, 2026-09-28): katalog
+  `<katalog programu>\<system>\packs\` — układ jak u MG; id `dnd5e-srd`, nazwa „SRD 5.1 — wpisy
+  przykładowe”; przypisanie SRD w `LICENSE.txt` obok manifestu (format manifestu bez zmian). Powtórzone
+  id paczki między źródłami — ta sama reguła co w jednym katalogu, bez pierwszeństwa po źródle; gdy
+  reguły nie ma, decyzja wraca do architekta.
 * **SRD to wyłącznie dane testowe** (autor, 2026-09-26) — źródło wpisów przykładowych, nie treść
   traktowana na stałe ani wzorzec dla rekordów.
 * **Projekt — decyzje autora z 2026-09-26** (część na rekomendację architekta, przyjęte w całości):
