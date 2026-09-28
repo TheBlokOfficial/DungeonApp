@@ -115,7 +115,7 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
 | 3c | sortowanie, poprawki z 3a | 0 | 51 / 9,5 / 5,1 mln |
 | 3d | pola filtrów (W — decyzja autora), diagnoza menu | 0 | 32 / 5,2 / 3,0 mln |
 | 3b | paczka dostarczana (bez widoku) | 0 | 36 / 7,2 / 3,6 mln |
-| 4a | obrazek wpisu, ramka (pierwsza ze swobodą projektową) | — | 52 / 11,9 / 5,8 mln |
+| 4a | obrazek wpisu, ramka (pierwsza ze swobodą projektową) | 1 R — ikony zastępcze nieczytelne (motyw fundamentu, rysunek, nie biblioteka); cały komunikat braku pliku w kolorze niebezpieczeństwa zamiast samego „Brak pliku”; obrazek przykrywa linię ramki; próbka w galerii za mała (rozmyta). Poprawka z porcją 4 | 52 / 11,9 / 5,8 mln |
 
 ## Ustalenia
 
@@ -151,6 +151,11 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
   wpisu — rozwiązanie ścieżki i wybór stanu — w bibliotece wpisów. Pole obrazka wskazuje deklaracja typu
   treści, loader waliduje ścieżkę przez nią. Rozszerzenie spoza PNG/JPG/WebP odrzuca wpis jak ścieżka
   poza paczkę; brak pliku sprawdza się przy pokazaniu.
+* **Ramka obrazka stoi na karcie potwora i przedmiotu zawsze** (autor, 2026-09-28) — wpis bez obrazka
+  pokazuje ramkę z ikoną zastępczą, nie pustkę. Wiąże porcje 4 i 5.
+* **Ikony zastępcze z Lucide (ISC): przedmiot — plecak, potwór — czaszka** (autor, 2026-09-28, na
+  propozycję architekta po obejrzeniu 4a) — zastępują ręcznie rysowane ikony motywu: plecak czytał się
+  jak kłódka, smok jak szczur. Poprawka z porcją 4.
 * **„Instancje” z polecenia autora to wpisy** (autor, 2026-09-26): pozycje w paczce, nie egzemplarze
   w kampanii (`architecture.md`, *Słownik*).
 * **Drugi zakaz czyta się według intencji** (autor, 2026-09-26, na propozycję architekta): czas
@@ -553,6 +558,9 @@ minuty / odczyt z `tools/subagent-usage.py`, suma przebiegów porcji.
     sekcji tła nie ma, a pusta ramka bez tła nie czyta się jako miejsce na obrazek.
   * Dekodowania (WebP, plik uszkodzony) testy nie sprawdzają — tylko aplikacja (`code-state.md`,
     *Pułapki*).
+  * **Poprawki po obejrzeniu 4a — do briefu 4:** ikony zastępcze (*Ustalenia*); w komunikacie tylko
+    „Brak pliku” kolorem niebezpieczeństwa, ścieżka drugorzędna; linia ramki nad obrazkiem, nie pod nim;
+    próbka w galerii większa od ramek (dziś 160×100 rozciągane do 200 wysokości).
 
 ## Do sesji głównej
 
