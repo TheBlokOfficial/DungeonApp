@@ -136,7 +136,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>The Kampania category's own row - the shelf when no campaign is open, the campaign page once one is.</summary>
     public NavigationItemViewModel CampaignPositionItem { get; }
 
-    /// <summary>The Kampania category's tab rows, one per <see cref="Content.IGameSystem.CampaignTabs"/> entry, in declared order.</summary>
+    /// <summary>The Kampania category's tab rows, one per <see cref="Systems.IGameSystem.CampaignTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> CampaignTabItems { get; }
 
     /// <summary>
@@ -146,7 +146,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// </summary>
     public IReadOnlyList<NavigationItemViewModel> CampaignItems { get; }
 
-    /// <summary>The System category's rows, one per <see cref="Content.IGameSystem.SystemTabs"/> entry, in declared order.</summary>
+    /// <summary>The System category's rows, one per <see cref="Systems.IGameSystem.SystemTabs"/> entry, in declared order.</summary>
     public IReadOnlyList<NavigationItemViewModel> SystemTabItems { get; }
 
     /// <summary>The Aplikacja category's "Galeria kontrolek" row - a frame-owned position showing every theme control in every state.</summary>

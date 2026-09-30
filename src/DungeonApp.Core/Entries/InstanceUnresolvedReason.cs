@@ -1,7 +1,7 @@
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// Why resolving a <see cref="CampaignInstance"/> against the registry did not reach its content.
+/// Why resolving a <see cref="Instances.CampaignInstance"/> against the registry did not reach its content.
 /// A distinct concern from <see cref="EntryUnresolvedReason"/>: that one explains why an entry
 /// never bound to a content type in the first place; this one explains why an instance - which
 /// starts from an address, not from an entry already in hand - never reached one.

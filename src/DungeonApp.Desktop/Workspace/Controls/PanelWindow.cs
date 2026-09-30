@@ -18,7 +18,7 @@ namespace DungeonApp.Desktop.Workspace.Controls;
 /// Not an OS window — it lives on the surface's <see cref="Canvas"/>.
 /// <para>
 /// Position and size deliberately reuse the framework's own properties (<see cref="Canvas.LeftProperty"/>,
-/// <see cref="Layoutable.WidthProperty"/>, <see cref="Visual.ZIndexProperty"/>) rather than
+/// <see cref="Avalonia.Layout.Layoutable.WidthProperty"/>, <see cref="Visual.ZIndexProperty"/>) rather than
 /// introducing parallel ones, so there is exactly one source of truth per value.
 /// </para>
 /// </summary>

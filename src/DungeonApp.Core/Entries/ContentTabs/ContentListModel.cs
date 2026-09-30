@@ -17,12 +17,12 @@ namespace DungeonApp.Core.Entries;
 /// <see cref="ContentTypeReference"/> is one of this tab's own <see cref="ContentTabDefinition.ContentTypes"/>
 /// - or when that reference belongs to <em>no</em> tab at all, in which case every tab shows it.
 /// Telling "known type, some other tab" apart from "no tab knows this type" needs more than this
-/// one tab's own definition, though: <paramref name="allKnownTypes"/> is the union of every content
+/// one tab's own definition, though: <c>allKnownTypes</c> is the union of every content
 /// type every content tab the system declares, gathered once by whoever builds all the tabs. With
 /// it the rule becomes one structural comparison - <c>entry.Entry.Type</c> against a set - and never
 /// branches on <see cref="EntryUnresolvedReason"/> at all: a values-rejected or version-mismatched
 /// entry's own reference is, by construction, one <see cref="IContentTypeCatalog.TryGet"/> already
-/// recognised, so it is always in <paramref name="allKnownTypes"/> when some tab declares it; a
+/// recognised, so it is always in <c>allKnownTypes</c> when some tab declares it; a
 /// missing-set or missing-type entry's reference never is. A <see cref="RejectedEntry"/> - a file
 /// that never parsed into an <see cref="Entry"/> at all - has no reference to check and always
 /// belongs to every tab, the same as a <see cref="RejectedPack"/>.

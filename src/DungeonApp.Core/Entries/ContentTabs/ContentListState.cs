@@ -11,9 +11,12 @@ namespace DungeonApp.Core.Entries;
 /// builds the next state and asks <see cref="ContentListModel.Build"/> for the next result, never
 /// mutates this one in place.
 /// </summary>
+/// <param name="Search">The search box text; empty does not narrow.</param>
 /// <param name="Categories">Chosen values of the category filter.</param>
 /// <param name="Packs">Chosen pack names (a rejected pack by its location) of the "Paczka" filter.</param>
 /// <param name="ValueFilters">Chosen values per value filter, keyed by the filter's label.</param>
+/// <param name="Sort">The chosen sort's label.</param>
+/// <param name="Selected">The selected row, or null when nothing is selected.</param>
 /// <param name="SortDescending">
 /// The sort's direction: descending reverses the key's order within each section. Ties still fall
 /// back to name A–Z, broken rows stay at the bottom of their section and sections keep their order.

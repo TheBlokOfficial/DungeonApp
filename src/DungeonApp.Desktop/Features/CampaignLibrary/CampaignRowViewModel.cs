@@ -11,7 +11,7 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// One row on the shelf. Built from a <see cref="CampaignSummary"/>, never from a loaded campaign:
 /// drawing the list must not cost the state of every campaign in it.
 /// <para>
-/// <paramref name="availability"/> is this row's whole verdict - computed once, by
+/// The <c>availability</c> argument is this row's whole verdict - computed once, by
 /// <see cref="CampaignPreparationCache.CheckAvailabilityAsync"/>, before the row is even built.
 /// A row whose <see cref="Availability"/> is not <see cref="CampaignAvailability.Available"/> shows a
 /// reason (<see cref="UnavailabilityReason"/>) and refuses to open - <see cref="OpenCommand"/>'s own

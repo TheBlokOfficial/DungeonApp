@@ -13,7 +13,7 @@ namespace DungeonApp.Desktop.Tests.Workspace;
 /// cannot be sensibly interpreted becomes <see cref="WorkspaceLayout.Empty"/> instead. The mapping
 /// from on-disk document to <see cref="WorkspaceLayout"/> is written twice in the production file
 /// (<c>Load</c> inline, <c>LoadAsync</c> via the private <c>ToLayout</c>), so every case here runs
-/// through both entry points via the <paramref name="useAsync"/> theory parameter and
+/// through both entry points via the <c>useAsync</c> theory parameter and
 /// <see cref="LoadViaPath"/>.
 /// </summary>
 public sealed class WorkspaceLayoutStoreTests : IDisposable

@@ -10,11 +10,15 @@ namespace DungeonApp.Core.Entries;
 /// loaded entries, never from the ones the current filters leave - a choice never disappears from
 /// under the hand while filtering.
 /// </summary>
+/// <param name="Sections">The sections to draw, in display order, each with its visible rows.</param>
 /// <param name="Category">The category filter, labelled by the system - null when no content type in the tab declares a category.</param>
 /// <param name="Pack">The "Paczka" filter: pack names in the order sections list in, then rejected packs' locations.</param>
+/// <param name="ValueFilters">The system's value filters, in the order the tab's profiles declare them.</param>
+/// <param name="Sorts">Every sort label the tab offers, the library's name sort first.</param>
 /// <param name="NumericSorts">The labels among <paramref name="Sorts"/> whose key is a number or a rank, not text.</param>
 /// <param name="TotalCount">Every valid entry this tab holds, independent of the current filters.</param>
 /// <param name="ShownCount">How many of <paramref name="TotalCount"/> are currently shown.</param>
+/// <param name="Selection">The selected row's detail, or null when nothing is selected or the selection no longer exists.</param>
 public sealed record ContentListResult(
     IReadOnlyList<ContentSection> Sections,
     ContentFilterOptions? Category,

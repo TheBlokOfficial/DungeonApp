@@ -6,5 +6,10 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <!-- Ostrzeżenie kompilatora jest błędem: naprawia się je u źródła, nie wycisza. -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Kompilator sprawdza komentarze dokumentacyjne: zerwane <see cref> i zły XML to błąd buildu.
+         CS1591 (brak komentarza przy publicznym symbolu) jest wyłączone, bo komentarz ma być tam,
+         gdzie coś wyjaśnia, a nie przy każdym symbolu. To jedyny wyłączony numer ostrzeżenia. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 </Project>

@@ -23,7 +23,7 @@ namespace DungeonApp.Core.Entries;
 /// </para>
 /// <para>
 /// <see cref="Overlay"/>, <see cref="Difference"/> and <see cref="From{T}"/> are what a
-/// <see cref="CampaignInstance"/>'s sparse patch is built and read through, and they stand on that
+/// <see cref="Instances.CampaignInstance"/>'s sparse patch is built and read through, and they stand on that
 /// same argument. They move whole properties around by the names the envelope already carries; none
 /// of them writes down a name, asks what a name means, or reads a value. Merging two envelopes
 /// key-for-key is no more knowledge of an entry's shape than carrying one envelope unopened is -

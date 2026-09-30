@@ -21,7 +21,7 @@ namespace DungeonApp.Desktop.Workspace;
 /// <para>
 /// Knows nothing of a campaign, a session or a system - see <see cref="CampaignDesk"/> for the one
 /// public entry point that builds one of these for a system's own desk tab. That is what lets this
-/// type stay inside the library-to-be: it takes a bare <paramref name="workspaceId"/> string, an
+/// type stay inside the library-to-be: it takes a bare <c>workspaceId</c> string, an
 /// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
 /// </para>
 /// </summary>

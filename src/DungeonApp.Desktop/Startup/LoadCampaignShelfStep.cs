@@ -10,7 +10,7 @@ namespace DungeonApp.Desktop.Startup;
 /// Wczytuje półkę kampanii, zanim cokolwiek wizualne o niej wie. Wynik trzyma we własnym polu i
 /// udostępnia następnym krokom - <see cref="WarmCampaignDataStep"/> potrzebuje tych samych
 /// podsumowań, a rozgrzewka biurka i strony kampanii (<see cref="WarmFrameChromeStep"/>,
-/// <see cref="WarmSystemContentStep"/>) - pierwszej kampanii z tej listy, jeśli jakaś istnieje.
+/// <see cref="WarmSystemTabsStep"/>) - pierwszej kampanii z tej listy, jeśli jakaś istnieje.
 /// </summary>
 public sealed class LoadCampaignShelfStep(CampaignLibraryViewModel campaignLibrary) : IStartupStep
 {

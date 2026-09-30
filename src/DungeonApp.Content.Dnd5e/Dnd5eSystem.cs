@@ -175,10 +175,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
 
     /// <summary>
-    /// This system's two content tabs - "Potwory" and "Przedmioty" - as pure data: a title and the
-    /// content type profile(s) that fill it (krok 10, zlecenie 1, część C). Not stood up on the
-    /// System bar and not touched by <see cref="SystemTabs"/> or <see cref="CreateRegistryTab"/> -
-    /// building the actual tab, from <c>ContentListModel</c>, is zlecenie 2.
+    /// This system's two content tabs - "Potwory" and "Przedmioty" - as data: a title and the content
+    /// type profile(s) that fill it. <see cref="SystemTabs"/> builds each tab's view from one of these.
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
 

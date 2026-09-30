@@ -19,13 +19,13 @@ namespace DungeonApp.Core.Persistence;
 /// The whole of every declared model is rewritten on every save (docs/architecture.md, "Gdzie
 /// mieszka stan": "Każda zatwierdzona zmiana trafia na dysk od razu"), deliberately without a
 /// "changed models only" optimization - the set of files this writes is exactly
-/// <paramref name="declarations"/>'s ids, every time. The manifest and every model file commit
+/// <c>declarations</c>'s ids, every time. The manifest and every model file commit
 /// together and share a generation counter, so a save interrupted partway through is detectable
 /// instead of silently half loaded - the same guarantee the old per-instance files carried, now
 /// applied per model.
 /// </para>
 /// <para>
-/// A model this build's <paramref name="declarations"/> does not declare is never opened, written,
+/// A model this build's <c>declarations</c> does not declare is never opened, written,
 /// or deleted, however old its file on disk - "Plik modelu, którego nikt nie zadeklarował →
 /// nieczytany, nietknięty na dysku." A declared model with no file simply reads back empty.
 /// </para>
@@ -236,7 +236,7 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
 
     /// <summary>
     /// How the campaign's directory actually goes away is not this store's decision -
-    /// <paramref name="deleteDirectory"/>, handed in through the constructor, is. A test can never be
+    /// <c>deleteDirectory</c>, handed in through the constructor, is. A test can never be
     /// allowed to reach the user's real Recycle Bin, and the composition root that builds the shipped
     /// app is where "delete" is meant to mean "send to the Recycle Bin" rather than gone for good - see
     /// DungeonApp.Desktop/App.axaml.cs. There is deliberately no default: whoever constructs this store

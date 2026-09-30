@@ -8,7 +8,7 @@ namespace DungeonApp.Desktop.Startup;
 /// <summary>
 /// Rozgrzewa dane każdej kampanii z półki (odczyt repozytorium) - czysta praca w tle, bez dotknięcia
 /// UI. Zapamiętuje pierwszą kampanię z półki dla wizualnej rozgrzewki strony kampanii, biurka i
-/// zakładek kampanii każdego systemu (<see cref="WarmFrameChromeStep"/>, <see cref="WarmSystemContentStep"/>) -
+/// zakładek kampanii każdego systemu (<see cref="WarmFrameChromeStep"/>, <see cref="WarmSystemTabsStep"/>) -
 /// tak samo jak 555802f rozgrzewał jedną, pierwszą kampanię, nigdy całą półkę wizualnie.
 /// </summary>
 public sealed class WarmCampaignDataStep(
