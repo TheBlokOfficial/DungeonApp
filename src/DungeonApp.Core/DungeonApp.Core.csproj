@@ -1,8 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+  <!-- Domena bez UI: kampanie, stan, zapis, wpisy i paczki. Nie może referencować Avalonii ani żadnego systemu. -->
 
 </Project>
