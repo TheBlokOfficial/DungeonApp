@@ -53,9 +53,8 @@ public sealed class WarmFrameChromeStep(
             await WarmSidebarAsync(ui, system, startCollapsed: true, cancellationToken);
         }
 
-        // Neither varies with sidebar collapse (the top bar no longer mirrors the sidebar's width the
-        // way the old, unused context strip did; the empty settings tab has no layout to speak of at
-        // all), so each warms once.
+        // Neither varies with sidebar collapse (the top bar does not mirror the sidebar's width; the
+        // empty settings tab has no layout to speak of at all), so each warms once.
         await WarmAsync(
             ui,
             new TopBarView { DataContext = new TopBarViewModel(new AsyncCommand(() => Task.CompletedTask)) },

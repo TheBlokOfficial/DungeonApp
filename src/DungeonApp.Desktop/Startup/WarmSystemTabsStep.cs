@@ -13,21 +13,21 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa każdą zakładkę każdego wkompilowanego systemu - to, co "wybór systemu" dawniej budował na
-/// wątku UI w chwili kliknięcia (docs/tasks.md, objaw 1). Dla każdego systemu: jego zakładki kategorii
+/// Rozgrzewa każdą zakładkę każdego wkompilowanego systemu, żeby wybór systemu nie budował ich na
+/// wątku UI w chwili kliknięcia. Dla każdego systemu: jego zakładki kategorii
 /// System (rama nie wie, co która buduje - tylko że każda jest deklaracją bez parametru, więc nie może
 /// sięgnąć po kampanię), i jego zakładki kategorii Kampania wobec pierwszej kampanii z półki, jeśli
 /// jakaś istnieje.
 /// <para>
-/// Rozgrzewka kart i wczytywanie paczek treści nie są już tutaj - odkąd każdy system sam wczytuje
-/// własne paczki i ma własny rejestr (docs/architecture.md, "Rama, biblioteka, system"), to jego
-/// własne kroki startowe (<see cref="IGameSystem.StartupSteps"/>), nie coś rama umiałaby zrobić za
-/// niego bez znajomości treści.
+/// Rozgrzewka kart i wczytywanie paczek treści nie należą tutaj - każdy system sam wczytuje własne
+/// paczki i ma własny rejestr, więc to jego własne kroki startowe
+/// (<see cref="IGameSystem.StartupSteps"/>), nie coś, co rama umiałaby zrobić za niego bez
+/// znajomości treści.
 /// </para>
 /// <para>
 /// Każda zawartość jest egzemplarzem rzucanym, budowanym przez tymczasowy kontekst - nigdy przez
 /// <see cref="ActiveSystemSession"/>, która przy wyborze systemu zbuduje swój własny, prawdziwy
-/// egzemplarz przy pierwszym pokazaniu (etap 1). Nic zbudowane tutaj nie zostaje w żadnej pamięci
+/// egzemplarz przy pierwszym pokazaniu. Nic zbudowane tutaj nie zostaje w żadnej pamięci
 /// podręcznej, którą później czytałby wybór systemu.
 /// </para>
 /// </summary>
@@ -51,9 +51,9 @@ public sealed class WarmSystemTabsStep(
         {
             await WarmSystemTabsAsync(ui, system, cancellationToken);
 
-            // The sampled campaign belongs to exactly one system (docs/architecture.md, "Kampania
-            // należy do jednego systemu"); warming another compiled system's campaign tabs against it
-            // would hand that system's tab factories a session built from a stranger's declarations.
+            // The sampled campaign belongs to exactly one system; warming another compiled system's
+            // campaign tabs against it would hand that system's tab factories a session built from a
+            // stranger's declarations.
             if (warmupCampaign is not null && warmupCampaign.SystemId == system.Id)
             {
                 await WarmCampaignTabsAsync(ui, system, warmupCampaign, cancellationToken);

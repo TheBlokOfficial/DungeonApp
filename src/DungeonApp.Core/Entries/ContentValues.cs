@@ -6,11 +6,10 @@ using System.Text.Json.Serialization;
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// A sealed envelope over one entry's raw <c>values</c> object. This is the one class
-/// docs/architecture.md's "Deklaracja treści" section means when it says the file format is now a
-/// choice of serializer, not an architectural decision: swap the serializer here, and every system's
-/// call to <see cref="Read{T}"/> keeps compiling and behaving the same, because none of them
-/// ever touch a <see cref="JsonElement"/> directly.
+/// A sealed envelope over one entry's raw <c>values</c> object. This is the one class where the
+/// file format is a choice of serializer, not an architectural decision: swap the serializer here,
+/// and every system's call to <see cref="Read{T}"/> keeps compiling and behaving the same, because
+/// none of them ever touch a <see cref="JsonElement"/> directly.
 /// <para>
 /// <see cref="Read{T}"/> is generic, and <c>Core</c> is allowed to carry a generic method here
 /// without breaking the boundary that keeps the engine from ever knowing what kind of thing an

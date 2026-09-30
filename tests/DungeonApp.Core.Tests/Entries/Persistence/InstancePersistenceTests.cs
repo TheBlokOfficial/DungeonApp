@@ -71,7 +71,7 @@ public sealed class InstancePersistenceTests : IDisposable
         Assert.Equal("Krzywy", found.Label);
     }
 
-    /// <summary>The most load-bearing round-trip in this step: the sealed envelope has to carry every
+    /// <summary>The most load-bearing round-trip: the sealed envelope has to carry every
     /// property back exactly as it went in, through the same <c>Read</c>/<c>From</c> pair a system
     /// uses, and nothing in the store may ever look at a property by name to get there.</summary>
     [Fact]
@@ -195,9 +195,8 @@ public sealed class InstancePersistenceTests : IDisposable
         Assert.False(Directory.Exists(Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "state")));
     }
 
-    /// <summary>"Plik modelu, którego nikt nie zadeklarował → nieczytany, nietknięty na dysku." - a
-    /// file for a model this build's declarations do not name is never opened, so a save that
-    /// writes only the declared models must leave it byte for byte as it was.</summary>
+    /// <summary>A file for a model this build's declarations do not name is never opened, so a
+    /// save that writes only the declared models must leave it byte for byte as it was.</summary>
     [Fact]
     public async Task A_state_file_for_an_undeclared_model_is_left_untouched_by_a_save()
     {
@@ -308,10 +307,9 @@ public sealed class InstancePersistenceTests : IDisposable
     }
 
     /// <summary>Valid JSON that simply has no patch at all - a hand-edited or half-written record.
-    /// The deserializer is the only validator for this model (docs/architecture.md,
-    /// "Deserializator jest jedynym walidatorem"): a missing required property fails to deserialize
-    /// the record, and the store reports that as an invalid record for the model rather than letting
-    /// the exception escape unlabeled.</summary>
+    /// The deserializer is the only validator for this model: a missing required property fails to
+    /// deserialize the record, and the store reports that as an invalid record for the model rather
+    /// than letting the exception escape unlabeled.</summary>
     [Fact]
     public async Task A_record_missing_its_required_patch_throws_Invalid()
     {

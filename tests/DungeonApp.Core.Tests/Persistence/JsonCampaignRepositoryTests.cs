@@ -41,7 +41,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(campaign.CreatedAt, restored.CreatedAt);
     }
 
-    /// <summary>docs/architecture.md, "Kampania należy do jednego systemu": the manifest carries the campaign's system.</summary>
+    /// <summary>The manifest carries the campaign's system.</summary>
     [Fact]
     public async Task Persists_the_campaigns_system()
     {
@@ -58,10 +58,10 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// docs/architecture.md, "Kampania należy do jednego systemu": a manifest that never recorded a
-    /// system - including every one written before this field existed - belongs to the system whose
-    /// own directory it was read from. Reading it stamps that system on immediately, so an ordinary
-    /// later save (never one this read forces by itself) writes it into the manifest for good.
+    /// A manifest that never recorded a system - including every one written before this field
+    /// existed - belongs to the system whose own directory it was read from. Reading it stamps that
+    /// system on immediately, so an ordinary later save (never one this read forces by itself)
+    /// writes it into the manifest for good.
     /// </summary>
     [Fact]
     public async Task Reads_a_manifest_without_a_system_field_as_the_directorys_own_system()
@@ -128,9 +128,8 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// docs/architecture.md, "Kampania należy do jednego systemu": a pre-system manifest - any format
-    /// version below the current one - is a campaign without a system, not a broken one. It is listed
-    /// like any other, using whatever name it does carry.
+    /// A pre-system manifest - any format version below the current one - is a campaign without a
+    /// system, not a broken one. It is listed like any other, using whatever name it does carry.
     /// </summary>
     [Fact]
     public async Task Lists_a_legacy_manifest_as_a_campaign_with_no_system()
@@ -177,9 +176,8 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
 
     /// <summary>
     /// One broken document must not hide every healthy campaign beside it - and must not disappear
-    /// either. docs/architecture.md, "Kampania należy do jednego systemu": "Kampania, której systemu
-    /// nie ma w programie, jest widoczna jako niedostępna - nie znika." The same holds for one whose
-    /// manifest cannot be read at all.
+    /// either: a campaign whose system is not in the program stays visible as unavailable, and the
+    /// same holds for one whose manifest cannot be read at all.
     /// </summary>
     [Fact]
     public async Task Lists_a_damaged_campaign_as_unavailable_instead_of_hiding_it()
@@ -220,7 +218,7 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
         Assert.Equal(CampaignStoreFailure.UnsupportedFormatVersion, exception.Failure);
     }
 
-    /// <summary>docs/architecture.md, "Wersjonowanie": no migration exists, so an older format is refused - distinguishably from a newer one - rather than guessed at.</summary>
+    /// <summary>No migration exists, so an older format is refused - distinguishably from a newer one - rather than guessed at.</summary>
     [Fact]
     public async Task Refuses_a_document_written_by_an_older_build()
     {
@@ -289,9 +287,8 @@ public sealed class JsonCampaignRepositoryTests : IDisposable
     }
 
     /// <summary>
-    /// docs/architecture.md, "Wersjonowanie": "Migracji nie budujemy" - a manifest from the format
-    /// this build's predecessor wrote (one file per instance, no state models) is refused
-    /// distinguishably rather than half-read or silently reinterpreted.
+    /// No migration is built: a manifest from the older format (one file per instance, no state
+    /// models) is refused distinguishably rather than half-read or silently reinterpreted.
     /// </summary>
     [Fact]
     public async Task Refuses_a_manifest_from_the_pre_state_model_format()

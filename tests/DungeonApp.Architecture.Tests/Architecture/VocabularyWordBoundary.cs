@@ -23,7 +23,7 @@ namespace DungeonApp.Architecture.Tests;
 /// a regex character class cannot express that once <see cref="RegexOptions.IgnoreCase"/> is in
 /// play: the option folds a class like <c>[a-z]</c> (or the Unicode "lowercase letter" category) to
 /// also match uppercase letters, which silently destroys the asymmetry this rule depends on. That
-/// was verified empirically before writing this, not assumed - see the frozen cases in
+/// was verified empirically, not assumed - see the frozen cases in
 /// <see cref="VocabularyWordBoundaryTests"/>.
 /// </para>
 /// </summary>

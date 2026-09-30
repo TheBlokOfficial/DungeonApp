@@ -31,8 +31,7 @@ public abstract class StateModelDeclaration
 
     /// <summary>
     /// This model's format version. A campaign whose stored version disagrees is refused rather
-    /// than guessed at - docs/architecture.md, "Wersjonowanie": "Niezgodna wersja modelu oznacza,
-    /// nie migruje."
+    /// than guessed at or migrated.
     /// </summary>
     public int Version { get; }
 

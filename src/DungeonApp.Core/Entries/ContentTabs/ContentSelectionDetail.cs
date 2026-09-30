@@ -4,9 +4,8 @@ namespace DungeonApp.Core.Entries;
 
 /// <summary>
 /// What a content tab knows about whichever row is currently selected, once
-/// <see cref="ContentListModel.Build"/> has confirmed the row is still visible - null otherwise
-/// (docs/architecture.md, "Zakładki treści": "Po zmianie filtrów zaznaczenie zostaje, jeśli pozycja
-/// jest nadal widoczna; inaczej znika").
+/// <see cref="ContentListModel.Build"/> has confirmed the row is still visible - null otherwise: a
+/// selection survives a filter change only while its row is still shown.
 /// </summary>
 public abstract record ContentSelectionDetail;
 

@@ -5,8 +5,7 @@ namespace DungeonApp.Core.Entries.Instances;
 /// <summary>
 /// The state model instances live in - the first one any system declares, and the example the
 /// declaration shape (<see cref="StateModelDeclaration{TRecord}"/>) was designed against. Owned by
-/// the entries library, hence the <c>entries.</c> prefix on its id - given before the model moved
-/// out of <c>DungeonApp.Core</c>, so the id on disk did not change with the move.
+/// the entries library, hence the <c>entries.</c> prefix on its id.
 /// </summary>
 public static class InstancesModel
 {

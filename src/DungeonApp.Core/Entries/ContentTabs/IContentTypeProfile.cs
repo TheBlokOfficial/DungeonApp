@@ -4,12 +4,11 @@ using System.Collections.Generic;
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// The library's only window onto one content type's presentation inside a content tab
-/// (docs/architecture.md, "Zakładki treści"): which value is its category, its tags, its row
-/// badge, and what it offers to filter and sort by. Every accessor takes the raw <see cref="Entry"/>
-/// the registry already holds; only a <see cref="ContentTypeProfile{TRecord}"/> - the one
-/// implementation this interface ever has - opens it, and this interface is the only shape
-/// <c>ContentListModel</c> is allowed to know. Mirrors <c>IContentPresentation</c>'s own
+/// The library's only window onto one content type's presentation inside a content tab: which
+/// value is its category, its tags, its row badge, and what it offers to filter and sort by. Every
+/// accessor takes the raw <see cref="Entry"/> the registry already holds; only a
+/// <see cref="ContentTypeProfile{TRecord}"/> - the one implementation this interface ever has -
+/// opens it, and this interface is the only shape <c>ContentListModel</c> is allowed to know. Mirrors <c>IContentPresentation</c>'s own
 /// discipline: a system supplies compiled code, the library never introspects a content type.
 /// </summary>
 public interface IContentTypeProfile

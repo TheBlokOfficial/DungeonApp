@@ -5,8 +5,7 @@ namespace DungeonApp.Core.Entries;
 /// bound to a content type, or a <see cref="RejectedEntry"/> file that never became an entry at all
 /// - never both, never neither, the same discipline <see cref="RegisteredEntry"/> itself follows.
 /// <see cref="DisplayName"/> is the entry's own name when there is one, and the file's location when
-/// there is not (docs/architecture.md, "Zakładki treści": broken rows sort "po nazwie, a gdy nazwy
-/// nie ma — po nazwie pliku").
+/// there is not.
 /// </summary>
 public sealed record ContentBrokenRow
 {

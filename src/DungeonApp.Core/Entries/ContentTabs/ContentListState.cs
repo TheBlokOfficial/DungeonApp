@@ -7,9 +7,8 @@ namespace DungeonApp.Core.Entries;
 /// values chosen in every filter, the chosen sort and its direction, and whichever row is selected. Every filter holds
 /// a set: an empty set, a null one, or a missing key in <see cref="ValueFilters"/> all mean the
 /// filter does not narrow. Values chosen in one filter combine with "or", filters with each other
-/// (and with the search) with "and" (docs/architecture.md, "Zakładki treści"). Immutable: a caller
-/// builds the next state and asks <see cref="ContentListModel.Build"/> for the next result, never
-/// mutates this one in place.
+/// (and with the search) with "and". Immutable: a caller builds the next state and asks
+/// <see cref="ContentListModel.Build"/> for the next result, never mutates this one in place.
 /// </summary>
 /// <param name="Categories">Chosen values of the category filter.</param>
 /// <param name="Packs">Chosen pack names (a rejected pack by its location) of the "Paczka" filter.</param>

@@ -80,7 +80,7 @@ public sealed class ContentPackLoaderTests : IDisposable
 
     // ---------------------------------------------------------------------
     // Manifest: missing pack.json, invalid JSON, unknown formatVersion, unknown key (e.g. a
-    // leftover "kind" - the old two-kind-of-pack split's field, now just an unmapped member).
+    // "kind" field - just an unmapped member).
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -329,8 +329,8 @@ public sealed class ContentPackLoaderTests : IDisposable
         var rejected = Assert.Single(registry.RejectedEntries);
         Assert.Equal("entries/e.json", rejected.Location);
 
-        // The heart of the reversal: the reason names the defect (the file is not valid JSON), and,
-        // unlike before, never repeats the file name the row title (Location) already carries.
+        // The reason names the defect (the file is not valid JSON) and never repeats the file name
+        // the row title (Location) already carries.
         Assert.Contains("is not valid", rejected.Reason);
         Assert.DoesNotContain("e.json", rejected.Reason);
     }
@@ -529,7 +529,7 @@ public sealed class ContentPackLoaderTests : IDisposable
         {
             var registry = await Loader().LoadAsync();
 
-            // A locked entry file is now scoped to that one file, not the whole pack it lives in.
+            // A locked entry file is scoped to that one file, not the whole pack it lives in.
             Assert.Empty(registry.RejectedPacks);
 
             var rejected = Assert.Single(registry.RejectedEntries);

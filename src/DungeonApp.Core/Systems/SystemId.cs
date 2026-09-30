@@ -11,8 +11,7 @@ namespace DungeonApp.Core.Systems;
 /// everything that matches a campaign's recorded system against a compiled one.
 /// <para>
 /// Deliberately its own type rather than a reuse of the entry library's own content id type: the
-/// frame is not supposed to reference that namespace at all (docs/architecture.md, "Rama, biblioteka,
-/// system" - "system przestaje być dla ramy katalogiem typów"), and a shared type would be exactly
+/// frame is not supposed to reference that namespace at all, and a shared type would be exactly
 /// that reference kept alive by a back door. The two ids happen to be spelled the same for today's one
 /// system (its implementation mints both from the same literal), but nothing here assumes they must
 /// be - a system is free to pick a different content-set id than its own frame identity.

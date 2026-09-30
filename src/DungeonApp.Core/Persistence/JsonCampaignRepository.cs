@@ -13,26 +13,23 @@ namespace DungeonApp.Core.Persistence;
 
 /// <summary>
 /// Stores each campaign as its own directory: a manifest beside one file per state model the
-/// system declares (<c>state/&lt;modelId&gt;.json</c>) - never one file per record any more, now
-/// that a model's whole record set is what gets versioned and read back together.
+/// system declares (<c>state/&lt;modelId&gt;.json</c>) - not one file per record, because a model's
+/// whole record set is what gets versioned and read back together.
 /// <para>
-/// The whole of every declared model is rewritten on every save (docs/architecture.md, "Gdzie
-/// mieszka stan": "Każda zatwierdzona zmiana trafia na dysk od razu"), deliberately without a
+/// The whole of every declared model is rewritten on every save, deliberately without a
 /// "changed models only" optimization - the set of files this writes is exactly
 /// <paramref name="declarations"/>'s ids, every time. The manifest and every model file commit
 /// together and share a generation counter, so a save interrupted partway through is detectable
-/// instead of silently half loaded - the same guarantee the old per-instance files carried, now
-/// applied per model.
+/// instead of silently half loaded.
 /// </para>
 /// <para>
 /// A model this build's <paramref name="declarations"/> does not declare is never opened, written,
-/// or deleted, however old its file on disk - "Plik modelu, którego nikt nie zadeklarował →
-/// nieczytany, nietknięty na dysku." A declared model with no file simply reads back empty.
+/// or deleted, however old its file on disk. A declared model with no file simply reads back empty.
 /// </para>
 /// <para>
-/// One instance is scoped to one system's own campaign directory (docs/architecture.md, "Gdzie
-/// mieszka stan": "Kampania należy do jednego systemu - tego, w którego katalogu leży"); the
-/// composition root builds one of these per compiled system, never a shared instance across systems.
+/// One instance is scoped to one system's own campaign directory, because a campaign belongs to the
+/// system whose directory it lies in; the composition root builds one of these per compiled
+/// system, never a shared instance across systems.
 /// <paramref name="ownerSystemId"/> is stamped onto every <see cref="CampaignSummary.DirectorySystemId"/>
 /// this instance produces, and - only when a manifest records no system of its own - onto the restored
 /// <see cref="Campaign.SystemId"/> too, so the next save this campaign gets naturally writes it back
@@ -42,9 +39,7 @@ namespace DungeonApp.Core.Persistence;
 public sealed class JsonCampaignRepository(SystemId ownerSystemId, string libraryPath, Action<string> deleteDirectory) : ICampaignRepository
 {
     /// <summary>
-    /// Bumped from the single-file-per-instance shape this format used before state models existed.
-    /// A manifest at any other version is refused whole rather than migrated or half-read -
-    /// docs/architecture.md, "Wersjonowanie".
+    /// A manifest at any other version is refused whole rather than migrated or half-read.
     /// </summary>
     public const int CurrentFormatVersion = 2;
 
@@ -140,11 +135,11 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
             modelsById[declaration.ModelId] = await ReadModelAsync(directory, declaration, modelEntry, cancellationToken);
         }
 
-        // A manifest that names no system belongs to this repository's own directory instead
-        // (docs/architecture.md, "Kampania należy do jednego systemu"): stamping that here, on read,
-        // is what lets an ordinary later save pick it up without this method forcing one itself. A
-        // manifest that already names a system - matching or not - is trusted as written; refusing a
-        // mismatch is CampaignPreparationCache's job, before this method is ever reached.
+        // A manifest that names no system belongs to this repository's own directory instead:
+        // stamping that here, on read, is what lets an ordinary later save pick it up without this
+        // method forcing one itself. A manifest that already names a system - matching or not - is
+        // trusted as written; refusing a mismatch is CampaignPreparationCache's job, before this
+        // method is ever reached.
         var systemId = SystemId.TryCreate(manifest.System, out var restoredSystemId) ? restoredSystemId : ownerSystemId;
 
         var snapshot = CampaignStateSnapshot.FromModels(modelsById);
@@ -152,15 +147,15 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
     }
 
     /// <summary>
-    /// Reads manifests only, and never skips a directory - docs/architecture.md, "Kampania należy do
-    /// jednego systemu": "Kampania, której systemu nie ma w programie, jest widoczna jako niedostępna
-    /// - nie znika." Drawing the shelf must not cost the value of every model in every campaign, and
-    /// a campaign whose manifest itself is damaged still deserves a row, with whatever this can
-    /// recover (the directory's own name and creation time at worst) and a
-    /// <see cref="CampaignSummary.ManifestFailure"/> the shell can turn into a reason. Whether a
-    /// campaign can actually be opened - matching its <see cref="CampaignSummary.SystemId"/> against a
-    /// compiled system, and reading its declared state - is not this method's job; that is the exact
-    /// same read <see cref="GetAsync"/> already performs, left to whoever is deciding availability.
+    /// Reads manifests only, and never skips a directory: a campaign whose system is not in the
+    /// program stays visible as unavailable instead of vanishing. Drawing the shelf must not cost
+    /// the value of every model in every campaign, and a campaign whose manifest itself is damaged
+    /// still deserves a row, with whatever this can recover (the directory's own name and creation
+    /// time at worst) and a <see cref="CampaignSummary.ManifestFailure"/> the shell can turn into a
+    /// reason. Whether a campaign can actually be opened - matching its
+    /// <see cref="CampaignSummary.SystemId"/> against a compiled system, and reading its declared
+    /// state - is not this method's job; that is the exact same read <see cref="GetAsync"/> already
+    /// performs, left to whoever is deciding availability.
     /// </summary>
     public async Task<IReadOnlyList<CampaignSummary>> ListAsync(CancellationToken cancellationToken = default)
     {
@@ -196,8 +191,8 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
     /// understand, still gets a row - with the directory's own name and creation time standing in for
     /// whatever the manifest could not supply, and the failure recorded rather than swallowed. A
     /// manifest that parses, whatever its format version, contributes whatever it actually has -
-    /// including no system at all, which is not itself a failure here (docs/architecture.md, "Kampania
-    /// należy do jednego systemu": a pre-system manifest is a campaign without one, not a broken one).
+    /// including no system at all, which is not itself a failure here: a pre-system manifest is a
+    /// campaign without one, not a broken one.
     /// </summary>
     private async Task<CampaignSummary> ReadSummaryAsync(
         CampaignId id, string directory, CancellationToken cancellationToken)
@@ -266,8 +261,8 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
                 + $"this build understands up to {CurrentFormatVersion}.");
         }
 
-        // An older format is refused whole too, distinguishably - docs/architecture.md,
-        // "Wersjonowanie": no migration exists, and none is silently attempted.
+        // An older format is refused whole too, distinguishably - no migration exists, and none is
+        // silently attempted.
         if (manifest.FormatVersion < CurrentFormatVersion)
         {
             throw new CampaignStoreException(
@@ -443,8 +438,8 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
         DateTimeOffset CreatedAt,
         long Generation,
         // Null for a campaign created before this field existed, or restored from a manifest that
-        // never recorded one - docs/architecture.md, "Kampania należy do jednego systemu": no format
-        // version bump for this field, and a v2 manifest without it reads back exactly like a v1 one.
+        // never recorded one - no format version bump for this field, and a v2 manifest without it
+        // reads back exactly like a v1 one.
         string? System = null,
         // Nullable and defaulted nowhere near strictly, on purpose: a manifest for a campaign that
         // has never had a single record in any model simply has no such key.

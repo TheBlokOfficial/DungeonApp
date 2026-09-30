@@ -7,8 +7,7 @@ namespace DungeonApp.Desktop.Startup;
 /// <summary>
 /// Wczytuje i waliduje paczki treści jednego systemu. Wynik trzyma we własnym polu i udostępnia jako
 /// <see cref="Registry"/> - krok startowy, który ten system sam zgłasza ramie
-/// (<c>IGameSystem.StartupSteps</c>, docs/architecture.md, "Rama, biblioteka, system": "system sam
-/// wczytuje paczki i ma własny rejestr"). Rama tylko go uruchamia, nie wiedząc, co robi.
+/// (<c>IGameSystem.StartupSteps</c>). Rama tylko go uruchamia, nie wiedząc, co robi.
 /// <para>
 /// Nie ma tu własnego try/catch: <see cref="ContentPackLoader.LoadAsync"/> nigdy nie rzuca z powodu
 /// wadliwej paczki - odkłada ją do <see cref="ContentRegistry.RejectedPacks"/> i ładuje dalej. Gdyby

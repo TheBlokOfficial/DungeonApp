@@ -4,15 +4,14 @@ using DungeonApp.Core.State;
 namespace DungeonApp.Core.Entries.Instances;
 
 /// <summary>
-/// Builds the <see cref="CampaignChange"/> for each thing a GM does to an instance - what used to
-/// be <c>CampaignInstances.Add</c>/<c>Remove</c>/<c>Relabel</c>/<c>ReplacePatch</c> before instances
-/// became a state model. Pure helpers: no state, no event, nothing that touches a campaign. A
-/// caller applies the returned change through the campaign's single change entry point
-/// (<c>CampaignSession.ChangeAsync</c>), which is what actually looks anything up, mutates
-/// anything, or saves anything.
+/// Builds the <see cref="CampaignChange"/> for each thing a GM does to an instance - adding,
+/// removing, relabelling, replacing its patch. Pure helpers: no state, no event, nothing that
+/// touches a campaign. A caller applies the returned change through the campaign's single change
+/// entry point (<c>CampaignSession.ChangeAsync</c>), which is what actually looks anything up,
+/// mutates anything, or saves anything.
 /// <para>
 /// <see cref="Relabel"/> and <see cref="ReplacePatch"/> take the instance's <em>current</em> value
-/// rather than looking it up by id, because there is no live magazine left to ask - the caller
+/// rather than looking it up by id, because there is no live collection to ask - the caller
 /// already has it, read a moment earlier from a <see cref="CampaignStateSnapshot"/>.
 /// </para>
 /// </summary>

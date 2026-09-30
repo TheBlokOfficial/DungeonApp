@@ -1,10 +1,8 @@
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// One piece of content from a content pack: the essence docs/architecture.md's "Wpis, dokument,
-/// instancja, nakładka" section calls a "wpis" - a fixed set of values, never a specific
-/// in-campaign occurrence of them (that is an instance, which does not exist in this layer at
-/// all).
+/// One piece of content from a content pack - the essence: a fixed set of values, never a specific
+/// in-campaign occurrence of them (that is an instance, <c>CampaignInstance</c>).
 /// <para>
 /// <see cref="TypeVersion"/> is the version of the content type this entry was written against,
 /// captured at file-write time rather than re-read from the system on every load - it is
@@ -13,9 +11,8 @@ namespace DungeonApp.Core.Entries;
 /// values under a new shape.
 /// </para>
 /// <para>
-/// <see cref="Values"/> is the unopened envelope docs/architecture.md's "Deklaracja treści" section
-/// describes: the engine carries it, but only the system named by <see cref="Type"/> ever
-/// opens it, by deserializing it into its own record.
+/// <see cref="Values"/> is the unopened envelope: the engine carries it, but only the system named
+/// by <see cref="Type"/> ever opens it, by deserializing it into its own record.
 /// </para>
 /// </summary>
 public sealed record Entry(

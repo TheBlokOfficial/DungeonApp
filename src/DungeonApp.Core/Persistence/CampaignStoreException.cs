@@ -13,7 +13,7 @@ public enum CampaignStoreFailure
 
     /// <summary>
     /// Written by an older build, before the campaign document's format last changed shape. Refused
-    /// whole rather than migrated - docs/architecture.md, "Wersjonowanie": "Migracji nie budujemy".
+    /// whole rather than migrated: no migration is built.
     /// </summary>
     LegacyFormatVersion,
 
@@ -27,8 +27,8 @@ public enum CampaignStoreFailure
     TornSave,
 
     /// <summary>
-    /// A model's state file was written at a version this build's declaration does not declare -
-    /// docs/architecture.md, "Wersjonowanie": a mismatch is reported, never guessed at.
+    /// A model's state file was written at a version this build's declaration does not declare - a
+    /// mismatch is reported, never guessed at.
     /// </summary>
     ModelVersionMismatch
 }

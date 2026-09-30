@@ -15,11 +15,10 @@ namespace DungeonApp.Core.Entries;
 /// cref="EntryUnresolvedReason.MissingSet"/> and <see cref="EntryUnresolvedReason.MissingType"/>.
 /// </para>
 /// <para>
-/// <see cref="TryValidate"/> exists for one concrete reason: docs/architecture.md's "Paczki,
-/// wczytywanie, bezpieczeństwo" section requires that malformed content be caught at startup, never
-/// on the first click mid-session. The engine cannot check a value against a shape it does not
-/// know - only the system that declared the shape can - so <see cref="ContentPackLoader"/>
-/// must ask at load time, through this method, rather than deferring the check to whatever renders
+/// <see cref="TryValidate"/> exists for one concrete reason: malformed content must be caught at
+/// startup, never on the first click mid-session. The engine cannot check a value against a shape
+/// it does not know - only the system that declared the shape can - so
+/// <see cref="ContentPackLoader"/> must ask at load time, through this method, rather than deferring the check to whatever renders
 /// the entry later.
 /// </para>
 /// <para>

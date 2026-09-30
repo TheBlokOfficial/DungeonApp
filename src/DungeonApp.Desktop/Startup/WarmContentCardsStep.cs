@@ -10,8 +10,8 @@ namespace DungeonApp.Desktop.Startup;
 /// <summary>
 /// Rozgrzewa jedną kartę na każdy rozwiązany typ treści w <paramref name="registry"/> - krok startowy,
 /// który system sam zgłasza ramie (<c>IGameSystem.StartupSteps</c>), tuż obok
-/// <see cref="LoadContentPacksStep"/>: to, co "wybór systemu" dawniej budowało na wątku UI w chwili
-/// kliknięcia, rozgrzewa się teraz za kurtyną startową, zanim cokolwiek da się kliknąć.
+/// <see cref="LoadContentPacksStep"/>: karty rozgrzewają się za kurtyną startową, zanim cokolwiek da
+/// się kliknąć, żeby nie budować się na wątku UI w chwili kliknięcia.
 /// <para>
 /// <paramref name="registry"/> jest odroczone (<see cref="Func{TResult}"/>), nie wartością wprost, bo
 /// ten krok jest budowany zanim <see cref="LoadContentPacksStep"/> zdąży wczytać paczki - odczytuje
@@ -47,7 +47,7 @@ public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IConten
             }
             catch (Exception)
             {
-                // Warmup is an optimization - the registry screen still draws the card for real on selection.
+                // Warmup is an optimization - the card is still drawn for real on selection.
             }
         }
     }

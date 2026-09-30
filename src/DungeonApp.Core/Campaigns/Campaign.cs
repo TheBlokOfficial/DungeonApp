@@ -5,11 +5,10 @@ using DungeonApp.Core.Systems;
 namespace DungeonApp.Core.Campaigns;
 
 /// <summary>
-/// The root of everything the GM owns. Immutable, the way every piece of a campaign's state is
-/// (docs/architecture.md, "Gdzie mieszka stan"): a change replaces this whole object with a new one
-/// carrying a new <see cref="Snapshot"/> rather than mutating one in place, which is what makes it
-/// safe to hand the same instance to a read-only view and to the code computing the next change at
-/// once.
+/// The root of everything the GM owns. Immutable, the way every piece of a campaign's state is:
+/// a change replaces this whole object with a new one carrying a new <see cref="Snapshot"/> rather
+/// than mutating one in place, which is what makes it safe to hand the same instance to a read-only
+/// view and to the code computing the next change at once.
 /// </summary>
 public sealed class Campaign
 {
@@ -33,9 +32,8 @@ public sealed class Campaign
 
     /// <summary>
     /// The system this campaign belongs to - set once, at <see cref="Create"/>, to whichever system
-    /// was active at the time, and never changed afterwards (docs/architecture.md, "Kampania należy
-    /// do jednego systemu"). Null for a campaign that predates this field, or one whose manifest never
-    /// recorded it - never migrated or guessed at.
+    /// was active at the time, and never changed afterwards. Null for a campaign that predates this
+    /// field, or one whose manifest never recorded it - never migrated or guessed at.
     /// </summary>
     public SystemId? SystemId { get; }
 

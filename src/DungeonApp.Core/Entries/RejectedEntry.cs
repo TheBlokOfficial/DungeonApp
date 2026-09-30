@@ -5,8 +5,8 @@ namespace DungeonApp.Core.Entries;
 /// accepted pack that the loader refused to read as an entry at all, and why.
 /// <para>
 /// The two halves answer different questions and must not overlap. <see cref="Location"/> says
-/// <em>which</em> file, and is the only place that file's own name belongs - the registry screen
-/// shows it as the row's title. <see cref="Reason"/> says <em>what</em> is wrong, concretely, never
+/// <em>which</em> file, and is the only place that file's own name belongs - a content tab shows it
+/// as the row's title. <see cref="Reason"/> says <em>what</em> is wrong, concretely, never
 /// merely "invalid entry", and never repeats the file it is about: a reason that names its own file
 /// prints that name twice on the same row, and every call site in
 /// <see cref="ContentPackLoader"/> is written to keep it out.

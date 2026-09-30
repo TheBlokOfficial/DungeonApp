@@ -3,9 +3,8 @@ using DungeonApp.Core.State;
 namespace DungeonApp.Core.Entries.Instances;
 
 /// <summary>
-/// One in-campaign occurrence of an <see cref="Entry"/> - the "instancja" of
-/// docs/architecture.md's "Wpis, dokument, instancja, nakładka" section. The entry is the essence;
-/// this is a particular specimen of it, standing somewhere in somebody's campaign.
+/// One in-campaign occurrence of an <see cref="Entry"/>. The entry is the essence; this is a
+/// particular specimen of it, standing somewhere in somebody's campaign.
 /// <para>
 /// A state record (<see cref="IStateRecord"/>): the frame stores, versions, and hands this type
 /// back through a <see cref="CampaignStateSnapshot"/> without ever knowing what it means. Named

@@ -17,12 +17,11 @@ namespace DungeonApp.Core.Entries;
 /// name="types"/> is the engine's only window into content types (see <see cref="IContentTypeCatalog"/>)
 /// - the composition root hands in the aggregate over every installed system.
 /// <para>
-/// Several directories - the GM's own packs and the packs shipped with the program
-/// (docs/architecture.md, "Gdzie mieszka stan") - are one scan, not several: every candidate
-/// directory from every root goes through the same validation into the same registry, and the
-/// pack-id collision rule below spans all of them at once. The loader never knows which root a
-/// pack came from - the list carries paths only, no labels - so no rule here can prefer one source
-/// over another. Every root is only ever read.
+/// Several directories - the GM's own packs and the packs shipped with the program - are one
+/// scan, not several: every candidate directory from every root goes through the same validation
+/// into the same registry, and the pack-id collision rule below spans all of them at once. The
+/// loader never knows which root a pack came from - the list carries paths only, no labels - so no
+/// rule here can prefer one source over another. Every root is only ever read.
 /// </para>
 /// <para>
 /// The governing rule for a pack's own manifest: <b>a pack is rejected whole, and says why.</b> A
@@ -32,10 +31,9 @@ namespace DungeonApp.Core.Entries;
 /// <see cref="ResolveEntries"/> for one that parsed fine but could not be bound to a content type.
 /// </para>
 /// <para>
-/// Section 13 of the content architecture doc reduces this layer's entire security model to
-/// "validate at load, plus size limits", because there is no level-3 (script) to sandbox. That is
-/// why the validation below is thorough rather than merely best-effort: it is the only gate there
-/// is.
+/// This layer's entire security model is "validate at load, plus size limits", because there is no
+/// scripting level to sandbox. That is why the validation below is thorough rather than merely
+/// best-effort: it is the only gate there is.
 /// </para>
 /// </summary>
 public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContentTypeCatalog types)
@@ -162,9 +160,9 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
     /// as <see cref="RejectedEntry"/> instead, alongside the pack that keeps loading regardless.
     /// <para>
     /// A <c>templates</c> directory, if present, is silently ignored rather than inspected or rejected
-    /// for - content types no longer come from packs, so a leftover or forgotten one is inert, not an
+    /// for - content types do not come from packs, so a leftover or forgotten one is inert, not an
     /// error. Rejecting a whole pack for a directory nobody reads from would contradict the very rule
-    /// (section 13) that one defect must never hide every entry beside it.
+    /// that one defect must never hide every entry beside it.
     /// </para>
     /// <para>
     /// An <see cref="IOException"/> or <see cref="UnauthorizedAccessException"/> reaching this method -
@@ -195,10 +193,10 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             }
             catch (PackRejectedException ex)
             {
-                // The only call site that still prefixes ParseStrictAsync's reason with the file it
-                // names: a rejected pack has no per-row title anywhere in the registry screen to carry
-                // "pack.json" instead (unlike a rejected entry, whose row title is its own Location), so
-                // the manifest's reason has to keep naming the file itself, exactly as it always did.
+                // The only call site that prefixes ParseStrictAsync's reason with the file it names: a
+                // rejected pack has no per-row title anywhere in a content tab to carry "pack.json"
+                // instead (unlike a rejected entry, whose row title is its own Location), so the
+                // manifest's reason has to name the file itself.
                 throw new PackRejectedException($"'{PackFileName}' {ex.Message}");
             }
 
@@ -313,7 +311,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
         // Keyed by the colliding id, valued with every file declaring it - so every file declaring the
         // id is rejected, not just the second one to appear. Each rejected file's own reason below
         // names its collision partners (the other files) but never itself: its own name is the row's
-        // Location already, and repeating it there is exactly the duplication this whole change removes.
+        // Location already, and repeating it there would be duplication.
         var duplicateFilesById = outcomes
             .Where(outcome => outcome.Entry is not null)
             .GroupBy(outcome => outcome.Entry!.Id)
@@ -381,9 +379,8 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
     /// <see cref="IContentTypeCatalog.HasSet"/>, then <see cref="IContentTypeCatalog.TryGet"/>, then
     /// the version, then <see cref="IContentTypeCatalog.TryValidate"/>. Every one of the four ways an
     /// entry can fail to resolve marks only that entry (<see cref="EntryUnresolvedReason"/>) - none of
-    /// them reject the pack itself, which is exactly the "Odrzucanie całej paczki za jeden wadliwy
-    /// wpis" reversal docs/decisions.md records: a system that rejects one entry's values says
-    /// nothing about any other entry beside it.
+    /// them reject the pack itself: a system that rejects one entry's values says nothing about any
+    /// other entry beside it.
     /// </summary>
     private static IEnumerable<RegisteredEntry> ResolveEntries(
         ContentId packId, IReadOnlyList<Entry> entries, IContentTypeCatalog types)
@@ -514,8 +511,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
 
     private sealed record PackVersionDto(int? Major, int? Minor);
 
-    // "Template"/"TemplateVersion" on the wire, unchanged, matching the entry file format
-    // docs/architecture.md's "Deklaracja treści" section already shows - only the in-memory record
-    // (Entry.Type / Entry.TypeVersion) took the new name.
+    // "Template"/"TemplateVersion" are the names in the entry file format; the in-memory record
+    // calls them Entry.Type / Entry.TypeVersion.
     private sealed record EntryFileDto(string? Id, string? Name, string? Template, int? TemplateVersion, JsonElement Values);
 }

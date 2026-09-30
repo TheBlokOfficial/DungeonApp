@@ -10,9 +10,8 @@ using DungeonApp.Desktop.Workspace.Layout;
 namespace DungeonApp.App;
 
 /// <summary>
-/// Composition root: the only project allowed to name a system by name. That is what lets "the
-/// shell knows no system" be checked by a project-reference test rather than by review. See
-/// docs/architecture.md, section "Warstwy i granice".
+/// Composition root: the only project allowed to name a system by name. That is what lets a
+/// project-reference test, rather than review, check that the shell knows no system.
 /// </summary>
 class Program
 {
@@ -30,7 +29,7 @@ class Program
     // Uses the AppBuilder.Configure<TApp>(Func<TApp>) overload rather than the parameterless one,
     // because DungeonApp.Desktop.App needs the compiled-in system list handed to it through
     // its constructor - the alternative, a static/mutable holder some other code populates before
-    // Avalonia touches the app, is exactly the state docs/architecture.md rules out for this list.
+    // Avalonia touches the app, is exactly the hidden global state this list must not live in.
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()))
             .UsePlatformDetect()
@@ -41,15 +40,12 @@ class Program
             .LogToTrace();
 
     // The one place in the app that lists systems by name. Hard-wired by project reference,
-    // never discovered at runtime - see docs/architecture.md, "Warstwy i granice", on why loading
-    // one from a plugin directory buys nothing here.
+    // never discovered at runtime, because loading one from a plugin directory would buy nothing
+    // here.
     //
     // Also the one place that computes the desk layout store's path and the content packs' path and
-    // hands both to the system in its constructor (docs/tasks.md, etap 1: "system dostaje w
-    // konstruktorze gołe WorkspaceLayoutStore, a wyliczenie katalogu danych aplikacji przenosi się w
-    // całości do Program.cs"; docs/architecture.md, "Rama, biblioteka, system": "ścieżkę katalogu
-    // paczek ustala korzeń kompozycji i podaje ją systemowi") - DungeonApp.Desktop's own composition
-    // root (App.axaml.cs) no longer knows either path, or either type, at all.
+    // hands both to the system in its constructor, so that DungeonApp.Desktop's own composition
+    // root (App.axaml.cs) knows neither path, nor either type, at all.
     private static IReadOnlyList<IGameSystem> BuildSystems()
     {
         var appDataDirectory = Path.Combine(
@@ -58,11 +54,10 @@ class Program
 
         var layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // Paczki treści są dokumentem użytkownika tak samo jak kampanie (architecture.md, "Gdzie
-        // mieszka stan") - obok, nie pod danymi aplikacji. Paczka należy do systemu, w którego
-        // katalogu leży: SystemDirectories wylicza ten sam układ ramy dla kampanii i paczek, podany
-        // tu jednym identyfikatorem, którym ten system przedstawia się ramie (Dnd5eSystem.IdValue),
-        // zamiast wpisywać "dnd5e" tu drugi raz.
+        // Paczki treści są dokumentem użytkownika tak samo jak kampanie - obok, nie pod danymi
+        // aplikacji. Paczka należy do systemu, w którego katalogu leży: SystemDirectories wylicza
+        // ten sam układ ramy dla kampanii i paczek, podany tu jednym identyfikatorem, którym ten
+        // system przedstawia się ramie (Dnd5eSystem.IdValue), zamiast wpisywać "dnd5e" tu drugi raz.
         //
         // Drugie źródło to paczki dostarczane z programem - ten sam układ <system>\packs\, tylko pod
         // katalogiem programu (AppContext.BaseDirectory), tylko do odczytu. System dostaje obie

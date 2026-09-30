@@ -11,9 +11,8 @@ namespace DungeonApp.Desktop.Startup;
 /// na jej <see cref="Control.Loaded"/>, oddaj sterowanie dispatcherowi, odepnij. Wydzielone, żeby
 /// każdy krok per typ panelu nie powtarzał tej samej sekwencji.
 /// <para>
-/// Publiczne, nie <c>internal</c>: krok startowy zgłaszany przez system (docs/architecture.md,
-/// "Start aplikacji") mieszka w innym zestawie i potrzebuje dokładnie tej samej sekwencji do
-/// rozgrzewki kart, których treść zna tylko on.
+/// Publiczne, nie <c>internal</c>: krok startowy zgłaszany przez system mieszka w innym zestawie i
+/// potrzebuje dokładnie tej samej sekwencji do rozgrzewki kart, których treść zna tylko on.
 /// </para>
 /// </summary>
 public static class VisualWarmupHost

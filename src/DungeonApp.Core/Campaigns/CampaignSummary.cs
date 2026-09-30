@@ -18,8 +18,8 @@ namespace DungeonApp.Core.Campaigns;
 /// declarations would need.
 /// </para>
 /// <para>
-/// docs/architecture.md, "Gdzie mieszka stan": "Kampania należy do jednego systemu - tego, w którego
-/// katalogu leży." <see cref="DirectorySystemId"/> is that system - always known, since a repository is
+/// A campaign belongs to one system - the one in whose directory it lies.
+/// <see cref="DirectorySystemId"/> is that system - always known, since a repository is
 /// only ever built for one compiled system's own campaign directory (never for an unknown one).
 /// <see cref="SystemId"/> is the separate, nullable claim the manifest itself makes: null for a
 /// pre-system manifest (any format version below the current one) as much as a current one that simply

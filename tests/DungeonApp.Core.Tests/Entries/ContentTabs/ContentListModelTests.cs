@@ -6,9 +6,9 @@ using DungeonApp.Core.Entries;
 namespace DungeonApp.Core.Tests.Entries.ContentTabs;
 
 /// <summary>
-/// Krok 10, zlecenie 1, część D: one test per rule from the brief's część B, on a fake pair of
-/// content types ("widget"/"gadget") so this project never names a real one - the same discipline
-/// <c>InstanceResolverTests</c> and <c>ContentPackLoaderTests</c> already follow.
+/// One test per list rule, on a fake pair of content types ("widget"/"gadget") so this project
+/// never names a real one - the same discipline <c>InstanceResolverTests</c> and
+/// <c>ContentPackLoaderTests</c> follow.
 /// </summary>
 public sealed class ContentListModelTests
 {
@@ -627,7 +627,7 @@ public sealed class ContentListModelTests
     /// <summary>
     /// Not ordinal: ordinal byte order puts every Polish letter after "z" ("Ż" is 0x017B, far past
     /// "z"'s 0x007A), which is not the order a Polish-reading GM expects from an alphabetised list.
-    /// Confirmed against pl-PL directly before writing this assertion, not assumed.
+    /// Confirmed against pl-PL directly, not assumed.
     /// </summary>
     [Fact]
     public void The_default_sort_uses_polish_collation_not_byte_order()

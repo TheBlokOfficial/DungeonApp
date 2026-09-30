@@ -4,9 +4,9 @@ using DungeonApp.Core.Systems;
 namespace DungeonApp.Core.Tests.Systems;
 
 /// <summary>
-/// docs/architecture.md, "Gdzie mieszka stan": the two directories a compiled system's own
-/// documents live under, computed from an arbitrary root and a <see cref="SystemId"/> - never from
-/// the real Documents folder, so this never touches the author's own machine.
+/// The two directories a compiled system's own documents live under, computed from an arbitrary
+/// root and a <see cref="SystemId"/> - never from the real Documents folder, so this never touches
+/// the author's own machine.
 /// </summary>
 public sealed class SystemDirectoriesTests
 {

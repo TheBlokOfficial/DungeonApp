@@ -16,10 +16,9 @@ public enum CampaignChangeDenial
 /// <summary>
 /// What came back from one call to the campaign's single change entry point.
 /// <para>
-/// Keeps today's distinction (docs/tasks.md's brief for this étape) between the two ways a call can
-/// fail to leave the GM with nothing to show for it: <see cref="Denial"/> means nothing changed at
-/// all, while <see cref="SaveWarning"/> means the change is sitting in memory - and the GM has
-/// already been shown it - but did not reach disk.
+/// Tells apart the two ways a call can fail to leave the GM with nothing to show for it:
+/// <see cref="Denial"/> means nothing changed at all, while <see cref="SaveWarning"/> means the
+/// change is sitting in memory - and the GM has already been shown it - but did not reach disk.
 /// </para>
 /// </summary>
 public sealed class CampaignChangeResult

@@ -4,10 +4,9 @@ namespace DungeonApp.Core.Entries;
 
 /// <summary>
 /// One section of a content tab's list: everything from one pack. A rejected pack's section never
-/// carries a row - <see cref="RejectedPack"/> is the only thing it has to show, per
-/// docs/architecture.md's "Zakładki treści": "Odrzucona paczka — ostatni nagłówek listy, bez
-/// wpisów." The two factory methods are the only way to build one, the same either/or discipline
-/// <see cref="RegisteredEntry"/> and <see cref="ContentBrokenRow"/> already follow.
+/// carries a row - <see cref="RejectedPack"/> is the only thing it has to show. The two factory
+/// methods are the only way to build one, the same either/or discipline
+/// <see cref="RegisteredEntry"/> and <see cref="ContentBrokenRow"/> follow.
 /// </summary>
 public sealed record ContentSection
 {

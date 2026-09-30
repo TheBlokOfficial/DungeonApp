@@ -5,9 +5,8 @@ namespace DungeonApp.Core.State;
 
 /// <summary>
 /// A campaign's whole state at one moment, read-only: every declared model, each one an immutable
-/// set of records keyed by their own id (docs/architecture.md, "Gdzie mieszka stan": "Model to
-/// niezmienny zbiór rzeczy kluczowany identyfikatorem"). A single record is simply a set with one
-/// element in it - there is no separate "singleton model" kind.
+/// set of records keyed by their own id. A single record is simply a set with one element in it -
+/// there is no separate "singleton model" kind.
 /// <para>
 /// Nothing here mutates. <see cref="Apply"/> returns a new snapshot rather than changing this one,
 /// which is what lets <c>CampaignSession</c> hand this exact type to a change notification without
@@ -37,8 +36,8 @@ public sealed class CampaignStateSnapshot
 
     /// <summary>
     /// <paramref name="declaration"/>'s records, keyed by their own id. A model nobody has ever
-    /// written a record for comes back empty rather than missing - "Zadeklarowany model bez pliku
-    /// → model pusty" is true of a snapshot exactly the way it is true of a campaign directory.
+    /// written a record for comes back empty rather than missing - the same way a declared model
+    /// with no file reads back empty from a campaign directory.
     /// </summary>
     public IReadOnlyDictionary<string, TRecord> Get<TRecord>(StateModelDeclaration<TRecord> declaration)
         where TRecord : IStateRecord

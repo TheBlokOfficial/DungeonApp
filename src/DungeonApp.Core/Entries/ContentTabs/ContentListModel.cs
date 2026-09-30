@@ -6,11 +6,10 @@ using System.Linq;
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// The shape behind every content tab (docs/architecture.md, "Zakładki treści"): given a registry
-/// and one tab's own content type profiles, decides which sections and rows show for a given
-/// <see cref="ContentListState"/> and hands back exactly what a view needs to draw - never a view
-/// itself, never anything Avalonia. One instance serves one tab; a system with several tabs builds
-/// one <see cref="ContentListModel"/> per tab.
+/// The shape behind every content tab: given a registry and one tab's own content type profiles,
+/// decides which sections and rows show for a given <see cref="ContentListState"/> and hands back
+/// exactly what a view needs to draw - never a view itself, never anything Avalonia. One instance
+/// serves one tab; a system with several tabs builds one <see cref="ContentListModel"/> per tab.
 /// <para>
 /// <b>Routing a broken entry.</b> A tab only ever shows a <em>broken</em> entry
 /// (<see cref="RegisteredEntry.Unresolved"/> not null) when the entry's own declared

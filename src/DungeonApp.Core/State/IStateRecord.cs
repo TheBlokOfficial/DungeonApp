@@ -4,8 +4,7 @@ namespace DungeonApp.Core.State;
 /// Marks a type as one model's record kind - state the frame can store, version, and hand back
 /// through a <see cref="CampaignStateSnapshot"/>. Carries only the record's own identity, nothing
 /// more: no base class, no behaviour, so a system's record stays a plain value the deserializer
-/// alone validates (docs/architecture.md, "Gdzie mieszka stan": "Zdolność do zapisu jest
-/// oznaczeniem typu, nie wspólnym przodkiem z logiką").
+/// alone validates.
 /// </summary>
 public interface IStateRecord
 {

@@ -19,9 +19,9 @@ namespace DungeonApp.Core.Campaigns;
 /// </para>
 /// <para>
 /// <paramref name="repositoriesBySystem"/> is one repository per compiled system - each scoped to
-/// that system's own campaign directory (docs/architecture.md, "Gdzie mieszka stan": "Kampania należy
-/// do jednego systemu - tego, w którego katalogu leży") - fixed for the life of this instance, built
-/// once by the composition root from <c>IGameSystem.Id</c>, never from a system named by literal.
+/// that system's own campaign directory, because a campaign belongs to the system whose directory it
+/// lies in - fixed for the life of this instance, built once by the composition root from
+/// <c>IGameSystem.Id</c>, never from a system named by literal.
 /// <paramref name="systemId"/> on <see cref="ExecuteAsync"/> is what picks which one a given call
 /// writes to.
 /// </para>

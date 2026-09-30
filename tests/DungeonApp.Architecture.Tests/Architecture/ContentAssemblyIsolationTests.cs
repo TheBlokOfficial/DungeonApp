@@ -8,7 +8,7 @@ using DungeonApp.Testing;
 namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
-/// Systemy never reference each other ("Warstwy i granice"). Today there is exactly one
+/// Systemy never reference each other. Today there is exactly one
 /// (DungeonApp.Content.Dnd5e), so a naive version of this test would pass whether or not the rule
 /// actually held, simply because there is nothing yet to violate it - the same trap
 /// <see cref="CoreEntryKindIndependenceTests.The_scan_reaches_engine_shell_and_the_content_dictionary"/>
