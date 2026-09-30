@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
+using DungeonApp.Desktop.Systems;
+using DungeonApp.Desktop.Workspace.Layout;
 
 namespace DungeonApp.App;
 

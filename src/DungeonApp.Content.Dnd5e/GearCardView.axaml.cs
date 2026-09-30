@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Controls;
-using DungeonApp.Library.Entries.Desktop.Controls.Content;
+using DungeonApp.Desktop.Entries.Controls;
 
 namespace DungeonApp.Content.Dnd5e;
 

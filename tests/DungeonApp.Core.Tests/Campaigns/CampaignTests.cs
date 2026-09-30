@@ -1,6 +1,6 @@
 using System;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Tests.Fakes;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Core.Tests.Campaigns;
 

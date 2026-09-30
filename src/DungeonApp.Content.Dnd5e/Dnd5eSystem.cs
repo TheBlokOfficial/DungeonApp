@@ -4,19 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Entries.Instances;
+using DungeonApp.Core.Entries;
+using DungeonApp.Core.Entries.Instances;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Startup;
-using DungeonApp.Library.Entries.Desktop.Content;
-using DungeonApp.Library.Entries.Desktop.Features.ContentTab;
-using DungeonApp.Library.Entries.Desktop.Startup;
-using DungeonApp.Library.Workspace.Controls.Workspace;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Panels;
+using DungeonApp.Desktop.Entries;
+using DungeonApp.Desktop.Entries.ContentTab;
+using DungeonApp.Desktop.Workspace.Controls;
+using DungeonApp.Desktop.Workspace;
+using DungeonApp.Desktop.Workspace.Layout;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -37,7 +36,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// Carries two distinct identities on purpose (docs/architecture.md, "Rama, biblioteka, system"):
 /// <see cref="Id"/> is what the frame knows this system as (<see cref="SystemId"/>, never
-/// <c>DungeonApp.Library.Entries</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
+/// <c>DungeonApp.Core.Entries</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
 /// content-set id every content type reference and pack entry in this system actually points at. Both
 /// are minted from the same literal, but nothing enforces that they stay equal - a system is free to
 /// pick a different one for either.

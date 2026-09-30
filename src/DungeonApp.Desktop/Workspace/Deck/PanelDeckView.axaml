@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:panels="using:DungeonApp.Desktop.Workspace.Panels"
+             xmlns:workspace="using:DungeonApp.Desktop.Workspace"
+             x:Class="DungeonApp.Desktop.Workspace.Deck.PanelDeckView"
+             x:DataType="workspace:CampaignWorkspaceViewModel">
+
+    <UserControl.Resources>
+        <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
+    </UserControl.Resources>
+
+    <!-- Minimized modules only. The taskbar has its own visual inset; panel geometry remains free
+         to use the complete workspace right up to coordinate zero. -->
+    <ItemsControl ItemsSource="{Binding MinimizedPanels}"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Bottom"
+                  Margin="{DynamicResource DungeonDeckEdgeInsetThickness}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="panels:WorkspacePanelViewModel">
+                <Button Theme="{StaticResource DungeonTile}"
+                        Width="{DynamicResource DungeonDeckCardSize}"
+                        Height="{DynamicResource DungeonDeckCardSize}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,8,0"
+                        Command="{Binding ActivateCommand}"
+                        ToolTip.Tip="{Binding Title}">
+                    <Image Width="{DynamicResource DungeonActionIconSize}"
+                           Height="{DynamicResource DungeonActionIconSize}"
+                           Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
+                </Button>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

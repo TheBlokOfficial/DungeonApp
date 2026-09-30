@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 
 namespace DungeonApp.Desktop.Shell;
 

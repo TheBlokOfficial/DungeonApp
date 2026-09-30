@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Entries.Instances;
+using DungeonApp.Core.Entries;
+using DungeonApp.Core.Entries.Instances;
 using DungeonApp.Desktop.ViewModels;
-using DungeonApp.Library.Entries.Desktop.Content;
+using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 

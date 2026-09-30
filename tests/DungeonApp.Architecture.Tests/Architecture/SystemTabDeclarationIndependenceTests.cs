@@ -1,5 +1,5 @@
 using System.Linq;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 
 namespace DungeonApp.Architecture.Tests;
 

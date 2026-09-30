@@ -7,8 +7,8 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Shell.Gallery.Sections;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Entries.Desktop.Content;
+using DungeonApp.Core.Entries;
+using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Desktop.RenderingTests;
 

@@ -5,9 +5,9 @@ using DungeonApp.Desktop.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Avalonia.Threading;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Entries.Desktop.Content;
-using DungeonApp.Library.Entries.Desktop.Features.ContentTab;
+using DungeonApp.Core.Entries;
+using DungeonApp.Desktop.Entries;
+using DungeonApp.Desktop.Entries.ContentTab;
 
 namespace DungeonApp.Desktop.RenderingTests;
 

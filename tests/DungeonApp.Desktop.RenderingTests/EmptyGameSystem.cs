@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Startup;
 
 namespace DungeonApp.Desktop.RenderingTests;

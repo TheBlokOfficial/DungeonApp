@@ -3,8 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
+using DungeonApp.Core.Entries;
+using DungeonApp.Desktop.Workspace.Layout;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 

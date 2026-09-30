@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Library.Entries.Instances;
+using DungeonApp.Core.Entries.Instances;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 

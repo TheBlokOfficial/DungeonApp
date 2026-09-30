@@ -9,7 +9,7 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;

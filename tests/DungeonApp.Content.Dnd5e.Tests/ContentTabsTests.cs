@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
+using DungeonApp.Core.Entries;
+using DungeonApp.Desktop.Workspace.Layout;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 

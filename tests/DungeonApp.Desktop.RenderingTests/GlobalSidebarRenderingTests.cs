@@ -10,7 +10,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using System;
 using System.Runtime.InteropServices;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Shell.Sidebars;
 

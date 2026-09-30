@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Library.Entries;
-using DungeonApp.Library.Entries.Instances;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Core.Entries;
+using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Shell;
-using DungeonApp.Library.Entries.Desktop.Content;
-using DungeonApp.Library.Workspace.Features.CampaignWorkspace.Layout;
+using DungeonApp.Desktop.Entries;
+using DungeonApp.Desktop.Workspace.Layout;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 

@@ -1,0 +1,290 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ct="using:DungeonApp.Desktop.Entries.ContentTab"
+             xmlns:conv="using:DungeonApp.Desktop.Entries.Converters"
+             xmlns:ctl="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Entries.ContentTab.ContentTabView"
+             x:DataType="ct:ContentTabViewModel">
+
+    <!-- Szkielet zakładki treści (krok 10, brief 3a): nagłówek zakładki na całą szerokość, pod linią
+         panel listy o stałej szerokości i obszar szczegółu z klockiem EntryDetailView. Wymiary ze
+         skali motywu, pismo z ról galerii (Typography.axaml). -->
+    <UserControl.Resources>
+        <conv:DimBrushConverter x:Key="DimBrush" />
+        <conv:UpperCaseConverter x:Key="UpperCase" />
+
+        <!-- Szerokość panelu listy (brief 3a). -->
+        <GridLength x:Key="ContentListColumnWidth">320</GridLength>
+
+        <!-- Nagłówek zakładki: 20 u góry, 24 po bokach, 16 nad linią. -->
+        <Thickness x:Key="ContentTabHeaderMargin">24,20,24,16</Thickness>
+
+        <!-- Obszar szczegółu: 32 u góry, z lewej i u dołu; z prawej strefa paska przewijania
+             (DungeonScrollBarZone) ustawiona na tym samym elemencie jako Padding. -->
+        <Thickness x:Key="ContentDetailMargin">32,32,0,32</Thickness>
+
+        <!-- Nagłówek sekcji: z lewej tam, gdzie zaczyna się tekst wiersza (pas kreski
+             DungeonListRowStripeGutter 10 + wcięcie wiersza DungeonPaddingMdHorizontal 12); 12 nad
+             każdym nagłówkiem, także pierwszym, 6 pod. -->
+        <Thickness x:Key="ContentSectionHeaderMargin">22,12,16,6</Thickness>
+
+        <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
+            <dc:ListRow ShowsSelectionStripe="True"
+                        IsSelected="{Binding IsSelected}"
+                        Command="{Binding SelectCommand}"
+                        ToolTip.Tip="{Binding Name}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                    <TextBlock Grid.Column="0" Classes="body row-name"
+                               Text="{Binding Name}"
+                               IsVisible="{Binding !IsBroken}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                    <TextBlock Grid.Column="0" Classes="body row-name"
+                               Text="{Binding Name}"
+                               IsVisible="{Binding IsBroken}"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               Foreground="{DynamicResource DungeonDangerTextBrush}" />
+
+                    <!-- Odznaka bez koloru (wyzwanie): zwykły tekst krojem liczb, przygaszony. -->
+                    <TextBlock Grid.Column="1" Classes="mono muted"
+                               Text="{Binding BadgeText}"
+                               IsVisible="{Binding HasPlainBadge}"
+                               VerticalAlignment="Center" />
+                    <!-- Odznaka w kolorze systemu (rzadkość): klocek WordTag w odmianie custom - tekst
+                         w kolorze, tło to samo przygaszone; wymiary, pismo i położenie z motywu. -->
+                    <dc:WordTag Grid.Column="1" Classes="custom"
+                                IsVisible="{Binding HasColoredBadge}"
+                                Content="{Binding BadgeText}"
+                                Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}"
+                                Foreground="{Binding BadgeBrush}" />
+                    <!-- Rzecz zepsuta: w miejscu odznaki ostrzeżenie kolorem treści niewczytanej. -->
+                    <dc:ForegroundIcon Grid.Column="1"
+                                       IsVisible="{Binding IsBroken}"
+                                       Width="{DynamicResource DungeonActionIconSize}"
+                                       Height="{DynamicResource DungeonActionIconSize}"
+                                       VerticalAlignment="Center"
+                                       Source="{DynamicResource DungeonIconWarningTriangle}"
+                                       Foreground="{DynamicResource DungeonDangerTextBrush}" />
+                </Grid>
+            </dc:ListRow>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- Wysokość wiersza ustawia lista, nie zawartość: stała biblioteki DungeonListRowHeight (32). -->
+        <Style Selector="ItemsControl.content-rows dc|ListRow">
+            <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
+        </Style>
+        <Style Selector="dc|ListRow:selected TextBlock.row-name">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <!-- Podpis wyłączonego filtra przygasa razem z polem (ta sama przezroczystość wyłączenia). -->
+        <Style Selector="TextBlock.filter-label:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,Auto,*" MinHeight="0">
+
+        <!-- ===== Nagłówek zakładki: nazwa i licznik na jednej linii bazowej (jeden TextBlock). Licznik:
+             liczby krojem liczb, słowa ("z", "wpisy") pismem interfejsu - ta sama wielkość i kolor.
+             Części licznika stoją bez białych znaków między elementami: odstępy niosą same części. ===== -->
+        <TextBlock Grid.Row="0"
+                   Margin="{StaticResource ContentTabHeaderMargin}"
+                   Classes="display-lg"
+                   TextTrimming="CharacterEllipsis"
+                   Foreground="{DynamicResource DungeonTextPrimaryBrush}">
+            <Run Text="{Binding Title}" />
+            <Run Text="  "
+                 FontFamily="{DynamicResource DungeonMonoFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}" />
+            <Run Text="{Binding CountShownPart}"
+                 FontFamily="{DynamicResource DungeonMonoFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountOfPart}"
+                 FontFamily="{DynamicResource DungeonUiFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountTotalPart}"
+                 FontFamily="{DynamicResource DungeonMonoFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+            /><Run Text="{Binding CountNounPart}"
+                 FontFamily="{DynamicResource DungeonUiFont}"
+                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                 FontWeight="Normal"
+                 Foreground="{DynamicResource DungeonTextMutedBrush}" />
+        </TextBlock>
+
+        <Border Grid.Row="1"
+                BorderBrush="{DynamicResource DungeonBorderBrush}"
+                BorderThickness="0,0,0,1" />
+
+        <!-- ===== Ciało: panel listy (stała szerokość) + obszar szczegółu. ===== -->
+        <Grid Grid.Row="2" MinHeight="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{StaticResource ContentListColumnWidth}" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- ===== Panel listy ===== -->
+            <Border Grid.Column="0"
+                    BorderBrush="{DynamicResource DungeonBorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid RowDefinitions="Auto,Auto,*" MinHeight="0">
+
+                    <StackPanel Grid.Row="0" Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingSm}">
+                        <dc:IconField Classes="search">
+                            <TextBox Text="{Binding Search, Mode=TwoWay}"
+                                     PlaceholderText="Szukaj po nazwie…" />
+                        </dc:IconField>
+
+                        <!-- Filtry jako pola z podpisem (brief 3d): kategoria, filtry systemu, "Paczka".
+                             Rząd = podpis z lewej (rola label, kolor drugorzędny) i lista rozwijana
+                             wielokrotna w motywie domyślnym na resztę szerokości. Kolumna podpisów wspólna
+                             dla rzędów (SharedSizeGroup), szerokość z najdłuższego podpisu; 12 między
+                             podpisem a polem, 8 między rzędami. Nic nie zaznaczone = filtr nie zawęża
+                             (tekst zastępczy "Wszystkie"); wybór trzymany po napisie wartości
+                             (SelectedValues). Filtr bez opcji - pole wyłączone, podpis przygaszony z nim. -->
+                        <ItemsControl ItemsSource="{Binding Filters}" Grid.IsSharedSizeScope="True">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="{DynamicResource DungeonSpacingSm}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="ct:ContentFilterChipViewModel">
+                                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingMd}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="ContentFilterLabel" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Classes="label secondary filter-label"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Label}"
+                                                   IsEnabled="{Binding IsAvailable}" />
+                                        <dc:DropDownPicker Grid.Column="1"
+                                                           SelectionMode="Multiple"
+                                                           PlaceholderText="Wszystkie"
+                                                           ItemsSource="{Binding Options}"
+                                                           SelectedItems="{Binding SelectedValues, Mode=OneWay}"
+                                                           IsEnabled="{Binding IsAvailable}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <dc:SortPicker Grid.Column="0"
+                                           Options="{Binding SortOptions}"
+                                           SelectedOption="{Binding SelectedSort, Mode=TwoWay}"
+                                           NumericOptions="{Binding NumericSortOptions}"
+                                           IsDescending="{Binding SortDescending, Mode=TwoWay}"
+                                           CanReverse="True" />
+                            <Button Grid.Column="1" Classes="link" HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding ClearFiltersCommand}"
+                                    Content="Wyczyść filtry" />
+                        </Grid>
+                    </StackPanel>
+
+                    <Border Grid.Row="1" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
+
+                    <!-- Jedna warstwa przewijania: ScrollViewer nad ItemsControl (bez własnego przewijania).
+                         Strefa paska należy do wiersza (motyw ListRow), a tło wiersza sięga pod pasek. -->
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,0,24">
+                            <!-- Pusty stan: żadna paczka nie ma wpisów tego typu. Ścieżki katalogu paczek
+                                 zakładka jeszcze nie zna (brief 3a - zgłoszone w raporcie). -->
+                            <dc:EmptyState IsVisible="{Binding HasNoEntries}"
+                                           Margin="{DynamicResource DungeonPaddingLg}"
+                                           Message="{Binding EmptyText}"
+                                           Hint="Paczki treści leżą w katalogu paczek aplikacji." />
+
+                            <!-- Pusty stan: nic nie pasuje (wzór: galeria, Kompozycje). -->
+                            <StackPanel IsVisible="{Binding HasNoMatches}"
+                                        Margin="{DynamicResource DungeonPaddingLg}"
+                                        Spacing="{DynamicResource DungeonSpacingSm}">
+                                <dc:EmptyState Message="Nic nie pasuje do wyszukiwania i filtrów." />
+                                <Button Classes="link" HorizontalAlignment="Center"
+                                        Command="{Binding ClearFiltersCommand}"
+                                        Content="Wyczyść filtry" />
+                            </StackPanel>
+
+                            <ItemsControl ItemsSource="{Binding Sections}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="ct:ContentSectionViewModel">
+                                        <StackPanel>
+                                            <!-- Nagłówek zwykłej paczki: nazwa i liczba wpisów sekcji. -->
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="{DynamicResource DungeonSpacingXs}"
+                                                        Margin="{StaticResource ContentSectionHeaderMargin}"
+                                                        IsVisible="{Binding !IsRejectedPack}">
+                                                <TextBlock Classes="overline-sm muted" VerticalAlignment="Center"
+                                                           Text="{Binding Header, Converter={StaticResource UpperCase}}" />
+                                                <TextBlock Classes="mono muted" VerticalAlignment="Center"
+                                                           Text="{Binding Count, StringFormat={}{0}}" />
+                                            </StackPanel>
+
+                                            <!-- Nagłówek odrzuconej paczki: kolor treści niewczytanej i ostrzeżenie. -->
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="{DynamicResource DungeonSpacingXs}"
+                                                        Margin="{StaticResource ContentSectionHeaderMargin}"
+                                                        IsVisible="{Binding IsRejectedPack}">
+                                                <dc:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                                   Height="{DynamicResource DungeonActionIconSize}"
+                                                                   VerticalAlignment="Center"
+                                                                   Source="{DynamicResource DungeonIconWarningTriangle}"
+                                                                   Foreground="{DynamicResource DungeonDangerTextBrush}" />
+                                                <TextBlock Classes="overline-sm" VerticalAlignment="Center"
+                                                           Foreground="{DynamicResource DungeonDangerTextBrush}"
+                                                           Text="{Binding Header, Converter={StaticResource UpperCase}}" />
+                                            </StackPanel>
+
+                                            <ItemsControl Classes="content-rows"
+                                                          ItemsSource="{Binding Rows}"
+                                                          ItemTemplate="{StaticResource ContentRowTemplate}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- ===== Obszar szczegółu: jedyna warstwa przewijania po tej stronie. Klocek 560 stoi przy
+                 liście (wyrównany do lewej); szerszy ekran daje pusty pas z prawej. ===== -->
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
+                <Border Margin="{StaticResource ContentDetailMargin}"
+                        Padding="{DynamicResource DungeonScrollBarZone}"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                    <Panel>
+                        <TextBlock Classes="body muted"
+                                   IsVisible="{Binding ShowSelectionPrompt}"
+                                   Text="Wybierz wpis z listy." />
+                        <!-- Rama szczegółu należy do hosta, nie do klocka (brief runda 3a): tło, linia
+                             i narożnik karty ramy (surface-card, jak karta w galerii Kompozycje),
+                             wcięcie 24 ze wszystkich stron. Szerokość z klocka 560 + 2 x 24 (+ linia),
+                             wysokość z treści; stoi też przy rzeczy zepsutej. -->
+                        <Border Classes="surface-card"
+                                Padding="{DynamicResource DungeonPaddingXxl}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                IsVisible="{Binding HasDetail}">
+                            <ctl:EntryDetailView DataContext="{Binding Detail}" />
+                        </Border>
+                    </Panel>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

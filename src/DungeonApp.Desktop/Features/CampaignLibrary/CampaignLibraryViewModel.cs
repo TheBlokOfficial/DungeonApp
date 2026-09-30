@@ -7,7 +7,7 @@ using System.Windows.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;

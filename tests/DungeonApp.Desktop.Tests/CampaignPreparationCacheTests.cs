@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 
 namespace DungeonApp.Desktop.Tests;

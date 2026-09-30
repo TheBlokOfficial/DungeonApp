@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Systems;
-using DungeonApp.Core.Tests.Fakes;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Core.Tests.Campaigns;
 

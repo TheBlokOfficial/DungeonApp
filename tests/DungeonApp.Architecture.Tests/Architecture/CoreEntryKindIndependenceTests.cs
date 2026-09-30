@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
 /// The twin of <see cref="CoreIndependenceTests"/>, guarding the second boundary this project
-/// rests on: neither the engine, the shell, nor the shared UI library knows what kinds of things
+/// rests on: neither Core nor Desktop knows what kinds of things
 /// exist. There is no Monster and no Spell, no enum of entry kind, and no branch keyed by one. An
 /// entry names a content type, a content type names controls, and that path is identical for every
 /// entry there will ever be.
@@ -98,11 +99,6 @@ public sealed class CoreEntryKindIndependenceTests
         Assert.Contains(
             files,
             file => file.StartsWith(RepositoryRoot.DesktopSources, StringComparison.OrdinalIgnoreCase));
-        Assert.NotEmpty(RepositoryRoot.LibrarySourceRoots);
-        Assert.Contains(
-            files,
-            file => RepositoryRoot.LibrarySourceRoots.Any(
-                root => file.StartsWith(root, StringComparison.OrdinalIgnoreCase)));
         Assert.Contains(
             files,
             file => file.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase));
@@ -112,8 +108,7 @@ public sealed class CoreEntryKindIndependenceTests
     private static IReadOnlyList<string> ScannedSourceFiles() =>
     [
         .. SourceFiles(RepositoryRoot.CoreSources),
-        .. SourceFiles(RepositoryRoot.DesktopSources),
-        .. RepositoryRoot.LibrarySourceRoots.SelectMany(SourceFiles)
+        .. SourceFiles(RepositoryRoot.DesktopSources)
     ];
 
     private static IEnumerable<string> SourceFiles(string root) =>

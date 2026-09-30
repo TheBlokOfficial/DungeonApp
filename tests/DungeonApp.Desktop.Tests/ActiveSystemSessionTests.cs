@@ -2,8 +2,9 @@ using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Systems;
-using DungeonApp.Desktop.Content;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Testing;
 
 namespace DungeonApp.Desktop.Tests;
 

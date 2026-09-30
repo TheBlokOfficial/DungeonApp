@@ -170,7 +170,7 @@ public partial class CompositionsSection : UserControl
     /// <summary>
     /// Polish plural of "wpis": 1 wpis, 2-4 wpisy (also 22-24, 32-34...), otherwise wpisów
     /// (0, 5-21, 25...). The same rule as ContentTabViewModel's private helper in
-    /// DungeonApp.Library.Entries.Desktop, which this project cannot reference.
+    /// DungeonApp.Desktop, which this project cannot reference.
     /// </summary>
     private static string EntryPlural(int count)
     {

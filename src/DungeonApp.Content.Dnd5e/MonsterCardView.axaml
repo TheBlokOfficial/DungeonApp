@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="using:DungeonApp.Library.Entries.Desktop.Controls.Content"
+             xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
 
     <!-- The designed statblock layout, per the mockup's own "detail-panel" block (krok 10, brief C):
