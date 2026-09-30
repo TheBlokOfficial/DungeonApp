@@ -1,35 +1,17 @@
 # DungeonApp
 
-Desktopowy panel Mistrza Gry do gry papierowej przy stole. Utrzymuje spójny stan kampanii
-i prowadzi księgowość reguł, nie odbierając sesji jej stołowego charakteru.
-
-C#/.NET 10, Avalonia. Jedna maszyna, jeden użytkownik, bez sieci, bez kont, bez synchronizacji.
+Desktopowy panel Mistrza Gry do gry papierowej przy stole. Utrzymuje spójny stan kampanii i prowadzi
+księgowość reguł, nie odbierając sesji jej stołowego charakteru.
 
 > **Aplikacja liczy. Ty decydujesz, co policzyć.**
->
-> Interpretacja zasad zostaje przy człowieku. Techniczne przełożenie tej zasady — pięć zakazów,
-> których złamanie zamienia tę aplikację w silnik cRPG — jest w [CLAUDE.md](CLAUDE.md).
 
-Asystenci Mistrza Gry dzielą się na dwa gatunki i oba zawodzą z przeciwnych stron: napisane pod
-jeden system twardo kodują jego pojęcia, a w pełni konfigurowalne każą użytkownikowi projektować
-własny interfejs w plikach tekstowych. DungeonApp szuka trzeciej drogi i przyjmuje asymetrię, która
-ją definiuje: **aplikacja wie, czym jest potwór i jak go pokazać — bo to zostało zaprojektowane;
-nie wie, czym jest D&D — bo wiedza o systemie mieszka w wymienialnej warstwie.**
+C#/.NET 10, Avalonia 12. Jedna maszyna, jeden użytkownik, bez sieci, bez kont.
 
-Nie jest stołem wirtualnym do grania online, aplikacją dla graczy, generatorem treści ani silnikiem
-reguł konkretnego systemu.
-
-Czym to jest i jak działa — część I [dokumentu architektury](docs/architecture.md). Dlaczego
-właśnie tak — [docs/decisions.md](docs/decisions.md), ale do rozeznania się w projekcie nie jest
-potrzebne.
-
-## Uruchomienie
+## Uruchomienie, build, testy
 
 ```bash
 dotnet run --project src/DungeonApp.App
 ```
-
-## Build i testy
 
 ```bash
 dotnet build DungeonApp.sln
@@ -43,68 +25,17 @@ dotnet test DungeonApp.sln
 
 ```text
 src/
-  DungeonApp.Core/            # Kampanie, stan, zdarzenia, zapis, treść. Bez Avalonii.
-  DungeonApp.Desktop/         # Avalonia — powłoka, biurko, panele, motyw.
-  DungeonApp.Content.Dnd5e/   # Zestaw treści D&D 5e — typy treści, karty, narzędzia biurka.
-  DungeonApp.App/             # Korzeń kompozycji i plik wykonywalny.
-tests/
-  DungeonApp.Core.Tests/
-  DungeonApp.Desktop.Tests/
-  DungeonApp.Architecture.Tests/    # Granice: referencje i słownictwo. Widzi wszystkie warstwy naraz.
-  DungeonApp.Content.Dnd5e.Tests/
-docs/
+  DungeonApp.Core/            domena bez UI: kampanie, stan, zapis, wpisy, paczki
+  DungeonApp.Desktop/         Avalonia: powłoka, zakładki treści, biurko, motyw
+  DungeonApp.Content.Dnd5e/   system D&D 5e — jedyne miejsce, które wie, czym jest potwór
+  DungeonApp.App/             korzeń kompozycji i plik wykonywalny
+tests/                        testy per projekt, testy granic, wspólne pomocniki, paczki wzorcowe
+docs/                         architektura, rozstrzygnięcia, plan
 ```
-
-Oddzielenie `Core` od `Desktop` jest zabiegiem higienicznym: logika ma być odseparowana od
-okna. Granicy pilnuje test architektoniczny, który odrzuca każdą referencję do Avalonii w `Core` —
-bez niego separacja byłaby deklaracją w dokumentacji, a nie czymś wymuszonym przez build.
-
-**Zestaw treści**, `DungeonApp.Content.Dnd5e`, już istnieje i niesie
-typy treści, ich widoki i narzędzia biurka. To jedyne miejsce w aplikacji, w którym wolno wiedzieć,
-czym jest potwór. Ponieważ powłoce nie wolno znać żadnego zestawu po imieniu, korzeń kompozycji
-przeniósł się do osobnego projektu wykonywalnego, `DungeonApp.App` — to on jako jedyny wymienia
-zestawy z nazwy.
-
-Co w kodzie jest dojrzałe, co rusztowaniem, gdzie dług i pułapki, jak rozszerzać — [docs/code-state.md](docs/code-state.md).
 
 ## Dokumenty
 
-Każdy dokument odpowiada na jedno pytanie. Pięć pierwszych opisuje aplikację i przy rozbieżności
-wygrywa ten wyżej. Szósty stoi obok tego porządku, bo opisuje nie program, tylko pracę nad nim —
-nigdy więc nie rozjeżdża się z kodem.
-
-| Dokument | Odpowiada na pytanie | Kiedy po niego sięgnąć |
-|---|---|---|
-| [CLAUDE.md](CLAUDE.md) | Czego nigdy nie wolno złamać? | zawsze; wygrywa nawet z kodem |
-| [docs/architecture.md](docs/architecture.md) | Czym to jest i jak jest zbudowane? | żeby się wdrożyć (część I) albo sprawdzić, co obowiązuje (część II–III) |
-| [docs/code-state.md](docs/code-state.md) | W jakim stanie jest kod — co dojrzałe, co rusztowanie, gdzie dług i pułapki, jak go rozszerzać? | przed decyzją o kodzie i przy pisaniu briefu |
-| [docs/decisions.md](docs/decisions.md) | Dlaczego tak, co odrzuciliśmy i co obowiązywało wcześniej? | **zanim** zaproponujesz zmianę; do wdrożenia się niepotrzebny |
-| [docs/tasks.md](docs/tasks.md) | Co jest do zrobienia dalej? | gdy szukasz następnego kroku |
-| [docs/collaboration.md](docs/collaboration.md) *(poza porządkiem)* | Jak prowadzić tę pracę i jak o niej raportować? | zanim cokolwiek zaczniesz robić w tym repo |
-| `docs/zadania/*.md` *(poza porządkiem, tymczasowe)* | Na czym stoi jedno duże zadanie w toku? | gdy autor wskaże go na start sesji; znika, gdy zadanie się zamknie |
-
-**Każdy fakt ma jeden dom.** Tabela wyżej mówi, kto wygrywa przy rozbieżności. Ta reguła mówi coś
-innego: kto w ogóle ma prawo rzecz zapisać. Uzasadnienie stoi w jednym dokumencie, a pozostałe
-odsyłają do niego po nazwie sekcji — nigdy go nie streszczają „żeby czytało się samodzielnie".
-
-| Rodzaj faktu | Dom |
-|---|---|
-| **co obowiązuje** — deklaracje i ich konsekwencje, w czasie teraźniejszym | `architecture.md` |
-| **dlaczego** — argumenty za przyjętym, kierunki odrzucone z wyzwalaczem powrotu, co obowiązywało wcześniej i kiedy się zmieniło | `decisions.md` |
-| **jak jest dziś** — sądy o stanie kodu | `code-state.md` |
-| **co dalej** | `tasks.md` |
-| **stan jednego dużego zadania w toku** — plan, ustalenia i notki na czas jego trwania | `docs/zadania/<zadanie>.md` |
-
-Powód jest praktyczny, nie porządkowy: dopóki każdy dokument powtarzał kawałek sąsiada, żadnego nie
-dało się bezpiecznie pominąć, a kolumna „kiedy po niego sięgnąć" była fikcją. Po tej regule
-pominięcie dokumentu, którego dziś nie potrzebujesz, jest bezpieczne — i o to w niej chodzi.
-
-Dwie rzeczy, które oszczędzają najwięcej czasu:
-
-* **`decisions.md` czyta się przed propozycją, nie po.** Sporo naturalnych pomysłów zostało już raz
-  rozważonych i odrzuconych z uzasadnieniem — dziedziczenie szablonów, skrypty w paczkach, wpisy
-  lokalne dla kampanii, przełączniki dodatków w środku logiki. Dokument istnieje po to, żeby nie
-  wracały co kilka miesięcy jako nowe — a gdy któryś wraca słusznie, zapisuje, dlaczego jego
-  odrzucenie straciło podstawy.
-* **`code-state.md` nigdy nie wygrywa z kodem.** On i `architecture.md` rozjeżdżają się **celowo** —
-  jeden opisuje stan, drugi cel.
+- [CLAUDE.md](CLAUDE.md) — pięć zakazów, sposób pracy, pułapki
+- [docs/architecture.md](docs/architecture.md) — jak to jest zbudowane
+- [docs/decisions.md](docs/decisions.md) — co przesądzone i czego nie robimy
+- [docs/roadmap.md](docs/roadmap.md) — co dalej
