@@ -14,7 +14,7 @@ namespace DungeonApp.Desktop.Controls;
 /// Ikona nie leży w polu tekstowym, więc kliknięcie w nią, obok niej ani w krawędź ramki nie stawia
 /// karetki i nie zaczyna zaznaczania. <see cref="IsClearable"/> dokłada na końcu ramki przycisk
 /// czyszczenia (x), widoczny tylko przy niepustym polu; czyszczenie zostawia fokus w polu. Wygląd
-/// i stany należą do motywu ramy (Themes/DungeonControls.axaml). Zmienia wyłącznie tekst pola
+/// i stany należą do motywu ramy (Themes/Controls/IconField.axaml). Zmienia wyłącznie tekst pola
 /// tekstowego na jawne kliknięcie przycisku czyszczenia.
 /// </summary>
 [TemplatePart(ClearButtonPartName, typeof(Button))]

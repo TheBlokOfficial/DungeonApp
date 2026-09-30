@@ -87,9 +87,10 @@ Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 ## Pułapki, których nie widać w kodzie
 
 1. Błąd w motywie kontrolki kompiluje się i wywraca aplikację przy pierwszym użyciu kontrolki. Pilnuje
-   tego `ControlThemesBuildTests`; nowy plik motywu dopisz do tego testu.
-2. Motywu Fluent nie ma. Wbudowana kontrolka bez szablonu w `Themes/DungeonControls.axaml` jest
-   niewidoczna. Dopisz jej motyw i typ do `BuiltInControlThemesTests`.
+   tego `ControlThemesBuildTests`. Motyw kontrolki to plik w `Themes/Controls/` wpisany do spisu
+   `Themes/DungeonControls.axaml`; test odrzuca plik, którego nie ma w spisie.
+2. Motywu Fluent nie ma. Wbudowana kontrolka bez motywu w `Themes/Controls/` jest niewidoczna. Dopisz
+   jej plik motywu i typ do `BuiltInControlThemesTests`.
 3. Zasób złego typu w XAML-u widoku (liczba tam, gdzie ma być `GridLength`) kompiluje się i wywraca
    widok przy utworzeniu — stąd test budujący widok.
 4. Każdy `Button` ma stałą wysokość z motywu; przycisk jako wiersz albo karta ustawia `Height` jawnie

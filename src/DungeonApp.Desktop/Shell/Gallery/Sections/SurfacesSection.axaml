@@ -5,7 +5,7 @@
     <!-- The surface and line colors of Themes/Tokens.axaml with their values and meanings, every text
          color on every background text stands on with its computed contrast, the three surface
          classes of Themes/Surfaces.axaml (each also with long text and empty), and the three Separator
-         variants of Themes/DungeonControls.axaml. Every sample has a fixed width, so long text shows
+         variants of Themes/Controls/Separator.axaml. Every sample has a fixed width, so long text shows
          whether it trims or wraps instead of widening the sample. -->
     <UserControl.Styles>
         <Style Selector="TextBlock.wrap">

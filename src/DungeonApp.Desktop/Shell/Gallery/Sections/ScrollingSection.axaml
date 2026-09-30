@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ScrollingSection">
-    <!-- The frame's ScrollViewer and ScrollBar themes (Themes/DungeonControls.axaml), live: two areas
+    <!-- The frame's ScrollViewer and ScrollBar themes (Themes/Controls/ScrollViewer.axaml), live: two areas
          of the same fixed size, one with more text than fits (the bar shows as an overlay at the
          area's edge; the text ends before the bar's zone, DungeonScrollBarZone, so it is never under
          the bar) and one with less (no bar - the text wraps at the same width in both). Nothing here

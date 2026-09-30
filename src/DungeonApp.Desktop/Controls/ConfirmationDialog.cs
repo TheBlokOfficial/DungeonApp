@@ -13,7 +13,7 @@ namespace DungeonApp.Desktop.Controls;
 /// <summary>
 /// Okno potwierdzenia: pytanie nad całym oknem aplikacji - zasłona (DungeonScrimBrush) na reszcie
 /// okna, karta na środku z tytułem, treścią i przyciskami "Anuluj" oraz akcji. Wygląd należy do motywu
-/// ramy (Themes/DungeonControls.axaml). Widok wywołuje je jedną metodą <see cref="ShowAsync"/>.
+/// ramy (Themes/Controls/ConfirmationDialog.axaml). Widok wywołuje je jedną metodą <see cref="ShowAsync"/>.
 /// Zachowanie: Escape = Anuluj; kliknięcie w zasłonę nie zamyka; Enter potwierdza tylko akcję główną,
 /// przy niszczącej nic nie robi. Zasłona zabiera mysz treści pod spodem, Tab krąży po karcie; po
 /// zamknięciu fokus wraca tam, gdzie był przed otwarciem. Okno jest widokiem: zwraca odpowiedź, stan

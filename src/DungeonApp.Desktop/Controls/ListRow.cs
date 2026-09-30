@@ -9,7 +9,7 @@ namespace DungeonApp.Desktop.Controls;
 /// nie zaznaczenie kontrolki. <see cref="IsSelected"/> (pseudoklasa :selected) podaje model widoku;
 /// wiersz sam się nie zaznacza. <see cref="ShowsSelectionStripe"/> włącza kreskę zaznaczenia w pasie
 /// wcięcia po lewej stronie wiersza. Wygląd, stany, wysokość i pas kreski należą do motywu ramy
-/// (Themes/DungeonControls.axaml); szerokość pasa i wcięcia kreski podaje układający listę zasobami
+/// (Themes/Controls/ListRow.axaml); szerokość pasa i wcięcia kreski podaje układający listę zasobami
 /// DungeonListRowStripeGutter i DungeonListRowStripeInset na poziomie listy.
 /// </summary>
 public sealed class ListRow : Button

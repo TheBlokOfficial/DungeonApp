@@ -22,7 +22,7 @@
              element that carries no fill of its own; the hover background lives on a separate
              element nested inside it, so it sits geometrically inside the line and can never
              paint over it. Height is reset to NaN (auto) because the Button ControlTheme
-             (DungeonControls.axaml) gives every button DungeonControlHeight, and leaving this
+             (Themes/Controls/Button.axaml) gives every button DungeonControlHeight, and leaving this
              style silent on it would keep that fixed height beating Stretch. A frame cell, not a
              button variant: it fills the bar and carries the bar's own line. -->
         <Style Selector="Button.frame-action">

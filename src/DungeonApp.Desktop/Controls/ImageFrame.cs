@@ -18,7 +18,7 @@ namespace DungeonApp.Desktop.Controls;
 /// It knows nothing about where a picture comes from - whoever places the frame decides the state and
 /// hands it ready data. It has no size of its own: its size and proportions (square, portrait) come
 /// from the layout it stands in. The look belongs to the frame's control theme
-/// (Themes/DungeonControls.axaml).
+/// (Themes/Controls/ImageFrame.axaml).
 /// </summary>
 public sealed class ImageFrame : TemplatedControl
 {

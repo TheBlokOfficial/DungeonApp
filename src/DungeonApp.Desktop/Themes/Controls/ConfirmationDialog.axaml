@@ -1,0 +1,68 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Okno potwierdzenia (controls:ConfirmationDialog) - wywołanie i zachowanie w Controls/ConfirmationDialog.cs.
+        Zasłona DungeonScrimBrush na całym oknie (warstwa controls:WindowOverlay); kliknięcie w nią
+        nic nie robi. Karta na środku: powierzchnia jak okienko wysuwane (DungeonBackstageCardBrush,
+        krawędź 1 px InputBorder, DungeonFlyoutShadow, DungeonFlyoutCornerRadius), szerokość najwyżej
+        DungeonConfirmationDialogMaxWidth, w wąskim oknie węższa - odstęp DungeonSpacingXxl od
+        krawędzi; wcięcie DungeonPaddingXxl. Tytuł stylem display-md (20, krój nagłówków - jak tytuł
+        okna dialogowego Windows), treść tekstem drugorzędnym (TextRegular) 13, oba zawijają się;
+        odstęp tytuł-treść DungeonSpacingSm, treść-przyciski DungeonSpacingXxl. Przyciski w prawym
+        dolnym rogu, odstęp DungeonSpacingSm: "Anuluj" (zwykły) i akcja (.primary albo - niszcząca
+        - .danger). Tab krąży po karcie (TabNavigation Cycle); fokus startowy na "Anuluj"; sama
+        kontrolka przyjmuje fokus (bez wyglądu), żeby klawisze trafiały do niej także po kliknięciu
+        w zasłonę. Pojawienie: całość z przezroczystości, karta dosuwa się o DungeonPopupOpenOffset
+        z dołu (DungeonPopupOpenDuration, wyhamowanie); zamknięcie natychmiast; wyłączone animacje
+        w systemie - od razu. Kursor strzałka.
+    -->
+    <ControlTheme x:Key="{x:Type controls:ConfirmationDialog}" TargetType="controls:ConfirmationDialog">
+        <Setter Property="Background" Value="{DynamicResource DungeonScrimBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="PART_Card"
+                            MaxWidth="{DynamicResource DungeonConfirmationDialogMaxWidth}"
+                            Margin="{DynamicResource DungeonPaddingXxl}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Padding="{DynamicResource DungeonPaddingXxl}"
+                            Background="{DynamicResource DungeonBackstageCardBrush}"
+                            BorderBrush="{DynamicResource DungeonInputBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
+                            BoxShadow="{DynamicResource DungeonFlyoutShadow}">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingXxl}">
+                            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                                <TextBlock Classes="display-md"
+                                           Text="{TemplateBinding Title}"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Classes="body secondary"
+                                           Text="{TemplateBinding Message}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                        Spacing="{DynamicResource DungeonSpacingSm}">
+                                <Button Name="PART_CancelButton" Content="Anuluj" />
+                                <Button Name="PART_ConfirmButton" Content="{TemplateBinding ActionText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

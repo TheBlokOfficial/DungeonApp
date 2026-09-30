@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ChoicesSection">
-    <!-- The frame's CheckBox, RadioButton, ToggleSwitch and Slider themes (Themes/DungeonControls.axaml), live:
+    <!-- The frame's CheckBox, RadioButton, ToggleSwitch and Slider themes (Themes/Controls/), live:
          every static state (unchecked, checked, indeterminate, disabled in each), a label longer than
          its column (it wraps, the mark stays by the first line), a mark without a label and a group of
          three radio buttons. Hover is checked with the mouse. Nothing here restyles a control - the

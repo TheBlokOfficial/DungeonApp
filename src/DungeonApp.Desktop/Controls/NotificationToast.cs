@@ -25,7 +25,7 @@ public enum NotificationKind
 /// <summary>
 /// Powiadomienie: dymek w prawym dolnym rogu okna (stos w <see cref="WindowOverlay"/>, najnowszy na
 /// dole) z ikoną odmiany, treścią, krzyżykiem zamknięcia i najwyżej jednym odnośnikiem akcji. Wygląd
-/// należy do motywu ramy (Themes/DungeonControls.axaml). Widok wywołuje je jedną metodą
+/// należy do motywu ramy (Themes/Controls/NotificationToast.axaml). Widok wywołuje je jedną metodą
 /// <see cref="Show"/>.
 /// Informacja i ostrzeżenie znikają same po czasie, który jest stałą motywu dla odmiany
 /// (DungeonNotificationInformationDismissDelay, DungeonNotificationWarningDismissDelay) - nie

@@ -6,7 +6,7 @@ namespace DungeonApp.Desktop.Themes;
 /// <summary>
 /// Znacznik listy, której wiersze mają pole wyboru (ListBox z motywem DungeonCheckList, wiersze
 /// DropDownPicker w trybie wielokrotnym). Dziedziczy się w dół drzewa - ustawiony na liście
-/// obejmuje jej wiersze. Motyw wiersza listy (ListBoxItem w Themes/DungeonControls.axaml) czyta go:
+/// obejmuje jej wiersze. Motyw wiersza listy (ListBoxItem w Themes/Controls/ListBox.axaml) czyta go:
 /// stan wiersza niesie wtedy samo pole wyboru, wybrany wiersz nie dostaje tła akcentu, a najechanie
 /// wygląda jak w zwykłym wierszu. Zmienia wyłącznie wygląd.
 /// </summary>

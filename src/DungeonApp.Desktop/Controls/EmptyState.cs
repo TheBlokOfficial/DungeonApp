@@ -6,7 +6,7 @@ namespace DungeonApp.Desktop.Controls;
 /// <summary>
 /// What an empty list shows in place of its rows: a message and, optionally, a hint under it saying
 /// what to do. It stands at the top of the list's area, not in the middle of a tall list; no picture
-/// and no icon. The look belongs to the frame's control theme (Themes/DungeonControls.axaml).
+/// and no icon. The look belongs to the frame's control theme (Themes/Controls/EmptyState.axaml).
 /// </summary>
 public sealed class EmptyState : TemplatedControl
 {

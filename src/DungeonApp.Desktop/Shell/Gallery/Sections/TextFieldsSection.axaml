@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.TextFieldsSection">
-    <!-- Every TextBox variant from the frame's ControlTheme (Themes/DungeonControls.axaml), live: one
+    <!-- Every TextBox variant from the frame's ControlTheme (Themes/Controls/TextBox.axaml), live: one
          row per kind of field in its states - empty with placeholder, with text, with text longer than
          the field, disabled. Every field has the same fixed width, so the long text shows it scrolls
          inside instead of widening the field. Nothing here restyles a field - the only local value is

@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.ListsSection">
-    <!-- The frame's ListBox and ListBoxItem themes (Themes/DungeonControls.axaml), live: one list with
+    <!-- The frame's ListBox and ListBoxItem themes (Themes/Controls/ListBox.axaml), live: one list with
          a row in every static state (rest, selected, disabled) and a row whose text is longer than the
          list, and one list longer than its area (it scrolls with the frame's bar). Hover is checked
          with the mouse. Nothing here restyles a list - the only local values are the lists' size and inset, and

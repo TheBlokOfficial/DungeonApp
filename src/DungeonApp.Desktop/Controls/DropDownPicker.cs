@@ -32,7 +32,7 @@ public enum DropDownPickerMode
 /// narrowing the rows with a search field. A plain single choice without search stays a ComboBox.
 /// Rows show each item's name: <see cref="DisplayMemberBinding"/> evaluated on the item (like
 /// ItemsControl.DisplayMemberBinding), or <c>ToString()</c> without it. The look belongs to the frame's control theme
-/// (Themes/DungeonControls.axaml). Selection changes only what the user clicked.
+/// (Themes/Controls/DropDownPicker.axaml). Selection changes only what the user clicked.
 /// </summary>
 [TemplatePart("PART_SearchBox", typeof(TextBox))]
 [PseudoClasses(":dropdownopen", ":has-selection")]
