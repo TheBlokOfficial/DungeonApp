@@ -3,21 +3,7 @@
 Kolejność od góry. Pozycja jest opisem potrzeby, nie zleceniem — przed pracą sprawdź w kodzie, czy
 nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka.
 
-## Teraz: błąd nie zamyka programu, modele widoków na CommunityToolkit.Mvvm
-
-Rozstrzygnięte z autorem: przy stole zamknięcie programu kosztuje więcej niż błąd, a kampania jest
-zapisana po każdej zmianie. Błąd w akcji MG albo na wątku interfejsu → wpis w logu i powiadomienie
-„Nie udało się …, szczegóły w logu”, program działa dalej. Błąd w tle poza interfejsem → tylko log.
-
-- CommunityToolkit.Mvvm zamiast ręcznych `ObservableObject`, `RelayCommand` i `AsyncCommand`; komendy
-  asynchroniczne nie przez `async void`, błąd komendy idzie jednym wspólnym miejscem do logu
-  i powiadomienia.
-- Handler wątku interfejsu (`App`) przestaje zamykać program; test w oknie bez ekranu.
-- Właściwości modeli widoków na `[ObservableProperty]` (ok. 110 miejsc w ok. 30 plikach) — praca
-  mechaniczna dla agenta `porzadki`.
-- Wpis w `docs/decisions.md` o zachowaniu po błędzie.
-
-## Potem: zakładki treści — karty potwora i przedmiotu
+## Teraz: zakładki treści — karty potwora i przedmiotu
 
 Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, paczka `dnd5e-srd` (na razie
 pusta), pole obrazka z ramką. Projekt kart (układ, wymiary, co wyróżnione) jest punktem wyjścia, nie

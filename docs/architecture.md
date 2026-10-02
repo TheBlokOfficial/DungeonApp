@@ -77,9 +77,15 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
 - **Start:** kurtyna startowa, podczas której biegną kroki startowe systemów (wczytanie paczek,
   rozgrzewka kart), a potem ramy (półka kampanii, rozgrzewka ekranów). Awaria kroku nigdy nie
   zatrzymuje startu — kończy się ostrzeżeniem na pasku stanu i wpisem w logu.
-- **Błędy:** błąd złapany i niepokazany MG trafia do logu (`AppLog`, statyczny, bo globalne handlery
-  i kroki startowe systemów nie mają wspólnego właściciela). Nieobsłużony wyjątek jest tylko
-  zapisywany — program kończy działanie jak bez logu.
+- **Błędy:** wyjątek na wątku interfejsu — z komendy, kliknięcia, timera czy układu (komenda
+  asynchroniczna oddaje swój błąd na ten wątek) — łapie jeden handler
+  (`Desktop/Diagnostics/UiThreadErrors`, podpięty w `App`): wpis w logu, jedno powiadomienie w oknie
+  głównym, program działa dalej. Kod akcji MG nie łapie więc błędu po to, żeby go ukryć. Błąd złapany
+  i niepokazany MG trafia do logu (`AppLog`, statyczny, bo globalne handlery i kroki startowe systemów
+  nie mają wspólnego właściciela). Błąd w tle poza interfejsem trafia tylko do logu. W testach bez
+  ekranu handlera nie ma — wyjątek oblewa test.
+- **Modele widoków:** CommunityToolkit.Mvvm — `[ObservableProperty]` na właściwościach częściowych
+  i `[RelayCommand]`. Komenda nie sprawdza `CanExecute` w `Execute`; robi to przycisk.
 - **Nawigacja:** ekran wyboru systemu, potem pasek boczny z trzema kategoriami: **Kampania** (półka
   kampanii, a po otwarciu kampanii jej zakładki), **System** (zakładki treści), **Aplikacja** (Galeria,
   Ustawienia). Zakładki wypełnia skompilowany system, nigdy paczka. Kryterium okna czy zakładki: czy

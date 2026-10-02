@@ -26,6 +26,17 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Liczby: `tools/subagent-usage.py`. *Wyzwalacz:* nowy model albo pomiar z Sonnetem bez poprawek.
 - **Zapis po każdej zmianie**, bez ręcznego „Zapisz”. *Wyzwalacz:* MG chce wrócić do wcześniejszego
   stanu → najpierw rotujące kopie zapasowe.
+- **Błąd nie zamyka programu.** Przy stole zamknięcie kosztuje więcej niż błąd, a kampania jest
+  zapisana po każdej zmianie. Wyjątek na wątku interfejsu (komenda, kliknięcie, timer, układ) łapie
+  jeden handler: wpis w logu, jedno powiadomienie „Nie udało się wykonać tej czynności. Szczegóły
+  w logu.”, program działa dalej. Błąd w tle poza interfejsem — tylko log. Akcja MG nie połyka błędu
+  po cichu, tylko go przepuszcza. *Wyzwalacz:* błąd, po którym dalsza praca psuje zapisaną kampanię.
+- **CommunityToolkit.Mvvm w modelach widoków**, nie ręczne `ObservableObject` i komendy. Próba na
+  pasku górnym: build, testy i aplikacja bez zmian; wiązania są kompilowane, więc nazwę wygenerowaną
+  sprawdza build, nie podpowiedzi edytora. Dawnego powodu odejścia od Toolkitu nie odtworzono.
+  Właściwości częściowe (C# 14), nie pola z atrybutem. Setter z logiką poza powiadomieniem zostaje
+  ręczny, bo `OnXChanged` biegnie przed powiadomieniem o X. *Wyzwalacz:* generator psuje build albo
+  edytor.
 
 ## Odrzucone
 
