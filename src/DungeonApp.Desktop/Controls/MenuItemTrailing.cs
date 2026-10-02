@@ -7,7 +7,7 @@ namespace DungeonApp.Desktop.Controls;
 /// Krótki napis w przygaszonej kolumnie po prawej stronie pozycji menu - tej samej, w której menu
 /// pokazuje skrót klawiszowy (np. kierunek sortowania przy wybranym polu w <see cref="SortPicker"/>).
 /// Pozycja nie ma naraz skrótu i takiego napisu. Wygląd należy do motywu MenuItem
-/// (Themes/DungeonControls.axaml, PART_TrailingText).
+/// (Themes/Controls/Menus.axaml, PART_TrailingText).
 /// </summary>
 public static class MenuItemTrailing
 {

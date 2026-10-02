@@ -11,7 +11,7 @@ namespace DungeonApp.Desktop.Workspace.Controls;
 /// The campaign desk: an <see cref="ItemsControl"/> that lays its items out on a <see cref="Canvas"/>
 /// as floating <see cref="PanelWindow"/>s.
 /// <para>
-/// The container <em>is</em> the panel, rather than the usual <see cref="ContentPresenter"/> wrapping
+/// The container <em>is</em> the panel, rather than the usual <see cref="Avalonia.Controls.Presenters.ContentPresenter"/> wrapping
 /// one. That is what lets the gesture code write <see cref="Canvas.LeftProperty"/> on the same object
 /// the placement is bound to. The declarative alternative — an <c>ItemContainerTheme</c> whose setters
 /// bind the placement — looks tidier but is a trap: setter values sit at Style priority, so the first

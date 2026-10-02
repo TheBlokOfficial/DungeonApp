@@ -29,7 +29,7 @@ namespace DungeonApp.Desktop.Controls;
 /// "rosnąco" / "malejąco". Zmiana kierunku przewraca ikonę przez oś poziomą (spłaszczenie do zera
 /// i rozłożenie odwróconej, DungeonMotionDuration, z wyhamowaniem); kierunek zmienia się od razu, ruch
 /// go dogania; przy wyłączonych animacjach w systemie (<see cref="SystemMotion.IsReduced"/>) - bez
-/// ruchu. Wygląd należy do motywu ramy (Themes/DungeonControls.axaml).
+/// ruchu. Wygląd należy do motywu ramy (Themes/Controls/SortPicker.axaml).
 /// </remarks>
 [TemplatePart(FieldButtonPartName, typeof(Button))]
 [TemplatePart(DirectionButtonPartName, typeof(Button))]

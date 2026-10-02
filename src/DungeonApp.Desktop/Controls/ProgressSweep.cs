@@ -8,7 +8,7 @@ using Avalonia.Media;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Wypełnienie nieokreślonego wskaźnika postępu (część szablonu ProgressBar, Themes/DungeonControls.axaml):
+/// Wypełnienie nieokreślonego wskaźnika postępu (część szablonu ProgressBar, Themes/Controls/ProgressBar.axaml):
 /// odcinek szerokości <see cref="SegmentFraction"/> toru przesuwa się w pętli od lewej do prawej
 /// w czasie DungeonProgressSweepDuration. To ruch ciągły, nie przejście stanu - rysuje go kod, bo
 /// animacja stylu nie daje się wyłączyć stylem ReducedMotion.axaml. Klatki napędza pętla renderowania

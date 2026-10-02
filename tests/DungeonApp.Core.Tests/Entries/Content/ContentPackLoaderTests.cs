@@ -79,8 +79,8 @@ public sealed class ContentPackLoaderTests : IDisposable
     }
 
     // ---------------------------------------------------------------------
-    // Manifest: missing pack.json, invalid JSON, unknown formatVersion, unknown key (e.g. a
-    // "kind" field - just an unmapped member).
+    // Manifest: missing pack.json, invalid JSON, unknown formatVersion, unknown key (e.g.
+    // "kind", which no manifest member maps).
     // ---------------------------------------------------------------------
 
     [Fact]

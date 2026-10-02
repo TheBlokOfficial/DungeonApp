@@ -19,7 +19,8 @@ namespace DungeonApp.Desktop.Startup;
 /// wkompilowanego systemu - to jego deklaracje zakładek nadają paskowi kształt), pasek górny i pustą
 /// zakładkę "Ustawienia" (żadne z nich nie zależy od zwinięcia paska bocznego, więc każde rozgrzewa
 /// się raz) oraz stronę kampanii, jeśli na półce jest choć jedna kampania. Zawartość poszczególnych
-/// systemów - ich zakładki, karty wpisów, biurko - rozgrzewa osobno <see cref="WarmSystemContentStep"/>;
+/// systemów rozgrzewają osobno <see cref="WarmSystemTabsStep"/> (zakładki, w tym biurko) i kroki
+/// startowe samych systemów (karty wpisów);
 /// ten krok nigdy nie buduje niczego przez tymczasową sesję kampanii.
 /// <para>
 /// Każda rozgrzewana kontrolka jest egzemplarzem rzucanym - powiązanym z prawdziwym modelem tam, gdzie

@@ -1,0 +1,88 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes">
+
+    <!--
+        Chip: klikalny przełącznik filtra - ToggleButton z Theme="{StaticResource DungeonChip}"
+        (IsChecked - filtr włączony). Zwarta kontrolka w rzędzie filtrów: wysokość DungeonChipHeight
+        (28, jawnie - niższa od przycisku 36), zaokrąglenie DungeonControlCornerRadius, wcięcie
+        DungeonChipPadding, pismo interfejsu 12 (DungeonHelperFontSize), Medium. Opcjonalna ikona
+        przed napisem - jak w przycisku: StackPanel z ForegroundIcon (DungeonActionIconSize, kolor
+        tekstu chipa) i TextBlock. Napis w jednej linii, zbyt długi przycina się wielokropkiem
+        z podpowiedzią (Themes/TrimmedLabelToolTip.cs). Krawędź zawsze 1 px i zawsze widoczna,
+        jaśniejsza od tła (włączony - pełny akcent), więc zmiana stanu nie zmienia wymiarów.
+        Stany:
+          spoczynek          - tło BackstageRow, krawędź Border, tekst TextRegular;
+          najechanie         - krawędź BorderStrong, tekst TextPrimary; wciśnięcie - jak najechanie;
+          włączony (:checked) - tło AccentDim, krawędź AccentEdge, tekst AccentOnDim; pod myszą i wciśnięty
+                               bez zmian;
+          wyłączony          - DungeonDisabledOpacity, gdy nic wyżej nie przygasza, wygląd spoczynku;
+          włączony wyłączony - traci akcent: tło SurfaceActive, krawędź Border, tekst TextRegular.
+        Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka, bez strzałki i listy wyboru.
+    -->
+    <ControlTheme x:Key="DungeonChip" TargetType="ToggleButton">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonChipPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Background"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      TextBlock.TextTrimming="CharacterEllipsis"
+                                      TextBlock.TextWrapping="NoWrap"
+                                      RecognizesAccessKey="True"
+                                      themes:TrimmedLabelToolTip.IsEnabled="True" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <!-- Włączony: w każdym stanie myszy ten sam - jawnie, nie przez kolejność stylów. -->
+        <Style Selector="^:checked, ^:checked:pointerover, ^:checked:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAccentOnDimBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^:checked:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

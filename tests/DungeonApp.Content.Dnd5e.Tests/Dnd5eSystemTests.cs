@@ -125,6 +125,39 @@ public sealed class Dnd5eSystemTests
         Assert.Equal(image, entry.Entry.Values.Read<Gear>().Image);
     }
 
+    [Fact]
+    public void A_content_type_the_system_does_not_declare_is_neither_found_nor_validated()
+    {
+        var system = NewSystem();
+        var unknown = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("spell"));
+
+        Assert.False(system.TryGet(unknown, out _));
+        Assert.False(system.TryValidate(unknown, ContentValues.Empty, out var error));
+        Assert.Contains("spell", error);
+    }
+
+    [Fact]
+    public void A_content_type_from_another_set_is_not_the_systems_own()
+    {
+        var system = NewSystem();
+        var foreign = new ContentTypeReference(ContentId.Create("other"), ContentId.Create("monster"));
+
+        Assert.False(system.HasSet(foreign.Set));
+        Assert.False(system.TryGet(foreign, out _));
+        Assert.False(system.TryValidate(foreign, ContentValues.Empty, out var error));
+        Assert.Contains("does not own", error);
+    }
+
+    [Fact]
+    public void Each_system_tab_is_built_from_the_content_tab_definition_it_is_named_after()
+    {
+        var system = NewSystem();
+
+        Assert.Equal(
+            system.ContentTabDefinitions.Select(definition => definition.Title),
+            system.SystemTabs.Select(tab => tab.Title));
+    }
+
     private static Task<ContentRegistry> LoadFixturesAsync() =>
         new ContentPackLoader(RepositoryRoot.PackFixtures, NewSystem()).LoadAsync(CancellationToken.None);
 

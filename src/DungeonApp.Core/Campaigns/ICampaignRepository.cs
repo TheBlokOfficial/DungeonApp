@@ -9,9 +9,9 @@ namespace DungeonApp.Core.Campaigns;
 /// The port the campaign use cases require. Asynchronous from the first line because the only
 /// planned adapter writes files - widening a synchronous port later would touch every caller.
 /// <para>
-/// <paramref name="declarations"/> on <see cref="SaveAsync"/> and <see cref="GetAsync"/> is the
-/// system's own list of state models - the frame saves, the system declares - never referenced by
-/// name here, so this port needs no change when a system declares another model.
+/// <c>declarations</c> on <see cref="SaveAsync"/> and <see cref="GetAsync"/> is the system's own
+/// list of state models - the frame saves, the system declares - never referenced by name here, so
+/// this port needs no change when a system declares another model.
 /// </para>
 /// </summary>
 public interface ICampaignRepository

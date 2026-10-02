@@ -13,7 +13,7 @@ namespace DungeonApp.Desktop.Controls;
 /// w pierwszej kolumnie, dolna zawsze, prawa w ostatniej kolumnie - i między kolumnami, gdy
 /// <see cref="ShowColumnLines"/>. Każda linia leży więc raz, tło wyróżnionej komórki sięga linii,
 /// a linia leży nad nim. Ostre narożniki. Nieinteraktywna. Wygląd należy do motywu ramy
-/// (Themes/DungeonControls.axaml).
+/// (Themes/Controls/Table.axaml).
 /// </summary>
 public sealed class Table : Grid
 {

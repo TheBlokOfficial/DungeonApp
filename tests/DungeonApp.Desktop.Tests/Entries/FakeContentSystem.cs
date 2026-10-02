@@ -11,23 +11,15 @@ using DungeonApp.Desktop.Entries;
 namespace DungeonApp.Desktop.Tests.Entries;
 
 /// <summary>
-/// A minimal <see cref="IGameSystem"/> for the Library.Entries.Desktop tests that need an
-/// <see cref="IContentPresentation"/> to hand a <see cref="Features.Registry.RegistryViewModel"/>
-/// (<c>RegistryViewModelTests</c>, <c>LoadContentPacksStepTests</c>). It knows exactly the descriptors
-/// it is given and draws a trivial placeholder card for any resolved entry - it exists to exercise the
-/// registry's plumbing, not to stand in for any real content type, so it names none.
+/// A minimal <see cref="IGameSystem"/> for the tests that need an <see cref="IContentTypeCatalog"/>
+/// and an <see cref="IContentPresentation"/>. It knows exactly the descriptors it is given and draws a
+/// trivial placeholder card for any resolved entry - it exercises the content plumbing, not any real
+/// content type, so it names none.
 /// <para>
 /// Implements <see cref="IContentTypeCatalog"/> and <see cref="IContentPresentation"/> directly, not
-/// through <see cref="IGameSystem"/> - the frame's own contract no longer carries either
-/// (docs/architecture.md, "Rama, biblioteka, system"), so <see cref="ContentSetId"/> is this fake's own
-/// concrete identity, separate from the frame's <see cref="Id"/>, the same split
-/// <c>Dnd5eSystem</c> makes.
-/// </para>
-/// <para>
-/// Copied minimally from <c>DungeonApp.Desktop.Tests.FakeContentSystem</c> rather than shared (docs/tasks.md,
-/// etap 2): that class is <c>internal</c> and still backs several Desktop.Tests fixtures unrelated to
-/// this move, and a reference between two test projects would be a second, needless edge for the sake
-/// of one fake.
+/// through <see cref="IGameSystem"/>, because the frame's own contract carries neither; so
+/// <see cref="ContentSetId"/> is this fake's own concrete identity, separate from the frame's
+/// <see cref="Id"/>, the same split <c>Dnd5eSystem</c> makes.
 /// </para>
 /// </summary>
 internal sealed class FakeContentSystem(

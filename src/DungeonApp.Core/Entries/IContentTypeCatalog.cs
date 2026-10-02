@@ -18,8 +18,8 @@ namespace DungeonApp.Core.Entries;
 /// <see cref="TryValidate"/> exists for one concrete reason: malformed content must be caught at
 /// startup, never on the first click mid-session. The engine cannot check a value against a shape
 /// it does not know - only the system that declared the shape can - so
-/// <see cref="ContentPackLoader"/> must ask at load time, through this method, rather than deferring the check to whatever renders
-/// the entry later.
+/// <see cref="ContentPackLoader"/> must ask at load time, through this method, rather than
+/// deferring the check to whatever renders the entry later.
 /// </para>
 /// <para>
 /// <see cref="TryValidate"/> deserializes the envelope internally and reports only success or

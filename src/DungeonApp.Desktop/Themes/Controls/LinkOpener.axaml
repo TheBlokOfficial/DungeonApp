@@ -1,0 +1,68 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes">
+
+    <!--
+        Odnośnik otwierający: Button z okienkiem wysuwanym (Flyout) i Theme="{StaticResource
+        DungeonLinkOpener}" razem z Classes="link" - odnośnik samodzielny ("Sortuj: nazwa"), który
+        otwiera menu albo listę. Wygląd i stany odnośnika samodzielnego z motywu Button (.link:
+        TextRegular bez podkreślenia; pod myszą, wciśnięty i otwarty TextPrimary z podkreśleniem;
+        po zamknięciu kliknięciem w siebie spoczynek do ponownego wjechania - Themes/OpenerHoverRest.cs).
+        Za napisem strzałka jak w liście rozwijanej: DungeonIconChevronDown, DungeonActionIconSize,
+        w kolorze tekstu, bez podkreślenia, odstęp DungeonSpacingXs; zamknięta w prawo, otwarta
+        wskazuje kierunek otwarcia (w dół albo w górę - klasa .opens-up z Themes/PopupOpenMotion.cs),
+        obrót ruchem (DungeonMotionDuration, z wyhamowaniem; ReducedMotion.axaml go zdejmuje - reguła
+        strzałek list obejmuje każdy Button z PART_DropDownGlyph). Napis w jednej linii, zbyt długi
+        przycina się wielokropkiem z podpowiedzią. Fokus bez wyglądu, kursor strzałka.
+    -->
+    <ControlTheme x:Key="DungeonLinkOpener" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Background"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          VerticalAlignment="Center"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap"
+                                          RecognizesAccessKey="True"
+                                          themes:TrimmedLabelToolTip.IsEnabled="True" />
+                        <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                                 Grid.Column="1"
+                                                 Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 VerticalAlignment="Center"
+                                                 IsHitTestVisible="False"
+                                                 Foreground="{TemplateBinding Foreground}"
+                                                 Source="{DynamicResource DungeonIconChevronDown}" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:flyout-open /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <Style Selector="^:flyout-open.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-180deg)" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

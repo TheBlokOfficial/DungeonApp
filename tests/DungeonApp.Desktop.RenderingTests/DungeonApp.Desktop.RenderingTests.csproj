@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+    <ProjectReference Include="..\DungeonApp.Testing\DungeonApp.Testing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,10 +7,9 @@ namespace DungeonApp.Core.Entries;
 /// <summary>
 /// A system's declared presentation for one of its own content types, typed by the system's own
 /// record (<typeparamref name="TRecord"/>) so every accessor below is compiled code reading real
-/// properties - never a path into the data. This is
-/// the only place an <see cref="Entry"/>'s values are opened while building a content tab;
-/// everything downstream only ever sees the erased <see cref="IContentTypeProfile"/> this projects
-/// down to.
+/// properties - never a path into the data. This is the only place an <see cref="Entry"/>'s values
+/// are opened while building a content tab; everything downstream only ever sees the erased
+/// <see cref="IContentTypeProfile"/> this projects down to.
 /// </summary>
 public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
 {

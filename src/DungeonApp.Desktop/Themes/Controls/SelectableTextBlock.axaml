@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Tekst do zaznaczenia: menu podręczne z kopiowaniem, gdy włączony. Kursor i barwę zaznaczenia
+        nadaje styl w Typography.axaml.
+    -->
+    <ControlTheme x:Key="{x:Type SelectableTextBlock}" TargetType="SelectableTextBlock">
+        <Style Selector="^[IsEnabled=True]">
+            <Setter Property="ContextFlyout" Value="{StaticResource DungeonSelectableTextContextFlyout}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

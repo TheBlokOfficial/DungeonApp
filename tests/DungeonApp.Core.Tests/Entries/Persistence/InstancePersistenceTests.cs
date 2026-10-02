@@ -17,7 +17,7 @@ namespace DungeonApp.Core.Tests.Entries.Persistence;
 /// <summary>
 /// Instances as the concrete example of a state model - the same round trip any future model gets
 /// for free from <see cref="JsonCampaignRepository"/>'s generic per-model file. Kept apart from
-/// <see cref="JsonCampaignRepositoryTests"/>, which is about the manifest and the format version
+/// <see cref="DungeonApp.Core.Tests.Persistence.JsonCampaignRepositoryTests"/>, which is about the manifest and the format version
 /// rather than about any one model's own records.
 /// </summary>
 public sealed class InstancePersistenceTests : IDisposable

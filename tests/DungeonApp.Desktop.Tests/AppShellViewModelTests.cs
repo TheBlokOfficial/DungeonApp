@@ -14,12 +14,11 @@ using DungeonApp.Testing;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// docs/tasks.md's revised zadanie 1 moved every visual build a system's tabs need behind the startup
-/// curtain (see the new <c>Warm*Step</c>s under <c>DungeonApp.Desktop.Startup</c>); zadanie 3 makes the
-/// sidebar's collapse state belong to the frame, not to any one system's sidebar instance. Both are
-/// testable here without a window: <see cref="AppShellViewModel.ChooseSystemAsync"/> and
-/// <see cref="AppShellViewModel.ReturnToSelectionAsync"/> touch no Avalonia control directly, only
-/// tab declarations (plain delegates) and <see cref="Shell.Sidebars.GlobalSidebarViewModel"/>.
+/// Every visual build a system's tabs need happens behind the startup curtain (the <c>Warm*Step</c>s
+/// under <c>DungeonApp.Desktop.Startup</c>), and the sidebar's collapse state belongs to the frame, not
+/// to any one system's sidebar instance. Both are testable here without a window: choosing a system
+/// and returning to the selection screen touch no Avalonia control directly, only tab declarations
+/// (plain delegates) and <see cref="Shell.Sidebars.GlobalSidebarViewModel"/>.
 /// </summary>
 public sealed class AppShellViewModelTests
 {

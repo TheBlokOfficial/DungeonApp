@@ -1,0 +1,29 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Menu podręczne tekstu: pole tekstowe (wytnij, kopiuj, wklej) i tekst do zaznaczenia (kopiuj).
+        Pozycje przygaszone, gdy nie ma czego wyciąć, skopiować albo wkleić.
+    -->
+    <MenuFlyout x:Key="DungeonTextBoxContextFlyout">
+        <MenuItem Header="Wytnij"
+                  Command="{Binding $parent[TextBox].Cut}"
+                  IsEnabled="{Binding $parent[TextBox].CanCut}"
+                  InputGesture="{x:Static TextBox.CutGesture}" />
+        <MenuItem Header="Kopiuj"
+                  Command="{Binding $parent[TextBox].Copy}"
+                  IsEnabled="{Binding $parent[TextBox].CanCopy}"
+                  InputGesture="{x:Static TextBox.CopyGesture}" />
+        <MenuItem Header="Wklej"
+                  Command="{Binding $parent[TextBox].Paste}"
+                  IsEnabled="{Binding $parent[TextBox].CanPaste}"
+                  InputGesture="{x:Static TextBox.PasteGesture}" />
+    </MenuFlyout>
+
+    <MenuFlyout x:Key="DungeonSelectableTextContextFlyout">
+        <MenuItem Header="Kopiuj"
+                  Command="{Binding $parent[SelectableTextBlock].Copy}"
+                  IsEnabled="{Binding $parent[SelectableTextBlock].CanCopy}"
+                  InputGesture="{x:Static TextBox.CopyGesture}" />
+    </MenuFlyout>
+</ResourceDictionary>

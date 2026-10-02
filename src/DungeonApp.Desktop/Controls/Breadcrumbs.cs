@@ -10,7 +10,7 @@ namespace DungeonApp.Desktop.Controls;
 /// <summary>
 /// Where the shown thing sits: its path as one line of segments, the last one being the thing itself
 /// (the current segment). Segments are text, not links - there is nowhere to navigate yet. The look
-/// (colours, size, the separator) belongs to the frame's control theme (Themes/DungeonControls.axaml);
+/// (colours, size, the separator) belongs to the frame's control theme (Themes/Controls/Breadcrumbs.axaml);
 /// this class only lays the segments out: when the line does not fit, the current segment keeps its
 /// width and the earlier ones (the trail) shorten with an ellipsis; only once the trail is gone does
 /// the current segment shorten too (<see cref="BreadcrumbsPanel"/>).

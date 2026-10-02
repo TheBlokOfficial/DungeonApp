@@ -18,13 +18,13 @@ namespace DungeonApp.Core.Persistence;
 /// <para>
 /// The whole of every declared model is rewritten on every save, deliberately without a
 /// "changed models only" optimization - the set of files this writes is exactly
-/// <paramref name="declarations"/>'s ids, every time. The manifest and every model file commit
+/// <c>declarations</c>'s ids, every time. The manifest and every model file commit
 /// together and share a generation counter, so a save interrupted partway through is detectable
 /// instead of silently half loaded.
 /// </para>
 /// <para>
-/// A model this build's <paramref name="declarations"/> does not declare is never opened, written,
-/// or deleted, however old its file on disk. A declared model with no file simply reads back empty.
+/// A model this build's <c>declarations</c> does not declare is never opened, written, or deleted,
+/// however old its file on disk. A declared model with no file simply reads back empty.
 /// </para>
 /// <para>
 /// One instance is scoped to one system's own campaign directory, because a campaign belongs to the
@@ -128,7 +128,7 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
 
             if (!manifestModels.TryGetValue(declaration.ModelId, out var modelEntry))
             {
-                // Zadeklarowany model bez pliku → model pusty.
+                // A declared model with no file reads back empty.
                 continue;
             }
 
@@ -231,7 +231,7 @@ public sealed class JsonCampaignRepository(SystemId ownerSystemId, string librar
 
     /// <summary>
     /// How the campaign's directory actually goes away is not this store's decision -
-    /// <paramref name="deleteDirectory"/>, handed in through the constructor, is. A test can never be
+    /// <c>deleteDirectory</c>, handed in through the constructor, is. A test can never be
     /// allowed to reach the user's real Recycle Bin, and the composition root that builds the shipped
     /// app is where "delete" is meant to mean "send to the Recycle Bin" rather than gone for good - see
     /// DungeonApp.Desktop/App.axaml.cs. There is deliberately no default: whoever constructs this store

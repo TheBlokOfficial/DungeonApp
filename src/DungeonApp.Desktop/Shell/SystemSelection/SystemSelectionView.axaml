@@ -21,7 +21,7 @@
         </Style>
         <!-- A full-row click target, not a button of its own (the list-row portion replaces it).
              Height is reset to auto so VerticalAlignment="Stretch" fills the row: the Button
-             ControlTheme (DungeonControls.axaml) gives every button DungeonControlHeight. -->
+             ControlTheme (Themes/Controls/Button.axaml) gives every button DungeonControlHeight. -->
         <Style Selector="Button.system-option-open">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />

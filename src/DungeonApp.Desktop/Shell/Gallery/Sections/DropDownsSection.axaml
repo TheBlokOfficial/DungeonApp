@@ -3,7 +3,7 @@
              xmlns:controls="using:DungeonApp.Desktop.Controls"
              xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.DropDownsSection">
-    <!-- The frame's FlyoutPresenter theme (Themes/DungeonControls.axaml), live: one flyout with short
+    <!-- The frame's FlyoutPresenter theme (Themes/Controls/FlyoutPresenter.axaml), live: one flyout with short
          content and one with a list longer than the flyout's highest height (it scrolls inside with
          the frame's bar). Closing by a click beside it or Escape is Flyout's own behavior. Nothing
          here restyles a control - the only local values are sizes. -->

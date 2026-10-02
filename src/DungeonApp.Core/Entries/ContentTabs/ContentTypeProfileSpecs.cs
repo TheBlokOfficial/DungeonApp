@@ -31,6 +31,8 @@ public sealed record ContentValueFilterSpec<TRecord>(
 /// <see cref="ContentValueFilterSpec{TRecord}"/>'s remarks for why this is typed and where it is
 /// consumed.
 /// </summary>
+/// <param name="Label">The sort's name in the sort picker.</param>
+/// <param name="Compare">Orders two records by the sort's key, ascending.</param>
 /// <param name="IsTextual">
 /// Whether the key is text ordered alphabetically (its directions read "A–Z" / "Z–A") rather than a
 /// number or a rank (directions read "rosnąco" / "malejąco"). The library's own name sort is the

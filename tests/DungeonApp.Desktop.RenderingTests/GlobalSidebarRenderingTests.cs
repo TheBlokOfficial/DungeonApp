@@ -61,7 +61,7 @@ public sealed class GlobalSidebarRenderingTests
     /// <para>
     /// Headless has no compositor-driven frame clock tied to wall time:
     /// <see cref="Avalonia.Headless.AvaloniaHeadlessPlatform.ForceRenderTimerTick"/>, tried first,
-    /// advanced neither the heading Border's Height transition nor <see cref="Control.Bounds"/> even
+    /// advanced neither the heading Border's Height transition nor <see cref="Visual.Bounds"/> even
     /// after many forced ticks. What headless *does* honour is that a transition only plays across a
     /// value change on a control that already rendered a prior frame - toggling
     /// <see cref="GlobalSidebarViewModel.IsCollapsed"/> before the view's first <c>Show()</c> gives it
@@ -124,10 +124,10 @@ public sealed class GlobalSidebarRenderingTests
             button.GetVisualDescendants().OfType<TextBlock>().Any(tb => tb.Text == label));
 
     /// <summary>
-    /// A generated row's own <see cref="Control.Bounds"/> is relative to its immediate visual parent -
+    /// A generated row's own <see cref="Visual.Bounds"/> is relative to its immediate visual parent -
     /// for an <see cref="ItemsControl"/>'s generated item that is the per-item container Avalonia
     /// wraps it in, not the sidebar - so every row reports the same Bounds.Y (0) regardless of where
-    /// it actually draws. <see cref="Visual.TranslatePoint(Point, Visual)"/> against the window itself
+    /// it actually draws. <see cref="Avalonia.VisualExtensions.TranslatePoint(Visual, Point, Visual)"/> against the window itself
     /// is what turns that into a comparable, window-relative coordinate.
     /// </summary>
     private static double TopOf(Visual visual, Visual window) =>

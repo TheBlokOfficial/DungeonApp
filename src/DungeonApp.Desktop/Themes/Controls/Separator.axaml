@@ -1,0 +1,42 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Linia (DungeonBorderBrush): dzieli, nie wyróżnia. Separator nie ma stanów - nie przyjmuje
+        fokusu i nie reaguje na mysz, więc kursor nad nim jest kursorem tego, na czym leży.
+        Odmiany:
+          domyślna   - pozioma, 1 px, pełna szerokość, bez marginesu (linia w liście, między grupami);
+          .section   - pozioma, z odstępem DungeonSpacingLg nad i pod linią (między sekcjami karty);
+          .vertical  - pionowa, 1 px, pełna wysokość, bez marginesu.
+        Odstęp odmiany .section to Margin z tokenu DungeonPaddingLgVertical (0,16,0,16 - wartość równa
+        DungeonSpacingLg): 16 + 1 + 16.
+    -->
+    <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Height" Value="1" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Line" Background="{TemplateBinding Background}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.section">
+            <Setter Property="Margin" Value="{DynamicResource DungeonPaddingLgVertical}" />
+        </Style>
+
+        <Style Selector="^.vertical">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="Width" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

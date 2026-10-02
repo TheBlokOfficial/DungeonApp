@@ -7,7 +7,7 @@ namespace DungeonApp.Desktop.Controls;
 /// wyróżnienia (Background podany przez układającego - wypełnia komórkę do linii). Linie rysuje
 /// sama komórka, ale ich grubość ustala tabela z położenia komórki (<see cref="Table"/>). Wygląd
 /// i klasy (.header - wiersz nagłówka, .mono - liczby krojem liczb) należą do motywu ramy
-/// (Themes/DungeonControls.axaml).
+/// (Themes/Controls/Table.axaml).
 /// </summary>
 public sealed class TableCell : ContentControl
 {

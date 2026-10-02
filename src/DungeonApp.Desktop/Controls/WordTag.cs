@@ -6,7 +6,7 @@ namespace DungeonApp.Desktop.Controls;
 /// Tag: słowo przy rzeczy - kategoria, typ, rzadkość ("Humanoid", "Rzadki") - pismem interfejsu,
 /// w pigułce. Wartość (liczba, wyzwanie) to <see cref="Badge"/>. Nieklikalny. Wygląd i odmiany po
 /// znaczeniu (klasy .accent, .success, .warning, .danger, .custom) należą do motywu ramy
-/// (Themes/DungeonControls.axaml).
+/// (Themes/Controls/BadgeAndWordTag.axaml).
 /// </summary>
 public sealed class WordTag : ContentControl
 {

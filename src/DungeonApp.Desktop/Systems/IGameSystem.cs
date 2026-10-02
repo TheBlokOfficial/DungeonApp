@@ -30,8 +30,8 @@ public interface IGameSystem
 
     /// <summary>
     /// Constant declarations, read once when this system is chosen. Each factory is synchronous and
-    /// receives a <see cref="SystemTabContext"/> - narrower than <see cref="CampaignTabContext"/>,
-    /// because a System-category tab never sees the open campaign at all.
+    /// takes no argument - unlike a campaign tab's <see cref="CampaignTabContext"/> - because a
+    /// System-category tab never sees the open campaign at all.
     /// </summary>
     IReadOnlyList<SystemTabDeclaration> SystemTabs { get; }
 

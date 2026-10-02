@@ -22,20 +22,16 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// The one place in the application allowed to know what a monster or a piece of gear is. Declares
 /// two content types - <c>monster</c> ("Potwór", version 1) and <c>gear</c> ("Przedmiot", version 1)
-/// - builds their cards, and declares this system's tabs: "Potwory" and "Przedmioty" (built from the
-/// library's content-tab skeleton, krok 10 zlecenie 2) in the System category, "Biurko" in the
-/// Campaign category.
+/// - builds their cards, and declares this system's tabs: "Potwory" and "Przedmioty" in the System
+/// category, "Biurko" in the Campaign category.
 /// <para>
-/// The dispatch on a content type's id inside <see cref="TryGet"/>, <see cref="TryValidate"/> and
-/// <see cref="CreateCard"/> below is legal and necessary here: docs/architecture.md's "Kontrakty są
-/// interfejsami" section names exactly one place allowed to be concrete about what a monster is, and
-/// this is it. The ban that section and <c>CoreEntryKindIndependenceTests</c> enforce is on
-/// <c>Core</c> or <c>Desktop</c> branching on entry kind - neither of them contains the word
-/// "monster" anywhere, and neither ever will just because this switch exists.
+/// Every content type is one row of a table, looked up by its reference in <see cref="TryGet"/>,
+/// <see cref="TryValidate"/> and <see cref="CreateCard"/>. Knowing what each type is belongs here and
+/// nowhere else: <c>CoreEntryKindIndependenceTests</c> bans <c>Core</c> and <c>Desktop</c> from
+/// branching on entry kind, and neither of them names a content type.
 /// </para>
 /// <para>
-/// Carries two distinct identities on purpose (docs/architecture.md, "Rama, biblioteka, system"):
-/// <see cref="Id"/> is what the frame knows this system as (<see cref="SystemId"/>, never
+/// Carries two distinct identities on purpose: <see cref="Id"/> is what the frame knows this system as (<see cref="SystemId"/>, never
 /// <c>DungeonApp.Core.Entries</c>'s own <see cref="ContentId"/>); <see cref="ContentSetId"/> is the
 /// content-set id every content type reference and pack entry in this system actually points at. Both
 /// are minted from the same literal, but nothing enforces that they stay equal - a system is free to
@@ -45,8 +41,8 @@ namespace DungeonApp.Content.Dnd5e;
 public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
     // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
-    // whether a row is a monster, and docs/decisions.md permits branching on this id only inside
-    // this system - duplicating the literal there instead would let the two silently drift.
+    // whether a row is a monster, and branching on this id is allowed only inside this system -
+    // duplicating the literal there instead would let the two silently drift.
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
 
@@ -55,15 +51,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     // Public, not internal: DungeonApp.App/Program.cs - the one place allowed to name a system by
     // name - is a separate assembly, and reads this to compute this system's packs directory from
-    // its own identifier (docs/architecture.md, "Gdzie mieszka stan":
-    // "Dokumenty\DungeonApp\<system>\packs\"), rather than typing the literal "dnd5e" a second time
-    // somewhere the two could drift apart.
+    // its own identifier, rather than typing the literal "dnd5e" a second time somewhere the two
+    // could drift apart.
     public const string IdValue = "dnd5e";
 
     /// <summary>
-    /// Rarity tiers in display order, paired with the color-key name (krok 10, zlecenie 1, część C)
-    /// their badge carries - an opaque intent for <see cref="ContentBadge.ColorKey"/>, not a color;
-    /// zlecenie 2 is the only place allowed to turn it into one. A rarity string this system does not
+    /// Rarity tiers in display order, paired with the color-key name their badge carries - an opaque
+    /// intent for <see cref="ContentBadge.ColorKey"/>, not a color; <see cref="ResolveBadgeBrush"/> is
+    /// the only place that turns it into one. A rarity string this system does not
     /// recognise gets no color key and falls after every known tier when "Rzadkość" is ordered
     /// (see <see cref="RankedTextComparer"/>).
     /// </summary>
@@ -84,13 +79,11 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     /// <summary>
     /// The brush each rarity color key resolves to (<see cref="ResolveBadgeBrush"/>) - this system's
-    /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens
-    /// (docs/architecture.md, "Niezmiennik interfejsu": "Skale należące do systemu... mają własne
-    /// kolory w systemie i nie pożyczają kolorów znaczeń z motywu ramy"). Hues follow the usual
-    /// rarity convention (gray, green, blue, violet, orange, pink) and none is the accent color.
-    /// Each is bright enough for its text to keep at least 4.5:1 against its own dimmed pill
-    /// (the same color at 16%) laid on the list row at rest, under the pointer and selected
-    /// (krok 10, brief 3a - the ratios are in that brief's report).
+    /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens: a scale
+    /// that belongs to a system carries its own colors. Hues follow the usual rarity convention (gray,
+    /// green, blue, violet, orange, pink) and none is the accent color. Each is bright enough for its
+    /// text to keep at least 4.5:1 against its own dimmed pill (the same color at 16%) laid on the
+    /// list row at rest, under the pointer and selected.
     /// </summary>
     private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
     {
@@ -115,8 +108,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         StringComparer.Create(new System.Globalization.CultureInfo("pl-PL"), ignoreCase: true);
 
     private readonly WorkspaceLayoutStore _layoutStore;
-    private readonly ContentTypeDescriptor _monster;
-    private readonly ContentTypeDescriptor _gear;
+    private readonly IReadOnlyDictionary<ContentTypeReference, ContentTypeRegistration> _contentTypes;
     private readonly LoadContentPacksStep _loadPacksStep;
 
     /// <param name="layoutStore">Where the desk's layout is kept.</param>
@@ -132,27 +124,37 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         _layoutStore = layoutStore;
 
-        Id = SystemId.Create("dnd5e");
-        ContentSetId = ContentId.Create("dnd5e");
-        // Both types declare "image" (Monster.Image, Gear.Image) as their picture, so the loader
-        // checks its path at load time without knowing what either type is.
-        _monster = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(MonsterTypeId)), "Potwór", 1, ImagePropertyName);
-        _gear = new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)), "Przedmiot", 1, ImagePropertyName);
+        Id = SystemId.Create(IdValue);
+        ContentSetId = ContentId.Create(IdValue);
+
+        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: 1, monster =>
+        {
+            var card = new MonsterCardView();
+            card.SetMonster(monster);
+            return card;
+        });
+        var gear = Register<Gear>(GearTypeId, "Przedmiot", version: 1, gear =>
+        {
+            var card = new GearCardView();
+            card.SetGear(gear);
+            return card;
+        });
+        _contentTypes = new[] { monster, gear }.ToDictionary(type => type.Descriptor.Reference);
 
         _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPaths, this));
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
         StartupSteps = [_loadPacksStep, warmCardsStep];
 
-        ContentTabDefinitions = [BuildMonsterContentTab(), BuildGearContentTab()];
-
-        // Icon choice (krok 10, brief B2): purpose-drawn icons replace the krok 10 zlecenie 2 picks -
-        // DungeonIconDragon (a beast's head) for "Potwory", DungeonIconBackpack for "Przedmioty".
-        // DungeonIconBookOpen stays in Icons.axaml (GlobalSidebarViewModel's own shelf icon still
-        // uses it); DungeonIconBoxes had no other user and was removed with it.
+        (string Id, string IconResourceKey, ContentTabDefinition Definition)[] contentTabs =
+        [
+            ("dnd5e.monsters", "DungeonIconDragon", BuildMonsterContentTab(monster.Descriptor.Reference)),
+            ("dnd5e.gear", "DungeonIconBackpack", BuildGearContentTab(gear.Descriptor.Reference)),
+        ];
+        ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
         SystemTabs =
         [
-            new SystemTabDeclaration("dnd5e.monsters", "Potwory", "DungeonIconDragon", () => CreateContentTab(0)),
-            new SystemTabDeclaration("dnd5e.gear", "Przedmioty", "DungeonIconBackpack", () => CreateContentTab(1)),
+            .. contentTabs.Select(tab => new SystemTabDeclaration(
+                tab.Id, tab.Definition.Title, tab.IconResourceKey, () => CreateContentTab(tab.Definition))),
         ];
         CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
     }
@@ -175,10 +177,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
 
     /// <summary>
-    /// This system's two content tabs - "Potwory" and "Przedmioty" - as pure data: a title and the
-    /// content type profile(s) that fill it (krok 10, zlecenie 1, część C). Not stood up on the
-    /// System bar and not touched by <see cref="SystemTabs"/> or <see cref="CreateRegistryTab"/> -
-    /// building the actual tab, from <c>ContentListModel</c>, is zlecenie 2.
+    /// This system's two content tabs - "Potwory" and "Przedmioty" - as data: a title and the content
+    /// type profile(s) that fill it. <see cref="SystemTabs"/> builds each tab's view from one of these.
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
 
@@ -190,15 +190,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
     {
-        if (reference.Set == ContentSetId && reference.Type.Value == MonsterTypeId)
+        if (_contentTypes.TryGetValue(reference, out var type))
         {
-            descriptor = _monster;
-            return true;
-        }
-
-        if (reference.Set == ContentSetId && reference.Type.Value == GearTypeId)
-        {
-            descriptor = _gear;
+            descriptor = type.Descriptor;
             return true;
         }
 
@@ -214,27 +208,19 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             return false;
         }
 
+        if (!_contentTypes.TryGetValue(reference, out var type))
+        {
+            error = $"'{ContentSetId}' declares no content type '{reference.Type}'.";
+            return false;
+        }
+
         try
         {
-            switch (reference.Type.Value)
-            {
-                case MonsterTypeId:
-                    values.Read<Monster>();
-                    break;
-
-                case GearTypeId:
-                    values.Read<Gear>();
-                    break;
-
-                default:
-                    error = $"'{ContentSetId}' declares no content type '{reference.Type}'.";
-                    return false;
-            }
+            type.Validate(values);
         }
         catch (Exception ex)
         {
-            // The deserializer is the validator (docs/architecture.md, "Deklaracja treści"): a
-            // missing required value, an unknown key, or a value of the wrong shape all surface as
+            // The deserializer is the validator: a missing required value, an unknown key, or a value of the wrong shape all surface as
             // an exception here, and its message is the only explanation the GM ever sees
             // (RegisteredEntry.UnresolvedDetail).
             error = ex.Message;
@@ -247,35 +233,36 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     public Control CreateCard(Entry entry)
     {
-        if (entry.Type.Set == ContentSetId && entry.Type.Type.Value == MonsterTypeId)
+        if (!_contentTypes.TryGetValue(entry.Type, out var type))
         {
-            var view = new MonsterCardView();
-            view.SetMonster(entry.Values.Read<Monster>());
-            return view;
+            throw new InvalidOperationException($"'{ContentSetId}' cannot draw a card for content type reference '{entry.Type}'.");
         }
 
-        if (entry.Type.Set == ContentSetId && entry.Type.Type.Value == GearTypeId)
-        {
-            var view = new GearCardView();
-            view.SetGear(entry.Values.Read<Gear>());
-            return view;
-        }
-
-        throw new InvalidOperationException($"'{ContentSetId}' cannot draw a card for content type reference '{entry.Type}'.");
+        return type.CreateCard(entry.Values);
     }
 
     public IBrush? ResolveBadgeBrush(string colorKey) => RarityBrushes.GetValueOrDefault(colorKey);
 
     /// <summary>
-    /// One of this system's two content tabs, built fresh from the library's content-tab skeleton
-    /// (krok 10, zlecenie 2) - <see cref="ContentTabDefinitions"/>'s own index, never a stored
-    /// instance: a System-category tab's factory runs again every time the GM opens it (warmup once,
-    /// the real tab again on first click), and a <see cref="ContentTabViewModel"/> holds mutable
-    /// list state that must not be shared between those two builds.
+    /// One row of the content-type table. Every type declares "image" (<see cref="Monster.Image"/>,
+    /// <see cref="Gear.Image"/>) as its picture, so the loader checks its path at load time without
+    /// knowing what the type is.
     /// </summary>
-    private ITabContent CreateContentTab(int definitionIndex)
+    private ContentTypeRegistration Register<TRecord>(
+        string typeId, string name, int version, Func<TRecord, Control> createCard) =>
+        new(
+            new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(typeId)), name, version, ImagePropertyName),
+            values => values.Read<TRecord>(),
+            values => createCard(values.Read<TRecord>()));
+
+    /// <summary>
+    /// One of this system's content tabs, built fresh from its definition, never a stored instance: a
+    /// System-category tab's factory runs again every time the GM opens it (warmup once, the real tab
+    /// again on first click), and a <see cref="ContentTabViewModel"/> holds mutable list state that
+    /// must not be shared between those two builds.
+    /// </summary>
+    private ITabContent CreateContentTab(ContentTabDefinition definition)
     {
-        var definition = ContentTabDefinitions[definitionIndex];
         var viewModel = new ContentTabViewModel(_loadPacksStep.Registry, definition, AllContentTypes, this);
         return new DelegateTabContent(new ContentTabView { DataContext = viewModel });
     }
@@ -283,25 +270,23 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// Every content type reference every content tab this system declares names - what
     /// <see cref="ContentTabViewModel"/> needs to tell "no tab anywhere claims this broken entry"
-    /// apart from "some other tab claims it" (docs/architecture.md, "Zakładki treści"; see
-    /// <c>ContentListModel</c>'s own remarks on <c>allKnownTypes</c>). Gathered once here, from the
-    /// same two definitions every tab is built from - never per tab, which would make each tab think
+    /// apart from "some other tab claims it" (see <c>ContentListModel</c>'s own remarks on
+    /// <c>allKnownTypes</c>). Gathered once here, from the same definitions every tab is built from - never per tab, which would make each tab think
     /// it was the only one that existed.
     /// </summary>
     private IReadOnlyCollection<ContentTypeReference> AllContentTypes =>
         ContentTabDefinitions.SelectMany(tab => tab.ContentTypes).Select(profile => profile.Type).Distinct().ToArray();
 
     /// <summary>
-    /// "Potwory": category "Grupa" = <see cref="Monster.Group"/> (krok 10, brief A9 - never
-    /// <see cref="Monster.Type"/>; a monster with no declared group has no category, full stop);
-    /// tags = size, type, alignment; badge = challenge, no color key; two value filters - "Typ"
-    /// (<see cref="Monster.Type"/>, alphabetical) before "Wyzwanie" (<see cref="ChallengeOrder"/>) -
-    /// and one sort, "Wyzwanie" (krok 10, zlecenie 1, część C; porcja 3 zakładek treści).
+    /// "Potwory": category "Grupa" = <see cref="Monster.Group"/>, never <see cref="Monster.Type"/> -
+    /// a monster with no declared group has no category; tags = size, type, alignment; badge =
+    /// challenge, no color key; two value filters - "Typ" (<see cref="Monster.Type"/>, alphabetical)
+    /// before "Wyzwanie" (<see cref="ChallengeOrder"/>) - and one sort, "Wyzwanie".
     /// </summary>
-    private ContentTabDefinition BuildMonsterContentTab()
+    private static ContentTabDefinition BuildMonsterContentTab(ContentTypeReference monster)
     {
         var profile = new ContentTypeProfile<Monster>(
-            _monster.Reference,
+            monster,
             category: new ContentCategorySpec<Monster>("Grupa", monster => monster.Group),
             tags: monster => [monster.Size, monster.Type, monster.Alignment],
             badge: monster => new ContentBadge(monster.Challenge),
@@ -316,16 +301,15 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// "Przedmioty": no category (the tab has no category filter); no tags
-    /// (krok 10, brief 3a); badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised
-    /// tier and none for anything else; one value filter, "Rzadkość", ordered by
-    /// <see cref="RarityOrder"/>; one sort, "Rzadkość", in the same <see cref="RarityOrder"/>
-    /// (porcja 3c zakładek treści).
+    /// "Przedmioty": no category (the tab has no category filter); no tags; badge = rarity, with a
+    /// color key per <see cref="RarityColorKeys"/> for a recognised tier and none for anything else;
+    /// one value filter, "Rzadkość", ordered by <see cref="RarityOrder"/>; one sort, "Rzadkość", in
+    /// the same <see cref="RarityOrder"/>.
     /// </summary>
-    private ContentTabDefinition BuildGearContentTab()
+    private static ContentTabDefinition BuildGearContentTab(ContentTypeReference gear)
     {
         var profile = new ContentTypeProfile<Gear>(
-            _gear.Reference,
+            gear,
             category: null,
             tags: gear => [],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
@@ -337,10 +321,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     /// <summary>
     /// The "Biurko" Campaign-category tab: the shared desk (<see cref="CampaignDesk"/>), stocked with
-    /// this system's own tool belt and nothing else - there is no cross-system tool provider
-    /// stitching several systems' tools together any more, so building the tool list is this
-    /// system's own job now, from a <see cref="CampaignEntriesContext"/> it builds itself out of the
-    /// tab context plus its own registry and type catalog.
+    /// this system's own tool belt and nothing else. Building the tool list is this system's own job,
+    /// from a <see cref="CampaignEntriesContext"/> it builds itself out of the tab context plus its
+    /// own registry and type catalog.
     /// </summary>
     private async Task<ITabContent> CreateDeskTabAsync(CampaignTabContext context)
     {
@@ -388,4 +371,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         {
             DataContext = new CampaignInstancesToolViewModel(context, ContentSetId),
         };
+
+    /// <summary>
+    /// A content type this system declares. <see cref="Validate"/> and <see cref="CreateCard"/> both
+    /// read the entry's values into the type's own record; reading is the whole validation.
+    /// </summary>
+    private sealed record ContentTypeRegistration(
+        ContentTypeDescriptor Descriptor,
+        Action<ContentValues> Validate,
+        Func<ContentValues, Control> CreateCard);
 }

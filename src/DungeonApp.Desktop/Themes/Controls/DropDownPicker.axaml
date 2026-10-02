@@ -1,0 +1,182 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes">
+
+    <!--
+        Lista rozwijana ramy (controls:DropDownPicker) - wybór wielokrotny i/lub wyszukiwanie; lista
+        pojedyncza bez wyszukiwania to ComboBox (ComboBox.axaml). Kolory tekstu zastępczego i strzałki oraz odstęp
+        przed strzałką to właściwości kontrolki (PlaceholderForeground, GlyphForeground, GlyphSpacing),
+        które ustawia motyw - strój chipa (DungeonChipPicker, ChipPicker.axaml) bierze ten sam szablon. Zamknięta wygląda i zachowuje się jak ComboBox
+        (te same wysokość, tło, krawędź, wcięcie, chevron, stany: spoczynek, najechanie, wciśnięcie,
+        otwarta = najechanie i chevron w dół, zamknięta - w prawo, obrót ruchem; wyłączenie). Treść zamkniętej
+        (DropDownPickerText): nic nie wybrane - tekst zastępczy; jedna pozycja - jej nazwa; więcej - nazwa
+        pierwszej w kolejności listy i odznaka neutralna "+N" (nie przycina się), podpowiedź z tekstem
+        zastępczym i wszystkimi wybranymi; napis przycięty wielokropkiem z podpowiedzią pełnego.
+        Rozwinięcie: powierzchnia okienka wysuwanego (motyw FlyoutPresenter), co najmniej tak szerokie
+        jak pole, położone jak w ComboBox (pod polem od lewej krawędzi, nad nim przy braku miejsca).
+        Z wyszukiwaniem (IsSearchEnabled) na górze pole
+        wyszukiwania z lupą (controls:IconField.search), odstęp DungeonSpacingXs pod nim; brak wyników -
+        EmptyState "Nic nie pasuje.".
+        Wiersz to wiersz listy (ListBoxItem - wysokość, wcięcia, najechanie). Tryb wielokrotny: pole
+        wyboru przed tekstem mówi, że wiersz jest wybrany - bez tła AccentDim, wygląd listy z polami
+        wyboru z motywu ListBoxItem (themes:CheckList.IsCheckList, jak DungeonCheckList); pole wyboru nie przyjmuje
+        kliknięć (klika wiersz), a jego wysokość kontrolki (36) jest ściągnięta ujemnym marginesem do
+        wysokości wiersza, żeby wiersz miał DungeonListRowHeight jak w liście. Tryb pojedynczy: wybrany
+        wiersz ma tło AccentDim jak ComboBoxItem.
+    -->
+    <ControlTheme x:Key="{x:Type controls:DropDownPicker}" TargetType="controls:DropDownPicker">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+        <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        <Setter Property="GlyphSpacing" Value="{DynamicResource DungeonSpacingMd}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <!-- Kilka wybranych: podpowiedź z nazwą filtra i wszystkimi wybranymi na polu - wygrywa
+                         z podpowiedzią przyciętego napisu (ta stoi na kontrolce), bo mówi więcej. -->
+                    <Border Name="PART_BorderElement"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            ToolTip.Tip="{TemplateBinding SelectionToolTipText}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{TemplateBinding GlyphSpacing}">
+                            <ContentPresenter Name="PART_Placeholder"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding PlaceholderText}"
+                                              Foreground="{TemplateBinding PlaceholderForeground}"
+                                              TextBlock.TextTrimming="CharacterEllipsis"
+                                              TextBlock.TextWrapping="NoWrap"
+                                              IsVisible="{TemplateBinding IsPlaceholderShown}"
+                                              themes:TrimmedLabelToolTip.IsEnabled="True" />
+                            <ContentPresenter Name="PART_Label"
+                                              VerticalAlignment="Center"
+                                              VerticalContentAlignment="Center"
+                                              Content="{TemplateBinding LabelText}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              TextBlock.TextTrimming="CharacterEllipsis"
+                                              TextBlock.TextWrapping="NoWrap"
+                                              IsVisible="{TemplateBinding IsPlaceholderShown, Converter={x:Static BoolConverters.Not}}"
+                                              themes:TrimmedLabelToolTip.IsEnabled="True" />
+                            <!-- Za napisem: odznaka "+N" (więcej niż jedna wybrana; nie przycina się)
+                                 i strzałka; niewidoczna odznaka nie zostawia odstępu. -->
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="{TemplateBinding GlyphSpacing}">
+                                <controls:Badge Name="PART_MoreSelected"
+                                                VerticalAlignment="Center"
+                                                Content="{TemplateBinding MoreBadgeText}"
+                                                IsVisible="{TemplateBinding HasMoreSelected}" />
+                                <controls:ForegroundIcon Name="PART_DropDownGlyph"
+                                                         Width="{DynamicResource DungeonActionIconSize}"
+                                                         Height="{DynamicResource DungeonActionIconSize}"
+                                                         VerticalAlignment="Center"
+                                                         IsHitTestVisible="False"
+                                                         Foreground="{TemplateBinding GlyphForeground}"
+                                                         Source="{DynamicResource DungeonIconChevronDown}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Popup Name="PART_Popup"
+                           WindowManagerAddShadowHint="False"
+                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                           MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                           PlacementTarget="PART_BorderElement"
+                           Placement="BottomEdgeAlignedLeft"
+                           IsLightDismissEnabled="True"
+                           InheritsTransform="True">
+                        <FlyoutPresenter Name="PART_DropDown" HorizontalAlignment="Stretch">
+                            <StackPanel>
+                                <!-- Pole wyszukiwania przewija się z wierszami - kończy się przed strefą
+                                     paska przewijania jak treść wierszy. -->
+                                <Panel Name="SearchRow"
+                                       Margin="{DynamicResource DungeonScrollBarZoneInFlyout}"
+                                       IsVisible="{TemplateBinding IsSearchEnabled}">
+                                    <controls:IconField Classes="search" Margin="0,0,0,6">
+                                        <TextBox Name="PART_SearchBox"
+                                                 PlaceholderText="Szukaj"
+                                                 Text="{TemplateBinding SearchText, Mode=TwoWay}" />
+                                    </controls:IconField>
+                                </Panel>
+                                <controls:EmptyState Message="Nic nie pasuje."
+                                                     IsVisible="{TemplateBinding HasNoMatches}" />
+                                <ItemsControl Name="PART_Rows" ItemsSource="{TemplateBinding Rows}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="controls:DropDownPickerRow">
+                                            <ListBoxItem IsSelected="{Binding IsSelected, Mode=OneWay}"
+                                                         themes:CheckList.IsCheckList="{Binding IsMultiple}">
+                                                <!-- Siatka, nie poziomy stos: napis dostaje resztę szerokości
+                                                     wiersza i przycina się, gdy okienko jest węższe od niego
+                                                     (szerokość ustalona przy otwarciu). Odstęp za polem
+                                                     wyboru (DungeonSpacingSm, 8) w jego marginesie - ukryte
+                                                     pole nie zostawia odstępu. -->
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <CheckBox Margin="0,-2,8,-2"
+                                                              IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                                              IsVisible="{Binding IsMultiple}"
+                                                              IsHitTestVisible="False"
+                                                              Focusable="False" />
+                                                    <TextBlock Grid.Column="1"
+                                                               VerticalAlignment="Center"
+                                                               Text="{Binding Text}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               TextWrapping="NoWrap"
+                                                               themes:TrimmedLabelToolTip.IsEnabled="True" />
+                                                </Grid>
+                                            </ListBoxItem>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </FlyoutPresenter>
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:dropdownopen">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę (tam, gdzie lista się pojawiła); obrót ruchem (DungeonMotionDuration,
+             z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <!-- Lista otwarta w górę (brak miejsca pod polem; klasa .opens-up z Themes/PopupOpenMotion.cs):
+             strzałka wskazuje w górę - z "w prawo" o 90 stopni w przeciwną stronę niż w dół. -->
+        <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
+            <Setter Property="RenderTransform" Value="rotate(-180deg)" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

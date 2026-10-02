@@ -1,0 +1,45 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Podpowiedź (ToolTip). Szablon napisany od nowa; nazwa części z ToolTip.xaml Fluenta
+        (Avalonia 12.0.5, MIT): PART_ContentPresenter. Tło SurfaceHeader, tekst TextPrimary, krawędź
+        1 px BorderStrong, zaokrąglenie DungeonControlCornerRadius, cień DungeonFlyoutShadow; krój
+        interfejsu 12 (DungeonHelperFontSize), wcięcie DungeonToolTipPadding. Najwyższa szerokość
+        DungeonToolTipMaxWidth - dłuższy tekst się zawija, podpowiedź nigdy nie przycina. Tekst się
+        nie zaznacza. Bez animacji: pojawia się od razu po opóźnieniu biblioteki, przy wskaźniku
+        (domyślne położenie). Przezroczysty margines DungeonFlyoutMargin daje miejsce na cień.
+        Nie ma stanów - nie reaguje na mysz.
+    -->
+    <ControlTheme x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+        <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonToolTipPadding}" />
+        <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
+        <Setter Property="MaxWidth" Value="{DynamicResource DungeonToolTipMaxWidth}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      TextBlock.TextWrapping="Wrap"
+                                      TextBlock.TextTrimming="None" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

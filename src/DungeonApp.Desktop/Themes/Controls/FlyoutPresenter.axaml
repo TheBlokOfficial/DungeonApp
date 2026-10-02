@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Okienko wysuwane (FlyoutPresenter - treść Flyout). Szablon wycięty z FlyoutPresenter.xaml
+        Fluenta (Avalonia 12.0.5, MIT): zostały obramowanie, obszar przewijania i prezenter treści
+        (PART_ContentPresenter); wygląd od nowa z tokenów.
+        Powierzchnia jak pole: tło InputBackground, krawędź InputBorder 1 px, zaokrąglenie
+        DungeonFlyoutCornerRadius; wcięcie wewnętrzne DungeonFlyoutPadding, żeby wiersze listy nie
+        dotykały krawędzi; lekki cień
+        DungeonFlyoutShadow. Wysokość najwyżej DungeonFlyoutMaxHeight - dłuższa treść przewija się
+        w środku paskiem ramy (motyw ScrollViewer), pasek tylko przy potrzebie. Szerokość z treści.
+        Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu. Otwarcie jest ruchem, zamknięcie
+        natychmiast (Themes/PopupOpenMotion.cs).
+        Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout.
+        Położenie: pod elementem, który je otworzył, wyrównane do jego lewej krawędzi - miejsce użycia
+        ustawia Flyout Placement="BottomEdgeAlignedLeft" (Flyout nie jest kontrolką i motywu nie ma);
+        gdy pod spodem brak miejsca, okno wyskakujące odwraca się nad element. Odstęp od elementu to
+        przezroczysty margines DungeonFlyoutMargin nad i pod powierzchnią (Margin tego motywu), nie
+        VerticalOffset - przesunięcie działa zawsze w dół, więc okienko odwrócone w górę nachodziłoby
+        na element; margines jest symetryczny i działa w obu kierunkach.
+    -->
+    <ControlTheme x:Key="{x:Type FlyoutPresenter}" TargetType="FlyoutPresenter">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonFlyoutCornerRadius}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
+        <Setter Property="Margin" Value="{DynamicResource DungeonFlyoutMargin}" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MaxHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        BoxShadow="{DynamicResource DungeonFlyoutShadow}"
+                        ClipToBounds="True">
+                    <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="Stretch"
+                                          VerticalContentAlignment="Stretch" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <!-- .list-host (Flyout FlyoutPresenterClasses="list-host"): treścią okienka jest lista, która
+             przewija się sama - okienko nie przewija, więc jest jeden pas paska, przy liście. Lista
+             dostaje skończoną wysokość (DungeonFlyoutMaxHeight). Okienko nie ma własnego wcięcia -
+             wcięcie niesie lista wewnątrz przewijanej treści (styl "FlyoutPresenter.list-host > ListBox"
+             w BuiltInControls.axaml), więc obszar przewijania listy sięga krawędzi okienka i pasek stoi
+             w tym samym miejscu co w każdym innym okienku (DungeonScrollBarInset od krawędzi, góry i dołu). -->
+        <Style Selector="^.list-host">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

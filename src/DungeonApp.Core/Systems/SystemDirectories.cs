@@ -6,8 +6,8 @@ namespace DungeonApp.Core.Systems;
 /// The one place the frame's directory layout for a compiled system's own documents is written down -
 /// "Dokumenty\DungeonApp\&lt;system&gt;\packs\" and "Dokumenty\DungeonApp\&lt;system&gt;\campaigns\" -
 /// plus the packs shipped together with the program, "&lt;katalog programu&gt;\&lt;system&gt;\packs\".
-/// Every method takes a root and a <see cref="SystemId"/>
-/// rather than reading the real filesystem itself, so the composition root supplies
+/// Every method takes a root and a <see cref="SystemId"/> rather than reading the real filesystem
+/// itself, so the composition root supplies
 /// <c>Environment.GetFolderPath(SpecialFolder.MyDocuments)</c> and <c>AppContext.BaseDirectory</c>
 /// exactly once each, and a test supplies a temporary directory instead - never touching the
 /// author's real Documents.

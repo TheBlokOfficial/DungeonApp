@@ -1,0 +1,145 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes">
+
+    <!--
+        Lista (ListBox) i wiersz listy (ListBoxItem). Szablony wycięte z ListBox.xaml
+        i ListBoxItem.xaml Fluenta (Avalonia 12.0.5, MIT): zostały obszar przewijania
+        (PART_ScrollViewer - pasek z motywu ScrollViewer ramy), prezenter elementów
+        (PART_ItemsPresenter) i prezenter treści wiersza (PART_ContentPresenter).
+        Lista leży na powierzchni, na której ją położono: tło przezroczyste, bez krawędzi, bez
+        wewnętrznego wcięcia. Nie ma własnych stanów; fokus bez wyglądu (FocusAdorner pusty).
+        Wiersz: wysokość najmniej DungeonListRowHeight - jedna linia tekstu albo ikona nie zmienia
+        jej ani o piksel; wyższy jest tylko wiersz, którego szablon składa się z kilku kontrolek (np.
+        świat kampanii). Wcięcie poziome DungeonSpacingMd, po prawej większe o strefę paska
+        przewijania (DungeonScrollBarZone) - tło wiersza sięga pod pasek, treść nie; treść wyśrodkowana
+        w pionie z założenia,
+        tekst w jednej linii przycięty wielokropkiem (szablon wiersza może to jawnie zmienić), stopień
+        i grubość tekstu interfejsu (Normal) w każdym stanie. Zaokrąglenie wyróżnienia
+        DungeonNavigationCornerRadius, bez krawędzi. Kursor strzałka.
+        Stany:
+          spoczynek          - tło przezroczyste;
+          najechanie         - tło BackstageRowHover, także nad akcją wiersza (DungeonRowAction);
+          wybrane            - tło AccentDim, także pod myszą i wciśnięte - wybrany wiersz nie ma
+                               najechania (klik w niego nic nie zmienia; styl stoi po najechaniu);
+          wciśnięcie         - wygląda jak pod myszą (niewybrany);
+          wyłączenie         - DungeonDisabledOpacity jak każda wyłączona kontrolka, tło
+                               przezroczyste, bez reakcji na mysz.
+        Fokus wiersza nie ma wyglądu (FocusAdorner pusty) - przyjdzie z obsługą klawiatury.
+    -->
+    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="False" />
+        <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="True" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="border"
+                        ClipToBounds="{TemplateBinding ClipToBounds}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+                                  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                  IsScrollInertiaEnabled="{TemplateBinding (ScrollViewer.IsScrollInertiaEnabled)}"
+                                  IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                        Margin="{TemplateBinding Padding}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+    <!--
+        Lista z polami wyboru (ListBox z Theme="{StaticResource DungeonCheckList}", zwykle
+        SelectionMode="Multiple,Toggle", wiersz z CheckBox związanym z IsSelected wiersza): stan wiersza
+        niesie samo pole wyboru - wybrany wiersz nie dostaje tła AccentDim, najechanie jak w zwykłym
+        wierszu. Ten sam wygląd mają wiersze DropDownPicker wielokrotnego - oba biorą go z motywu
+        ListBoxItem przez znacznik themes:CheckList.IsCheckList.
+    -->
+    <ControlTheme x:Key="DungeonCheckList" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+        <Setter Property="themes:CheckList.IsCheckList" Value="True" />
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type ListBoxItem}" TargetType="ListBoxItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonListRowHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMdHorizontal}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!-- Podświetlenie o DungeonListRowHighlightInset węższe z góry i z dołu niż wiersz:
+                     sąsiednie podświetlenia dzieli odstęp, wiersz dalej zajmuje DungeonListRowHeight.
+                     Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie - najechanie nie
+                     gaśnie między wierszami. Podświetlenie sięga na całą szerokość wiersza, także pod
+                     pasek przewijania; treść kończy się przed strefą paska (DungeonScrollBarZone
+                     dokładane do wcięcia wiersza). -->
+                <Border Background="Transparent">
+                    <Border Name="PART_Highlight"
+                            Margin="{DynamicResource DungeonListRowHighlightInset}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="{TemplateBinding Padding}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          TextBlock.TextTrimming="CharacterEllipsis"
+                                          TextBlock.TextWrapping="NoWrap" />
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Strefa paska stylem, nie wartością w szablonie: wiersz w okienku wysuwanym (ComboBoxItem,
+             wiersze w FlyoutPresenter - BuiltInControls.axaml) nadpisuje ją DungeonScrollBarZoneInFlyout. -->
+        <Style Selector="^ /template/ Border#PART_Highlight">
+            <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZone}" />
+        </Style>
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="^:selected">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <!-- Lista z polami wyboru (themes:CheckList.IsCheckList - motyw DungeonCheckList, wiersze
+             DropDownPicker wielokrotnego): stan niesie pole, wybrany wiersz wygląda jak niewybrany. -->
+        <Style Selector="^[(themes|CheckList.IsCheckList)=True]:selected">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^[(themes|CheckList.IsCheckList)=True]:selected:pointerover,
+                       ^[(themes|CheckList.IsCheckList)=True]:selected:pressed">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

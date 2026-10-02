@@ -1,7 +1,7 @@
  <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:DungeonApp.Desktop.Controls">
-    <!-- Okno ma pismo i kolor tekstu w swoim motywie (DungeonControls.axaml, Window). -->
+    <!-- Okno ma pismo i kolor tekstu w swoim motywie (Controls/Window.axaml). -->
     <Style Selector="UserControl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
@@ -25,7 +25,7 @@
          ramka pola z ikoną, więc pole tekstowe w środku jest bez krawędzi i tła, wypełnia wnętrze
          ramki na pełnej wysokości, nie przygasza się drugi raz (Opacity 1 także wyłączone), a tekst
          zaczyna się tuż za odstępem ikony (DungeonInputTextAfterIconMargin). Mieszka tu, a nie
-         w motywie pola z ikoną (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora
+         w motywie pola z ikoną (Controls/IconField.axaml), bo ControlTheme nie dopuszcza selektora
          potomka. -->
     <Style Selector="controls|IconField > TextBox">
         <Setter Property="Background" Value="Transparent" />
@@ -41,7 +41,7 @@
          każda kolumna wyśrodkowana w pionie niezależnie. Siatka wiersza ma wysokość najwyższej
          kolumny, a rozciągnięty TextBlock rysuje tekst u góry swojego pola - bez tego wyższa odznaka
          w sąsiedniej kolumnie przesuwała tytuł w górę. Mieszka tu, a nie w motywie wiersza
-         (DungeonControls.axaml), bo ControlTheme nie dopuszcza selektora potomka.
+         (Controls/ListRow.axaml), bo ControlTheme nie dopuszcza selektora potomka.
          Korzeń szablonu wiersza (Grid PART_Root) też jest logicznym dzieckiem wiersza - wyłączony
          z selektora, bo pas kreski i tło PART_Highlight mają się rozciągać na wysokość wiersza. -->
     <Style Selector="controls|ListRow > Grid:not(#PART_Root) > :is(Control)">
@@ -94,7 +94,7 @@
     </Style>
 
     <!-- Separator w menu (MenuFlyout, ContextMenu, podmenu): linia 1 px na pełną szerokość wnętrza
-         menu, odstęp 4 nad i pod. Mieszka tu, a nie w motywie menu (DungeonControls.axaml), bo
+         menu, odstęp 4 nad i pod. Mieszka tu, a nie w motywie menu (Controls/Menus.axaml), bo
          ControlTheme nie dopuszcza selektora potomka. -->
     <Style Selector="MenuFlyoutPresenter > Separator, ContextMenu > Separator, MenuItem > Separator">
         <Setter Property="Margin" Value="{DynamicResource DungeonMenuSeparatorMargin}" />

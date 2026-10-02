@@ -1,0 +1,97 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Pole z ikoną (controls:IconField): ramka pola z ikoną na początku i polem tekstowym widoku
+        w środku. Ikona nie leży w polu tekstowym - pole tekstowe zaczyna się za nią i wypełnia resztę
+        ramki na pełnej wysokości wnętrza, bez własnej krawędzi i tła (styl "controls|IconField >
+        TextBox" w BuiltInControls.axaml - ControlTheme nie dopuszcza selektora potomka). Kliknięcie
+        w ikonę, obok niej i w krawędź ramki nie trafia w pole tekstowe: nie stawia karetki, nie
+        zaczyna zaznaczania.
+        Wygląd jak pole tekstowe: te same zasoby tła, krawędzi, zaokrąglenia i wysokości
+        (DungeonControlHeight). Ikona DungeonActionIconSize, odstęp DungeonSpacingMd z obu stron,
+        kolor tekstu przygaszonego, nie reaguje na mysz (nie jest celem trafienia - kursor strzałka
+        ramki). Tekst pola zaczyna się tuż za odstępem ikony (wcięcie DungeonInputTextAfterIconMargin),
+        tekst zastępczy tak samo.
+        Przycisk czyszczenia (IsClearable): sam rysunek (DungeonFieldGlyphButton) na końcu ramki, poza
+        polem tekstowym, na pełnej wysokości wnętrza; widoczny tylko przy niepustym polu (CanClear).
+        Nie przyjmuje fokusu, więc czyszczenie zostawia fokus w polu; kliknięcie w niego ani w ikonę
+        nie kończy edycji (Themes/EditFocusRelease.cs liczy ramkę pola z ikoną jako pole).
+        Stany:
+          spoczynek  - tło InputBackground, krawędź InputBorder;
+          najechanie - mysz nad ramką (także nad ikoną i przyciskiem): krawędź InputHoverBorder;
+          edycja     - fokus w polu (:focus-within): krawędź InputHoverBorder przez całą edycję;
+          wyłączenie - DungeonDisabledOpacity raz, na ramce (najwyższa wyłączona); pole tekstowe w środku
+                       nie przygasza drugi raz.
+        Odmiany:
+          .search    - wyszukiwania: lupa i przycisk czyszczenia.
+    -->
+    <ControlTheme x:Key="{x:Type controls:IconField}" TargetType="controls:IconField">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
+        <!-- Najmniejszą szerokość wyznacza zawartość: pole tekstowe w środku ma co najmniej
+             DungeonInputMinWidth (jak zwykłe pole), więc całość to ta wartość plus pasy ikony
+             i czyszczenia. -->
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_BorderElement"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <controls:ForegroundIcon Name="PART_Icon"
+                                                 Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+                                                 VerticalAlignment="Center"
+                                                 IsHitTestVisible="False"
+                                                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                 Source="{TemplateBinding Icon}" />
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          Grid.Column="1"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        <Button Name="PART_ClearButton"
+                                Grid.Column="2"
+                                Theme="{StaticResource DungeonFieldGlyphButton}"
+                                IsVisible="{TemplateBinding CanClear}">
+                            <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                     Height="{DynamicResource DungeonActionIconSize}"
+                                                     Source="{DynamicResource DungeonIconClear}" />
+                        </Button>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.search">
+            <Setter Property="Icon" Value="{DynamicResource DungeonIconSearch}" />
+            <Setter Property="IsClearable" Value="True" />
+        </Style>
+
+        <!-- Najechanie i edycja: ta sama krawędź co pole tekstowe; w edycji trzyma się bez myszy. -->
+        <Style Selector="^:pointerover, ^:focus-within">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

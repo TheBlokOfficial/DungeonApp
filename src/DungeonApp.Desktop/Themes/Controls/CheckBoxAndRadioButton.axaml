@@ -1,0 +1,208 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Pole wyboru (CheckBox) i przycisk opcji (RadioButton). Szablony wycięte z CheckBox.xaml
+        i RadioButton.xaml Fluenta (Avalonia 12.0.5, MIT): zostały znacznik i prezenter etykiety
+        (PART_ContentPresenter); wygląd i stany napisane od nowa z tokenów.
+        Układ: znacznik (kwadrat albo koło DungeonChoiceMarkSize) po lewej, etykieta (Content) po
+        prawej z odstępem DungeonSpacingSm. Wysokość najmniej DungeonControlHeight - kontrolka stoi
+        w jednym rzędzie z polem i przyciskiem; znacznik jest wyśrodkowany z pierwszą linią etykiety
+        (wcięcie etykiety DungeonChoiceLabelPadding), długa etykieta zawija się w dół, a znacznik
+        zostaje przy pierwszej linii. Bez etykiety kontrolka to sam znacznik w wysokości kontrolki.
+        Klikalny jest cały element razem z etykietą (tło przezroczyste, nie puste). Kursor strzałka.
+        Właściwości kontrolki niosą wygląd znacznika: Background - wypełnienie, BorderBrush - krawędź
+        (zawsze 1 px, więc stan nie przesuwa układu), Foreground - kolor etykiety.
+        Stany - nic więcej:
+          spoczynek          - tło InputBackground, krawędź InputBorder;
+          najechanie         - (niezaznaczone) krawędź InputHoverBorder;
+          zaznaczone         - wypełnienie i krawędź Accent; na nim znak w OnAccent: ptaszek (pole
+                               wyboru), kropka DungeonRadioDotSize (przycisk opcji); pod myszą bez
+                               zmian - bez otoczki i bez zmiany koloru;
+          pośrednie          - (IsThreeState) jak zaznaczone, znak: pozioma kreska;
+          wciśnięcie         - wygląda jak najechanie (zaznaczone - jak zaznaczone);
+          wyłączenie         - DungeonDisabledOpacity na całości, bez reakcji na mysz; zaznaczone
+                               traci akcent jak wyłączony przycisk główny: znacznik neutralny (tło
+                               i krawędź Input), znak w kolorze tekstu podstawowego.
+        Ptaszek i kreska są konturowe, jak ikony ramy: pióro DungeonChoiceGlyphThickness, zaokrąglone
+        końce i złącza. Fokus nie ma własnego wyglądu (FocusAdorner pusty); bez animacji przejść.
+    -->
+    <ControlTheme x:Key="{x:Type CheckBox}" TargetType="CheckBox">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonChoiceLabelPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCheckBoxCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*">
+                    <Panel Height="{DynamicResource DungeonControlHeight}" VerticalAlignment="Top">
+                        <Border Name="PART_Mark"
+                                Width="{DynamicResource DungeonChoiceMarkSize}"
+                                Height="{DynamicResource DungeonChoiceMarkSize}"
+                                VerticalAlignment="Center"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Panel>
+                                <!-- Ptaszek i kreska w układzie 16 x 16 znacznika (krawędź 1 px
+                                     odjęta: rysunek 14 x 14 przesunięty o -1). -->
+                                <Path Name="PART_CheckGlyph"
+                                      IsVisible="False"
+                                      Data="M3.5,7.5 L6,10 L10.5,4.5"
+                                      Stroke="{DynamicResource DungeonOnAccentBrush}"
+                                      StrokeThickness="{DynamicResource DungeonChoiceGlyphThickness}"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round" />
+                                <Path Name="PART_IndeterminateGlyph"
+                                      IsVisible="False"
+                                      Data="M3.5,7 L10.5,7"
+                                      Stroke="{DynamicResource DungeonOnAccentBrush}"
+                                      StrokeThickness="{DynamicResource DungeonChoiceGlyphThickness}"
+                                      StrokeLineCap="Round"
+                                      StrokeJoin="Round" />
+                            </Panel>
+                        </Border>
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Grid.Column="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      TextWrapping="Wrap"
+                                      RecognizesAccessKey="True" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- Bez etykiety: sam znacznik, bez odstępu na etykietę. -->
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+
+        <!-- Zaznaczone i pośrednie - pod myszą bez zmian (styl stoi po najechaniu). -->
+        <Style Selector="^:checked, ^:indeterminate">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="^:checked /template/ Path#PART_CheckGlyph">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:indeterminate /template/ Path#PART_IndeterminateGlyph">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <!-- Wyłączone: bez akcentu - znacznik neutralny, znak w kolorze tekstu podstawowego. -->
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Path">
+            <Setter Property="Stroke" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type RadioButton}" TargetType="RadioButton">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="MinHeight" Value="{DynamicResource DungeonControlHeight}" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonChoiceLabelPadding}" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonRadioButtonCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*">
+                    <Panel Height="{DynamicResource DungeonControlHeight}" VerticalAlignment="Top">
+                        <Border Name="PART_Mark"
+                                Width="{DynamicResource DungeonChoiceMarkSize}"
+                                Height="{DynamicResource DungeonChoiceMarkSize}"
+                                VerticalAlignment="Center"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{TemplateBinding CornerRadius}">
+                            <Ellipse Name="PART_Dot"
+                                     IsVisible="False"
+                                     Width="{DynamicResource DungeonRadioDotSize}"
+                                     Height="{DynamicResource DungeonRadioDotSize}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="{DynamicResource DungeonOnAccentBrush}" />
+                        </Border>
+                    </Panel>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Grid.Column="1"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      TextWrapping="Wrap"
+                                      RecognizesAccessKey="True" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style Selector="^:pointerover, ^:pressed">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
+        </Style>
+
+        <Style Selector="^:checked">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
+        </Style>
+        <Style Selector="^:checked /template/ Ellipse#PART_Dot">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Ellipse#PART_Dot">
+            <Setter Property="Fill" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
