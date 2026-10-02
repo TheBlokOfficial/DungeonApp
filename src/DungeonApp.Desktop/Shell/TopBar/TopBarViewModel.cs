@@ -6,7 +6,7 @@ namespace DungeonApp.Desktop.Shell.TopBar;
 /// <summary>
 /// The strip above the content area, to the right of the sidebar. Reports where the GM is - which
 /// system is active and, once one is open, which campaign - and offers the one action that leaves
-/// the system behind: "Zmień system", the same action the sidebar used to carry.
+/// the system behind: "Zmień system".
 /// <para>
 /// One instance lives for the whole life of <see cref="AppShellViewModel"/>, updated in place on every
 /// system choice and every campaign open/close, rather than rebuilt the way

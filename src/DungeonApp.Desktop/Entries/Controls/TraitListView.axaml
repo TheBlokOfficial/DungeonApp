@@ -29,7 +29,7 @@
     </UserControl.Resources>
 
     <!-- No Margin on this root, ever: spacing between card controls belongs to the card view that
-         lays them out, not to the control itself. See docs/architecture.md, "Deklaracja treści". -->
+         lays them out, not to the control itself. -->
     <!-- The shared size scope starts here, at one control, and deliberately not higher: the label
          column is shared by the rows of THIS trait list, so a long label widens its own block and
          leaves the neighbouring one alone. Without a scope every row measures its own Auto column

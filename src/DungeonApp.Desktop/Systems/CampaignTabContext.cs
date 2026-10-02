@@ -14,11 +14,11 @@ namespace DungeonApp.Desktop.Systems;
 /// Carries the campaign's id, a read-only <see cref="Snapshot"/>, the one door any change goes
 /// through, and a subscription to what changed - and nothing else reachable from here, in particular
 /// never <see cref="Shell.CampaignSession"/> or <see cref="Core.Campaigns.Campaign"/> themselves, no
-/// object with a method that mutates state (docs/architecture.md, "Gdzie mieszka stan"), and no
-/// content registry: the frame does not know what an entry is, so it has nothing to carry here. A tab
-/// that needs entries - today, the desk's own tools - builds its own <c>CampaignEntriesContext</c> (in
-/// the entries library, which the frame does not reference and so cannot name by <c>cref</c>) from
-/// this context plus its own registry and type catalog, the same way the desk always has.
+/// object with a method that mutates state, and no content registry: the frame does not know what
+/// an entry is, so it has nothing to carry here. A tab that needs entries - today, the desk's own
+/// tools - builds its own <c>CampaignEntriesContext</c> (in the entries library, which the frame
+/// does not reference and so cannot name by <c>cref</c>) from this context plus its own registry
+/// and type catalog.
 /// </para>
 /// </summary>
 public sealed class CampaignTabContext

@@ -14,15 +14,14 @@
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
 
         <!-- Pas kreski zaznaczenia wierszy nawigacji (ListRow): odstęp kreski od tła wiersza 12,
-             wcięcie z góry i z dołu 6 (mockup .sidebar-item.active::before: left -12, top/bottom 6).
-             Pasek nie ma przewijania: strefa paska w wierszu to tylko prawy pas wiersza (12, szerokość
-             pasa kreski) - treść kończy się tam, gdzie tło, jak przed wprowadzeniem prawego pasa. -->
+             wcięcie z góry i z dołu 6. Pasek nie ma przewijania: strefa paska w wierszu to tylko
+             prawy pas wiersza (12, szerokość pasa kreski) - treść kończy się tam, gdzie tło. -->
         <x:Double x:Key="DungeonListRowStripeGutter">12</x:Double>
         <Thickness x:Key="DungeonListRowStripeInset">0,6</Thickness>
         <Thickness x:Key="DungeonScrollBarZone">0,0,12,0</Thickness>
         <!-- Shared by every row in every category - the campaign position, a Campaign-category tab,
-             a System-category tab, and "Zmień system" alike - so a row's category never shows in its
-             own visual shape, only in which group on the page it sits in. -->
+             a System-category tab, and an Aplikacja row alike - so a row's category never shows in
+             its own visual shape, only in which group on the page it sits in. -->
         <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
             <!-- Wiersz ramy (ListRow) z kreską; aktywna pozycja = wybrana. Ikona na środku kolumny 40
                  za pasem kreski (12) - na środku zwiniętego paska (64), tło wiersza kwadratem 40. -->
@@ -82,15 +81,14 @@
     <Border Background="{DynamicResource DungeonFrameBrush}"
             ClipToBounds="True">
         <Grid>
-        <!-- Third row: the Aplikacja category, pinned to the sidebar's own bottom edge (docs/
-             architecture.md, "Pasek boczny: trzy kategorie" - this row's own screen label is
-             "SYSTEM", not "Aplikacja"; see the heading TextBlock below). Because the middle row is
-             "*" and this one is "Auto", this row's bottom edge is always the Grid's own bottom edge,
-             whatever its Auto height is - which is exactly what makes its items' Y position collapse-
-             invariant: collapsing only shrinks this row's own heading (HeadingHeight, animated, same
-             as every other heading), and since the row's total height shrinks by exactly that amount
-             while its bottom edge stays fixed, the items immediately below the heading end up at the
-             same absolute Y either way. -->
+        <!-- Third row: the Aplikacja category, pinned to the sidebar's own bottom edge (this row's
+             own screen label is "SYSTEM", not "Aplikacja"; see the heading TextBlock below).
+             Because the middle row is "*" and this one is "Auto", this row's bottom edge is always
+             the Grid's own bottom edge, whatever its Auto height is - which is exactly what makes
+             its items' Y position collapse-invariant: collapsing only shrinks this row's own
+             heading (HeadingHeight, animated, same as every other heading), and since the row's
+             total height shrinks by exactly that amount while its bottom edge stays fixed, the
+             items immediately below the heading end up at the same absolute Y either way. -->
         <Grid RowDefinitions="Auto,*,Auto">
             <!-- The brand belongs with global navigation, so static backstage pages do not spend
                  a second horizontal strip repeating application chrome. -->
@@ -188,24 +186,21 @@
                  "BIBLIOTEKA" - see that heading's Text below). The third category, Aplikacja, is its
                  own sibling at Grid.Row="2" below, pinned to the sidebar's bottom edge - see the
                  comment on the outer Grid's RowDefinitions.
-                 Each heading fades and slides the same way 555802f's single "BIBLIOTEKA KAMPANII"
-                 heading did (CollapsibleTextOpacity/Offset, unchanged). Etap 1 had replaced this with
-                 an unheaded separator (docs/tasks.md); the author vetoed that, and still does - no
-                 separator was added for the gap between these two groups either, only spacing.
+                 Each heading fades and slides (CollapsibleTextOpacity/Offset). The groups are told
+                 apart by headings and spacing, never by a separator line.
 
-                 Collapsing no longer slides the item list under a still-reserved heading row
-                 (NavigationItemsOffset, the etap-1 restore's approach): a translate by one heading's
-                 height only ever closed the gap within its own group, leaving every later group's
-                 still full-height heading row as a dead gap below it. Instead each heading's own
-                 Border animates its Height between 44 (unchanged literal, the row height this sidebar
-                 already used) and 0, same 0.18s CubicEaseInOut as before; the surrounding Grid's Auto
-                 row then reflows every row beneath it every frame, so both groups close in one
-                 continuous motion with no reserved space left behind.
+                 Collapsing does not slide the item list under a still-reserved heading row: a
+                 translate by one heading's height only ever closes the gap within its own group,
+                 leaving every later group's still full-height heading row as a dead gap below it.
+                 Instead each heading's own Border animates its Height between 44 and 0 (0.18s
+                 CubicEaseInOut); the surrounding Grid's Auto row then reflows every row beneath it
+                 every frame, so both groups close in one continuous motion with no reserved space
+                 left behind.
 
                  DungeonSpacingLg between the two groups - not the heading-collapse mechanics alone -
                  is what keeps a deliberate, designed gap between Kampania and Biblioteka once
-                 collapsed (the author's own call: the two must stay visibly separate groups, not
-                 read as one continuous list the way every other adjacent pair of rows does). -->
+                 collapsed: the two must stay visibly separate groups, not read as one continuous
+                 list the way every other adjacent pair of rows does. -->
             <StackPanel Grid.Row="1" Spacing="{DynamicResource DungeonSpacingLg}">
                 <Grid RowDefinitions="Auto,Auto">
                     <Border Grid.Row="0"
@@ -269,8 +264,8 @@
                             </Transitions>
                         </Border.Transitions>
                         <!-- Screen label "BIBLIOTEKA" - the SystemTabItems binding and every C#
-                             identifier around it keep naming this the System category (docs/
-                             collaboration.md: labels on screen change, code vocabulary does not). -->
+                             identifier around it keep naming this the System category: labels on
+                             screen may change, code vocabulary does not. -->
                         <TextBlock Margin="16,0,64,3"
                                    Classes="sidebar-section-heading eyebrow"
                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
@@ -308,9 +303,8 @@
             </StackPanel>
 
             <!-- Aplikacja, pinned to the bottom (see the outer Grid's RowDefinitions comment) -
-                 screen label "SYSTEM", today just "Ustawienia" (a frame-owned, always-empty
-                 position). Margin retained verbatim from 555802f's single trailing group margin,
-                 relocated here since this is now the actual last visible group. -->
+                 screen label "SYSTEM": "Galeria kontrolek" and "Ustawienia" (frame-owned
+                 positions). The bottom margin belongs here: this is the last visible group. -->
             <Grid Grid.Row="2" RowDefinitions="Auto,Auto" Margin="0,0,0,8">
                 <Border Grid.Row="0"
                         Height="{Binding HeadingHeight}"

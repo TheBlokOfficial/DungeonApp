@@ -12,16 +12,16 @@ namespace DungeonApp.Desktop.Shell;
 /// Owns one chosen system's tab lifecycle: its System-category tabs, its Campaign-category tabs, and
 /// the currently open campaign, if any. Free of Avalonia's dispatcher and the startup-warmup
 /// machinery on purpose - <see cref="AppShellViewModel"/> needs both of those to drive the screen,
-/// but the navigation contract with a system itself (what docs/tasks.md's "Testy" section calls "the
-/// tab lifecycle on a substituted system") does not, which is what makes this type unit-testable
-/// without a running application, the same way <see cref="CampaignSession"/> is.
+/// but the navigation contract with a system itself (the tab lifecycle, testable on a substituted
+/// system) does not, which is what makes this type unit-testable without a running application,
+/// the same way <see cref="CampaignSession"/> is.
 /// <para>
 /// A tab's content is built at most once and cached here until it is released - by
 /// <see cref="CloseCampaign"/> (Campaign-category tabs only), or by <see cref="ReleaseAll"/>, which
-/// covers every point docs/architecture.md's navigation section names as a release: returning to
-/// system selection and exiting the program. Warmup never touches this cache at all - it builds and
-/// releases its own throwaway content against a throwaway <see cref="CampaignTabContext"/>, so it can
-/// never leave anything here for a later real open to find already built.
+/// covers every other release point: returning to system selection and exiting the program. Warmup
+/// never touches this cache at all - it builds and releases its own throwaway content against a
+/// throwaway <see cref="CampaignTabContext"/>, so it can never leave anything here for a later real
+/// open to find already built.
 /// </para>
 /// </summary>
 public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository campaigns)
@@ -78,8 +78,7 @@ public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository 
 
     /// <summary>
     /// Builds <paramref name="declaration"/>'s content on first call and returns the same instance on
-    /// every later one - the "zawartość zakładki powstaje przy pierwszym pokazaniu" half of the tab
-    /// lifecycle rule.
+    /// every later one: a tab's content is built when the tab is first shown, not before.
     /// </summary>
     public ITabContent GetOrCreateSystemTab(SystemTabDeclaration declaration)
     {
@@ -120,8 +119,8 @@ public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository 
 
     /// <summary>
     /// Releases every tab this session ever built - System-category and Campaign-category alike -
-    /// and closes the open campaign. Called on "powrót do wyboru" and on program exit; safe to call
-    /// more than once, since every dictionary it drains is empty after the first call.
+    /// and closes the open campaign. Called on returning to system selection and on program exit;
+    /// safe to call more than once, since every dictionary it drains is empty after the first call.
     /// </summary>
     public void ReleaseAll()
     {

@@ -10,13 +10,12 @@ using DungeonApp.Desktop.Workspace.Panels;
 namespace DungeonApp.Desktop.Workspace;
 
 /// <summary>
-/// The desk's one public entry point (docs/tasks.md, "Etap 1 - projekt styku"): a system builds its
-/// desk tab by handing this exactly a campaign context, a layout store and its own tool list, and
-/// gets back a finished <see cref="ITabContent"/> that has already loaded its own saved layout.
+/// The desk's one public entry point: a system builds its desk tab by handing this exactly a
+/// campaign context, a layout store and its own tool list, and gets back a finished
+/// <see cref="ITabContent"/> that has already loaded its own saved layout.
 /// <para>
 /// Nothing upstream of this call - a system's tab factory, the shell that invokes it - reads or
-/// writes a layout file directly; this is the only place that does, which is what
-/// docs/code-state.md's "Biurko wystawia systemowi jedno publiczne wejście" cashes out to in code.
+/// writes a layout file directly; this is the only place that does.
 /// </para>
 /// </summary>
 public static class CampaignDesk
@@ -44,11 +43,10 @@ public static class CampaignDesk
     }
 
     /// <summary>
-    /// Wraps the desk view model as an <see cref="ITabContent"/>. Disposing it does what
-    /// docs/tasks.md's "zwolnienie zapisuje oczekujący układ" requires: flush whatever gesture is
-    /// still pending, then release the view model's own subscriptions - in that order, because a
-    /// flush after the session is disposed would write nothing (its debounce timer is already
-    /// stopped).
+    /// Wraps the desk view model as an <see cref="ITabContent"/>. Releasing the tab saves the
+    /// pending layout: disposing it flushes whatever gesture is still pending, then releases the
+    /// view model's own subscriptions - in that order, because a flush after the session is
+    /// disposed would write nothing (its debounce timer is already stopped).
     /// </summary>
     private sealed class CampaignWorkspaceTabContent(CampaignWorkspaceViewModel viewModel) : ITabContent
     {

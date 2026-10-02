@@ -8,11 +8,11 @@ namespace DungeonApp.Desktop.Entries.ContentTab;
 
 /// <summary>
 /// One selectable row in a content tab's list: a resolved entry, a broken entry, a rejected file, or
-/// a rejected pack's own header (docs/architecture.md, "Zakładki treści": "Odrzucona paczka...
-/// wybieralny"). The same shape serves all four - a name, an optional badge, whether it draws in the
-/// broken-content color, and a command that reports its own <see cref="ContentSelectionKey"/> back to
-/// the owning <see cref="ContentTabViewModel"/> - because the view only ever needs to draw and click
-/// a row, never to know which of the four it is drawing.
+/// a rejected pack's own header, selectable so its detail can give the reason. The same shape
+/// serves all four - a name, an optional badge, whether it draws in the broken-content color, and a
+/// command that reports its own <see cref="ContentSelectionKey"/> back to the owning
+/// <see cref="ContentTabViewModel"/> - because the view only ever needs to draw and click a row,
+/// never to know which of the four it is drawing.
 /// </summary>
 public sealed class ContentRowViewModel : ObservableObject
 {

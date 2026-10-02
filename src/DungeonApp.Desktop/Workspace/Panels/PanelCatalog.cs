@@ -7,8 +7,8 @@ namespace DungeonApp.Desktop.Workspace.Panels;
 /// Which panels one open campaign's desk offers, and the only place to ask for one by id.
 /// <para>
 /// Powstaje dla jednej kampanii, bo blat oferuje okna należące do jej bieżącej sesji. Żaden
-/// identyfikator panelu nie jest już tutaj wypisany: wszystkie przychodzą z pasa narzędzi
-/// wybranego systemu, a powłoka nie wnosi dziś własnego panelu.
+/// identyfikator panelu nie jest tutaj wypisany: wszystkie przychodzą z pasa narzędzi wybranego
+/// systemu, a powłoka nie wnosi dziś własnego panelu.
 /// </para>
 /// </summary>
 public sealed class PanelCatalog

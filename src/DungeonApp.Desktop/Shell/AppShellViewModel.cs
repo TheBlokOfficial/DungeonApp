@@ -27,7 +27,7 @@ namespace DungeonApp.Desktop.Shell;
 /// actual tab lifecycle to <see cref="ActiveSystemSession"/>, keeping here only what genuinely needs
 /// Avalonia's dispatcher (the startup sequence, visual warmup) or is pure screen-routing glue -
 /// which is also why, unlike <see cref="ActiveSystemSession"/>, this type has no unit tests of its
-/// own (docs/code-state.md already names this the untested half of the shell, for the same reason).
+/// own.
 /// </summary>
 public sealed class AppShellViewModel : ObservableObject
 {
@@ -49,9 +49,8 @@ public sealed class AppShellViewModel : ObservableObject
     private GlobalSidebarViewModel? _sidebar;
     private CampaignPageViewModel? _campaignPage;
 
-    // Survives "Zmień system" and every later choice, per docs/tasks.md zadanie 3: the frame owns
-    // collapse, not any one system's sidebar instance. 555802f never wrote this to disk (grep of that
-    // commit shows no store call near it), so this stays in-memory only - no new persistence added.
+    // Survives "Zmień system" and every later choice: the frame owns collapse, not any one system's
+    // sidebar instance. In memory only - never written to disk.
     private bool _sidebarCollapsed;
 
     public AppShellViewModel(
@@ -69,8 +68,7 @@ public sealed class AppShellViewModel : ObservableObject
         SystemSelection = new SystemSelectionViewModel(systems, ChooseSystemAsync);
         StatusBar = new StatusBarViewModel("Gotowe");
         // One instance for the app's whole life (unlike Sidebar, never rebuilt per system) - see
-        // TopBarViewModel's own remarks. "Zmień system" is the same action the sidebar used to
-        // trigger, wired here instead.
+        // TopBarViewModel's own remarks. "Zmień system" is wired here.
         TopBar = new TopBarViewModel(new AsyncCommand(ReturnToSelectionAsync));
 
         // Backstage first. Nothing about a system is shown before one is chosen.
@@ -104,9 +102,8 @@ public sealed class AppShellViewModel : ObservableObject
     public bool IsStarting => !IsReady;
 
     /// <summary>
-    /// The fullscreen system picker versus the sidebar-and-content screen (docs/architecture.md,
-    /// "Aplikacja startuje na ekranie wyboru systemu"). Both live under the same status bar row -
-    /// see AppShellView.axaml.
+    /// The fullscreen system picker, where the application starts, versus the sidebar-and-content
+    /// screen. Both live under the same status bar row - see AppShellView.axaml.
     /// </summary>
     public bool IsSystemChosen
     {
@@ -135,11 +132,11 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Runs the whole startup sequence behind the curtain: content packs, the campaign shelf, and -
-    /// per docs/tasks.md's revised zadanie 1 - every visual warmup the GM's first minute could
-    /// otherwise pay for on click (every compiled system's tabs, cards and desk, the sidebar in both
-    /// collapse states, the shelf and the campaign page). Nothing here is bounded by how long it
-    /// takes - a slower, fully warmed curtain is the point, not a cost to shave.
+    /// Runs the whole startup sequence behind the curtain: content packs, the campaign shelf, and
+    /// every visual warmup the GM's first minute could otherwise pay for on click (every compiled
+    /// system's tabs, cards and desk, the sidebar in both collapse states, the shelf and the
+    /// campaign page). Nothing here is bounded by how long it takes - a slower, fully warmed
+    /// curtain is the point, not a cost to shave.
     /// </summary>
     public async Task RunStartupAsync(StartupUiContext ui)
     {
@@ -188,7 +185,7 @@ public sealed class AppShellViewModel : ObservableObject
     /// <summary>
     /// <paramref name="warning"/> comes from whichever step failed (<see cref="IStartupStep.FailureWarning"/>)
     /// - the frame never knows why a step failed, only that one did, so the step itself is the only
-    /// one that can put that into words (docs/architecture.md, "Start aplikacji").
+    /// one that can put that into words.
     /// </summary>
     private void CompleteStartupWithWarning(string? warning)
     {
@@ -198,10 +195,10 @@ public sealed class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Releases every tab this session ever built. Called from the application's shutdown hooks - see
-    /// docs/architecture.md's "wyjście z programu" release trigger. A desk tab's own release flushes
-    /// whatever arrangement is still pending (the desk's own <c>CampaignDesk</c> entry point),
-    /// so this needs no separate layout-flush step of its own the way the previous shell did.
+    /// Releases every tab this session ever built. Called from the application's shutdown hooks:
+    /// exiting the program is a release point. A desk tab's own release flushes whatever
+    /// arrangement is still pending (the desk's own <c>CampaignDesk</c> entry point), so this needs
+    /// no separate layout-flush step of its own.
     /// </summary>
     public void FlushPendingState() => _session?.ReleaseAll();
 
@@ -245,15 +242,15 @@ public sealed class AppShellViewModel : ObservableObject
     /// <summary>
     /// Applies the GM's choice of system. Everything expensive - every compiled system's tabs, cards
     /// and desk, the shelf, the campaign page, the sidebar chrome in both collapse states - already
-    /// ran once behind the startup curtain (<see cref="RunStartupAsync"/>, docs/tasks.md's revised
-    /// zadanie 1); nothing here builds a type warmup has not already shown once. What is left is
-    /// cheap and depends only on which system was picked: the session that will lazily build this
-    /// system's *real*, cached tab content on first click, and a sidebar instance carrying this
-    /// system's own tab declarations and the collapse state the frame remembers across systems (zadanie
-    /// 3). Also the point where the shelf learns which system is now active
-    /// (<see cref="CampaignLibraryViewModel.SetActiveSystem"/>) and reloads to filter itself to it -
-    /// docs/architecture.md, "Kampania należy do jednego systemu": the load that already ran behind
-    /// the startup curtain, before any system was chosen, showed every campaign unfiltered.
+    /// ran once behind the startup curtain (<see cref="RunStartupAsync"/>); nothing here builds a
+    /// type warmup has not already shown once. What is left is cheap and depends only on which
+    /// system was picked: the session that will lazily build this system's *real*, cached tab
+    /// content on first click, and a sidebar instance carrying this system's own tab declarations
+    /// and the collapse state the frame remembers across systems. Also the point where the shelf
+    /// learns which system is now active (<see cref="CampaignLibraryViewModel.SetActiveSystem"/>)
+    /// and reloads to filter itself to it, since a campaign belongs to one system: the load that
+    /// already ran behind the startup curtain, before any system was chosen, showed every campaign
+    /// unfiltered.
     /// </summary>
     private async Task ChooseSystemAsync(IGameSystem system)
     {
@@ -308,7 +305,8 @@ public sealed class AppShellViewModel : ObservableObject
         return Task.CompletedTask;
     }
 
-    /// <summary>Mirrors the active sidebar's collapse state into the frame so it outlives that sidebar instance (zadanie 3).</summary>
+    /// <summary>Mirrors the active sidebar's collapse state into the frame so it outlives that
+    /// sidebar instance.</summary>
     private void OnSidebarPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(GlobalSidebarViewModel.IsCollapsed) && sender is GlobalSidebarViewModel sidebar)

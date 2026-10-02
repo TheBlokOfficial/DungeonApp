@@ -9,9 +9,9 @@ using DungeonApp.Core.Entries;
 namespace DungeonApp.Desktop.Entries.ContentTab;
 
 /// <summary>
-/// One filter chip - the category, one of a tab's own value filters, or "Paczka"
-/// (docs/architecture.md, "Zakładki treści") - as a list of options with check boxes: any number of
-/// them chosen, nothing chosen means the filter does not narrow. There is no "Wszystkie" entry.
+/// One filter chip - the category, one of a tab's own value filters, or "Paczka" - as a list of
+/// options with check boxes: any number of them chosen, nothing chosen means the filter does not
+/// narrow. There is no "Wszystkie" entry.
 /// <para>
 /// The chosen values are kept by value (the option text), never by object, in
 /// <see cref="SelectedValues"/> - the collection the chip's picker adds to and removes from. Lives

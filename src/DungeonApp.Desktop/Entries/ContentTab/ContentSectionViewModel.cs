@@ -9,8 +9,7 @@ namespace DungeonApp.Desktop.Entries.ContentTab;
 /// <para>
 /// A rejected pack's section is drawn the same way - an unselectable header - but in the
 /// broken-content color with a warning icon, and its <see cref="Rows"/> hold exactly one row: the
-/// pack's own directory, selectable like any other row, whose detail gives the reason
-/// (docs/architecture.md, "Zakładki treści").
+/// pack's own directory, selectable like any other row, whose detail gives the reason.
 /// </para>
 /// </summary>
 public sealed class ContentSectionViewModel(string header, int count, bool isRejectedPack, IReadOnlyList<ContentRowViewModel> rows)

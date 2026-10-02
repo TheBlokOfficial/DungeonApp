@@ -40,7 +40,7 @@ public partial class App : Avalonia.Application
     /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
     /// empty system list only ever reaches <see cref="Initialize"/> under design-time tooling;
     /// outside of it, the guard at the top of that method turns this into a loud failure instead of
-    /// a silently empty registry.
+    /// silently empty content tabs.
     /// </summary>
     public App() : this([])
     {
@@ -62,9 +62,9 @@ public partial class App : Avalonia.Application
 
         // Kampanie leżą z dokumentami użytkownika, nie w danych aplikacji: kampania ma być widocznym,
         // przenośnym, kopiowalnym dokumentem, a nie ukrytym stanem programu. Jeden magazyn na
-        // wkompilowany system, w jego własnym katalogu - docs/architecture.md, "Gdzie mieszka stan":
-        // "Kampania należy do jednego systemu - tego, w którego katalogu leży." SystemDirectories
-        // wylicza tę ścieżkę generycznie z każdego IGameSystem.Id, nigdy z nazwy konkretnego systemu.
+        // wkompilowany system, w jego własnym katalogu: kampania należy do jednego systemu - tego,
+        // w którego katalogu leży. SystemDirectories wylicza tę ścieżkę generycznie z każdego
+        // IGameSystem.Id, nigdy z nazwy konkretnego systemu.
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         // Usunięcie kampanii w działającej aplikacji trafia do Kosza systemu, nie znika trwale - tak,
@@ -80,11 +80,11 @@ public partial class App : Avalonia.Application
 
         // Cache dzielony przez rozgrzewkę pierwszej kampanii po wyborze systemu i przez otwarcie
         // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
-        // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten dziś wystawia wyłącznie
+        // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten wystawia wyłącznie
         // system, w swoim własnym konstruktorze (DungeonApp.App/Program.cs), bo rama nie stawia
-        // biurka. Deklaracje, którymi czyta jedną konkretną kampanię, nie są tu już z góry ustalone -
-        // każda kampania niesie własny system w manifeście (docs/architecture.md, "Kampania należy do
-        // jednego systemu"), więc cache sam dopasowuje go do jednego z `_systems` przy każdym odczycie.
+        // biurka. Deklaracje, którymi czyta jedną konkretną kampanię, nie są tu z góry ustalone -
+        // każda kampania niesie własny system w manifeście, więc cache sam dopasowuje go do jednego
+        // z `_systems` przy każdym odczycie.
         _preparations = new CampaignPreparationCache(_repositoriesBySystem, _systems);
 
         // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
@@ -99,13 +99,13 @@ public partial class App : Avalonia.Application
             summary => _shell!.OpenCampaignAsync(summary));
 
         // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Wszystko wizualne, co GM mógłby
-        // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, przed pokazaniem ekranu
-        // wyboru jako interaktywnego (docs/tasks.md, zadanie 1 - zamrożenie przy wyborze systemu
-        // znikło stąd, nie skróceniem rozgrzewki, tylko przeniesieniem jej przed kurtynę startową):
-        // najpierw każdy wkompilowany system przygotowuje własną treść (paczki, karty - jego własne
-        // kroki startowe, rama nie wie, co robią), potem półka, dane każdej kampanii z półki, chrom
-        // ramy (ekran wyboru, półka, pasek boczny w obu stanach, strona kampanii) i na końcu zakładki
-        // każdego wkompilowanego systemu (jego rejestr, jego biurko z narzędziami).
+        // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, za kurtyną
+        // startową, przed pokazaniem ekranu wyboru jako interaktywnego - inaczej wybór systemu
+        // zamroziłby okno: najpierw każdy wkompilowany system przygotowuje własną treść (paczki,
+        // karty - jego własne kroki startowe, rama nie wie, co robią), potem półka, dane każdej
+        // kampanii z półki, chrom ramy (ekran wyboru, półka, pasek boczny w obu stanach, strona
+        // kampanii) i na końcu zakładki każdego wkompilowanego systemu (jego zakładki treści, jego
+        // biurko z narzędziami).
         var shelfStep = new LoadCampaignShelfStep(_campaignLibrary);
         var dataStep = new WarmCampaignDataStep(_preparations, shelfStep);
 
@@ -157,8 +157,7 @@ public partial class App : Avalonia.Application
     /// <summary>
     /// The Recycle Bin is a Windows shell concept; <see cref="OperatingSystem.IsWindows"/> is the
     /// source-level guard CA1416 asks for, not a suppression of it. Off Windows there is no bin to
-    /// send anything to, so this falls back to the same permanent delete the store used before this
-    /// injection existed.
+    /// send anything to, so this falls back to a permanent delete.
     /// </summary>
     private static void DeleteDirectoryToRecycleBin(string path)
     {

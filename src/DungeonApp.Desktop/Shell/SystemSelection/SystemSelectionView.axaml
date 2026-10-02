@@ -34,7 +34,7 @@
     </UserControl.Styles>
 
     <!-- Fullscreen, no sidebar and no top bar - the status bar is a sibling row in AppShellView, not
-         part of this view (docs/tasks.md: "Ekran wyboru bez paska bocznego i górnego"). -->
+         part of this view. -->
     <Grid Background="{DynamicResource DungeonBackstageBrush}">
         <Border Width="3200"
                 HorizontalAlignment="Left"

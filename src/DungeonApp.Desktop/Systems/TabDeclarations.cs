@@ -7,8 +7,7 @@ namespace DungeonApp.Desktop.Systems;
 /// One tab a system declares in the System sidebar category: a constant triple plus a synchronous,
 /// parameterless factory, read once when the system is chosen. Parameterless is what makes "a
 /// System-category tab never sees the open campaign" structural rather than a promise a context
-/// class happens to keep today (docs/architecture.md, "Pasek boczny: trzy kategorie") - there is
-/// nothing here a factory could even accept a campaign through.
+/// class happens to keep - there is nothing here a factory could even accept a campaign through.
 /// </summary>
 public sealed record SystemTabDeclaration(
     string Id,

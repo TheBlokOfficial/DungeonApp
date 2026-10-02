@@ -13,7 +13,7 @@ public enum CampaignAvailability
     /// <summary>The manifest names a system other than the one whose directory this campaign was found in -
     /// including a system this build does not compile at all, which can never equal a directory's own
     /// (always-compiled) system. A manifest that names none at all is not this: it belongs to the directory's
-    /// system and opens as Available - docs/architecture.md, "Kampania należy do jednego systemu".</summary>
+    /// system and opens as Available.</summary>
     MismatchedSystem,
 
     /// <summary>The manifest was written by a newer build than this one understands.</summary>

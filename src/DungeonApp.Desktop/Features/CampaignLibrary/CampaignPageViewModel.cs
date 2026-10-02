@@ -8,8 +8,8 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
 /// <summary>
 /// What the campaign position on the sidebar turns into once a campaign is open: what the shell
-/// knows about it - name, creation date - and the one action that changes that, closing it
-/// (docs/architecture.md, "Kampanię zamyka się z wnętrza strony kampanii, nie z paska").
+/// knows about it - name, creation date - and the one action that changes that, closing it. A
+/// campaign is closed from inside its own page, not from the sidebar.
 /// </summary>
 public sealed class CampaignPageViewModel(Campaign campaign, Func<Task> closeCampaign) : ObservableObject
 {

@@ -17,8 +17,8 @@
 
         <!--
             Full-window startup curtain: covers topbar, sidebar and workspace alike, not just the
-            workspace cell. Układ portowany z zaakceptowanego mockupu (wariant A): oś pionowa,
-            wszystko wyśrodkowane - marka, nazwa, pasek postępu, tekst kroku.
+            workspace cell. Układ: oś pionowa, wszystko wyśrodkowane - marka, nazwa, pasek
+            postępu, tekst kroku.
 
             IsHitTestVisible drops the instant AppShellViewModel.IsReady flips; the fade itself is a
             transition on Opacity and is not waited on.

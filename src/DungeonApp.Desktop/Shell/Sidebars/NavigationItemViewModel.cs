@@ -6,8 +6,8 @@ namespace DungeonApp.Desktop.Shell.Sidebars;
 /// <summary>
 /// One row on the global sidebar - a fixed id and command, plus a label and icon that a caller can
 /// still update afterwards. Two rows need that: the campaign position (shelf vs. campaign page swap
-/// both, docs/tasks.md's "ikona pozycji paska staje się stanem pochodnym") and a Campaign-category
-/// tab (its icon becomes the lock glyph while no campaign is open).
+/// both, so its icon is derived state) and a Campaign-category tab (its icon becomes the lock glyph
+/// while no campaign is open).
 /// </summary>
 public sealed class NavigationItemViewModel(string id, string iconResourceKey, string label, ICommand selectCommand)
     : ObservableObject
@@ -43,8 +43,8 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     /// <summary>
     /// True for a Campaign-category tab while no campaign is open. A locked row is greyed out,
     /// shows the lock icon in place of its own, and does not react to a click - the shell never even
-    /// builds its content while this is true (docs/architecture.md, "Zakładki kampanii są na pasku
-    /// od wyboru systemu; bez otwartej kampanii są zamknięte").
+    /// builds its content while this is true. Campaign tabs sit on the sidebar from the moment a
+    /// system is chosen; without an open campaign they are locked.
     /// </summary>
     public bool IsLocked
     {

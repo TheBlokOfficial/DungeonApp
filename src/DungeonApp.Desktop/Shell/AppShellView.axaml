@@ -30,11 +30,11 @@
             <settings:SettingsView />
         </DataTemplate>
         <!-- A fresh GlobalSidebarView per DataTemplate build - not a persistent element rebound by
-             DataContext - is what makes zadanie 2 hold on "Zmień system" too, not only on the very
-             first system choice: a control Avalonia has never rendered before has no earlier frame for
-             its Width/heading/label transitions to play across (docs/tasks.md; confirmed by
-             DungeonApp.Desktop.RenderingTests.GlobalSidebarRenderingTests, whose DataContext-swap-on-
-             an-already-shown-instance probe fails without this). -->
+             DataContext - is what keeps the sidebar from animating into its state on "Zmień system"
+             too, not only on the very first system choice: a control Avalonia has never rendered
+             before has no earlier frame for its Width/heading/label transitions to play across
+             (DungeonApp.Desktop.RenderingTests.GlobalSidebarRenderingTests, whose
+             DataContext-swap-on-an-already-shown-instance probe fails without this). -->
         <DataTemplate DataType="sidebars:GlobalSidebarViewModel">
             <sidebars:GlobalSidebarView Width="{Binding SidebarWidth}">
                 <sidebars:GlobalSidebarView.Transitions>
@@ -51,7 +51,7 @@
         <!-- A system tab's or a campaign tab's content arrives as an already-finished Control
              (ITabContent.Content), never a view model - so it needs no template here. Avalonia hosts
              a Control assigned directly as Content as-is, the same trick a panel's own body already
-             uses (docs/code-state.md, "Narzędzie oddaje gotową kontrolkę, nie ViewModel"). -->
+             uses. -->
     </UserControl.DataTemplates>
 
     <Grid IsHitTestVisible="{Binding IsReady}">
@@ -61,7 +61,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <!-- Ekran wyboru systemu: pełnoekranowy, bez paska bocznego (docs/tasks.md, etap 1). -->
+            <!-- Ekran wyboru systemu: pełnoekranowy, bez paska bocznego. -->
             <ContentControl Content="{Binding SystemSelection}" IsVisible="{Binding !IsSystemChosen}" />
 
             <!-- Pasek boczny + (pasek górny nad treścią), dopiero po wyborze systemu. Pasek boczny

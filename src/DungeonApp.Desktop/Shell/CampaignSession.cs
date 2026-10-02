@@ -17,7 +17,7 @@ namespace DungeonApp.Desktop.Shell;
 /// exactly the <see cref="CampaignChange"/> it was handed to the campaign's state, saves the whole
 /// result in one commit, and only then raises <see cref="Changed"/> - carrying nothing but a
 /// read-only snapshot, so a subscriber has no way to turn around and mutate anything from inside
-/// the notification (docs/architecture.md, "Gdzie mieszka stan").
+/// the notification.
 /// </para>
 /// </summary>
 public sealed class CampaignSession(

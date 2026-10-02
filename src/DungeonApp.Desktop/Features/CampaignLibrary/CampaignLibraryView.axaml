@@ -8,7 +8,7 @@
     <UserControl.Styles>
         <!-- A shelf row. A minimum rather than a fixed height so the row can accommodate content,
              but the row's layout is identical whether the campaign is available or not - an
-             unavailable row no longer carries a reason line, so it never grows past this minimum. -->
+             unavailable row carries no reason line, so it never grows past this minimum. -->
         <Style Selector="Border.campaign-row">
             <Setter Property="MinHeight" Value="{DynamicResource DungeonCampaignRowHeight}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -38,7 +38,7 @@
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageBrush}" />
         </Style>
         <!-- Name, date and arrow dim the same way any disabled control in this theme does - the
-             Button ControlTheme's own disabled style (Themes/Controls/Button.axaml) and this one now
+             Button ControlTheme's own disabled style (Themes/Controls/Button.axaml) and this one
              share DungeonDisabledOpacity (Themes/Tokens.axaml), the only disabled-state opacity this
              theme defines.
              One selector per concrete type, not a shared "Control.campaign-dim:disabled" base-type
@@ -162,9 +162,9 @@
                                                     BorderBrush="{DynamicResource DungeonBorderBrush}"
                                                     BorderThickness="1">
                                                 <Panel>
-                                                    <!-- Available: the same record emblem as always.
+                                                    <!-- Available: the record emblem.
                                                          Unavailable: a warning triangle in place of it -
-                                                         the row's only remaining icon distinction. -->
+                                                         the row's only icon distinction. -->
                                                     <Image Width="16"
                                                            Height="16"
                                                            HorizontalAlignment="Center"

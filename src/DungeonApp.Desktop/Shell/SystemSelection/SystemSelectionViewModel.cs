@@ -9,9 +9,7 @@ namespace DungeonApp.Desktop.Shell.SystemSelection;
 
 /// <summary>
 /// The fullscreen screen the application starts on: every compiled-in system, and the one gesture
-/// that matters here - choosing one. Exists even with a single system installed
-/// (docs/architecture.md, "Nawigacja: ekran wyboru systemu i pasek boczny": "Dziś system jest jeden,
-/// a ekran wyboru systemu istnieje mimo to").
+/// that matters here - choosing one. Exists even with a single system installed.
 /// </summary>
 public sealed class SystemSelectionViewModel : ObservableObject
 {

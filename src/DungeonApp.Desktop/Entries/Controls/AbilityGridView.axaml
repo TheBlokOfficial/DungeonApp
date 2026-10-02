@@ -15,8 +15,8 @@
     </UserControl.Styles>
 
     <!-- A three-column grid of bordered boxes, each with a label on the left and a score plus its
-         own modifier on the right (mockup: .ability-grid / .ability) - the card designer's own fixed
-         layout, not something rows-count-driven: docs/architecture.md, "Kontrolki, nie katalog".
+         own modifier on the right - the card designer's own fixed layout, not something
+         rows-count-driven: a card is composed from controls, not picked from a catalog of layouts.
          No Margin on this root, ever - spacing between card controls belongs to the card view that
          lays them out. -->
     <ItemsControl ItemsSource="{Binding Rows}">

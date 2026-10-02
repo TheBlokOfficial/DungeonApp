@@ -16,8 +16,7 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// A row whose <see cref="Availability"/> is not <see cref="CampaignAvailability.Available"/> shows a
 /// reason (<see cref="UnavailabilityReason"/>) and refuses to open - <see cref="OpenCommand"/>'s own
 /// <c>canExecute</c> is only half of that refusal; the operation itself refuses again, from
-/// <see cref="CampaignPreparationCache.TakeAsync"/>, docs/architecture.md's "Kampania należy do
-/// jednego systemu".
+/// <see cref="CampaignPreparationCache.TakeAsync"/>.
 /// </para>
 /// </summary>
 public sealed class CampaignRowViewModel

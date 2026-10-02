@@ -17,13 +17,12 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// themselves are cached, so a click that races a refresh awaits the existing read instead of
 /// starting a duplicate one.
 /// <para>
-/// Caches only the <see cref="Campaign"/> itself - docs/tasks.md's "Etap 1" moved the desk-layout
-/// half of what this cache used to prepare into the desk itself (its own <c>CampaignDesk</c> entry point),
-/// which now loads its own layout when a desk tab is actually built.
+/// Caches only the <see cref="Campaign"/> itself - the desk layout belongs to the desk (its own
+/// <c>CampaignDesk</c> entry point), which loads it when a desk tab is actually built.
 /// </para>
 /// <para>
 /// Every method here is keyed by a <see cref="CampaignSummary"/>, not a bare <see cref="CampaignId"/>:
-/// opening a campaign now means resolving <em>which</em> system's declarations - and which of
+/// opening a campaign means resolving <em>which</em> system's declarations - and which of
 /// <paramref name="repositoriesBySystem"/> - to read it with. <see cref="CampaignSummary.DirectorySystemId"/>
 /// answers both: it names the compiled system whose own directory this summary was listed from (always
 /// one of <paramref name="systems"/>, never a stranger - a repository is never built for an uncompiled
@@ -163,7 +162,7 @@ public sealed class CampaignPreparationCache(
 
     /// <summary>
     /// The one place that decides which repository and which system's declarations a specific campaign
-    /// reads with - docs/architecture.md, "Kampania należy do jednego systemu". A manifest-level failure
+    /// reads with: a campaign belongs to exactly one system. A manifest-level failure
     /// (<see cref="CampaignSummary.ManifestFailure"/>) is not resolved here at all: an empty declaration
     /// list is handed to the directory's own repository anyway, so its own manifest validation
     /// reproduces the very same <see cref="CampaignStoreException"/> the listing already saw, rather

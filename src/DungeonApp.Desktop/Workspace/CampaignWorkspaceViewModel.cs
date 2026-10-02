@@ -21,7 +21,7 @@ namespace DungeonApp.Desktop.Workspace;
 /// <para>
 /// Knows nothing of a campaign, a session or a system - see <see cref="CampaignDesk"/> for the one
 /// public entry point that builds one of these for a system's own desk tab. That is what lets this
-/// type stay inside the library-to-be: it takes a bare <c>workspaceId</c> string, an
+/// type stay inside the library: it takes a bare <c>workspaceId</c> string, an
 /// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
 /// </para>
 /// </summary>
@@ -218,8 +218,8 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
                     entry.InstanceKey,
                     new PanelPlacement(entry.X, entry.Y, entry.Width, entry.Height))
                 {
-                    // Migration from the old close/open model: a closed module becomes minimized,
-                    // because every known module now remains part of the workspace for its lifetime.
+                    // A module stored as closed becomes minimized, because every known module
+                    // remains part of the workspace for its lifetime.
                     State = !entry.IsOpen || entry.State == PanelDisplayState.Minimized
                         ? PanelDisplayState.Minimized
                         : entry.State
@@ -343,7 +343,7 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
         new(
             panel.Descriptor.Id,
             panel.InstanceKey,
-            // Retained in schema v1 for backward compatibility. New layouts never close modules.
+            // The schema's open flag. The desk never closes a module, so it is always written true.
             true,
             panel.State,
             panel.ZOrder,

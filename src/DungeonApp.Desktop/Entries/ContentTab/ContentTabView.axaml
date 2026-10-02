@@ -7,14 +7,14 @@
              x:Class="DungeonApp.Desktop.Entries.ContentTab.ContentTabView"
              x:DataType="ct:ContentTabViewModel">
 
-    <!-- Szkielet zakładki treści (krok 10, brief 3a): nagłówek zakładki na całą szerokość, pod linią
+    <!-- Szkielet zakładki treści: nagłówek zakładki na całą szerokość, pod linią
          panel listy o stałej szerokości i obszar szczegółu z klockiem EntryDetailView. Wymiary ze
          skali motywu, pismo z ról galerii (Typography.axaml). -->
     <UserControl.Resources>
         <conv:DimBrushConverter x:Key="DimBrush" />
         <conv:UpperCaseConverter x:Key="UpperCase" />
 
-        <!-- Szerokość panelu listy (brief 3a). -->
+        <!-- Szerokość panelu listy. -->
         <GridLength x:Key="ContentListColumnWidth">320</GridLength>
 
         <!-- Nagłówek zakładki: 20 u góry, 24 po bokach, 16 nad linią. -->
@@ -146,7 +146,7 @@
                                      PlaceholderText="Szukaj po nazwie…" />
                         </dc:IconField>
 
-                        <!-- Filtry jako pola z podpisem (brief 3d): kategoria, filtry systemu, "Paczka".
+                        <!-- Filtry jako pola z podpisem: kategoria, filtry systemu, "Paczka".
                              Rząd = podpis z lewej (rola label, kolor drugorzędny) i lista rozwijana
                              wielokrotna w motywie domyślnym na resztę szerokości. Kolumna podpisów wspólna
                              dla rzędów (SharedSizeGroup), szerokość z najdłuższego podpisu; 12 między
@@ -202,7 +202,7 @@
                     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="0,0,0,24">
                             <!-- Pusty stan: żadna paczka nie ma wpisów tego typu. Ścieżki katalogu paczek
-                                 zakładka jeszcze nie zna (brief 3a - zgłoszone w raporcie). -->
+                                 zakładka nie zna, więc podpowiedź mówi o nim ogólnie. -->
                             <dc:EmptyState IsVisible="{Binding HasNoEntries}"
                                            Margin="{DynamicResource DungeonPaddingLg}"
                                            Message="{Binding EmptyText}"
@@ -271,7 +271,7 @@
                         <TextBlock Classes="body muted"
                                    IsVisible="{Binding ShowSelectionPrompt}"
                                    Text="Wybierz wpis z listy." />
-                        <!-- Rama szczegółu należy do hosta, nie do klocka (brief runda 3a): tło, linia
+                        <!-- Rama szczegółu należy do hosta, nie do klocka: tło, linia
                              i narożnik karty ramy (surface-card, jak karta w galerii Kompozycje),
                              wcięcie 24 ze wszystkich stron. Szerokość z klocka 560 + 2 x 24 (+ linia),
                              wysokość z treści; stoi też przy rzeczy zepsutej. -->

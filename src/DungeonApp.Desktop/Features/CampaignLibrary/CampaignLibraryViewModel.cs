@@ -22,12 +22,12 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// <para>
 /// <see cref="SetActiveSystem"/> is called once per system choice, before the shelf is shown for real
 /// (<c>AppShellViewModel.ChooseSystemAsync</c>). Once an active system is set, <see cref="LoadAsync"/>
-/// reads only that system's own repository - docs/architecture.md, "Gdzie mieszka stan": "Kampania
-/// należy do jednego systemu - tego, w którego katalogu leży." There is nothing left to filter: every
-/// summary a system's own repository returns already belongs to that system's directory, available or
-/// not. Before <see cref="SetActiveSystem"/> is ever called - during the startup warmup pass, which
-/// runs before any system is chosen - <see cref="LoadAsync"/> instead reads every compiled system's
-/// repository and shows the concatenation, since nothing about that pass is ever seen by the GM.
+/// reads only that system's own repository: a campaign belongs to one system - the one whose
+/// directory it lies in. There is nothing left to filter: every summary a system's own repository
+/// returns already belongs to that system's directory, available or not. Before
+/// <see cref="SetActiveSystem"/> is ever called - during the startup warmup pass, which runs before
+/// any system is chosen - <see cref="LoadAsync"/> instead reads every compiled system's repository
+/// and shows the concatenation, since nothing about that pass is ever seen by the GM.
 /// </para>
 /// </summary>
 public sealed class CampaignLibraryViewModel : ObservableObject

@@ -7,8 +7,8 @@
              x:DataType="workspace:CampaignWorkspaceViewModel">
 
     <!-- The desk's own two ControlThemes (WorkspaceSurface, PanelWindow) live in the library, not
-         the frame - docs/architecture.md, "Narzędzia biurka i system okien": the frame must never
-         name a library type, not even in a resource include. Merged here, on the library's own
+         the frame: the frame must never name a library type, not even in a resource include.
+         Merged here, on the library's own
          top-level view, rather than in the frame's Application.Resources: PanelWindow instances are
          generated inside Surface below, so they sit in this control's logical tree and resolve their
          implicit theme from these merged resources the same way they would from an application-wide

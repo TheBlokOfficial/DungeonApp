@@ -8,7 +8,7 @@
              Width="560"
              HorizontalAlignment="Left">
 
-    <!-- Klocek szczegółu wpisu (krok 10, brief 3a): nagłówek wpisu i karta systemu pod nim, szerokość
+    <!-- Klocek szczegółu wpisu: nagłówek wpisu i karta systemu pod nim, szerokość
          560. Bez tła, obramowania (ramy), przewijania i zewnętrznych odstępów - te daje host (zakładka
          treści dziś, okienko podglądu w kampanii później). DataContext: ContentDetailViewModel. -->
     <UserControl.Resources>

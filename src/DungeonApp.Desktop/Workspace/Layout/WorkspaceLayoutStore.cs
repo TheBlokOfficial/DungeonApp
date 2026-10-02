@@ -122,10 +122,9 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
         Path.Combine(directoryPath, "layouts", $"{Sanitize(workspaceId)}.json");
 
     /// <summary>
-    /// The one mapping from stored document to layout, shared by both read paths. It used to exist
-    /// twice - inlined in <see cref="Load"/> and called from <see cref="LoadAsync"/> - so the two
-    /// could drift apart silently. The tests exercise every case against both paths, which is what
-    /// made collapsing them safe.
+    /// The one mapping from stored document to layout, shared by both read paths
+    /// (<see cref="Load"/> and <see cref="LoadAsync"/>), so the two cannot drift apart silently.
+    /// The tests exercise every case against both paths.
     /// </summary>
     private static WorkspaceLayout ToLayout(LayoutDocument? document)
     {

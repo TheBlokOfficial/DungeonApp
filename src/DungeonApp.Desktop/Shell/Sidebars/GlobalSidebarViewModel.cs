@@ -8,19 +8,18 @@ using DungeonApp.Desktop.ViewModels;
 namespace DungeonApp.Desktop.Shell.Sidebars;
 
 /// <summary>
-/// The sidebar shown once a system is chosen: three categories (docs/architecture.md, "Pasek boczny:
-/// trzy kategorie") - Kampania (the campaign position, plus the chosen system's Campaign-category
-/// tabs), System (the chosen system's System-category tabs, shown on screen as "Biblioteka") and
-/// Aplikacja (shown on screen as "System" - today just "Ustawienia", a frame-owned position with no
-/// content of its own). The category names are this class's own row grouping - and, for the middle
-/// and last one, deliberately not what the screen shows for them; the shell decides what each
-/// selection shows.
+/// The sidebar shown once a system is chosen: three categories - Kampania (the campaign position,
+/// plus the chosen system's Campaign-category tabs), System (the chosen system's System-category
+/// tabs, shown on screen as "Biblioteka") and Aplikacja (shown on screen as "System" - "Galeria
+/// kontrolek" and "Ustawienia", frame-owned positions). The category names are this class's own row
+/// grouping - and, for the middle and last one, deliberately not what the screen shows for them;
+/// the shell decides what each selection shows.
 /// <para>
-/// Owns exactly one piece of navigation state: which row is active. That state now spans all three
+/// Owns exactly one piece of navigation state: which row is active. That state spans all three
 /// categories together - the campaign position, every tab of either the Kampania or System category,
 /// and "Ustawienia" are one mutually exclusive set, because the content area shows exactly one of
-/// them at a time. Unlike the "Zmień system" row this sidebar used to carry, "Ustawienia" is a real
-/// destination: it lingers as a highlighted row exactly like any tab does.
+/// them at a time. "Ustawienia" is a real destination, not a one-off action: it lingers as a
+/// highlighted row exactly like any tab does.
 /// </para>
 /// </summary>
 public sealed class GlobalSidebarViewModel : ObservableObject
@@ -28,8 +27,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     private const string LockedIconResourceKey = "DungeonIconLock";
     private const string ShelfIconResourceKey = "DungeonIconBookOpen";
     private const string CampaignPageIconResourceKey = "DungeonIconCampaignRecord";
-    // The pre-etap-1 sidebar's shelf row used this exact label (555802f, GlobalSidebarViewModel's
-    // "campaigns" item) - the campaign position keeps it while no campaign is open.
+    // The campaign position's label while no campaign is open.
     private const string ShelfLabel = "Kampanie";
 
     private readonly List<NavigationItemViewModel> _selectableItems = [];
@@ -71,9 +69,8 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
         // The Kampania category's row, drawn by one ItemsControl - the campaign position first,
         // its own row's identity never changes with it, then the system's campaign tabs in
-        // declared order. A bare ContentPresenter for the campaign position, tried first, drew
-        // nothing (docs/tasks.md: the row reserved its height but its DataTemplate resolved
-        // against a null Content) - the fix is the same mechanism every other row already used.
+        // declared order. A bare ContentPresenter for the campaign position draws nothing: the row
+        // reserves its height but its DataTemplate resolves against a null Content.
         CampaignItems = [CampaignPositionItem, .. CampaignTabItems];
 
         SystemTabItems =
@@ -95,13 +92,13 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             }),
         ];
 
-        // The controls gallery (docs/tasks.md, punkt 3): a frame-owned destination like Ustawienia,
+        // The controls gallery: a frame-owned destination like Ustawienia,
         // drawn above it in the same category.
         GalleryItem = CreateSelectableItem("shell.gallery", "DungeonIconGallery", "Galeria kontrolek", selectGallery);
         _selectableItems.Add(GalleryItem);
         _allItems.Add(GalleryItem);
 
-        // A real destination, unlike the "Zmień system" row this used to be: it joins
+        // A real destination: it joins
         // _selectableItems like the campaign position and every tab do, so choosing it lingers as a
         // highlighted row instead of firing a one-off action.
         SettingsItem = CreateSelectableItem("shell.settings", "DungeonIconSettings", "Ustawienia", selectSettings);
@@ -118,7 +115,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
             return Task.CompletedTask;
         });
 
-        // Set before this instance is ever handed to a view (docs/tasks.md, zadanie 2): Avalonia's
+        // Set before this instance is ever handed to a view: Avalonia's
         // Transitions only animate a property change measured against a frame the control already
         // rendered. Setting the target collapse state here, before GlobalSidebarView is even
         // constructed, gives the first layout pass nothing earlier to transition from, so the
@@ -141,8 +138,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
 
     /// <summary>
     /// The Kampania category's whole row list - <see cref="CampaignPositionItem"/> followed by
-    /// <see cref="CampaignTabItems"/> - for the one <c>ItemsControl</c> that draws the category
-    /// (docs/architecture.md, "Pasek boczny: trzy kategorie").
+    /// <see cref="CampaignTabItems"/> - for the one <c>ItemsControl</c> that draws the category.
     /// </summary>
     public IReadOnlyList<NavigationItemViewModel> CampaignItems { get; }
 
@@ -197,8 +193,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     public double CollapsibleTextOffset => IsCollapsed ? -12 : 0;
 
     /// <summary>
-    /// Each of the three group headings' own row height - 44 unchanged from the value this sidebar
-    /// already used for a heading row (docs/decisions.md, "Nawigacja"). Animated to 0 on collapse
+    /// Each of the three group headings' own row height - 44. Animated to 0 on collapse
     /// (its Border's Height transition, GlobalSidebarView.axaml) rather than translating the item
     /// list under a still-reserved row, so a group's own Grid actually shrinks and every row below it
     /// - including the next group's heading - reflows in the same motion instead of leaving a gap the
@@ -209,8 +204,7 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>
     /// Called by the shell on every campaign open and close. Swaps the campaign position's label and
     /// icon between the shelf and the campaign page, and locks or unlocks every Campaign-category
-    /// tab - each one's icon becomes the lock glyph while locked, its own declared icon while not
-    /// (docs/tasks.md, etap 1: "kłódka zamiast ikony zakładki").
+    /// tab - each one's icon becomes the lock glyph while locked, its own declared icon while not.
     /// </summary>
     public void SetCampaignOpen(bool isOpen, string? campaignName)
     {

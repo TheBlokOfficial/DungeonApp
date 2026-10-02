@@ -8,14 +8,12 @@ using DungeonApp.Core.Entries;
 namespace DungeonApp.Desktop.Entries.ContentTab;
 
 /// <summary>
-/// The view model behind one content tab's whole screen (docs/architecture.md, "Zakładki treści"):
-/// wraps one <see cref="ContentListModel"/> - built once, for this tab's own
-/// <see cref="ContentTabDefinition"/> - and a mutable <see cref="ContentListState"/>, and exposes
-/// exactly what the skeleton view draws. Every mutation (search, a filter, a sort, a selection,
-/// "Wyczyść filtry") builds the next immutable state and passes it through <c>Apply</c>, the only
-/// place <see cref="ContentListModel.Build"/> is ever called - the same discipline
-/// docs/architecture.md's "Stanu nie zmienia się w miejscu" describes for campaign state, at
-/// list-state scale.
+/// The view model behind one content tab's whole screen: wraps one <see cref="ContentListModel"/> -
+/// built once, for this tab's own <see cref="ContentTabDefinition"/> - and a mutable
+/// <see cref="ContentListState"/>, and exposes exactly what the skeleton view draws. Every mutation
+/// (search, a filter, a sort, a selection, "Wyczyść filtry") builds the next immutable state and
+/// passes it through <c>Apply</c>, the only place <see cref="ContentListModel.Build"/> is ever
+/// called - the same never-change-in-place discipline campaign state follows, at list-state scale.
 /// </summary>
 public sealed class ContentTabViewModel : ObservableObject
 {
@@ -58,7 +56,7 @@ public sealed class ContentTabViewModel : ObservableObject
         var firstBuild = _model.Build(_state);
 
         // The tab's own total: loaded and broken rows under every pack, with no filter or search -
-        // a rejected pack's row is not an entry and never counts (krok 10, brief 3a).
+        // a rejected pack's row is not an entry and never counts.
         _totalCount = CountShown(firstBuild.Sections);
 
         CategoryFilter = firstBuild.Category is { } category
@@ -255,7 +253,7 @@ public sealed class ContentTabViewModel : ObservableObject
         }
 
         // A selected row that today's filters or search no longer show drops the selection for good:
-        // widening them again does not bring it back (krok 10, brief 3a).
+        // widening them again does not bring it back.
         if (_state.Selected is not null && result.Selection is null)
         {
             _state = _state with { Selected = null };
@@ -384,9 +382,8 @@ public sealed class ContentTabViewModel : ObservableObject
     /// <summary>
     /// Polish plural agreement for "wpis" against a count: "1 wpis", "2 wpisy", "5 wpisów", "12
     /// wpisów", "22 wpisy". "<paramref name="shown"/> z <paramref name="total"/> wpisów" when a
-    /// filter hides something - agreeing with <paramref name="total"/>, the second number, exactly
-    /// as docs/architecture.md's "Co ma być na ekranie" describes. Sets the parts and the whole
-    /// sentence together, the whole being the parts joined.
+    /// filter hides something - agreeing with <paramref name="total"/>, the second number. Sets the
+    /// parts and the whole sentence together, the whole being the parts joined.
     /// </summary>
     private void SetCount(int shown, int total)
     {
