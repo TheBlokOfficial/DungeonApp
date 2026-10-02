@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Avalonia.Threading;
+using DungeonApp.Desktop.Diagnostics;
 
 namespace DungeonApp.Desktop.Workspace.Layout;
 
@@ -67,6 +68,7 @@ public sealed class WorkspaceLayoutSession : IDisposable
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
+            AppLog.Error($"Nie udało się zapisać układu biurka {_workspaceId}.", ex);
         }
     }
 

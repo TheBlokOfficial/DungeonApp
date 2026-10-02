@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Workspace.Controls;
 
 namespace DungeonApp.Desktop.Workspace.Layout;
@@ -46,6 +47,7 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
+            AppLog.Error($"Nie udało się odczytać układu biurka {workspaceId}; biurko startuje z układem domyślnym.", ex);
             return WorkspaceLayout.Empty;
         }
     }
@@ -85,6 +87,7 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
+            AppLog.Error($"Nie udało się odczytać układu biurka {workspaceId}; biurko startuje z układem domyślnym.", ex);
             return WorkspaceLayout.Empty;
         }
     }
