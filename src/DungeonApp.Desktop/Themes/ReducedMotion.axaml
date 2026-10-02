@@ -3,10 +3,10 @@
         xmlns:controls="using:DungeonApp.Desktop.Controls"
         xmlns:themes="using:DungeonApp.Desktop.Themes">
     <!--
-        Wyłączone animacje w systemie wyłączają je w aplikacji (docs/architecture.md, "Niezmiennik
-        interfejsu", Ruch). Dołącza je SystemMotion przy starcie, tylko gdy Windows ma animacje
-        wyłączone; style stoją nad motywami kontrolek, więc zdejmują ich przejścia - stan zmienia się
-        od razu, bez ruchu. Każde przejście motywu ramy (DungeonMotionDuration) ma tu swój wpis.
+        Wyłączone animacje w systemie wyłączają je w aplikacji. Dołącza je SystemMotion przy
+        starcie, tylko gdy Windows ma animacje wyłączone; style stoją nad motywami kontrolek, więc
+        zdejmują ich przejścia - stan zmienia się od razu, bez ruchu. Każde przejście motywu ramy
+        (DungeonMotionDuration) ma tu swój wpis.
     -->
     <Style Selector="ToggleSwitch">
         <Setter Property="KnobTransitions" Value="{x:Null}" />

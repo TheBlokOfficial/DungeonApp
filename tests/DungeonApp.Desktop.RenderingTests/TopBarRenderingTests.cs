@@ -11,14 +11,13 @@ using DungeonApp.Desktop.ViewModels;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Headless-rendering coverage for the "Zmień system" button's own layout, fixed after the coordinator
-/// traced the actual cause of the hover-covers-the-line bug: TopBarView.axaml's outer frame Border is
-/// <c>DungeonTopBarHeight</c> tall with a 1px bottom edge, so its content area is one pixel shorter than
-/// that. The button's own style never set Height, but the global <c>Style Selector="Button"</c> in
-/// BuiltInControls.axaml does (38, DungeonControlHeight) - a more specific selector that leaves a
-/// property alone does not un-set a less specific selector's Setter for it, so that fixed 38 silently
-/// beat <c>VerticalAlignment="Stretch"</c> and the button never grew to fill the bar. Every assertion
-/// below measures the button against the bar's own Border, not against a hard-coded pixel count, so it
+/// Headless-rendering coverage for the "Zmień system" button's own layout. TopBarView.axaml's
+/// outer frame Border is <c>DungeonTopBarHeight</c> tall with a 1px bottom edge, so its content
+/// area is one pixel shorter than that. The button theme gives every Button a fixed height
+/// (<c>DungeonControlHeight</c>), and a more specific style that leaves Height alone does not
+/// un-set it, so unless the button sets its own Height that fixed value silently beats
+/// <c>VerticalAlignment="Stretch"</c> and the button does not fill the bar. Every assertion below
+/// measures the button against the bar's own Border, not against a hard-coded pixel count, so it
 /// keeps catching the same class of mistake even if the tokens change.
 /// </summary>
 public sealed class TopBarRenderingTests

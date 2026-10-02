@@ -1,14 +1,13 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        Frame text styles (docs/tasks.md, punkt 3 "Fundament interfejsu"): the mockup's roles
-        (docs/images/mockup_rejestr.html) on seven sizes - 34, 26, 20, 15, 13, 12, 11
-        (docs/decisions.md, "Siedem stopni pisma"); the display face starts at 20. Typeface, size,
-        weight, letter spacing and line height only - never a color: the color stays with the context,
-        the color class "secondary" (at the end of this file) and the existing "muted" class.
+        Frame text styles: every text role on seven sizes only - 34, 26, 20, 15, 13, 12, 11; the
+        display face starts at 20. Typeface, size, weight, letter spacing and line height only -
+        never a color: the color stays with the context, the color class "secondary" (at the end of
+        this file) and the existing "muted" class.
         Only the multi-line styles (body, display-prose) set a line height - a tighter one clips
-        descenders; it is the CSS multiplier times the size, in pixels. Letter spacing is CSS em times
-        the size, in pixels. Included after BuiltInControls.axaml, so a size set here wins over
+        descenders; it is a multiplier times the size, in pixels. Letter spacing is em times the
+        size, in pixels. Included after BuiltInControls.axaml, so a size set here wins over
         "muted"'s own. The overline classes do not uppercase - Avalonia has no style-level text
         transform; their text is written in capitals.
     -->

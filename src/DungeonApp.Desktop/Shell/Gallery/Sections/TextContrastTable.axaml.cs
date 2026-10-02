@@ -10,8 +10,8 @@ namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 
 /// <summary>
 /// Every text color on every background it stands on, each with its WCAG contrast ratio computed
-/// from the current color resources. The rule (docs/decisions.md, "Niezmiennik interfejsu") is at
-/// least 4.5:1; a ratio below it is written in the danger-text color.
+/// from the current color resources. The rule is at least 4.5:1; a ratio below it is written in the
+/// danger-text color.
 /// </summary>
 public partial class TextContrastTable : UserControl
 {

@@ -12,8 +12,8 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Układ okienka ustalany przy otwarciu i niezmienny do zamknięcia (docs/architecture.md,
-/// "Niezmiennik interfejsu", Pasek przewijania jest nakładką):
+/// Układ okienka ustalany przy otwarciu i niezmienny do zamknięcia (pasek przewijania jest
+/// nakładką):
 /// <list type="bullet">
 /// <item>strefa paska przewijania w okienku (menu, menu kontekstowe, podmenu, ComboBox,
 /// DropDownPicker, okienko .list-host) jest tylko wtedy, gdy treść się nie mieści - okienko, którego

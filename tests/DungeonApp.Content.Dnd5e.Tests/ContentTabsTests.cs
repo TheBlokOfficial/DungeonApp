@@ -7,9 +7,8 @@ using DungeonApp.Desktop.Workspace.Layout;
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// Krok 10, zlecenie 1, część C: the two content tab definitions this system declares as data - not
-/// stood up anywhere yet (zlecenie 2's job), just proven correct against the brief: what "Potwory"
-/// and "Przedmioty" read off their own records, and the "Wyzwanie"/"Rzadkość" option orders.
+/// The two content tab definitions this system declares as data, tested as data: what "Potwory" and
+/// "Przedmioty" read off their own records, and the "Wyzwanie"/"Rzadkość" option orders.
 /// </summary>
 public sealed class ContentTabsTests
 {
@@ -55,7 +54,7 @@ public sealed class ContentTabsTests
     }
 
     // -----------------------------------------------------------------------------------------
-    // Declarations: two tabs, ready for zlecenie 2, not stood up anywhere.
+    // Declarations: two tabs.
     // -----------------------------------------------------------------------------------------
 
     [Fact]
@@ -79,9 +78,9 @@ public sealed class ContentTabsTests
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Krok 10, brief A9: a monster's category is its own optional <see cref="Monster.Group"/> field,
-    /// never <see cref="Monster.Type"/> - the two are deliberately different values here so this test
-    /// would fail if the profile still read <c>Type</c>.
+    /// A monster's category is its own optional <see cref="Monster.Group"/> field, never
+    /// <see cref="Monster.Type"/> - the two are deliberately different values here so this test
+    /// would fail if the profile read <c>Type</c>.
     /// </summary>
     [Fact]
     public void A_monsters_category_is_its_own_group_field()
@@ -92,7 +91,7 @@ public sealed class ContentTabsTests
     }
 
     /// <summary>
-    /// Krok 10, brief A9: "Bez `group` wpis nie ma kategorii" - never a silent fallback to
+    /// Without <c>group</c> an entry has no category - never a silent fallback to
     /// <see cref="Monster.Type"/>.
     /// </summary>
     [Fact]

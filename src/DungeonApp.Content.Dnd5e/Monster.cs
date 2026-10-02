@@ -20,12 +20,11 @@ public sealed record Monster
     public required string Type { get; init; }
 
     /// <summary>
-    /// The category a "Potwory" content tab groups and filters this monster by (krok 10, brief A9;
-    /// docs/architecture.md, "Zakładki treści"). Optional and separate from <see cref="Type"/> on
-    /// purpose - a pack author who leaves it out gets no category, never a silent fallback to
-    /// <see cref="Type"/>; the skeleton already shows and filters a category-less entry correctly
-    /// (it is exactly how every "Przedmioty" entry behaves today, since <c>Gear</c> declares no
-    /// category at all).
+    /// The category a "Potwory" content tab groups and filters this monster by. Optional and
+    /// separate from <see cref="Type"/> on purpose - a pack author who leaves it out gets no
+    /// category, never a silent fallback to <see cref="Type"/>; the content tab shows and filters a
+    /// category-less entry correctly (it is how every "Przedmioty" entry behaves, since <c>Gear</c>
+    /// declares no category at all).
     /// </summary>
     public string? Group { get; init; }
 

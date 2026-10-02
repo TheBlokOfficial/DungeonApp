@@ -13,10 +13,10 @@ using DungeonApp.Desktop.Features.CampaignLibrary;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The shelf's availability rules - docs/architecture.md, "Kampania należy do jednego systemu": the
-/// active system's own repository is the only one ever read (there is nothing left to filter - every
-/// summary it returns already belongs to that system's directory), a campaign whose manifest names no
-/// system belongs to the directory it was found in and opens normally, and a campaign whose manifest
+/// The shelf's availability rules - a campaign belongs to exactly one system: the active system's
+/// own repository is the only one ever read (there is nothing left to filter - every summary it
+/// returns already belongs to that system's directory), a campaign whose manifest names no system
+/// belongs to the directory it was found in and opens normally, and a campaign whose manifest
 /// names a *different* system than its directory stands on the shelf as unavailable, with a reason. An
 /// unavailable row refuses to open and can still be deleted.
 /// </summary>
@@ -42,8 +42,7 @@ public sealed class CampaignLibraryViewModelTests
 
     /// <summary>
     /// A pre-system manifest (or a current one that simply never recorded one) belongs to the
-    /// directory's own system - docs/architecture.md, "Kampania należy do jednego systemu" - and opens
-    /// like any other campaign, never flagged.
+    /// directory's own system and opens like any other campaign, never flagged.
     /// </summary>
     [Fact]
     public async Task Shows_a_campaign_with_no_manifest_system_as_belonging_to_the_directorys_system()
@@ -61,11 +60,10 @@ public sealed class CampaignLibraryViewModelTests
     }
 
     /// <summary>
-    /// The one case the previous, manifest-driven filter used to hide entirely: with a per-system
-    /// directory, this campaign is never even listed by system A's own repository in the first place,
-    /// so a manifest naming a different system than the directory it is actually found in can only
-    /// mean the directory and the manifest disagree - stood on the shelf as unavailable, with a
-    /// reason, never hidden and never opened under either system.
+    /// With a per-system directory, this campaign is never even listed by system A's own repository
+    /// in the first place, so a manifest naming a different system than the directory it is
+    /// actually found in can only mean the directory and the manifest disagree - stood on the shelf
+    /// as unavailable, with a reason, never hidden and never opened under either system.
     /// </summary>
     [Fact]
     public async Task Shows_a_campaign_whose_manifest_names_a_different_system_than_its_directory_as_unavailable()

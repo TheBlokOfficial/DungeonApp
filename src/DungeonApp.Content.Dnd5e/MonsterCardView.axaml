@@ -3,19 +3,17 @@
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
 
-    <!-- The designed statblock layout, per the mockup's own "detail-panel" block (krok 10, brief C):
-         a KP/PZ/Szybkość stat-strip, six abilities in a bordered grid, skills-and-senses as plain
-         rows, wyzwanie as a chip, then cechy szczególne / akcje under bar-accented section heads, and
-         an italic description. Size/Type/Alignment and Rarity are gone from this card entirely -
-         they are exactly this content type's own tags, already shown once in the detail header
-         (krok 10, brief A10: "Karta bez dublujących wierszy"), never repeated here.
-         Spacing between controls is set once, here, on the host - never carried by a control itself
-         (see docs/architecture.md, "Deklaracja treści"). -->
+    <!-- The designed statblock layout: a KP/PZ/Szybkość stat-strip, six abilities in a bordered
+         grid, skills-and-senses as plain rows, wyzwanie as a chip, then cechy szczególne / akcje
+         under bar-accented section heads, and an italic description. Size/Type/Alignment are not on
+         this card - they are this content type's own tags, already shown once in the detail header,
+         and the card does not repeat what the header shows.
+         Spacing between controls is set once, here, on the host - never carried by a control
+         itself. -->
     <UserControl.Resources>
-        <!-- Dimensions with no equivalent frame token, taken from the mockup's own CSS
-             (docs/images/mockup_rejestr.html): .stat-strip/.stat padding and divider,
-             .section-head .bar, .cr-badge - named once here, listed in the zlecenie report. -->
-        <!-- mockup: .stat{padding:0 18px} .stat:first-child{padding-left:0}. -->
+        <!-- Dimensions with no equivalent frame token: stat-strip padding and divider, the section
+             head bar, the challenge chip - named once here. -->
+        <!-- The first stat has no left padding; the rest are padded 18 on both sides. -->
         <Thickness x:Key="MonsterStatPaddingFirst">0,0,18,0</Thickness>
         <Thickness x:Key="MonsterStatPadding">18,0,18,0</Thickness>
         <x:Double x:Key="MonsterSectionBarWidth">3</x:Double>
@@ -23,7 +21,7 @@
         <CornerRadius x:Key="MonsterSectionBarCornerRadius">2</CornerRadius>
         <Thickness x:Key="MonsterChallengeChipPadding">9,1</Thickness>
         <CornerRadius x:Key="MonsterChallengeChipCornerRadius">6</CornerRadius>
-        <!-- mockup: .section-head h2, .desc are both font-size: 16px. -->
+        <!-- Section heads and the description share one size. -->
         <x:Double x:Key="MonsterSectionHeadFontSize">16</x:Double>
 
     </UserControl.Resources>
@@ -92,11 +90,9 @@
         <!-- ===== Akcje (Actions jest polem wymaganym rekordu) ===== -->
         <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
-                <!-- krok 10, brief C: mockup's own ".section-head.action .bar" uses its danger color
-                     for this bar - Danger's own documented meaning in Tokens.axaml ("coś jest zepsute
-                     albo akcja jest nieodwracalna") does not fit "these are a monster's attacks", so
-                     this uses the same accent as "Cechy szczególne" instead of borrowing that token.
-                     Reported as a deviation. -->
+                <!-- Not Danger: its meaning in Tokens.axaml (something is broken, or an action
+                     deletes or cannot be undone) does not fit "these are a monster's attacks", so
+                     this bar uses the same accent as "Cechy szczególne". -->
                 <Border Width="{StaticResource MonsterSectionBarWidth}" Height="{StaticResource MonsterSectionBarHeight}"
                         CornerRadius="{StaticResource MonsterSectionBarCornerRadius}"
                         Background="{DynamicResource DungeonAccentBrush}" />

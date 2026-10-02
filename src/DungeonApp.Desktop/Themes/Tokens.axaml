@@ -38,7 +38,7 @@
         <!-- HoverOverlay: najechanie na cichej kontrolce (przycisk .subtle) - biały o nieprzezroczystości
              8 % (#14FFFFFF), z kanałem alfa: rozjaśnia to, na czym leży, więc najechanie widać na każdej
              powierzchni, także na wierszu listy pod myszą (BackstageRowHover). Na zapleczu (#151412)
-             daje ok. #272522 - tyle co kryjący SurfaceActive, którego używał wcześniej. -->
+             daje ok. #272522 - tyle co kryjący SurfaceActive. -->
         <Color x:Key="DungeonHoverOverlayColor">#14FFFFFF</Color>
         <!-- Border: linia - dzieli, nie wyróżnia; krawędź powierzchni i separator. -->
         <Color x:Key="DungeonBorderColor">#302C28</Color>
@@ -287,7 +287,7 @@
         <!-- TYPOGRAFIA ========================================================= -->
         <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
         <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/CormorantGaramond#Cormorant Garamond</FontFamily>
-        <!-- Fixed-width figures for numbers (the mockup's font-mono). Regular, Medium and SemiBold files. -->
+        <!-- Fixed-width figures for numbers. Regular, Medium and SemiBold files. -->
         <FontFamily x:Key="DungeonMonoFont">avares://DungeonApp.Desktop/Assets/Fonts/IBMPlexMono#IBM Plex Mono</FontFamily>
 
         <CornerRadius x:Key="DungeonWindowCornerRadius">6</CornerRadius>
@@ -459,7 +459,7 @@
              zaokrąglona. Stoi w pasie wcięcia po lewej stronie wiersza (tło wiersza zaczyna się za
              pasem), przy lewej krawędzi pasa - odstęp od krawędzi tła to szerokość pasa. Szerokość pasa
              i wcięcia pionowe kreski podaje układający listę (zasoby na poziomie listy); tu wartości
-             listy treści (mockup .entry.selected::before: left -10, top/bottom 5). -->
+             listy treści (pas 10, wcięcie kreski 5 nad i pod). -->
         <x:Double x:Key="DungeonListRowStripeWidth">3</x:Double>
         <CornerRadius x:Key="DungeonListRowStripeCornerRadius">1.5</CornerRadius>
         <x:Double x:Key="DungeonListRowStripeGutter">10</x:Double>
@@ -520,19 +520,19 @@
         <Thickness x:Key="DungeonMenuChevronMargin">8,0,0,0</Thickness>
         <!-- Separator w menu: odstęp 4 nad i pod linią. -->
         <Thickness x:Key="DungeonMenuSeparatorMargin">0,4</Thickness>
-        <!-- Okruszki (controls:Breadcrumbs): strzałka między odcinkami 8 px (mockup rejestru,
-             .crumb-path svg) - mniejsza niż ikona akcji (16), bo stoi w tekście 12 px i tylko
-             rozdziela. Odstęp po obu stronach strzałki DungeonSpacingXs. -->
+        <!-- Okruszki (controls:Breadcrumbs): strzałka między odcinkami 8 px - mniejsza niż ikona
+             akcji (16), bo stoi w tekście 12 px i tylko rozdziela. Odstęp po obu stronach strzałki
+             DungeonSpacingXs. -->
         <x:Double x:Key="DungeonBreadcrumbSeparatorSize">8</x:Double>
-        <!-- Zakładka (TabItem, TabStripItem): wysokość 32 - jak wiersz listy; mockup rejestru
-             (.type-tab: 8 px + linia 13 px + 8 px) daje ok. 32. Wcięcie poziome 12 (DungeonSpacingMd). -->
+        <!-- Zakładka (TabItem, TabStripItem): wysokość 32 - jak wiersz listy (8 px + linia 13 px
+             + 8 px daje ok. 32). Wcięcie poziome 12 (DungeonSpacingMd). -->
         <x:Double x:Key="DungeonTabHeight">32</x:Double>
         <Thickness x:Key="DungeonTabPadding">12,0</Thickness>
         <!-- Najwyższa szerokość zakładki: ok. 30 znaków pisma 13. Dłuższa nazwa przycina się
              wielokropkiem i pokazuje pełną w podpowiedzi. -->
         <x:Double x:Key="DungeonTabMaxWidth">240</x:Double>
         <!-- Odstęp między zakładkami w pasku (w poziomie i między liniami po zawinięciu) idzie ze
-             skali: DungeonSpacingXs. Mockup rejestru ma 3 px (.type-tabs gap) - poza skalą. -->
+             skali: DungeonSpacingXs. -->
         <!-- Przełącznik segmentowy (ListBox z motywem DungeonSegmentedControl): pojemnik ma wysokość
              i krawędź pola (DungeonControlHeight, Input*), segmenty leżą w nim z wcięciem 3 px od
              krawędzi i zaokrągleniem 3 - mniejszym niż pojemnik (5), żeby wybrany segment czytał się

@@ -8,18 +8,15 @@ using DungeonApp.Desktop.Workspace.Panels;
 namespace DungeonApp.Desktop.Tests.Workspace;
 
 /// <summary>
-/// docs/tasks.md, "Testy": "Biurko utworzone i zwolnione bez gestu nie zapisuje układu." Restoring a
-/// layout and fitting it to a surface must never mark it dirty on their own - only a gesture
-/// (<see cref="CampaignWorkspaceViewModel.CommitGesture"/>) does that (docs/tasks.md's "Zapis układu
-/// jest już bezpieczny" note).
+/// A desk created and released without a gesture writes no layout. Restoring a layout and fitting
+/// it to a surface must never mark it dirty on their own - only a gesture
+/// (<see cref="CampaignWorkspaceViewModel.CommitGesture"/>) does that.
 /// <para>
 /// Exercises <see cref="CampaignWorkspaceViewModel"/> directly rather than through
 /// <see cref="CampaignDesk.CreateAsync"/>: the latter builds a real <c>CampaignWorkspaceView</c>,
 /// whose compiled XAML needs a running Avalonia application this test project has no headless
-/// harness for (docs/code-state.md already names the view model itself as the part nothing here can
-/// reach - this closes that gap for exactly the property docs/tasks.md asks for, without reaching
-/// past it into the view). <c>CampaignDesk</c>'s own release sequence - flush, then dispose - is
-/// reproduced by hand below, in that same order.
+/// harness for. <c>CampaignDesk</c>'s own release sequence - flush, then dispose - is reproduced by
+/// hand below, in that same order.
 /// </para>
 /// </summary>
 public sealed class CampaignDeskTests : IDisposable

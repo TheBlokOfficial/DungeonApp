@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <!--
-    Paczki dostarczane z tym systemem (docs/architecture.md, "Gdzie mieszka stan"): zwykłe paczki
-    w formacie paczek MG, kopiowane do <wyjście>\dnd5e\packs\ - tam, gdzie wskazuje
+    Paczki dostarczane z tym systemem: zwykłe paczki w formacie paczek MG, kopiowane do
+    <wyjście>\dnd5e\packs\ - tam, gdzie wskazuje
     SystemDirectories.BundledPacks(AppContext.BaseDirectory, Dnd5eSystem.IdValue). Katalog "dnd5e"
     musi być równy Dnd5eSystem.IdValue; pilnuje tego test w DungeonApp.Content.Dnd5e.Tests.
   -->

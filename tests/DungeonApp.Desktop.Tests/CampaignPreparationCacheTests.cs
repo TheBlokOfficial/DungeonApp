@@ -49,9 +49,9 @@ public sealed class CampaignPreparationCacheTests
     }
 
     /// <summary>
-    /// docs/architecture.md, "Kampania należy do jednego systemu": a manifest that names no system at
-    /// all belongs to the directory it was found in - the repository for that very directory is the
-    /// one this reads with, and the campaign opens normally.
+    /// A campaign belongs to exactly one system: a manifest that names no system at all belongs to
+    /// the directory it was found in - the repository for that very directory is the one this reads
+    /// with, and the campaign opens normally.
     /// </summary>
     [Fact]
     public async Task TakeAsync_reads_a_campaign_with_no_manifest_system_from_its_directorys_own_repository()
@@ -69,9 +69,9 @@ public sealed class CampaignPreparationCacheTests
     }
 
     /// <summary>
-    /// docs/architecture.md, "Kampania należy do jednego systemu": a manifest naming a system other
-    /// than the directory it lives in is refused before any disk read - whether or not that manifest
-    /// system happens to be a compiled one.
+    /// A campaign belongs to exactly one system: a manifest naming a system other than the
+    /// directory it lives in is refused before any disk read - whether or not that manifest system
+    /// happens to be a compiled one.
     /// </summary>
     [Fact]
     public async Task TakeAsync_refuses_a_campaign_whose_manifest_names_a_different_system_than_its_directory()

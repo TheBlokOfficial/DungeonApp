@@ -4,8 +4,7 @@
              x:Class="DungeonApp.Content.Dnd5e.GearCardView">
 
     <!-- The designed gear card: rarity and weight untitled, then a description block. Spacing
-         between them belongs to this host, never to a control (see docs/architecture.md,
-         "Deklaracja treści"). -->
+         between them belongs to this host, never to a control. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <controls:TraitListView x:Name="Properties" />
         <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />

@@ -345,7 +345,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
         public CampaignInstancesToolViewModel CreateViewModel() => new(Context, Dnd5e.ContentSetId);
 
-        /// <summary>Every instance the campaign holds right now, read from the context's own snapshot - the test-side equivalent of what used to be <c>Context.Instances.All</c>.</summary>
+        /// <summary>Every instance the campaign holds right now, read from the context's own snapshot.</summary>
         public IReadOnlyCollection<CampaignInstance> Instances() =>
             Context.Snapshot.Get(InstancesModel.Declaration).Values.ToArray();
 

@@ -11,13 +11,11 @@ using DungeonApp.Testing;
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// Proof that the on-disk campaign format has not moved by a single byte across the etap 4 brief 2
-/// migration (docs/tasks.md, "Wyniesienie logiki wpisów z rdzenia do biblioteki"). The fixture under
-/// <c>Fixtures/CampaignFormat</c> was generated once, by the pre-migration code, from a campaign
-/// with a declared system and two instances - one carrying a GM-given label and a non-empty patch,
-/// one plain - and is never regenerated or hand-edited afterwards; this test file itself may only
-/// ever change in its <c>using</c> directives as types move namespace, never in what it asserts (the
-/// brief's own condition for this test).
+/// Proof that the on-disk campaign format does not move by a single byte. The fixture under
+/// <c>Fixtures/CampaignFormat</c> was generated once, from a campaign with a declared system and
+/// two instances - one carrying a GM-given label and a non-empty patch, one plain - and is never
+/// regenerated or hand-edited; this test file itself may only ever change in its <c>using</c>
+/// directives as types move namespace, never in what it asserts.
 /// <para>
 /// The fixture directory is read from, never written to: <see cref="ICampaignRepository.GetAsync"/>
 /// only reads, and the re-save goes to a fresh, empty temporary directory rather than back on top of

@@ -1,8 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        Powierzchnie ramy (docs/tasks.md, punkt 3 "Fundament interfejsu"): klasy na Border, wyłącznie
-        z tokenów w Themes/Tokens.axaml. Znaczenie każdego koloru jest zapisane tam, nad kolorem.
+        Powierzchnie ramy: klasy na Border, wyłącznie z tokenów w Themes/Tokens.axaml. Znaczenie
+        każdego koloru jest zapisane tam, nad kolorem.
         Klasa nadaje tło, krawędź, promień i wnętrze - nigdy rozmiaru: rozmiar daje układ, w którym
         powierzchnia stoi, a treść dłuższa niż powierzchnia przycina się albo zawija w środku.
     -->

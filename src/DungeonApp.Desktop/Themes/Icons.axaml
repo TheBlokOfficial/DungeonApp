@@ -91,9 +91,9 @@
             <GeometryDrawing Geometry="M5,9 L15,9 L15,19 L5,19 Z" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <!-- A closed campaign tab shows this in place of its own icon (docs/tasks.md, etap 1: "kłódka
-         zamiast ikony zakładki") - same 24x24 viewbox and DungeonIconPen as every outline icon above,
-         so a locked tab is visually just another member of this icon set, not a special case. -->
+    <!-- A closed campaign tab shows this in place of its own icon - same 24x24 viewbox and
+         DungeonIconPen as every outline icon above, so a locked tab is visually just another member
+         of this icon set, not a special case. -->
     <DrawingImage x:Key="DungeonIconLock" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M6,11 L18,11 L18,21 L6,21 Z" Pen="{StaticResource DungeonIconPen}" />
@@ -132,9 +132,6 @@
             <GeometryDrawing Geometry="M9,12 L20,12 M16,8 L20,12 L16,16" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <!-- Chevron pointing down - dropdown affordance for a filter chip and the sort button (krok 10,
-         brief A4). Same pen and 24x24 viewbox as every other outline icon; only the direction differs
-         from DungeonIconChevronRight above. -->
     <!-- Ptaszek: pozycja menu zaznaczona (MenuItem ToggleType CheckBox). -->
     <DrawingImage x:Key="DungeonIconCheck" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,12.5 L10,17.5 L19,7" Pen="{StaticResource DungeonIconPen}" />
@@ -154,12 +151,15 @@
     <DrawingImage x:Key="DungeonIconSortDirection" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M7,5 L7,19 M4,16 L7,19 L10,16 M13,7 L20,7 M13,12 L18,12 M13,17 L16,17" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
+    <!-- Chevron pointing down - dropdown affordance for a filter chip and the sort button. Same pen
+         and 24x24 viewbox as every other outline icon; only the direction differs from
+         DungeonIconChevronRight above. -->
     <DrawingImage x:Key="DungeonIconChevronDown" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,9 L12,16 L19,9" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
-    <!-- "Potwory" tab icon (krok 10, brief B2) - named for what it draws, a beast's head in profile,
-         not what it is used for: a pointed snout, one back-swept horn, a brow ridge and a fanged
-         lower jaw. Same pen, viewbox and rounded line caps/joins as every other outline icon. -->
+    <!-- "Potwory" tab icon - named for what it draws, a beast's head in profile, not what it is
+         used for: a pointed snout, one back-swept horn, a brow ridge and a fanged lower jaw. Same
+         pen, viewbox and rounded line caps/joins as every other outline icon. -->
     <DrawingImage x:Key="DungeonIconDragon" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M22,12 L17,7 L12,5 L6,6 L3,10 L3,14 L7,16.5 L13,15 L18,15 Z" Pen="{StaticResource DungeonIconPen}" />
@@ -168,8 +168,8 @@
             <GeometryDrawing Geometry="M16,15 L16,17.3 M19.3,14.3 L19.3,16.6" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <!-- "Przedmioty" tab icon (krok 10, brief B2) - a backpack: rounded body, top flap and collar,
-         two shoulder straps, one front pocket seam. -->
+    <!-- "Przedmioty" tab icon - a backpack: rounded body, top flap and collar, two shoulder straps,
+         one front pocket seam. -->
     <DrawingImage x:Key="DungeonIconBackpack" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M8,9 L8,5 A2,2 0 0 1 10,3 L14,3 A2,2 0 0 1 16,5 L16,9" Pen="{StaticResource DungeonIconPen}" />

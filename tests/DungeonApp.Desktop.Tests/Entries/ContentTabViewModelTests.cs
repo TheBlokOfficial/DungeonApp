@@ -9,13 +9,12 @@ using DungeonApp.Core.Entries;
 namespace DungeonApp.Desktop.Tests.Entries;
 
 /// <summary>
-/// Krok 10, zlecenie 2: <see cref="ContentTabViewModel"/> against a fake "widget" content type - the
-/// same discipline <c>ContentListModelTests</c> follows, and this project's replacement for the
-/// registry's own view model tests now that the registry screen is gone. This project never names a
-/// real content type, so a hand-built <see cref="ContentRegistry"/> stands in for
-/// <see cref="ContentPackLoader"/>'s output - <c>ContentListModel</c> itself already has exhaustive
-/// coverage of section/filter/sort rules (<c>ContentListModelTests</c>); these tests only check that
-/// the view model drives it correctly and exposes the right bindable shape.
+/// <see cref="ContentTabViewModel"/> against a fake "widget" content type - the same discipline
+/// <c>ContentListModelTests</c> follows. This project never names a real content type, so a
+/// hand-built <see cref="ContentRegistry"/> stands in for <see cref="ContentPackLoader"/>'s output
+/// - <c>ContentListModel</c> itself already has exhaustive coverage of section/filter/sort rules
+/// (<c>ContentListModelTests</c>); these tests only check that the view model drives it correctly
+/// and exposes the right bindable shape.
 /// </summary>
 public sealed class ContentTabViewModelTests
 {

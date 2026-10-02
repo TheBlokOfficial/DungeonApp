@@ -6,9 +6,9 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// Orders known values by a fixed rank this system declares, and puts every other value after all
-/// of them, alphabetically - backs the "Rzadkość" filter's option order (krok 10, zlecenie 1,
-/// część C): a named rarity tier orders by its place in <c>RarityTiers</c>, anything the list does
-/// not recognise falls to the end rather than sorting arbitrarily among the known tiers.
+/// of them, alphabetically - backs the "Rzadkość" filter's option order: a named rarity tier
+/// orders by its place in <c>RarityTiers</c>, anything the list does not recognise falls to the
+/// end rather than sorting arbitrarily among the known tiers.
 /// </summary>
 internal sealed class RankedTextComparer(IReadOnlyList<string> knownInOrder) : IComparer<string>
 {

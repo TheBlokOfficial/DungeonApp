@@ -25,7 +25,8 @@
         pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem;
         tekst zastępczy ma krój, stopień i grubość (Regular) tekstu pola - wiązane w szablonie, więc
         żaden styl TextBlocka z widoku ich nie zmieni - i różni się wyłącznie kolorem.
-        Menu kontekstowe (wytnij/kopiuj/wklej) - domyślne Fluenta, do porcji 7.
+        Menu kontekstowe (wytnij/kopiuj/wklej) - DungeonTextBoxContextFlyout
+        (TextContextFlyouts.axaml).
         Odmiany:
           (brak)          - jednowierszowe;
           AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej

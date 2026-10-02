@@ -5,7 +5,7 @@
     <!--
         Okruszki (controls:Breadcrumbs): ścieżka tego, co pokazane, w jednej linii, stopień
         DungeonHelperFontSize (12), krój tekstu interfejsu. Ślad (wszystkie odcinki poza ostatnim) -
-        tekst przygaszony; ostatni, bieżący - tekst drugorzędny (mockup rejestru, .crumb-path .current).
+        tekst przygaszony; ostatni, bieżący - tekst drugorzędny.
         Między odcinkami strzałka w prawo DungeonIconChevronRight, DungeonBreadcrumbSeparatorSize,
         kolorem tekstu przygaszonego, z odstępem DungeonSpacingXs po obu stronach.
         Za mało miejsca: bieżący odcinek zostaje w całości, odcinki śladu skracają się wielokropkiem

@@ -9,7 +9,7 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Aplikacja nie ma motywu domyślnego biblioteki (porcja 9a) - każdy wbudowany typ kontrolki z
+/// Aplikacja nie ma motywu domyślnego biblioteki - każdy wbudowany typ kontrolki z
 /// szablonem, którego używa, ma motyw ramy. Kontrolka bez motywu nie rysuje się wcale, a w rzadko
 /// otwieranym miejscu (okienko, menu podręczne) nikt tego nie zauważy, dopóki tam nie kliknie.
 /// Lista jawna: nowy wbudowany typ w widoku albo w szablonie dopisuje się tutaj.

@@ -10,14 +10,13 @@ using DungeonApp.Testing;
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// Deliberately minimal, per the brief for this pass: four tests, proving exactly the two things
-/// this project's shape depends on. The first two prove a real fixture entry deserializes into the
-/// right record with the right values; the last two are the ones that matter most - they prove the
-/// deserializer (<c>System.Text.Json</c>, driven by <see cref="Monster"/>/<see cref="Gear"/>'s own
+/// The first two tests prove a real fixture entry deserializes into the right record with the right
+/// values; the next two are the ones that matter most - they prove the deserializer
+/// (<c>System.Text.Json</c>, driven by <see cref="Monster"/>/<see cref="Gear"/>'s own
 /// <see langword="required"/> members and strict unmapped-member handling) is what rejects bad
-/// content now, with zero bespoke validation code written anywhere in
-/// <see cref="Dnd5eSystem.TryValidate"/>. The picture tests at the end (porcja 4a) prove the one
-/// thing this system adds to the loader's own picture-path check: that both types declare it.
+/// content, with zero bespoke validation code written anywhere in
+/// <see cref="Dnd5eSystem.TryValidate"/>. The picture tests prove the one thing this system adds to
+/// the loader's own picture-path check: that both types declare it.
 /// </summary>
 public sealed class Dnd5eSystemTests
 {
@@ -87,7 +86,7 @@ public sealed class Dnd5eSystemTests
         Assert.Contains("actions", entry.UnresolvedDetail, StringComparison.OrdinalIgnoreCase);
     }
 
-    // Porcja 4a: both types declare their "image" value as the entry's picture, so the loader checks
+    // Both types declare their "image" value as the entry's picture, so the loader checks
     // its path - a picture reaching outside the pack rejects the entry, a picture in a subdirectory
     // of the pack reads back as written.
     [Theory]

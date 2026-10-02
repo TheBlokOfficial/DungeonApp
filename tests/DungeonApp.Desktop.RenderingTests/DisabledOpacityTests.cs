@@ -8,8 +8,8 @@ namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
 /// Przygaszenie wyłączenia w motywie ramy idzie po :disabled na najwyższej wyłączonej kontrolce.
-/// Przycisk wyłączony komendą (CanExecute fałsz) ma IsEnabled true - do porcji 3c przygaszenie stało
-/// na [IsEnabled=False] i taki przycisk wyglądał jak włączony. Kontrolka w wyłączonym pojemniku nie
+/// Przycisk wyłączony komendą (CanExecute fałsz) ma IsEnabled true - przygaszenie po
+/// [IsEnabled=False] zostawiłoby go wyglądającym jak włączony. Kontrolka w wyłączonym pojemniku nie
 /// przygasa drugi raz: przygasza ją pojemnik.
 /// </summary>
 public sealed class DisabledOpacityTests

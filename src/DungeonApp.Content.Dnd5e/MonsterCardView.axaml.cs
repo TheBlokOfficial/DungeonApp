@@ -6,21 +6,16 @@ using DungeonApp.Desktop.Entries.Controls;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The monster statblock, laid out per the mockup's own "detail-panel" block (krok 10, brief C):
-/// stat-strip, ability grid with D&amp;D 5e's own modifier arithmetic (<see cref="AbilityModifier"/>),
-/// skills-and-senses, wyzwanie as a chip, cechy szczególne / akcje under bar-accented headers, and an
-/// italic description.
+/// The monster statblock: stat-strip, ability grid with D&amp;D 5e's own modifier arithmetic
+/// (<see cref="AbilityModifier"/>), skills-and-senses, wyzwanie as a chip, cechy szczególne / akcje
+/// under bar-accented headers, and an italic description.
 /// <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after construction, through
 /// <see cref="SetMonster"/> - see <see cref="Gear"/>'s card for the same reasoning on why this stays
 /// a plain parameterless constructor.
 /// <para>
-/// <b>What the mockup shows that this card does not.</b> The mockup's own KP stat carries a dopisek
-/// ("skórz., tarcza") whose source is <see cref="Monster.AcSource"/> - shown, since the record
-/// carries it. Nothing in the mockup is skipped for lack of a field on this card: every stat-strip
-/// value, every ability score, every info row and the wyzwanie chip all come from fields
-/// <see cref="Monster"/> already declares. See the krok 10 report for the two color deviations
-/// (the ability modifier's sign and the "Akcje" section bar, both explained where they are set,
-/// below and in MonsterCardView.axaml).
+/// The KP and PZ stats carry a bracketed note ("skórz., tarcza", "2k6") taken from
+/// <see cref="Monster.AcSource"/> and <see cref="Monster.HpDice"/>. Every value on the card comes
+/// from a field <see cref="Monster"/> declares.
 /// </para>
 /// </summary>
 public partial class MonsterCardView : UserControl
@@ -84,6 +79,6 @@ public partial class MonsterCardView : UserControl
 
     private static string Format(int value) => value.ToString(CultureInfo.InvariantCulture);
 
-    /// <summary>The mockup's own "(skórz., tarcza)" / "(2k6)" bracketed note - empty (not null) when the source field is absent, so the inline Run simply prints nothing.</summary>
+    /// <summary>The "(skórz., tarcza)" / "(2k6)" bracketed note - empty (not null) when the source field is absent, so the inline Run simply prints nothing.</summary>
     private static string Note(string? source) => source is null ? string.Empty : $" ({source})";
 }

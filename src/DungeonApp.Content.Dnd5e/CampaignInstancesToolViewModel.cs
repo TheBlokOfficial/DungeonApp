@@ -163,7 +163,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
 
     /// <summary>
     /// One Polish sentence per <see cref="InstanceUnresolvedReason"/> - never a shared generic
-    /// fallback, mirroring how the registry screen explains a broken entry. The values-rejected case
+    /// fallback, mirroring how a content tab explains a broken entry. The values-rejected case
     /// appends the system's own explanation (<see cref="ResolvedInstance.UnresolvedDetail"/>),
     /// because that text is the only place the reason for the rejection lives.
     /// </summary>

@@ -6,12 +6,10 @@ using DungeonApp.Desktop.ViewModels;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The campaign position (docs/architecture.md, "Pasek boczny: trzy kategorie"): the one Kampania-
-/// category row that belongs to the frame itself, not to the chosen system. Covers the bug report
-/// that started this fix - "po wyborze systemu ... na pasku nie ma pozycji, która [półkę]
-/// reprezentuje" - by asserting the row exists straight out of construction, and the three state
-/// transitions docs/architecture.md's "Pozycja kampanii zmienia się razem ze stanem" names: selected
-/// by default, relabelled on open, and back to the shelf (still selected) on close.
+/// The campaign position: the one Kampania-category row that belongs to the frame itself, not to
+/// the chosen system. Asserts the row exists straight out of construction, so the shelf always has
+/// a position on the sidebar once a system is chosen, and its three state transitions: selected by
+/// default, relabelled on open, and back to the shelf (still selected) on close.
 /// </summary>
 public sealed class GlobalSidebarViewModelTests
 {

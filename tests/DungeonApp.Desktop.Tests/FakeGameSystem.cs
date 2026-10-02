@@ -10,8 +10,7 @@ namespace DungeonApp.Desktop.Tests;
 /// A minimal <see cref="IGameSystem"/> shared by every Desktop test that needs one: the tab-lifecycle
 /// tests (<c>ActiveSystemSessionTests</c>) use its <see cref="SystemTabs"/> and <see cref="CampaignTabs"/>,
 /// others only need its <see cref="Id"/> to match a <c>CampaignSummary</c>. It carries no content-type
-/// knowledge at all - the frame's own <see cref="IGameSystem"/> no longer asks for any
-/// (docs/architecture.md, "Rama, biblioteka, system").
+/// knowledge at all - the frame's own <see cref="IGameSystem"/> does not ask for any.
 /// <para>
 /// <paramref name="systemTabs"/> and <paramref name="campaignTabs"/> default to empty, so a test that
 /// only needs an identity is not forced to think about tabs at all.

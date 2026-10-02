@@ -24,7 +24,7 @@
         choć mysz jest już nad okienkiem. Po zamknięciu okienka kliknięciem w przycisk przycisk jest
         w spoczynku, dopóki mysz z niego nie zjedzie (klasa .hover-suppressed, Themes/OpenerHoverRest.cs;
         to samo w ComboBox i DropDownPicker). Nic nie przygasza treści ani jej nie zmniejsza
-        (RenderTransform i Transitions wyzerowane; motyw Fluenta nie działa, bo ten go zastępuje).
+        (RenderTransform i Transitions wyzerowane).
         Fokus nie ma własnego wyglądu (FocusAdorner pusty). Kursor jest strzałką w każdej odmianie,
         także w odnośnikach - klikalność pokazuje najechanie.
         Odmiany:

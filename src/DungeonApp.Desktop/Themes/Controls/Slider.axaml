@@ -6,7 +6,7 @@
         zostały PART_Track z częściami toru PART_DecreaseButton i PART_IncreaseButton (RepeatButton)
         i uchwytem (Thumb); wypadły podziałki (TickBar), DataValidationErrors, podpowiedź z wartością
         i szablon pionowy. Suwak pionowy nie ma konsumenta: Orientation="Vertical" dostaje ten sam
-        poziomy szablon - pierwszy konsument dopisze pionowy osobnym zleceniem.
+        poziomy szablon - pionowy dopisze pierwszy konsument.
         Wysokość najmniej DungeonControlHeight (stoi w rzędzie z polem i przyciskiem), szerokość
         z kontenera. Tor DungeonSliderTrackThickness, wyśrodkowany w pionie, zaokrąglony na obu
         końcach: część przed uchwytem w kolorze Foreground (Accent), za uchwytem - Background

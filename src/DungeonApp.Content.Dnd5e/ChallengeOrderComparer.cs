@@ -7,8 +7,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// Orders challenge rating text ("1/2 (100 PD)", "1/4 (50 PD)", "5") by the numeric value of its
 /// leading fraction or whole number, and puts anything that does not parse after every value that
-/// does, alphabetically - backs the "Wyzwanie" filter's option order and the "Wyzwanie" sort (krok
-/// 10, zlecenie 1, część C).
+/// does, alphabetically - backs the "Wyzwanie" filter's option order and the "Wyzwanie" sort.
 /// </summary>
 internal sealed class ChallengeOrderComparer : IComparer<string>
 {

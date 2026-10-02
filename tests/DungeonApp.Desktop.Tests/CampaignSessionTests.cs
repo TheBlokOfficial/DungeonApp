@@ -11,11 +11,10 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The single door any change goes through. Exercises the ordering and refusal guarantees
-/// docs/architecture.md's "Gdzie mieszka stan" names for it: save before notify, a refusal changes
-/// and notifies nothing, a failed save still notifies with a warning, and the fifth ban is
-/// structural rather than counted - a change called from inside the notification a previous one is
-/// still raising is refused, not merely discouraged.
+/// The single door any change goes through. Exercises its ordering and refusal guarantees: save
+/// before notify, a refusal changes and notifies nothing, a failed save still notifies with a
+/// warning, and the fifth ban is structural rather than counted - a change called from inside the
+/// notification a previous one is still raising is refused, not merely discouraged.
 /// </summary>
 public sealed class CampaignSessionTests
 {

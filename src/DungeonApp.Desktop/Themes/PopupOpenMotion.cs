@@ -12,8 +12,7 @@ namespace DungeonApp.Desktop.Themes;
 /// <summary>
 /// Otwarcie okienka wysuwanego, rozwiniętej listy i menu (każde okno wyskakujące, którego treścią jest
 /// FlyoutPresenter - Flyout, ComboBox, DropDownPicker - albo MenuFlyoutPresenter, ContextMenu
-/// i powierzchnia podmenu MenuItem), raz dla całej aplikacji
-/// (docs/architecture.md, "Niezmiennik interfejsu", Okienko i lista rozwijana):
+/// i powierzchnia podmenu MenuItem), raz dla całej aplikacji:
 /// <list type="bullet">
 /// <item>ustala, czy okno stanęło pod otwierającym, czy nad nim, i daje otwierającemu klasę
 /// <see cref="OpensUpClass"/>, gdy nad - motyw obraca po niej strzałkę listy w górę;</item>

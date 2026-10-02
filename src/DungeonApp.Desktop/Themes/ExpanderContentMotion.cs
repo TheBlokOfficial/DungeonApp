@@ -7,8 +7,8 @@ using Avalonia.VisualTree;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Rozwinięcie sekcji (Expander), raz dla całej aplikacji (docs/architecture.md, "Niezmiennik
-/// interfejsu", Ruch): treść rozwiniętej sekcji wyłania się jak okienko - z przezroczystości,
+/// Rozwinięcie sekcji (Expander), raz dla całej aplikacji: treść rozwiniętej sekcji wyłania się
+/// jak okienko - z przezroczystości,
 /// dosuwając się o DungeonPopupOpenOffset od strony nagłówka (z góry), w DungeonPopupOpenDuration,
 /// z wyhamowaniem (ten sam ruch co otwarcie okienka, <see cref="PopupOpenMotion.Appear"/>).
 /// Wysokość się nie animuje - to, co pod sekcją, przesuwa się od razu; treść jest klikalna od

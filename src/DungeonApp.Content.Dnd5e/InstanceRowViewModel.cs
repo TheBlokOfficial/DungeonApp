@@ -10,8 +10,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// One row of the campaign's instance list: the name to show and, when the instance did not resolve,
 /// the Polish sentence explaining what is wrong. An unresolved instance is never left off this list -
-/// it gets a row and a message instead, mirroring how the registry marks a broken entry rather than
-/// hiding it (docs/architecture.md, "Co się dzieje, gdy treść jest zepsuta").
+/// it gets a row and a message instead, mirroring how a content tab marks a broken entry rather
+/// than hiding it.
 /// <para>
 /// A resolved monster row also carries its current hit points, changed only through
 /// <see cref="SaveHitPointsCommand"/> - never through the <see cref="CurrentHp"/> setter itself, so a
@@ -45,7 +45,7 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         Message = message;
 
         // Branching on a content type's own id ("monster") is legal here and nowhere outside this
-        // system - see docs/decisions.md on where that knowledge is allowed to live.
+        // system: knowledge of D&D content types lives only in this project.
         CanEditHitPoints = resolved.Unresolved is null
             && resolved.Source is { } source
             && source.Entry.Type.Set == ownerSet

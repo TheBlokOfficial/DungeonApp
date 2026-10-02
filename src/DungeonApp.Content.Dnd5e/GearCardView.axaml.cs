@@ -15,8 +15,8 @@ public partial class GearCardView : UserControl
 
     public void SetGear(Gear gear)
     {
-        // krok 10, brief A10: "Karta bez dublujących wierszy" - rarity is already this content
-        // type's only tag, shown once in the detail header. No row for it here any more.
+        // No rarity row: rarity is this content type's only tag, already shown once in the detail
+        // header, and the card does not repeat what the header shows.
         var rows = new List<TraitRow>();
 
         if (gear.Weight is { } weight)

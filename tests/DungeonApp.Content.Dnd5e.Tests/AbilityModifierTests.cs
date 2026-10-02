@@ -1,8 +1,7 @@
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// krok 10, brief C: "Modyfikator cechy - testem jednostkowym na kilku wartościach, także
-/// nieparzystych i poniżej 10." D&amp;D 5e's own floor((score-10)/2) - values below 10 (negative
+/// D&amp;D 5e's own floor((score-10)/2) on several values - values below 10 (negative
 /// modifiers), odd scores (5e's own case for floor rounding down, not truncating toward zero), and
 /// the boundary at 10/11 (both give +0).
 /// </summary>

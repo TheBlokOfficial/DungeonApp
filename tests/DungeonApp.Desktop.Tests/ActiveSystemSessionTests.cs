@@ -9,10 +9,9 @@ using DungeonApp.Testing;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The tab lifecycle on a substituted system (docs/tasks.md, "Testy"): closed without a campaign,
-/// open after one is opened, content built once and released at close, at "powrót" (here,
-/// <see cref="ActiveSystemSession.ReleaseAll"/>) and after warmup - the four release triggers
-/// docs/architecture.md's navigation section names.
+/// The tab lifecycle on a substituted system: closed without a campaign, open after one is opened,
+/// content built once and released at close, at "powrót" (here,
+/// <see cref="ActiveSystemSession.ReleaseAll"/>) and after warmup.
 /// </summary>
 public sealed class ActiveSystemSessionTests
 {
@@ -112,8 +111,7 @@ public sealed class ActiveSystemSessionTests
 
     /// <summary>
     /// Calling <see cref="ActiveSystemSession.ReleaseAll"/> is how "powrót do wyboru" and "wyjście z
-    /// programu" both release tabs (docs/architecture.md). Calling it twice - once per shutdown hook,
-    /// the same way the previous shell's <c>FlushPendingState</c> could run from two hooks - must not
+    /// programu" both release tabs. Calling it twice - once per shutdown hook - must not
     /// double-dispose anything.
     /// </summary>
     [Fact]
@@ -134,9 +132,8 @@ public sealed class ActiveSystemSessionTests
     /// <summary>
     /// Mimics <c>AppShellViewModel.WarmFirstCampaignAsync</c>: warmup builds and disposes its own
     /// content against a throwaway session, entirely outside <see cref="ActiveSystemSession"/>'s
-    /// cache. A later real open of the same campaign must still build fresh content - "zawartość
-    /// zakładki... zwalniana... po rozgrzewce" (docs/tasks.md) means warmup's instance never leaks
-    /// into the real one.
+    /// cache. A later real open of the same campaign must still build fresh content - warmup
+    /// releases what it built, so its instance never leaks into the real one.
     /// </summary>
     [Fact]
     public async Task Content_built_and_released_by_warmup_does_not_leak_into_a_later_real_open()
