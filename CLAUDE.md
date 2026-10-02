@@ -11,9 +11,11 @@ powiedz to autorowi.
 
 1. **Wyrażenie się nie rozgałęzia.** Żaden węzeł, operator ani parametr nie wybiera wartości na
    podstawie warunku. `min` i `max` to arytmetyka i są dozwolone.
-2. **Żaden typ nie niesie czasu.** Nic nie odczytuje czasu trwania, rundy, tury ani wygaśnięcia.
-   Czas może stać w polu rekordu jako napis na karcie („Koncentracja, do 1 minuty”), ale poza kartą
-   nic go nie rozbiera, nie liczy, nie filtruje ani nie sortuje.
+2. **Czas nie jest niczyim wejściem.** Nic nie wygasa, nie odnawia się ani nie dzieje się dlatego,
+   że minął czas. Zegar świata, numer rundy i wskaźnik tury może trzymać narzędzie, które je pokazuje;
+   przesuwa je tylko akcja MG, a poza tym widokiem nic ich nie odczytuje. Czas może stać w polu
+   rekordu jako napis na karcie („Koncentracja, do 1 minuty”), ale poza kartą nic go nie rozbiera,
+   nie liczy, nie filtruje ani nie sortuje.
 3. **Wkłady do pola sumują się bezwarunkowo.** Bez priorytetów, kolejności i reguł „to się nie
    kumuluje”.
 4. **Nic nie wybiera celów za MG.** Operacja zmienia wyłącznie to, co MG jawnie wskazał (może to być

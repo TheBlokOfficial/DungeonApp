@@ -3,38 +3,60 @@
 Kolejność od góry. Pozycja jest opisem potrzeby, nie zleceniem — przed pracą sprawdź w kodzie, czy
 nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka.
 
-## Teraz: zakładki treści — karty potwora i przedmiotu
+## Kamień milowy: pierwsza sesja przy stole
 
-Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, paczka `dnd5e-srd` (na razie
-pusta), pole obrazka z ramką. Projekt kart (układ, wymiary, co wyróżnione) jest punktem wyjścia, nie
-specyfikacją: `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
+Cel: poprowadzić prawdziwą sesję bez podręcznika i bez papieru. Każdy brak z tej listy oznacza grę
+hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam. Formuły
+nie są potrzebne — KP czy ST czarów MG wpisuje. Rozstrzygnięcia, na których stoi plan, są
+w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
-1. **Karta potwora, pełna.**
-   - Poprawki ramki obrazka: tylko „Brak pliku” w kolorze niebezpieczeństwa, a ścieżka drugorzędna;
-     linia ramki nad obrazkiem; ikony zastępcze z Lucide (czaszka — potwór, plecak — przedmiot), razem
-     z licencją ISC w `Assets/Licenses`.
-   - Styk karta–paczka: `CreateCard(Entry)` nie zna paczki, a obrazek rozwiązuje się względem niej.
-   - Nowe pola, opcjonalne: PD, rzuty obronne, podatności, odporności i niewrażliwości, akcje
-     dodatkowe, reakcje, akcje legendarne, rzucanie czarów.
-   - Sekcje rozwijane przy długiej prozie.
-   - Zaznaczanie tekstu przeciąganiem rozpoczętym obok tekstu.
-   - Kilka–kilkanaście wpisów przykładowych w `dnd5e-srd`, każdy pokazujący inny wariant karty.
-2. **Karta przedmiotu:** kategoria, podtyp, dostrojenie, cena, waga z ułamkami, obrażenia
-   i właściwości broni, KP zbroi, wymagana Siła, ukrywanie się, ładunki i odnawianie. Filtry
-   Kategoria i Dostrojenie. Do tego wpisy przykładowe.
-3. **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
-4. **Zaklęcia** — opcjonalnie. Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry
-   i sortowanie po poziomie i szkole; koncentracja i rytuał jako tagi.
-
-Dane przykładowe pochodzą z SRD 5.1 (CC-BY 4.0), tłumaczone. Tylko jako przykłady, nie wzorzec rekordów.
-
-## Następny kamień milowy: pierwsza sesja przy stole
-
-Zanim wejdą formuły i sloty, aplikacja ma się nadawać do poprowadzenia prawdziwej sesji. Zapytaj
-autora, czego potrzebuje przy stole. Znane braki:
-- nie da się nazwać okazu: operacja zmiany nazwy instancji istnieje i jest przetestowana, ale nie ma
-  pola w interfejsie;
-- panel „Świat kampanii” jest testowy — do przeprojektowania pod realne użycie.
+1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
+   z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
+   `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
+   - **Karta potwora, pełna.** Ramka obrazka: tylko „Brak pliku” w kolorze niebezpieczeństwa,
+     ścieżka drugorzędna, linia ramki nad obrazkiem, ikony zastępcze z Lucide (czaszka — potwór,
+     plecak — przedmiot) z licencją ISC w `Assets/Licenses`. Styk karta–paczka: `CreateCard(Entry)`
+     nie zna paczki, a obrazek rozwiązuje się względem niej. Nowe pola, opcjonalne: PD, rzuty
+     obronne, podatności, odporności i niewrażliwości, akcje dodatkowe, reakcje, akcje legendarne,
+     rzucanie czarów. Sekcje rozwijane przy długiej prozie. Zaznaczanie tekstu przeciąganiem
+     rozpoczętym obok tekstu.
+   - **Karta przedmiotu:** kategoria, podtyp, dostrojenie, cena (potrzebna do handlu), waga
+     z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie się, ładunki
+     i odnawianie. Filtry Kategoria i Dostrojenie.
+   - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
+   - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
+     po poziomie i szkole; koncentracja i rytuał jako tagi.
+   - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce.
+   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
+     cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
+     magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
+     typie, gdy rekord i karta typu są gotowe.
+2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
+   jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
+   i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
+   Nazwa entity (dziś operacja zmiany nazwy jest, pola w interfejsie nie ma) i notatka MG.
+   Przenoszenie entity i katalogów; usuwa się tylko pusty katalog. Klik w entity otwiera okno jego
+   karty — kilka naraz — z szybkimi PZ: „-7” albo „+5” i Enter zapisuje.
+3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
+4. **Inicjatywa** — okno: entity i postacie z liczbą wpisaną przez MG, ułożone według niej; runda
+   i wskaźnik tury przesuwane przez MG.
+5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG
+   tworzy je i zmienia formularzem w aplikacji. Wejście postaci do kampanii tworzy jej entity.
+   Identyfikator `źródło:id` wskazuje odtąd wpis w paczce albo postać.
+6. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
+   i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje.
+7. **Ekwipunek, sakiewka, handel** — entity w entity (plecak postaci jako gałąź drzewa świata), złoto
+   na entity. Okno handlu: MG wskazuje sprzedającego, kupującego i sakiewkę, aplikacja proponuje
+   cenę z karty, MG ją poprawia, jedno kliknięcie przenosi przedmiot i złoto. Brak złota widać, nie
+   blokuje.
+8. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
+   wartość). Podróż to jedna akcja: drużyna do innego katalogu, zegar o czas wpisany przez MG.
+9. **Fabuła i lore** — zakładka dokumentów. Markdown z paczki, pisany poza aplikacją (np.
+   w Obsidianie). Linki między stronami i do identyfikatorów; klik w identyfikator pokazuje kartę.
+   Odhaczenia decyzji w fabule zapisują się w kampanii, więc jedna przygoda może iść dla kilku grup.
+10. **Ściągawki** — wybór wpisów (cechy klas, zaklęcia, przedmioty, stany) i wydruk A4 przez PDF.
+    Każdy typ ma własny układ na białą kartkę. Zaznaczenia może podpowiedzieć postać (jej węzły,
+    zaklęcia, ekwipunek); MG poprawia je przed drukiem.
 
 ## Porządki w kodzie
 
@@ -58,9 +80,11 @@ autora, czego potrzebuje przy stole. Znane braki:
 
 ## Odłożone, z wyzwalaczem
 
-- **Formuły, sloty, dokument** — po kamieniu milowym „przy stole”.
+- **Formuły** — po kamieniu milowym „przy stole”.
+- **Edytor treści w aplikacji** (wpisy, przygoda, lore) — pisanie plików poza aplikacją zaczyna
+  przeszkadzać w przygotowaniu sesji.
+- **Odległości między lokacjami** (propozycja czasu podróży) — wpisywanie czasu podróży zaczyna męczyć.
 - **Dodatki (warianty zasad)** — pierwszy wariant, który autor chce mieć w konkretnej kampanii.
 - **Dodanie paczki przeciągnięciem do okna** — kolizja nazwy daje odmowę z komunikatem, nigdy
   nadpisanie.
-- **Kopie zapasowe kampanii** — MG chce wrócić do wcześniejszego stanu.
 - **Pomiar startu** — pierwsze zacięcie zauważone przez autora; wtedy najpierw liczby, potem poprawka.

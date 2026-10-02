@@ -37,6 +37,25 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Właściwości częściowe (C# 14), nie pola z atrybutem. Setter z logiką poza powiadomieniem zostaje
   ręczny, bo `OnXChanged` biegnie przed powiadomieniem o X. *Wyzwalacz:* generator psuje build albo
   edytor.
+- **Zakaz 2 według intencji: czas nie jest niczyim wejściem.** Litera „żaden typ nie niesie czasu”
+  zabraniała zegara świata i rundy w inicjatywie, choć nic ich nie wykonuje. Narzędzie trzyma zegar,
+  rundę i wskaźnik tury, przesuwa je akcja MG, czyta tylko jego widok. Podróż przesuwa zegar
+  wyłącznie jako część jednej akcji MG z czasem, który MG widzi; samo przeniesienie drużyny zegara
+  nie rusza (zakaz 5).
+- **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
+  kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
+  i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — zakaz 4). Usuwa się
+  tylko pusty, żeby jedno kliknięcie nie zabrało po cichu części świata.
+- **Postać gracza leży obok kampanii.** Trzeci rodzaj danych obok treści paczek i stanu kampanii:
+  tworzy ją MG w aplikacji, może grać w wielu kampaniach. Postać mówi, kim jest (cechy, klasa
+  i węzły, zaklęcia, poziom, PZ maks.); jej entity w kampanii — co ma i gdzie jest (aktualne PZ,
+  stany, miejsce, ekwipunek, złoto). Awans dociera do każdej kampanii jak poprawka wpisu; przedmioty
+  zostają w świecie, w którym je zdobyto. Identyfikator `źródło:id` wskazuje wpis albo postać.
+- **Klasa i węzeł drzewka są wpisami w paczce.** Kształt i wygląd drzewka jest kodem systemu; węzeł
+  zna klasę, poziom i węzły poprzedzające. Węzeł ma więc identyfikator (ściągawka drukuje go jak
+  zaklęcie), wartości zostają płaskie, a własną klasę dopisuje się bez programisty. Odblokowanie
+  zapisuje tylko siebie — nie dodaje PZ, zaklęć ani następnych węzłów; niespełnione wymaganie widać,
+  ale nie blokuje.
 
 ## Odrzucone
 
@@ -48,6 +67,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Karta z listy elementów podanej w danych, generyczne prymitywy UI dla danych, jedna uniwersalna
   forma pośrednia** — to decyzje o układzie przebrane za dane.
 - **Dziedziczenie i osadzanie szablonów, typy treści jako plik danych** — typ treści jest kodem.
+- **Klasy postaci wkompilowane w kod systemu, całe drzewo klasy w jednym wpisie** — wpis nie jest
+  kodem, a wartości są płaskie; patrz klasa i węzeł wyżej.
 - **Zagnieżdżone wartości w polu wpisu** — wartości są płaskie; strukturę da slot.
 - **Wpisy lokalne dla kampanii, rejestr wewnątrz kampanii** — treść mieszka w paczkach; autorstwo
   idzie przez własną paczkę MG.

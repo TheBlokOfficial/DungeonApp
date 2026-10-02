@@ -119,8 +119,13 @@ dopiero razem z pierwszym konsumentem.
 - **Formuły:** jeden deklaratywny silnik za polami obliczanymi — bez pętli, gałęzi i efektów
   ubocznych. Wartość pochodna (bez kości, przeliczana przy odczycie) i rzut (na żądanie, wynik jest
   zdarzeniem dla MG). Zasięg: własna instancja plus jeden skok do slotów, bez przechodniości.
+- **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
+  leży w katalogu albo w innym entity — tak wygląda ekwipunek. Katalog niesie tylko nazwę.
+- **Postacie graczy:** obok kampanii, w katalogu systemu; zmieniane formularzem w aplikacji. Postać
+  jest źródłem entity tak jak wpis, więc identyfikator `źródło:id` wskazuje wpis albo postać.
 - **Sloty:** pole, którego wartością jest lista referencji (we wpisie) albo instancji (w kampanii).
-- **Dokument:** długi tekst przygody z markerami pól interaktywnych; własny renderer, bez karty.
+- **Dokument:** długi tekst przygody albo lore z markerami pól interaktywnych i linkami do stron
+  i identyfikatorów; mieszka w paczce, odhaczenia w kampanii; własny renderer, bez karty.
 - **Dodatki i warianty:** przełączniki wariantów zasad na stronie kampanii. System dowiaduje się
   o nich tylko przy składaniu kampanii; żaden kontekst zakładki ani okna ich nie niesie.
 - **Autorstwo treści w aplikacji:** najpierw „skopiuj i zmień” do własnej paczki MG, potem tworzenie
