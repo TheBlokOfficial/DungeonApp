@@ -5,10 +5,12 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
@@ -121,6 +123,11 @@ public partial class App : Avalonia.Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // Attached here, not in Program.Main: the dispatcher exists only once Avalonia is up. Records
+        // only - Handled stays false, so an exception on the UI thread still ends the program.
+        Dispatcher.UIThread.UnhandledException += (_, e) =>
+            AppLog.Error("Nieobsłużony wyjątek na wątku interfejsu.", e.Exception);
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             Themes.EditFocusRelease.Register();

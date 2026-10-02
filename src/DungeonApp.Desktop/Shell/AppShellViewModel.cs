@@ -8,6 +8,7 @@ using Avalonia.Threading;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell.Gallery;
@@ -164,8 +165,9 @@ public sealed class AppShellViewModel : ObservableObject
 
             CompleteStartup();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            AppLog.Error($"Krok startowy {currentStep?.GetType().Name} zawiódł; start dokończony bez reszty kroków.", ex);
             ui.WarmupHost.Content = null;
             CompleteStartupWithWarning(currentStep?.FailureWarning);
         }
@@ -343,6 +345,7 @@ public sealed class AppShellViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            AppLog.Error($"Nie udało się utworzyć zakładki {declaration.Id}.", ex);
             StatusBar.Message = $"Nie udało się utworzyć zakładki „{declaration.Title}”: {ex.Message}";
         }
     }
@@ -356,6 +359,7 @@ public sealed class AppShellViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            AppLog.Error($"Nie udało się utworzyć zakładki {declaration.Id}.", ex);
             StatusBar.Message = $"Nie udało się utworzyć zakładki „{declaration.Title}”: {ex.Message}";
         }
     }

@@ -2,8 +2,10 @@ using Avalonia;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
 
@@ -18,10 +20,35 @@ class Program
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
+    //
+    // The log is set up first, before Avalonia, so a failure anywhere after this line leaves a trace.
+    // The handlers only record: a crash still ends the process exactly as it would without them.
+    // The UI thread's own handler needs a running dispatcher and is attached in App instead.
     [STAThread]
     public static void Main(string[] args)
     {
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        var log = new FileLog(Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DungeonApp", "logs"));
+        AppLog.Use(log.Write);
+
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            AppLog.Error("Nieobsłużony wyjątek, program kończy działanie.", e.ExceptionObject as Exception);
+        TaskScheduler.UnobservedTaskException += (_, e) =>
+            AppLog.Error("Nieobserwowany wyjątek zadania w tle.", e.Exception);
+
+        AppLog.Info("Start programu.");
+
+        try
+        {
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Error("Awaria programu.", ex);
+            throw;
+        }
+
+        AppLog.Info("Koniec programu.");
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.

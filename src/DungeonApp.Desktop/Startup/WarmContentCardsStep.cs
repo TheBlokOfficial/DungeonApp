@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Entries;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Desktop.Startup;
@@ -45,9 +46,10 @@ public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IConten
                 var card = presentation.CreateCard(entry.Entry);
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, card, cancellationToken);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Warmup is an optimization - the card is still drawn for real on selection.
+                AppLog.Error($"Rozgrzewka karty {entry.Entry.Type} nie powiodła się.", ex);
             }
         }
     }

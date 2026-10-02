@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.State;
+using DungeonApp.Desktop.Diagnostics;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -80,6 +81,7 @@ public sealed class CampaignSession(
             {
                 // The change stands in memory and the next successful save will carry it, so this is
                 // a warning rather than a rollback - but the GM has to know the table is not on disk.
+                AppLog.Error("Zapis kampanii nie powiódł się; zmiana została w pamięci.", ex);
                 result = CampaignChangeResult.SaveFailed(
                     "Zmiana nie została zapisana na dysku. Sprawdź dostęp do katalogu kampanii.");
             }
@@ -107,6 +109,7 @@ public sealed class CampaignSession(
                 }
                 catch (Exception ex)
                 {
+                    AppLog.Error("Widok zawiódł przy powiadomieniu o zmianie kampanii.", ex);
                     (failures ??= []).Add(ex);
                 }
             }

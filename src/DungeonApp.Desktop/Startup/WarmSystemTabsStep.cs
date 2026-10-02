@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
@@ -73,9 +74,10 @@ public sealed class WarmSystemTabsStep(
                 tab = declaration.CreateContent();
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, tab.Content, cancellationToken);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Warmup is an optimization - a real chance to build still exists on first click.
+                AppLog.Error($"Rozgrzewka zakładki {declaration.Id} nie powiodła się.", ex);
             }
             finally
             {
@@ -102,9 +104,10 @@ public sealed class WarmSystemTabsStep(
                 tab = await declaration.CreateContentAsync(warmupContext);
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, tab.Content, cancellationToken);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Warmup is an optimization - a real chance to build still exists on first click.
+                AppLog.Error($"Rozgrzewka zakładki {declaration.Id} nie powiodła się.", ex);
             }
             finally
             {

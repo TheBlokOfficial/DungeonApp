@@ -42,6 +42,9 @@ public sealed class TemporaryLibrary() : TemporaryDirectory("dungeonapp-tests")
     }
 }
 
+/// <summary>A temporary log directory.</summary>
+public sealed class TemporaryLogs() : TemporaryDirectory("dungeonapp-logs");
+
 /// <summary>A temporary packs directory: one subdirectory per pack.</summary>
 public sealed class TemporaryPacks() : TemporaryDirectory("dungeonapp-packs")
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell.Settings;
@@ -94,9 +95,10 @@ public sealed class WarmFrameChromeStep(
         {
             await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, control, cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Warmup is an optimization - the real control still gets a full chance to build once shown.
+            AppLog.Error($"Rozgrzewka widoku {control.GetType().Name} nie powiodła się.", ex);
         }
     }
 }
