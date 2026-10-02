@@ -1,7 +1,7 @@
 """Zużycie subagentów z zapisów Claude Code — kroki, czas, odczyt, zapis.
 
-Podstawa liczb w docs/tasks.md (punkt kontrolny fundamentu) i w docs/collaboration.md.
-Czyta ~/.claude/projects/D--Projekty-DungeonApp/<sesja>/subagents/*.jsonl (pole usage).
+Służy do porównania modeli i sposobów zlecania pracy subagentom (wpis „Model subagentów”
+w docs/decisions.md). Czyta ~/.claude/projects/D--Projekty-DungeonApp/<sesja>/subagents/*.jsonl (pole usage).
 
 Definicje:
   krok     — jedno wywołanie modelu (unikalne message.id; jedna odpowiedź zajmuje w zapisie
