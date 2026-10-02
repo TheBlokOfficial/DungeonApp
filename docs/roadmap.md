@@ -38,14 +38,14 @@ autora, czego potrzebuje przy stole. Znane braki:
 
 ## Porządki w kodzie
 
-- **Komentarze:** usunąć odwołania do briefów, porcji i kroków (ok. 100) oraz do sekcji starych
-  dokumentów (ok. 140 odwołań do `docs/`); włączyć walidację `<see cref>` (`GenerateDocumentationFile`
-  z wyłączonym tylko CS1591) i poprawić zerwane odwołania, np. `Dnd5eSystem.cs` → `CreateRegistryTab`.
-- **Rozbić `Themes/DungeonControls.axaml`** (ok. 4200 linii, 63 motywy) na plik per kontrolka.
-- **Logowanie do pliku** (`%LocalAppData%\DungeonApp\logs`) i globalna obsługa nieobsłużonych
-  wyjątków; kroki startowe połykają dziś błędy bez śladu.
-- **`Dnd5eSystem`:** tabela rejestracji typów zamiast rozgałęzień po napisie w `TryGet`,
-  `TryValidate` i `CreateCard` oraz zamiast `CreateContentTab(0/1)`.
+- **Pytanie do autora:** po nieobsłużonym błędzie aplikacja zapisuje go w logu i się zamyka. Czy ma
+  zamiast tego pokazać komunikat i działać dalej?
+- **Komentarze po polsku** w ok. 40 plikach — przetłumaczyć na angielski (konwencja: kod i komentarze
+  po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
+- **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
+  pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
+  (kolejność „panele powłoki, potem narzędzia”), karty potwora i przedmiotu odsyłają po uzasadnienie
+  do siebie nawzajem.
 - **CommunityToolkit.Mvvm** zamiast ręcznych `ObservableObject`, `RelayCommand` i `AsyncCommand`.
 - Piąty zakaz nie ma strażnika w kodzie — pilnuje go przegląd.
 

@@ -18,6 +18,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   odrzucenia wpisu, nie cicho zignorowana wartość.
 - **Nakładka instancji to rzadka łatka rozwiązywana przy odczycie**, nie kopia wpisu: zmiana wpisu
   działa jak patch balansujący grę i dociera do zapisanych kampanii.
+- **Model subagentów: Opus 5.5 także do pracy mechanicznej.** Pomiar na porządkach komentarzy (trzy
+  rozłączne paczki, worktree, ten sam opis zadania): Sonnet 5.5 — 80 kroków, 12,3 min, 14,4 mln
+  odczytu, przerwany przed buildem, 6 poprawek po przeglądzie; Opus 5.5 — 66 i 64 kroki, ok. 9,5 min,
+  12,7 i 11,0 mln odczytu, build i testy zielone, 3 i 0 poprawek. Opus wyszedł taniej w odczycie
+  i bez dokańczania. Subagent biegnie w tle, gdy główny wątek ma w tym czasie pracę na innych plikach.
+  Liczby: `tools/subagent-usage.py`. *Wyzwalacz:* nowy model albo pomiar z Sonnetem bez poprawek.
 - **Zapis po każdej zmianie**, bez ręcznego „Zapisz”. *Wyzwalacz:* MG chce wrócić do wcześniejszego
   stanu → najpierw rotujące kopie zapasowe.
 

@@ -70,12 +70,16 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
 | Paczki MG | `Dokumenty\DungeonApp\<system>\packs\<paczka>\` |
 | Kampanie | `Dokumenty\DungeonApp\<system>\campaigns\<id>\` |
 | Układy biurka | `%LocalAppData%\DungeonApp\layouts\` |
+| Log | `%LocalAppData%\DungeonApp\logs\dungeonapp.log`; powyżej 1 MB poprzedni jako `dungeonapp.old.log` |
 
 ## Interfejs
 
 - **Start:** kurtyna startowa, podczas której biegną kroki startowe systemów (wczytanie paczek,
   rozgrzewka kart), a potem ramy (półka kampanii, rozgrzewka ekranów). Awaria kroku nigdy nie
-  zatrzymuje startu — kończy się ostrzeżeniem na pasku stanu.
+  zatrzymuje startu — kończy się ostrzeżeniem na pasku stanu i wpisem w logu.
+- **Błędy:** błąd złapany i niepokazany MG trafia do logu (`AppLog`, statyczny, bo globalne handlery
+  i kroki startowe systemów nie mają wspólnego właściciela). Nieobsłużony wyjątek jest tylko
+  zapisywany — program kończy działanie jak bez logu.
 - **Nawigacja:** ekran wyboru systemu, potem pasek boczny z trzema kategoriami: **Kampania** (półka
   kampanii, a po otwarciu kampanii jej zakładki), **System** (zakładki treści), **Aplikacja** (Galeria,
   Ustawienia). Zakładki wypełnia skompilowany system, nigdy paczka. Kryterium okna czy zakładki: czy

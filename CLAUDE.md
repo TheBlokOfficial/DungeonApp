@@ -75,7 +75,11 @@ Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
   data, commit, „wcześniej było…”) — historia jest w gicie. Stare komentarze z takimi odwołaniami
   i z odsyłaczami do sekcji dokumentów, których już nie ma, poprawiaj w plikach, które i tak zmieniasz.
 - Kod i komentarze po angielsku; teksty interfejsu, dokumenty i commity po polsku.
-- Nie tłum ostrzeżeń (`#pragma`, `NoWarn`, `SuppressMessage`) — naprawiaj u źródła.
+- Nie tłum ostrzeżeń (`#pragma`, `NoWarn`, `SuppressMessage`) — naprawiaj u źródła. Jedyny wyjątek:
+  CS1591 w `Directory.Build.props` — komentarz dokumentacyjny nie jest obowiązkowy, ale każdy
+  istniejący jest sprawdzany (zerwany `<see cref>` to ostrzeżenie, więc błąd builda).
+- Błąd złapany i niepokazany MG zapisuj przez `AppLog.Error` (log w `%LocalAppData%\DungeonApp\logs`).
+  Pusty `catch` bez wpisu ukrywa awarię przed autorem.
 - Wygląd składaj z kontrolek i tokenów motywu (`Themes/`, podgląd w zakładce „Galeria”). Nowa kontrolka
   motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Kolor ma jedno znaczenie, zapisane przy
   tokenie; widok sięga po kolor ze względu na znaczenie, nie barwę.
