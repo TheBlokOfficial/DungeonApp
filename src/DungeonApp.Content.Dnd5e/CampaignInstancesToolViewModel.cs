@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Entries;
 using DungeonApp.Core.Entries.Instances;
 using DungeonApp.Core.State;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
@@ -20,7 +21,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// window.
 /// </para>
 /// </summary>
-public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposable
+public sealed partial class CampaignInstancesToolViewModel : ObservableObject, IDisposable
 {
     private readonly CampaignEntriesContext _context;
     private readonly ContentId _ownerSet;
@@ -49,8 +50,6 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
                 .Select(entry => new AddableEntryOption(entry.Entry.Name, entry.Address)),
         ];
 
-        AddCommand = new AsyncCommand(AddSelectedAsync, () => _selectedToAdd is not null && !_isDisposed);
-
         _context.Changed += OnChanged;
 
         Refresh();
@@ -60,7 +59,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
     public IReadOnlyList<InstanceRowViewModel> Instances
     {
         get => _instances;
-        private set => SetField(ref _instances, value);
+        private set => SetProperty(ref _instances, value);
     }
 
     public bool HasInstances => Instances.Count > 0;
@@ -79,15 +78,12 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         get => _selectedToAdd;
         set
         {
-            if (SetField(ref _selectedToAdd, value))
+            if (SetProperty(ref _selectedToAdd, value))
             {
-                AddCommand.RaiseCanExecuteChanged();
+                AddCommand.NotifyCanExecuteChanged();
             }
         }
     }
-
-    /// <summary>Brings <see cref="SelectedToAdd"/> into the campaign as a new instance, and saves it.</summary>
-    public AsyncCommand AddCommand { get; }
 
     /// <summary>The sentence for the GM after the last write attempt - null once it went through cleanly.</summary>
     public string? Message
@@ -95,9 +91,9 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         get => _message;
         private set
         {
-            if (SetField(ref _message, value))
+            if (SetProperty(ref _message, value))
             {
-                RaisePropertyChanged(nameof(HasMessage));
+                OnPropertyChanged(nameof(HasMessage));
             }
         }
     }
@@ -114,12 +110,14 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         _isDisposed = true;
         _context.Changed -= OnChanged;
 
-        AddCommand.RaiseCanExecuteChanged();
+        AddCommand.NotifyCanExecuteChanged();
     }
 
     private void OnChanged(CampaignStateSnapshot snapshot) => Refresh();
 
-    private async Task AddSelectedAsync()
+    /// <summary>Brings <see cref="SelectedToAdd"/> into the campaign as a new instance, and saves it.</summary>
+    [RelayCommand(CanExecute = nameof(CanAdd))]
+    private async Task AddAsync()
     {
         if (_selectedToAdd is not { } option)
         {
@@ -135,6 +133,8 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
         SelectedToAdd = null;
     }
 
+    private bool CanAdd() => _selectedToAdd is not null && !_isDisposed;
+
     private void Refresh()
     {
         if (_isDisposed)
@@ -149,7 +149,7 @@ public sealed class CampaignInstancesToolViewModel : ObservableObject, IDisposab
                 .OrderBy(row => row.DisplayName, StringComparer.CurrentCultureIgnoreCase),
         ];
 
-        RaisePropertyChanged(nameof(HasInstances));
+        OnPropertyChanged(nameof(HasInstances));
     }
 
     private InstanceRowViewModel BuildRow(CampaignInstance instance)

@@ -1,6 +1,5 @@
-using System.Threading.Tasks;
 using Avalonia.Controls;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
 namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 
@@ -25,6 +24,6 @@ public partial class ButtonsSection : UserControl
         SortSampleDisabled.SelectedOption = SortOptions[1];
 
         // Komenda, której nie da się wykonać - przycisk wyłącza ona, nie IsEnabled.
-        DisabledByCommandSample.Command = new AsyncCommand(() => Task.CompletedTask, () => false);
+        DisabledByCommandSample.Command = new RelayCommand(() => { }, () => false);
     }
 }

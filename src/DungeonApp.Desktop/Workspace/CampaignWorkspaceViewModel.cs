@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Workspace.Panels;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Workspace;
 
@@ -25,7 +24,7 @@ namespace DungeonApp.Desktop.Workspace;
 /// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
 /// </para>
 /// </summary>
-public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
+public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisposable
 {
     private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
@@ -49,13 +48,6 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
         // one campaign has no business following them into another.
         _session = new WorkspaceLayoutSession(store, workspaceId, CreateSnapshot);
 
-        ResetLayoutCommand = new AsyncCommand(() =>
-        {
-            Restore(WorkspaceLayout.Empty);
-            _session.MarkDirty();
-            return Task.CompletedTask;
-        });
-
         // Storage was already read by the caller (see CampaignDesk.CreateAsync). Construction is a
         // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
         Restore(layout);
@@ -66,7 +58,12 @@ public sealed class CampaignWorkspaceViewModel : ObservableObject, IDisposable
     /// <summary>Maintained explicitly rather than derived, so no collection-filtering plumbing is needed.</summary>
     public ObservableCollection<WorkspacePanelViewModel> MinimizedPanels { get; } = [];
 
-    public ICommand ResetLayoutCommand { get; }
+    [RelayCommand]
+    private void ResetLayout()
+    {
+        Restore(WorkspaceLayout.Empty);
+        _session.MarkDirty();
+    }
 
     /// <summary>
     /// Called from the view's SizeChanged. The caller is responsible for filtering out the degenerate

@@ -1,8 +1,7 @@
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
 namespace DungeonApp.Desktop.RenderingTests;
 
@@ -20,7 +19,7 @@ public sealed class DisabledOpacityTests
         var button = new Button
         {
             Content = "Wyczyść",
-            Command = new AsyncCommand(() => Task.CompletedTask, () => false),
+            Command = new RelayCommand(() => { }, () => false),
         };
         Show(button);
 

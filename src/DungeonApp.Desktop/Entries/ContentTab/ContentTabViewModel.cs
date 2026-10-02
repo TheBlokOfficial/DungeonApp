@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DungeonApp.Desktop.ViewModels;
-using DungeonApp.Desktop.Entries;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Desktop.Entries.ContentTab;
@@ -15,7 +15,7 @@ namespace DungeonApp.Desktop.Entries.ContentTab;
 /// passes it through <c>Apply</c>, the only place <see cref="ContentListModel.Build"/> is ever
 /// called - the same never-change-in-place discipline campaign state follows, at list-state scale.
 /// </summary>
-public sealed class ContentTabViewModel : ObservableObject
+public sealed partial class ContentTabViewModel : ObservableObject
 {
     private readonly ContentListModel _model;
     private readonly IContentPresentation _presentation;
@@ -24,7 +24,6 @@ public sealed class ContentTabViewModel : ObservableObject
     private readonly int _totalCount;
 
     private ContentListState _state = new();
-    private readonly RelayCommand _clearFiltersCommand;
     private bool _anyFilterNarrows;
     private string _countText = string.Empty;
     private string _countShownPart = string.Empty;
@@ -71,8 +70,6 @@ public sealed class ContentTabViewModel : ObservableObject
         Filters = [.. CategoryFilter is { } categoryChip ? [categoryChip] : Array.Empty<ContentFilterChipViewModel>(), .. ValueFilters, PackFilter];
         SortOptions = firstBuild.Sorts;
         NumericSortOptions = firstBuild.NumericSorts;
-
-        _clearFiltersCommand = new RelayCommand(ClearFilters, () => _anyFilterNarrows);
 
         ApplyResult(firstBuild);
     }
@@ -122,20 +119,13 @@ public sealed class ContentTabViewModel : ObservableObject
         set => Apply(_state with { SortDescending = value });
     }
 
-    /// <summary>
-    /// "Wyczyść filtry": executable only while the search box holds a character or a chip holds a
-    /// value - otherwise there is nothing to clear and the link greys out. The same command backs the
-    /// "Nic nie pasuje…" state's link, which only shows while something narrows the list.
-    /// </summary>
-    public System.Windows.Input.ICommand ClearFiltersCommand => _clearFiltersCommand;
-
     public IReadOnlyList<ContentSectionViewModel> Sections { get; private set; } = [];
 
     /// <summary>The whole counter as one sentence - "3 wpisy", "1 z 3 wpisy".</summary>
     public string CountText
     {
         get => _countText;
-        private set => SetField(ref _countText, value);
+        private set => SetProperty(ref _countText, value);
     }
 
     // The counter's parts in reading order, so the view can set numbers in the numeral face and
@@ -146,28 +136,28 @@ public sealed class ContentTabViewModel : ObservableObject
     public string CountShownPart
     {
         get => _countShownPart;
-        private set => SetField(ref _countShownPart, value);
+        private set => SetProperty(ref _countShownPart, value);
     }
 
     /// <summary>" z " between the shown and total numbers, when a filter or search hides some - empty otherwise.</summary>
     public string CountOfPart
     {
         get => _countOfPart;
-        private set => SetField(ref _countOfPart, value);
+        private set => SetProperty(ref _countOfPart, value);
     }
 
     /// <summary>The tab's own total.</summary>
     public string CountTotalPart
     {
         get => _countTotalPart;
-        private set => SetField(ref _countTotalPart, value);
+        private set => SetProperty(ref _countTotalPart, value);
     }
 
     /// <summary>" wpis", " wpisy" or " wpisów", agreeing with the total.</summary>
     public string CountNounPart
     {
         get => _countNounPart;
-        private set => SetField(ref _countNounPart, value);
+        private set => SetProperty(ref _countNounPart, value);
     }
 
     /// <summary>The detail column's content - null when nothing is selected.</summary>
@@ -176,9 +166,9 @@ public sealed class ContentTabViewModel : ObservableObject
         get => _detail;
         private set
         {
-            if (SetField(ref _detail, value))
+            if (SetProperty(ref _detail, value))
             {
-                RaisePropertyChanged(nameof(HasDetail));
+                OnPropertyChanged(nameof(HasDetail));
             }
         }
     }
@@ -189,7 +179,7 @@ public sealed class ContentTabViewModel : ObservableObject
     public bool ShowSelectionPrompt
     {
         get => _showSelectionPrompt;
-        private set => SetField(ref _showSelectionPrompt, value);
+        private set => SetProperty(ref _showSelectionPrompt, value);
     }
 
     /// <summary>
@@ -200,7 +190,7 @@ public sealed class ContentTabViewModel : ObservableObject
     public bool HasNoMatches
     {
         get => _hasNoMatches;
-        private set => SetField(ref _hasNoMatches, value);
+        private set => SetProperty(ref _hasNoMatches, value);
     }
 
     private void ApplyValueFilter(string label, IReadOnlyCollection<string> values)
@@ -221,13 +211,21 @@ public sealed class ContentTabViewModel : ObservableObject
         Apply(_state with { ValueFilters = current.Count == 0 ? null : current });
     }
 
-    // "Wyczyść filtry": every chip and the search box. The search box is bound two-way, so it has
-    // to hear that its text changed from here.
+    /// <summary>
+    /// "Wyczyść filtry": every chip and the search box. Executable only while the search box holds a
+    /// character or a chip holds a value - otherwise there is nothing to clear and the link greys out.
+    /// The same command backs the "Nic nie pasuje…" state's link, which only shows while something
+    /// narrows the list. The search box is bound two-way, so it has to hear that its text changed
+    /// from here.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanClearFilters))]
     private void ClearFilters()
     {
         Apply(_state.ClearFilters());
-        RaisePropertyChanged(nameof(Search));
+        OnPropertyChanged(nameof(Search));
     }
+
+    private bool CanClearFilters() => _anyFilterNarrows;
 
     private void Select(ContentSelectionKey key) => Apply(_state with { Selected = key });
 
@@ -260,7 +258,7 @@ public sealed class ContentTabViewModel : ObservableObject
         }
 
         Sections = result.Sections.Select(BuildSection).ToArray();
-        RaisePropertyChanged(nameof(Sections));
+        OnPropertyChanged(nameof(Sections));
 
         var shown = CountShown(result.Sections);
         SetCount(shown, _totalCount);
@@ -269,7 +267,7 @@ public sealed class ContentTabViewModel : ObservableObject
         if (anyFilterNarrows != _anyFilterNarrows)
         {
             _anyFilterNarrows = anyFilterNarrows;
-            _clearFiltersCommand.RaiseCanExecuteChanged();
+            ClearFiltersCommand.NotifyCanExecuteChanged();
         }
         Detail = BuildDetail(result.Selection);
 

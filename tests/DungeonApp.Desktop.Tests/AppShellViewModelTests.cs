@@ -41,7 +41,7 @@ public sealed class AppShellViewModelTests
 
         var shell = BuildShell([system]);
 
-        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync();
+        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync(null);
 
         Assert.Equal(0, systemTabCalls);
         Assert.Equal(0, campaignTabCalls);
@@ -56,16 +56,16 @@ public sealed class AppShellViewModelTests
         var systemB = new FakeGameSystem(SystemId.Create("sys-b"), []);
         var shell = BuildShell([systemA, systemB]);
 
-        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync();
+        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync(null);
         Assert.False(shell.Sidebar!.IsCollapsed);
 
-        await shell.Sidebar!.ToggleCollapsedCommand.ExecuteAsync();
+        shell.Sidebar!.ToggleCollapsedCommand.Execute(null);
         Assert.True(shell.Sidebar!.IsCollapsed);
 
         await shell.TopBar.ChangeSystemCommand.ExecuteAsync(null);
         Assert.Null(shell.Sidebar);
 
-        await shell.SystemSelection.Systems[1].ChooseCommand.ExecuteAsync();
+        await shell.SystemSelection.Systems[1].ChooseCommand.ExecuteAsync(null);
 
         Assert.True(shell.Sidebar!.IsCollapsed);
     }
@@ -76,7 +76,7 @@ public sealed class AppShellViewModelTests
         var system = new FakeGameSystem(SystemId.Create("sys-a"), []);
         var shell = BuildShell([system]);
 
-        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync();
+        await shell.SystemSelection.Systems[0].ChooseCommand.ExecuteAsync(null);
 
         Assert.False(shell.Sidebar!.IsCollapsed);
     }

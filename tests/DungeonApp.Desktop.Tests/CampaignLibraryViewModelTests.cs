@@ -130,23 +130,14 @@ public sealed class CampaignLibraryViewModelTests
     {
         var summary = MakeSummary("Cudza kampania", directorySystemId: SystemA, systemId: SystemB);
         var repository = new FakeShelfRepository([summary]);
-        var opened = false;
 
-        var library = BuildLibrary(
-            repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA,
-            onOpen: _ =>
-            {
-                opened = true;
-                return Task.CompletedTask;
-            });
+        var library = BuildLibrary(repository, [new FakeGameSystem(SystemA, [])], activeSystem: SystemA);
         await library.LoadAsync();
 
+        // A bound button never runs a command it was told it cannot run; the operation itself
+        // refuses again (CampaignPreparationCache.TakeAsync, covered by its own tests).
         var row = Assert.Single(library.Campaigns);
         Assert.False(row.OpenCommand.CanExecute(null));
-
-        await ((DungeonApp.Desktop.ViewModels.AsyncCommand)row.OpenCommand).ExecuteAsync();
-
-        Assert.False(opened);
     }
 
     [Fact]
@@ -159,7 +150,7 @@ public sealed class CampaignLibraryViewModelTests
         await library.LoadAsync();
 
         var row = Assert.Single(library.Campaigns);
-        await ((DungeonApp.Desktop.ViewModels.AsyncCommand)row.DeleteCommand).ExecuteAsync();
+        await row.DeleteCommand.ExecuteAsync(null);
 
         Assert.Contains(summary.Id, repository.Deleted);
         Assert.Empty(library.Campaigns);

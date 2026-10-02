@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Systems;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.SystemSelection;
 
@@ -35,11 +36,11 @@ public sealed class SystemSelectionViewModel : ObservableObject
         get => _isChoosing;
         private set
         {
-            if (SetField(ref _isChoosing, value))
+            if (SetProperty(ref _isChoosing, value))
             {
                 foreach (var option in Systems)
                 {
-                    option.ChooseCommand.RaiseCanExecuteChanged();
+                    option.ChooseCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -65,10 +66,10 @@ public sealed class SystemOptionViewModel
     public SystemOptionViewModel(IGameSystem system, Func<Task> choose, Func<bool> canChoose)
     {
         DisplayName = system.DisplayName;
-        ChooseCommand = new AsyncCommand(choose, canChoose);
+        ChooseCommand = new AsyncRelayCommand(choose, canChoose);
     }
 
     public string DisplayName { get; }
 
-    public AsyncCommand ChooseCommand { get; }
+    public IAsyncRelayCommand ChooseCommand { get; }
 }

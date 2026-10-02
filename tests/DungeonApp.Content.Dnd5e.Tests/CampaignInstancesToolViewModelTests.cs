@@ -75,7 +75,7 @@ public sealed class CampaignInstancesToolViewModelTests
         var option = Assert.Single(viewModel.AddableEntries);
 
         viewModel.SelectedToAdd = option;
-        await viewModel.AddCommand.ExecuteAsync();
+        await viewModel.AddCommand.ExecuteAsync(null);
 
         Assert.Equal(1, fixture.Repository.SaveCount);
         var instance = Assert.Single(fixture.Instances());
@@ -137,7 +137,7 @@ public sealed class CampaignInstancesToolViewModelTests
         Assert.True(row.CanEditHitPoints);
 
         row.CurrentHp = 3;
-        await row.SaveHitPointsCommand.ExecuteAsync();
+        await row.SaveHitPointsCommand.ExecuteAsync(null);
 
         var patch = Assert.Single(fixture.Instances()).Patch;
         Assert.False(patch.IsEmpty);
@@ -159,7 +159,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
         var row = Assert.Single(fixture.CreateViewModel().Instances);
         row.CurrentHp = 3;
-        await row.SaveHitPointsCommand.ExecuteAsync();
+        await row.SaveHitPointsCommand.ExecuteAsync(null);
 
         var instance = Assert.Single(fixture.Instances());
         var resolved = fixture.Context.Resolver.Resolve(instance);
@@ -178,7 +178,7 @@ public sealed class CampaignInstancesToolViewModelTests
 
         var firstRow = Assert.Single(fixture.CreateViewModel().Instances);
         firstRow.CurrentHp = 3;
-        await firstRow.SaveHitPointsCommand.ExecuteAsync();
+        await firstRow.SaveHitPointsCommand.ExecuteAsync(null);
 
         var instanceId = Assert.Single(fixture.Instances()).Id;
         Assert.False(fixture.Find(instanceId)!.Patch.IsEmpty);
@@ -188,7 +188,7 @@ public sealed class CampaignInstancesToolViewModelTests
         var secondRow = Assert.Single(fixture.CreateViewModel().Instances);
         Assert.Equal(3, secondRow.CurrentHp);
         secondRow.CurrentHp = null;
-        await secondRow.SaveHitPointsCommand.ExecuteAsync();
+        await secondRow.SaveHitPointsCommand.ExecuteAsync(null);
 
         Assert.True(fixture.Find(instanceId)!.Patch.IsEmpty);
     }
@@ -227,7 +227,7 @@ public sealed class CampaignInstancesToolViewModelTests
         var viewModel = fixture.CreateViewModel();
         var row = Assert.Single(viewModel.Instances);
 
-        await row.RemoveCommand.ExecuteAsync();
+        await row.RemoveCommand.ExecuteAsync(null);
 
         Assert.Equal(2, fixture.Repository.SaveCount);
         Assert.Empty(viewModel.Instances);

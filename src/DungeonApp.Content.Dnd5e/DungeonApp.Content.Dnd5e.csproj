@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" />
+    <!-- Własna referencja, nie przechodnia przez Desktop: generator kodu Toolkitu nie przechodzi
+         na projekty zależne. -->
+    <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
 
   <!--

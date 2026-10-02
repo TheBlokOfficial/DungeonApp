@@ -22,8 +22,9 @@ class Program
     // yet and stuff might break.
     //
     // The log is set up first, before Avalonia, so a failure anywhere after this line leaves a trace.
-    // The handlers only record: a crash still ends the process exactly as it would without them.
-    // The UI thread's own handler needs a running dispatcher and is attached in App instead.
+    // These handlers see failures off the UI thread and only record them: a crash on a background
+    // thread still ends the process exactly as it would without them. The UI thread's own handler
+    // keeps the program running; it needs a running dispatcher and is attached in App instead.
     [STAThread]
     public static void Main(string[] args)
     {

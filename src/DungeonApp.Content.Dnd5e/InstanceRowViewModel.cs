@@ -2,7 +2,8 @@ using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Entries;
 using DungeonApp.Core.Entries.Instances;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
@@ -18,7 +19,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// write is always something a caller can await instead of one that runs unobserved.
 /// </para>
 /// </summary>
-public sealed class InstanceRowViewModel : ObservableObject, IDisposable
+public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 {
     private readonly CampaignEntriesContext _context;
     private readonly CampaignInstance _instance;
@@ -57,9 +58,6 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
             _currentHp = monster.CurrentHp ?? monster.Hp;
             MaxHp = monster.Hp;
         }
-
-        SaveHitPointsCommand = new AsyncCommand(SaveHitPointsAsync, () => CanEditHitPoints && !_isDisposed);
-        RemoveCommand = new AsyncCommand(RemoveAsync, () => !_isDisposed);
     }
 
     public string DisplayName { get; }
@@ -82,12 +80,8 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
     public int? CurrentHp
     {
         get => _currentHp;
-        set => SetField(ref _currentHp, value);
+        set => SetProperty(ref _currentHp, value);
     }
-
-    public AsyncCommand SaveHitPointsCommand { get; }
-
-    public AsyncCommand RemoveCommand { get; }
 
     public void Dispose()
     {
@@ -97,10 +91,11 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         }
 
         _isDisposed = true;
-        SaveHitPointsCommand.RaiseCanExecuteChanged();
-        RemoveCommand.RaiseCanExecuteChanged();
+        SaveHitPointsCommand.NotifyCanExecuteChanged();
+        RemoveCommand.NotifyCanExecuteChanged();
     }
 
+    [RelayCommand(CanExecute = nameof(CanSaveHitPoints))]
     private async Task SaveHitPointsAsync()
     {
         // Diffed against the entry's own values, never the merged ones - differencing against the
@@ -114,6 +109,11 @@ public sealed class InstanceRowViewModel : ObservableObject, IDisposable
         await _context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(_instance, patch));
     }
 
+    private bool CanSaveHitPoints() => CanEditHitPoints && !_isDisposed;
+
+    [RelayCommand(CanExecute = nameof(CanRemove))]
     private async Task RemoveAsync() =>
         await _context.ChangeAsync(CampaignInstanceChanges.Remove(_instance.Id));
+
+    private bool CanRemove() => !_isDisposed;
 }

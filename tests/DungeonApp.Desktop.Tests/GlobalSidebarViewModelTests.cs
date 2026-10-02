@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Shell.Sidebars;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.Input;
 
 namespace DungeonApp.Desktop.Tests;
 
@@ -52,7 +52,7 @@ public sealed class GlobalSidebarViewModelTests
     {
         var declaration = new SystemTabDeclaration("sys.tab", "Tab", "icon", () => new FakeTabContent());
         var sidebar = BuildSidebar(systemTabs: [declaration]);
-        await ((AsyncCommand)sidebar.SystemTabItems[0].SelectCommand).ExecuteAsync();
+        await ((IAsyncRelayCommand)sidebar.SystemTabItems[0].SelectCommand).ExecuteAsync(null);
         Assert.False(sidebar.CampaignPositionItem.IsActive);
 
         sidebar.ActivateCampaignPosition();
@@ -78,7 +78,7 @@ public sealed class GlobalSidebarViewModelTests
             () => Task.CompletedTask,
             () => Task.CompletedTask);
 
-        await ((AsyncCommand)sidebar.CampaignPositionItem.SelectCommand).ExecuteAsync();
+        await ((IAsyncRelayCommand)sidebar.CampaignPositionItem.SelectCommand).ExecuteAsync(null);
 
         Assert.Equal(1, calls);
     }

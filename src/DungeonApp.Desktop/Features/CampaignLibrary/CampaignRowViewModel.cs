@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
@@ -34,8 +33,8 @@ public sealed class CampaignRowViewModel
         CreatedAt = summary.CreatedAt.ToLocalTime().ToString("d MMM yyyy", CultureInfo.CurrentCulture);
         Availability = availability;
         UnavailabilityReason = DescribeUnavailability(availability, summary);
-        OpenCommand = new AsyncCommand(() => open(this), () => IsAvailable);
-        DeleteCommand = new AsyncCommand(() => delete(this));
+        OpenCommand = new AsyncRelayCommand(() => open(this), () => IsAvailable);
+        DeleteCommand = new AsyncRelayCommand(() => delete(this));
     }
 
     /// <summary>What <see cref="CampaignPreparationCache"/> needs to open, peek at or check this campaign again.</summary>
@@ -54,9 +53,9 @@ public sealed class CampaignRowViewModel
     /// <summary>Null when <see cref="IsAvailable"/> - there is nothing to explain about a campaign that opens fine.</summary>
     public string? UnavailabilityReason { get; }
 
-    public ICommand OpenCommand { get; }
+    public IAsyncRelayCommand OpenCommand { get; }
 
-    public ICommand DeleteCommand { get; }
+    public IAsyncRelayCommand DeleteCommand { get; }
 
     private static string? DescribeUnavailability(CampaignAvailability availability, CampaignSummary summary) => availability switch
     {

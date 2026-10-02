@@ -1,7 +1,8 @@
 using System;
 using System.Windows.Input;
 using Avalonia.Media;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Desktop.Entries.ContentTab;
@@ -61,7 +62,7 @@ public sealed class ContentRowViewModel : ObservableObject
     public bool IsSelected
     {
         get => _isSelected;
-        internal set => SetField(ref _isSelected, value);
+        internal set => SetProperty(ref _isSelected, value);
     }
 
     public ICommand SelectCommand { get; }

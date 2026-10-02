@@ -1,5 +1,5 @@
 using System.Windows.Input;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
 
@@ -23,13 +23,13 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     public string IconResourceKey
     {
         get => _iconResourceKey;
-        set => SetField(ref _iconResourceKey, value);
+        set => SetProperty(ref _iconResourceKey, value);
     }
 
     public string Label
     {
         get => _label;
-        set => SetField(ref _label, value);
+        set => SetProperty(ref _label, value);
     }
 
     public ICommand SelectCommand { get; } = selectCommand;
@@ -37,7 +37,7 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     public bool IsActive
     {
         get => _isActive;
-        set => SetField(ref _isActive, value);
+        set => SetProperty(ref _isActive, value);
     }
 
     /// <summary>
@@ -51,9 +51,9 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
         get => _isLocked;
         set
         {
-            if (SetField(ref _isLocked, value))
+            if (SetProperty(ref _isLocked, value))
             {
-                RaisePropertyChanged(nameof(IsEnabled));
+                OnPropertyChanged(nameof(IsEnabled));
             }
         }
     }
@@ -65,10 +65,10 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
         get => _isSidebarCollapsed;
         set
         {
-            if (SetField(ref _isSidebarCollapsed, value))
+            if (SetProperty(ref _isSidebarCollapsed, value))
             {
-                RaisePropertyChanged(nameof(LabelOpacity));
-                RaisePropertyChanged(nameof(LabelOffset));
+                OnPropertyChanged(nameof(LabelOpacity));
+                OnPropertyChanged(nameof(LabelOffset));
             }
         }
     }

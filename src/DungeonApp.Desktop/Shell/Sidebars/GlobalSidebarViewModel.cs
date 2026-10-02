@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Systems;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Shell.Sidebars;
 
@@ -22,7 +23,7 @@ namespace DungeonApp.Desktop.Shell.Sidebars;
 /// highlighted row exactly like any tab does.
 /// </para>
 /// </summary>
-public sealed class GlobalSidebarViewModel : ObservableObject
+public sealed partial class GlobalSidebarViewModel : ObservableObject
 {
     private const string LockedIconResourceKey = "DungeonIconLock";
     private const string ShelfIconResourceKey = "DungeonIconBookOpen";
@@ -109,12 +110,6 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         // see CampaignItems above for why a bare ContentPresenter is not used.
         ApplicationItems = [GalleryItem, SettingsItem];
 
-        ToggleCollapsedCommand = new AsyncCommand(() =>
-        {
-            IsCollapsed = !IsCollapsed;
-            return Task.CompletedTask;
-        });
-
         // Set before this instance is ever handed to a view: Avalonia's
         // Transitions only animate a property change measured against a frame the control already
         // rendered. Setting the target collapse state here, before GlobalSidebarView is even
@@ -157,8 +152,6 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// </summary>
     public IReadOnlyList<NavigationItemViewModel> ApplicationItems { get; }
 
-    public AsyncCommand ToggleCollapsedCommand { get; }
-
     /// <summary>
     /// The compact rail deliberately keeps the same 40px icon targets as the expanded navigation,
     /// while returning workspace to the current page.
@@ -168,18 +161,18 @@ public sealed class GlobalSidebarViewModel : ObservableObject
         get => _isCollapsed;
         private set
         {
-            if (SetField(ref _isCollapsed, value))
+            if (SetProperty(ref _isCollapsed, value))
             {
                 foreach (var item in _allItems)
                 {
                     item.IsSidebarCollapsed = value;
                 }
 
-                RaisePropertyChanged(nameof(SidebarWidth));
-                RaisePropertyChanged(nameof(SidebarToggleToolTip));
-                RaisePropertyChanged(nameof(CollapsibleTextOpacity));
-                RaisePropertyChanged(nameof(CollapsibleTextOffset));
-                RaisePropertyChanged(nameof(HeadingHeight));
+                OnPropertyChanged(nameof(SidebarWidth));
+                OnPropertyChanged(nameof(SidebarToggleToolTip));
+                OnPropertyChanged(nameof(CollapsibleTextOpacity));
+                OnPropertyChanged(nameof(CollapsibleTextOffset));
+                OnPropertyChanged(nameof(HeadingHeight));
             }
         }
     }
@@ -221,10 +214,13 @@ public sealed class GlobalSidebarViewModel : ObservableObject
     /// <summary>Highlights the campaign position row without going through its command - used right after opening a campaign.</summary>
     public void ActivateCampaignPosition() => Select(CampaignPositionItem);
 
+    [RelayCommand]
+    private void ToggleCollapsed() => IsCollapsed = !IsCollapsed;
+
     private NavigationItemViewModel CreateSelectableItem(string id, string iconResourceKey, string label, Func<Task> onSelected)
     {
         NavigationItemViewModel? item = null;
-        item = new NavigationItemViewModel(id, iconResourceKey, label, new AsyncCommand(async () =>
+        item = new NavigationItemViewModel(id, iconResourceKey, label, new AsyncRelayCommand(async () =>
         {
             if (item!.IsLocked)
             {

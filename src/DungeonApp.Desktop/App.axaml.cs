@@ -123,13 +123,13 @@ public partial class App : Avalonia.Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Attached here, not in Program.Main: the dispatcher exists only once Avalonia is up. Records
-        // only - Handled stays false, so an exception on the UI thread still ends the program.
-        Dispatcher.UIThread.UnhandledException += (_, e) =>
-            AppLog.Error("Nieobsłużony wyjątek na wątku interfejsu.", e.Exception);
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Attached here, not in Program.Main: the dispatcher exists only once Avalonia is up.
+            // Only in the desktop lifetime: headless tests run this same App, and there an exception
+            // on the UI thread has to keep failing the test instead of becoming a notification.
+            Dispatcher.UIThread.UnhandledException += (_, e) => UiThreadErrors.Handle(e, desktop.MainWindow);
+
             Themes.EditFocusRelease.Register();
             Themes.OpenerHoverRest.Register();
             Themes.PopupOpenMotion.Register();

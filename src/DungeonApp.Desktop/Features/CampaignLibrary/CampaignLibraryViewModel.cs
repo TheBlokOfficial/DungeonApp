@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
 
@@ -29,8 +30,12 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// any system is chosen - <see cref="LoadAsync"/> instead reads every compiled system's repository
 /// and shows the concatenation, since nothing about that pass is ever seen by the GM.
 /// </para>
+/// <para>
+/// Creating, opening and deleting let a storage failure through: it reaches the GM the way every
+/// failed action does, as the UI thread's one error notification (<see cref="UiThreadErrors"/>).
+/// </para>
 /// </summary>
-public sealed class CampaignLibraryViewModel : ObservableObject
+public sealed partial class CampaignLibraryViewModel : ObservableObject
 {
     private readonly IReadOnlyDictionary<SystemId, ICampaignRepository> _repositoriesBySystem;
     private readonly CreateCampaign _createCampaign;
@@ -56,13 +61,9 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         _preparations = preparations;
         _systems = systems;
         _openCampaign = openCampaign;
-
-        CreateCommand = new AsyncCommand(CreateAsync, () => CanCreate);
     }
 
     public ObservableCollection<CampaignRowViewModel> Campaigns { get; } = [];
-
-    public AsyncCommand CreateCommand { get; }
 
     /// <summary>
     /// Bound to the name box. Every keystroke re-asks the Core for a verdict rather than repeating
@@ -73,7 +74,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         get => _newCampaignName;
         set
         {
-            if (!SetField(ref _newCampaignName, value))
+            if (!SetProperty(ref _newCampaignName, value))
             {
                 return;
             }
@@ -81,8 +82,8 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             // An untouched, empty box is not a mistake yet - do not scold the GM before they type.
             NameError = value.Length == 0 ? null : DescribeNameError(CampaignName.Validate(value));
 
-            RaisePropertyChanged(nameof(CanCreate));
-            CreateCommand.RaiseCanExecuteChanged();
+            OnPropertyChanged(nameof(CanCreate));
+            CreateCommand.NotifyCanExecuteChanged();
         }
     }
 
@@ -91,9 +92,9 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         get => _nameError;
         private set
         {
-            if (SetField(ref _nameError, value))
+            if (SetProperty(ref _nameError, value))
             {
-                RaisePropertyChanged(nameof(HasNameError));
+                OnPropertyChanged(nameof(HasNameError));
             }
         }
     }
@@ -105,10 +106,10 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         get => _isBusy;
         private set
         {
-            if (SetField(ref _isBusy, value))
+            if (SetProperty(ref _isBusy, value))
             {
-                RaisePropertyChanged(nameof(CanCreate));
-                CreateCommand.RaiseCanExecuteChanged();
+                OnPropertyChanged(nameof(CanCreate));
+                CreateCommand.NotifyCanExecuteChanged();
             }
         }
     }
@@ -130,8 +131,8 @@ public sealed class CampaignLibraryViewModel : ObservableObject
     public void SetActiveSystem(IGameSystem system)
     {
         _activeSystem = system;
-        RaisePropertyChanged(nameof(CanCreate));
-        CreateCommand.RaiseCanExecuteChanged();
+        OnPropertyChanged(nameof(CanCreate));
+        CreateCommand.NotifyCanExecuteChanged();
     }
 
     public async Task<IReadOnlyList<CampaignSummary>> LoadAsync()
@@ -162,14 +163,15 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             }
 
             _isLoaded = true;
-            RaisePropertyChanged(nameof(IsEmpty));
-            RaisePropertyChanged(nameof(HasCampaigns));
+            OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(HasCampaigns));
         }
         // The shelf is also part of startup preparation. A storage failure is presentation state,
         // not a reason to abort the readiness pipeline and leave the shell permanently gated.
         catch (Exception ex) when (ex is CampaignStoreException or System.IO.IOException or UnauthorizedAccessException)
         {
             // Persistent feedback belongs to a future error state, not a temporary toast.
+            AppLog.Error("Nie udało się odczytać półki kampanii.", ex);
         }
         finally
         {
@@ -197,6 +199,7 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         return all;
     }
 
+    [RelayCommand(CanExecute = nameof(CanCreate))]
     private async Task CreateAsync()
     {
         if (_activeSystem is not { } system)
@@ -211,10 +214,6 @@ public sealed class CampaignLibraryViewModel : ObservableObject
             await _createCampaign.ExecuteAsync(NewCampaignName, system.Id, system.StateModels);
 
             NewCampaignName = string.Empty;
-        }
-        catch (System.IO.IOException)
-        {
-            // Persistent feedback belongs to a future error state, not a temporary toast.
         }
         finally
         {
@@ -232,14 +231,10 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         {
             await _openCampaign(row.Summary);
         }
-        catch (CampaignStoreException)
-        {
-        }
-        catch (System.IO.IOException)
-        {
-        }
         catch (CampaignUnavailableException)
         {
+            // Not a failure to report: the campaign changed on disk since the shelf was read, and a
+            // fresh read gives its row the reason it cannot be opened.
             await LoadAsync();
         }
         finally
@@ -255,11 +250,8 @@ public sealed class CampaignLibraryViewModel : ObservableObject
         {
             await _repositoriesBySystem[row.Summary.DirectorySystemId].DeleteAsync(row.Id);
             Campaigns.Remove(row);
-            RaisePropertyChanged(nameof(IsEmpty));
-            RaisePropertyChanged(nameof(HasCampaigns));
-        }
-        catch (System.IO.IOException)
-        {
+            OnPropertyChanged(nameof(IsEmpty));
+            OnPropertyChanged(nameof(HasCampaigns));
         }
         finally
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Desktop.Entries.ContentTab;
@@ -57,8 +57,8 @@ public sealed class ContentFilterChipViewModel : ObservableObject
         if (!_options.SequenceEqual(options, StringComparer.Ordinal))
         {
             _options = options;
-            RaisePropertyChanged(nameof(Options));
-            RaisePropertyChanged(nameof(IsAvailable));
+            OnPropertyChanged(nameof(Options));
+            OnPropertyChanged(nameof(IsAvailable));
         }
 
         var next = selected ?? [];
@@ -81,7 +81,7 @@ public sealed class ContentFilterChipViewModel : ObservableObject
             _syncing = false;
         }
 
-        RaisePropertyChanged(nameof(IsActive));
+        OnPropertyChanged(nameof(IsActive));
     }
 
     // The picker toggled a value: the chip hands its whole choice to the list state. A sync from a
@@ -93,7 +93,7 @@ public sealed class ContentFilterChipViewModel : ObservableObject
             return;
         }
 
-        RaisePropertyChanged(nameof(IsActive));
+        OnPropertyChanged(nameof(IsActive));
         _apply(SelectedValues.ToArray());
     }
 }

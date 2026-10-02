@@ -1,4 +1,4 @@
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Desktop.Shell.StatusBar;
 
@@ -10,12 +10,12 @@ public sealed class StatusBarViewModel(string message) : ObservableObject
     public string Message
     {
         get => _message;
-        set => SetField(ref _message, value);
+        set => SetProperty(ref _message, value);
     }
 
     public double SidebarWidth
     {
         get => _sidebarWidth;
-        set => SetField(ref _sidebarWidth, value);
+        set => SetProperty(ref _sidebarWidth, value);
     }
 }

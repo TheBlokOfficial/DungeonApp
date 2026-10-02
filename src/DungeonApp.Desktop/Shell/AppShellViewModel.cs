@@ -18,7 +18,7 @@ using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.SystemSelection;
 using DungeonApp.Desktop.Shell.TopBar;
 using DungeonApp.Desktop.Startup;
-using DungeonApp.Desktop.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -85,7 +85,7 @@ public sealed class AppShellViewModel : ObservableObject
     public GlobalSidebarViewModel? Sidebar
     {
         get => _sidebar;
-        private set => SetField(ref _sidebar, value);
+        private set => SetProperty(ref _sidebar, value);
     }
 
     public bool IsReady
@@ -93,9 +93,9 @@ public sealed class AppShellViewModel : ObservableObject
         get => _isReady;
         private set
         {
-            if (SetField(ref _isReady, value))
+            if (SetProperty(ref _isReady, value))
             {
-                RaisePropertyChanged(nameof(IsStarting));
+                OnPropertyChanged(nameof(IsStarting));
             }
         }
     }
@@ -109,13 +109,13 @@ public sealed class AppShellViewModel : ObservableObject
     public bool IsSystemChosen
     {
         get => _isSystemChosen;
-        private set => SetField(ref _isSystemChosen, value);
+        private set => SetProperty(ref _isSystemChosen, value);
     }
 
     public string StartupMessage
     {
         get => _startupMessage;
-        private set => SetField(ref _startupMessage, value);
+        private set => SetProperty(ref _startupMessage, value);
     }
 
     public int TotalSteps => _startupSteps.Length;
@@ -123,13 +123,13 @@ public sealed class AppShellViewModel : ObservableObject
     public int CompletedSteps
     {
         get => _completedSteps;
-        private set => SetField(ref _completedSteps, value);
+        private set => SetProperty(ref _completedSteps, value);
     }
 
     public object CurrentWorkspaceContent
     {
         get => _currentWorkspaceContent;
-        private set => SetField(ref _currentWorkspaceContent, value);
+        private set => SetProperty(ref _currentWorkspaceContent, value);
     }
 
     /// <summary>

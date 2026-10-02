@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Workspace.Controls;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Workspace.Panels;
 
@@ -49,25 +49,12 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
         _width = desired.Width;
         _height = desired.Height;
 
-        // Every panel owns its commands, so each one is parameterless and the project needs no
-        // generic AsyncCommand<T> and no closure-capture trick.
-        ActivateCommand = new AsyncCommand(() =>
-        {
-            _host.Activate(this);
-            return Task.CompletedTask;
-        });
-
-        MinimizeCommand = new AsyncCommand(() =>
-        {
-            _host.Minimize(this);
-            return Task.CompletedTask;
-        });
-
-        ToggleMaximizeCommand = new AsyncCommand(() =>
-        {
-            _host.ToggleMaximize(this);
-            return Task.CompletedTask;
-        });
+        // Every panel owns its commands, so each one is parameterless - no command parameter and no
+        // closure-capture trick. Built here rather than generated: IWorkspacePanel exposes them as
+        // plain ICommand.
+        ActivateCommand = new RelayCommand(() => _host.Activate(this));
+        MinimizeCommand = new RelayCommand(() => _host.Minimize(this));
+        ToggleMaximizeCommand = new RelayCommand(() => _host.ToggleMaximize(this));
     }
 
     public WorkspacePanelDescriptor Descriptor { get; }
@@ -94,43 +81,43 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
     public double X
     {
         get => _x;
-        set => SetField(ref _x, value);
+        set => SetProperty(ref _x, value);
     }
 
     public double Y
     {
         get => _y;
-        set => SetField(ref _y, value);
+        set => SetProperty(ref _y, value);
     }
 
     public double Width
     {
         get => _width;
-        set => SetField(ref _width, value);
+        set => SetProperty(ref _width, value);
     }
 
     public double Height
     {
         get => _height;
-        set => SetField(ref _height, value);
+        set => SetProperty(ref _height, value);
     }
 
     public int ZOrder
     {
         get => _zOrder;
-        set => SetField(ref _zOrder, value);
+        set => SetProperty(ref _zOrder, value);
     }
 
     public bool IsActive
     {
         get => _isActive;
-        set => SetField(ref _isActive, value);
+        set => SetProperty(ref _isActive, value);
     }
 
     public PanelDisplayState State
     {
         get => _state;
-        set => SetField(ref _state, value);
+        set => SetProperty(ref _state, value);
     }
 
     public ICommand ActivateCommand { get; }
