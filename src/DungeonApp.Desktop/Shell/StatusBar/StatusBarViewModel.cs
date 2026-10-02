@@ -2,20 +2,11 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Desktop.Shell.StatusBar;
 
-public sealed class StatusBarViewModel(string message) : ObservableObject
+public sealed partial class StatusBarViewModel(string message) : ObservableObject
 {
-    private string _message = message;
-    private double _sidebarWidth = 224;
+    [ObservableProperty]
+    public partial string Message { get; set; } = message;
 
-    public string Message
-    {
-        get => _message;
-        set => SetProperty(ref _message, value);
-    }
-
-    public double SidebarWidth
-    {
-        get => _sidebarWidth;
-        set => SetProperty(ref _sidebarWidth, value);
-    }
+    [ObservableProperty]
+    public partial double SidebarWidth { get; set; } = 224;
 }

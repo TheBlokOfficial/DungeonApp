@@ -15,10 +15,8 @@ namespace DungeonApp.Desktop.Entries.ContentTab;
 /// <see cref="ContentTabViewModel"/> - because the view only ever needs to draw and click a row,
 /// never to know which of the four it is drawing.
 /// </summary>
-public sealed class ContentRowViewModel : ObservableObject
+public sealed partial class ContentRowViewModel : ObservableObject
 {
-    private bool _isSelected;
-
     internal ContentRowViewModel(
         string name,
         string? badgeText,
@@ -59,11 +57,8 @@ public sealed class ContentRowViewModel : ObservableObject
     /// <summary>True for a broken row - drawn in the content-broken color, with no badge.</summary>
     public bool IsBroken { get; }
 
-    public bool IsSelected
-    {
-        get => _isSelected;
-        internal set => SetProperty(ref _isSelected, value);
-    }
+    [ObservableProperty]
+    public partial bool IsSelected { get; internal set; }
 
     public ICommand SelectCommand { get; }
 }

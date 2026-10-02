@@ -25,7 +25,6 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
     private readonly CampaignInstance _instance;
     private readonly ResolvedInstance _resolved;
 
-    private int? _currentHp;
     private bool _isDisposed;
 
     public InstanceRowViewModel(
@@ -55,7 +54,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
         if (CanEditHitPoints)
         {
             var monster = resolved.Values!.Read<Monster>();
-            _currentHp = monster.CurrentHp ?? monster.Hp;
+            CurrentHp = monster.CurrentHp ?? monster.Hp;
             MaxHp = monster.Hp;
         }
     }
@@ -77,11 +76,8 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
     /// <see cref="CampaignInstancesToolViewModel.SelectedToAdd"/> is: typing here saves nothing by
     /// itself, only <see cref="SaveHitPointsCommand"/> does.
     /// </summary>
-    public int? CurrentHp
-    {
-        get => _currentHp;
-        set => SetProperty(ref _currentHp, value);
-    }
+    [ObservableProperty]
+    public partial int? CurrentHp { get; set; }
 
     public void Dispose()
     {

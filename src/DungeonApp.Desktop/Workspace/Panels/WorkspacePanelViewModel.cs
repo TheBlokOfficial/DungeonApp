@@ -20,17 +20,9 @@ namespace DungeonApp.Desktop.Workspace.Panels;
 /// <see cref="PanelGeometry"/> and runs before the value is written.
 /// </para>
 /// </summary>
-public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
+public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
 {
     private readonly CampaignWorkspaceViewModel _host;
-
-    private double _x;
-    private double _y;
-    private double _width;
-    private double _height;
-    private int _zOrder;
-    private bool _isActive;
-    private PanelDisplayState _state;
 
     public WorkspacePanelViewModel(
         CampaignWorkspaceViewModel host,
@@ -44,10 +36,10 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
         Desired = desired;
         Body = descriptor.CreateContent();
 
-        _x = desired.X;
-        _y = desired.Y;
-        _width = desired.Width;
-        _height = desired.Height;
+        X = desired.X;
+        Y = desired.Y;
+        Width = desired.Width;
+        Height = desired.Height;
 
         // Every panel owns its commands, so each one is parameterless - no command parameter and no
         // closure-capture trick. Built here rather than generated: IWorkspacePanel exposes them as
@@ -78,47 +70,26 @@ public sealed class WorkspacePanelViewModel : ObservableObject, IWorkspacePanel
 
     public double MaxHeight => Descriptor.Constraints.EffectiveMaxHeight;
 
-    public double X
-    {
-        get => _x;
-        set => SetProperty(ref _x, value);
-    }
+    [ObservableProperty]
+    public partial double X { get; set; }
 
-    public double Y
-    {
-        get => _y;
-        set => SetProperty(ref _y, value);
-    }
+    [ObservableProperty]
+    public partial double Y { get; set; }
 
-    public double Width
-    {
-        get => _width;
-        set => SetProperty(ref _width, value);
-    }
+    [ObservableProperty]
+    public partial double Width { get; set; }
 
-    public double Height
-    {
-        get => _height;
-        set => SetProperty(ref _height, value);
-    }
+    [ObservableProperty]
+    public partial double Height { get; set; }
 
-    public int ZOrder
-    {
-        get => _zOrder;
-        set => SetProperty(ref _zOrder, value);
-    }
+    [ObservableProperty]
+    public partial int ZOrder { get; set; }
 
-    public bool IsActive
-    {
-        get => _isActive;
-        set => SetProperty(ref _isActive, value);
-    }
+    [ObservableProperty]
+    public partial bool IsActive { get; set; }
 
-    public PanelDisplayState State
-    {
-        get => _state;
-        set => SetProperty(ref _state, value);
-    }
+    [ObservableProperty]
+    public partial PanelDisplayState State { get; set; }
 
     public ICommand ActivateCommand { get; }
 

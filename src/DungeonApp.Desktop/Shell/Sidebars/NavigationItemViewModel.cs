@@ -9,36 +9,21 @@ namespace DungeonApp.Desktop.Shell.Sidebars;
 /// both, so its icon is derived state) and a Campaign-category tab (its icon becomes the lock glyph
 /// while no campaign is open).
 /// </summary>
-public sealed class NavigationItemViewModel(string id, string iconResourceKey, string label, ICommand selectCommand)
+public sealed partial class NavigationItemViewModel(string id, string iconResourceKey, string label, ICommand selectCommand)
     : ObservableObject
 {
-    private string _iconResourceKey = iconResourceKey;
-    private string _label = label;
-    private bool _isActive;
-    private bool _isSidebarCollapsed;
-    private bool _isLocked;
-
     public string Id { get; } = id;
 
-    public string IconResourceKey
-    {
-        get => _iconResourceKey;
-        set => SetProperty(ref _iconResourceKey, value);
-    }
+    [ObservableProperty]
+    public partial string IconResourceKey { get; set; } = iconResourceKey;
 
-    public string Label
-    {
-        get => _label;
-        set => SetProperty(ref _label, value);
-    }
+    [ObservableProperty]
+    public partial string Label { get; set; } = label;
 
     public ICommand SelectCommand { get; } = selectCommand;
 
-    public bool IsActive
-    {
-        get => _isActive;
-        set => SetProperty(ref _isActive, value);
-    }
+    [ObservableProperty]
+    public partial bool IsActive { get; set; }
 
     /// <summary>
     /// True for a Campaign-category tab while no campaign is open. A locked row is greyed out,
@@ -46,32 +31,16 @@ public sealed class NavigationItemViewModel(string id, string iconResourceKey, s
     /// builds its content while this is true. Campaign tabs sit on the sidebar from the moment a
     /// system is chosen; without an open campaign they are locked.
     /// </summary>
-    public bool IsLocked
-    {
-        get => _isLocked;
-        set
-        {
-            if (SetProperty(ref _isLocked, value))
-            {
-                OnPropertyChanged(nameof(IsEnabled));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEnabled))]
+    public partial bool IsLocked { get; set; }
 
     public bool IsEnabled => !IsLocked;
 
-    public bool IsSidebarCollapsed
-    {
-        get => _isSidebarCollapsed;
-        set
-        {
-            if (SetProperty(ref _isSidebarCollapsed, value))
-            {
-                OnPropertyChanged(nameof(LabelOpacity));
-                OnPropertyChanged(nameof(LabelOffset));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(LabelOpacity))]
+    [NotifyPropertyChangedFor(nameof(LabelOffset))]
+    public partial bool IsSidebarCollapsed { get; set; }
 
     public double LabelOpacity => IsSidebarCollapsed ? 0 : 1;
 

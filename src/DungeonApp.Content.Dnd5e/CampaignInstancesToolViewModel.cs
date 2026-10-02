@@ -26,9 +26,6 @@ public sealed partial class CampaignInstancesToolViewModel : ObservableObject, I
     private readonly CampaignEntriesContext _context;
     private readonly ContentId _ownerSet;
 
-    private IReadOnlyList<InstanceRowViewModel> _instances = [];
-    private AddableEntryOption? _selectedToAdd;
-    private string? _message;
     private bool _isDisposed;
 
     public CampaignInstancesToolViewModel(CampaignEntriesContext context, ContentId ownerSet)
@@ -56,11 +53,8 @@ public sealed partial class CampaignInstancesToolViewModel : ObservableObject, I
     }
 
     /// <summary>Every instance this campaign holds, resolved or not - an unresolved one never disappears.</summary>
-    public IReadOnlyList<InstanceRowViewModel> Instances
-    {
-        get => _instances;
-        private set => SetProperty(ref _instances, value);
-    }
+    [ObservableProperty]
+    public partial IReadOnlyList<InstanceRowViewModel> Instances { get; private set; } = [];
 
     public bool HasInstances => Instances.Count > 0;
 
@@ -73,30 +67,14 @@ public sealed partial class CampaignInstancesToolViewModel : ObservableObject, I
     /// its failure would surface nowhere, and a test could only assert the result by relying on the
     /// repository happening to finish synchronously.
     /// </summary>
-    public AddableEntryOption? SelectedToAdd
-    {
-        get => _selectedToAdd;
-        set
-        {
-            if (SetProperty(ref _selectedToAdd, value))
-            {
-                AddCommand.NotifyCanExecuteChanged();
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    public partial AddableEntryOption? SelectedToAdd { get; set; }
 
     /// <summary>The sentence for the GM after the last write attempt - null once it went through cleanly.</summary>
-    public string? Message
-    {
-        get => _message;
-        private set
-        {
-            if (SetProperty(ref _message, value))
-            {
-                OnPropertyChanged(nameof(HasMessage));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasMessage))]
+    public partial string? Message { get; private set; }
 
     public bool HasMessage => Message is not null;
 
@@ -119,7 +97,7 @@ public sealed partial class CampaignInstancesToolViewModel : ObservableObject, I
     [RelayCommand(CanExecute = nameof(CanAdd))]
     private async Task AddAsync()
     {
-        if (_selectedToAdd is not { } option)
+        if (SelectedToAdd is not { } option)
         {
             return;
         }
@@ -133,7 +111,7 @@ public sealed partial class CampaignInstancesToolViewModel : ObservableObject, I
         SelectedToAdd = null;
     }
 
-    private bool CanAdd() => _selectedToAdd is not null && !_isDisposed;
+    private bool CanAdd() => SelectedToAdd is not null && !_isDisposed;
 
     private void Refresh()
     {

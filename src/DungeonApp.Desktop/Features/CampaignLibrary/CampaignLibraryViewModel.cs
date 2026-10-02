@@ -45,8 +45,6 @@ public sealed partial class CampaignLibraryViewModel : ObservableObject
 
     private IGameSystem? _activeSystem;
     private string _newCampaignName = string.Empty;
-    private string? _nameError;
-    private bool _isBusy;
     private bool _isLoaded;
 
     public CampaignLibraryViewModel(
@@ -87,32 +85,16 @@ public sealed partial class CampaignLibraryViewModel : ObservableObject
         }
     }
 
-    public string? NameError
-    {
-        get => _nameError;
-        private set
-        {
-            if (SetProperty(ref _nameError, value))
-            {
-                OnPropertyChanged(nameof(HasNameError));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasNameError))]
+    public partial string? NameError { get; private set; }
 
     public bool HasNameError => !string.IsNullOrWhiteSpace(NameError);
 
-    public bool IsBusy
-    {
-        get => _isBusy;
-        private set
-        {
-            if (SetProperty(ref _isBusy, value))
-            {
-                OnPropertyChanged(nameof(CanCreate));
-                CreateCommand.NotifyCanExecuteChanged();
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCreate))]
+    [NotifyCanExecuteChangedFor(nameof(CreateCommand))]
+    public partial bool IsBusy { get; private set; }
 
     public bool CanCreate => !IsBusy && _activeSystem is not null && CampaignName.Validate(NewCampaignName) is CampaignNameError.None;
 

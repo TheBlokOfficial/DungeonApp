@@ -30,24 +30,17 @@ namespace DungeonApp.Desktop.Shell;
 /// which is also why, unlike <see cref="ActiveSystemSession"/>, this type has no unit tests of its
 /// own.
 /// </summary>
-public sealed class AppShellViewModel : ObservableObject
+public sealed partial class AppShellViewModel : ObservableObject
 {
     private readonly IReadOnlyDictionary<SystemId, ICampaignRepository> _repositoriesBySystem;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignPreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
 
-    private object _currentWorkspaceContent;
-    private bool _isReady;
-    private bool _isSystemChosen;
-    private string _startupMessage = "Wczytywanie paczek treści…";
-    private int _completedSteps;
-
     private readonly GalleryViewModel _gallery = new();
     private readonly SettingsViewModel _settings = new();
 
     private ActiveSystemSession? _session;
-    private GlobalSidebarViewModel? _sidebar;
     private CampaignPageViewModel? _campaignPage;
 
     // Survives "Zmień system" and every later choice: the frame owns collapse, not any one system's
@@ -73,7 +66,7 @@ public sealed class AppShellViewModel : ObservableObject
         TopBar = new TopBarViewModel(ReturnToSelectionAsync);
 
         // Backstage first. Nothing about a system is shown before one is chosen.
-        _currentWorkspaceContent = _campaignLibrary;
+        CurrentWorkspaceContent = _campaignLibrary;
     }
 
     public SystemSelectionViewModel SystemSelection { get; }
@@ -82,23 +75,12 @@ public sealed class AppShellViewModel : ObservableObject
 
     public TopBarViewModel TopBar { get; }
 
-    public GlobalSidebarViewModel? Sidebar
-    {
-        get => _sidebar;
-        private set => SetProperty(ref _sidebar, value);
-    }
+    [ObservableProperty]
+    public partial GlobalSidebarViewModel? Sidebar { get; private set; }
 
-    public bool IsReady
-    {
-        get => _isReady;
-        private set
-        {
-            if (SetProperty(ref _isReady, value))
-            {
-                OnPropertyChanged(nameof(IsStarting));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsStarting))]
+    public partial bool IsReady { get; private set; }
 
     public bool IsStarting => !IsReady;
 
@@ -106,31 +88,19 @@ public sealed class AppShellViewModel : ObservableObject
     /// The fullscreen system picker, where the application starts, versus the sidebar-and-content
     /// screen. Both live under the same status bar row - see AppShellView.axaml.
     /// </summary>
-    public bool IsSystemChosen
-    {
-        get => _isSystemChosen;
-        private set => SetProperty(ref _isSystemChosen, value);
-    }
+    [ObservableProperty]
+    public partial bool IsSystemChosen { get; private set; }
 
-    public string StartupMessage
-    {
-        get => _startupMessage;
-        private set => SetProperty(ref _startupMessage, value);
-    }
+    [ObservableProperty]
+    public partial string StartupMessage { get; private set; } = "Wczytywanie paczek treści…";
 
     public int TotalSteps => _startupSteps.Length;
 
-    public int CompletedSteps
-    {
-        get => _completedSteps;
-        private set => SetProperty(ref _completedSteps, value);
-    }
+    [ObservableProperty]
+    public partial int CompletedSteps { get; private set; }
 
-    public object CurrentWorkspaceContent
-    {
-        get => _currentWorkspaceContent;
-        private set => SetProperty(ref _currentWorkspaceContent, value);
-    }
+    [ObservableProperty]
+    public partial object CurrentWorkspaceContent { get; private set; }
 
     /// <summary>
     /// Runs the whole startup sequence behind the curtain: content packs, the campaign shelf, and

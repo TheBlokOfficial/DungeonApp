@@ -25,14 +25,6 @@ public sealed partial class ContentTabViewModel : ObservableObject
 
     private ContentListState _state = new();
     private bool _anyFilterNarrows;
-    private string _countText = string.Empty;
-    private string _countShownPart = string.Empty;
-    private string _countOfPart = string.Empty;
-    private string _countTotalPart = string.Empty;
-    private string _countNounPart = string.Empty;
-    private ContentDetailViewModel? _detail;
-    private bool _showSelectionPrompt;
-    private bool _hasNoMatches;
 
     public ContentTabViewModel(
         ContentRegistry registry,
@@ -122,76 +114,47 @@ public sealed partial class ContentTabViewModel : ObservableObject
     public IReadOnlyList<ContentSectionViewModel> Sections { get; private set; } = [];
 
     /// <summary>The whole counter as one sentence - "3 wpisy", "1 z 3 wpisy".</summary>
-    public string CountText
-    {
-        get => _countText;
-        private set => SetProperty(ref _countText, value);
-    }
+    [ObservableProperty]
+    public partial string CountText { get; private set; } = string.Empty;
 
     // The counter's parts in reading order, so the view can set numbers in the numeral face and
     // words in the interface face: CountShownPart + CountOfPart + CountTotalPart + CountNounPart
     // is exactly CountText. The first two are empty when nothing is hidden.
 
     /// <summary>Rows shown, when a filter or search hides some - empty otherwise.</summary>
-    public string CountShownPart
-    {
-        get => _countShownPart;
-        private set => SetProperty(ref _countShownPart, value);
-    }
+    [ObservableProperty]
+    public partial string CountShownPart { get; private set; } = string.Empty;
 
     /// <summary>" z " between the shown and total numbers, when a filter or search hides some - empty otherwise.</summary>
-    public string CountOfPart
-    {
-        get => _countOfPart;
-        private set => SetProperty(ref _countOfPart, value);
-    }
+    [ObservableProperty]
+    public partial string CountOfPart { get; private set; } = string.Empty;
 
     /// <summary>The tab's own total.</summary>
-    public string CountTotalPart
-    {
-        get => _countTotalPart;
-        private set => SetProperty(ref _countTotalPart, value);
-    }
+    [ObservableProperty]
+    public partial string CountTotalPart { get; private set; } = string.Empty;
 
     /// <summary>" wpis", " wpisy" or " wpisów", agreeing with the total.</summary>
-    public string CountNounPart
-    {
-        get => _countNounPart;
-        private set => SetProperty(ref _countNounPart, value);
-    }
+    [ObservableProperty]
+    public partial string CountNounPart { get; private set; } = string.Empty;
 
     /// <summary>The detail column's content - null when nothing is selected.</summary>
-    public ContentDetailViewModel? Detail
-    {
-        get => _detail;
-        private set
-        {
-            if (SetProperty(ref _detail, value))
-            {
-                OnPropertyChanged(nameof(HasDetail));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDetail))]
+    public partial ContentDetailViewModel? Detail { get; private set; }
 
     public bool HasDetail => Detail is not null;
 
     /// <summary>Invites a selection - never true at the same time as <see cref="Detail"/> is non-null.</summary>
-    public bool ShowSelectionPrompt
-    {
-        get => _showSelectionPrompt;
-        private set => SetProperty(ref _showSelectionPrompt, value);
-    }
+    [ObservableProperty]
+    public partial bool ShowSelectionPrompt { get; private set; }
 
     /// <summary>
     /// The tab holds entries, but today's filters and search show none of them - the list says so and
     /// points at clearing the filters. False for a tab with no entries at all: there is nothing to
     /// clear.
     /// </summary>
-    public bool HasNoMatches
-    {
-        get => _hasNoMatches;
-        private set => SetProperty(ref _hasNoMatches, value);
-    }
+    [ObservableProperty]
+    public partial bool HasNoMatches { get; private set; }
 
     private void ApplyValueFilter(string label, IReadOnlyCollection<string> values)
     {
