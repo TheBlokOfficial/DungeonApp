@@ -1,5 +1,7 @@
-using System.Windows.Input;
-using DungeonApp.Desktop.ViewModels;
+using System;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace DungeonApp.Desktop.Shell.TopBar;
 
@@ -14,32 +16,19 @@ namespace DungeonApp.Desktop.Shell.TopBar;
 /// skip an animation across an already-shown control, because nothing here animates.
 /// </para>
 /// </summary>
-public sealed class TopBarViewModel(ICommand changeSystemCommand) : ObservableObject
+public sealed partial class TopBarViewModel(Func<Task> changeSystem) : ObservableObject
 {
-    private string _activeSystemName = string.Empty;
-    private string? _campaignName;
-
     /// <summary>The chosen system's own display name. Empty before any system is chosen - the strip itself stays hidden then (AppShellView.axaml).</summary>
-    public string ActiveSystemName
-    {
-        get => _activeSystemName;
-        set => SetField(ref _activeSystemName, value);
-    }
+    [ObservableProperty]
+    public partial string ActiveSystemName { get; set; } = string.Empty;
 
     /// <summary>Null while no campaign is open - drives the chevron and this text's own visibility together (<see cref="HasCampaign"/>).</summary>
-    public string? CampaignName
-    {
-        get => _campaignName;
-        set
-        {
-            if (SetField(ref _campaignName, value))
-            {
-                RaisePropertyChanged(nameof(HasCampaign));
-            }
-        }
-    }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasCampaign))]
+    public partial string? CampaignName { get; set; }
 
     public bool HasCampaign => CampaignName is not null;
 
-    public ICommand ChangeSystemCommand { get; } = changeSystemCommand;
+    [RelayCommand]
+    private Task ChangeSystem() => changeSystem();
 }

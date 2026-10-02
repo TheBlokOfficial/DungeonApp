@@ -10,7 +10,6 @@ using DungeonApp.Desktop.Shell.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.SystemSelection;
 using DungeonApp.Desktop.Shell.TopBar;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.Startup;
 
@@ -59,7 +58,7 @@ public sealed class WarmFrameChromeStep(
         // empty settings tab has no layout to speak of at all), so each warms once.
         await WarmAsync(
             ui,
-            new TopBarView { DataContext = new TopBarViewModel(new AsyncCommand(() => Task.CompletedTask)) },
+            new TopBarView { DataContext = new TopBarViewModel(() => Task.CompletedTask) },
             cancellationToken);
 
         await WarmAsync(ui, new SettingsView { DataContext = new SettingsViewModel() }, cancellationToken);

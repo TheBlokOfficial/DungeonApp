@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using DungeonApp.Desktop.Shell.TopBar;
-using DungeonApp.Desktop.ViewModels;
 
 namespace DungeonApp.Desktop.RenderingTests;
 
@@ -102,7 +101,7 @@ public sealed class TopBarRenderingTests
 
     private static Window BuildWindow()
     {
-        var viewModel = new TopBarViewModel(new AsyncCommand(() => Task.CompletedTask))
+        var viewModel = new TopBarViewModel(() => Task.CompletedTask)
         {
             ActiveSystemName = "Testowy system",
         };

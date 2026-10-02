@@ -70,7 +70,7 @@ public sealed class AppShellViewModel : ObservableObject
         StatusBar = new StatusBarViewModel("Gotowe");
         // One instance for the app's whole life (unlike Sidebar, never rebuilt per system) - see
         // TopBarViewModel's own remarks. "Zmień system" is wired here.
-        TopBar = new TopBarViewModel(new AsyncCommand(ReturnToSelectionAsync));
+        TopBar = new TopBarViewModel(ReturnToSelectionAsync);
 
         // Backstage first. Nothing about a system is shown before one is chosen.
         _currentWorkspaceContent = _campaignLibrary;

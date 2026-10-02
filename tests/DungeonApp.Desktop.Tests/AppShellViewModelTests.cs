@@ -8,7 +8,6 @@ using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
-using DungeonApp.Desktop.ViewModels;
 using DungeonApp.Testing;
 
 namespace DungeonApp.Desktop.Tests;
@@ -63,7 +62,7 @@ public sealed class AppShellViewModelTests
         await shell.Sidebar!.ToggleCollapsedCommand.ExecuteAsync();
         Assert.True(shell.Sidebar!.IsCollapsed);
 
-        await ((AsyncCommand)shell.TopBar.ChangeSystemCommand).ExecuteAsync();
+        await shell.TopBar.ChangeSystemCommand.ExecuteAsync(null);
         Assert.Null(shell.Sidebar);
 
         await shell.SystemSelection.Systems[1].ChooseCommand.ExecuteAsync();
