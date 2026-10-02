@@ -3,7 +3,21 @@
 Kolejność od góry. Pozycja jest opisem potrzeby, nie zleceniem — przed pracą sprawdź w kodzie, czy
 nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka.
 
-## Teraz: zakładki treści — karty potwora i przedmiotu
+## Teraz: błąd nie zamyka programu, modele widoków na CommunityToolkit.Mvvm
+
+Rozstrzygnięte z autorem: przy stole zamknięcie programu kosztuje więcej niż błąd, a kampania jest
+zapisana po każdej zmianie. Błąd w akcji MG albo na wątku interfejsu → wpis w logu i powiadomienie
+„Nie udało się …, szczegóły w logu”, program działa dalej. Błąd w tle poza interfejsem → tylko log.
+
+- CommunityToolkit.Mvvm zamiast ręcznych `ObservableObject`, `RelayCommand` i `AsyncCommand`; komendy
+  asynchroniczne nie przez `async void`, błąd komendy idzie jednym wspólnym miejscem do logu
+  i powiadomienia.
+- Handler wątku interfejsu (`App`) przestaje zamykać program; test w oknie bez ekranu.
+- Właściwości modeli widoków na `[ObservableProperty]` (ok. 110 miejsc w ok. 30 plikach) — praca
+  mechaniczna dla agenta `porzadki`.
+- Wpis w `docs/decisions.md` o zachowaniu po błędzie.
+
+## Potem: zakładki treści — karty potwora i przedmiotu
 
 Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, paczka `dnd5e-srd` (na razie
 pusta), pole obrazka z ramką. Projekt kart (układ, wymiary, co wyróżnione) jest punktem wyjścia, nie
@@ -38,15 +52,12 @@ autora, czego potrzebuje przy stole. Znane braki:
 
 ## Porządki w kodzie
 
-- **Pytanie do autora:** po nieobsłużonym błędzie aplikacja zapisuje go w logu i się zamyka. Czy ma
-  zamiast tego pokazać komunikat i działać dalej?
 - **Komentarze po polsku** w ok. 40 plikach — przetłumaczyć na angielski (konwencja: kod i komentarze
   po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”), karty potwora i przedmiotu odsyłają po uzasadnienie
   do siebie nawzajem.
-- **CommunityToolkit.Mvvm** zamiast ręcznych `ObservableObject`, `RelayCommand` i `AsyncCommand`.
 - Piąty zakaz nie ma strażnika w kodzie — pilnuje go przegląd.
 
 ## Drobne uwagi autora
