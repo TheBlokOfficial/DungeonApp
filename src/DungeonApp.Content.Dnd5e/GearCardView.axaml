@@ -3,7 +3,7 @@
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Content.Dnd5e.GearCardView">
 
-    <!-- The designed gear card: rarity and weight untitled, then a description block. Spacing
+    <!-- The designed gear card: its properties as an untitled trait list, then a description block. Spacing
          between them belongs to this host, never to a control. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <controls:TraitListView x:Name="Properties" />

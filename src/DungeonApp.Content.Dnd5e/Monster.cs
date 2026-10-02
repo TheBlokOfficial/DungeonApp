@@ -8,9 +8,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// <see cref="int"/>) make adjacent positional parameters - <see cref="Str"/> next to
 /// <see cref="Dex"/>, <see cref="Senses"/> next to <see cref="Languages"/> - silently swappable past
 /// both the compiler and the deserializer. <see langword="required"/> marks exactly the properties
-/// <c>tests/DungeonApp.Core.Tests/Packs/dnd5e/templates/monster.json</c> declares without
-/// <c>"required": false"</c>; <c>System.Text.Json</c> enforces that on its own; the field-by-field
-/// <c>ValuesRejected</c> path never re-checks it.
+/// a monster entry cannot do without; <c>System.Text.Json</c> enforces that on its own; the
+/// field-by-field <c>ValuesRejected</c> path never re-checks it.
 /// </para>
 /// </summary>
 public sealed record Monster

@@ -81,8 +81,8 @@ public sealed class GlobalSidebarRenderingTests
     /// <summary>
     /// The Aplikacja category (on screen, "SYSTEM" - today just "Ustawienia") is pinned to the
     /// sidebar's own bottom edge in both collapse states, and collapsing only ever hides its own
-    /// heading - its row must never move vertically. Both halves are asserted: the row's Y is identical whether the sidebar is collapsed or not, and that Y
-    /// sits exactly this group's own trailing margin (8, GlobalSidebarView.axaml) above the sidebar's
+    /// heading - its row must never move vertically. Both halves are asserted: the row's Y is
+    /// identical whether the sidebar is collapsed or not, and that Y sits exactly this group's own trailing margin (8, GlobalSidebarView.axaml) above the sidebar's
     /// own rendered bottom edge in either state.
     /// </summary>
     [AvaloniaFact]
