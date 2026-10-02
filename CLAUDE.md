@@ -33,8 +33,8 @@ powiedz to autorowi.
 - **Czytaj kod.** Kod jest źródłem prawdy; dokumenty są tylko tam, gdzie kod nie wystarcza.
 - **Subagenci** tylko wtedy, gdy realnie oszczędzają: szerokie przeszukanie tylko do odczytu albo
   wydzielona praca mechaniczna. Nie są domyślnym trybem pracy. Pracę mechaniczną zleca się agentowi
-  `porzadki` (`.claude/agents/`, Opus, effort medium) w worktree i w tle, gdy główny wątek ma w tym
-  czasie pracę na innych plikach.
+  `porzadki` (`.claude/agents/`, Opus, effort medium) w worktree. Subagent biegnie **zawsze w tle**,
+  także gdy nie ma innej pracy — autor musi móc w tym czasie pisać i pytać.
 - **Git:** praca w gałęzi → build bez ostrzeżeń i zielone testy → scalenie do `master` → `git push`.
   CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
