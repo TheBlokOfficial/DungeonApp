@@ -38,4 +38,13 @@ public sealed record ContentValueFilterSpec<TRecord>(
 /// number or a rank (directions read "rosnąco" / "malejąco"). The library's own name sort is the
 /// only textual one today, so a system's sort defaults to numeric or ranked.
 /// </param>
-public sealed record ContentSortSpec<TRecord>(string Label, Comparison<TRecord> Compare, bool IsTextual = false);
+/// <param name="HasKey">
+/// Whether a record has the sort's key at all - null when every record has one. A record without
+/// it lists after every record with it in both directions, so reversing the sort never brings the
+/// blanks to the top; <paramref name="Compare"/> is only asked about two records that both have it.
+/// </param>
+public sealed record ContentSortSpec<TRecord>(
+    string Label,
+    Comparison<TRecord> Compare,
+    bool IsTextual = false,
+    Func<TRecord, bool>? HasKey = null);

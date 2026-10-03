@@ -261,7 +261,16 @@ public sealed class ContentListModel
 
         return (a, b) =>
         {
-            var primary = direction * (definition?.Compare(a.Entry, b.Entry) ?? 0);
+            // An entry without the chosen key lists last whichever the direction; two such entries
+            // fall through to the name.
+            var aHasKey = definition?.HasKey?.Invoke(a.Entry) ?? true;
+            var bHasKey = definition?.HasKey?.Invoke(b.Entry) ?? true;
+            if (aHasKey != bHasKey)
+            {
+                return aHasKey ? -1 : 1;
+            }
+
+            var primary = aHasKey ? direction * (definition?.Compare(a.Entry, b.Entry) ?? 0) : 0;
 
             if (primary != 0)
             {

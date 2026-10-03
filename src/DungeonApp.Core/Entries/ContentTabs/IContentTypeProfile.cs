@@ -51,6 +51,11 @@ public sealed record ContentValueFilterDefinition(
 /// The erased form of a <see cref="ContentSortSpec{TRecord}"/>: comparing two <see cref="Entry"/>
 /// values rather than two concrete records. <see cref="ContentTypeProfile{TRecord}"/> arranges for
 /// this to compare as equal whenever either side is not its own content type, so it can sit safely
-/// among a mixed tab's other sorts - see its own remarks.
+/// among a mixed tab's other sorts - see its own remarks. <see cref="HasKey"/> is null when every
+/// entry has the key; otherwise an entry without it lists last in both directions.
 /// </summary>
-public sealed record ContentSortDefinition(string Label, Comparison<Entry> Compare, bool IsTextual = false);
+public sealed record ContentSortDefinition(
+    string Label,
+    Comparison<Entry> Compare,
+    bool IsTextual = false,
+    Func<Entry, bool>? HasKey = null);

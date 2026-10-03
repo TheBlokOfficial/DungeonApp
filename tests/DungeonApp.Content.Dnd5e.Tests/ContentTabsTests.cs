@@ -47,10 +47,11 @@ public sealed class ContentTabsTests
         return new Entry(ContentId.Create("m"), "Testowy potwór", reference, 1, ContentValues.From(monster));
     }
 
-    private static Entry GearEntry(string rarity)
+    private static Entry GearEntry(string rarity, Func<Gear, Gear>? change = null)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        return new Entry(ContentId.Create("g"), "Testowy przedmiot", reference, 1, ContentValues.From(new Gear { Rarity = rarity, Category = "Ekwipunek" }));
+        var gear = new Gear { Rarity = rarity, Category = "Ekwipunek" };
+        return new Entry(ContentId.Create("g"), "Testowy przedmiot", reference, 1, ContentValues.From(change is null ? gear : change(gear)));
     }
 
     // -----------------------------------------------------------------------------------------
@@ -256,11 +257,41 @@ public sealed class ContentTabsTests
     [Fact]
     public void The_rarity_sort_orders_gear_entries_the_same_way_as_the_filter()
     {
-        var sort = Assert.Single(GearProfile().Sorts);
+        var sort = Assert.Single(GearProfile().Sorts, sort => sort.Label == "Rzadkość");
 
-        Assert.Equal("Rzadkość", sort.Label);
         Assert.False(sort.IsTextual);
         Assert.True(sort.Compare(GearEntry("Pospolity"), GearEntry("Rzadki")) < 0);
         Assert.True(sort.Compare(GearEntry("Rzadki"), GearEntry("Niezwykły")) > 0);
+    }
+
+    [Fact]
+    public void Items_offer_exactly_the_rarity_and_attunement_filters_and_the_rarity_and_worth_sorts()
+    {
+        Assert.Equal(["Rzadkość", "Dostrojenie"], GearProfile().ValueFilters.Select(filter => filter.Label));
+        Assert.Equal(["Rzadkość", "Wartość"], GearProfile().Sorts.Select(sort => sort.Label));
+    }
+
+    [Fact]
+    public void The_attunement_filter_reads_needs_or_needs_not_and_lists_needs_first()
+    {
+        var filter = Assert.Single(GearProfile().ValueFilters, filter => filter.Label == "Dostrojenie");
+
+        Assert.Equal("wymaga", filter.Value(GearEntry("Rzadki", gear => gear with { Attunement = true })));
+        Assert.Equal("nie wymaga", filter.Value(GearEntry("Rzadki")));
+        Assert.Equal(["wymaga", "nie wymaga"], new[] { "nie wymaga", "wymaga" }.OrderBy(value => value, filter.OptionOrder));
+    }
+
+    [Fact]
+    public void The_worth_sort_orders_by_number_and_knows_an_item_without_worth_has_no_key()
+    {
+        var sort = Assert.Single(GearProfile().Sorts, sort => sort.Label == "Wartość");
+        var cheap = GearEntry("Zwykły", gear => gear with { Value = 0.5m });
+        var dear = GearEntry("Zwykły", gear => gear with { Value = 15m });
+        var priceless = GearEntry("Zwykły");
+
+        Assert.False(sort.IsTextual);
+        Assert.True(sort.Compare(cheap, dear) < 0);
+        Assert.True(sort.HasKey!(cheap));
+        Assert.False(sort.HasKey!(priceless));
     }
 }

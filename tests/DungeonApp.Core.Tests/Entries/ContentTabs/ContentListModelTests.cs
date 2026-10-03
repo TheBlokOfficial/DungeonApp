@@ -536,6 +536,39 @@ public sealed class ContentListModelTests
         Assert.Equal(["Alfa-name", "Zeta-name"], section.ValidRows.Select(row => row.Entry.Name));
     }
 
+    // A sort whose key some entries lack ("-" here) lists those entries last in both directions,
+    // among themselves by name.
+    [Theory]
+    [InlineData(false, new[] { "Jeden", "Trzy", "Alfa-brak", "Zeta-brak" })]
+    [InlineData(true, new[] { "Trzy", "Jeden", "Alfa-brak", "Zeta-brak" })]
+    public void Entries_without_the_sort_key_list_last_in_both_directions(bool descending, string[] expected)
+    {
+        var profile = new ContentTypeProfile<Widget>(
+            WidgetType,
+            sorts:
+            [
+                new ContentSortSpec<Widget>(
+                    "Poziom",
+                    (a, b) => TierOrder.Compare(a.Tier, b.Tier),
+                    HasKey: widget => widget.Tier != "-"),
+            ]);
+        var registry = new ContentRegistry(
+            [MakePack("alpha", "Alpha")],
+            [
+                Valid("alpha", "a1", "Zeta-brak", WidgetType, "k", "-"),
+                Valid("alpha", "a2", "Trzy", WidgetType, "k", "3"),
+                Valid("alpha", "a3", "Alfa-brak", WidgetType, "k", "-"),
+                Valid("alpha", "a4", "Jeden", WidgetType, "k", "1"),
+            ],
+            [],
+            []);
+
+        var result = ModelFor(new ContentTabDefinition("Widgety", [profile]), registry)
+            .Build(new ContentListState(Sort: "Poziom", SortDescending: descending));
+
+        Assert.Equal(expected, Assert.Single(result.Sections).ValidRows.Select(row => row.Entry.Name));
+    }
+
     [Fact]
     public void The_default_sort_orders_valid_rows_by_name()
     {

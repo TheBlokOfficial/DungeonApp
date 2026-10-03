@@ -39,7 +39,11 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
             .ToArray();
 
         Sorts = (sorts ?? [])
-            .Select(spec => new ContentSortDefinition(spec.Label, Erase(spec.Compare), spec.IsTextual))
+            .Select(spec => new ContentSortDefinition(
+                spec.Label,
+                Erase(spec.Compare),
+                spec.IsTextual,
+                spec.HasKey is { } hasKey ? Erase(hasKey) : null))
             .ToArray();
     }
 
@@ -71,4 +75,11 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
 
         return aMine && bMine ? compare(a.Values.Read<TRecord>(), b.Values.Read<TRecord>()) : 0;
     };
+
+    /// <summary>
+    /// Widens a sort's "has the key" test the same way: an entry of a different content type counts
+    /// as having it, so it is never sent to the end on this sort's account.
+    /// </summary>
+    private Func<Entry, bool> Erase(Func<TRecord, bool> hasKey) => entry =>
+        entry.Type != Type || hasKey(entry.Values.Read<TRecord>());
 }

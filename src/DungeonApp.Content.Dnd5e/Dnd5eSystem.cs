@@ -106,6 +106,12 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         ["rarity-artifact"] = new SolidColorBrush(Color.Parse("#E88AB6")),
     };
 
+    private const string NeedsAttunement = "wymaga";
+    private const string NeedsNoAttunement = "nie wymaga";
+
+    /// <summary>The "Dostrojenie" filter's two options, the one that narrows the list first.</summary>
+    private static readonly IComparer<string> AttunementOrder = new RankedTextComparer([NeedsAttunement, NeedsNoAttunement]);
+
     private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
 
     /// <summary>The "Typ" filter's option order: alphabetical, Polish collation, case insensitive.</summary>
@@ -316,8 +322,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// "Przedmioty": no category (the tab has no category filter); tags = the item's category and,
     /// when it has one, its subtype - the header's line under the title; badge = rarity, with a
     /// color key per <see cref="RarityColorKeys"/> for a recognised tier and none for anything else;
-    /// one value filter, "Rzadkość", ordered by <see cref="RarityOrder"/>; one sort, "Rzadkość", in
-    /// the same <see cref="RarityOrder"/>.
+    /// two value filters - "Rzadkość" (<see cref="RarityOrder"/>) and "Dostrojenie" ("wymaga" /
+    /// "nie wymaga") - and two sorts: "Rzadkość" in the same <see cref="RarityOrder"/>, and
+    /// "Wartość" by number, an item with no worth last in either direction.
     /// </summary>
     private static ContentTabDefinition BuildGearContentTab(ContentTypeReference gear)
     {
@@ -326,8 +333,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             category: null,
             tags: gear => gear.Subtype is { } subtype ? [gear.Category, subtype] : [gear.Category],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
-            valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)],
-            sorts: [new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity))]);
+            valueFilters:
+            [
+                new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder),
+                new ContentValueFilterSpec<Gear>("Dostrojenie", gear => gear.Attunement ? NeedsAttunement : NeedsNoAttunement, AttunementOrder),
+            ],
+            sorts:
+            [
+                new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity)),
+                new ContentSortSpec<Gear>("Wartość", (a, b) => a.Value!.Value.CompareTo(b.Value!.Value), HasKey: gear => gear.Value is not null),
+            ]);
 
         return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");
     }
