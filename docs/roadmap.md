@@ -21,7 +21,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
      po poziomie i szkole; koncentracja i rytuał jako tagi.
-   - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce.
+   - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
+     skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
+     skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność).
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
@@ -33,6 +35,11 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
    Nazwa entity (dziś operacja zmiany nazwy jest, pola w interfejsie nie ma) i notatka MG.
    Przenoszenie entity i katalogów; usuwa się tylko pusty katalog. Klik w entity otwiera okno jego
    karty — kilka naraz — z szybkimi PZ: „-7” albo „+5” i Enter zapisuje.
+   Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
+   kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
+   separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
+   nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni; 0 PZ niczego
+   samo nie dodaje (zakaz 5).
 3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
 4. **Inicjatywa** — okno: entity i postacie z liczbą wpisaną przez MG, ułożone według niej; runda
    i wskaźnik tury przesuwane przez MG.
