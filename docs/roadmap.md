@@ -10,19 +10,13 @@ hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy 
 nie są potrzebne — KP czy ST czarów MG wpisuje. Rozstrzygnięcia, na których stoi plan, są
 w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
-1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
-   z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
-   `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Karta potwora, pełna.** Ramka obrazka: tylko „Brak pliku” w kolorze niebezpieczeństwa,
-     ścieżka drugorzędna, linia ramki nad obrazkiem, ikony zastępcze z Lucide (czaszka — potwór,
-     plecak — przedmiot) z licencją ISC w `Assets/Licenses`. Styk karta–paczka: `CreateCard(Entry)`
-     nie zna paczki, a obrazek rozwiązuje się względem niej. Nowe pola, opcjonalne: PD, rzuty
-     obronne, podatności, odporności i niewrażliwości, akcje dodatkowe, reakcje, akcje legendarne,
-     rzucanie czarów. Sekcje rozwijane przy długiej prozie. Zaznaczanie tekstu przeciąganiem
-     rozpoczętym obok tekstu.
-   - **Karta przedmiotu:** kategoria, podtyp, dostrojenie, cena (potrzebna do handlu), waga
-     z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie się, ładunki
-     i odnawianie. Filtry Kategoria i Dostrojenie.
+1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pełna karta
+   potwora (portret, pary, sekcje rozwijane, zaznaczanie przeciąganiem obok tekstu). Projekt kart jest
+   punktem wyjścia, nie specyfikacją: `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt
+   szkieletu i kart*.
+   - **Karta przedmiotu** (ramka obrazka już stoi): kategoria, podtyp, dostrojenie, cena (potrzebna
+     do handlu), waga z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie
+     się, ładunki i odnawianie. Filtry Kategoria i Dostrojenie.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
      po poziomie i szkole; koncentracja i rytuał jako tagi.
@@ -30,7 +24,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
-     typie, gdy rekord i karta typu są gotowe.
+     typie, gdy rekord i karta typu są gotowe. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
+     ma pięć potworów przykładowych.
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
@@ -64,8 +59,7 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
   po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
-  (kolejność „panele powłoki, potem narzędzia”), karty potwora i przedmiotu odsyłają po uzasadnienie
-  do siebie nawzajem.
+  (kolejność „panele powłoki, potem narzędzia”).
 - Piąty zakaz nie ma strażnika w kodzie — pilnuje go przegląd.
 
 ## Drobne uwagi autora

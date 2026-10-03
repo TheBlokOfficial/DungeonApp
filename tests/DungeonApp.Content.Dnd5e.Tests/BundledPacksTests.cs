@@ -34,7 +34,11 @@ public sealed class BundledPacksTests
         var pack = Assert.Single(registry.Packs);
         Assert.Equal("dnd5e-srd", pack.Id.Value);
         Assert.Equal("SRD 5.1 — wpisy przykładowe", pack.Name);
-        Assert.Empty(pack.Entries);
         Assert.True(File.Exists(Path.Combine(BundledPacksPath, "dnd5e-srd", "LICENSE.txt")));
+
+        // Every sample entry is read by its type's own record - a misspelled field or a missing
+        // required value would leave it unresolved, shipped as a broken row.
+        Assert.NotEmpty(registry.Entries);
+        Assert.All(registry.Entries, entry => Assert.Null(entry.UnresolvedDetail));
     }
 }

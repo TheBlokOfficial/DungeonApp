@@ -61,7 +61,8 @@ public sealed class ContentPackLoaderTests : IDisposable
             ["dnd5e", "dnd5e-srd", "goblinoids"],
             registry.Packs.Select(pack => pack.Id.Value).Order(StringComparer.Ordinal));
         Assert.Equal("SRD 5.1 — wpisy przykładowe", registry.Packs.Single(pack => pack.Id.Value == "dnd5e-srd").Name);
-        Assert.Equal(3, registry.Entries.Count);
+        // The fixtures' own entries are counted; the shipped pack's grow with its content.
+        Assert.Equal(3, registry.Entries.Count(entry => entry.Address.Pack.Value != "dnd5e-srd"));
         Assert.All(registry.Entries, entry => Assert.Null(entry.Unresolved));
 
         var goblin = registry.Entries.Single(entry => entry.Address.Entry.Value == "goblin");

@@ -1,0 +1,37 @@
+{
+  "id": "rycerz",
+  "name": "Rycerz",
+  "template": "dnd5e:monster",
+  "templateVersion": 1,
+
+  "values": {
+    "size": "Średni",
+    "type": "humanoid (dowolna rasa)",
+    "group": "Ludzie",
+    "alignment": "dowolny charakter",
+
+    "ac": 18,
+    "acSource": "zbroja płytowa",
+    "hp": 52,
+    "hpDice": "8k8+16",
+    "speed": "9 m",
+
+    "str": 16,
+    "dex": 11,
+    "con": 14,
+    "int": 11,
+    "wis": 11,
+    "cha": 15,
+
+    "savingThrows": "Kon +4, Mdr +2",
+    "senses": "bierna Percepcja 10",
+    "languages": "dowolny jeden (zwykle wspólny)",
+    "challenge": "3",
+    "xp": 700,
+
+    "specialAbilities": "Odwaga. Rycerz ma ułatwienie w rzutach obronnych przeciwko przestraszeniu.",
+    "actions": "Wielokrotny atak. Rycerz wykonuje dwa ataki w zwarciu.\n\nMiecz dwuręczny. Atak bronią w zwarciu: +5 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 10 (2k6+3) obrażeń ciętych.\n\nCiężka kusza. Atak bronią dystansową: +2 do trafienia, zasięg 30/120 m, jeden cel. Trafienie: 5 (1k10) obrażeń kłutych.\n\nDowodzenie (odnawia się po krótkim lub długim odpoczynku). Przez 1 minutę rycerz może wydać rozkaz albo ostrzeżenie za każdym razem, gdy niewrogie stworzenie, które widzi w promieniu 9 m, wykonuje rzut ataku lub rzut obronny. Stworzenie może dodać k4 do rzutu, jeśli słyszy i rozumie rycerza. Stworzenie korzysta naraz tylko z jednej kości Dowodzenia. Efekt kończy się, gdy rycerz zostanie obezwładniony.",
+    "reactions": "Parowanie. Rycerz dodaje 2 do KP przeciwko jednemu atakowi w zwarciu, który by go trafił. Musi widzieć atakującego i trzymać broń do walki wręcz.",
+    "description": "Zakuty w stal wojownik, który przysiągł służbę panu, wierze albo sprawie - i dotrzymuje słowa także wtedy, gdy nikt nie patrzy."
+  }
+}

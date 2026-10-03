@@ -1,0 +1,36 @@
+{
+  "id": "kaplan",
+  "name": "Kapłan",
+  "template": "dnd5e:monster",
+  "templateVersion": 1,
+
+  "values": {
+    "size": "Średni",
+    "type": "humanoid (dowolna rasa)",
+    "group": "Ludzie",
+    "alignment": "dowolny charakter",
+
+    "ac": 13,
+    "acSource": "koszulka kolcza",
+    "hp": 27,
+    "hpDice": "5k8+5",
+    "speed": "7,5 m",
+
+    "str": 10,
+    "dex": 10,
+    "con": 12,
+    "int": 13,
+    "wis": 16,
+    "cha": 13,
+
+    "skills": "Medycyna +7, Perswazja +3, Religia +4",
+    "senses": "bierna Percepcja 13",
+    "languages": "dowolne dwa",
+    "challenge": "2",
+    "xp": 450,
+
+    "actions": "Buzdygan. Atak bronią w zwarciu: +2 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 3 (1k6) obrażeń obuchowych.",
+    "spellcasting": "Kapłan rzuca czary jak postać 5. poziomu. Jego cechą do rzucania czarów jest Mądrość (ST rzutu obronnego 13, +5 do trafienia atakami czarami). Ma przygotowane następujące czary kleryka:\n\nSztuczki (bez ograniczeń): światło, święty płomień, taumaturgia\n1. poziom (4 komórki): leczenie ran, smuga prowadząca, azyl\n2. poziom (3 komórki): pomniejsze przywrócenie, duchowa broń\n3. poziom (2 komórki): rozproszenie magii, duchowi strażnicy",
+    "bonusActions": "Boska wyższość. Kapłan wydaje komórkę czaru, a jego ataki bronią w zwarciu do końca tury zadają przy trafieniu magicznie dodatkowe 10 (3k6) obrażeń od światłości. Za komórkę 2. poziomu lub wyższego obrażenia rosną o 1k6 za każdy poziom powyżej pierwszego."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "wilk",
+  "name": "Wilk",
+  "template": "dnd5e:monster",
+  "templateVersion": 1,
+
+  "values": {
+    "size": "Średni",
+    "type": "bestia",
+    "group": "Zwierzęta",
+    "alignment": "bez charakteru",
+
+    "ac": 13,
+    "acSource": "pancerz naturalny",
+    "hp": 11,
+    "hpDice": "2k8+2",
+    "speed": "12 m",
+
+    "str": 12,
+    "dex": 15,
+    "con": 12,
+    "int": 3,
+    "wis": 12,
+    "cha": 6,
+
+    "skills": "Percepcja +3, Skradanie się +4",
+    "senses": "bierna Percepcja 13",
+    "challenge": "1/4",
+    "xp": 50,
+
+    "specialAbilities": "Wyostrzony słuch i węch. Wilk ma ułatwienie w testach Mądrości (Percepcja) opartych na słuchu lub węchu.\n\nTaktyka stada. Wilk ma ułatwienie w rzucie ataku przeciwko stworzeniu, jeśli w promieniu 1,5 m od tego stworzenia stoi co najmniej jeden sojusznik wilka, który nie jest obezwładniony.",
+    "actions": "Ugryzienie. Atak bronią w zwarciu: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 7 (2k4+2) obrażeń kłutych. Jeśli cel jest stworzeniem, musi odnieść sukces w rzucie obronnym na Siłę o ST 11, inaczej zostaje powalony."
+  }
+}

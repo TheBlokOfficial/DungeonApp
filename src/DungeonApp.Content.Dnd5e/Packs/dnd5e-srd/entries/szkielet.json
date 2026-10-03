@@ -1,0 +1,37 @@
+{
+  "id": "szkielet",
+  "name": "Szkielet",
+  "template": "dnd5e:monster",
+  "templateVersion": 1,
+
+  "values": {
+    "size": "Średni",
+    "type": "nieumarły",
+    "group": "Nieumarli",
+    "alignment": "praworządny zły",
+
+    "ac": 13,
+    "acSource": "strzępy zbroi",
+    "hp": 13,
+    "hpDice": "2k8+4",
+    "speed": "9 m",
+
+    "str": 10,
+    "dex": 14,
+    "con": 15,
+    "int": 6,
+    "wis": 8,
+    "cha": 5,
+
+    "damageVulnerabilities": "obuchowe",
+    "damageImmunities": "od trucizny",
+    "conditionImmunities": "wyczerpanie, zatrucie",
+    "senses": "widzenie w ciemności 18 m, bierna Percepcja 9",
+    "languages": "rozumie języki, którymi władał za życia, ale nie mówi",
+    "challenge": "1/4",
+    "xp": 50,
+
+    "actions": "Krótki miecz. Atak bronią w zwarciu: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.\n\nKrótki łuk. Atak bronią dystansową: +4 do trafienia, zasięg 24/96 m, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.",
+    "description": "Kości złożone i poruszane nekromancją. Pamięta ostatni rozkaz, nie pamięta własnego imienia, i wykonuje go, dopóki ktoś go nie rozbije."
+  }
+}
