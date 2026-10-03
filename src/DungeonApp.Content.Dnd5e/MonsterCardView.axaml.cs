@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Avalonia;
@@ -49,8 +49,8 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
         };
 
         // The pairs' values start on the title column's line: the label column and the pair's own
-        // gap together span the portrait and the gap after it.
-        Traits.LabelMinWidth = (3 * cell) + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
+        // gap together span the portrait and the gap after it, a long label wrapping inside.
+        Traits.LabelWidth = (3 * cell) + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
     }
 
     public Control HeaderVisual => _portrait;

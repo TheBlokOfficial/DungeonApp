@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:content="using:DungeonApp.Desktop.Entries.Controls"
              xmlns:dc="using:DungeonApp.Desktop.Controls"
@@ -17,7 +17,8 @@
                 </Grid.ColumnDefinitions>
                 <SelectableTextBlock Classes="muted trait-label"
                                      Text="{Binding Label}"
-                                     MinWidth="{Binding $parent[content:TraitListView].LabelMinWidth}" />
+                                     TextWrapping="Wrap"
+                                     Width="{Binding $parent[content:TraitListView].LabelWidth}" />
                 <!-- Value and secondary value as one wrapping text: a long value wraps within its
                      column instead of running past the card's edge. -->
                 <SelectableTextBlock Grid.Column="1" TextWrapping="Wrap" IsVisible="{Binding IsPlain}">

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls;
 using DungeonApp.Core.Entries;
@@ -32,8 +32,8 @@ public partial class TraitListView : UserControl
     public static readonly StyledProperty<bool> CompactProperty =
         AvaloniaProperty.Register<TraitListView, bool>(nameof(Compact));
 
-    public static readonly StyledProperty<double> LabelMinWidthProperty =
-        AvaloniaProperty.Register<TraitListView, double>(nameof(LabelMinWidth));
+    public static readonly StyledProperty<double> LabelWidthProperty =
+        AvaloniaProperty.Register<TraitListView, double>(nameof(LabelWidth), defaultValue: double.NaN);
 
     public static readonly DirectProperty<TraitListView, bool> HasTitleProperty =
         AvaloniaProperty.RegisterDirect<TraitListView, bool>(nameof(HasTitle), o => o.HasTitle);
@@ -68,13 +68,14 @@ public partial class TraitListView : UserControl
     }
 
     /// <summary>
-    /// The narrowest the label column gets - wider when a label needs it. Lets a card line the values
-    /// up with something else it draws (a column above the list), a layout decision of the card's.
+    /// The label column's fixed width, a longer label wrapping inside it; unset (NaN), the column is
+    /// as wide as the longest label. Lets a card stand the values on a line it draws elsewhere (a
+    /// column above the list) whatever the labels say - a layout decision of the card's.
     /// </summary>
-    public double LabelMinWidth
+    public double LabelWidth
     {
-        get => GetValue(LabelMinWidthProperty);
-        set => SetValue(LabelMinWidthProperty, value);
+        get => GetValue(LabelWidthProperty);
+        set => SetValue(LabelWidthProperty, value);
     }
 
     public bool HasTitle
