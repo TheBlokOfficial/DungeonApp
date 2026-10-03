@@ -13,11 +13,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Karta potwora, pełna — nieprzyjęta.** Pierwsza wersja jest w kodzie: portret w ramce z ikonami
-     Lucide, nowe pola (PD, rzuty obronne, podatności, odporności i niewrażliwości, rzucanie czarów,
-     akcje dodatkowe, reakcje, akcje legendarne), pary, sekcje rozwijane, zaznaczanie przeciąganiem
-     zaczętym obok tekstu, pięć potworów przykładowych. Ma poważne problemy; zakres poprawek czeka
-     na uwagi autora po obejrzeniu.
+   - **Karta potwora czeka na przegląd autora w aplikacji:** portret obok nazwy, KP, PZ i Szybkość
+     pod tagami, dwie tabele cech, stałe sekcje prozy z nazwanymi wpisami.
    - **Karta przedmiotu** (ramka obrazka już stoi): kategoria, podtyp, dostrojenie, cena (potrzebna
      do handlu), waga z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie
      się, ładunki i odnawianie. Filtry Kategoria i Dostrojenie.
@@ -65,6 +62,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
 - Piąty zakaz nie ma strażnika w kodzie — pilnuje go przegląd.
+- **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
+  be converted to …”) — potrzebne polskie zdanie, które nazywa pole.
 
 ## Drobne uwagi autora
 
@@ -75,6 +74,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
 - Przenieść stare kampanie do `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs`/`Campaigns` nie są
   czytane) i dopisać potworom pole `group`.
+- Przepisać albo usunąć potwory we własnych paczkach w starym formacie (proza jako zwykły napis) —
+  pokazują się jako odrzucone wpisy.
 
 ## Odłożone, z wyzwalaczem
 
