@@ -33,9 +33,13 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- A badge is taller than a line of text: its label stands on the badge's middle. -->
-        <Style Selector="Grid.highlighted > SelectableTextBlock.trait-label">
-            <Setter Property="VerticalAlignment" Value="Center" />
+        <!-- A row is as tall as its text line, the badge's row too: the badge gives up its fixed
+             height and its border (transparent in the accent variant, yet 2 px of height) and takes
+             the line's height from the label beside it, so a highlighted row keeps the list's pitch. -->
+        <Style Selector="Grid.highlighted > dc|Badge">
+            <Setter Property="Height" Value="NaN" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
         </Style>
     </UserControl.Styles>
 
