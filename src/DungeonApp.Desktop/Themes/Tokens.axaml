@@ -110,14 +110,16 @@
              (BackstageCard #1F1D1A), wyraźniej niż wiersz (#221F1C); nie akcent. Tekst drugorzędny
              na nim ok. 7,4:1. -->
         <Color x:Key="DungeonTableHeaderColor">#262320</Color>
-        <!-- Kierunek liczby: tło komórki z liczbą, która coś dodaje (PositiveValueDim, zielonkawe)
-             albo odejmuje (NegativeValueDim, czerwonawe) - modyfikator cechy w tabeli. Który znak
-             to "dodaje", mówi system, nie rama. Nie stan (to nie sukces ani awaria), więc osobne
-             tokeny, choć odcienie biorą od Success i Danger: alfa 0x33 (20 %), z kanałem alfa jak
-             kolory *Dim. Tekst podstawowy na nich na karcie ok. 11:1 i 10:1. Tylko tło komórki - nie
-             tekst ani linia. -->
-        <Color x:Key="DungeonPositiveValueDimColor">#3384A98B</Color>
-        <Color x:Key="DungeonNegativeValueDimColor">#339C4530</Color>
+        <!-- Kierunek liczby: ciche tło komórki z liczbą, która coś dodaje (PositiveSubtle, zielone)
+             albo odejmuje (NegativeSubtle, czerwone) - modyfikator cechy w tabeli. Który znak to
+             "dodaje", mówi system, nie rama. Nie stan (to nie sukces ani awaria), więc nie z Success
+             i Danger: przygaszone barwy stanów na ciemnej karcie czytają się jak szarozielona
+             i brązowa. Tu wyraźnie nasycona zieleń #2FBF5B (alfa 0x3D, 24 %) i czerwień #EE3B3B
+             (alfa 0x4C, 30 % - czerwień przy tej samej alfie ciemnieje w brąz), z kanałem alfa jak
+             kolory *Dim: barwa czyta się jako zieleń i czerwień, a tło zostaje ciche. Tekst
+             podstawowy na nich na karcie ok. 8,6:1 i 9,4:1. Tylko tło komórki - nie tekst ani linia. -->
+        <Color x:Key="DungeonPositiveSubtleColor">#3D2FBF5B</Color>
+        <Color x:Key="DungeonNegativeSubtleColor">#4CEE3B3B</Color>
 
         <!-- PĘDZLE ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -164,8 +166,8 @@
         <SolidColorBrush x:Key="DungeonWarningDimBrush" Color="{DynamicResource DungeonWarningDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerDimBrush" Color="{DynamicResource DungeonDangerDimColor}" />
         <SolidColorBrush x:Key="DungeonTableHeaderBrush" Color="{DynamicResource DungeonTableHeaderColor}" />
-        <SolidColorBrush x:Key="DungeonPositiveValueDimBrush" Color="{DynamicResource DungeonPositiveValueDimColor}" />
-        <SolidColorBrush x:Key="DungeonNegativeValueDimBrush" Color="{DynamicResource DungeonNegativeValueDimColor}" />
+        <SolidColorBrush x:Key="DungeonPositiveSubtleBrush" Color="{DynamicResource DungeonPositiveSubtleColor}" />
+        <SolidColorBrush x:Key="DungeonNegativeSubtleBrush" Color="{DynamicResource DungeonNegativeSubtleColor}" />
         <SolidColorBrush x:Key="DungeonAccentOnDimBrush" Color="{DynamicResource DungeonAccentOnDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />

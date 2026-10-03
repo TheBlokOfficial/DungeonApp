@@ -21,10 +21,10 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
         <Style Selector="dc|TableCell.positive">
-            <Setter Property="Background" Value="{DynamicResource DungeonPositiveValueDimBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonPositiveSubtleBrush}" />
         </Style>
         <Style Selector="dc|TableCell.negative">
-            <Setter Property="Background" Value="{DynamicResource DungeonNegativeValueDimBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DungeonNegativeSubtleBrush}" />
         </Style>
     </UserControl.Styles>
 
