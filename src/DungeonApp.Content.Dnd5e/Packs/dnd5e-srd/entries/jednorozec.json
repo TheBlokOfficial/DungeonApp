@@ -62,7 +62,7 @@
         {
           "name": "Leczący dotyk",
           "note": "3 na dzień",
-          "text": "Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje 11 (2k8+2) punktów życia. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel."
+          "text": "Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje **11 (2k8+2)** punktów życia. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel."
         },
         {
           "name": "Teleportacja",
@@ -99,7 +99,7 @@
         {
           "name": "Uleczenie siebie",
           "note": "kosztuje 3 akcje",
-          "text": "Jednorożec magicznie odzyskuje 11 (2k8+2) punktów życia."
+          "text": "Jednorożec magicznie odzyskuje **11 (2k8+2)** punktów życia."
         }
       ]
     },
