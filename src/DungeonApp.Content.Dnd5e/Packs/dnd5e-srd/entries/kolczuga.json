@@ -9,7 +9,7 @@
     "category": "Zbroja",
     "subtype": "zbroja ciężka",
     "weight": 27.5,
-    "value": 7500,
+    "value": 75,
 
     "armorClass": "16",
     "strengthRequirement": 13,

@@ -34,10 +34,11 @@ public sealed record Gear : IJsonOnDeserialized
     public decimal? Weight { get; init; }
 
     /// <summary>
-    /// The item's worth on an abstract, relative scale - a whole number with no unit, never negative.
-    /// Not a price: a price belongs to a particular slot in an inventory or a shop.
+    /// The item's worth on an abstract, relative scale - a number with no unit, never negative, its
+    /// scale not bounded either way. Not a price: a price belongs to a particular slot in an
+    /// inventory or a shop.
     /// </summary>
-    public int? Value { get; init; }
+    public decimal? Value { get; init; }
 
     /// <summary>A weapon's damage as written ("1k8 cięte").</summary>
     public string? Damage { get; init; }

@@ -9,7 +9,7 @@
     "category": "Broń",
     "subtype": "miecz długi",
     "weight": 1.5,
-    "value": 1500,
+    "value": 15,
 
     "damage": "1k8 cięte",
     "properties": "uniwersalna (1k10)",

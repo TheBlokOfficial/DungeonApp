@@ -85,7 +85,7 @@ public sealed class Dnd5eSystemTests
         Assert.Equal("Pospolity", gear.Rarity);
         Assert.Equal("Mikstura", gear.Category);
         Assert.Equal(0.25m, gear.Weight);
-        Assert.Equal(5000, gear.Value);
+        Assert.Equal(50m, gear.Value);
         Assert.False(gear.Attunement);
         Assert.Contains("2k4+2", gear.Description);
     }
@@ -102,7 +102,7 @@ public sealed class Dnd5eSystemTests
             "attunement": true,
             "attunementBy": "przez barda, kapłana albo druida",
             "weight": 2,
-            "value": 1500,
+            "value": 0.5,
             "damage": "1k6 obuchowe",
             "properties": "uniwersalna (1k8)",
             "armorClass": "+2",
@@ -123,7 +123,7 @@ public sealed class Dnd5eSystemTests
         Assert.True(gear.Attunement);
         Assert.Equal("przez barda, kapłana albo druida", gear.AttunementBy);
         Assert.Equal(2m, gear.Weight);
-        Assert.Equal(1500, gear.Value);
+        Assert.Equal(0.5m, gear.Value);
         Assert.Equal("1k6 obuchowe", gear.Damage);
         Assert.Equal("uniwersalna (1k8)", gear.Properties);
         Assert.Equal("+2", gear.ArmorClass);
@@ -134,15 +134,14 @@ public sealed class Dnd5eSystemTests
     }
 
     // The gear record is its own validator, like the monster's: a missing required value, an
-    // unknown key, a who-attunes without attunement, a negative worth and a fractional worth each
-    // reject the entry, whose reason names the offending key.
+    // unknown key, a who-attunes without attunement and a negative worth each reject the entry,
+    // whose reason names the offending key.
     [Theory]
     [InlineData("\"rarity\": \"Zwykły\"", "category")]
     [InlineData("\"category\": \"Broń\"", "rarity")]
     [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"price\": 15", "price")]
     [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"attunementBy\": \"przez maga\"", "attunement")]
     [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"value\": -1", "value")]
-    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"value\": 1.5", "value")]
     public async Task A_malformed_gear_entry_is_rejected(string values, string named)
     {
         using var packs = new TemporaryPacks();
