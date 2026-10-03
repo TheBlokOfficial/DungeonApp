@@ -34,12 +34,12 @@ public sealed class ValidContentDetailViewModel(
     public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
 
     /// <summary>
-    /// The tags' row as drawn: every tag, then the card's own end of the row
-    /// (<see cref="IEntryCardHeader.HeaderTagsEnd"/>) when it lends one - a control among strings,
-    /// shown as itself.
+    /// The tags' row as drawn: the card's own start of the row
+    /// (<see cref="IEntryCardHeader.HeaderTagsStart"/>) when it lends one - a control among strings,
+    /// shown as itself - then every tag.
     /// </summary>
     public IReadOnlyList<object> TagRow { get; } =
-        (card as IEntryCardHeader)?.HeaderTagsEnd is { } tagsEnd ? [.. tags, tagsEnd] : [.. tags];
+        (card as IEntryCardHeader)?.HeaderTagsStart is { } tagsStart ? [tagsStart, .. tags] : [.. tags];
 
     public bool HasTagRow => TagRow.Count > 0;
 

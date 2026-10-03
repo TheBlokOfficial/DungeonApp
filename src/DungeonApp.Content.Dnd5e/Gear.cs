@@ -19,10 +19,16 @@ public sealed record Gear : IJsonOnDeserialized
     /// </summary>
     public required string Rarity { get; init; }
 
-    /// <summary>What kind of thing the item is ("Broń", "Zbroja", "Mikstura") - free text.</summary>
+    /// <summary>
+    /// What kind of thing the item is ("Broń", "Zbroja", "Mikstura") - free text; the content tab's
+    /// category (<see cref="Dnd5eSystem"/>).
+    /// </summary>
     public required string Category { get; init; }
 
-    /// <summary>A narrower kind within <see cref="Category"/> ("miecz długi", "zbroja ciężka").</summary>
+    /// <summary>
+    /// The item's class within <see cref="Category"/> that matters to the rules ("żołnierska, do walki
+    /// wręcz", "ciężka"), never a repeat of the item's name - it stands on the card as a pill.
+    /// </summary>
     public string? Subtype { get; init; }
 
     public bool Attunement { get; init; }

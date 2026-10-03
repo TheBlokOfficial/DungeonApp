@@ -96,10 +96,10 @@ public sealed class ContentTabsTests
     /// <see cref="Monster.Type"/>.
     /// </summary>
     [Fact]
-    public void The_monster_category_filter_is_named_grupa_and_gear_has_none()
+    public void The_monster_category_filter_is_named_grupa_and_the_items_kategoria()
     {
         Assert.Equal("Grupa", MonsterProfile().CategoryLabel);
-        Assert.Null(GearProfile().CategoryLabel);
+        Assert.Equal("Kategoria", GearProfile().CategoryLabel);
     }
 
     [Fact]
@@ -177,26 +177,23 @@ public sealed class ContentTabsTests
     }
 
     // -----------------------------------------------------------------------------------------
-    // Gear profile: no category, tags, badge with a color key per tier, "Rzadkość" filter.
+    // Gear profile: category, tags, badge with a color key per tier, filters and sorts.
     // -----------------------------------------------------------------------------------------
 
     [Fact]
-    public void Gear_has_no_category()
+    public void An_items_category_is_the_tabs_category()
     {
-        var entry = GearEntry("Pospolity");
-
-        Assert.Null(GearProfile().Category(entry));
+        Assert.Equal("Kategoria", GearProfile().CategoryLabel);
+        Assert.Equal("Ekwipunek", GearProfile().Category(GearEntry("Pospolity")));
     }
 
     [Fact]
-    public void An_items_tags_are_its_category_then_its_subtype_when_it_has_one()
+    public void An_items_only_tag_is_its_subtype_when_it_has_one()
     {
-        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        var sword = new Entry(ContentId.Create("s"), "Miecz", reference, 1, ContentValues.From(
-            new Gear { Rarity = "Zwykły", Category = "Broń", Subtype = "miecz długi" }));
+        var sword = GearEntry("Zwykły", gear => gear with { Category = "Broń", Subtype = "żołnierska, do walki wręcz" });
 
-        Assert.Equal(["Broń", "miecz długi"], GearProfile().Tags(sword));
-        Assert.Equal(["Ekwipunek"], GearProfile().Tags(GearEntry("Rzadki")));
+        Assert.Equal(["żołnierska, do walki wręcz"], GearProfile().Tags(sword));
+        Assert.Empty(GearProfile().Tags(GearEntry("Rzadki")));
     }
 
     [Fact]

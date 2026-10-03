@@ -319,8 +319,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// "Przedmioty": no category (the tab has no category filter); tags = the item's category and,
-    /// when it has one, its subtype - the header's line under the title; badge = rarity, with a
+    /// "Przedmioty": category "Kategoria" = <see cref="Gear.Category"/> - the breadcrumb's middle
+    /// segment and the tab's category filter, like a monster's group; tags = the subtype, when the item
+    /// has one (the card puts the rarity pill before it); badge = rarity, with a
     /// color key per <see cref="RarityColorKeys"/> for a recognised tier and none for anything else;
     /// two value filters - "Rzadkość" (<see cref="RarityOrder"/>) and "Dostrojenie" ("wymaga" /
     /// "nie wymaga") - and two sorts: "Rzadkość" in the same <see cref="RarityOrder"/>, and
@@ -330,8 +331,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     {
         var profile = new ContentTypeProfile<Gear>(
             gear,
-            category: null,
-            tags: gear => gear.Subtype is { } subtype ? [gear.Category, subtype] : [gear.Category],
+            category: new ContentCategorySpec<Gear>("Kategoria", gear => gear.Category),
+            tags: gear => gear.Subtype is { } subtype ? [subtype] : [],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
             valueFilters:
             [

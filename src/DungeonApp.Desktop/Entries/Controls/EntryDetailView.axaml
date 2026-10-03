@@ -42,8 +42,8 @@
                     <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
 
                     <!-- The card's visual (IEntryCardHeader) on the left; the title column beside it:
-                         name (the card's title end against the right edge), tags (the card's tags end
-                         after them), and at its foot the card's block - pushed down by the star row to
+                         name (the card's title end against the right edge), tags (the card's tags start
+                         before them), and at its foot the card's block - pushed down by the star row to
                          the visual's bottom edge while the column is shorter than the visual. -->
                     <Grid ColumnDefinitions="Auto,*" Classes.with-visual="{Binding HasHeaderVisual}">
                         <ContentControl Content="{Binding HeaderVisual}"
@@ -72,7 +72,7 @@
                                                    LineSpacing="{DynamicResource DungeonSpacingXs}" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-                                <!-- A tag is a string drawn as a word tag; the card's tags end is a
+                                <!-- A tag is a string drawn as a word tag; the card's tags start is a
                                      control and shows as itself. -->
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="x:String">

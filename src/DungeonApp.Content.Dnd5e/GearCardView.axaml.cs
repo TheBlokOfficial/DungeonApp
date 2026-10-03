@@ -18,8 +18,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// Four pieces are lent to the detail header (<see cref="IEntryCardHeader"/>): the square picture -
 /// three ability cells wide, like the monster's portrait, so every card's title starts on the same
-/// line; the weight at the end of the title's line; the rarity pill after the tags (category and
-/// subtype, <see cref="Dnd5eSystem"/>), drawn like the list's; and the Wartość / Dostrojenie pairs
+/// line; the weight at the end of the title's line; the rarity pill at the start of the tags' row,
+/// before the subtype (<see cref="Dnd5eSystem"/>), drawn like the list's; and the Wartość / Dostrojenie pairs
 /// under them. An item with neither of those two pairs lends no block, one without a weight no
 /// title end.
 /// </para>
@@ -64,7 +64,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
     public Control? HeaderTitleEnd => _weight;
 
-    public Control HeaderTagsEnd => _rarity;
+    public Control HeaderTagsStart => _rarity;
 
     public Control? HeaderBlock => _headline;
 

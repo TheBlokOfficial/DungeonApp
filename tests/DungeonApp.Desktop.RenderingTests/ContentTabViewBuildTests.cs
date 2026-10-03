@@ -37,7 +37,7 @@ public sealed class ContentTabViewBuildTests
 
         public Control HeaderTitleEnd { get; } = new TextBlock { Text = "1,5 kg" };
 
-        public Control HeaderTagsEnd { get; } = new WordTag { Content = "Rzadki" };
+        public Control HeaderTagsStart { get; } = new WordTag { Content = "Rzadki" };
 
         public Control HeaderBlock { get; } = new StatTile { Label = "Próbka", Value = "1", Note = "dopisek" };
     }

@@ -160,7 +160,7 @@ public sealed class Dnd5eCardBuildTests
     private static readonly Gear FullGear = MinimalGear with
     {
         Rarity = "Rzadki",
-        Subtype = "kostur",
+        Subtype = "magiczna",
         Attunement = true,
         AttunementBy = "przez czarodzieja",
         Weight = 1.5m,
@@ -199,7 +199,7 @@ public sealed class Dnd5eCardBuildTests
     {
         var header = (IEntryCardHeader)card;
         var panel = new StackPanel();
-        foreach (var piece in new[] { header.HeaderVisual, header.HeaderTitleEnd, header.HeaderTagsEnd, header.HeaderBlock })
+        foreach (var piece in new[] { header.HeaderVisual, header.HeaderTitleEnd, header.HeaderTagsStart, header.HeaderBlock })
         {
             if (piece is not null)
             {
@@ -223,7 +223,7 @@ public sealed class Dnd5eCardBuildTests
             "1,5 kg",
             Plain(header.HeaderTitleEnd!.GetVisualDescendants().OfType<SelectableTextBlock>().Single().Text!));
 
-        var rarity = Assert.IsType<WordTag>(header.HeaderTagsEnd);
+        var rarity = Assert.IsType<WordTag>(header.HeaderTagsStart);
         Assert.Equal("Rzadki", rarity.Content);
         Assert.Contains("custom", rarity.Classes);
 
@@ -250,7 +250,7 @@ public sealed class Dnd5eCardBuildTests
 
         Assert.Null(header.HeaderTitleEnd);
         Assert.Null(header.HeaderBlock);
-        Assert.Equal("Zwykły", Assert.IsType<WordTag>(header.HeaderTagsEnd).Content);
+        Assert.Equal("Zwykły", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
         Assert.Empty(GearTraitLabels(card));
         Assert.False(card.FindControl<Control>("Groups")!.IsVisible);
         Assert.False(card.FindControl<Control>("DescriptionBlock")!.IsVisible);
@@ -279,7 +279,7 @@ public sealed class Dnd5eCardBuildTests
     {
         var card = GearCard(MinimalGear with { Rarity = "Coś nowego" });
 
-        Assert.DoesNotContain("custom", Assert.IsType<WordTag>(((IEntryCardHeader)card).HeaderTagsEnd).Classes);
+        Assert.DoesNotContain("custom", Assert.IsType<WordTag>(((IEntryCardHeader)card).HeaderTagsStart).Classes);
     }
 
     [AvaloniaFact]

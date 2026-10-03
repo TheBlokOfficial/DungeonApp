@@ -61,7 +61,7 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
     public Control? HeaderTitleEnd => null;
 
     /// <summary>Nothing after the tags: size, type and alignment say it all.</summary>
-    public Control? HeaderTagsEnd => null;
+    public Control? HeaderTagsStart => null;
 
     public Control HeaderBlock => _vitals;
 
