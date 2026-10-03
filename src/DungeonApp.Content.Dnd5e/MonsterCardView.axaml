@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
 
     <!-- The designed statblock on one geometric grid. Three vertical lines carry everything: the
@@ -15,6 +16,17 @@
          Size, type and alignment are not on this card - they are this content type's tags, shown
          once in the detail header. Spacing between controls is set here, on the host, never carried
          by a control itself. -->
+    <UserControl.Styles>
+        <!-- The wyzwanie badge drawn like the card's other blocks: sharp corners, and its number in
+             the same face as every other value on the card (stat-value), not the badges' default
+             fixed-width one. -->
+        <Style Selector="dc|Badge">
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+            <Setter Property="FontFeatures" Value="tnum" />
+        </Style>
+    </UserControl.Styles>
+
     <StackPanel>
         <!-- ===== abilities ===== -->
         <Grid ColumnDefinitions="Auto,Auto"

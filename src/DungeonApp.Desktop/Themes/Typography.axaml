@@ -92,16 +92,25 @@
     </Style>
 
     <!-- LICZBY ============================================================ -->
-    <!-- mono-value i mono-value-lg: ta sama liczba w dwóch stopniach - wartość w komórce tabeli
-         i wartość w kafelku. Jeden krój i grubość, żeby równoważne liczby wyglądały jednakowo. -->
-    <Style Selector="TextBlock.mono-value, SelectableTextBlock.mono-value">
-        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
+    <!-- stat-value i stat-value-lg: ta sama liczba w dwóch stopniach - wartość w komórce tabeli
+         i wartość w kafelku. Pismo interfejsu, nie krój o stałej szerokości: wartość z jednostką
+         („7,5 m”) czyta się jak tekst, a cyfry tabelaryczne (tnum) i tak trzymają kolumny liczb
+         równo. Jeden krój i grubość, żeby równoważne liczby wyglądały jednakowo. -->
+    <Style Selector="TextBlock.stat-value, SelectableTextBlock.stat-value">
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontFeatures" Value="tnum" />
         <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style Selector="TextBlock.mono-value-lg, SelectableTextBlock.mono-value-lg">
-        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
+    <Style Selector="TextBlock.stat-value-lg, SelectableTextBlock.stat-value-lg">
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontFeatures" Value="tnum" />
         <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.mono-value">
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style Selector="TextBlock.mono">

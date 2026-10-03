@@ -7,7 +7,7 @@
         własnego (karta pod spodem), linia Border 1 px, ostre narożniki - jak tabela w karcie, z którą
         stoi w jednej siatce. Wcięcie DungeonStatTilePadding. Od góry:
           podpis - ikona DungeonStatTileIconSize i napis w roli caption, oba przygaszone (TextMuted);
-          wartość - mono-value-lg (ten krój i grubość co liczba w tabeli cech), tekst podstawowy;
+          wartość - stat-value-lg (ten krój i grubość co liczba w tabeli cech), tekst podstawowy;
           dopisek - caption, przygaszony; tylko gdy podany.
         Każdy tekst zawija się w kafelku; kafelki jednego rzędu mają równą wysokość z układu.
         Bez stanów: nie reaguje na mysz i nie przyjmuje fokusu; tekst się zaznacza (SelectableTextBlock).
@@ -45,7 +45,7 @@
                                                  TextWrapping="Wrap" />
                         </Grid>
                         <SelectableTextBlock Name="PART_Value"
-                                             Classes="mono-value-lg"
+                                             Classes="stat-value-lg"
                                              Text="{TemplateBinding Value}"
                                              Foreground="{TemplateBinding Foreground}"
                                              TextWrapping="Wrap" />

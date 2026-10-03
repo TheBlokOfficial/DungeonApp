@@ -45,6 +45,8 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
             Width = 3 * cell,
             Height = 4 * cell,
             VerticalAlignment = VerticalAlignment.Top,
+            // Sharp, like the ability tables it stands over: one grid, one kind of corner.
+            CornerRadius = default,
             Icon = ThemeResource.Get<DrawingImage>("DungeonIconSkull"),
         };
 

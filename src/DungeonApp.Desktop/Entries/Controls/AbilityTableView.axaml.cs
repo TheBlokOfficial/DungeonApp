@@ -51,9 +51,9 @@ public partial class AbilityTableView : UserControl
             Cells.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
 
             Cells.Children.Add(Cell(index, 0, row.Label, "label muted"));
-            Cells.Children.Add(Cell(index, 1, row.Score, "mono-value"));
+            Cells.Children.Add(Cell(index, 1, row.Score, "stat-value"));
 
-            var modifier = Cell(index, 2, row.Modifier, "mono-value");
+            var modifier = Cell(index, 2, row.Modifier, "stat-value");
             modifier.Classes.Set("positive", row.ModifierTone == ValueTone.Positive);
             modifier.Classes.Set("negative", row.ModifierTone == ValueTone.Negative);
             Cells.Children.Add(modifier);
