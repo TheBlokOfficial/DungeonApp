@@ -6,8 +6,9 @@
     <!-- The frame's Table and TableCell themes, live, straight on the section background like every
          other gallery example (no card around them - the card's frame read as part of the table): a
          general table (header, text column on the left, number column on the right, a long label
-         trimmed, column lines on), the author's abilities table (AbilityScoresSample - square
-         40 x 40 cells, modifiers not highlighted) and a disabled table whose modifier cells carry
+         trimmed, column lines on), the abilities tables exactly as a card shows them
+         (AbilityScoresSample - two 3 x 3 tables of square cells, every line drawn, the modifier tinted
+         by its sign) and a disabled table whose modifier cells carry
          the number-direction tints (DungeonPositiveSubtleBrush, DungeonNegativeSubtleBrush). -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Tabele" />
@@ -28,7 +29,7 @@
             <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" HorizontalContentAlignment="Right" Content="12345,5" />
         </controls:Table>
 
-        <TextBlock Classes="overline-sm muted" Text="TABELA CECH - KOMÓRKI 40 × 40, MODYFIKATOR BEZ WYRÓŻNIENIA" />
+        <TextBlock Classes="overline-sm muted" Text="TABELA CECH - DWIE TABELE 3 × 3, KOMÓRKI KWADRATOWE, MODYFIKATOR PODBARWIONY ZNAKIEM" />
         <sections:AbilityScoresSample />
 
         <TextBlock Classes="overline-sm muted" Text="TABELA WYŁĄCZONA" />

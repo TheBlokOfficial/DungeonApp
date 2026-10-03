@@ -137,14 +137,34 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
+    // The pieces a card lends the detail header are controls of their own, outside the card's tree,
+    // so building the card does not build them: they are placed in a window here.
+    [AvaloniaFact]
+    public void The_pieces_a_monster_card_lends_the_header_build_with_its_headline_values()
+    {
+        var card = MonsterCard(Full, EntryPicture.None);
+        var header = (IEntryCardHeader)card;
+        var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock! } });
+
+        var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal(["KP", "PZ", "Szybkość"], tiles.Select(tile => tile.Label));
+        Assert.Equal(["13", "11", "12 m"], tiles.Select(tile => tile.Value));
+        Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
+        Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
+
+        window.Close();
+    }
+
     [AvaloniaFact]
     public void A_gear_card_builds_with_its_picture_frame()
     {
         var card = new GearCardView();
         card.SetGear(new Gear { Rarity = "Pospolity", Weight = 1, Description = "Leczy 2k4+2." }, EntryPicture.None);
-        var window = Show(card);
+        var header = (IEntryCardHeader)card;
+        var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
 
-        Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
+        Assert.IsType<ImageFrame>(header.HeaderVisual);
+        Assert.NotEmpty(Assert.IsType<TraitListView>(header.HeaderBlock).Rows);
 
         window.Close();
     }

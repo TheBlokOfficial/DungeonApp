@@ -31,6 +31,7 @@
             <sections:FeedbackSection />
             <sections:LabelsSection />
             <sections:TablesSection />
+            <sections:CardPartsSection />
             <sections:TilesSection />
             <sections:ImagesSection />
             <sections:CompositionsSection />

@@ -25,9 +25,17 @@ public sealed class ContentTabViewBuildTests
 
     private sealed class FakePresentation : IContentPresentation
     {
-        public Control CreateCard(Entry entry, EntryPicture picture) => new TextBlock { Text = entry.Name };
+        public Control CreateCard(Entry entry, EntryPicture picture) => new HeaderLendingCard { Text = entry.Name };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
+    }
+
+    /// <summary>A card that lends the detail header both pieces, so the header's full layout builds.</summary>
+    private sealed class HeaderLendingCard : TextBlock, IEntryCardHeader
+    {
+        public Control HeaderVisual { get; } = new ImageFrame { Width = 132, Height = 176 };
+
+        public Control HeaderBlock { get; } = new StatTile { Label = "Próbka", Value = "1", Note = "dopisek" };
     }
 
     private static ContentTabViewModel BuildViewModel(ContentRegistry registry)
@@ -94,6 +102,12 @@ public sealed class ContentTabViewBuildTests
             row.SelectCommand.Execute(null);
             Dispatcher.UIThread.RunJobs();
             Assert.NotNull(viewModel.Detail);
+
+            if (viewModel.Detail is ValidContentDetailViewModel detail)
+            {
+                Assert.True(detail.HeaderVisual!.IsEffectivelyVisible);
+                Assert.NotEmpty(detail.HeaderBlock!.GetVisualChildren());
+            }
         }
 
         Assert.Equal(3, viewModel.Sections.SelectMany(section => section.Rows).Count());

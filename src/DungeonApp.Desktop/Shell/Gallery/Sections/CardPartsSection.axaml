@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:entries="using:DungeonApp.Desktop.Entries.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.CardPartsSection">
+    <!-- The pieces a card's text is built from, live and exactly as a card uses them: the section
+         heading (controls:SectionHeading - accent bar and title), the prose section
+         (entries:ProseSectionView - heading, optional introduction, named entries with a muted note
+         and the author's **…** emphasis; a stray ** stays in the text) and the headline value
+         (controls:StatTile - borderless column: icon and label, value, optional note), three in equal
+         columns 412 wide - the room a header's title column has beside a three-cell picture.
+         Sample entries in CardPartsSection.axaml.cs. Nothing here restyles a control. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Elementy karty" />
+        <TextBlock Classes="caption muted" Text="Nic tu nie reaguje na mysz; każdy tekst się zaznacza. Szerokości jak w szczególe wpisu." />
+
+        <TextBlock Classes="overline-sm muted" Text="NAGŁÓWEK SEKCJI" />
+        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+            <controls:SectionHeading Text="Akcje" />
+            <controls:SectionHeading Text="Akcje legendarne" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="SEKCJA PROZY (560): WSTĘP, WPISY Z NOTATKĄ, WYRÓŻNIENIE **…**" />
+        <StackPanel Width="560" HorizontalAlignment="Left" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <entries:ProseSectionView x:Name="ProseWithIntro" Title="Akcje legendarne" />
+            <entries:ProseSectionView x:Name="ProseWithoutIntro" Title="Cechy szczególne" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: TRZY KOLUMNY (412), DŁUGI DOPISEK SIĘ ZAWIJA" />
+        <Grid Width="412" HorizontalAlignment="Left"
+              ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="17" Note="zbroja płytowa" />
+            <controls:StatTile Grid.Column="1" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
+            <controls:StatTile Grid.Column="2" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="9 m" Note="lot 18 m, pływanie 9 m, wspinaczka 6 m" />
+        </Grid>
+
+        <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: BEZ DOPISKU, BEZ IKONY, WYŁĄCZONA" />
+        <Grid Width="412" HorizontalAlignment="Left"
+              ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="12" />
+            <controls:StatTile Grid.Column="1" Label="Waga" Value="0,5 kg" />
+            <controls:StatTile Grid.Column="2" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" IsEnabled="False" />
+        </Grid>
+    </StackPanel>
+</UserControl>

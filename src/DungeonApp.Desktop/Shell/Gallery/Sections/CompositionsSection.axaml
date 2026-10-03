@@ -8,7 +8,8 @@
          next to each other. A: a filtered list (search field, type chips, "Wyczyść filtry" link,
          entry counter, list rows with tag, challenge value and delete band, EmptyState when nothing
          matches). B: deleting a row - confirmation, then a notification whose "Cofnij" puts the row
-         back. C: a card with header, value bar, abilities table and a collapsible description.
+         back. C: a card with header, headline values (StatTile), abilities tables and a collapsible
+         description.
          Sample data in Polish, in memory only, defined here (CompositionsSection.axaml.cs) - nothing
          reaches a campaign, a system or DungeonApp.Core. Only existing controls and tokens.
          A and C sit in a WrapPanel: side by side when the window is wide enough for both fixed
@@ -104,20 +105,12 @@
                             </WrapPanel>
                         </StackPanel>
 
-                        <!-- Pasek wartości: pary etykieta - wartość w stałej siatce po dwie w rzędzie;
-                             wartość zwykłym tekstem krojem liczb, także Wyzwanie. Bez odznak i bez
-                             zakreśleń - to wartości z karty, nie liczniki. -->
-                        <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto"
-                              ColumnSpacing="{DynamicResource DungeonSpacingSm}"
-                              RowSpacing="{DynamicResource DungeonSpacingXs}">
-                            <TextBlock Classes="label secondary" VerticalAlignment="Center" Text="KP" />
-                            <TextBlock Grid.Column="1" Classes="mono" VerticalAlignment="Center" Text="15" />
-                            <TextBlock Grid.Column="2" Classes="label secondary" VerticalAlignment="Center" Text="PW" />
-                            <TextBlock Grid.Column="3" Classes="mono" VerticalAlignment="Center" Text="7" />
-                            <TextBlock Grid.Row="1" Classes="label secondary" VerticalAlignment="Center" Text="Szybkość" />
-                            <TextBlock Grid.Row="1" Grid.Column="1" Classes="mono" VerticalAlignment="Center" Text="9 m" />
-                            <TextBlock Grid.Row="1" Grid.Column="2" Classes="label secondary" VerticalAlignment="Center" Text="Wyzwanie" />
-                            <TextBlock Grid.Row="1" Grid.Column="3" Classes="mono" VerticalAlignment="Center" Text="1/4" />
+                        <!-- Wartości nagłówkowe: trzy kolumny równej szerokości, bez ramek - jak pod
+                             tagami w szczególe wpisu. To wartości z karty, nie liczniki. -->
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+                            <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="15" Note="skórzana zbroja, tarcza" />
+                            <controls:StatTile Grid.Column="1" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" />
+                            <controls:StatTile Grid.Column="2" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="9 m" />
                         </Grid>
 
                         <sections:AbilityScoresSample />
