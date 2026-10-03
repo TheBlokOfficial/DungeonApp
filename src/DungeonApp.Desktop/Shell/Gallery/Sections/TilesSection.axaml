@@ -22,7 +22,7 @@
                             Height="{DynamicResource DungeonDeckCardSize}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
                                                  Height="{DynamicResource DungeonActionIconSize}"
-                                                 Source="{DynamicResource DungeonIconDragon}" />
+                                                 Source="{DynamicResource DungeonIconSkull}" />
                     </Button>
                     <Button Theme="{StaticResource DungeonTile}"
                             Width="{DynamicResource DungeonDeckCardSize}"

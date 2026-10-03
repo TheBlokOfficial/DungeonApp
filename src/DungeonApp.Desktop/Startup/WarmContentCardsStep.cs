@@ -9,14 +9,14 @@ using DungeonApp.Desktop.Entries;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa jedną kartę na każdy rozwiązany typ treści w <paramref name="registry"/> - krok startowy,
-/// który system sam zgłasza ramie (<c>IGameSystem.StartupSteps</c>), tuż obok
-/// <see cref="LoadContentPacksStep"/>: karty rozgrzewają się za kurtyną startową, zanim cokolwiek da
-/// się kliknąć, żeby nie budować się na wątku UI w chwili kliknięcia.
+/// Warms one card for every resolved content type in <paramref name="registry"/> - a startup step the
+/// system reports to the frame itself (<c>IGameSystem.StartupSteps</c>), right next to
+/// <see cref="LoadContentPacksStep"/>: cards warm up behind the startup curtain, before anything can
+/// be clicked, so none is built for the first time on the UI thread at the moment of a click.
 /// <para>
-/// <paramref name="registry"/> jest odroczone (<see cref="Func{TResult}"/>), nie wartością wprost, bo
-/// ten krok jest budowany zanim <see cref="LoadContentPacksStep"/> zdąży wczytać paczki - odczytuje
-/// rejestr dopiero we własnym <see cref="ApplyAsync"/>, gdy loader już skończył.
+/// <paramref name="registry"/> is deferred (<see cref="Func{TResult}"/>), not a plain value, because
+/// this step is built before <see cref="LoadContentPacksStep"/> has read the packs - it reads the
+/// registry only in its own <see cref="ApplyAsync"/>, once the loader is done.
 /// </para>
 /// </summary>
 public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IContentPresentation presentation) : IStartupStep
@@ -43,7 +43,9 @@ public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IConten
         {
             try
             {
-                var card = presentation.CreateCard(entry.Entry);
+                // No picture: warming builds the card's controls, frame included - reading a file
+                // the GM may never open would only slow the start.
+                var card = presentation.CreateCard(entry.Entry, EntryPicture.None);
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, card, cancellationToken);
             }
             catch (Exception ex)

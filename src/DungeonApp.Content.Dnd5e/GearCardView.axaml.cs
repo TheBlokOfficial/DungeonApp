@@ -1,11 +1,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Controls;
+using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Entries.Controls;
 
 namespace DungeonApp.Content.Dnd5e;
 
-/// <summary>The gear card. See <see cref="MonsterCardView"/>'s remarks - the same reasoning applies.</summary>
+/// <summary>
+/// The gear card. <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after
+/// construction, through <see cref="SetGear"/>: the constructor stays parameterless, as the XAML
+/// loader and the designer preview need it.
+/// </summary>
 public partial class GearCardView : UserControl
 {
     public GearCardView()
@@ -13,8 +18,10 @@ public partial class GearCardView : UserControl
         InitializeComponent();
     }
 
-    public void SetGear(Gear gear)
+    public void SetGear(Gear gear, EntryPicture picture)
     {
+        picture.ShowIn(Picture);
+
         // No rarity row: rarity is this content type's only tag, already shown once in the detail
         // header, and the card does not repeat what the header shows.
         var rows = new List<TraitRow>();

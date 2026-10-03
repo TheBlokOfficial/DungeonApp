@@ -14,16 +14,15 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="TraitLabel" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Classes="muted" Text="{Binding Label}" />
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="{DynamicResource DungeonSpacingXs}">
-                    <TextBlock Text="{Binding Value}" TextWrapping="Wrap" />
-                    <TextBlock Classes="muted"
-                               IsVisible="{Binding HasSecondary}"
-                               Text="{Binding SecondaryDisplay}"
-                               TextWrapping="Wrap" />
-                </StackPanel>
+                <TextBlock Classes="muted"
+                           Text="{Binding Label}"
+                           MinWidth="{Binding $parent[content:TraitListView].LabelMinWidth}" />
+                <!-- Value and secondary value as one wrapping text: a long value wraps within its
+                     column instead of running past the card's edge. -->
+                <TextBlock Grid.Column="1" TextWrapping="Wrap">
+                    <Run Text="{Binding Value}" /><Run Text="{Binding SecondaryDisplay}"
+                                                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                </TextBlock>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>

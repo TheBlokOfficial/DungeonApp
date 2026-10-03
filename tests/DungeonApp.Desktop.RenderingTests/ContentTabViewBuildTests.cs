@@ -25,7 +25,7 @@ public sealed class ContentTabViewBuildTests
 
     private sealed class FakePresentation : IContentPresentation
     {
-        public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+        public Control CreateCard(Entry entry, EntryPicture picture) => new TextBlock { Text = entry.Name };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
     }

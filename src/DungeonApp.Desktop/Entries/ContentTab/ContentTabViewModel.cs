@@ -17,6 +17,7 @@ namespace DungeonApp.Desktop.Entries.ContentTab;
 /// </summary>
 public sealed partial class ContentTabViewModel : ObservableObject
 {
+    private readonly ContentRegistry _registry;
     private readonly ContentListModel _model;
     private readonly IContentPresentation _presentation;
     private readonly IReadOnlyDictionary<ContentTypeReference, IContentTypeProfile> _profilesByType;
@@ -38,6 +39,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
         ArgumentNullException.ThrowIfNull(presentation);
 
         Title = tab.Title;
+        _registry = registry;
         _presentation = presentation;
         _profilesByType = tab.ContentTypes.ToDictionary(profile => profile.Type);
         _packNames = registry.Packs.ToDictionary(pack => pack.Id, pack => pack.Name);
@@ -292,7 +294,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
             valid.Category is { } category ? [Title, category, valid.Name] : [Title, valid.Name],
             valid.Name,
             valid.Tags,
-            _presentation.CreateCard(valid.Entry.Entry)),
+            _presentation.CreateCard(valid.Entry.Entry, EntryPicture.Load(_registry, valid.Entry))),
 
         BrokenRowSelection broken => BuildBrokenDetail(broken.Row),
 

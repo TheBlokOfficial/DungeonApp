@@ -12,8 +12,8 @@ namespace DungeonApp.Desktop.Controls;
 /// frame's proportions, never stretched out of shape;</item>
 /// <item><b>placeholder</b> - no <see cref="Source"/> and no <see cref="Message"/>: <see cref="Icon"/>,
 /// large and dimmed, in the middle;</item>
-/// <item><b>error</b> - no <see cref="Source"/>, a <see cref="Message"/>: the same icon, and under it the
-/// message and its <see cref="Detail"/> in the danger color.</item>
+/// <item><b>error</b> - no <see cref="Source"/>, a <see cref="Message"/>: the same icon, under it the
+/// message in the danger color and, secondary to it, its <see cref="Detail"/>.</item>
 /// </list>
 /// It knows nothing about where a picture comes from - whoever places the frame decides the state and
 /// hands it ready data. It has no size of its own: its size and proportions (square, portrait) come

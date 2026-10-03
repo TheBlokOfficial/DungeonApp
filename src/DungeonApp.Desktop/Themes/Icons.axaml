@@ -157,24 +157,25 @@
     <DrawingImage x:Key="DungeonIconChevronDown" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,9 L12,16 L19,9" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
-    <!-- "Potwory" tab icon - named for what it draws, a beast's head in profile, not what it is
-         used for: a pointed snout, one back-swept horn, a brow ridge and a fanged lower jaw. Same
-         pen, viewbox and rounded line caps/joins as every other outline icon. -->
-    <DrawingImage x:Key="DungeonIconDragon" Viewbox="0,0,24,24">
+    <!-- Lucide "skull" (Assets/Icons/Lucide/skull.svg), its relative path commands written out as
+         absolute ones like every icon here: the nose, the cranium with the jaw, two eye sockets. -->
+    <DrawingImage x:Key="DungeonIconSkull" Viewbox="0,0,24,24">
         <DrawingGroup>
-            <GeometryDrawing Geometry="M22,12 L17,7 L12,5 L6,6 L3,10 L3,14 L7,16.5 L13,15 L18,15 Z" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M11,5 L7,1.5" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M14,10 L14,10.1" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M16,15 L16,17.3 M19.3,14.3 L19.3,16.6" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M12.5,17 L12,16 L11.5,17 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M15,22 A1,1 0 0 0 16,21 L16,20 A2,2 0 0 0 17.56,16.75 A8,8 0 1 0 6.44,16.75 A2,2 0 0 0 8,20 L8,21 A1,1 0 0 0 9,22 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M16,12 A1,1 0 1 1 14,12 A1,1 0 1 1 16,12" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M10,12 A1,1 0 1 1 8,12 A1,1 0 1 1 10,12" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
-    <!-- "Przedmioty" tab icon - a backpack: rounded body, top flap and collar, two shoulder straps,
-         one front pocket seam. -->
+    <!-- Lucide "backpack" (Assets/Icons/Lucide/backpack.svg): the body, its top and bottom seams,
+         the front pocket and the carrying handle. -->
     <DrawingImage x:Key="DungeonIconBackpack" Viewbox="0,0,24,24">
         <DrawingGroup>
-            <GeometryDrawing Geometry="M8,9 L8,5 A2,2 0 0 1 10,3 L14,3 A2,2 0 0 1 16,5 L16,9" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M6,11 A2,2 0 0 1 8,9 L16,9 A2,2 0 0 1 18,11 L18,20 A2,2 0 0 1 16,22 L8,22 A2,2 0 0 1 6,20 Z" Pen="{StaticResource DungeonIconPen}" />
-            <GeometryDrawing Geometry="M9,14 L15,14 L15,18 L9,18 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M4,10 A4,4 0 0 1 8,6 L16,6 A4,4 0 0 1 20,10 L20,20 A2,2 0 0 1 18,22 L6,22 A2,2 0 0 1 4,20 Z" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M8,10 L16,10" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M8,18 L16,18" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M8,22 L8,16 A2,2 0 0 1 10,14 L14,14 A2,2 0 0 1 16,16 L16,22" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M9,6 L9,4 A2,2 0 0 1 11,2 L13,2 A2,2 0 0 1 15,4 L15,6" Pen="{StaticResource DungeonIconPen}" />
         </DrawingGroup>
     </DrawingImage>
 </ResourceDictionary>

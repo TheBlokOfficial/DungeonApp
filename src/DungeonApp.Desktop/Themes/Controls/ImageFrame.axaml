@@ -3,17 +3,20 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Ramka obrazka (controls:ImageFrame): pole na jeden obrazek, bez własnego rozmiaru - rozmiar
-        i proporcje (kwadrat, portret) daje układ, w którym stoi. Tło powierzchni (DungeonSurfaceBrush,
-        żeby puste pole czytało się jako miejsce na obrazek także na tle bez koloru), linia motywu,
-        narożnik karty; treść przycięta do narożnika.
-        Trzy stany, z tego, co ramka dostała: :picture - obrazek wypełnia ramkę (UniformToFill:
-        przycięty do proporcji ramki, bez zniekształcenia), na środku; bez obrazka - ikona zastępcza
-        DungeonImageFrameIconSize na środku, kolorem tekstu przygaszonego; :error - ta sama ikona, pod
-        nią komunikat (rola caption) i szczegół (caption, zawijany także w środku ścieżki bez spacji,
-        najwyżej trzy wiersze, dalej wielokropek) kolorem tekstu niebezpieczeństwa, wyśrodkowane.
-        Nie ma stanów interakcji: nie przyjmuje fokusu, nie reaguje na mysz (kursor tego, na czym
-        leży), tekst się nie zaznacza.
+        Picture frame (controls:ImageFrame): a field for one picture, with no size of its own - size
+        and proportions (square, portrait) come from the layout it stands in. Surface background
+        (DungeonSurfaceBrush, so an empty field reads as a place for a picture on any background), the
+        theme line, the card corner; content clipped to the corner.
+        The line is drawn last, over the picture: a picture that filled the frame under it would hide
+        the frame's edge, and its corners would cut into the rounded line.
+        Three states, from what the frame was given: :picture - the picture fills the frame
+        (UniformToFill: cropped to the frame's proportions, never distorted), centered; no picture -
+        the placeholder icon, DungeonImageFrameIconSize, centered, in the muted text color; :error -
+        the same icon with the message under it (caption role, danger text color - the one thing that
+        is wrong) and the detail under that (caption, muted - secondary to the message; wraps even
+        inside a path without spaces, at most three lines, then an ellipsis), centered.
+        No interaction states: takes no focus, ignores the pointer (the cursor is whatever it lies
+        on), its text does not select.
     -->
     <ControlTheme x:Key="{x:Type controls:ImageFrame}" TargetType="controls:ImageFrame">
         <Setter Property="Focusable" Value="False" />
@@ -27,51 +30,55 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
-                    <Panel>
-                        <Image Name="PART_Picture"
-                               Source="{TemplateBinding Source}"
-                               Stretch="UniformToFill"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               IsVisible="False" />
-                        <StackPanel Name="PART_Placeholder"
-                                    Margin="{TemplateBinding Padding}"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    Spacing="{DynamicResource DungeonSpacingSm}">
-                            <controls:ForegroundIcon Name="PART_Icon"
-                                                     Width="{DynamicResource DungeonImageFrameIconSize}"
-                                                     Height="{DynamicResource DungeonImageFrameIconSize}"
-                                                     HorizontalAlignment="Center"
-                                                     Source="{TemplateBinding Icon}"
-                                                     Foreground="{TemplateBinding Foreground}" />
-                            <!-- Komunikat i ścieżka bez odstępu: jedna notatka w dwóch wierszach. -->
-                            <StackPanel Name="PART_Error"
-                                        IsVisible="False">
-                                <TextBlock Name="PART_Message"
-                                           Classes="caption"
-                                           Text="{TemplateBinding Message}"
-                                           Foreground="{DynamicResource DungeonDangerTextBrush}"
-                                           TextAlignment="Center"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Name="PART_Detail"
-                                           Classes="caption"
-                                           Text="{TemplateBinding Detail}"
-                                           Foreground="{DynamicResource DungeonDangerTextBrush}"
-                                           TextAlignment="Center"
-                                           TextWrapping="Wrap"
-                                           MaxLines="3"
-                                           TextTrimming="CharacterEllipsis"
-                                           IsVisible="{TemplateBinding Detail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                <Panel>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            ClipToBounds="True">
+                        <Panel>
+                            <Image Name="PART_Picture"
+                                   Source="{TemplateBinding Source}"
+                                   Stretch="UniformToFill"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   IsVisible="False" />
+                            <StackPanel Name="PART_Placeholder"
+                                        Margin="{TemplateBinding Padding}"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Center"
+                                        Spacing="{DynamicResource DungeonSpacingSm}">
+                                <controls:ForegroundIcon Name="PART_Icon"
+                                                         Width="{DynamicResource DungeonImageFrameIconSize}"
+                                                         Height="{DynamicResource DungeonImageFrameIconSize}"
+                                                         HorizontalAlignment="Center"
+                                                         Source="{TemplateBinding Icon}"
+                                                         Foreground="{TemplateBinding Foreground}" />
+                                <!-- Message and path with no gap between them: one note on two lines. -->
+                                <StackPanel Name="PART_Error"
+                                            IsVisible="False">
+                                    <TextBlock Name="PART_Message"
+                                               Classes="caption"
+                                               Text="{TemplateBinding Message}"
+                                               Foreground="{DynamicResource DungeonDangerTextBrush}"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock Name="PART_Detail"
+                                               Classes="caption"
+                                               Text="{TemplateBinding Detail}"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               MaxLines="3"
+                                               TextTrimming="CharacterEllipsis"
+                                               IsVisible="{TemplateBinding Detail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                    </Panel>
-                </Border>
+                        </Panel>
+                    </Border>
+                    <Border Name="PART_Line"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                </Panel>
             </ControlTemplate>
         </Setter>
 

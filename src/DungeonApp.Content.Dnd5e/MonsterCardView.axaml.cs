@@ -1,37 +1,40 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Controls;
+using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Entries.Controls;
 
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The monster statblock: stat-strip, ability grid with D&amp;D 5e's own modifier arithmetic
-/// (<see cref="AbilityModifier"/>), skills-and-senses, wyzwanie as a chip, cechy szczególne / akcje
-/// under bar-accented headers, and an italic description.
-/// <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately after construction, through
-/// <see cref="SetMonster"/> - see <see cref="Gear"/>'s card for the same reasoning on why this stays
-/// a plain parameterless constructor.
+/// The monster statblock: portrait, KP / PZ / Szybkość and the ability grid with D&amp;D 5e's own
+/// modifier arithmetic (<see cref="AbilityModifier"/>) on top, the filled pairs under it, then the
+/// collapsible prose sections. <see cref="Dnd5eSystem.CreateCard"/> sets the model once, immediately
+/// after construction, through <see cref="SetMonster"/>: the constructor stays parameterless, as the
+/// XAML loader and the designer preview need it.
 /// <para>
-/// The KP and PZ stats carry a bracketed note ("skórz., tarcza", "2k6") taken from
-/// <see cref="Monster.AcSource"/> and <see cref="Monster.HpDice"/>. Every value on the card comes
-/// from a field <see cref="Monster"/> declares.
+/// Every value on the card comes from a field <see cref="Monster"/> declares; a pair or a section
+/// whose field is empty is not shown at all.
 /// </para>
 /// </summary>
 public partial class MonsterCardView : UserControl
 {
+    private static readonly CultureInfo Polish = CultureInfo.GetCultureInfo("pl-PL");
+
     public MonsterCardView()
     {
         InitializeComponent();
     }
 
-    public void SetMonster(Monster monster)
+    public void SetMonster(Monster monster, EntryPicture picture)
     {
-        AcValueRun.Text = Format(monster.Ac);
-        AcNoteRun.Text = Note(monster.AcSource);
+        picture.ShowIn(Portrait);
 
-        HpValueRun.Text = Format(monster.Hp);
-        HpNoteRun.Text = Note(monster.HpDice);
+        AcValueText.Text = Format(monster.Ac);
+        AcNoteText.Text = monster.AcSource;
+
+        HpValueText.Text = Format(monster.Hp);
+        HpNoteText.Text = monster.HpDice;
 
         SpeedValueText.Text = monster.Speed;
 
@@ -45,40 +48,53 @@ public partial class MonsterCardView : UserControl
             new AbilityRow("CHA", Format(monster.Cha), AbilityModifier.Format(monster.Cha)),
         ];
 
-        SkillsAndSenses.Rows = BuildSkillsAndSensesRows(monster);
-        ChallengeText.Text = monster.Challenge;
+        Traits.Rows = BuildTraitRows(monster);
 
-        SpecialAbilitiesSection.IsVisible = monster.SpecialAbilities is not null;
-        SpecialAbilitiesBlock.Text = monster.SpecialAbilities;
-
+        Show(SpecialAbilitiesSection, SpecialAbilitiesBlock, monster.SpecialAbilities);
         ActionsBlock.Text = monster.Actions;
+        Show(SpellcastingSection, SpellcastingBlock, monster.Spellcasting);
+        Show(BonusActionsSection, BonusActionsBlock, monster.BonusActions);
+        Show(ReactionsSection, ReactionsBlock, monster.Reactions);
+        Show(LegendaryActionsSection, LegendaryActionsBlock, monster.LegendaryActions);
 
         DescriptionSection.IsVisible = monster.Description is not null;
-        DescriptionBlock.Text = monster.Description;
+        DescriptionText.Text = monster.Description;
     }
 
-    /// <summary>Umiejętności (optional) and Języki (optional) around Zmysły (required) - Wyzwanie is its own chip row, not a plain trait row.</summary>
-    private static IReadOnlyList<TraitRow> BuildSkillsAndSensesRows(Monster monster)
+    /// <summary>
+    /// The pairs in statblock order. Zmysły and Wyzwanie are required fields, so they always show;
+    /// every other pair only when its field is filled.
+    /// </summary>
+    private static IReadOnlyList<TraitRow> BuildTraitRows(Monster monster)
     {
         var rows = new List<TraitRow>();
 
-        if (monster.Skills is not null)
-        {
-            rows.Add(new TraitRow("Umiejętności", monster.Skills));
-        }
-
+        AddIfFilled(rows, "Rzuty obronne", monster.SavingThrows);
+        AddIfFilled(rows, "Umiejętności", monster.Skills);
+        AddIfFilled(rows, "Podatność na obrażenia", monster.DamageVulnerabilities);
+        AddIfFilled(rows, "Odporność na obrażenia", monster.DamageResistances);
+        AddIfFilled(rows, "Niewrażliwość na obrażenia", monster.DamageImmunities);
+        AddIfFilled(rows, "Niewrażliwość na stany", monster.ConditionImmunities);
         rows.Add(new TraitRow("Zmysły", monster.Senses));
-
-        if (monster.Languages is not null)
-        {
-            rows.Add(new TraitRow("Języki", monster.Languages));
-        }
+        AddIfFilled(rows, "Języki", monster.Languages);
+        rows.Add(new TraitRow("Wyzwanie", monster.Challenge, monster.Xp is { } xp ? $"{xp.ToString("N0", Polish)} PD" : null));
 
         return rows;
     }
 
-    private static string Format(int value) => value.ToString(CultureInfo.InvariantCulture);
+    private static void AddIfFilled(List<TraitRow> rows, string label, string? value)
+    {
+        if (value is not null)
+        {
+            rows.Add(new TraitRow(label, value));
+        }
+    }
 
-    /// <summary>The "(skórz., tarcza)" / "(2k6)" bracketed note - empty (not null) when the source field is absent, so the inline Run simply prints nothing.</summary>
-    private static string Note(string? source) => source is null ? string.Empty : $" ({source})";
+    private static void Show(Expander section, ProseBlockView block, string? text)
+    {
+        section.IsVisible = text is not null;
+        block.Text = text;
+    }
+
+    private static string Format(int value) => value.ToString(CultureInfo.InvariantCulture);
 }

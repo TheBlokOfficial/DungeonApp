@@ -72,7 +72,7 @@ internal sealed class FakeContentSystem(
         return error is null;
     }
 
-    public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+    public Control CreateCard(Entry entry, EntryPicture picture) => new TextBlock { Text = entry.Name };
 
     public Avalonia.Media.IBrush? ResolveBadgeBrush(string colorKey) => null;
 }

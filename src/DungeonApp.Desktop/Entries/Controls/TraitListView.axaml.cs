@@ -32,6 +32,9 @@ public partial class TraitListView : UserControl
     public static readonly StyledProperty<bool> CompactProperty =
         AvaloniaProperty.Register<TraitListView, bool>(nameof(Compact));
 
+    public static readonly StyledProperty<double> LabelMinWidthProperty =
+        AvaloniaProperty.Register<TraitListView, double>(nameof(LabelMinWidth));
+
     public static readonly DirectProperty<TraitListView, bool> HasTitleProperty =
         AvaloniaProperty.RegisterDirect<TraitListView, bool>(nameof(HasTitle), o => o.HasTitle);
 
@@ -62,6 +65,16 @@ public partial class TraitListView : UserControl
     {
         get => GetValue(CompactProperty);
         set => SetValue(CompactProperty, value);
+    }
+
+    /// <summary>
+    /// The narrowest the label column gets - wider when a label needs it. Lets a card line the values
+    /// up with something else it draws (a column above the list), a layout decision of the card's.
+    /// </summary>
+    public double LabelMinWidth
+    {
+        get => GetValue(LabelMinWidthProperty);
+        set => SetValue(LabelMinWidthProperty, value);
     }
 
     public bool HasTitle

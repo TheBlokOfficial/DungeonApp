@@ -44,6 +44,31 @@ public sealed class Dnd5eSystemTests
     }
 
     [Fact]
+    public async Task Every_optional_monster_field_is_read_under_its_own_name()
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", EntryJsonWithEveryOptionalMonsterField);
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Null(entry.UnresolvedDetail);
+        var monster = entry.Entry.Values.Read<Monster>();
+
+        Assert.Equal("Kon +4, Mdr +2", monster.SavingThrows);
+        Assert.Equal("obuchowe", monster.DamageVulnerabilities);
+        Assert.Equal("od zimna", monster.DamageResistances);
+        Assert.Equal("od trucizny", monster.DamageImmunities);
+        Assert.Equal("zatrucie", monster.ConditionImmunities);
+        Assert.Equal(1800, monster.Xp);
+        Assert.Equal("Wrodzone rzucanie czarów.", monster.Spellcasting);
+        Assert.Equal("Odskok.", monster.BonusActions);
+        Assert.Equal("Parowanie.", monster.Reactions);
+        Assert.Equal("Kopyta.", monster.LegendaryActions);
+    }
+
+    [Fact]
     public async Task Healing_potion_entry_deserializes_into_a_gear_with_correct_values()
     {
         var registry = await LoadFixturesAsync();
@@ -201,6 +226,42 @@ public sealed class Dnd5eSystemTests
             "challenge": "0",
             "actions": "Brak.",
             "bogusField": "x"
+          }
+        }
+        """;
+
+    private const string EntryJsonWithEveryOptionalMonsterField = """
+        {
+          "id": "e1",
+          "name": "Test Monster",
+          "template": "dnd5e:monster",
+          "templateVersion": 1,
+          "values": {
+            "size": "Duży",
+            "type": "niebianin",
+            "alignment": "praworządny dobry",
+            "ac": 12,
+            "hp": 67,
+            "speed": "15 m",
+            "str": 18,
+            "dex": 14,
+            "con": 15,
+            "int": 11,
+            "wis": 17,
+            "cha": 16,
+            "savingThrows": "Kon +4, Mdr +2",
+            "damageVulnerabilities": "obuchowe",
+            "damageResistances": "od zimna",
+            "damageImmunities": "od trucizny",
+            "conditionImmunities": "zatrucie",
+            "senses": "bierna Percepcja 13",
+            "challenge": "5",
+            "xp": 1800,
+            "actions": "Róg.",
+            "spellcasting": "Wrodzone rzucanie czarów.",
+            "bonusActions": "Odskok.",
+            "reactions": "Parowanie.",
+            "legendaryActions": "Kopyta."
           }
         }
         """;

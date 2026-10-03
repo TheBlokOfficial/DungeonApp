@@ -27,7 +27,7 @@ public sealed class ContentTabViewModelTests
     {
         public IBrush? Brush { get; set; }
 
-        public Control CreateCard(Entry entry) => new TextBlock { Text = entry.Name };
+        public Control CreateCard(Entry entry, EntryPicture picture) => new TextBlock { Text = entry.Name };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brush;
     }

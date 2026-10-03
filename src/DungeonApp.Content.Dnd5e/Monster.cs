@@ -4,7 +4,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// A D&amp;D 5e monster's values. This project is the only place in the application allowed to know
 /// what a monster is; the shape below is a designed record, not something assembled from data.
 /// <para>
-/// Named, not positional: twenty-one properties of a handful of repeated types (<see cref="string"/>,
+/// Named, not positional: some thirty properties of a handful of repeated types (<see cref="string"/>,
 /// <see cref="int"/>) make adjacent positional parameters - <see cref="Str"/> next to
 /// <see cref="Dex"/>, <see cref="Senses"/> next to <see cref="Languages"/> - silently swappable past
 /// both the compiler and the deserializer. <see langword="required"/> marks exactly the properties
@@ -58,17 +58,46 @@ public sealed record Monster
 
     public required int Cha { get; init; }
 
+    public string? SavingThrows { get; init; }
+
     public string? Skills { get; init; }
+
+    public string? DamageVulnerabilities { get; init; }
+
+    public string? DamageResistances { get; init; }
+
+    public string? DamageImmunities { get; init; }
+
+    public string? ConditionImmunities { get; init; }
 
     public required string Senses { get; init; }
 
     public string? Languages { get; init; }
 
+    /// <summary>
+    /// The challenge rating exactly as written ("1/4", "5") - a label the card shows and the list
+    /// orders by, never a number anything computes with. Experience points are <see cref="Xp"/>.
+    /// </summary>
     public required string Challenge { get; init; }
+
+    /// <summary>Experience points for defeating this monster, shown next to <see cref="Challenge"/>.</summary>
+    public int? Xp { get; init; }
 
     public string? SpecialAbilities { get; init; }
 
     public required string Actions { get; init; }
+
+    public string? Spellcasting { get; init; }
+
+    public string? BonusActions { get; init; }
+
+    public string? Reactions { get; init; }
+
+    /// <summary>
+    /// Legendary actions as prose, the per-turn allowance included ("3 na turę") - text the GM
+    /// reads, never a counter anything spends.
+    /// </summary>
+    public string? LegendaryActions { get; init; }
 
     public string? Description { get; init; }
 

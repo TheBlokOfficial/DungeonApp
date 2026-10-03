@@ -47,6 +47,8 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   wczytuje. Zepsuty manifest odrzuca całą paczkę z powodem.
 - Obrazek wpisu: pole wskazane przez deskryptor typu (`ImageProperty`); ścieżka względem katalogu
   paczki, tylko PNG/JPG/WebP. Ścieżka poza paczkę odrzuca wpis; brak pliku pokazuje się na karcie.
+  Plik czyta biblioteka przy pokazaniu karty i podaje go karcie gotowy (`EntryPicture`); karta stawia
+  ramkę i ikonę zastępczą, ale nie wie, gdzie leży paczka.
 - Rejestr (`ContentRegistry`) jest tylko do odczytu. Każdy system wczytuje własny.
 
 ## Kampania i stan
@@ -92,7 +94,9 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   patrzysz na to obok innych rzeczy (okno na biurku), czy w tym przebywasz (zakładka).
 - **Zakładka treści** (`Desktop/Entries/ContentTab`): układ lista–szczegół, wspólny dla typów treści.
   System podaje profil typu: kategorię, tagi, odznakę wiersza, filtry wartości i sortowania. Szczegół
-  to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości.
+  to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Proza karty
+  jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu zaznacza najbliższy blok
+  (`TextSelectionArea`) — zaznaczenia przez kilka bloków naraz nie ma.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
   system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PZ).
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta pod spodem. Tokeny kolorów mają

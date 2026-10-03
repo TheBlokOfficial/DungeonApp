@@ -21,8 +21,14 @@ public interface IContentPresentation
     /// system to build a card with; an implementation is free to throw rather than guess, since
     /// a caller that already has a <see cref="RegisteredEntry"/> can and must check
     /// <see cref="RegisteredEntry.Unresolved"/> first.
+    /// <para>
+    /// <paramref name="picture"/> is the entry's picture already read from its pack
+    /// (<see cref="EntryPicture.Load(ContentRegistry, RegisteredEntry)"/>), or
+    /// <see cref="EntryPicture.None"/>: the card decides where its frame stands and which placeholder
+    /// icon it shows, but never where the entry's pack lies - an <see cref="Entry"/> does not know.
+    /// </para>
     /// </summary>
-    Control CreateCard(Entry entry);
+    Control CreateCard(Entry entry, EntryPicture picture);
 
     /// <summary>
     /// Turns a row badge's <see cref="ContentBadge.ColorKey"/> into an actual brush - the one place

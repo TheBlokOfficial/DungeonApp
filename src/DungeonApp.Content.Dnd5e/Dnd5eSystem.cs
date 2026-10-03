@@ -127,16 +127,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         Id = SystemId.Create(IdValue);
         ContentSetId = ContentId.Create(IdValue);
 
-        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: 1, monster =>
+        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: 1, (monster, picture) =>
         {
             var card = new MonsterCardView();
-            card.SetMonster(monster);
+            card.SetMonster(monster, picture);
             return card;
         });
-        var gear = Register<Gear>(GearTypeId, "Przedmiot", version: 1, gear =>
+        var gear = Register<Gear>(GearTypeId, "Przedmiot", version: 1, (gear, picture) =>
         {
             var card = new GearCardView();
-            card.SetGear(gear);
+            card.SetGear(gear, picture);
             return card;
         });
         _contentTypes = new[] { monster, gear }.ToDictionary(type => type.Descriptor.Reference);
@@ -147,7 +147,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         (string Id, string IconResourceKey, ContentTabDefinition Definition)[] contentTabs =
         [
-            ("dnd5e.monsters", "DungeonIconDragon", BuildMonsterContentTab(monster.Descriptor.Reference)),
+            ("dnd5e.monsters", "DungeonIconSkull", BuildMonsterContentTab(monster.Descriptor.Reference)),
             ("dnd5e.gear", "DungeonIconBackpack", BuildGearContentTab(gear.Descriptor.Reference)),
         ];
         ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
@@ -231,14 +231,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         return true;
     }
 
-    public Control CreateCard(Entry entry)
+    public Control CreateCard(Entry entry, EntryPicture picture)
     {
         if (!_contentTypes.TryGetValue(entry.Type, out var type))
         {
             throw new InvalidOperationException($"'{ContentSetId}' cannot draw a card for content type reference '{entry.Type}'.");
         }
 
-        return type.CreateCard(entry.Values);
+        return type.CreateCard(entry.Values, picture);
     }
 
     public IBrush? ResolveBadgeBrush(string colorKey) => RarityBrushes.GetValueOrDefault(colorKey);
@@ -246,14 +246,14 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// One row of the content-type table. Every type declares "image" (<see cref="Monster.Image"/>,
     /// <see cref="Gear.Image"/>) as its picture, so the loader checks its path at load time without
-    /// knowing what the type is.
+    /// knowing what the type is, and every card stands a frame for it.
     /// </summary>
     private ContentTypeRegistration Register<TRecord>(
-        string typeId, string name, int version, Func<TRecord, Control> createCard) =>
+        string typeId, string name, int version, Func<TRecord, EntryPicture, Control> createCard) =>
         new(
             new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(typeId)), name, version, ImagePropertyName),
             values => values.Read<TRecord>(),
-            values => createCard(values.Read<TRecord>()));
+            (values, picture) => createCard(values.Read<TRecord>(), picture));
 
     /// <summary>
     /// One of this system's content tabs, built fresh from its definition, never a stored instance: a
@@ -379,5 +379,5 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     private sealed record ContentTypeRegistration(
         ContentTypeDescriptor Descriptor,
         Action<ContentValues> Validate,
-        Func<ContentValues, Control> CreateCard);
+        Func<ContentValues, EntryPicture, Control> CreateCard);
 }

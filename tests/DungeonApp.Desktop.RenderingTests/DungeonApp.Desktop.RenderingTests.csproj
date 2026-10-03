@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+    <!-- A system's cards are views too, and only this project builds views in a window. -->
+    <ProjectReference Include="..\..\src\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
     <ProjectReference Include="..\DungeonApp.Testing\DungeonApp.Testing.csproj" />
   </ItemGroup>
 
