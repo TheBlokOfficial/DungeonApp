@@ -33,7 +33,7 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
     private static readonly CultureInfo Polish = CultureInfo.GetCultureInfo("pl-PL");
 
     private readonly ImageFrame _portrait;
-    private readonly MonsterVitalsView _vitals = new();
+    private readonly HeadlineValuesView _vitals = new();
 
     public MonsterCardView()
     {
@@ -68,7 +68,12 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
     public void SetMonster(Monster monster, EntryPicture picture)
     {
         picture.ShowIn(_portrait);
-        _vitals.SetMonster(monster);
+        _vitals.Show(
+        [
+            new HeadlineValue("KP", "DungeonIconShield", monster.Ac.ToString(CultureInfo.InvariantCulture), monster.AcSource),
+            new HeadlineValue("PZ", "DungeonIconHeart", monster.Hp.ToString(CultureInfo.InvariantCulture), monster.HpDice),
+            new HeadlineValue("Szybkość", "DungeonIconFootprints", monster.Speed),
+        ]);
 
         PhysicalAbilities.Rows =
         [

@@ -18,23 +18,25 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// Four pieces are lent to the detail header (<see cref="IEntryCardHeader"/>): the square picture -
 /// three ability cells wide, like the monster's portrait, so every card's title starts on the same
-/// line; the weight at the end of the title's line; the rarity pill at the start of the tags' row,
-/// before the subtype (<see cref="Dnd5eSystem"/>), drawn like the list's; and the Wartość / Dostrojenie pairs
-/// under them. An item with neither of those two pairs lends no block, one without a weight no
-/// title end.
+/// line; the weight and, under it, the worth at the end of the title's line; the rarity pill at the
+/// start of the tags' row, drawn like the list's (the tags after it - "magiczny", the subtype - are
+/// the profile's, <see cref="Dnd5eSystem"/>); and the KP / Obrażenia / Ładunki headline values,
+/// the same block as the monster's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
+/// with none of those three lends no block, one with neither weight nor worth no title end.
 /// </para>
 /// <para>
-/// Every value on the card comes from a field <see cref="Gear"/> declares; a pair whose field is
-/// empty is not shown, nor is a group with no pair. Nothing is computed: the weight is only written
-/// in its scale (<see cref="UnitScale.Weight"/>), the worth as a bare number (<see cref="PolishNumber"/>).
+/// Every value on the card comes from a field <see cref="Gear"/> declares; a value whose field is
+/// empty is not shown. An icon stands only by a headline value, never in the pairs. Nothing is
+/// computed: the weight is only written in its scale (<see cref="UnitScale.Weight"/>), the worth as
+/// a bare number (<see cref="PolishNumber"/>).
 /// </para>
 /// </summary>
 public partial class GearCardView : UserControl, IEntryCardHeader
 {
     private readonly ImageFrame _picture;
     private readonly WordTag _rarity = new();
-    private GearWeightView? _weight;
-    private TraitListView? _headline;
+    private GearMetadataView? _metadata;
+    private HeadlineValuesView? _headline;
 
     public GearCardView()
     {
@@ -54,15 +56,12 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
         // The pairs' values start on the title column's line, as on the monster card: the label
         // column and the pair's own gap together span the picture and the gap after it.
-        var labelWidth = side + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
-        WeaponTraits.LabelWidth = labelWidth;
-        ArmorTraits.LabelWidth = labelWidth;
-        ChargeTraits.LabelWidth = labelWidth;
+        Traits.LabelWidth = side + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
     }
 
     public Control HeaderVisual => _picture;
 
-    public Control? HeaderTitleEnd => _weight;
+    public Control? HeaderTitleEnd => _metadata;
 
     public Control HeaderTagsStart => _rarity;
 
@@ -72,37 +71,54 @@ public partial class GearCardView : UserControl, IEntryCardHeader
     {
         picture.ShowIn(_picture);
 
-        _weight = gear.Weight is { } weight ? new GearWeightView { Text = UnitScale.Weight.Format(weight) } : null;
+        ShowMetadata(
+            gear.Weight is { } weight ? UnitScale.Weight.Format(weight) : null,
+            gear.Value is { } value ? $"wartość {PolishNumber.Format(value)}" : null);
 
         ShowRarity(gear.Rarity);
 
-        var headline = Filled(
-            ("Wartość", gear.Value is { } value ? PolishNumber.Format(value) : null),
-            ("Dostrojenie", gear.Attunement ? Attunement(gear.AttunementBy) : null));
-        _headline = headline.Count > 0 ? new TraitListView { Rows = headline } : null;
-
-        Show(WeaponTraits, Filled(
-            ("Obrażenia", gear.Damage),
-            ("Właściwości", gear.Properties)));
-
-        var armor = new List<TraitRow>();
+        var headline = new List<HeadlineValue>();
         if (gear.ArmorClass is { } armorClass)
         {
-            armor.Add(new TraitRow("KP", armorClass, Icon: ThemeResource.Get<DrawingImage>("DungeonIconShield")));
+            headline.Add(new HeadlineValue("KP", "DungeonIconShield", armorClass, gear.ArmorClassNote));
         }
 
-        armor.AddRange(Filled(
+        if (gear.Damage is { } damage)
+        {
+            headline.Add(new HeadlineValue("Obrażenia", "DungeonIconSword", damage, gear.DamageType));
+        }
+
+        if (gear.Charges is { } charges)
+        {
+            headline.Add(new HeadlineValue("Ładunki", "DungeonIconZap", charges.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        _headline = headline.Count > 0 ? new HeadlineValuesView() : null;
+        _headline?.Show(headline);
+
+        var traits = Filled(
+            ("Dostrojenie", gear.Attunement ? Attunement(gear.AttunementBy) : null),
+            ("Właściwości", gear.Properties),
             ("Siła", gear.StrengthRequirement?.ToString(CultureInfo.InvariantCulture)),
-            ("Skradanie się", gear.StealthDisadvantage ? "utrudnienie" : null)));
-        Show(ArmorTraits, armor);
+            ("Skradanie się", gear.StealthDisadvantage ? "utrudnienie" : null),
+            ("Odnawianie", gear.Recharge));
+        TraitsBlock.IsVisible = traits.Count > 0;
+        Traits.Rows = traits;
 
-        Show(ChargeTraits, Filled(
-            ("Ładunki", gear.Charges?.ToString(CultureInfo.InvariantCulture)),
-            ("Odnawianie", gear.Recharge)));
-
-        Groups.IsVisible = Groups.Children.Any(group => group.IsVisible);
         DescriptionBlock.IsVisible = gear.Description is not null;
-        DescriptionText.Text = gear.Description;
+        DescriptionSection.Intro = gear.Description;
+    }
+
+    private void ShowMetadata(string? weight, string? worth)
+    {
+        if (weight is null && worth is null)
+        {
+            _metadata = null;
+            return;
+        }
+
+        _metadata = new GearMetadataView();
+        _metadata.Show(weight, worth);
     }
 
     /// <summary>
@@ -124,10 +140,4 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
     private static List<TraitRow> Filled(params (string Label, string? Value)[] pairs) =>
         [.. pairs.Where(pair => pair.Value is not null).Select(pair => new TraitRow(pair.Label, pair.Value!))];
-
-    private static void Show(TraitListView view, IReadOnlyList<TraitRow> rows)
-    {
-        view.IsVisible = rows.Count > 0;
-        view.Rows = rows;
-    }
 }

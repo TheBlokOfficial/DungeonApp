@@ -42,47 +42,57 @@
                     <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
 
                     <!-- The card's visual (IEntryCardHeader) on the left; the title column beside it:
-                         name (the card's title end against the right edge), tags (the card's tags start
-                         before them), and at its foot the card's block - pushed down by the star row to
-                         the visual's bottom edge while the column is shorter than the visual. -->
+                         name and tags (the card's tags start before them), the card's title end against
+                         the right edge beside both, and at the column's foot the card's block - pushed
+                         down by the star row to the visual's bottom edge while the column is shorter
+                         than the visual. -->
                     <Grid ColumnDefinitions="Auto,*" Classes.with-visual="{Binding HasHeaderVisual}">
                         <ContentControl Content="{Binding HeaderVisual}"
                                         IsVisible="{Binding HasHeaderVisual}"
                                         VerticalAlignment="Top" />
                         <Grid Grid.Column="1"
-                              RowDefinitions="Auto,Auto,*,Auto"
+                              RowDefinitions="Auto,*,Auto"
                               RowSpacing="{DynamicResource DungeonSpacingXs}">
-                            <Grid ColumnDefinitions="*,Auto" Classes.with-title-end="{Binding HasHeaderTitleEnd}">
+                            <Grid ColumnDefinitions="*,Auto"
+                                  RowDefinitions="Auto,Auto"
+                                  RowSpacing="{DynamicResource DungeonSpacingXs}"
+                                  Classes.with-title-end="{Binding HasHeaderTitleEnd}">
                                 <SelectableTextBlock Classes="display-xl"
                                                      Text="{Binding Name}"
                                                      TextWrapping="Wrap"
                                                      Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
                                 <!-- The title's end, centred on the title's first line: an empty,
                                      zero-wide line of the title's own style gives the cell exactly one
-                                     line's height, however many lines the title wraps to. -->
-                                <Panel Grid.Column="1" VerticalAlignment="Top" IsVisible="{Binding HasHeaderTitleEnd}">
+                                     line's height, however many lines the title wraps to. It spans the
+                                     tags' row too, so an end taller than one line (a value with a note
+                                     under it) runs down beside the tags, which wrap before it, instead
+                                     of pushing them down. -->
+                                <Panel Grid.Column="1"
+                                       Grid.RowSpan="2"
+                                       VerticalAlignment="Top"
+                                       IsVisible="{Binding HasHeaderTitleEnd}">
                                     <TextBlock Classes="display-xl" Text=" " Width="0" IsHitTestVisible="False" />
                                     <ContentControl Content="{Binding HeaderTitleEnd}" VerticalAlignment="Center" />
                                 </Panel>
+                                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagRow}" IsVisible="{Binding HasTagRow}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                                                       LineSpacing="{DynamicResource DungeonSpacingXs}" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <!-- A tag is a string drawn as a word tag; the card's tags start is a
+                                         control and shows as itself. -->
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="x:String">
+                                            <dc:WordTag>
+                                                <SelectableTextBlock Text="{Binding}" />
+                                            </dc:WordTag>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </Grid>
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding TagRow}" IsVisible="{Binding HasTagRow}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                                   LineSpacing="{DynamicResource DungeonSpacingXs}" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                                <!-- A tag is a string drawn as a word tag; the card's tags start is a
-                                     control and shows as itself. -->
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate x:DataType="x:String">
-                                        <dc:WordTag>
-                                            <SelectableTextBlock Text="{Binding}" />
-                                        </dc:WordTag>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <ContentControl Grid.Row="3"
+                            <ContentControl Grid.Row="2"
                                             Content="{Binding HeaderBlock}"
                                             IsVisible="{Binding HasHeaderBlock}" />
                         </Grid>

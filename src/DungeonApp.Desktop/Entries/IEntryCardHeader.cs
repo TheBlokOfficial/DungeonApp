@@ -15,8 +15,10 @@ namespace DungeonApp.Desktop.Entries;
 /// The visual stands left of the title column with DungeonDetailColumnGap between them, and the
 /// block sits at the foot of the title column, its bottom on the visual's bottom while the title
 /// column is shorter than the visual. The title's end stands against the column's right edge,
-/// centred on the title's first line; a long title wraps before it, and nothing else moves. The
-/// tags' start comes before the first tag, in the same wrapping row. Any piece may be null; a card that does
+/// centred on the title's first line when it is one line tall; a taller one keeps its own first
+/// line on the title's (by centring it within one line of the title's style) and runs down beside
+/// the tags. A long title and the tags both wrap before it, and nothing else moves. The tags' start
+/// comes before the first tag, in the same wrapping row. Any piece may be null; a card that does
 /// not implement this gets the header with none. Each piece is a control of its own, never a part of
 /// the card's own tree - a control has one parent.
 /// </summary>

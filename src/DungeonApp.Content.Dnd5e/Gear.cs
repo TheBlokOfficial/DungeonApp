@@ -78,7 +78,10 @@ public sealed record Gear : IJsonOnDeserialized
     /// <summary>How the charges come back, as text the GM reads ("odzyskuje 1k6+1 ładunków o świcie").</summary>
     public string? Recharge { get; init; }
 
-    /// <summary>The item's flavor and rules prose: plain text, no emphasis.</summary>
+    /// <summary>
+    /// The item's flavor and rules prose, shown as the card's "Opis" section; emphasis marked by the
+    /// pack as in a monster's sections (<c>**…**</c>).
+    /// </summary>
     public string? Description { get; init; }
 
     /// <summary>

@@ -160,14 +160,17 @@ public sealed class Dnd5eCardBuildTests
     private static readonly Gear FullGear = MinimalGear with
     {
         Rarity = "Rzadki",
-        Subtype = "magiczna",
+        Magical = true,
+        Subtype = "kostur",
         Attunement = true,
         AttunementBy = "przez czarodzieja",
         Weight = 1.5m,
         Value = 1500,
-        Damage = "1k6 obuchowe",
+        Damage = "1k6",
+        DamageType = "obuchowe",
         Properties = "uniwersalna (1k8)",
-        ArmorClass = "+2",
+        ArmorClass = "11",
+        ArmorClassNote = "+ mod. Zr",
         StrengthRequirement = 13,
         StealthDisadvantage = true,
         Charges = 7,
@@ -183,11 +186,15 @@ public sealed class Dnd5eCardBuildTests
     }
 
     private static string[] GearTraitLabels(Control card) =>
+        card.FindControl<Control>("TraitsBlock")!.IsVisible
+            ? [.. card.FindControl<TraitListView>("Traits")!.Rows.Select(row => row.Label)]
+            : [];
+
+    private static string[] TitleEndTexts(IEntryCardHeader header) =>
     [
-        .. new[] { "WeaponTraits", "ArmorTraits", "ChargeTraits" }
-            .Select(name => card.FindControl<TraitListView>(name)!)
-            .Where(list => list.IsVisible)
-            .SelectMany(list => list.Rows.Select(row => row.Label)),
+        .. header.HeaderTitleEnd!.GetVisualDescendants().OfType<SelectableTextBlock>()
+            .Where(text => text.IsEffectivelyVisible)
+            .Select(text => Plain(text.Text!)),
     ];
 
     // Digit groups and units are parted by non-breaking spaces; the expectations use plain ones.
@@ -212,37 +219,37 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void An_item_with_every_field_shows_every_pair_its_weight_and_its_rarity()
+    public void An_item_with_every_field_shows_its_weight_and_worth_its_rarity_its_headline_values_every_pair_and_its_description()
     {
         var card = GearCard(FullGear);
         var header = (IEntryCardHeader)card;
         var window = ShowGear(card);
 
         Assert.IsType<ImageFrame>(header.HeaderVisual);
-        Assert.Equal(
-            "1,5 kg",
-            Plain(header.HeaderTitleEnd!.GetVisualDescendants().OfType<SelectableTextBlock>().Single().Text!));
+        Assert.Equal(["1,5 kg", "wartość 1 500"], TitleEndTexts(header));
 
         var rarity = Assert.IsType<WordTag>(header.HeaderTagsStart);
         Assert.Equal("Rzadki", rarity.Content);
         Assert.Contains("custom", rarity.Classes);
 
-        var headline = Assert.IsType<TraitListView>(header.HeaderBlock).Rows.ToList();
-        Assert.Equal(["Wartość", "Dostrojenie"], headline.Select(row => row.Label));
-        Assert.Equal("1 500", Plain(headline[0].Value));
-        Assert.Equal("wymagane przez czarodzieja", headline[1].Value);
+        var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal(["KP", "Obrażenia", "Ładunki"], tiles.Select(tile => tile.Label));
+        Assert.Equal(["11", "1k6", "7"], tiles.Select(tile => tile.Value));
+        Assert.Equal(["+ mod. Zr", "obuchowe", null], tiles.Select(tile => tile.Note));
+        Assert.All(tiles, tile => Assert.NotNull(tile.Icon));
 
-        Assert.Equal(
-            ["Obrażenia", "Właściwości", "KP", "Siła", "Skradanie się", "Ładunki", "Odnawianie"],
-            GearTraitLabels(card));
-        Assert.NotNull(card.FindControl<TraitListView>("ArmorTraits")!.Rows.First().Icon);
+        Assert.Equal(["Dostrojenie", "Właściwości", "Siła", "Skradanie się", "Odnawianie"], GearTraitLabels(card));
+        Assert.Equal("wymagane przez czarodzieja", card.FindControl<TraitListView>("Traits")!.Rows.First().Value);
+
         Assert.True(card.FindControl<Control>("DescriptionBlock")!.IsVisible);
+        var description = card.FindControl<ProseSectionView>("DescriptionSection")!;
+        Assert.Equal(("Opis", "Gładki kij."), (description.Title, description.Intro));
 
         window.Close();
     }
 
     [AvaloniaFact]
-    public void An_item_with_only_required_fields_lends_no_weight_and_no_pairs_and_shows_no_group()
+    public void An_item_with_only_required_fields_lends_no_title_end_and_no_block_and_shows_no_pairs_or_description()
     {
         var card = GearCard(MinimalGear);
         var header = (IEntryCardHeader)card;
@@ -252,8 +259,48 @@ public sealed class Dnd5eCardBuildTests
         Assert.Null(header.HeaderBlock);
         Assert.Equal("Pospolity", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
         Assert.Empty(GearTraitLabels(card));
-        Assert.False(card.FindControl<Control>("Groups")!.IsVisible);
         Assert.False(card.FindControl<Control>("DescriptionBlock")!.IsVisible);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void An_item_with_only_headline_values_shows_the_filled_ones_from_the_left_and_no_pairs()
+    {
+        var card = GearCard(MinimalGear with { Damage = "1k8", Charges = 3 });
+        var header = (IEntryCardHeader)card;
+        var window = ShowGear(card);
+
+        var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal(["Obrażenia", "Ładunki"], tiles.Select(tile => tile.Label));
+        Assert.Equal([0, 1], tiles.Select(Grid.GetColumn));
+        Assert.Equal([null, null], tiles.Select(tile => tile.Note));
+        Assert.Empty(GearTraitLabels(card));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void An_item_without_headline_values_lends_no_block_but_shows_its_pairs()
+    {
+        var card = GearCard(MinimalGear with { Attunement = true, Properties = "lekka" });
+        var header = (IEntryCardHeader)card;
+        var window = ShowGear(card);
+
+        Assert.Null(header.HeaderBlock);
+        Assert.Equal(["Dostrojenie", "Właściwości"], GearTraitLabels(card));
+        Assert.Equal("wymagane", card.FindControl<TraitListView>("Traits")!.Rows.First().Value);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void Without_a_weight_the_worth_alone_ends_the_title()
+    {
+        var card = GearCard(MinimalGear with { Value = 75 });
+        var window = ShowGear(card);
+
+        Assert.Equal(["wartość 75"], TitleEndTexts(card));
 
         window.Close();
     }
@@ -261,17 +308,19 @@ public sealed class Dnd5eCardBuildTests
     // The worth is a bare number, no unit and no rounding: Polish grouping, decimal comma, no
     // trailing zeros.
     [AvaloniaTheory]
-    [InlineData("15", "15")]
-    [InlineData("15.00", "15")]
-    [InlineData("0.5", "0,5")]
-    [InlineData("1500", "1 500")]
-    [InlineData("0.0125", "0,0125")]
+    [InlineData("15", "wartość 15")]
+    [InlineData("15.00", "wartość 15")]
+    [InlineData("0.5", "wartość 0,5")]
+    [InlineData("1500", "wartość 1 500")]
+    [InlineData("0.0125", "wartość 0,0125")]
     public void The_worth_is_written_as_a_bare_polish_number(string value, string expected)
     {
-        var card = GearCard(MinimalGear with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+        var card = GearCard(MinimalGear with { Weight = 1, Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+        var window = ShowGear(card);
 
-        var row = Assert.Single(Assert.IsType<TraitListView>(((IEntryCardHeader)card).HeaderBlock).Rows);
-        Assert.Equal(("Wartość", expected), (row.Label, Plain(row.Value)));
+        Assert.Equal(expected, TitleEndTexts(card)[1]);
+
+        window.Close();
     }
 
     [AvaloniaFact]
@@ -280,14 +329,5 @@ public sealed class Dnd5eCardBuildTests
         var card = GearCard(MinimalGear with { Rarity = "Coś nowego" });
 
         Assert.DoesNotContain("custom", Assert.IsType<WordTag>(((IEntryCardHeader)card).HeaderTagsStart).Classes);
-    }
-
-    [AvaloniaFact]
-    public void Attunement_without_a_named_attuner_reads_required()
-    {
-        var card = GearCard(MinimalGear with { Attunement = true });
-
-        var row = Assert.Single(Assert.IsType<TraitListView>(((IEntryCardHeader)card).HeaderBlock).Rows);
-        Assert.Equal(("Dostrojenie", "wymagane"), (row.Label, row.Value));
     }
 }
