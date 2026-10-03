@@ -12,7 +12,7 @@
          note muted after it and the closing period in the name's style at the line's end; its text under it in the secondary color, the author's **…** runs
          emphasized. Every text selectable. No Margin on this root - the card view spaces sections. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
-        <dc:SectionHeading Icon="{Binding Icon}" Text="{Binding Title}" />
+        <dc:SectionHeading Text="{Binding Title}" />
 
         <StackPanel Spacing="{DynamicResource DungeonSpacingMd}">
             <SelectableTextBlock x:Name="IntroText"

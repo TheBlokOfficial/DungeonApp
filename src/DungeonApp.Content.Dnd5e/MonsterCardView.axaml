@@ -45,18 +45,12 @@
 
         <!-- ===== rules sections ===== -->
         <StackPanel x:Name="Sections" Spacing="{DynamicResource DungeonSpacingXxl}">
-            <controls:ProseSectionView x:Name="SpecialAbilitiesSection" Title="Cechy szczególne"
-                                       Icon="{DynamicResource DungeonIconSparkles}" />
-            <controls:ProseSectionView x:Name="ActionsSection" Title="Akcje"
-                                       Icon="{DynamicResource DungeonIconSwords}" />
-            <controls:ProseSectionView x:Name="SpellcastingSection" Title="Rzucanie czarów"
-                                       Icon="{DynamicResource DungeonIconWand}" />
-            <controls:ProseSectionView x:Name="BonusActionsSection" Title="Akcje dodatkowe"
-                                       Icon="{DynamicResource DungeonIconZap}" />
-            <controls:ProseSectionView x:Name="ReactionsSection" Title="Reakcje"
-                                       Icon="{DynamicResource DungeonIconUndo}" />
-            <controls:ProseSectionView x:Name="LegendaryActionsSection" Title="Akcje legendarne"
-                                       Icon="{DynamicResource DungeonIconCrown}" />
+            <controls:ProseSectionView x:Name="SpecialAbilitiesSection" Title="Cechy szczególne" />
+            <controls:ProseSectionView x:Name="ActionsSection" Title="Akcje" />
+            <controls:ProseSectionView x:Name="SpellcastingSection" Title="Rzucanie czarów" />
+            <controls:ProseSectionView x:Name="BonusActionsSection" Title="Akcje dodatkowe" />
+            <controls:ProseSectionView x:Name="ReactionsSection" Title="Reakcje" />
+            <controls:ProseSectionView x:Name="LegendaryActionsSection" Title="Akcje legendarne" />
         </StackPanel>
 
         <!-- ===== footer: the monster's flavor, not its rules ===== -->

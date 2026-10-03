@@ -5,10 +5,10 @@
     <!--
         Nagłówek sekcji (controls:SectionHeading): początek sekcji tekstu karty. W jednym rzędzie, na
         środku w pionie: kreska akcentu (Accent - tu zaczyna się sekcja; DungeonSectionHeadingBarWidth
-        x DungeonSectionHeadingBarHeight, ostre końce), ikona sekcji (DungeonActionIconSize, tekst
-        drugorzędny), tytuł w roli display-md (krój ozdobny 20, SemiBold), tekst podstawowy.
-        Odstęp między częściami DungeonSpacingSm. Kreska stoi przy lewej krawędzi - na tej samej
-        linii co treść sekcji pod nagłówkiem.
+        x DungeonSectionHeadingBarHeight, ostre końce) i tytuł w roli display-md (krój ozdobny 20,
+        SemiBold), tekst podstawowy. Bez ikony: sekcję rozpoznaje się po tytule, a obrazek przy
+        każdym nagłówku tylko dokłada szumu. Odstęp między częściami DungeonSpacingSm. Kreska stoi
+        przy lewej krawędzi - na tej samej linii co treść sekcji pod nagłówkiem.
         Bez stanów: niczego nie zwija, nie reaguje na mysz, nie przyjmuje fokusu; tytuł się zaznacza.
     -->
     <ControlTheme x:Key="{x:Type controls:SectionHeading}" TargetType="controls:SectionHeading">
@@ -23,12 +23,6 @@
                             Height="{DynamicResource DungeonSectionHeadingBarHeight}"
                             VerticalAlignment="Center"
                             Background="{DynamicResource DungeonAccentBrush}" />
-                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
-                                             Height="{DynamicResource DungeonActionIconSize}"
-                                             VerticalAlignment="Center"
-                                             Source="{TemplateBinding Icon}"
-                                             Foreground="{DynamicResource DungeonTextRegularBrush}"
-                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <SelectableTextBlock Name="PART_Text"
                                          Classes="display-md"
                                          Text="{TemplateBinding Text}"
