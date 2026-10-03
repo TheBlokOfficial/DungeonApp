@@ -10,6 +10,9 @@
         size, in pixels. Included after BuiltInControls.axaml, so a size set here wins over
         "muted"'s own. The overline classes do not uppercase - Avalonia has no style-level text
         transform; their text is written in capitals.
+        A "TextBlock" selector does not reach a SelectableTextBlock (a type selector matches the
+        exact type), so the roles selectable text takes - body, caption, display-prose, secondary -
+        name it as well.
     -->
 
     <!-- DISPLAY =========================================================== -->
@@ -28,7 +31,7 @@
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style Selector="TextBlock.display-prose">
+    <Style Selector="TextBlock.display-prose, SelectableTextBlock.display-prose">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -37,7 +40,7 @@
     </Style>
 
     <!-- TEKST ============================================================= -->
-    <Style Selector="TextBlock.body">
+    <Style Selector="TextBlock.body, SelectableTextBlock.body">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -59,7 +62,7 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="LetterSpacing" Value="0.36" />
     </Style>
-    <Style Selector="TextBlock.caption">
+    <Style Selector="TextBlock.caption, SelectableTextBlock.caption">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="11" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -97,7 +100,7 @@
     <!-- KOLOR ============================================================= -->
     <!-- Color only - never typeface or size, so it combines with any style above. The default text
          color (BuiltInControls.axaml) is DungeonTextPrimaryBrush; "secondary" is the second role. -->
-    <Style Selector="TextBlock.secondary">
+    <Style Selector="TextBlock.secondary, SelectableTextBlock.secondary">
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
     </Style>
 

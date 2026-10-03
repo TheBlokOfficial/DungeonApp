@@ -8,9 +8,10 @@
              Width="560"
              HorizontalAlignment="Left">
 
-    <!-- Klocek szczegółu wpisu: nagłówek wpisu i karta systemu pod nim, szerokość
-         560. Bez tła, obramowania (ramy), przewijania i zewnętrznych odstępów - te daje host (zakładka
-         treści dziś, okienko podglądu w kampanii później). DataContext: ContentDetailViewModel. -->
+    <!-- An entry's detail block: the entry's header with the system's card under it, 560 wide. No
+         background, border, scrolling or outer spacing - the host gives those (the content tab today,
+         a preview window in the campaign later). The whole block is one text selection area: a drag
+         started beside a card's text selects it. DataContext: ContentDetailViewModel. -->
     <UserControl.Resources>
         <conv:UpperCaseConverter x:Key="UpperCase" />
     </UserControl.Resources>
@@ -19,8 +20,9 @@
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
             <StackPanel Spacing="{DynamicResource DungeonSpacingXl}">
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
-                    <!-- Ścieżka "{Typ} › {Kategoria} › {Nazwa}" - kontrolka ramy (motyw controls:Breadcrumbs):
-                         ślad przygaszony, bieżący odcinek wyróżniony; za wąsko - ślad się skraca. -->
+                    <!-- The "{Typ} › {Kategoria} › {Nazwa}" path - a frame control (controls:Breadcrumbs
+                         theme): the trail dimmed, the current segment emphasized; too narrow - the
+                         trail shortens. -->
                     <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
                     <TextBlock Classes="display-xl"
                                Text="{Binding Name}"
@@ -46,8 +48,8 @@
         </DataTemplate>
 
         <DataTemplate DataType="ct:BrokenContentDetailViewModel" x:DataType="ct:BrokenContentDetailViewModel">
-            <!-- Ten sam kształt co wpis: nagłówek (6 między elementami), 20 do miejsca karty, w którym
-                 stoi powód i ścieżka pliku. -->
+            <!-- The same shape as an entry: the header (6 between its parts), 20 to where the card
+                 would stand, which holds the reason and the file path. -->
             <StackPanel Spacing="{DynamicResource DungeonSpacingXl}">
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                     <TextBlock Classes="overline-sm"
@@ -74,5 +76,7 @@
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <ContentControl Content="{Binding}" />
+    <dc:TextSelectionArea>
+        <ContentControl Content="{Binding}" />
+    </dc:TextSelectionArea>
 </UserControl>
