@@ -236,7 +236,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 2,
+          "templateVersion": 1,
           "values": {
             "size": "Mały",
             "type": "humanoid",
@@ -263,7 +263,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 2,
+          "templateVersion": 1,
           "values": {
             "size": "Duży",
             "type": "niebianin",
@@ -299,7 +299,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 2,
+          "templateVersion": 1,
           "values": {
             "size": "Mały",
             "type": "humanoid",

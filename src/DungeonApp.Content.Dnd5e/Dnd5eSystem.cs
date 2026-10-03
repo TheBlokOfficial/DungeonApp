@@ -21,7 +21,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// The one place in the application allowed to know what a monster or a piece of gear is. Declares
-/// two content types - <c>monster</c> ("Potwór", version 2) and <c>gear</c> ("Przedmiot", version 1)
+/// two content types - <c>monster</c> ("Potwór", version 1) and <c>gear</c> ("Przedmiot", version 1)
 /// - builds their cards, and declares this system's tabs: "Potwory" and "Przedmioty" in the System
 /// category, "Biurko" in the Campaign category.
 /// <para>
@@ -45,13 +45,6 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     // duplicating the literal there instead would let the two silently drift.
     internal const string MonsterTypeId = "monster";
     private const string GearTypeId = "gear";
-
-    /// <summary>
-    /// The shape version of <see cref="Monster"/>, raised whenever it changes in a way an entry
-    /// written for an earlier shape would be misread under. The loader then marks such an entry
-    /// stale instead of handing it to the deserializer.
-    /// </summary>
-    private const int MonsterTypeVersion = 2;
 
     /// <summary>The JSON name of <see cref="Monster.Image"/> and <see cref="Gear.Image"/>.</summary>
     private const string ImagePropertyName = "image";
@@ -134,7 +127,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         Id = SystemId.Create(IdValue);
         ContentSetId = ContentId.Create(IdValue);
 
-        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: MonsterTypeVersion, (monster, picture) =>
+        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: 1, (monster, picture) =>
         {
             var card = new MonsterCardView();
             card.SetMonster(monster, picture);

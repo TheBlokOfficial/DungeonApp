@@ -2,7 +2,7 @@
   "id": "goblin",
   "name": "Goblin",
   "template": "dnd5e:monster",
-  "templateVersion": 2,
+  "templateVersion": 1,
 
   "values": {
     "size": "Mały",

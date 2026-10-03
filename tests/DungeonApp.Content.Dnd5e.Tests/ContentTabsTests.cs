@@ -44,7 +44,7 @@ public sealed class ContentTabsTests
             Challenge = challenge,
             Actions = new StatblockSection { Entries = [new StatblockEntry { Name = "Brak", Text = "Nic nie robi." }] },
         };
-        return new Entry(ContentId.Create("m"), "Testowy potwór", reference, 2, ContentValues.From(monster));
+        return new Entry(ContentId.Create("m"), "Testowy potwór", reference, 1, ContentValues.From(monster));
     }
 
     private static Entry GearEntry(string rarity)

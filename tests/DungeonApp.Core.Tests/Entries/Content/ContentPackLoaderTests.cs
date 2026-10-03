@@ -49,7 +49,7 @@ public sealed class ContentPackLoaderTests : IDisposable
         var monster = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("monster"));
         var gear = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("gear"));
         var types = FakeContentTypeCatalog.Of(
-            new ContentTypeDescriptor(monster, "Monster", 2),
+            new ContentTypeDescriptor(monster, "Monster", 1),
             new ContentTypeDescriptor(gear, "Gear", 1));
 
         var registry = await new ContentPackLoader(

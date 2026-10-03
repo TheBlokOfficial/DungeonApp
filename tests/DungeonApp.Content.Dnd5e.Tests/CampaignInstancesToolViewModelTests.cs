@@ -294,7 +294,7 @@ public sealed class CampaignInstancesToolViewModelTests
             Challenge = "1/4",
             Actions = new StatblockSection { Entries = [new StatblockEntry { Name = "Tasak", Text = "Tnie." }] },
         };
-        var entry = new Entry(ContentId.Create(entryId), name, reference, 2, ContentValues.From(monster));
+        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(monster));
 
         Assert.True(Dnd5e.TryGet(reference, out var descriptor));
 
