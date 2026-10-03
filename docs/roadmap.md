@@ -79,6 +79,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
+- Karta przedmiotu czeka na przegląd autora w aplikacji. Znany brak: odstęp między nagłówkiem
+  a pierwszym separatorem jest ok. dwa razy większy niż wokół pozostałych separatorów (widać
+  przy linie); wyrównać do ich rytmu, karta potwora bez zmian.
 
 ## Po stronie autora
 
