@@ -236,7 +236,7 @@ public sealed class Dnd5eCardBuildTests
             ["Obrażenia", "Właściwości", "KP", "Siła", "Skradanie się", "Ładunki", "Odnawianie"],
             GearTraitLabels(card));
         Assert.NotNull(card.FindControl<TraitListView>("ArmorTraits")!.Rows.First().Icon);
-        Assert.True(card.FindControl<Control>("Footer")!.IsVisible);
+        Assert.True(card.FindControl<Control>("DescriptionBlock")!.IsVisible);
 
         window.Close();
     }
@@ -253,7 +253,7 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal("Zwykły", Assert.IsType<WordTag>(header.HeaderTagsEnd).Content);
         Assert.Empty(GearTraitLabels(card));
         Assert.False(card.FindControl<Control>("Groups")!.IsVisible);
-        Assert.False(card.FindControl<Control>("Footer")!.IsVisible);
+        Assert.False(card.FindControl<Control>("DescriptionBlock")!.IsVisible);
 
         window.Close();
     }

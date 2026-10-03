@@ -9,7 +9,7 @@
          are lent to the detail header (GearCardView.axaml.cs); the card itself, top to bottom:
          - the item's rules values as pairs, their values on the title line, in three groups parted by
            a gap - weapon, armor, charges - each shown only when one of its fields is filled;
-         - the description as a small italic footer, only when filled.
+         - the description as card prose, only when filled.
          Spacing between controls is set here, on the host, never carried by a control itself. -->
     <StackPanel>
         <!-- ===== pairs ===== -->
@@ -19,11 +19,12 @@
             <controls:TraitListView x:Name="ChargeTraits" />
         </StackPanel>
 
-        <!-- ===== footer: the item's description ===== -->
-        <StackPanel x:Name="Footer">
-            <Separator x:Name="FooterSeparator" Classes="section" />
+        <!-- ===== description: the item's rules as well as its flavor, so card prose (the
+             monster's entry text), not a footer ===== -->
+        <StackPanel x:Name="DescriptionBlock">
+            <Separator Classes="section" />
             <SelectableTextBlock x:Name="DescriptionText"
-                                 Classes="display-note muted"
+                                 Classes="body secondary"
                                  TextWrapping="Wrap" />
         </StackPanel>
     </StackPanel>

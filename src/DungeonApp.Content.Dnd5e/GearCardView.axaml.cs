@@ -101,7 +101,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
             ("Odnawianie", gear.Recharge)));
 
         Groups.IsVisible = Groups.Children.Any(group => group.IsVisible);
-        Footer.IsVisible = gear.Description is not null;
+        DescriptionBlock.IsVisible = gear.Description is not null;
         DescriptionText.Text = gear.Description;
     }
 
