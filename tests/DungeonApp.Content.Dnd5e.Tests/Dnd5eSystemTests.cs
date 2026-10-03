@@ -105,9 +105,11 @@ public sealed class Dnd5eSystemTests
             "attunementBy": "przez barda, kapłana albo druida",
             "weight": 2,
             "value": 0.5,
-            "damage": "1k6 obuchowe",
+            "damage": "1k6",
+            "damageType": "obuchowe",
             "properties": "uniwersalna (1k8)",
-            "armorClass": "+2",
+            "armorClass": "11",
+            "armorClassNote": "+ mod. Zr",
             "strengthRequirement": 13,
             "stealthDisadvantage": true,
             "charges": 10,
@@ -127,9 +129,11 @@ public sealed class Dnd5eSystemTests
         Assert.Equal("przez barda, kapłana albo druida", gear.AttunementBy);
         Assert.Equal(2m, gear.Weight);
         Assert.Equal(0.5m, gear.Value);
-        Assert.Equal("1k6 obuchowe", gear.Damage);
+        Assert.Equal("1k6", gear.Damage);
+        Assert.Equal("obuchowe", gear.DamageType);
         Assert.Equal("uniwersalna (1k8)", gear.Properties);
-        Assert.Equal("+2", gear.ArmorClass);
+        Assert.Equal("11", gear.ArmorClass);
+        Assert.Equal("+ mod. Zr", gear.ArmorClassNote);
         Assert.Equal(13, gear.StrengthRequirement);
         Assert.True(gear.StealthDisadvantage);
         Assert.Equal(10, gear.Charges);
@@ -137,9 +141,11 @@ public sealed class Dnd5eSystemTests
     }
 
     // The gear record is its own validator, like the monster's: a missing required value, an
-    // unknown key, a who-attunes without attunement and a negative worth each reject the entry,
-    // whose reason names the offending key.
+    // unknown key, a who-attunes without attunement, a note without the value it stands under and a
+    // negative worth each reject the entry, whose reason names the offending key.
     [Theory]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"damageType\": \"cięte\"", "damageType")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Zbroja\", \"armorClassNote\": \"+ mod. Zr\"", "armorClassNote")]
     [InlineData("\"rarity\": \"Pospolity\"", "category")]
     [InlineData("\"category\": \"Broń\"", "rarity")]
     [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"price\": 15", "price")]

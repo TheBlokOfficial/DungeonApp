@@ -11,7 +11,8 @@
     "weight": 1.5,
     "value": 15,
 
-    "damage": "1k8 cięte",
+    "damage": "1k8",
+    "damageType": "cięte",
     "properties": "uniwersalna (1k10)",
 
     "description": "Prosta, obosieczna klinga do walki jedną ręką. Ujęty oburącz miecz zadaje cięższe rany."

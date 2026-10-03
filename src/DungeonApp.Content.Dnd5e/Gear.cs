@@ -50,14 +50,23 @@ public sealed record Gear : IJsonOnDeserialized
     /// </summary>
     public decimal? Value { get; init; }
 
-    /// <summary>A weapon's damage as written ("1k8 cięte").</summary>
+    /// <summary>A weapon's damage dice as written ("1k8") - the card's large value.</summary>
     public string? Damage { get; init; }
+
+    /// <summary>The kind of <see cref="Damage"/> ("cięte"), written under it.</summary>
+    public string? DamageType { get; init; }
 
     /// <summary>A weapon's properties as written ("uniwersalna (1k10)").</summary>
     public string? Properties { get; init; }
 
-    /// <summary>Armor's or a shield's armor class as written ("16", "11 + mod. Zr", "+2").</summary>
+    /// <summary>
+    /// Armor's or a shield's armor class, short ("16", "11", "+2") - the card's large value; what is
+    /// added to it goes to <see cref="ArmorClassNote"/>.
+    /// </summary>
     public string? ArmorClass { get; init; }
+
+    /// <summary>What is added to <see cref="ArmorClass"/> ("+ mod. Zr (maks. 2)"), written under it.</summary>
+    public string? ArmorClassNote { get; init; }
 
     /// <summary>The Strength score heavy armor asks for.</summary>
     public int? StrengthRequirement { get; init; }
@@ -82,8 +91,9 @@ public sealed record Gear : IJsonOnDeserialized
 
     /// <summary>
     /// Saying who may attune to an item that needs no attunement contradicts itself; the entry is
-    /// refused rather than drawn with one of the two silently ignored. A negative worth means nothing
-    /// on the scale and is refused too.
+    /// refused rather than drawn with one of the two silently ignored. So is a note under a value that
+    /// is not there (a damage type without dice, an armor class note without an armor class). A
+    /// negative worth means nothing on the scale and is refused too.
     /// </summary>
     private void OnDeserialized()
     {
@@ -95,6 +105,16 @@ public sealed record Gear : IJsonOnDeserialized
         if (AttunementBy is not null && !Attunement)
         {
             throw new JsonException("\"attunementBy\" needs \"attunement\": true.");
+        }
+
+        if (DamageType is not null && Damage is null)
+        {
+            throw new JsonException("\"damageType\" needs \"damage\".");
+        }
+
+        if (ArmorClassNote is not null && ArmorClass is null)
+        {
+            throw new JsonException("\"armorClassNote\" needs \"armorClass\".");
         }
     }
 }
