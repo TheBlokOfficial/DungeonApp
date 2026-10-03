@@ -108,6 +108,16 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Proza karty
   jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu zaznacza najbliższy blok
   (`TextSelectionArea`) — zaznaczenia przez kilka bloków naraz nie ma.
+- **Zasady wyglądu kart** (przyjęte przez autora na karcie potwora; obowiązują każdą kartę):
+  układ stoi na kilku pionowych liniach, do których wyrównuje się wszystko (portret ma szerokość
+  bloku pod nim, wartości par zaczynają się na linii nazwy). Sekcje są statyczne — bez rozwijania,
+  strzałek i wcięć; to, co puste, się nie pokazuje. Karta nie reaguje na mysz. Bloki z obramowaniem
+  mają ostre rogi. Liczby krojem interfejsu z cyframi tabelarycznymi, bez kroju o stałej szerokości.
+  Ikona tylko tam, gdzie niesie znaczenie przez konwencję (tarcza przy KP), nigdy jako ozdoba.
+  Wysokość wiersza wyznacza linia tekstu — plakietka jej nie podnosi. Nazwa wpisu prozy pogrubiona,
+  w osobnej linii, z kropką; wyróżnienia w tekście zaznacza paczka (`**…**`). Odcień wartości:
+  nasycona barwa przy małej nieprzezroczystości, nie barwa przygaszona. Opis to mała stopka.
+  Wygląd sprawdza się renderem (`tools/render`) przed oddaniem autorowi.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
   system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PZ).
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta pod spodem. Tokeny kolorów mają
