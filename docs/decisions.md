@@ -61,6 +61,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   nie podnosi wersji formatu: niezgodną zmianę robi się w miejscu, a stare dane przepisuje albo usuwa
   ręcznie. Migracji nie ma; mechanizm porównania wersji zostaje. *Wyzwalacz:* koniec tego kamienia —
   od tej chwili niezgodna zmiana podnosi wersję i przychodzi razem z migracją.
+- **Wartość jest we wpisie, cena na slocie.** Wpis przedmiotu niesie wartość: liczbę bez jednostki,
+  z ułamkami, która mówi tylko, ile razy coś jest cenniejsze od czegoś innego. Cenę nakłada
+  sprzedający — należy do slotu (sklep, plecak) razem z ilością, więc ten sam przedmiot kosztuje
+  różnie w różnych miejscach bez reguły wybierającej cenę według miejsca (zakaz 1). Skala liczb to
+  umowa autora paczki, nie aplikacji. Jednostki (kilogramy i funty, monety kampanii) to listy
+  mnożników od jednej bazy.
 
 ## Odrzucone
 

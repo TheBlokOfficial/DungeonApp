@@ -15,9 +15,6 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
    - **Karta potwora czeka na przegląd autora w aplikacji:** portret obok nazwy, KP, PZ i Szybkość
      pod tagami, dwie tabele cech, stałe sekcje prozy z nazwanymi wpisami.
-   - **Karta przedmiotu** (ramka obrazka już stoi): kategoria, podtyp, dostrojenie, cena (potrzebna
-     do handlu), waga z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie
-     się, ładunki i odnawianie. Filtry Kategoria i Dostrojenie.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
      po poziomie i szkole; koncentracja i rytuał jako tagi.
@@ -28,7 +25,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
      typie, gdy rekord i karta typu są gotowe. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
-     ma pięć potworów przykładowych.
+     ma pięć potworów i osiem przedmiotów przykładowych. Przed wyceną przedmiotów ustalić skalę
+     wartości: małe, czytelne liczby z miejscem w dół i w górę (dziś przykłady mają cenę SRD
+     w sztukach złota).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
@@ -49,9 +48,11 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 6. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
    i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje.
 7. **Ekwipunek, sakiewka, handel** — entity w entity (plecak postaci jako gałąź drzewa świata), złoto
-   na entity. Okno handlu: MG wskazuje sprzedającego, kupującego i sakiewkę, aplikacja proponuje
-   cenę z karty, MG ją poprawia, jedno kliknięcie przenosi przedmiot i złoto. Brak złota widać, nie
-   blokuje.
+   na entity. Cena i ilość leżą na slocie (sklep, plecak), nie we wpisie. Okno handlu: MG wskazuje
+   sprzedającego, kupującego i sakiewkę, aplikacja proponuje cenę z wartości wpisu przez kurs waluty
+   kampanii, MG ją poprawia, jedno kliknięcie przenosi przedmiot i złoto. Waluta kampanii to lista
+   nominałów z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota
+   widać, nie blokuje.
 8. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
    wartość). Podróż to jedna akcja: drużyna do innego katalogu, zegar o czas wpisany przez MG.
 9. **Fabuła i lore** — zakładka dokumentów. Markdown z paczki, pisany poza aplikacją (np.

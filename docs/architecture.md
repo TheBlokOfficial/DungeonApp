@@ -103,10 +103,12 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   System podaje profil typu: kategorię, tagi, odznakę wiersza, filtry wartości i sortowania. Szczegół
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
-  pierwszej linii nazwy, słowo po tagach i blok pod tagami (u potwora portret oraz KP, PZ i Szybkość;
-  u przedmiotu kwadratowy obrazek, waga, plakietka rzadkości oraz Wartość i Dostrojenie). Karta
-  potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
-  z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Proza karty
+  pierwszej linii nazwy, słowo przed tagami i blok pod tagami (u potwora portret oraz KP, PZ i Szybkość).
+  Karta potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
+  z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Przedmiot:
+  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek, waga z ikoną odważnika na
+  końcu linii nazwy, plakietka rzadkości przed podtypem, pary Wartość i Dostrojenie; pod nagłówkiem
+  pary w grupach broń / zbroja / ładunki (pusta grupa znika), opis jako zwykła proza karty. Proza karty
   jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu zaznacza najbliższy blok
   (`TextSelectionArea`) — zaznaczenia przez kilka bloków naraz nie ma.
 - **Zasady wyglądu kart** (przyjęte przez autora na karcie potwora; obowiązują każdą kartę):
@@ -117,7 +119,8 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   Ikona tylko tam, gdzie niesie znaczenie przez konwencję (tarcza przy KP), nigdy jako ozdoba.
   Wysokość wiersza wyznacza linia tekstu — plakietka jej nie podnosi. Nazwa wpisu prozy pogrubiona,
   w osobnej linii, z kropką; wyróżnienia w tekście zaznacza paczka (`**…**`). Odcień wartości:
-  nasycona barwa przy małej nieprzezroczystości, nie barwa przygaszona. Opis to mała stopka.
+  nasycona barwa przy małej nieprzezroczystości, nie barwa przygaszona. Opis, który jest tylko
+  kolorytem (potwór), to mała stopka; opis niosący zasady (przedmiot) to zwykła proza karty.
   Wygląd sprawdza się renderem (`tools/render`) przed oddaniem autorowi.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
   system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PZ).
