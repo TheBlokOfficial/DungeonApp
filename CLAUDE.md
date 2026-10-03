@@ -33,10 +33,14 @@ powiedz to autorowi.
 - **Przed większą funkcją** daj w rozmowie 5–10 linii planu: co autor zobaczy i co się zmieni w kodzie.
   Nie zapisuj planów jako dokumentów w repozytorium.
 - **Czytaj kod.** Kod jest źródłem prawdy; dokumenty są tylko tam, gdzie kod nie wystarcza.
-- **Subagenci** tylko wtedy, gdy realnie oszczędzają: szerokie przeszukanie tylko do odczytu albo
-  wydzielona praca mechaniczna. Nie są domyślnym trybem pracy. Pracę mechaniczną zleca się agentowi
-  `porzadki` (`.claude/agents/`, Opus, effort medium) w worktree. Subagent biegnie **zawsze w tle**,
-  także gdy nie ma innej pracy — autor musi móc w tym czasie pisać i pytać.
+- **Architekt i wykonawcy.** Główna sesja jest architektem: rozmawia z autorem, pisze specyfikację,
+  ogląda rendery (`tools/render`) i decyduje; sama nie czyta szczegółów kodu ponad potrzebę decyzji.
+  Kod piszą wykonawcy (subagenci) w worktree, **zawsze w tle** — autor musi móc w tym czasie pisać.
+  Zlecenie ma etapy z punktem zatrzymania i wskazuje pliki; wykonawca czyta tylko to, co zmienia,
+  commituje po każdym zamkniętym kroku, a wygląd renderuje i sam porównuje ze specyfikacją przed
+  oddaniem. W jednym worktree pracuje naraz jeden wykonawca. Poprawki idą do tego samego wykonawcy,
+  dopóki jego kontekst jest mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
+  agent `porzadki` (`.claude/agents/`). Autorowi pokazuje się wynik, który architekt sam by przyjął.
 - **Git:** praca w gałęzi → build bez ostrzeżeń i zielone testy → scalenie do `master` → `git push`.
   CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
