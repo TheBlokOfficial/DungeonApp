@@ -25,7 +25,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
      typie, gdy rekord i karta typu są gotowe. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
-     ma pięć potworów i osiem przedmiotów przykładowych. Przed wyceną przedmiotów ustalić skalę
+     ma pięć potworów i osiem przedmiotów przykładowych. Rzadkość D&D na skalę aplikacji:
+     niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo
+     rzadkie → Epicki, legendarne i artefakty → Legendarny. Przed wyceną przedmiotów ustalić skalę
      wartości: małe, czytelne liczby z miejscem w dół i w górę (dziś przykłady mają cenę SRD
      w sztukach złota).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:

@@ -67,6 +67,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   różnie w różnych miejscach bez reguły wybierającej cenę według miejsca (zakaz 1). Skala liczb to
   umowa autora paczki, nie aplikacji. Jednostki (kilogramy i funty, monety kampanii) to listy
   mnożników od jednej bazy.
+- **Rzadkość według skali gier, nie D&D.** Pięć stopni: Pospolity, Niepospolity, Rzadki, Epicki, Legendarny, z kolorami jak w grach komputerowych — przy kilkuset przedmiotach jedna skala czytelna od razu jest ważniejsza niż wierność podręcznikowi. To, czy przedmiot jest magiczny (ważne mechanicznie), niesie osobny znacznik i pigułka „magiczny”, nie rzadkość.
 
 ## Odrzucone
 
