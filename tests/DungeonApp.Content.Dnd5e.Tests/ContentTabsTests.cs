@@ -188,23 +188,40 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void An_items_only_tag_is_its_subtype_when_it_has_one()
+    public void An_items_tags_are_magical_then_its_subtype_each_only_when_it_has_one()
     {
-        var sword = GearEntry("Zwykły", gear => gear with { Category = "Broń", Subtype = "żołnierska, do walki wręcz" });
+        var sword = GearEntry("Pospolity", gear => gear with { Category = "Broń", Subtype = "żołnierska, do walki wręcz" });
+        var staff = GearEntry("Rzadki", gear => gear with { Magical = true, Subtype = "kostur" });
 
         Assert.Equal(["żołnierska, do walki wręcz"], GearProfile().Tags(sword));
+        Assert.Equal(["magiczny", "kostur"], GearProfile().Tags(staff));
+        Assert.Equal(["magiczny"], GearProfile().Tags(GearEntry("Rzadki", gear => gear with { Magical = true })));
         Assert.Empty(GearProfile().Tags(GearEntry("Rzadki")));
     }
 
-    [Fact]
-    public void A_recognised_rarity_tier_carries_a_color_key_on_its_badge()
+    [Theory]
+    [InlineData("Pospolity")]
+    [InlineData("Niepospolity")]
+    [InlineData("Rzadki")]
+    [InlineData("Epicki")]
+    [InlineData("Legendarny")]
+    public void Every_rarity_tier_carries_its_own_color_key_with_a_brush(string tier)
     {
-        var entry = GearEntry("Niezwykły");
+        var badge = GearProfile().Badge(GearEntry(tier));
 
-        var badge = GearProfile().Badge(entry);
-
-        Assert.Equal("Niezwykły", badge.Text);
+        Assert.Equal(tier, badge.Text);
         Assert.NotNull(badge.ColorKey);
+        Assert.NotNull(Dnd5e.ResolveBadgeBrush(badge.ColorKey!));
+    }
+
+    [Fact]
+    public void No_two_rarity_tiers_share_a_color_key()
+    {
+        string[] tiers = ["Pospolity", "Niepospolity", "Rzadki", "Epicki", "Legendarny"];
+
+        var keys = tiers.Select(tier => GearProfile().Badge(GearEntry(tier)).ColorKey).Distinct();
+
+        Assert.Equal(tiers.Length, keys.Count());
     }
 
     [Fact]
@@ -219,25 +236,24 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void The_rarity_filter_orders_tiers_from_mundane_to_artifact()
+    public void The_rarity_filter_orders_tiers_from_common_to_legendary()
     {
         var order = Assert.Single(GearProfile().ValueFilters, filter => filter.Label == "Rzadkość").OptionOrder;
 
-        var shuffled = new[] { "Legendarny", "Pospolity", "Artefakt", "Zwykły", "Bardzo rzadki", "Rzadki", "Niezwykły" };
+        var shuffled = new[] { "Legendarny", "Pospolity", "Epicki", "Rzadki", "Niepospolity" };
         var sorted = shuffled.OrderBy(value => value, order).ToArray();
 
-        Assert.Equal(["Zwykły", "Pospolity", "Niezwykły", "Rzadki", "Bardzo rzadki", "Legendarny", "Artefakt"], sorted);
+        Assert.Equal(["Pospolity", "Niepospolity", "Rzadki", "Epicki", "Legendarny"], sorted);
     }
 
+    /// <summary>The rulebook's own tier names are not on this scale: no color, after every tier.</summary>
     [Fact]
-    public void A_mundane_item_carries_its_own_color_key_apart_from_common()
+    public void The_rulebooks_tier_names_are_not_tiers_of_this_scale()
     {
-        var mundane = GearProfile().Badge(GearEntry("Zwykły")).ColorKey;
-        var common = GearProfile().Badge(GearEntry("Pospolity")).ColorKey;
+        var order = Assert.Single(GearProfile().ValueFilters, filter => filter.Label == "Rzadkość").OptionOrder;
 
-        Assert.NotNull(mundane);
-        Assert.NotEqual(common, mundane);
-        Assert.NotNull(Dnd5e.ResolveBadgeBrush(mundane!));
+        Assert.Null(GearProfile().Badge(GearEntry("Bardzo rzadki")).ColorKey);
+        Assert.True(order.Compare("Legendarny", "Artefakt") < 0);
     }
 
     [Fact]
@@ -258,14 +274,24 @@ public sealed class ContentTabsTests
 
         Assert.False(sort.IsTextual);
         Assert.True(sort.Compare(GearEntry("Pospolity"), GearEntry("Rzadki")) < 0);
-        Assert.True(sort.Compare(GearEntry("Rzadki"), GearEntry("Niezwykły")) > 0);
+        Assert.True(sort.Compare(GearEntry("Rzadki"), GearEntry("Niepospolity")) > 0);
     }
 
     [Fact]
-    public void Items_offer_exactly_the_rarity_and_attunement_filters_and_the_rarity_and_worth_sorts()
+    public void Items_offer_exactly_the_rarity_magic_and_attunement_filters_and_the_rarity_and_worth_sorts()
     {
-        Assert.Equal(["Rzadkość", "Dostrojenie"], GearProfile().ValueFilters.Select(filter => filter.Label));
+        Assert.Equal(["Rzadkość", "Magia", "Dostrojenie"], GearProfile().ValueFilters.Select(filter => filter.Label));
         Assert.Equal(["Rzadkość", "Wartość"], GearProfile().Sorts.Select(sort => sort.Label));
+    }
+
+    [Fact]
+    public void The_magic_filter_reads_magical_or_not_and_lists_magical_first()
+    {
+        var filter = Assert.Single(GearProfile().ValueFilters, filter => filter.Label == "Magia");
+
+        Assert.Equal("magiczny", filter.Value(GearEntry("Rzadki", gear => gear with { Magical = true })));
+        Assert.Equal("niemagiczny", filter.Value(GearEntry("Rzadki")));
+        Assert.Equal(["magiczny", "niemagiczny"], new[] { "niemagiczny", "magiczny" }.OrderBy(value => value, filter.OptionOrder));
     }
 
     [Fact]
@@ -282,9 +308,9 @@ public sealed class ContentTabsTests
     public void The_worth_sort_orders_by_number_and_knows_an_item_without_worth_has_no_key()
     {
         var sort = Assert.Single(GearProfile().Sorts, sort => sort.Label == "Wartość");
-        var cheap = GearEntry("Zwykły", gear => gear with { Value = 0.5m });
-        var dear = GearEntry("Zwykły", gear => gear with { Value = 15m });
-        var priceless = GearEntry("Zwykły");
+        var cheap = GearEntry("Pospolity", gear => gear with { Value = 0.5m });
+        var dear = GearEntry("Pospolity", gear => gear with { Value = 15m });
+        var priceless = GearEntry("Pospolity");
 
         Assert.False(sort.IsTextual);
         Assert.True(sort.Compare(cheap, dear) < 0);

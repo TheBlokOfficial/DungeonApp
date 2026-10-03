@@ -6,6 +6,7 @@
 
   "values": {
     "rarity": "Pospolity",
+    "magical": true,
     "category": "Mikstura",
     "weight": 0.25,
     "value": 50,

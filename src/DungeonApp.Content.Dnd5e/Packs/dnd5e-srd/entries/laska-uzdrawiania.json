@@ -6,6 +6,7 @@
 
   "values": {
     "rarity": "Rzadki",
+    "magical": true,
     "category": "Laska",
     "attunement": true,
     "attunementBy": "przez barda, kapłana albo druida",

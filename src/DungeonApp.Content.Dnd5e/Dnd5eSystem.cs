@@ -56,21 +56,21 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public const string IdValue = "dnd5e";
 
     /// <summary>
-    /// Rarity tiers in display order, paired with the color-key name their badge carries - an opaque
-    /// intent for <see cref="ContentBadge.ColorKey"/>, not a color; <see cref="ResolveBadgeBrush"/> is
-    /// the only place that turns it into one. A rarity string this system does not
+    /// Rarity tiers in display order - the scale of computer games, not the rulebook's - paired with
+    /// the color-key name their badge carries: an opaque intent for <see cref="ContentBadge.ColorKey"/>,
+    /// not a color; <see cref="ResolveBadgeBrush"/> is the only place that turns it into one. D&amp;D's
+    /// rarities map onto it as: mundane and common → Pospolity, uncommon → Niepospolity, rare → Rzadki,
+    /// very rare → Epicki, legendary and artifact → Legendarny. A rarity string this system does not
     /// recognise gets no color key and falls after every known tier when "Rzadkość" is ordered
     /// (see <see cref="RankedTextComparer"/>).
     /// </summary>
     private static readonly IReadOnlyList<(string Tier, string ColorKey)> RarityTiers =
     [
-        ("Zwykły", "rarity-mundane"),
         ("Pospolity", "rarity-common"),
-        ("Niezwykły", "rarity-uncommon"),
+        ("Niepospolity", "rarity-uncommon"),
         ("Rzadki", "rarity-rare"),
-        ("Bardzo rzadki", "rarity-very-rare"),
+        ("Epicki", "rarity-epic"),
         ("Legendarny", "rarity-legendary"),
-        ("Artefakt", "rarity-artifact"),
     ];
 
     private static readonly IComparer<string> RarityOrder = new RankedTextComparer([.. RarityTiers.Select(tier => tier.Tier)]);
@@ -81,29 +81,23 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// The brush each rarity color key resolves to (<see cref="ResolveBadgeBrush"/>) - this system's
     /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens: a scale
-    /// that belongs to a system carries its own colors. Hues follow the usual rarity convention (white,
-    /// green, blue, violet, orange, pink) and none is the accent color; a mundane item, below the
-    /// magic tiers, is the quietest - a plain gray clearly darker than the common white. Each is bright
-    /// enough for its text to keep at least 4.5:1 against its own dimmed pill (the same color at 16%)
-    /// laid on the list row at rest, under the pointer and selected - which is why the mundane gray
-    /// cannot get any darker and the common tier is the lighter of the two.
+    /// that belongs to a system carries its own colors. Hues follow the computer-game rarity convention
+    /// (light gray, green, blue, violet, orange) and none is the accent color. Each is bright enough
+    /// for its text to keep at least 4.5:1 against its own dimmed pill (the same color at 16%) laid on
+    /// the list row at rest, under the pointer and selected.
     /// </summary>
     private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
     {
-        // Rzadkość: zwykły (przedmiot niemagiczny).
-        ["rarity-mundane"] = new SolidColorBrush(Color.Parse("#A9A8A1")),
         // Rzadkość: pospolity.
         ["rarity-common"] = new SolidColorBrush(Color.Parse("#D2D0C8")),
-        // Rzadkość: niezwykły.
+        // Rzadkość: niepospolity.
         ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#95BA9C")),
         // Rzadkość: rzadki.
         ["rarity-rare"] = new SolidColorBrush(Color.Parse("#7AAAD6")),
-        // Rzadkość: bardzo rzadki.
-        ["rarity-very-rare"] = new SolidColorBrush(Color.Parse("#BA9EDC")),
+        // Rzadkość: epicki.
+        ["rarity-epic"] = new SolidColorBrush(Color.Parse("#BA9EDC")),
         // Rzadkość: legendarny.
         ["rarity-legendary"] = new SolidColorBrush(Color.Parse("#E8A060")),
-        // Rzadkość: artefakt.
-        ["rarity-artifact"] = new SolidColorBrush(Color.Parse("#E88AB6")),
     };
 
     private const string NeedsAttunement = "wymaga";
@@ -111,6 +105,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     /// <summary>The "Dostrojenie" filter's two options, the one that narrows the list first.</summary>
     private static readonly IComparer<string> AttunementOrder = new RankedTextComparer([NeedsAttunement, NeedsNoAttunement]);
+
+    /// <summary>The magical item's pill on the card, and the "Magia" filter's option for it.</summary>
+    private const string MagicalTag = "magiczny";
+    private const string Mundane = "niemagiczny";
+
+    /// <summary>The "Magia" filter's two options, the one that narrows the list first.</summary>
+    private static readonly IComparer<string> MagicOrder = new RankedTextComparer([MagicalTag, Mundane]);
 
     private static readonly IComparer<string> ChallengeOrder = new ChallengeOrderComparer();
 
@@ -320,23 +321,25 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     /// <summary>
     /// "Przedmioty": category "Kategoria" = <see cref="Gear.Category"/> - the breadcrumb's middle
-    /// segment and the tab's category filter, like a monster's group; tags = the subtype, when the item
-    /// has one (the card puts the rarity pill before it); badge = rarity, with a
-    /// color key per <see cref="RarityColorKeys"/> for a recognised tier and none for anything else;
-    /// two value filters - "Rzadkość" (<see cref="RarityOrder"/>) and "Dostrojenie" ("wymaga" /
-    /// "nie wymaga") - and two sorts: "Rzadkość" in the same <see cref="RarityOrder"/>, and
-    /// "Wartość" by number, an item with no worth last in either direction.
+    /// segment and the tab's category filter, like a monster's group; tags = "magiczny" for a magical
+    /// item, then the subtype, each only when there is one (the card puts the rarity pill before them);
+    /// badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised tier and
+    /// none for anything else; three value filters - "Rzadkość" (<see cref="RarityOrder"/>), "Magia"
+    /// ("magiczny" / "niemagiczny") and "Dostrojenie" ("wymaga" / "nie wymaga") - and two sorts:
+    /// "Rzadkość" in the same <see cref="RarityOrder"/>, and "Wartość" by number, an item with no worth
+    /// last in either direction.
     /// </summary>
     private static ContentTabDefinition BuildGearContentTab(ContentTypeReference gear)
     {
         var profile = new ContentTypeProfile<Gear>(
             gear,
             category: new ContentCategorySpec<Gear>("Kategoria", gear => gear.Category),
-            tags: gear => gear.Subtype is { } subtype ? [subtype] : [],
+            tags: gear => [.. new[] { gear.Magical ? MagicalTag : null, gear.Subtype }.OfType<string>()],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
             valueFilters:
             [
                 new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder),
+                new ContentValueFilterSpec<Gear>("Magia", gear => gear.Magical ? MagicalTag : Mundane, MagicOrder),
                 new ContentValueFilterSpec<Gear>("Dostrojenie", gear => gear.Attunement ? NeedsAttunement : NeedsNoAttunement, AttunementOrder),
             ],
             sorts:

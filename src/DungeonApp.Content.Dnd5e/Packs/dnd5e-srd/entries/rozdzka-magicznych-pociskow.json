@@ -5,7 +5,8 @@
   "templateVersion": 1,
 
   "values": {
-    "rarity": "Niezwykły",
+    "rarity": "Niepospolity",
+    "magical": true,
     "category": "Różdżka",
 
     "charges": 7,

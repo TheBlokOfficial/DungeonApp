@@ -155,7 +155,7 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
-    private static readonly Gear MinimalGear = new() { Rarity = "Zwykły", Category = "Ekwipunek" };
+    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek" };
 
     private static readonly Gear FullGear = MinimalGear with
     {
@@ -250,7 +250,7 @@ public sealed class Dnd5eCardBuildTests
 
         Assert.Null(header.HeaderTitleEnd);
         Assert.Null(header.HeaderBlock);
-        Assert.Equal("Zwykły", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
+        Assert.Equal("Pospolity", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
         Assert.Empty(GearTraitLabels(card));
         Assert.False(card.FindControl<Control>("Groups")!.IsVisible);
         Assert.False(card.FindControl<Control>("DescriptionBlock")!.IsVisible);

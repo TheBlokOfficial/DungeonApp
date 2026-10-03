@@ -83,6 +83,7 @@ public sealed class Dnd5eSystemTests
         var gear = potion.Entry.Values.Read<Gear>();
 
         Assert.Equal("Pospolity", gear.Rarity);
+        Assert.True(gear.Magical);
         Assert.Equal("Mikstura", gear.Category);
         Assert.Equal(0.25m, gear.Weight);
         Assert.Equal(50m, gear.Value);
@@ -97,6 +98,7 @@ public sealed class Dnd5eSystemTests
         packs.WriteFile("pack", "pack.json", PackJson);
         packs.WriteFile("pack", "entries/e.json", GearEntryJson("""
             "rarity": "Rzadki",
+            "magical": true,
             "category": "Laska",
             "subtype": "kostur",
             "attunement": true,
@@ -119,6 +121,7 @@ public sealed class Dnd5eSystemTests
         Assert.Null(entry.UnresolvedDetail);
         var gear = entry.Entry.Values.Read<Gear>();
 
+        Assert.True(gear.Magical);
         Assert.Equal("kostur", gear.Subtype);
         Assert.True(gear.Attunement);
         Assert.Equal("przez barda, kapłana albo druida", gear.AttunementBy);
@@ -137,11 +140,11 @@ public sealed class Dnd5eSystemTests
     // unknown key, a who-attunes without attunement and a negative worth each reject the entry,
     // whose reason names the offending key.
     [Theory]
-    [InlineData("\"rarity\": \"Zwykły\"", "category")]
+    [InlineData("\"rarity\": \"Pospolity\"", "category")]
     [InlineData("\"category\": \"Broń\"", "rarity")]
-    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"price\": 15", "price")]
-    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"attunementBy\": \"przez maga\"", "attunement")]
-    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"value\": -1", "value")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"price\": 15", "price")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"attunementBy\": \"przez maga\"", "attunement")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"value\": -1", "value")]
     public async Task A_malformed_gear_entry_is_rejected(string values, string named)
     {
         using var packs = new TemporaryPacks();
@@ -160,12 +163,12 @@ public sealed class Dnd5eSystemTests
     {
         using var packs = new TemporaryPacks();
         packs.WriteFile("pack", "pack.json", PackJson);
-        packs.WriteFile("pack", "entries/e.json", GearEntryJson("\"rarity\": \"Zwykły\", \"category\": \"Ekwipunek\""));
+        packs.WriteFile("pack", "entries/e.json", GearEntryJson("\"rarity\": \"Pospolity\", \"category\": \"Ekwipunek\""));
 
         var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
 
         var gear = Assert.Single(registry.Entries).Entry.Values.Read<Gear>();
-        Assert.Equal(new Gear { Rarity = "Zwykły", Category = "Ekwipunek" }, gear);
+        Assert.Equal(new Gear { Rarity = "Pospolity", Category = "Ekwipunek" }, gear);
     }
 
     private static string GearEntryJson(string values) => $$"""

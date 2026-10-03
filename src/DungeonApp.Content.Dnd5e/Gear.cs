@@ -14,10 +14,14 @@ namespace DungeonApp.Content.Dnd5e;
 public sealed record Gear : IJsonOnDeserialized
 {
     /// <summary>
-    /// One of this system's rarity tiers ("Zwykły" for a mundane item, then "Pospolity" up to
-    /// "Artefakt"). Any other text is kept and shown as written, without a tier's color.
+    /// One of this system's five rarity tiers, "Pospolity" up to "Legendarny" (<see cref="Dnd5eSystem"/>).
+    /// Any other text is kept and shown as written, without a tier's color. Says how rare the item
+    /// is, never whether it is magical - that is <see cref="Magical"/>.
     /// </summary>
     public required string Rarity { get; init; }
+
+    /// <summary>Whether the item is magical - it matters to the rules, so the card shows it as a pill.</summary>
+    public bool Magical { get; init; }
 
     /// <summary>
     /// What kind of thing the item is ("Broń", "Zbroja", "Mikstura") - free text; the content tab's
