@@ -1,0 +1,234 @@
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Headless;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using DungeonApp.Content.Dnd5e;
+using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Entries.ContentTab;
+using DungeonApp.Desktop.Entries.Controls;
+using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Shell.Gallery;
+using DungeonApp.Desktop.Systems;
+using DungeonApp.Desktop.Workspace.Layout;
+using SkiaSharp;
+
+namespace DungeonApp.Tools.Render;
+
+/// <summary>
+/// Boots the real shell (real App, real main window, the real system reading the bundled pack) on
+/// the headless platform with Skia rasterization, so a look can be checked without a screen. Writes
+/// one PNG per content card and per gallery section into the directory given as the only argument.
+/// Nothing reads the GM's Documents: packs come from the build output, desk layouts go to a
+/// throwaway directory.
+/// </summary>
+internal static class Program
+{
+    private const int WindowWidth = 1440;
+    private const int WindowHeight = 900;
+
+    private static string _outDir = "";
+
+    /// <summary>
+    /// Pack directories read after the bundled one - the test fixtures, because the bundled pack has
+    /// no gear yet and the gear card should be rendered too.
+    /// </summary>
+    private static string[] _extraPacks = [];
+
+    /// <summary>Arguments: the output directory, then any number of extra pack directories.</summary>
+    [STAThread]
+    private static int Main(string[] args)
+    {
+        _outDir = Path.GetFullPath(args.Length > 0 ? args[0] : "out");
+        _extraPacks = [.. args.Skip(1).Select(Path.GetFullPath)];
+        Directory.CreateDirectory(_outDir);
+
+        var lifetime = new ClassicDesktopStyleApplicationLifetime { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()))
+            .UseSkia()
+            .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false })
+            .WithInterFont()
+            .SetupWithLifetime(lifetime);
+
+        var window = lifetime.MainWindow ?? throw new InvalidOperationException("The app did not create its main window.");
+        var shell = (AppShellViewModel)window.DataContext!;
+        window.Width = WindowWidth;
+        window.Height = WindowHeight;
+        window.Show();
+
+        Pump(() => shell.IsReady, "startup");
+        Settle();
+
+        shell.SystemSelection.Systems.Single().ChooseCommand.Execute(null);
+        Pump(() => shell.IsSystemChosen && shell.Sidebar is not null, "system choice");
+        Settle();
+
+        RenderCards(window, shell, "Potwory", "monster");
+        RenderCards(window, shell, "Przedmioty", "gear");
+        RenderGallery(window, shell);
+
+        Console.WriteLine("Done.");
+        return 0;
+    }
+
+    private static IReadOnlyList<IGameSystem> BuildSystems()
+    {
+        var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), "DungeonAppRender"));
+        var system = SystemId.Create(Dnd5eSystem.IdValue);
+        return [new Dnd5eSystem(layoutStore, [SystemDirectories.BundledPacks(AppContext.BaseDirectory, system), .. _extraPacks])];
+    }
+
+    /// <summary>Selects every row of a content tab and saves its detail block - header and card.</summary>
+    private static void RenderCards(Window window, AppShellViewModel shell, string tabTitle, string prefix)
+    {
+        shell.Sidebar!.SystemTabItems.Single(item => item.Label == tabTitle).SelectCommand.Execute(null);
+        Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: ContentTabViewModel tab } && tab.Title == tabTitle, tabTitle);
+        Settle();
+
+        var tabView = (Control)shell.CurrentWorkspaceContent!;
+        var tabModel = (ContentTabViewModel)tabView.DataContext!;
+        foreach (var row in tabModel.Sections.SelectMany(section => section.Rows).ToList())
+        {
+            row.SelectCommand.Execute(null);
+            SetSize(window, WindowWidth, WindowHeight);
+            GrowToFit(window, tabView);
+
+            var detail = tabView.GetVisualDescendants().OfType<EntryDetailView>().FirstOrDefault(view => view.IsEffectivelyVisible);
+            if (detail is not null)
+            {
+                SaveCrop(window, (Control)detail.GetVisualParent()!, $"{prefix}_{Slug(row.Name)}.png");
+            }
+        }
+
+        SetSize(window, WindowWidth, WindowHeight);
+    }
+
+    /// <summary>Opens the controls gallery tall enough to show it whole and saves each section on its own.</summary>
+    private static void RenderGallery(Window window, AppShellViewModel shell)
+    {
+        shell.Sidebar!.GalleryItem.SelectCommand.Execute(null);
+        Pump(() => window.GetVisualDescendants().OfType<GalleryView>().Any(), "gallery");
+        Settle();
+
+        var gallery = window.GetVisualDescendants().OfType<GalleryView>().First();
+        GrowToFit(window, gallery);
+
+        // The sections' own column: the one panel whose children are the section views.
+        var list = gallery.GetVisualDescendants().OfType<StackPanel>()
+            .First(panel => panel.Children.Count > 0 && panel.Children.All(child => child.GetType().Name.EndsWith("Section", StringComparison.Ordinal)));
+        foreach (var section in list.Children)
+        {
+            SaveCrop(window, section, $"gallery_{Slug(section.GetType().Name.Replace("Section", "", StringComparison.Ordinal))}.png");
+        }
+
+        SetSize(window, WindowWidth, WindowHeight);
+    }
+
+    /// <summary>Enlarges the window until no visible scroll viewer under <paramref name="root"/> scrolls vertically.</summary>
+    private static void GrowToFit(Window window, Control root)
+    {
+        for (var attempt = 0; attempt < 6; attempt++)
+        {
+            var overflow = root.GetVisualDescendants().OfType<ScrollViewer>()
+                .Where(viewer => viewer.IsEffectivelyVisible)
+                .Select(viewer => viewer.Extent.Height - viewer.Viewport.Height)
+                .DefaultIfEmpty(0)
+                .Max();
+            if (overflow <= 0.5)
+            {
+                return;
+            }
+
+            SetSize(window, window.Width, Math.Ceiling(window.Height + overflow + 2));
+        }
+    }
+
+    private static void SetSize(Window window, double width, double height)
+    {
+        window.Width = width;
+        window.Height = height;
+        Settle();
+    }
+
+    private static void SaveCrop(Window window, Control control, string name)
+    {
+        Settle();
+        var origin = control.TranslatePoint(new Point(0, 0), window)
+            ?? throw new InvalidOperationException($"{name}: the control is not in the window.");
+
+        var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No frame was rendered.");
+        using var stream = new MemoryStream();
+        frame.Save(stream);
+        stream.Position = 0;
+        using var bitmap = SKBitmap.Decode(stream);
+
+        var left = Math.Max(0, (int)origin.X);
+        var top = Math.Max(0, (int)origin.Y);
+        var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + control.Bounds.Width));
+        var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + control.Bounds.Height));
+        using var subset = new SKBitmap();
+        bitmap.ExtractSubset(subset, new SKRectI(left, top, right, bottom));
+        using var image = SKImage.FromBitmap(subset);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+
+        var target = Path.Combine(_outDir, name);
+        using (var file = File.Create(target))
+        {
+            data.SaveTo(file);
+        }
+
+        Console.WriteLine($"Saved {target} ({right - left}x{bottom - top})");
+    }
+
+    /// <summary>Runs the dispatcher and render ticks for a while, so asynchronous work and transitions finish.</summary>
+    private static void Settle(int milliseconds = 700)
+    {
+        var watch = Stopwatch.StartNew();
+        while (watch.ElapsedMilliseconds < milliseconds)
+        {
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Thread.Sleep(10);
+        }
+
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void Pump(Func<bool> until, string what, int timeoutMilliseconds = 60000)
+    {
+        var watch = Stopwatch.StartNew();
+        while (!until())
+        {
+            if (watch.ElapsedMilliseconds > timeoutMilliseconds)
+            {
+                throw new TimeoutException($"Timed out waiting for {what}.");
+            }
+
+            Dispatcher.UIThread.RunJobs();
+            AvaloniaHeadlessPlatform.ForceRenderTimerTick();
+            Thread.Sleep(10);
+        }
+    }
+
+    /// <summary>A file-name-safe form of a name: lower case, Polish letters without diacritics, dashes elsewhere.</summary>
+    private static string Slug(string name)
+    {
+        var normalized = name.Replace('ł', 'l').Replace('Ł', 'L').Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder();
+        foreach (var character in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(character) == UnicodeCategory.NonSpacingMark)
+            {
+                continue;
+            }
+
+            builder.Append(char.IsLetterOrDigit(character) ? char.ToLowerInvariant(character) : '-');
+        }
+
+        return builder.ToString().Trim('-');
+    }
+}

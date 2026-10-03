@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Offscreen renderer of the real application (render.ps1). Not in DungeonApp.sln, so CI never
+       builds it. It imports the repository's Directory.Build.props and Directory.Packages.props like
+       every project: the same warnings-as-errors and the same package versions. render.ps1 builds it
+       with UseArtifactsOutput, so neither this tool nor the projects it references write into any
+       bin/ or obj/ of the repository. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.Headless" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />
+    <ProjectReference Include="..\..\src\DungeonApp.Content.Dnd5e\DungeonApp.Content.Dnd5e.csproj" />
+  </ItemGroup>
+
+</Project>

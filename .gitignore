@@ -9,5 +9,9 @@ riderModule.iml
 .build-verify/
 *.stackdump
 
+# Renderer offscreen (tools/render): wynik budowania i obrazy
+tools/render/artifacts/
+tools/render/out/
+
 # Kopie robocze subagentów (docs/collaboration.md, "Środowisko")
 .claude/worktrees/

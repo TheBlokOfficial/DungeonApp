@@ -56,6 +56,9 @@ Błąd `MSB3021`/`MSB3027` na `bin/` projektu wykonywalnego to blokada pliku prz
 albo uruchomioną aplikację autora, nie błąd kodu. Nie zabijaj procesów. Buduj wtedy i testuj projekty
 testowe; one nie zależą od `DungeonApp.App`.
 
+Wygląd bez ekranu: `powershell -File tools/render/render.ps1` renderuje karty i sekcje galerii do
+`tools/render/out/*.png` (poza solucją, buduje do `tools/render/artifacts/`; `zoom.ps1` powiększa wycinek).
+
 ## Struktura
 
 ```text
