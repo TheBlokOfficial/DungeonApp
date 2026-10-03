@@ -41,6 +41,9 @@ powiedz to autorowi.
   oddaniem. W jednym worktree pracuje naraz jeden wykonawca. Poprawki idą do tego samego wykonawcy,
   dopóki jego kontekst jest mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
   agent `porzadki` (`.claude/agents/`). Autorowi pokazuje się wynik, który architekt sam by przyjął.
+- **Lista zadań** (narzędzie todo Claude Code, włączone eksperymentalnie zmienną
+  `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`): architekt prowadzi na niej etapy pracy, żeby autor widział
+  postęp w interfejsie. Jeśli narzędzia nie ma w sesji, powiedz to autorowi na starcie.
 - **Git:** praca w gałęzi → build bez ostrzeżeń i zielone testy → scalenie do `master` → `git push`.
   CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
