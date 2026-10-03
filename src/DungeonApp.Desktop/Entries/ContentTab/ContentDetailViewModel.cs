@@ -23,7 +23,8 @@ public abstract class ContentDetailViewModel
 /// <summary>
 /// A resolved entry's detail: the "{tytuł zakładki} › {kategoria} › {nazwa}" path (the category
 /// segment left out when the entry has none) over the name, its tags, and the system's own finished
-/// card underneath - all drawn by the library's detail block except the card itself.
+/// card underneath - all drawn by the library's detail block except the card itself and the pieces
+/// the card lends the header (<see cref="IEntryCardHeader"/>).
 /// </summary>
 public sealed class ValidContentDetailViewModel(
     IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card)
@@ -37,6 +38,14 @@ public sealed class ValidContentDetailViewModel(
     public bool HasTags { get; } = tags.Count > 0;
 
     public Control Card { get; } = card;
+
+    public Control? HeaderVisual { get; } = (card as IEntryCardHeader)?.HeaderVisual;
+
+    public bool HasHeaderVisual => HeaderVisual is not null;
+
+    public Control? HeaderBlock { get; } = (card as IEntryCardHeader)?.HeaderBlock;
+
+    public bool HasHeaderBlock => HeaderBlock is not null;
 }
 
 /// <summary>

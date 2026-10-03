@@ -2,7 +2,7 @@
   "id": "jednorozec",
   "name": "Jednorożec",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Duży",
@@ -29,10 +29,80 @@
     "challenge": "5",
     "xp": 1800,
 
-    "specialAbilities": "Szarża. Jeśli jednorożec przemieści się co najmniej 6 m prosto w stronę celu, a potem w tej samej turze trafi go atakiem rogiem, cel otrzymuje dodatkowe 9 (2k8) obrażeń kłutych. Jeśli cel jest stworzeniem, musi odnieść sukces w rzucie obronnym na Siłę o ST 15, inaczej zostaje powalony.\n\nOdporność na magię. Jednorożec ma ułatwienie w rzutach obronnych przeciwko czarom i innym efektom magicznym.\n\nMagiczna broń. Ataki bronią jednorożca są magiczne.",
-    "actions": "Wielokrotny atak. Jednorożec wykonuje dwa ataki: jeden kopytami i jeden rogiem.\n\nKopyta. Atak bronią w zwarciu: +7 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 11 (2k6+4) obrażeń obuchowych.\n\nRóg. Atak bronią w zwarciu: +7 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 8 (1k8+4) obrażeń kłutych.\n\nLeczący dotyk (3 na dzień). Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje 11 (2k8+2) punktów życia. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel.\n\nTeleportacja (1 na dzień). Jednorożec magicznie teleportuje siebie i do trzech chętnych stworzeń, które widzi w promieniu 1,5 m, razem z ich ekwipunkiem, w znane sobie miejsce oddalone o najwyżej 1,5 km.",
-    "spellcasting": "Wrodzone rzucanie czarów. Cechą jednorożca do wrodzonego rzucania czarów jest Charyzma (ST rzutu obronnego 14). Rzuca następujące czary bez komponentów:\n\nBez ograniczeń: wykrycie dobra i zła, druidzka sztuczka, bez śladu\nRaz na dzień każdy: uspokojenie emocji, rozproszenie dobra i zła, splątanie",
-    "legendaryActions": "Jednorożec może wykonać 3 akcje legendarne, wybierając spośród poniższych. Naraz można użyć tylko jednej, i tylko na koniec tury innego stworzenia. Jednorożec odzyskuje wydane akcje legendarne na początku swojej tury.\n\nKopyta. Jednorożec wykonuje jeden atak kopytami.\n\nMigocząca tarcza (kosztuje 2 akcje). Jednorożec otacza siebie albo inne stworzenie, które widzi w promieniu 18 m, migoczącym magicznym polem. Cel dostaje premię +2 do KP do końca następnej tury jednorożca.\n\nUleczenie siebie (kosztuje 3 akcje). Jednorożec magicznie odzyskuje 11 (2k8+2) punktów życia.",
+    "specialAbilities": {
+      "entries": [
+        {
+          "name": "Szarża",
+          "text": "Jeśli jednorożec przemieści się co najmniej 6 m prosto w stronę celu, a potem w tej samej turze trafi go atakiem rogiem, cel otrzymuje dodatkowe **9 (2k8)** obrażeń kłutych. Jeśli cel jest stworzeniem, musi odnieść sukces w rzucie obronnym na Siłę o **ST 15**, inaczej zostaje powalony."
+        },
+        {
+          "name": "Odporność na magię",
+          "text": "Jednorożec ma ułatwienie w rzutach obronnych przeciwko czarom i innym efektom magicznym."
+        },
+        {
+          "name": "Magiczna broń",
+          "text": "Ataki bronią jednorożca są magiczne."
+        }
+      ]
+    },
+    "actions": {
+      "entries": [
+        {
+          "name": "Wielokrotny atak",
+          "text": "Jednorożec wykonuje dwa ataki: jeden kopytami i jeden rogiem."
+        },
+        {
+          "name": "Kopyta",
+          "text": "Atak bronią w zwarciu: **+7 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **11 (2k6+4)** obrażeń obuchowych."
+        },
+        {
+          "name": "Róg",
+          "text": "Atak bronią w zwarciu: **+7 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **8 (1k8+4)** obrażeń kłutych."
+        },
+        {
+          "name": "Leczący dotyk",
+          "note": "3 na dzień",
+          "text": "Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje 11 (2k8+2) punktów życia. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel."
+        },
+        {
+          "name": "Teleportacja",
+          "note": "1 na dzień",
+          "text": "Jednorożec magicznie teleportuje siebie i do trzech chętnych stworzeń, które widzi w promieniu 1,5 m, razem z ich ekwipunkiem, w znane sobie miejsce oddalone o najwyżej 1,5 km."
+        }
+      ]
+    },
+    "spellcasting": {
+      "intro": "Cechą jednorożca do wrodzonego rzucania czarów jest Charyzma (**ST 14** rzutu obronnego). Rzuca następujące czary bez komponentów:",
+      "entries": [
+        {
+          "name": "Bez ograniczeń",
+          "text": "wykrycie dobra i zła, druidzka sztuczka, bez śladu"
+        },
+        {
+          "name": "Raz na dzień każdy",
+          "text": "uspokojenie emocji, rozproszenie dobra i zła, splątanie"
+        }
+      ]
+    },
+    "legendaryActions": {
+      "intro": "Jednorożec może wykonać 3 akcje legendarne, wybierając spośród poniższych. Naraz można użyć tylko jednej, i tylko na koniec tury innego stworzenia. Jednorożec odzyskuje wydane akcje legendarne na początku swojej tury.",
+      "entries": [
+        {
+          "name": "Kopyta",
+          "text": "Jednorożec wykonuje jeden atak kopytami."
+        },
+        {
+          "name": "Migocząca tarcza",
+          "note": "kosztuje 2 akcje",
+          "text": "Jednorożec otacza siebie albo inne stworzenie, które widzi w promieniu 18 m, migoczącym magicznym polem. Cel dostaje premię +2 do KP do końca następnej tury jednorożca."
+        },
+        {
+          "name": "Uleczenie siebie",
+          "note": "kosztuje 3 akcje",
+          "text": "Jednorożec magicznie odzyskuje 11 (2k8+2) punktów życia."
+        }
+      ]
+    },
     "description": "Strażnik zaczarowanych lasów. Pokazuje się tym, którzy bronią niewinnych, i znika, zanim ktokolwiek zdąży mu podziękować."
   }
 }

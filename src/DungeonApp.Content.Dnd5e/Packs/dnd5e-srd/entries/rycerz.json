@@ -2,7 +2,7 @@
   "id": "rycerz",
   "name": "Rycerz",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Średni",
@@ -29,9 +29,43 @@
     "challenge": "3",
     "xp": 700,
 
-    "specialAbilities": "Odwaga. Rycerz ma ułatwienie w rzutach obronnych przeciwko przestraszeniu.",
-    "actions": "Wielokrotny atak. Rycerz wykonuje dwa ataki w zwarciu.\n\nMiecz dwuręczny. Atak bronią w zwarciu: +5 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 10 (2k6+3) obrażeń ciętych.\n\nCiężka kusza. Atak bronią dystansową: +2 do trafienia, zasięg 30/120 m, jeden cel. Trafienie: 5 (1k10) obrażeń kłutych.\n\nDowodzenie (odnawia się po krótkim lub długim odpoczynku). Przez 1 minutę rycerz może wydać rozkaz albo ostrzeżenie za każdym razem, gdy niewrogie stworzenie, które widzi w promieniu 9 m, wykonuje rzut ataku lub rzut obronny. Stworzenie może dodać k4 do rzutu, jeśli słyszy i rozumie rycerza. Stworzenie korzysta naraz tylko z jednej kości Dowodzenia. Efekt kończy się, gdy rycerz zostanie obezwładniony.",
-    "reactions": "Parowanie. Rycerz dodaje 2 do KP przeciwko jednemu atakowi w zwarciu, który by go trafił. Musi widzieć atakującego i trzymać broń do walki wręcz.",
+    "specialAbilities": {
+      "entries": [
+        {
+          "name": "Odwaga",
+          "text": "Rycerz ma ułatwienie w rzutach obronnych przeciwko przestraszeniu."
+        }
+      ]
+    },
+    "actions": {
+      "entries": [
+        {
+          "name": "Wielokrotny atak",
+          "text": "Rycerz wykonuje dwa ataki w zwarciu."
+        },
+        {
+          "name": "Miecz dwuręczny",
+          "text": "Atak bronią w zwarciu: **+5 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **10 (2k6+3)** obrażeń ciętych."
+        },
+        {
+          "name": "Ciężka kusza",
+          "text": "Atak bronią dystansową: **+2 do trafienia**, zasięg 30/120 m, jeden cel. Trafienie: **5 (1k10)** obrażeń kłutych."
+        },
+        {
+          "name": "Dowodzenie",
+          "note": "odnawia się po krótkim lub długim odpoczynku",
+          "text": "Przez 1 minutę rycerz może wydać rozkaz albo ostrzeżenie za każdym razem, gdy niewrogie stworzenie, które widzi w promieniu 9 m, wykonuje rzut ataku lub rzut obronny. Stworzenie może dodać k4 do rzutu, jeśli słyszy i rozumie rycerza. Stworzenie korzysta naraz tylko z jednej kości Dowodzenia. Efekt kończy się, gdy rycerz zostanie obezwładniony."
+        }
+      ]
+    },
+    "reactions": {
+      "entries": [
+        {
+          "name": "Parowanie",
+          "text": "Rycerz dodaje 2 do KP przeciwko jednemu atakowi w zwarciu, który by go trafił. Musi widzieć atakującego i trzymać broń do walki wręcz."
+        }
+      ]
+    },
     "description": "Zakuty w stal wojownik, który przysiągł służbę panu, wierze albo sprawie - i dotrzymuje słowa także wtedy, gdy nikt nie patrzy."
   }
 }

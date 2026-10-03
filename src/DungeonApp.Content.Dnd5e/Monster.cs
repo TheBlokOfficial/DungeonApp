@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
@@ -11,8 +14,14 @@ namespace DungeonApp.Content.Dnd5e;
 /// a monster entry cannot do without; <c>System.Text.Json</c> enforces that on its own; the
 /// field-by-field <c>ValuesRejected</c> path never re-checks it.
 /// </para>
+/// <para>
+/// The six blocks of rules prose are <see cref="StatblockSection"/>s - named entries the pack author
+/// wrote out, so the card can set each name apart without reading it out of the text. An entry
+/// written against an earlier version of this type (<see cref="Dnd5eSystem"/> declares the current
+/// one) is marked stale rather than misread.
+/// </para>
 /// </summary>
-public sealed record Monster
+public sealed record Monster : IJsonOnDeserialized
 {
     public required string Size { get; init; }
 
@@ -83,22 +92,28 @@ public sealed record Monster
     /// <summary>Experience points for defeating this monster, shown next to <see cref="Challenge"/>.</summary>
     public int? Xp { get; init; }
 
-    public string? SpecialAbilities { get; init; }
+    public StatblockSection? SpecialAbilities { get; init; }
 
-    public required string Actions { get; init; }
-
-    public string? Spellcasting { get; init; }
-
-    public string? BonusActions { get; init; }
-
-    public string? Reactions { get; init; }
+    /// <summary>The one section every monster has: at least one entry (<see cref="OnDeserialized"/>).</summary>
+    public required StatblockSection Actions { get; init; }
 
     /// <summary>
-    /// Legendary actions as prose, the per-turn allowance included ("3 na turę") - text the GM
-    /// reads, never a counter anything spends.
+    /// The preamble (ability, save DC, attack bonus) as the introduction; each group of spells cast
+    /// alike ("Bez ograniczeń", "1. poziom (4 komórki)") as an entry whose text lists the spells.
     /// </summary>
-    public string? LegendaryActions { get; init; }
+    public StatblockSection? Spellcasting { get; init; }
 
+    public StatblockSection? BonusActions { get; init; }
+
+    public StatblockSection? Reactions { get; init; }
+
+    /// <summary>
+    /// The per-turn allowance as the introduction, an action's cost ("kosztuje 2 akcje") as its
+    /// entry's note - text the GM reads, never a counter anything spends.
+    /// </summary>
+    public StatblockSection? LegendaryActions { get; init; }
+
+    /// <summary>The monster's flavor, not its rules: plain text, no emphasis.</summary>
     public string? Description { get; init; }
 
     /// <summary>
@@ -107,4 +122,18 @@ public sealed record Monster
     /// (<see cref="Dnd5eSystem"/>).
     /// </summary>
     public string? Image { get; init; }
+
+    void IJsonOnDeserialized.OnDeserialized() => OnDeserialized();
+
+    /// <summary>
+    /// A monster with no action at all has nothing the GM can run at the table, so an empty
+    /// <see cref="Actions"/> section - an introduction alone - is refused like a missing one.
+    /// </summary>
+    private void OnDeserialized()
+    {
+        if (Actions is null || Actions.Entries.Count == 0)
+        {
+            throw new JsonException("\"actions\" needs at least one entry.");
+        }
+    }
 }

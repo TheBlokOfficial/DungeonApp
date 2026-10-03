@@ -90,12 +90,19 @@ public sealed class TextSelectionArea : Border
     private SelectableTextBlock? Nearest(Point point) =>
         this.GetVisualDescendants()
             .OfType<SelectableTextBlock>()
-            .Where(text => text.IsEffectivelyVisible && text.IsEffectivelyEnabled && !string.IsNullOrEmpty(text.Text))
+            .Where(text => text.IsEffectivelyVisible && text.IsEffectivelyEnabled && HasText(text))
             .Select(text => (Text: text, Distance: DistanceTo(text, point)))
             .Where(candidate => candidate.Distance is not null)
             .OrderBy(candidate => candidate.Distance)
             .Select(candidate => candidate.Text)
             .FirstOrDefault();
+
+    /// <summary>
+    /// A text written as runs (<see cref="EmphasisMarkup"/>, a value with its muted note) carries
+    /// its content in its inlines, not in <see cref="TextBlock.Text"/>.
+    /// </summary>
+    private static bool HasText(SelectableTextBlock text) =>
+        !string.IsNullOrEmpty(text.Text) || !string.IsNullOrEmpty(text.Inlines?.Text);
 
     private double? DistanceTo(SelectableTextBlock text, Point point)
     {

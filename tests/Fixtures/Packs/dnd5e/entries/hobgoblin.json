@@ -2,7 +2,7 @@
   "id": "hobgoblin",
   "name": "Hobgoblin",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Średni",
@@ -27,8 +27,27 @@
     "languages": "wspólny, goblini",
     "challenge": "1/2 (100 PD)",
 
-    "specialAbilities": "Przewaga bojowa. Raz na turę hobgoblin zadaje dodatkowe 7 (2k6) obrażeń celowi, w którego trafia atakiem bronią, jeśli w zasięgu 5 stóp od tego celu znajduje się sprzymierzeniec hobgoblina, który nie jest nieprzytomny.",
-    "actions": "Berdysz. Atak bronią w zwarciu: +3 do trafienia, zasięg 5 stóp, jeden cel. Trafienie: 5 (1k10) obrażeń siecznych.\n\nKusza ręczna. Atak bronią dystansową: +3 do trafienia, zasięg 30/120 stóp, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.",
+    "specialAbilities": {
+      "entries": [
+        {
+          "name": "Przewaga bojowa",
+          "note": "raz na turę",
+          "text": "Hobgoblin zadaje dodatkowe **7 (2k6)** obrażeń celowi, w którego trafia atakiem bronią, jeśli w zasięgu 5 stóp od tego celu znajduje się sprzymierzeniec hobgoblina, który nie jest nieprzytomny."
+        }
+      ]
+    },
+    "actions": {
+      "entries": [
+        {
+          "name": "Berdysz",
+          "text": "Atak bronią w zwarciu: **+3 do trafienia**, zasięg 5 stóp, jeden cel. Trafienie: **5 (1k10)** obrażeń siecznych."
+        },
+        {
+          "name": "Kusza ręczna",
+          "text": "Atak bronią dystansową: **+3 do trafienia**, zasięg 30/120 stóp, jeden cel. Trafienie: **5 (1k6+2)** obrażeń kłutych."
+        }
+      ]
+    },
     "description": "Zdyscyplinowany żołnierz gromady goblinoidów, walczący w szyku i osłaniający towarzyszy w boju."
   }
 }

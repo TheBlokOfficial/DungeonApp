@@ -1,97 +1,58 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
-             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
 
-    <!-- The designed statblock, top to bottom:
-         - the top block: an upright portrait on the left; on the right KP, PZ and Szybkość as pairs
-           with their values emphasized and their notes ("zbroja skórzana, tarcza", "2k6") muted,
-           then the six abilities;
-         - pairs, one row per filled field: rzuty obronne, umiejętności, the damage and condition
-           lines, zmysły, języki, wyzwanie with its PD;
-         - prose sections, each collapsible and open by default: cechy szczególne, akcje, rzucanie
-           czarów, akcje dodatkowe, reakcje, akcje legendarne, opis. A section shows only when its
-           field is filled; nothing about its open state is kept.
+    <!-- The designed statblock on one geometric grid. Three vertical lines carry everything: the
+         card's left edge, the portrait's right edge, and the title column's start (portrait plus
+         DungeonDetailColumnGap). The portrait (three ability cells wide, 3:4) and the KP / PZ /
+         Szybkość tiles are lent to the detail header (MonsterCardView.axaml.cs); the card itself,
+         top to bottom:
+         - two ability tables, SIŁ/ZRĘ/KON under the portrait and INT/MDR/CHA on the title line;
+         - pairs, one row per filled field, their values on the title line; wyzwanie as a badge;
+         - the rules sections in statblock order, each shown only when filled, always open;
+         - the description as a small italic footer, only when filled.
          Size, type and alignment are not on this card - they are this content type's tags, shown
          once in the detail header. Spacing between controls is set here, on the host, never carried
          by a control itself. -->
-    <UserControl.Resources>
-        <!-- The portrait: 3:4, upright. -->
-        <x:Double x:Key="MonsterPortraitWidth">168</x:Double>
-        <x:Double x:Key="MonsterPortraitHeight">224</x:Double>
-        <!-- The pairs' label column reaches exactly to the top block's right column (portrait 168 +
-             gap 24, less the pair's own gap 8), so the values below line up with KP and PZ above. -->
-        <x:Double x:Key="MonsterTraitLabelMinWidth">184</x:Double>
-    </UserControl.Resources>
-
     <StackPanel>
-        <!-- ===== top block ===== -->
-        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingXxl}">
-            <dc:ImageFrame x:Name="Portrait"
-                           Width="{StaticResource MonsterPortraitWidth}"
-                           Height="{StaticResource MonsterPortraitHeight}"
-                           VerticalAlignment="Top"
-                           Icon="{DynamicResource DungeonIconSkull}" />
-
-            <StackPanel Grid.Column="1" Spacing="{DynamicResource DungeonSpacingLg}">
-                <Grid ColumnDefinitions="72,*" RowDefinitions="Auto,Auto,Auto"
-                      ColumnSpacing="{DynamicResource DungeonSpacingSm}"
-                      RowSpacing="{DynamicResource DungeonSpacingXs}">
-                    <TextBlock Grid.Row="0" Classes="muted" Text="KP" VerticalAlignment="Center" />
-                    <Grid Grid.Row="0" Grid.Column="1" ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
-                        <TextBlock x:Name="AcValueText" Classes="mono-value" VerticalAlignment="Center" />
-                        <TextBlock x:Name="AcNoteText" Grid.Column="1" Classes="caption muted"
-                                   TextWrapping="Wrap" VerticalAlignment="Center" />
-                    </Grid>
-
-                    <TextBlock Grid.Row="1" Classes="muted" Text="PZ" VerticalAlignment="Center" />
-                    <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
-                        <TextBlock x:Name="HpValueText" Classes="mono-value" VerticalAlignment="Center" />
-                        <TextBlock x:Name="HpNoteText" Grid.Column="1" Classes="caption muted"
-                                   TextWrapping="Wrap" VerticalAlignment="Center" />
-                    </Grid>
-
-                    <TextBlock Grid.Row="2" Classes="muted" Text="Szybkość" VerticalAlignment="Top" />
-                    <TextBlock x:Name="SpeedValueText" Grid.Row="2" Grid.Column="1" Classes="body-strong"
-                               TextWrapping="Wrap" />
-                </Grid>
-
-                <controls:AbilityGridView x:Name="Abilities" />
-            </StackPanel>
+        <!-- ===== abilities ===== -->
+        <Grid ColumnDefinitions="Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonDetailColumnGap}"
+              HorizontalAlignment="Left">
+            <controls:AbilityTableView x:Name="PhysicalAbilities" />
+            <controls:AbilityTableView x:Name="MentalAbilities" Grid.Column="1" />
         </Grid>
 
         <Separator Classes="section" />
 
         <!-- ===== pairs ===== -->
-        <controls:TraitListView x:Name="Traits" LabelMinWidth="{StaticResource MonsterTraitLabelMinWidth}" />
+        <controls:TraitListView x:Name="Traits" />
 
         <Separator Classes="section" />
 
-        <!-- ===== prose sections ===== -->
-        <StackPanel>
-            <Expander x:Name="SpecialAbilitiesSection" Header="Cechy szczególne" IsExpanded="True">
-                <controls:ProseBlockView x:Name="SpecialAbilitiesBlock" />
-            </Expander>
-            <Expander Header="Akcje" IsExpanded="True">
-                <controls:ProseBlockView x:Name="ActionsBlock" />
-            </Expander>
-            <Expander x:Name="SpellcastingSection" Header="Rzucanie czarów" IsExpanded="True">
-                <controls:ProseBlockView x:Name="SpellcastingBlock" />
-            </Expander>
-            <Expander x:Name="BonusActionsSection" Header="Akcje dodatkowe" IsExpanded="True">
-                <controls:ProseBlockView x:Name="BonusActionsBlock" />
-            </Expander>
-            <Expander x:Name="ReactionsSection" Header="Reakcje" IsExpanded="True">
-                <controls:ProseBlockView x:Name="ReactionsBlock" />
-            </Expander>
-            <Expander x:Name="LegendaryActionsSection" Header="Akcje legendarne" IsExpanded="True">
-                <controls:ProseBlockView x:Name="LegendaryActionsBlock" />
-            </Expander>
-            <!-- The description is a monster's flavor, not its rules: the display face's italic. -->
-            <Expander x:Name="DescriptionSection" Header="Opis" IsExpanded="True">
-                <SelectableTextBlock x:Name="DescriptionText" Classes="display-prose secondary" TextWrapping="Wrap" />
-            </Expander>
+        <!-- ===== rules sections ===== -->
+        <StackPanel x:Name="Sections" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <controls:ProseSectionView x:Name="SpecialAbilitiesSection" Title="Cechy szczególne"
+                                       Icon="{DynamicResource DungeonIconSparkles}" />
+            <controls:ProseSectionView x:Name="ActionsSection" Title="Akcje"
+                                       Icon="{DynamicResource DungeonIconSwords}" />
+            <controls:ProseSectionView x:Name="SpellcastingSection" Title="Rzucanie czarów"
+                                       Icon="{DynamicResource DungeonIconWand}" />
+            <controls:ProseSectionView x:Name="BonusActionsSection" Title="Akcje dodatkowe"
+                                       Icon="{DynamicResource DungeonIconZap}" />
+            <controls:ProseSectionView x:Name="ReactionsSection" Title="Reakcje"
+                                       Icon="{DynamicResource DungeonIconUndo}" />
+            <controls:ProseSectionView x:Name="LegendaryActionsSection" Title="Akcje legendarne"
+                                       Icon="{DynamicResource DungeonIconCrown}" />
+        </StackPanel>
+
+        <!-- ===== footer: the monster's flavor, not its rules ===== -->
+        <StackPanel x:Name="Footer">
+            <Separator Classes="section" />
+            <SelectableTextBlock x:Name="DescriptionText"
+                                 Classes="display-note muted"
+                                 TextWrapping="Wrap" />
         </StackPanel>
     </StackPanel>
 </UserControl>

@@ -110,6 +110,14 @@
              (BackstageCard #1F1D1A), wyraźniej niż wiersz (#221F1C); nie akcent. Tekst drugorzędny
              na nim ok. 7,4:1. -->
         <Color x:Key="DungeonTableHeaderColor">#262320</Color>
+        <!-- Kierunek liczby: tło komórki z liczbą, która coś dodaje (PositiveValueDim, zielonkawe)
+             albo odejmuje (NegativeValueDim, czerwonawe) - modyfikator cechy w tabeli. Który znak
+             to "dodaje", mówi system, nie rama. Nie stan (to nie sukces ani awaria), więc osobne
+             tokeny, choć odcienie biorą od Success i Danger: alfa 0x33 (20 %), z kanałem alfa jak
+             kolory *Dim. Tekst podstawowy na nich na karcie ok. 11:1 i 10:1. Tylko tło komórki - nie
+             tekst ani linia. -->
+        <Color x:Key="DungeonPositiveValueDimColor">#3384A98B</Color>
+        <Color x:Key="DungeonNegativeValueDimColor">#339C4530</Color>
 
         <!-- PĘDZLE ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -156,6 +164,8 @@
         <SolidColorBrush x:Key="DungeonWarningDimBrush" Color="{DynamicResource DungeonWarningDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerDimBrush" Color="{DynamicResource DungeonDangerDimColor}" />
         <SolidColorBrush x:Key="DungeonTableHeaderBrush" Color="{DynamicResource DungeonTableHeaderColor}" />
+        <SolidColorBrush x:Key="DungeonPositiveValueDimBrush" Color="{DynamicResource DungeonPositiveValueDimColor}" />
+        <SolidColorBrush x:Key="DungeonNegativeValueDimBrush" Color="{DynamicResource DungeonNegativeValueDimColor}" />
         <SolidColorBrush x:Key="DungeonAccentOnDimBrush" Color="{DynamicResource DungeonAccentOnDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
@@ -480,6 +490,21 @@
         <!-- Tabela w karcie: komórka najmniej 28 wysokości, wcięcie 10 z boków i 6 nad i pod. -->
         <x:Double x:Key="DungeonTableCellMinHeight">28</x:Double>
         <Thickness x:Key="DungeonTableCellPadding">10,6</Thickness>
+        <!-- Siatka szczegółu wpisu: wszystko w szczegółu staje na trzech pionowych liniach - lewej
+             krawędzi, prawej krawędzi obrazu w nagłówku i początku kolumny tytułu.
+             AbilityCellSize - bok kwadratowej komórki tabeli cech (44: liczba dwucyfrowa 15 px
+             z oddechem); obraz w nagłówku ma szerokość trzech komórek, czyli jednej tabeli.
+             DetailColumnGap - odstęp między obrazem a kolumną tytułu i ten sam między kolumnami
+             karty (dwie tabele cech), więc druga kolumna karty zaczyna się na linii tytułu. -->
+        <x:Double x:Key="DungeonAbilityCellSize">44</x:Double>
+        <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
+        <!-- Kafelek wartości (controls:StatTile): wcięcie 10 z boków, 8 nad i pod; ikona przy
+             podpisie 12 px - mniejsza niż ikona akcji (16), bo stoi w podpisie 11 px. -->
+        <Thickness x:Key="DungeonStatTilePadding">10,8</Thickness>
+        <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>
+        <!-- Nagłówek sekcji (controls:SectionHeading): kreska akcentu 3 x 18, ikona 16. -->
+        <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
+        <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>
         <!-- Okienko wysuwane i rozwinięta lista: zaokrąglenie powierzchni (6, jak karta) i wewnętrzne
              wcięcie (4 - mniej niż DungeonPaddingXs, żeby podświetlenie wiersza leżało blisko
              krawędzi okienka, bez "ramki w ramce"). Przyciski i pola dalej mają

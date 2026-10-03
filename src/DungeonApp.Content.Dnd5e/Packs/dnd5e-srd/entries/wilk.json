@@ -2,7 +2,7 @@
   "id": "wilk",
   "name": "Wilk",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Średni",
@@ -28,7 +28,25 @@
     "challenge": "1/4",
     "xp": 50,
 
-    "specialAbilities": "Wyostrzony słuch i węch. Wilk ma ułatwienie w testach Mądrości (Percepcja) opartych na słuchu lub węchu.\n\nTaktyka stada. Wilk ma ułatwienie w rzucie ataku przeciwko stworzeniu, jeśli w promieniu 1,5 m od tego stworzenia stoi co najmniej jeden sojusznik wilka, który nie jest obezwładniony.",
-    "actions": "Ugryzienie. Atak bronią w zwarciu: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 7 (2k4+2) obrażeń kłutych. Jeśli cel jest stworzeniem, musi odnieść sukces w rzucie obronnym na Siłę o ST 11, inaczej zostaje powalony."
+    "specialAbilities": {
+      "entries": [
+        {
+          "name": "Wyostrzony słuch i węch",
+          "text": "Wilk ma ułatwienie w testach Mądrości (Percepcja) opartych na słuchu lub węchu."
+        },
+        {
+          "name": "Taktyka stada",
+          "text": "Wilk ma ułatwienie w rzucie ataku przeciwko stworzeniu, jeśli w promieniu 1,5 m od tego stworzenia stoi co najmniej jeden sojusznik wilka, który nie jest obezwładniony."
+        }
+      ]
+    },
+    "actions": {
+      "entries": [
+        {
+          "name": "Ugryzienie",
+          "text": "Atak bronią w zwarciu: **+4 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **7 (2k4+2)** obrażeń kłutych. Jeśli cel jest stworzeniem, musi odnieść sukces w rzucie obronnym na Siłę o **ST 11**, inaczej zostaje powalony."
+        }
+      ]
+    }
   }
 }

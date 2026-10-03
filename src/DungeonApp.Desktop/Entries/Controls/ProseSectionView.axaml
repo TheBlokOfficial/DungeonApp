@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:content="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Entries.Controls.ProseSectionView"
+             x:DataType="content:ProseSectionView">
+
+    <!-- A section of a card's text, always open: the heading (controls:SectionHeading), then - flush
+         with the heading's left edge, never indented - an optional introduction and the named items.
+         Rhythm: DungeonSpacingSm from the heading to its content, DungeonSpacingMd between the
+         introduction and each item. An item's name stands on its own line in the strong role with its
+         note muted after it; its text under it in the secondary color, the author's **…** runs
+         emphasized. Every text selectable. No Margin on this root - the card view spaces sections. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+        <dc:SectionHeading Icon="{Binding Icon}" Text="{Binding Title}" />
+
+        <StackPanel Spacing="{DynamicResource DungeonSpacingMd}">
+            <SelectableTextBlock x:Name="IntroText"
+                                 Classes="body secondary"
+                                 TextWrapping="Wrap"
+                                 dc:EmphasisMarkup.Text="{Binding Intro}"
+                                 IsVisible="{Binding Intro, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+            <ItemsControl ItemsSource="{Binding Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingMd}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="content:ProseItem">
+                        <StackPanel>
+                            <SelectableTextBlock Classes="body" TextWrapping="Wrap">
+                                <Run Text="{Binding Name}"
+                                     FontWeight="SemiBold"
+                                     Foreground="{DynamicResource DungeonTextPrimaryBrush}" /><Run Text="{Binding NoteDisplay}"
+                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                            </SelectableTextBlock>
+                            <SelectableTextBlock Classes="body secondary"
+                                                 TextWrapping="Wrap"
+                                                 dc:EmphasisMarkup.Text="{Binding Text}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

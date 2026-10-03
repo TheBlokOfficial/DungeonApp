@@ -2,7 +2,7 @@
   "id": "kaplan",
   "name": "Kapłan",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Średni",
@@ -29,8 +29,46 @@
     "challenge": "2",
     "xp": 450,
 
-    "actions": "Buzdygan. Atak bronią w zwarciu: +2 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 3 (1k6) obrażeń obuchowych.",
-    "spellcasting": "Kapłan rzuca czary jak postać 5. poziomu. Jego cechą do rzucania czarów jest Mądrość (ST rzutu obronnego 13, +5 do trafienia atakami czarami). Ma przygotowane następujące czary kleryka:\n\nSztuczki (bez ograniczeń): światło, święty płomień, taumaturgia\n1. poziom (4 komórki): leczenie ran, smuga prowadząca, azyl\n2. poziom (3 komórki): pomniejsze przywrócenie, duchowa broń\n3. poziom (2 komórki): rozproszenie magii, duchowi strażnicy",
-    "bonusActions": "Boska wyższość. Kapłan wydaje komórkę czaru, a jego ataki bronią w zwarciu do końca tury zadają przy trafieniu magicznie dodatkowe 10 (3k6) obrażeń od światłości. Za komórkę 2. poziomu lub wyższego obrażenia rosną o 1k6 za każdy poziom powyżej pierwszego."
+    "actions": {
+      "entries": [
+        {
+          "name": "Buzdygan",
+          "text": "Atak bronią w zwarciu: **+2 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **3 (1k6)** obrażeń obuchowych."
+        }
+      ]
+    },
+    "spellcasting": {
+      "intro": "Kapłan rzuca czary jak postać 5. poziomu. Jego cechą do rzucania czarów jest Mądrość (**ST 13** rzutu obronnego, **+5 do trafienia** atakami czarami). Ma przygotowane następujące czary kleryka:",
+      "entries": [
+        {
+          "name": "Sztuczki",
+          "note": "bez ograniczeń",
+          "text": "światło, święty płomień, taumaturgia"
+        },
+        {
+          "name": "1. poziom",
+          "note": "4 komórki",
+          "text": "leczenie ran, smuga prowadząca, azyl"
+        },
+        {
+          "name": "2. poziom",
+          "note": "3 komórki",
+          "text": "pomniejsze przywrócenie, duchowa broń"
+        },
+        {
+          "name": "3. poziom",
+          "note": "2 komórki",
+          "text": "rozproszenie magii, duchowi strażnicy"
+        }
+      ]
+    },
+    "bonusActions": {
+      "entries": [
+        {
+          "name": "Boska wyższość",
+          "text": "Kapłan wydaje komórkę czaru, a jego ataki bronią w zwarciu do końca tury zadają przy trafieniu magicznie dodatkowe **10 (3k6)** obrażeń od światłości. Za komórkę 2. poziomu lub wyższego obrażenia rosną o 1k6 za każdy poziom powyżej pierwszego."
+        }
+      ]
+    }
   }
 }

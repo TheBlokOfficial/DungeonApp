@@ -14,7 +14,7 @@
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
     </Style>
-    <Style Selector="TextBlock.eyebrow">
+    <Style Selector="TextBlock.eyebrow, SelectableTextBlock.eyebrow">
         <Setter Property="FontSize" Value="{DynamicResource DungeonEyebrowFontSize}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="LetterSpacing" Value="0.7" />
@@ -78,7 +78,7 @@
         <Setter Property="Margin" Value="0" />
     </Style>
 
-    <Style Selector="TextBlock.muted">
+    <Style Selector="TextBlock.muted, SelectableTextBlock.muted">
         <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
     </Style>

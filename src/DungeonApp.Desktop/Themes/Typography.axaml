@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
         Frame text styles: every text role on seven sizes only - 34, 26, 20, 15, 13, 12, 11; the
-        display face starts at 20. Typeface, size, weight, letter spacing and line height only -
+        display face starts at 20, save for its italic note (display-note, 15). Typeface, size,
+        weight, letter spacing and line height only -
         never a color: the color stays with the context, the color class "secondary" (at the end of
         this file) and the existing "muted" class.
         Only the multi-line styles (body, display-prose) set a line height - a tighter one clips
@@ -11,12 +12,12 @@
         "muted"'s own. The overline classes do not uppercase - Avalonia has no style-level text
         transform; their text is written in capitals.
         A "TextBlock" selector does not reach a SelectableTextBlock (a type selector matches the
-        exact type), so the roles selectable text takes - body, caption, display-prose, secondary -
-        name it as well.
+        exact type), so every role selectable text takes names it as well - a card's text is all
+        selectable, labels and numbers included.
     -->
 
     <!-- DISPLAY =========================================================== -->
-    <Style Selector="TextBlock.display-xl">
+    <Style Selector="TextBlock.display-xl, SelectableTextBlock.display-xl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="34" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -26,7 +27,7 @@
         <Setter Property="FontSize" Value="26" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style Selector="TextBlock.display-md">
+    <Style Selector="TextBlock.display-md, SelectableTextBlock.display-md">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -38,6 +39,16 @@
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="LineHeight" Value="32" />
     </Style>
+    <!-- Dopisek krojem ozdobnym: krótki tekst nastroju pod treścią (opis potwora pod jego regułami).
+         Jedyny styl kroju ozdobnego poniżej 20 - kursywa i stopka, więc 15 wystarcza, a mniejszy
+         stopień oddziela go od prozy reguł nad nim. -->
+    <Style Selector="TextBlock.display-note, SelectableTextBlock.display-note">
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontStyle" Value="Italic" />
+        <Setter Property="LineHeight" Value="22" />
+    </Style>
 
     <!-- TEKST ============================================================= -->
     <Style Selector="TextBlock.body, SelectableTextBlock.body">
@@ -46,12 +57,12 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="LineHeight" Value="20.15" />
     </Style>
-    <Style Selector="TextBlock.body-strong">
+    <Style Selector="TextBlock.body-strong, SelectableTextBlock.body-strong">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
-    <Style Selector="TextBlock.label">
+    <Style Selector="TextBlock.label, SelectableTextBlock.label">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontWeight" Value="Normal" />
@@ -81,9 +92,16 @@
     </Style>
 
     <!-- LICZBY ============================================================ -->
-    <Style Selector="TextBlock.mono-value">
+    <!-- mono-value i mono-value-lg: ta sama liczba w dwóch stopniach - wartość w komórce tabeli
+         i wartość w kafelku. Jeden krój i grubość, żeby równoważne liczby wyglądały jednakowo. -->
+    <Style Selector="TextBlock.mono-value, SelectableTextBlock.mono-value">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
         <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.mono-value-lg, SelectableTextBlock.mono-value-lg">
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
+        <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style Selector="TextBlock.mono">
@@ -125,6 +143,16 @@
     -->
     <Style Selector="Run.highlight, Span.highlight">
         <Setter Property="Background" Value="{DynamicResource DungeonHighlightBrush}" />
+    </Style>
+
+    <!--
+        Wyróżnienie autora (Run.emphasis, controls:EmphasisMarkup): fragment, który autor treści
+        oznaczył **…** - premia do trafienia, rzut obrażeń, ST. Pogrubienie (SemiBold) w kolorze tekstu
+        podstawowego, także w zdaniu tekstem drugorzędnym - oko ląduje na liczbie, nie na tle.
+    -->
+    <Style Selector="Run.emphasis">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
     </Style>
     <Style Selector="Run.search-match, Span.search-match">
         <Setter Property="Background" Value="{DynamicResource DungeonSearchMatchBrush}" />

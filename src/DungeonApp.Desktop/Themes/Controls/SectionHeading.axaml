@@ -1,0 +1,41 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Nagłówek sekcji (controls:SectionHeading): początek sekcji tekstu karty. W jednym rzędzie, na
+        środku w pionie: kreska akcentu (Accent - tu zaczyna się sekcja; DungeonSectionHeadingBarWidth
+        x DungeonSectionHeadingBarHeight, ostre końce), ikona sekcji (DungeonActionIconSize, tekst
+        drugorzędny), tytuł w roli display-md (krój ozdobny 20, SemiBold), tekst podstawowy.
+        Odstęp między częściami DungeonSpacingSm. Kreska stoi przy lewej krawędzi - na tej samej
+        linii co treść sekcji pod nagłówkiem.
+        Bez stanów: niczego nie zwija, nie reaguje na mysz, nie przyjmuje fokusu; tytuł się zaznacza.
+    -->
+    <ControlTheme x:Key="{x:Type controls:SectionHeading}" TargetType="controls:SectionHeading">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                    <Border Name="PART_Bar"
+                            Width="{DynamicResource DungeonSectionHeadingBarWidth}"
+                            Height="{DynamicResource DungeonSectionHeadingBarHeight}"
+                            VerticalAlignment="Center"
+                            Background="{DynamicResource DungeonAccentBrush}" />
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             VerticalAlignment="Center"
+                                             Source="{TemplateBinding Icon}"
+                                             Foreground="{DynamicResource DungeonTextRegularBrush}"
+                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    <SelectableTextBlock Name="PART_Text"
+                                         Classes="display-md"
+                                         Text="{TemplateBinding Text}"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         VerticalAlignment="Center" />
+                </StackPanel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

@@ -11,10 +11,19 @@
     <!-- An entry's detail block: the entry's header with the system's card under it, 560 wide. No
          background, border, scrolling or outer spacing - the host gives those (the content tab today,
          a preview window in the campaign later). The whole block is one text selection area: a drag
-         started beside a card's text selects it. DataContext: ContentDetailViewModel. -->
+         started beside a card's text selects it; the title and tags select like the card's text.
+         DataContext: ContentDetailViewModel. -->
     <UserControl.Resources>
         <conv:UpperCaseConverter x:Key="UpperCase" />
     </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- The gap opens only when a card lends the header a visual: without one, the title column
+             starts at the left edge, as for every card that lends nothing. -->
+        <Style Selector="Grid.with-visual">
+            <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonDetailColumnGap}" />
+        </Style>
+    </UserControl.Styles>
 
     <UserControl.DataTemplates>
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
@@ -22,25 +31,43 @@
                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                     <!-- The "{Typ} › {Kategoria} › {Nazwa}" path - a frame control (controls:Breadcrumbs
                          theme): the trail dimmed, the current segment emphasized; too narrow - the
-                         trail shortens. -->
+                         trail shortens. Full width, over the visual too. -->
                     <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
-                    <TextBlock Classes="display-xl"
-                               Text="{Binding Name}"
-                               TextWrapping="Wrap"
-                               Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
-                    <ItemsControl ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                           LineSpacing="{DynamicResource DungeonSpacingXs}" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="x:String">
-                                <dc:WordTag Content="{Binding}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+
+                    <!-- The card's visual (IEntryCardHeader) on the left; the title column beside it:
+                         name, tags, and at its foot the card's block - pushed down by the star row to
+                         the visual's bottom edge while the column is shorter than the visual. -->
+                    <Grid ColumnDefinitions="Auto,*" Classes.with-visual="{Binding HasHeaderVisual}">
+                        <ContentControl Content="{Binding HeaderVisual}"
+                                        IsVisible="{Binding HasHeaderVisual}"
+                                        VerticalAlignment="Top" />
+                        <Grid Grid.Column="1"
+                              RowDefinitions="Auto,Auto,*,Auto"
+                              RowSpacing="{DynamicResource DungeonSpacingXs}">
+                            <SelectableTextBlock Classes="display-xl"
+                                                 Text="{Binding Name}"
+                                                 TextWrapping="Wrap"
+                                                 Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
+                                                   LineSpacing="{DynamicResource DungeonSpacingXs}" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <dc:WordTag>
+                                            <SelectableTextBlock Text="{Binding}" />
+                                        </dc:WordTag>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ContentControl Grid.Row="3"
+                                            Content="{Binding HeaderBlock}"
+                                            IsVisible="{Binding HasHeaderBlock}" />
+                        </Grid>
+                    </Grid>
                 </StackPanel>
 
                 <ContentControl Content="{Binding Card}" />

@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Entries.Controls.AbilityTableView"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Top">
+
+    <!-- A table of square cells, three columns - label, score, modifier - one row per ability, lines
+         between every cell and sharp corners (the frame's Table with column lines). The cell side is
+         DungeonAbilityCellSize, so a table is exactly three cells wide: the width a card lines its
+         other columns up with. Label muted, score and modifier in the numbers' face; the modifier
+         cell tinted by its ValueTone. Every text selectable. No Margin on this root - spacing
+         between card controls belongs to the card view. -->
+    <UserControl.Styles>
+        <Style Selector="dc|TableCell">
+            <Setter Property="Width" Value="{DynamicResource DungeonAbilityCellSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonAbilityCellSize}" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="dc|TableCell.positive">
+            <Setter Property="Background" Value="{DynamicResource DungeonPositiveValueDimBrush}" />
+        </Style>
+        <Style Selector="dc|TableCell.negative">
+            <Setter Property="Background" Value="{DynamicResource DungeonNegativeValueDimBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <dc:Table x:Name="Cells" ShowColumnLines="True" ColumnDefinitions="Auto,Auto,Auto" />
+</UserControl>

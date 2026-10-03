@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:content="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Entries.Controls.TraitListView"
              x:DataType="content:TraitListView">
 
@@ -9,23 +10,33 @@
          arranges the rows differs. -->
     <UserControl.Resources>
         <DataTemplate x:Key="TraitRowTemplate" x:DataType="content:TraitRow">
-            <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+            <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}" Classes.highlighted="{Binding IsHighlighted}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="TraitLabel" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Classes="muted"
-                           Text="{Binding Label}"
-                           MinWidth="{Binding $parent[content:TraitListView].LabelMinWidth}" />
+                <SelectableTextBlock Classes="muted trait-label"
+                                     Text="{Binding Label}"
+                                     MinWidth="{Binding $parent[content:TraitListView].LabelMinWidth}" />
                 <!-- Value and secondary value as one wrapping text: a long value wraps within its
                      column instead of running past the card's edge. -->
-                <TextBlock Grid.Column="1" TextWrapping="Wrap">
+                <SelectableTextBlock Grid.Column="1" TextWrapping="Wrap" IsVisible="{Binding IsPlain}">
                     <Run Text="{Binding Value}" /><Run Text="{Binding SecondaryDisplay}"
                                                        Foreground="{DynamicResource DungeonTextMutedBrush}" />
-                </TextBlock>
+                </SelectableTextBlock>
+                <dc:Badge Grid.Column="1" Classes="accent" IsVisible="{Binding IsHighlighted}">
+                    <SelectableTextBlock Text="{Binding BadgeText}" />
+                </dc:Badge>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- A badge is taller than a line of text: its label stands on the badge's middle. -->
+        <Style Selector="Grid.highlighted > SelectableTextBlock.trait-label">
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
 
     <!-- No Margin on this root, ever: spacing between card controls belongs to the card view that
          lays them out, not to the control itself. -->
@@ -36,7 +47,7 @@
          accident. Both layouts below sit inside this one scope, so switching between them keeps a
          single shared label column either way. -->
     <StackPanel Grid.IsSharedSizeScope="True" Spacing="{DynamicResource DungeonSpacingXs}">
-        <TextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
+        <SelectableTextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
 
         <!-- Non-compact: one pair per row. -->
         <ItemsControl ItemsSource="{Binding Rows}"

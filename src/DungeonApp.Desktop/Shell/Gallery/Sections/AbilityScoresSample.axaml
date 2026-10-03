@@ -1,44 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:entries="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.AbilityScoresSample"
              HorizontalAlignment="Left">
-    <!-- The author's abilities table: six rows of three square 40 x 40 cells - abbreviation, score,
-         modifier. The dimensions live in this example's row and column definitions; the Table theme
-         does not impose them and stays unchanged. Modifiers carry no cell highlight: positive and
-         negative modifier colours are system tokens, not frame tokens. Used by the Tables and
-         Compositions sections, so both show the same table. -->
-    <UserControl.Styles>
-        <!-- A 40-wide square has no room for the theme's 10 px side padding around "CHA"; the text
-             is centred in both axes, so the cell is its own margin. -->
-        <Style Selector="controls|TableCell">
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-        </Style>
-        <Style Selector="controls|TableCell.abbreviation">
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
-            <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
-    </UserControl.Styles>
-    <controls:Table ColumnDefinitions="40,40,40" RowDefinitions="40,40,40,40,40,40">
-        <controls:TableCell Grid.Row="0" Grid.Column="0" Classes="abbreviation" Content="SIŁ" />
-        <controls:TableCell Grid.Row="0" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="0" Grid.Column="2" Classes="mono" Content="−1" />
-        <controls:TableCell Grid.Row="1" Grid.Column="0" Classes="abbreviation" Content="ZRC" />
-        <controls:TableCell Grid.Row="1" Grid.Column="1" Classes="mono" Content="14" />
-        <controls:TableCell Grid.Row="1" Grid.Column="2" Classes="mono" Content="+2" />
-        <controls:TableCell Grid.Row="2" Grid.Column="0" Classes="abbreviation" Content="KON" />
-        <controls:TableCell Grid.Row="2" Grid.Column="1" Classes="mono" Content="10" />
-        <controls:TableCell Grid.Row="2" Grid.Column="2" Classes="mono" Content="+0" />
-        <controls:TableCell Grid.Row="3" Grid.Column="0" Classes="abbreviation" Content="INT" />
-        <controls:TableCell Grid.Row="3" Grid.Column="1" Classes="mono" Content="10" />
-        <controls:TableCell Grid.Row="3" Grid.Column="2" Classes="mono" Content="+0" />
-        <controls:TableCell Grid.Row="4" Grid.Column="0" Classes="abbreviation" Content="MDR" />
-        <controls:TableCell Grid.Row="4" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="4" Grid.Column="2" Classes="mono" Content="−1" />
-        <controls:TableCell Grid.Row="5" Grid.Column="0" Classes="abbreviation" Content="CHA" />
-        <controls:TableCell Grid.Row="5" Grid.Column="1" Classes="mono" Content="8" />
-        <controls:TableCell Grid.Row="5" Grid.Column="2" Classes="mono" Content="−1" />
-    </controls:Table>
+    <!-- The abilities table exactly as a card lays it out: two AbilityTableViews (the control the
+         monster card uses) side by side, DungeonDetailColumnGap apart, three rows each - label,
+         score, modifier in square DungeonAbilityCellSize cells, every line drawn, sharp corners, the
+         modifier tinted by its sign (positive, negative, none for zero). Sample rows in
+         AbilityScoresSample.axaml.cs. Used by the Tables and Compositions sections, so both show the
+         same table. -->
+    <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+        <entries:AbilityTableView x:Name="LeftTable" />
+        <entries:AbilityTableView x:Name="RightTable" Grid.Column="1" />
+    </Grid>
 </UserControl>

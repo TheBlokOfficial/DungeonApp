@@ -1,5 +1,3 @@
-using DungeonApp.Core.Entries;
-
 namespace DungeonApp.Desktop.Entries.Controls;
 
 /// <summary>
@@ -7,8 +5,13 @@ namespace DungeonApp.Desktop.Entries.Controls;
 /// shown alongside it - "15" with its source "zbroja skórzana, tarcza" is one row carrying two
 /// strings, not two rows. The card designer builds these directly in a system's card view; no
 /// pack file ever names one.
+/// <para>
+/// <see cref="IsHighlighted"/> draws the value as an accent badge instead of text - the one value
+/// in a list the card wants found at a glance (a monster's challenge). A layout decision of the card,
+/// never of data.
+/// </para>
 /// </summary>
-public sealed record TraitRow(string Label, string Value, string? Secondary = null)
+public sealed record TraitRow(string Label, string Value, string? Secondary = null, bool IsHighlighted = false)
 {
     /// <summary>
     /// The secondary value in brackets, which is how every trad statblock on paper writes it:
@@ -18,4 +21,12 @@ public sealed record TraitRow(string Label, string Value, string? Secondary = nu
     /// both run on in one wrapping line of text.
     /// </summary>
     public string? SecondaryDisplay => Secondary is null ? null : $" ({Secondary})";
+
+    /// <summary>
+    /// A highlighted row's badge text: the value and its secondary value parted by a middle dot
+    /// ("5 · 1 800 PD") - inside a badge, brackets would read as a second badge.
+    /// </summary>
+    public string BadgeText => Secondary is null ? Value : $"{Value} · {Secondary}";
+
+    public bool IsPlain => !IsHighlighted;
 }

@@ -2,7 +2,7 @@
   "id": "goblin",
   "name": "Goblin",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Mały",
@@ -27,8 +27,26 @@
     "languages": "wspólny, goblini",
     "challenge": "1/4 (50 PD)",
 
-    "specialAbilities": "Zwinna ucieczka. Goblin może w każdej swojej turze wykonać akcję Odwrotu lub Ukrycia się jako akcję dodatkową.",
-    "actions": "Bułat. Atak bronią w zwarciu: +4 do trafienia, zasięg 5 stóp, jeden cel. Trafienie: 5 (1k6+2) obrażeń sieczących.\n\nKrótki łuk. Atak bronią dystansową: +4 do trafienia, zasięg 80/320 stóp, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.",
+    "specialAbilities": {
+      "entries": [
+        {
+          "name": "Zwinna ucieczka",
+          "text": "Goblin może w każdej swojej turze wykonać akcję Odwrotu lub Ukrycia się jako akcję dodatkową."
+        }
+      ]
+    },
+    "actions": {
+      "entries": [
+        {
+          "name": "Bułat",
+          "text": "Atak bronią w zwarciu: **+4 do trafienia**, zasięg 5 stóp, jeden cel. Trafienie: **5 (1k6+2)** obrażeń sieczących."
+        },
+        {
+          "name": "Krótki łuk",
+          "text": "Atak bronią dystansową: **+4 do trafienia**, zasięg 80/320 stóp, jeden cel. Trafienie: **5 (1k6+2)** obrażeń kłutych."
+        }
+      ]
+    },
     "description": "Mały, tchórzliwy rabuś polujący w gromadzie. Sam ucieka; w dziesiątkę potrafi obrabować karawanę."
   }
 }

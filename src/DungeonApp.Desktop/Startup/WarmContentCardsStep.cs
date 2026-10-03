@@ -47,6 +47,18 @@ public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IConten
                 // the GM may never open would only slow the start.
                 var card = presentation.CreateCard(entry.Entry, EntryPicture.None);
                 await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, card, cancellationToken);
+
+                // The pieces a card lends the detail header are built with it, outside its own tree.
+                if (card is IEntryCardHeader header)
+                {
+                    foreach (var piece in new[] { header.HeaderVisual, header.HeaderBlock })
+                    {
+                        if (piece is not null)
+                        {
+                            await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, piece, cancellationToken);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

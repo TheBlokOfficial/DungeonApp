@@ -2,7 +2,7 @@
   "id": "szkielet",
   "name": "Szkielet",
   "template": "dnd5e:monster",
-  "templateVersion": 1,
+  "templateVersion": 2,
 
   "values": {
     "size": "Średni",
@@ -31,7 +31,18 @@
     "challenge": "1/4",
     "xp": 50,
 
-    "actions": "Krótki miecz. Atak bronią w zwarciu: +4 do trafienia, zasięg 1,5 m, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.\n\nKrótki łuk. Atak bronią dystansową: +4 do trafienia, zasięg 24/96 m, jeden cel. Trafienie: 5 (1k6+2) obrażeń kłutych.",
+    "actions": {
+      "entries": [
+        {
+          "name": "Krótki miecz",
+          "text": "Atak bronią w zwarciu: **+4 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **5 (1k6+2)** obrażeń kłutych."
+        },
+        {
+          "name": "Krótki łuk",
+          "text": "Atak bronią dystansową: **+4 do trafienia**, zasięg 24/96 m, jeden cel. Trafienie: **5 (1k6+2)** obrażeń kłutych."
+        }
+      ]
+    },
     "description": "Kości złożone i poruszane nekromancją. Pamięta ostatni rozkaz, nie pamięta własnego imienia, i wykonuje go, dopóki ktoś go nie rozbije."
   }
 }

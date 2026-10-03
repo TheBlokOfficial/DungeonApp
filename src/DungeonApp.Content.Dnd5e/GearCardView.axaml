@@ -1,25 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
-             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.GearCardView">
 
-    <!-- The designed gear card: a square picture in the top left corner with the properties as an
-         untitled trait list beside it, then a description block. Spacing between them belongs to
-         this host, never to a control. -->
-    <UserControl.Resources>
-        <x:Double x:Key="GearPictureSize">128</x:Double>
-    </UserControl.Resources>
-
-    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
-        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingXxl}">
-            <dc:ImageFrame x:Name="Picture"
-                           Width="{StaticResource GearPictureSize}"
-                           Height="{StaticResource GearPictureSize}"
-                           VerticalAlignment="Top"
-                           Icon="{DynamicResource DungeonIconBackpack}" />
-            <controls:TraitListView x:Name="Properties" Grid.Column="1" />
-        </Grid>
-        <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
-    </StackPanel>
+    <!-- The designed gear card: a square picture and the properties as an untitled trait list are
+         lent to the detail header (GearCardView.axaml.cs) - beside the title and under it, on the
+         same grid as the monster card; the card itself is the description block. -->
+    <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
 </UserControl>

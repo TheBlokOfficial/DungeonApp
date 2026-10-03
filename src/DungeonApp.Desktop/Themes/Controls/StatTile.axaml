@@ -1,0 +1,67 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Kafelek wartości (controls:StatTile): wartość nagłówkowa karty (KP, PZ, szybkość). Bez tła
+        własnego (karta pod spodem), linia Border 1 px, ostre narożniki - jak tabela w karcie, z którą
+        stoi w jednej siatce. Wcięcie DungeonStatTilePadding. Od góry:
+          podpis - ikona DungeonStatTileIconSize i napis w roli caption, oba przygaszone (TextMuted);
+          wartość - mono-value-lg (ten krój i grubość co liczba w tabeli cech), tekst podstawowy;
+          dopisek - caption, przygaszony; tylko gdy podany.
+        Każdy tekst zawija się w kafelku; kafelki jednego rzędu mają równą wysokość z układu.
+        Bez stanów: nie reaguje na mysz i nie przyjmuje fokusu; tekst się zaznacza (SelectableTextBlock).
+        Wyłączony - DungeonDisabledOpacity, gdy nic wyżej nie przygasza.
+    -->
+    <ControlTheme x:Key="{x:Type controls:StatTile}" TargetType="controls:StatTile">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="{DynamicResource DungeonStatTilePadding}" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <StackPanel>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
+                            <controls:ForegroundIcon Width="{DynamicResource DungeonStatTileIconSize}"
+                                                     Height="{DynamicResource DungeonStatTileIconSize}"
+                                                     VerticalAlignment="Center"
+                                                     Source="{TemplateBinding Icon}"
+                                                     Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                     IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <SelectableTextBlock Name="PART_Label"
+                                                 Grid.Column="1"
+                                                 Classes="caption"
+                                                 Text="{TemplateBinding Label}"
+                                                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                 VerticalAlignment="Center"
+                                                 TextWrapping="Wrap" />
+                        </Grid>
+                        <SelectableTextBlock Name="PART_Value"
+                                             Classes="mono-value-lg"
+                                             Text="{TemplateBinding Value}"
+                                             Foreground="{TemplateBinding Foreground}"
+                                             TextWrapping="Wrap" />
+                        <SelectableTextBlock Name="PART_Note"
+                                             Classes="caption"
+                                             Text="{TemplateBinding Note}"
+                                             Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                             TextWrapping="Wrap"
+                                             IsVisible="{TemplateBinding Note, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
