@@ -3,8 +3,8 @@
              xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.MonsterVitalsView">
 
-    <!-- A monster's headline values - KP, PZ, Szybkość - as three tiles of equal width in one row,
-         spaced like the card's columns. Lent to the detail header, under the tags (see
+    <!-- A monster's headline values - KP, PZ, Szybkość - as three borderless columns of equal width
+         in one row, spaced like the card's columns. Lent to the detail header, under the tags (see
          MonsterCardView). -->
     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
         <dc:StatTile x:Name="ArmorClassTile" Label="KP" Icon="{DynamicResource DungeonIconShield}" />

@@ -93,7 +93,7 @@
 
     <!-- LICZBY ============================================================ -->
     <!-- stat-value i stat-value-lg: ta sama liczba w dwóch stopniach - wartość w komórce tabeli
-         i wartość w kafelku. Pismo interfejsu, nie krój o stałej szerokości: wartość z jednostką
+         i wartość nagłówkowa (bez ramki, więc to ona prowadzi oko - stopień 26). Pismo interfejsu, nie krój o stałej szerokości: wartość z jednostką
          („7,5 m”) czyta się jak tekst, a cyfry tabelaryczne (tnum) i tak trzymają kolumny liczb
          równo. Jeden krój i grubość, żeby równoważne liczby wyglądały jednakowo. -->
     <Style Selector="TextBlock.stat-value, SelectableTextBlock.stat-value">
@@ -105,7 +105,7 @@
     <Style Selector="TextBlock.stat-value-lg, SelectableTextBlock.stat-value-lg">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontFeatures" Value="tnum" />
-        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontSize" Value="26" />
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style Selector="TextBlock.mono-value">

@@ -4,7 +4,7 @@ using Avalonia.Controls;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The tiles of a monster's armor class, hit points and speed, each with its note (the armor, the
+/// The headline values of a monster's armor class, hit points and speed, each with its note (the armor, the
 /// hit dice). Built by <see cref="MonsterCardView"/> for the detail header.
 /// </summary>
 public partial class MonsterVitalsView : UserControl

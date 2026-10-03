@@ -16,7 +16,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// after construction, through <see cref="SetMonster"/>: the constructor stays parameterless, as the
 /// XAML loader and the designer preview need it.
 /// <para>
-/// The portrait and the KP / PZ / Szybkość tiles belong to the detail header
+/// The portrait and the KP / PZ / Szybkość values belong to the detail header
 /// (<see cref="IEntryCardHeader"/>): the header draws the title and tags for every content type
 /// alike, and this card only lends it those two pieces. The portrait is three ability cells wide
 /// (DungeonAbilityCellSize) and four tall, so the ability table under it is exactly as wide and the

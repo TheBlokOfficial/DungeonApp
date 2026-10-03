@@ -5,9 +5,10 @@ using Avalonia.Media;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// A headline value as a small bordered tile: a label with its icon, the value large, a note under it
-/// ("pancerz naturalny", "2k8+2"). Tiles of one row stand side by side at equal width and height,
-/// so a long note wraps inside its tile instead of pushing the row apart. Nothing to click: every
+/// A headline value as a borderless column of text: a label with its icon, the value large, a note
+/// under it ("pancerz naturalny", "2k8+2"). Values of one row stand side by side in equal-width
+/// columns the host lays out, so a long note wraps inside its column instead of pushing the row
+/// apart. Nothing to click: every
 /// text in it is selectable like the rest of a card. The look belongs to the frame's control theme
 /// (Themes/Controls/StatTile.axaml).
 /// </summary>

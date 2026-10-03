@@ -500,9 +500,8 @@
              karty (dwie tabele cech), więc druga kolumna karty zaczyna się na linii tytułu. -->
         <x:Double x:Key="DungeonAbilityCellSize">44</x:Double>
         <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
-        <!-- Kafelek wartości (controls:StatTile): wcięcie 10 z boków, 8 nad i pod; ikona przy
-             podpisie 12 px - mniejsza niż ikona akcji (16), bo stoi w podpisie 11 px. -->
-        <Thickness x:Key="DungeonStatTilePadding">10,8</Thickness>
+        <!-- Wartość nagłówkowa (controls:StatTile): ikona przy podpisie 12 px - mniejsza niż ikona
+             akcji (16), bo stoi w podpisie 11 px. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>
         <!-- Nagłówek sekcji (controls:SectionHeading): kreska akcentu 3 x 18, ikona 16. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
