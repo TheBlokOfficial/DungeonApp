@@ -15,7 +15,7 @@ namespace DungeonApp.Desktop.Entries;
 /// The visual stands left of the title column with DungeonDetailColumnGap between them, and the
 /// block sits at the foot of the title column, its bottom on the visual's bottom while the title
 /// column is shorter than the visual. Either piece may be null; a card that does not implement this
-/// gets the header as it always was. Each piece is a control of its own, never a part of the card's
+/// gets the header with neither. Each piece is a control of its own, never a part of the card's
 /// own tree - a control has one parent.
 /// </summary>
 public interface IEntryCardHeader
