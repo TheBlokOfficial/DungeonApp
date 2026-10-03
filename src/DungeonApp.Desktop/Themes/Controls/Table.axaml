@@ -47,7 +47,11 @@
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
+                <!-- InnerBorderEdge: a highlight never lies under the cell's own lines, so at a
+                     fractional display scale an antialiased line does not blend into the highlight
+                     and every line keeps the same color over highlighted and plain cells. -->
                 <Border Background="{TemplateBinding Background}"
+                        BackgroundSizing="InnerBorderEdge"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
                     <ContentPresenter Name="PART_ContentPresenter"
