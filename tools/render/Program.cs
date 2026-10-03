@@ -34,8 +34,8 @@ internal static class Program
     private static string _outDir = "";
 
     /// <summary>
-    /// Pack directories read after the bundled one - the test fixtures, because the bundled pack has
-    /// no gear yet and the gear card should be rendered too.
+    /// Pack directories read after the bundled one - the test fixtures, so the cards they exercise
+    /// are rendered too.
     /// </summary>
     private static string[] _extraPacks = [];
 

@@ -1,0 +1,15 @@
+{
+  "id": "lina-konopna",
+  "name": "Lina konopna (15 m)",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Zwykły",
+    "category": "Ekwipunek",
+    "weight": 5,
+    "value": 100,
+
+    "description": "Zwój mocnej liny skręconej z konopi. Lina ma 2 punkty wytrzymałości; zerwać ją można testem Siły o ST 17."
+  }
+}

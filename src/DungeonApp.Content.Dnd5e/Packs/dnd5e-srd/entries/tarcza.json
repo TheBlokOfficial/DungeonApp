@@ -1,0 +1,18 @@
+{
+  "id": "tarcza",
+  "name": "Tarcza",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Zwykły",
+    "category": "Zbroja",
+    "subtype": "tarcza",
+    "weight": 3,
+    "value": 1000,
+
+    "armorClass": "+2",
+
+    "description": "Drewniana albo metalowa osłona trzymana w jednej ręce. Naraz można korzystać tylko z jednej tarczy."
+  }
+}

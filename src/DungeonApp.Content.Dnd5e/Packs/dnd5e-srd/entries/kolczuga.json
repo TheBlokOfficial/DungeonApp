@@ -1,0 +1,20 @@
+{
+  "id": "kolczuga",
+  "name": "Kolczuga",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Zwykły",
+    "category": "Zbroja",
+    "subtype": "zbroja ciężka",
+    "weight": 27.5,
+    "value": 7500,
+
+    "armorClass": "16",
+    "strengthRequirement": 13,
+    "stealthDisadvantage": true,
+
+    "description": "Koszula z tysięcy splecionych stalowych kółek, noszona na grubym, pikowanym kaftanie. Chroni całe ciało, ale ciąży i dzwoni przy każdym kroku."
+  }
+}

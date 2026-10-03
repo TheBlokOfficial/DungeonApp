@@ -1,7 +1,7 @@
 # Renders the real application offscreen and saves PNGs to tools\render\out\:
 #   monster_<name>.png  - every monster card, header included: the bundled SRD pack and the test
 #                         fixture packs (tests\Fixtures\Packs)
-#   gear_<name>.png     - every gear card; today only the fixtures have gear
+#   gear_<name>.png     - every gear card: the bundled SRD pack and the test fixture packs
 #   gallery_<section>.png - every section of the controls gallery
 # Usage (from anywhere): powershell -File tools\render\render.ps1
 # Build output goes to tools\render\artifacts\ (UseArtifactsOutput, for the referenced projects too),

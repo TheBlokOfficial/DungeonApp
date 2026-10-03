@@ -1,0 +1,19 @@
+{
+  "id": "miecz-dlugi",
+  "name": "Miecz długi",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Zwykły",
+    "category": "Broń",
+    "subtype": "miecz długi",
+    "weight": 1.5,
+    "value": 1500,
+
+    "damage": "1k8 cięte",
+    "properties": "uniwersalna (1k10)",
+
+    "description": "Prosta, obosieczna klinga do walki jedną ręką. Ujęty oburącz miecz zadaje cięższe rany."
+  }
+}

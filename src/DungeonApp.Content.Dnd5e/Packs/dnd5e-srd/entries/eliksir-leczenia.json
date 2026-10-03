@@ -1,0 +1,15 @@
+{
+  "id": "eliksir-leczenia",
+  "name": "Eliksir leczenia",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Pospolity",
+    "category": "Mikstura",
+    "weight": 0.25,
+    "value": 5000,
+
+    "description": "Kto wypije eliksir, odzyskuje 2k4+2 punkty wytrzymałości. Czerwony płyn połyskuje, gdy zakołysać fiolką."
+  }
+}
