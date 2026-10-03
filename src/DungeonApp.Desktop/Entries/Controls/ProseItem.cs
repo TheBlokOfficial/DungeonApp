@@ -14,4 +14,14 @@ public sealed record ProseItem(string Name, string? Note, string Text)
     /// prints it.
     /// </summary>
     public string? NoteDisplay => Note is null ? null : $" ({Note})";
+
+    /// <summary>
+    /// The period that closes the name line, the way a statblock prints "Ugryzienie." - the view adds
+    /// it, so a pack writes the bare name. It closes the whole line, after the note too; a name
+    /// already ending in punctuation, with nothing after it, gets none.
+    /// </summary>
+    public string? Period => Note is null && EndsInPunctuation(Name) ? null : ".";
+
+    private static bool EndsInPunctuation(string text) =>
+        text.Length > 0 && text[^1] is '.' or '!' or '?' or ':' or '…';
 }

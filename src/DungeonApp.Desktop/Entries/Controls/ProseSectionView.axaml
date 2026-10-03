@@ -9,7 +9,7 @@
          with the heading's left edge, never indented - an optional introduction and the named items.
          Rhythm: DungeonSpacingSm from the heading to its content, DungeonSpacingMd between the
          introduction and each item. An item's name stands on its own line in the strong role with its
-         note muted after it; its text under it in the secondary color, the author's **…** runs
+         note muted after it and the closing period in the name's style at the line's end; its text under it in the secondary color, the author's **…** runs
          emphasized. Every text selectable. No Margin on this root - the card view spaces sections. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
         <dc:SectionHeading Icon="{Binding Icon}" Text="{Binding Title}" />
@@ -34,7 +34,9 @@
                                 <Run Text="{Binding Name}"
                                      FontWeight="SemiBold"
                                      Foreground="{DynamicResource DungeonTextPrimaryBrush}" /><Run Text="{Binding NoteDisplay}"
-                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                                     Foreground="{DynamicResource DungeonTextMutedBrush}" /><Run Text="{Binding Period}"
+                                     FontWeight="SemiBold"
+                                     Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
                             </SelectableTextBlock>
                             <SelectableTextBlock Classes="body secondary"
                                                  TextWrapping="Wrap"
