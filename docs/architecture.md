@@ -102,8 +102,9 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
 - **Zakładka treści** (`Desktop/Entries/ContentTab`): układ lista–szczegół, wspólny dla typów treści.
   System podaje profil typu: kategorię, tagi, odznakę wiersza, filtry wartości i sortowania. Szczegół
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
-  pożyczyć nagłówkowi dwie kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy i blok pod tagami
-  (u potwora portret oraz KP, PZ i Szybkość; u przedmiotu kwadratowy obrazek i jego pary). Karta
+  pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
+  pierwszej linii nazwy, słowo po tagach i blok pod tagami (u potwora portret oraz KP, PZ i Szybkość;
+  u przedmiotu kwadratowy obrazek, waga, plakietka rzadkości oraz Wartość i Dostrojenie). Karta
   potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Proza karty
   jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu zaznacza najbliższy blok

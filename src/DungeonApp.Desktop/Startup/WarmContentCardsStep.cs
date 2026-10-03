@@ -51,7 +51,7 @@ public sealed class WarmContentCardsStep(Func<ContentRegistry> registry, IConten
                 // The pieces a card lends the detail header are built with it, outside its own tree.
                 if (card is IEntryCardHeader header)
                 {
-                    foreach (var piece in new[] { header.HeaderVisual, header.HeaderBlock })
+                    foreach (var piece in new[] { header.HeaderVisual, header.HeaderTitleEnd, header.HeaderTagsEnd, header.HeaderBlock })
                     {
                         if (piece is not null)
                         {

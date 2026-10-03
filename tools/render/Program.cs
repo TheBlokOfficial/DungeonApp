@@ -39,6 +39,8 @@ internal static class Program
     /// </summary>
     private static string[] _extraPacks = [];
 
+    private static readonly HashSet<string> _written = new(StringComparer.Ordinal);
+
     /// <summary>Arguments: the output directory, then any number of extra pack directories.</summary>
     [STAThread]
     private static int Main(string[] args)
@@ -100,13 +102,27 @@ internal static class Program
             var detail = tabView.GetVisualDescendants().OfType<EntryDetailView>().FirstOrDefault(view => view.IsEffectivelyVisible);
             if (detail is not null)
             {
-                SaveCrop(window, (Control)detail.GetVisualParent()!, $"{prefix}_{Slug(row.Name)}.png");
+                SaveCrop(window, (Control)detail.GetVisualParent()!, UniqueName($"{prefix}_{Slug(row.Name)}"));
             }
         }
 
         SetSize(window, WindowWidth, WindowHeight);
     }
 
+    /// <summary>
+    /// A file name not yet written in this run: two packs may each have an entry of the same name
+    /// (the bundled pack and a fixture), and the second must not overwrite the first.
+    /// </summary>
+    private static string UniqueName(string stem)
+    {
+        var name = $"{stem}.png";
+        for (var copy = 2; !_written.Add(name); copy++)
+        {
+            name = $"{stem}-{copy}.png";
+        }
+
+        return name;
+    }
     /// <summary>Opens the controls gallery tall enough to show it whole and saves each section on its own.</summary>
     private static void RenderGallery(Window window, AppShellViewModel shell)
     {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace DungeonApp.Content.Dnd5e;
@@ -19,9 +18,7 @@ public sealed record ScaleUnit(string Symbol, decimal Multiplier);
 public sealed class UnitScale
 {
     // A non-breaking space keeps a number and its unit on one line.
-    private const char UnitSeparator = ' ';
-
-    private static readonly CultureInfo Polish = CultureInfo.GetCultureInfo("pl-PL");
+    private const char UnitSeparator = '\u00A0';
 
     private readonly IReadOnlyList<ScaleUnit> _units;
 
@@ -45,6 +42,6 @@ public sealed class UnitScale
         var unit = _units.FirstOrDefault(unit => decimal.Remainder(quantity, unit.Multiplier) == 0) ?? _units[^1];
         var amount = quantity / unit.Multiplier;
 
-        return $"{amount.ToString("#,##0.############################", Polish)}{UnitSeparator}{unit.Symbol}";
+        return $"{PolishNumber.Format(amount)}{UnitSeparator}{unit.Symbol}";
     }
 }

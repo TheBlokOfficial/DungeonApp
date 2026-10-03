@@ -33,15 +33,25 @@ public sealed class ValidContentDetailViewModel(
     /// <summary>The path's segments, the last one being the entry itself.</summary>
     public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
 
-    public IReadOnlyList<string> Tags { get; } = tags;
+    /// <summary>
+    /// The tags' row as drawn: every tag, then the card's own end of the row
+    /// (<see cref="IEntryCardHeader.HeaderTagsEnd"/>) when it lends one - a control among strings,
+    /// shown as itself.
+    /// </summary>
+    public IReadOnlyList<object> TagRow { get; } =
+        (card as IEntryCardHeader)?.HeaderTagsEnd is { } tagsEnd ? [.. tags, tagsEnd] : [.. tags];
 
-    public bool HasTags { get; } = tags.Count > 0;
+    public bool HasTagRow => TagRow.Count > 0;
 
     public Control Card { get; } = card;
 
     public Control? HeaderVisual { get; } = (card as IEntryCardHeader)?.HeaderVisual;
 
     public bool HasHeaderVisual => HeaderVisual is not null;
+
+    public Control? HeaderTitleEnd { get; } = (card as IEntryCardHeader)?.HeaderTitleEnd;
+
+    public bool HasHeaderTitleEnd => HeaderTitleEnd is not null;
 
     public Control? HeaderBlock { get; } = (card as IEntryCardHeader)?.HeaderBlock;
 

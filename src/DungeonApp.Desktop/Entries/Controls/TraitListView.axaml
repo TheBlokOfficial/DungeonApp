@@ -15,10 +15,22 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="TraitLabel" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <SelectableTextBlock Classes="muted trait-label"
-                                     Text="{Binding Label}"
-                                     TextWrapping="Wrap"
-                                     Width="{Binding $parent[content:TraitListView].LabelWidth}" />
+                <!-- The label, after its icon when the row has one (KP's shield): the icon in the
+                     label's muted color, as in a headline value's caption. -->
+                <Grid ColumnDefinitions="Auto,*"
+                      Classes.with-icon="{Binding HasIcon}"
+                      Width="{Binding $parent[content:TraitListView].LabelWidth}">
+                    <dc:ForegroundIcon Width="{DynamicResource DungeonStatTileIconSize}"
+                                       Height="{DynamicResource DungeonStatTileIconSize}"
+                                       VerticalAlignment="Center"
+                                       Source="{Binding Icon}"
+                                       Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                       IsVisible="{Binding HasIcon}" />
+                    <SelectableTextBlock Grid.Column="1"
+                                         Classes="muted trait-label"
+                                         Text="{Binding Label}"
+                                         TextWrapping="Wrap" />
+                </Grid>
                 <!-- Value and secondary value as one wrapping text: a long value wraps within its
                      column instead of running past the card's edge. -->
                 <SelectableTextBlock Grid.Column="1" TextWrapping="Wrap" IsVisible="{Binding IsPlain}">
@@ -36,6 +48,11 @@
         <!-- A row is as tall as its text line, the badge's row too: the badge gives up its fixed
              height and its border (transparent in the accent variant, yet 2 px of height) and takes
              the line's height from the label beside it, so a highlighted row keeps the list's pitch. -->
+        <!-- The gap between a label's icon and its text opens only with an icon: a label without
+             one starts on the list's edge. -->
+        <Style Selector="Grid.with-icon">
+            <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingXs}" />
+        </Style>
         <Style Selector="Grid.highlighted > dc|Badge">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="BorderThickness" Value="0" />

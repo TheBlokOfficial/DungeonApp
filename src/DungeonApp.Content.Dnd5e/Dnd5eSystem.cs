@@ -249,6 +249,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IBrush? ResolveBadgeBrush(string colorKey) => RarityBrushes.GetValueOrDefault(colorKey);
 
     /// <summary>
+    /// A rarity tier's own color, for the item card's rarity pill - the same one the list's badge
+    /// resolves to; null for a rarity this system does not know.
+    /// </summary>
+    internal static IBrush? RarityBrush(string rarity) =>
+        RarityColorKeys.TryGetValue(rarity, out var colorKey) ? RarityBrushes.GetValueOrDefault(colorKey) : null;
+
+    /// <summary>
     /// One row of the content-type table. Every type declares "image" (<see cref="Monster.Image"/>,
     /// <see cref="Gear.Image"/>) as its picture, so the loader checks its path at load time without
     /// knowing what the type is, and every card stands a frame for it.
@@ -306,7 +313,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// "Przedmioty": no category (the tab has no category filter); no tags; badge = rarity, with a
+    /// "Przedmioty": no category (the tab has no category filter); tags = the item's category and,
+    /// when it has one, its subtype - the header's line under the title; badge = rarity, with a
     /// color key per <see cref="RarityColorKeys"/> for a recognised tier and none for anything else;
     /// one value filter, "Rzadkość", ordered by <see cref="RarityOrder"/>; one sort, "Rzadkość", in
     /// the same <see cref="RarityOrder"/>.
@@ -316,7 +324,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         var profile = new ContentTypeProfile<Gear>(
             gear,
             category: null,
-            tags: gear => [],
+            tags: gear => gear.Subtype is { } subtype ? [gear.Category, subtype] : [gear.Category],
             badge: gear => new ContentBadge(gear.Rarity, RarityColorKeys.GetValueOrDefault(gear.Rarity)),
             valueFilters: [new ContentValueFilterSpec<Gear>("Rzadkość", gear => gear.Rarity, RarityOrder)],
             sorts: [new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity))]);

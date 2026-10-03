@@ -57,6 +57,12 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
 
     public Control HeaderVisual => _portrait;
 
+    /// <summary>Nothing at the end of the title's line: a monster's name has the line to itself.</summary>
+    public Control? HeaderTitleEnd => null;
+
+    /// <summary>Nothing after the tags: size, type and alignment say it all.</summary>
+    public Control? HeaderTagsEnd => null;
+
     public Control HeaderBlock => _vitals;
 
     public void SetMonster(Monster monster, EntryPicture picture)

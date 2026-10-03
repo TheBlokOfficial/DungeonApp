@@ -23,6 +23,10 @@
         <Style Selector="Grid.with-visual">
             <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonDetailColumnGap}" />
         </Style>
+        <!-- Likewise the gap before the title's end: without one, the title wraps at the column's edge. -->
+        <Style Selector="Grid.with-title-end">
+            <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingMd}" />
+        </Style>
     </UserControl.Styles>
 
     <UserControl.DataTemplates>
@@ -38,7 +42,8 @@
                     <dc:Breadcrumbs Segments="{Binding Breadcrumbs}" />
 
                     <!-- The card's visual (IEntryCardHeader) on the left; the title column beside it:
-                         name, tags, and at its foot the card's block - pushed down by the star row to
+                         name (the card's title end against the right edge), tags (the card's tags end
+                         after them), and at its foot the card's block - pushed down by the star row to
                          the visual's bottom edge while the column is shorter than the visual. -->
                     <Grid ColumnDefinitions="Auto,*" Classes.with-visual="{Binding HasHeaderVisual}">
                         <ContentControl Content="{Binding HeaderVisual}"
@@ -47,17 +52,28 @@
                         <Grid Grid.Column="1"
                               RowDefinitions="Auto,Auto,*,Auto"
                               RowSpacing="{DynamicResource DungeonSpacingXs}">
-                            <SelectableTextBlock Classes="display-xl"
-                                                 Text="{Binding Name}"
-                                                 TextWrapping="Wrap"
-                                                 Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
+                            <Grid ColumnDefinitions="*,Auto" Classes.with-title-end="{Binding HasHeaderTitleEnd}">
+                                <SelectableTextBlock Classes="display-xl"
+                                                     Text="{Binding Name}"
+                                                     TextWrapping="Wrap"
+                                                     Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                                <!-- The title's end, centred on the title's first line: an empty,
+                                     zero-wide line of the title's own style gives the cell exactly one
+                                     line's height, however many lines the title wraps to. -->
+                                <Panel Grid.Column="1" VerticalAlignment="Top" IsVisible="{Binding HasHeaderTitleEnd}">
+                                    <TextBlock Classes="display-xl" Text=" " Width="0" IsHitTestVisible="False" />
+                                    <ContentControl Content="{Binding HeaderTitleEnd}" VerticalAlignment="Center" />
+                                </Panel>
+                            </Grid>
+                            <ItemsControl Grid.Row="1" ItemsSource="{Binding TagRow}" IsVisible="{Binding HasTagRow}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
                                                    LineSpacing="{DynamicResource DungeonSpacingXs}" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
+                                <!-- A tag is a string drawn as a word tag; the card's tags end is a
+                                     control and shows as itself. -->
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="x:String">
                                         <dc:WordTag>

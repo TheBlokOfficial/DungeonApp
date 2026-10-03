@@ -188,11 +188,14 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void Gear_has_no_tags()
+    public void An_items_tags_are_its_category_then_its_subtype_when_it_has_one()
     {
-        var entry = GearEntry("Rzadki");
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
+        var sword = new Entry(ContentId.Create("s"), "Miecz", reference, 1, ContentValues.From(
+            new Gear { Rarity = "Zwykły", Category = "Broń", Subtype = "miecz długi" }));
 
-        Assert.Empty(GearProfile().Tags(entry));
+        Assert.Equal(["Broń", "miecz długi"], GearProfile().Tags(sword));
+        Assert.Equal(["Ekwipunek"], GearProfile().Tags(GearEntry("Rzadki")));
     }
 
     [Fact]

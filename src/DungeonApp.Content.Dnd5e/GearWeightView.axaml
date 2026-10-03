@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Content.Dnd5e.GearWeightView">
+
+    <!-- An item's weight at the end of its title's line (lent to the detail header, see
+         GearCardView): the weight icon in the muted color, as by a headline value's caption, and the
+         weight in interface type with tabular digits. -->
+    <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXs}">
+        <dc:ForegroundIcon Width="{DynamicResource DungeonStatTileIconSize}"
+                           Height="{DynamicResource DungeonStatTileIconSize}"
+                           VerticalAlignment="Center"
+                           Source="{DynamicResource DungeonIconWeight}"
+                           Foreground="{DynamicResource DungeonTextMutedBrush}" />
+        <SelectableTextBlock x:Name="WeightText"
+                             Classes="body"
+                             FontFeatures="tnum"
+                             VerticalAlignment="Center"
+                             Foreground="{DynamicResource DungeonTextRegularBrush}" />
+    </StackPanel>
+</UserControl>

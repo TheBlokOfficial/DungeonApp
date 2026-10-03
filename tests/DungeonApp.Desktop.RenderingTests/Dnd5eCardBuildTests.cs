@@ -155,17 +155,139 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
-    [AvaloniaFact]
-    public void A_gear_card_builds_with_its_picture_frame()
+    private static readonly Gear MinimalGear = new() { Rarity = "Zwykły", Category = "Ekwipunek" };
+
+    private static readonly Gear FullGear = MinimalGear with
+    {
+        Rarity = "Rzadki",
+        Subtype = "kostur",
+        Attunement = true,
+        AttunementBy = "przez czarodzieja",
+        Weight = 1.5m,
+        Value = 1500,
+        Damage = "1k6 obuchowe",
+        Properties = "uniwersalna (1k8)",
+        ArmorClass = "+2",
+        StrengthRequirement = 13,
+        StealthDisadvantage = true,
+        Charges = 7,
+        Recharge = "odzyskuje 1k6+1 ładunków o świcie",
+        Description = "Gładki kij.",
+    };
+
+    private static GearCardView GearCard(Gear gear)
     {
         var card = new GearCardView();
-        card.SetGear(new Gear { Rarity = "Pospolity", Category = "Mikstura", Weight = 1, Description = "Leczy 2k4+2." }, EntryPicture.None);
+        card.SetGear(gear, EntryPicture.None);
+        return card;
+    }
+
+    private static string[] GearTraitLabels(Control card) =>
+    [
+        .. new[] { "WeaponTraits", "ArmorTraits", "ChargeTraits" }
+            .Select(name => card.FindControl<TraitListView>(name)!)
+            .Where(list => list.IsVisible)
+            .SelectMany(list => list.Rows.Select(row => row.Label)),
+    ];
+
+    // Digit groups and units are parted by non-breaking spaces; the expectations use plain ones.
+    private static string Plain(string text) => text.Replace((char)0x00A0, ' ').Replace((char)0x202F, ' ');
+
+    // The header's pieces are placed in the window next to the card: a control has one parent, and
+    // they are not in the card's own tree.
+    private static Window ShowGear(GearCardView card)
+    {
         var header = (IEntryCardHeader)card;
-        var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
+        var panel = new StackPanel();
+        foreach (var piece in new[] { header.HeaderVisual, header.HeaderTitleEnd, header.HeaderTagsEnd, header.HeaderBlock })
+        {
+            if (piece is not null)
+            {
+                panel.Children.Add(piece);
+            }
+        }
+
+        panel.Children.Add(card);
+        return Show(panel);
+    }
+
+    [AvaloniaFact]
+    public void An_item_with_every_field_shows_every_pair_its_weight_and_its_rarity()
+    {
+        var card = GearCard(FullGear);
+        var header = (IEntryCardHeader)card;
+        var window = ShowGear(card);
 
         Assert.IsType<ImageFrame>(header.HeaderVisual);
-        Assert.NotEmpty(Assert.IsType<TraitListView>(header.HeaderBlock).Rows);
+        Assert.Equal(
+            "1,5 kg",
+            Plain(header.HeaderTitleEnd!.GetVisualDescendants().OfType<SelectableTextBlock>().Single().Text!));
+
+        var rarity = Assert.IsType<WordTag>(header.HeaderTagsEnd);
+        Assert.Equal("Rzadki", rarity.Content);
+        Assert.Contains("custom", rarity.Classes);
+
+        var headline = Assert.IsType<TraitListView>(header.HeaderBlock).Rows.ToList();
+        Assert.Equal(["Wartość", "Dostrojenie"], headline.Select(row => row.Label));
+        Assert.Equal("1 500", Plain(headline[0].Value));
+        Assert.Equal("wymagane przez czarodzieja", headline[1].Value);
+
+        Assert.Equal(
+            ["Obrażenia", "Właściwości", "KP", "Siła", "Skradanie się", "Ładunki", "Odnawianie"],
+            GearTraitLabels(card));
+        Assert.NotNull(card.FindControl<TraitListView>("ArmorTraits")!.Rows.First().Icon);
+        Assert.True(card.FindControl<Control>("Footer")!.IsVisible);
 
         window.Close();
+    }
+
+    [AvaloniaFact]
+    public void An_item_with_only_required_fields_lends_no_weight_and_no_pairs_and_shows_no_group()
+    {
+        var card = GearCard(MinimalGear);
+        var header = (IEntryCardHeader)card;
+        var window = ShowGear(card);
+
+        Assert.Null(header.HeaderTitleEnd);
+        Assert.Null(header.HeaderBlock);
+        Assert.Equal("Zwykły", Assert.IsType<WordTag>(header.HeaderTagsEnd).Content);
+        Assert.Empty(GearTraitLabels(card));
+        Assert.False(card.FindControl<Control>("Groups")!.IsVisible);
+        Assert.False(card.FindControl<Control>("Footer")!.IsVisible);
+
+        window.Close();
+    }
+
+    // The worth is a bare number, no unit and no rounding: Polish grouping, decimal comma, no
+    // trailing zeros.
+    [AvaloniaTheory]
+    [InlineData("15", "15")]
+    [InlineData("15.00", "15")]
+    [InlineData("0.5", "0,5")]
+    [InlineData("1500", "1 500")]
+    [InlineData("0.0125", "0,0125")]
+    public void The_worth_is_written_as_a_bare_polish_number(string value, string expected)
+    {
+        var card = GearCard(MinimalGear with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+
+        var row = Assert.Single(Assert.IsType<TraitListView>(((IEntryCardHeader)card).HeaderBlock).Rows);
+        Assert.Equal(("Wartość", expected), (row.Label, Plain(row.Value)));
+    }
+
+    [AvaloniaFact]
+    public void An_unknown_rarity_is_a_plain_word_tag()
+    {
+        var card = GearCard(MinimalGear with { Rarity = "Coś nowego" });
+
+        Assert.DoesNotContain("custom", Assert.IsType<WordTag>(((IEntryCardHeader)card).HeaderTagsEnd).Classes);
+    }
+
+    [AvaloniaFact]
+    public void Attunement_without_a_named_attuner_reads_required()
+    {
+        var card = GearCard(MinimalGear with { Attunement = true });
+
+        var row = Assert.Single(Assert.IsType<TraitListView>(((IEntryCardHeader)card).HeaderBlock).Rows);
+        Assert.Equal(("Dostrojenie", "wymagane"), (row.Label, row.Value));
     }
 }

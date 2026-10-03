@@ -3,8 +3,28 @@
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Content.Dnd5e.GearCardView">
 
-    <!-- The designed gear card: a square picture and the properties as an untitled trait list are
-         lent to the detail header (GearCardView.axaml.cs) - beside the title and under it, on the
-         same grid as the monster card; the card itself is the description block. -->
-    <controls:ProseBlockView x:Name="DescriptionBlock" Title="Opis" />
+    <!-- The designed item card, on the monster card's grid: the card's left edge, the picture's right
+         edge, and the title column's start. The square picture, the weight (end of the title's line),
+         the rarity (end of the tags' row - category and subtype) and the Wartość / Dostrojenie pairs
+         are lent to the detail header (GearCardView.axaml.cs); the card itself, top to bottom:
+         - the item's rules values as pairs, their values on the title line, in three groups parted by
+           a gap - weapon, armor, charges - each shown only when one of its fields is filled;
+         - the description as a small italic footer, only when filled.
+         Spacing between controls is set here, on the host, never carried by a control itself. -->
+    <StackPanel>
+        <!-- ===== pairs ===== -->
+        <StackPanel x:Name="Groups" Spacing="{DynamicResource DungeonSpacingLg}">
+            <controls:TraitListView x:Name="WeaponTraits" />
+            <controls:TraitListView x:Name="ArmorTraits" />
+            <controls:TraitListView x:Name="ChargeTraits" />
+        </StackPanel>
+
+        <!-- ===== footer: the item's description ===== -->
+        <StackPanel x:Name="Footer">
+            <Separator x:Name="FooterSeparator" Classes="section" />
+            <SelectableTextBlock x:Name="DescriptionText"
+                                 Classes="display-note muted"
+                                 TextWrapping="Wrap" />
+        </StackPanel>
+    </StackPanel>
 </UserControl>

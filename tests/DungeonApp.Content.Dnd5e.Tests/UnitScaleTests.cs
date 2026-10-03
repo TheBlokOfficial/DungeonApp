@@ -35,7 +35,7 @@ public sealed class UnitScaleTests
     [Fact]
     public void A_number_and_its_unit_never_part_across_lines()
     {
-        Assert.Equal("1,5 kg", UnitScale.Weight.Format(1.5m));
+        Assert.Equal("1,5" + (char)0x00A0 + "kg", UnitScale.Weight.Format(1.5m));
     }
 
     [Fact]
@@ -46,5 +46,5 @@ public sealed class UnitScaleTests
 
     // The group and unit separators are non-breaking spaces (U+00A0 or U+202F, depending on the
     // platform's culture data); the expectations above are written with plain ones.
-    private static string Plain(string text) => text.Replace(' ', ' ').Replace(' ', ' ');
+    private static string Plain(string text) => text.Replace((char)0x00A0, ' ').Replace((char)0x202F, ' ');
 }

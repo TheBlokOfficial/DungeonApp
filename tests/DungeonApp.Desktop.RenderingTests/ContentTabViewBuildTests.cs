@@ -30,10 +30,14 @@ public sealed class ContentTabViewBuildTests
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
     }
 
-    /// <summary>A card that lends the detail header both pieces, so the header's full layout builds.</summary>
+    /// <summary>A card that lends the detail header every piece, so the header's full layout builds.</summary>
     private sealed class HeaderLendingCard : TextBlock, IEntryCardHeader
     {
         public Control HeaderVisual { get; } = new ImageFrame { Width = 132, Height = 176 };
+
+        public Control HeaderTitleEnd { get; } = new TextBlock { Text = "1,5 kg" };
+
+        public Control HeaderTagsEnd { get; } = new WordTag { Content = "Rzadki" };
 
         public Control HeaderBlock { get; } = new StatTile { Label = "Próbka", Value = "1", Note = "dopisek" };
     }
