@@ -43,6 +43,11 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   Deklaruje go system w swoim katalogu typów (`IContentTypeCatalog`) — to jedyne legalne miejsce
   rozgałęzienia po identyfikatorze typu. `values` deserializuje się wprost w rekord; deserializator
   (`required`, brak nieznanych kluczy) jest walidatorem. Wartości są płaskie: napisy, liczby, znaczniki.
+- Wyjątek od płaskości: **sekcja prozy** (u potwora cechy szczególne, akcje, rzucanie czarów, akcje
+  dodatkowe, reakcje, akcje legendarne) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
+  `intro` i `note` są opcjonalne; sekcja bez wstępu i bez wpisów, wpis bez nazwy albo tekstu, a proza
+  zapisana zwykłym napisem odrzucają wpis. W `intro` i `text` `**…**` wyróżnia fragment (premia,
+  obrażenia, ST). Strukturę pisze autor paczki — karta niczego nie wyczytuje z tekstu i nic jej nie liczy.
 - **Zepsuta treść jest widoczna, nie znika**: wadliwy wpis dostaje powód, a reszta paczki się
   wczytuje. Zepsuty manifest odrzuca całą paczkę z powodem.
 - Obrazek wpisu: pole wskazane przez deskryptor typu (`ImageProperty`); ścieżka względem katalogu
@@ -63,7 +68,9 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
 - **Instancja** to egzemplarz w kampanii: łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka
   łatka z samymi odchyleniami (np. aktualne PZ, nazwa własna). Rozwiązuje się ją od nowa przy każdym
   odczycie, więc poprawka wpisu w paczce dociera do istniejących kampanii.
-- Zbyt nowy format kampanii oznacza odmowę odczytu; migracji nie ma, dopóki nie będzie potrzebna.
+- Format kampanii inny niż bieżący (zbyt nowy albo zbyt stary) oznacza odmowę odczytu, a wpis paczki
+  w innej wersji typu niż bieżąca jest oznaczany. Kiedy wersje rosną i kiedy pojawią się migracje:
+  `docs/decisions.md`, „Wersje formatów nie rosną do pierwszej sesji przy stole”.
 
 ## Gdzie mieszka stan
 
@@ -94,7 +101,11 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   patrzysz na to obok innych rzeczy (okno na biurku), czy w tym przebywasz (zakładka).
 - **Zakładka treści** (`Desktop/Entries/ContentTab`): układ lista–szczegół, wspólny dla typów treści.
   System podaje profil typu: kategorię, tagi, odznakę wiersza, filtry wartości i sortowania. Szczegół
-  to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Proza karty
+  to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
+  pożyczyć nagłówkowi dwie kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy i blok pod tagami
+  (u potwora portret oraz KP, PZ i Szybkość; u przedmiotu kwadratowy obrazek i jego pary). Karta
+  potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
+  z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Proza karty
   jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu zaznacza najbliższy blok
   (`TextSelectionArea`) — zaznaczenia przez kilka bloków naraz nie ma.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez

@@ -56,6 +56,11 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   zaklęcie), wartości zostają płaskie, a własną klasę dopisuje się bez programisty. Odblokowanie
   zapisuje tylko siebie — nie dodaje PZ, zaklęć ani następnych węzłów; niespełnione wymaganie widać,
   ale nie blokuje.
+- **Wersje formatów nie rosną do pierwszej sesji przy stole.** Dopóki aplikacja nie ma prawdziwego
+  użycia (koniec kamienia milowego „pierwsza sesja przy stole”), żaden typ treści ani zapis kampanii
+  nie podnosi wersji formatu: niezgodną zmianę robi się w miejscu, a stare dane przepisuje albo usuwa
+  ręcznie. Migracji nie ma; mechanizm porównania wersji zostaje. *Wyzwalacz:* koniec tego kamienia —
+  od tej chwili niezgodna zmiana podnosi wersję i przychodzi razem z migracją.
 
 ## Odrzucone
 
@@ -69,7 +74,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Dziedziczenie i osadzanie szablonów, typy treści jako plik danych** — typ treści jest kodem.
 - **Klasy postaci wkompilowane w kod systemu, całe drzewo klasy w jednym wpisie** — wpis nie jest
   kodem, a wartości są płaskie; patrz klasa i węzeł wyżej.
-- **Zagnieżdżone wartości w polu wpisu** — wartości są płaskie; strukturę da slot.
+- **Zagnieżdżone wartości w polu wpisu** — wartości są płaskie; strukturę da slot. Wyjątkiem jest
+  sekcja prozy karty (wstęp i nazwane wpisy): kształt ustala rekord typu, a służy tylko do czytania.
 - **Wpisy lokalne dla kampanii, rejestr wewnątrz kampanii** — treść mieszka w paczkach; autorstwo
   idzie przez własną paczkę MG.
 - **Materializacja wpisu w instancji, nakładka jako miejsce na warianty rzeczy** — patrz nakładka wyżej.
@@ -82,5 +88,6 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   logiki, zwykle wykonuje regułę, którą powinien wykonać MG.
 - **Warstwa scen** — kampania jest sesją i światem naraz.
 - **Migracja formatu i pola zarezerwowane budowane z wyprzedzeniem** — manifest jest pobłażliwy, więc
-  dołożenie pola nie wymaga migracji; migracja powstanie z pierwszą niezgodną zmianą.
+  dołożenie pola nie wymaga migracji; pierwsza migracja powstanie z pierwszą niezgodną zmianą po
+  pierwszej sesji przy stole (patrz wersje formatów wyżej).
 - **Śledzenie tur jako element karty albo licznik rund w danych** — zakaz 2.
