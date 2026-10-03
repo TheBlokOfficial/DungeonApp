@@ -3,8 +3,8 @@
              xmlns:entries="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.AbilityScoresSample"
              HorizontalAlignment="Left">
-    <!-- The abilities table exactly as a card lays it out: two AbilityTableViews (the control the
-         monster card uses) side by side, DungeonDetailColumnGap apart, three rows each - label,
+    <!-- The abilities table exactly as a card lays it out: two AbilityTableViews (the control a
+         statblock card uses) side by side, DungeonDetailColumnGap apart, three rows each - label,
          score, modifier in square DungeonAbilityCellSize cells, every line drawn, sharp corners, the
          modifier tinted by its sign (positive, negative, none for zero). Sample rows in
          AbilityScoresSample.axaml.cs. Used by the Tables and Compositions sections, so both show the

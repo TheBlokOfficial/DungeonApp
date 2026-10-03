@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -40,7 +40,8 @@ public sealed class Dnd5eSystemTests
         Assert.Equal(8, monster.Str);
         Assert.Equal(14, monster.Dex);
         Assert.Equal("1/4 (50 PD)", monster.Challenge);
-        Assert.Contains("Zwinna ucieczka", monster.SpecialAbilities);
+        Assert.Equal("Zwinna ucieczka", Assert.Single(monster.SpecialAbilities!.Entries).Name);
+        Assert.Equal(["Bułat", "Krótki łuk"], monster.Actions.Entries.Select(entry => entry.Name));
     }
 
     [Fact]
@@ -62,10 +63,13 @@ public sealed class Dnd5eSystemTests
         Assert.Equal("od trucizny", monster.DamageImmunities);
         Assert.Equal("zatrucie", monster.ConditionImmunities);
         Assert.Equal(1800, monster.Xp);
-        Assert.Equal("Wrodzone rzucanie czarów.", monster.Spellcasting);
-        Assert.Equal("Odskok.", monster.BonusActions);
-        Assert.Equal("Parowanie.", monster.Reactions);
-        Assert.Equal("Kopyta.", monster.LegendaryActions);
+        Assert.Equal("Wrodzone rzucanie czarów.", monster.Spellcasting!.Intro);
+        Assert.Equal("światło", Assert.Single(monster.Spellcasting.Entries).Text);
+        Assert.Equal("Odskok", Assert.Single(monster.BonusActions!.Entries).Name);
+        Assert.Equal("Parowanie", Assert.Single(monster.Reactions!.Entries).Name);
+        var legendary = Assert.Single(monster.LegendaryActions!.Entries);
+        Assert.Equal("Kopyta", legendary.Name);
+        Assert.Equal("kosztuje 2 akcje", legendary.Note);
     }
 
     [Fact]
@@ -109,6 +113,30 @@ public sealed class Dnd5eSystemTests
         var entry = Assert.Single(registry.Entries);
         Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
         Assert.Contains("actions", entry.UnresolvedDetail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // A section is a structure, not prose: plain text where a section belongs, an entry without a
+    // name or text, and a section saying nothing are each refused, so the pack author sees the entry
+    // rejected instead of a card drawn with holes in it.
+    [Theory]
+    [InlineData("\"Ugryzienie.\"")]
+    [InlineData("""{ "entries": [{ "name": "Ugryzienie" }] }""")]
+    [InlineData("""{ "entries": [{ "text": "Gryzie." }] }""")]
+    [InlineData("""{ "entries": [{ "name": " ", "text": "Gryzie." }] }""")]
+    [InlineData("""{ "entries": [] }""")]
+    public async Task A_malformed_section_is_rejected(string actions)
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", EntryJsonMissingRequiredActions.Replace(
+            "\"challenge\": \"0\"",
+            $"\"challenge\": \"0\", \"actions\": {actions}",
+            StringComparison.Ordinal));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
     }
 
     // Both types declare their "image" value as the entry's picture, so the loader checks
@@ -208,7 +236,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 1,
+          "templateVersion": 2,
           "values": {
             "size": "Mały",
             "type": "humanoid",
@@ -224,7 +252,7 @@ public sealed class Dnd5eSystemTests
             "cha": 10,
             "senses": "zwykły wzrok",
             "challenge": "0",
-            "actions": "Brak.",
+            "actions": { "entries": [{ "name": "Brak", "text": "Nic nie robi." }] },
             "bogusField": "x"
           }
         }
@@ -235,7 +263,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 1,
+          "templateVersion": 2,
           "values": {
             "size": "Duży",
             "type": "niebianin",
@@ -257,11 +285,11 @@ public sealed class Dnd5eSystemTests
             "senses": "bierna Percepcja 13",
             "challenge": "5",
             "xp": 1800,
-            "actions": "Róg.",
-            "spellcasting": "Wrodzone rzucanie czarów.",
-            "bonusActions": "Odskok.",
-            "reactions": "Parowanie.",
-            "legendaryActions": "Kopyta."
+            "actions": { "entries": [{ "name": "Róg", "text": "**+7 do trafienia**." }] },
+            "spellcasting": { "intro": "Wrodzone rzucanie czarów.", "entries": [{ "name": "Bez ograniczeń", "text": "światło" }] },
+            "bonusActions": { "entries": [{ "name": "Odskok", "text": "Odskakuje." }] },
+            "reactions": { "entries": [{ "name": "Parowanie", "text": "Paruje." }] },
+            "legendaryActions": { "entries": [{ "name": "Kopyta", "note": "kosztuje 2 akcje", "text": "Kopie." }] }
           }
         }
         """;
@@ -271,7 +299,7 @@ public sealed class Dnd5eSystemTests
           "id": "e1",
           "name": "Test Monster",
           "template": "dnd5e:monster",
-          "templateVersion": 1,
+          "templateVersion": 2,
           "values": {
             "size": "Mały",
             "type": "humanoid",

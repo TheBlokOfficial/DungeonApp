@@ -7,7 +7,7 @@ namespace DungeonApp.Desktop.Entries.Controls;
 /// pack file ever names one.
 /// <para>
 /// <see cref="IsHighlighted"/> draws the value as an accent badge instead of text - the one value
-/// in a list the card wants found at a glance (a monster's challenge). A layout decision of the card,
+/// in a list the card wants found at a glance (a difficulty rating). A layout decision of the card,
 /// never of data.
 /// </para>
 /// </summary>

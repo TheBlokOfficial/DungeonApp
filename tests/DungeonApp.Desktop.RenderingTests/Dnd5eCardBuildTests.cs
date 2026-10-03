@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Threading;
@@ -34,7 +34,7 @@ public sealed class Dnd5eCardBuildTests
         Cha = 6,
         Senses = "bierna Percepcja 13",
         Challenge = "1/4",
-        Actions = "Ugryzienie.",
+        Actions = Section("Ugryzienie"),
     };
 
     private static readonly Monster Full = Required with
@@ -49,13 +49,16 @@ public sealed class Dnd5eCardBuildTests
         ConditionImmunities = "zatrucie",
         Languages = "wspólny",
         Xp = 1800,
-        SpecialAbilities = "Taktyka stada.",
-        Spellcasting = "Bez ograniczeń: światło.",
-        BonusActions = "Odskok.",
-        Reactions = "Parowanie.",
-        LegendaryActions = "Kopyta.",
+        SpecialAbilities = Section("Taktyka stada"),
+        Spellcasting = new StatblockSection { Intro = "Rzuca czary bez komponentów.", Entries = [new StatblockEntry { Name = "Bez ograniczeń", Text = "światło" }] },
+        BonusActions = Section("Odskok"),
+        Reactions = Section("Parowanie"),
+        LegendaryActions = Section("Kopyta"),
         Description = "Poluje w watahach.",
     };
+
+    private static StatblockSection Section(string name) =>
+        new() { Entries = [new StatblockEntry { Name = name, Note = "3 na dzień", Text = $"{name}: **+4 do trafienia**." }] };
 
     private static Window Show(Control content)
     {
@@ -73,7 +76,7 @@ public sealed class Dnd5eCardBuildTests
     }
 
     private static string[] VisibleSections(Control card) =>
-        [.. card.GetVisualDescendants().OfType<Expander>().Where(section => section.IsVisible).Select(section => (string)section.Header!)];
+        [.. card.GetVisualDescendants().OfType<ProseSectionView>().Where(section => section.IsVisible).Select(section => section.Title!)];
 
     private static string[] TraitLabels(Control card) =>
         [.. card.FindControl<TraitListView>("Traits")!.Rows.Select(row => row.Label)];
@@ -87,8 +90,9 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(["Zmysły", "Wyzwanie"], TraitLabels(card));
         Assert.Null(card.FindControl<TraitListView>("Traits")!.Rows.Last().Secondary);
         Assert.Equal(["Akcje"], VisibleSections(card));
+        Assert.False(card.FindControl<Control>("Footer")!.IsVisible);
 
-        var portrait = card.FindControl<ImageFrame>("Portrait")!;
+        var portrait = Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
         Assert.DoesNotContain(":picture", portrait.Classes);
         Assert.DoesNotContain(":error", portrait.Classes);
 
@@ -108,13 +112,13 @@ public sealed class Dnd5eCardBuildTests
             ],
             TraitLabels(card));
         Assert.Equal(
-            ["Cechy szczególne", "Akcje", "Rzucanie czarów", "Akcje dodatkowe", "Reakcje", "Akcje legendarne", "Opis"],
+            ["Cechy szczególne", "Akcje", "Rzucanie czarów", "Akcje dodatkowe", "Reakcje", "Akcje legendarne"],
             VisibleSections(card));
 
         var challenge = card.FindControl<TraitListView>("Traits")!.Rows.Last();
         Assert.Equal("1 800 PD", challenge.Secondary!.Replace(' ', ' ').Replace(' ', ' '));
 
-        Assert.All(card.GetVisualDescendants().OfType<Expander>(), section => Assert.True(section.IsExpanded));
+        Assert.True(card.FindControl<Control>("Footer")!.IsVisible);
 
         window.Close();
     }
@@ -125,7 +129,7 @@ public sealed class Dnd5eCardBuildTests
         var card = MonsterCard(Required, new EntryPicture(null, "obrazy/wilk.png"));
         var window = Show(card);
 
-        var portrait = card.FindControl<ImageFrame>("Portrait")!;
+        var portrait = Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
         Assert.Contains(":error", portrait.Classes);
         Assert.Equal(EntryPicture.MissingMessage, portrait.Message);
         Assert.Equal("obrazy/wilk.png", portrait.Detail);
@@ -140,7 +144,7 @@ public sealed class Dnd5eCardBuildTests
         card.SetGear(new Gear { Rarity = "Pospolity", Weight = 1, Description = "Leczy 2k4+2." }, EntryPicture.None);
         var window = Show(card);
 
-        Assert.Single(card.GetVisualDescendants().OfType<ImageFrame>());
+        Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
 
         window.Close();
     }
