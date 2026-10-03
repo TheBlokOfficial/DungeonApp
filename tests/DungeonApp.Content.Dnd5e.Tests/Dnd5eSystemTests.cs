@@ -83,9 +83,101 @@ public sealed class Dnd5eSystemTests
         var gear = potion.Entry.Values.Read<Gear>();
 
         Assert.Equal("Pospolity", gear.Rarity);
-        Assert.Equal(1, gear.Weight);
+        Assert.Equal("Mikstura", gear.Category);
+        Assert.Equal(0.25m, gear.Weight);
+        Assert.Equal(5000, gear.Value);
+        Assert.False(gear.Attunement);
         Assert.Contains("2k4+2", gear.Description);
     }
+
+    [Fact]
+    public async Task Every_optional_gear_field_is_read_under_its_own_name()
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", GearEntryJson("""
+            "rarity": "Rzadki",
+            "category": "Laska",
+            "subtype": "kostur",
+            "attunement": true,
+            "attunementBy": "przez barda, kapłana albo druida",
+            "weight": 2,
+            "value": 1500,
+            "damage": "1k6 obuchowe",
+            "properties": "uniwersalna (1k8)",
+            "armorClass": "+2",
+            "strengthRequirement": 13,
+            "stealthDisadvantage": true,
+            "charges": 10,
+            "recharge": "odzyskuje 1k6+4 ładunków o świcie",
+            "description": "Gładki kij."
+            """));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Null(entry.UnresolvedDetail);
+        var gear = entry.Entry.Values.Read<Gear>();
+
+        Assert.Equal("kostur", gear.Subtype);
+        Assert.True(gear.Attunement);
+        Assert.Equal("przez barda, kapłana albo druida", gear.AttunementBy);
+        Assert.Equal(2m, gear.Weight);
+        Assert.Equal(1500, gear.Value);
+        Assert.Equal("1k6 obuchowe", gear.Damage);
+        Assert.Equal("uniwersalna (1k8)", gear.Properties);
+        Assert.Equal("+2", gear.ArmorClass);
+        Assert.Equal(13, gear.StrengthRequirement);
+        Assert.True(gear.StealthDisadvantage);
+        Assert.Equal(10, gear.Charges);
+        Assert.Equal("odzyskuje 1k6+4 ładunków o świcie", gear.Recharge);
+    }
+
+    // The gear record is its own validator, like the monster's: a missing required value, an
+    // unknown key, a who-attunes without attunement, a negative worth and a fractional worth each
+    // reject the entry, whose reason names the offending key.
+    [Theory]
+    [InlineData("\"rarity\": \"Zwykły\"", "category")]
+    [InlineData("\"category\": \"Broń\"", "rarity")]
+    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"price\": 15", "price")]
+    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"attunementBy\": \"przez maga\"", "attunement")]
+    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"value\": -1", "value")]
+    [InlineData("\"rarity\": \"Zwykły\", \"category\": \"Broń\", \"value\": 1.5", "value")]
+    public async Task A_malformed_gear_entry_is_rejected(string values, string named)
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", GearEntryJson(values));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Equal(EntryUnresolvedReason.ValuesRejected, entry.Unresolved);
+        Assert.Contains(named, entry.UnresolvedDetail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task An_item_with_only_its_required_values_is_read_with_nothing_else_set()
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", GearEntryJson("\"rarity\": \"Zwykły\", \"category\": \"Ekwipunek\""));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var gear = Assert.Single(registry.Entries).Entry.Values.Read<Gear>();
+        Assert.Equal(new Gear { Rarity = "Zwykły", Category = "Ekwipunek" }, gear);
+    }
+
+    private static string GearEntryJson(string values) => $$"""
+        {
+          "id": "g1",
+          "name": "Test Item",
+          "template": "dnd5e:gear",
+          "templateVersion": 1,
+          "values": { {{values}} }
+        }
+        """;
 
     [Fact]
     public async Task An_unknown_key_in_values_is_rejected()
@@ -166,7 +258,7 @@ public sealed class Dnd5eSystemTests
               "name": "Mikstura",
               "template": "dnd5e:gear",
               "templateVersion": 1,
-              "values": { "rarity": "Pospolity", "image": "{{image}}" }
+              "values": { "rarity": "Pospolity", "category": "Mikstura", "image": "{{image}}" }
             }
             """);
 

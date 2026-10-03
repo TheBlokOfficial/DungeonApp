@@ -64,6 +64,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// </summary>
     private static readonly IReadOnlyList<(string Tier, string ColorKey)> RarityTiers =
     [
+        ("Zwykły", "rarity-mundane"),
         ("Pospolity", "rarity-common"),
         ("Niezwykły", "rarity-uncommon"),
         ("Rzadki", "rarity-rare"),
@@ -80,15 +81,19 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// The brush each rarity color key resolves to (<see cref="ResolveBadgeBrush"/>) - this system's
     /// own colors, minted fresh rather than borrowed from the frame's meaning-carrying tokens: a scale
-    /// that belongs to a system carries its own colors. Hues follow the usual rarity convention (gray,
-    /// green, blue, violet, orange, pink) and none is the accent color. Each is bright enough for its
-    /// text to keep at least 4.5:1 against its own dimmed pill (the same color at 16%) laid on the
-    /// list row at rest, under the pointer and selected.
+    /// that belongs to a system carries its own colors. Hues follow the usual rarity convention (white,
+    /// green, blue, violet, orange, pink) and none is the accent color; a mundane item, below the
+    /// magic tiers, is the quietest - a plain gray clearly darker than the common white. Each is bright
+    /// enough for its text to keep at least 4.5:1 against its own dimmed pill (the same color at 16%)
+    /// laid on the list row at rest, under the pointer and selected - which is why the mundane gray
+    /// cannot get any darker and the common tier is the lighter of the two.
     /// </summary>
     private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
     {
+        // Rzadkość: zwykły (przedmiot niemagiczny).
+        ["rarity-mundane"] = new SolidColorBrush(Color.Parse("#A9A8A1")),
         // Rzadkość: pospolity.
-        ["rarity-common"] = new SolidColorBrush(Color.Parse("#A9A8A1")),
+        ["rarity-common"] = new SolidColorBrush(Color.Parse("#D2D0C8")),
         // Rzadkość: niezwykły.
         ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#95BA9C")),
         // Rzadkość: rzadki.

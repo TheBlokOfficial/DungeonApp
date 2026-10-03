@@ -50,7 +50,7 @@ public sealed class ContentTabsTests
     private static Entry GearEntry(string rarity)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        return new Entry(ContentId.Create("g"), "Testowy przedmiot", reference, 1, ContentValues.From(new Gear { Rarity = rarity }));
+        return new Entry(ContentId.Create("g"), "Testowy przedmiot", reference, 1, ContentValues.From(new Gear { Rarity = rarity, Category = "Ekwipunek" }));
     }
 
     // -----------------------------------------------------------------------------------------
@@ -218,14 +218,25 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void The_rarity_filter_orders_tiers_from_common_to_artifact()
+    public void The_rarity_filter_orders_tiers_from_mundane_to_artifact()
     {
         var order = Assert.Single(GearProfile().ValueFilters, filter => filter.Label == "Rzadkość").OptionOrder;
 
-        var shuffled = new[] { "Legendarny", "Pospolity", "Artefakt", "Bardzo rzadki", "Rzadki", "Niezwykły" };
+        var shuffled = new[] { "Legendarny", "Pospolity", "Artefakt", "Zwykły", "Bardzo rzadki", "Rzadki", "Niezwykły" };
         var sorted = shuffled.OrderBy(value => value, order).ToArray();
 
-        Assert.Equal(["Pospolity", "Niezwykły", "Rzadki", "Bardzo rzadki", "Legendarny", "Artefakt"], sorted);
+        Assert.Equal(["Zwykły", "Pospolity", "Niezwykły", "Rzadki", "Bardzo rzadki", "Legendarny", "Artefakt"], sorted);
+    }
+
+    [Fact]
+    public void A_mundane_item_carries_its_own_color_key_apart_from_common()
+    {
+        var mundane = GearProfile().Badge(GearEntry("Zwykły")).ColorKey;
+        var common = GearProfile().Badge(GearEntry("Pospolity")).ColorKey;
+
+        Assert.NotNull(mundane);
+        Assert.NotEqual(common, mundane);
+        Assert.NotNull(Dnd5e.ResolveBadgeBrush(mundane!));
     }
 
     [Fact]

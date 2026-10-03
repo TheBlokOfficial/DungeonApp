@@ -159,7 +159,7 @@ public sealed class Dnd5eCardBuildTests
     public void A_gear_card_builds_with_its_picture_frame()
     {
         var card = new GearCardView();
-        card.SetGear(new Gear { Rarity = "Pospolity", Weight = 1, Description = "Leczy 2k4+2." }, EntryPicture.None);
+        card.SetGear(new Gear { Rarity = "Pospolity", Category = "Mikstura", Weight = 1, Description = "Leczy 2k4+2." }, EntryPicture.None);
         var header = (IEntryCardHeader)card;
         var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
 

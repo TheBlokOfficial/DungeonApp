@@ -53,7 +53,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
         if (gear.Weight is { } weight)
         {
-            rows.Add(new TraitRow("Waga", weight.ToString(CultureInfo.InvariantCulture)));
+            rows.Add(new TraitRow("Waga", UnitScale.Weight.Format(weight)));
         }
 
         _properties = rows.Count > 0 ? new TraitListView { Rows = rows } : null;

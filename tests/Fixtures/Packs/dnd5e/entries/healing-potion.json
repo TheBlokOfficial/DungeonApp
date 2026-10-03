@@ -6,7 +6,9 @@
 
   "values": {
     "rarity": "Pospolity",
-    "weight": 1,
+    "category": "Mikstura",
+    "weight": 0.25,
+    "value": 5000,
     "description": "Wypity eliksir przywraca 2k4+2 punkty wytrzymałości. Płyn błyszczy i lekko się pieni w fiolce."
   }
 }
