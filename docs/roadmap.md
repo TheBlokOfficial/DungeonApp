@@ -10,10 +10,14 @@ hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy 
 nie są potrzebne — KP czy ST czarów MG wpisuje. Rozstrzygnięcia, na których stoi plan, są
 w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
-1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pełna karta
-   potwora (portret, pary, sekcje rozwijane, zaznaczanie przeciąganiem obok tekstu). Projekt kart jest
-   punktem wyjścia, nie specyfikacją: `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt
-   szkieletu i kart*.
+1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
+   z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
+   `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
+   - **Karta potwora, pełna — nieprzyjęta.** Pierwsza wersja jest w kodzie: portret w ramce z ikonami
+     Lucide, nowe pola (PD, rzuty obronne, podatności, odporności i niewrażliwości, rzucanie czarów,
+     akcje dodatkowe, reakcje, akcje legendarne), pary, sekcje rozwijane, zaznaczanie przeciąganiem
+     zaczętym obok tekstu, pięć potworów przykładowych. Ma poważne problemy; zakres poprawek czeka
+     na uwagi autora po obejrzeniu.
    - **Karta przedmiotu** (ramka obrazka już stoi): kategoria, podtyp, dostrojenie, cena (potrzebna
      do handlu), waga z ułamkami, obrażenia i właściwości broni, KP zbroi, wymagana Siła, ukrywanie
      się, ładunki i odnawianie. Filtry Kategoria i Dostrojenie.
