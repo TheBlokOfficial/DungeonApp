@@ -28,7 +28,10 @@
     <UserControl.DataTemplates>
         <DataTemplate DataType="ct:ValidContentDetailViewModel" x:DataType="ct:ValidContentDetailViewModel">
             <StackPanel Spacing="{DynamicResource DungeonSpacingXl}">
-                <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                <!-- The path stands apart from what it names: as much room under it as the host's
+                     padding gives over it (DungeonPaddingXxl in the content tab), so it reads as the
+                     block's own line, not as a caption stuck to the visual and the title. -->
+                <StackPanel Spacing="{DynamicResource DungeonSpacingXxl}">
                     <!-- The "{Typ} › {Kategoria} › {Nazwa}" path - a frame control (controls:Breadcrumbs
                          theme): the trail dimmed, the current segment emphasized; too narrow - the
                          trail shortens. Full width, over the visual too. -->
