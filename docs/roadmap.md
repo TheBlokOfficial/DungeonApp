@@ -15,9 +15,6 @@ zmiany, znaczniki, kalkulator, tryb edycji), jest w `CLAUDE.md` i `docs/decision
 3. **Odnowienie „o świcie”** (ładunki przedmiotów): część długiego odpoczynku czy przesunięcia zegara?
 4. **Nazwa zakładki istot:** „Potwory”, „Stworzenia” czy „Istoty” (jeden typ, `docs/decisions.md`).
 5. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
-6. **Odnośniki jak w Pathfinder WotR:** klik otwiera kartę w pływającym okienku, kilka naraz (to samo
-   okno co entity i lore); z pól ze strukturą same, w prozie jawnym znacznikiem, zerwany widoczny.
-   Słownik „Hasło” i zakładka „Zasady” (stany i hasła)? *W etapie 1, po stanach.*
 
 **Do uzgodnienia w dokumentach:** „wartości są płaskie” (`architecture.md`) wobec struktury dla
 księgi; dodatki wobec wariantów; bierna Percepcja. Komentarze „never a timer/counter” w `Gear.cs`,
@@ -45,7 +42,9 @@ klasy, księgowość i lista przełomów).
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
-     typie, gdy rekord i karta typu są gotowe. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
+     typie, gdy rekord i karta typu są gotowe. W prozie wstawia znaczniki `[[id|tekst]]` do zaklęć,
+     stanów, przedmiotów i istot (karta pokazuje sam tekst), żeby odnośniki nie wymagały drugiego
+     przejścia przez paczkę. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
      ma pięć potworów i dziesięć przedmiotów przykładowych; epicki (Pierścień regeneracji)
      i legendarny (Miecz worpalny) są przykładami ponad zakres paczki. Rzadkość D&D na skalę aplikacji:
      niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo
@@ -140,6 +139,9 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PZ
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
 - **Edycja kilku zaznaczonych egzemplarzy naraz** — MG zmienia to samo pole po kolei na kilku.
+- **Odnośniki do wiedzy** (klik w zaklęcie albo stan w prozie otwiera kartę; na biurku jako pływające
+  okno), słownik „Hasło” i zakładka „Zasady” — MG zbyt często szuka opisu wspomnianego w prozie.
+  Znaczniki `[[id|tekst]]` wstawia już tłumaczenie SRD, a karta pokazuje sam tekst.
 - **Formuły w danych paczki** (pola liczone, które dopisuje autor paczki) — po kamieniu milowym
   „przy stole”.
 - **Edytor treści w aplikacji** (wpisy, przygoda, lore) — pisanie plików poza aplikacją zaczyna
