@@ -13,7 +13,7 @@ zmiany, znaczniki, kalkulator, tryb edycji), jest w `CLAUDE.md` i `docs/decision
 2. **Rzut inicjatywy potworów:** kolejka z liczb wpisanych przez MG czy narzędzie rzuca potworom
    k20 + mod. ZRĘ z karty (jedyny rzut z danych wpisu)?
 3. **Odnowienie „o świcie”** (ładunki przedmiotów): część długiego odpoczynku czy przesunięcia zegara?
-4. **Zakładka istot:** „Potwory” czy „Stworzenia” — jeden typ dla potworów i NPC; fabuła NPC to lore.
+4. **Nazwa zakładki istot:** „Potwory”, „Stworzenia” czy „Istoty” (jeden typ, `docs/decisions.md`).
 5. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
 6. **Odnośniki jak w Pathfinder WotR:** klik otwiera kartę w pływającym okienku, kilka naraz (to samo
    okno co entity i lore); z pól ze strukturą same, w prozie jawnym znacznikiem, zerwany widoczny.
@@ -34,6 +34,8 @@ klasy, księgowość i lista przełomów).
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
+   - **Aspekty w potworze i przedmiocie** — pogrupowanie pól przed tłumaczeniem SRD; potwór staje
+     się istotą z opcjonalną walką. Karta wygląda tak samo.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma

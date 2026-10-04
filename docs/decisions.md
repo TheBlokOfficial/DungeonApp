@@ -78,10 +78,24 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   kliknięcia na zmianę) i wszystko edytowalne od razu (formularz, przypadkowe zmiany przy stole).
 - **Istota i przedmiot bez wpisu.** Improwizowany karczmarz to imię, notatka i — jeśli trzeba — PZ
   i KP wpisane ręcznie. To stan kampanii, nie treść, więc nie jest wpisem lokalnym kampanii.
-- **Struktura tylko dla księgi i przełomów.** Pole wpisu dostaje kształt, gdy czyta je księga albo
-  przełom: maksimum PZ, ładunki i odnowienie, miejsca na zaklęcia, wartość i waga, cechy (modyfikator
-  liczony przy odczycie). Ataki, obrażenia, odporności i rzuty obronne zostają prozą z wyróżnieniami.
-  Kształt wpisu ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
+- **Konsument nadaje polu strukturę.** Trzy poziomy: proza (czyta MG), pole nazwane z tekstem
+  (miejsce na zaprojektowanej karcie, wyszukiwanie: „Szybkość 9 m”, „Odporności: ogień”) i pole
+  typowane — liczba, kość, wybór z listy — które czyta narzędzie, przełom, filtr, sortowanie, wartość
+  liczona albo odnośnik. Pole wchodzi poziom wyżej z konsumentem z bieżącego kamienia milowego, nie
+  „na kiedyś” — późny konsument wymusza przepisanie paczek. Ataki, obrażenia i odporności zostają
+  prozą. Kształt ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
+- **Rzecz świata składa się z aspektów.** Egzemplarz w drzewie kampanii to tożsamość (id, nazwa,
+  miejsce, notatka, wpis źródłowy) i zestaw aspektów; aspekt to paczka pól typowanych jednego
+  konsumenta (walka: PZ, KP, cechy, inicjatywa, stany; przedmiot: waga, wartość, ilość; sakiewka;
+  ładunki; miejsca na zaklęcia). Typ treści to zaprojektowana karta, domyślne aspekty i proza.
+  Narzędzie pyta o aspekt, nie o typ. MG dodaje i zdejmuje aspekt na egzemplarzu (skrzynia-mimik
+  dostaje walkę); obcy dla typu aspekt ma zaprojektowaną sekcję u dołu karty. Trzymać coś może każdy
+  egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
+- **Rzeczy świata i wiedza.** Rzeczy świata mają egzemplarze: istota, przedmiot, postać gracza.
+  Wiedza ich nie ma i wskazuje się ją identyfikatorem: zaklęcia, zdolności, stany, hasła, lore.
+  Zaklęcie nigdy nie leży w katalogu świata — postać je zna, zwój je wskazuje.
+- **Jeden typ „Istota”** dla potworów, przeciwników i NPC; aspekt walki jest opcjonalny (karczmarz
+  bez statbloku). „Nieumarły” to pole do filtrowania, nie gałąź.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
   i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — cele wskazuje MG). Usuwa się
@@ -116,6 +130,9 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   obrażenia z odpornością, koncentracja) — patrz księgowość, nie zasady.
 - **Dawne pięć zakazów w literze** („nic nie wygasa, bo minął czas”) — licznik stanu to księgowanie
   przy stole; przełom zdejmuje stan na kliknięcie MG i pokazuje to w okienku.
+- **Hierarchia dziedziczenia istot** (Entity → Żywa istota → Nieumarły → Zombie) — D&D przecina
+  gałęzie (mimik, ożywiona zbroja, inteligentny miecz, przemiana druida, NPC wskrzeszony jako zombie),
+  a zmiana gałęzi to nowy obiekt bez tożsamości; miesza też etykietę z budową. Patrz aspekty wyżej.
 - **Dziennik świata** (wszystkie zmiany w jednym długim logu) — jego potrzeby pokrywają okienko
   przełomu, znaczniki w turze, ostatnia zmiana przy wartości i historia kalkulatora.
 - **Klocek bez dopisku dosuwany do dna obrazka** — rząd dopisku zostaje zarezerwowany zawsze, choć
