@@ -94,11 +94,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Narzędzie pyta o aspekt, nie o typ. MG dodaje i zdejmuje aspekt na egzemplarzu (skrzynia-mimik
   dostaje walkę); obcy dla typu aspekt ma zaprojektowaną sekcję u dołu karty. Trzymać coś może każdy
   egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
-- **Rzeczy świata i wiedza.** Rzeczy świata mają egzemplarze: istota, przedmiot, postać gracza.
+- **Rzeczy świata i wiedza.** Rzeczy świata mają egzemplarze: stworzenie, przedmiot, postać gracza.
   Wiedza ich nie ma i wskazuje się ją identyfikatorem: zaklęcia, zdolności, stany, hasła, lore.
   Zaklęcie nigdy nie leży w katalogu świata — postać je zna, zwój je wskazuje.
-- **Jeden typ „Istota”** dla potworów, przeciwników i NPC; aspekt walki jest opcjonalny (karczmarz
-  bez statbloku). „Nieumarły” to pole do filtrowania, nie gałąź.
+- **Jeden typ „Stworzenie”** dla potworów, przeciwników i NPC, zakładka „Stworzenia” — termin zasad
+  z polskiego podręcznika. Aspekt walki jest opcjonalny (karczmarz bez statbloku). „Nieumarły” to
+  pole do filtrowania, nie gałąź.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
   i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — cele wskazuje MG). Usuwa się

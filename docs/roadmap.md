@@ -10,20 +10,16 @@ zmiany, znaczniki, kalkulator, tryb edycji), jest w `CLAUDE.md` i `docs/decision
 
 1. **Podział kamienia:** „Pierwsza walka przy stole” (treść, katalog świata z kartą istoty, kopie,
    postacie w minimum, walka z przełomem tury i kalkulator) i „Pełna sesja” (reszta)?
-2. **Rzut inicjatywy potworów:** kolejka z liczb wpisanych przez MG czy narzędzie rzuca potworom
-   k20 + mod. ZRĘ z karty (jedyny rzut z danych wpisu)?
-3. **Odnowienie „o świcie”** (ładunki przedmiotów): część długiego odpoczynku czy przesunięcia zegara?
-4. **Nazwa zakładki istot:** „Potwory”, „Stworzenia” czy „Istoty” (jeden typ, `docs/decisions.md`).
-5. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
 
 **Do uzgodnienia w dokumentach:** „wartości są płaskie” (`architecture.md`) wobec struktury dla
-księgi; dodatki wobec wariantów; bierna Percepcja. Komentarze „never a timer/counter” w `Gear.cs`,
+księgi i aspektów; dodatki wobec wariantów. Komentarze „never a timer/counter” w `Gear.cs`,
 `Monster.cs`, `StatblockSection.cs` — sprawdzić wobec liczników i tyknięć (żyją w narzędziu walki,
 nie we wpisie).
 
 ## Kamień milowy: pierwsza sesja przy stole
 
-Cel: poprowadzić prawdziwą sesję bez podręcznika i bez papieru. Każdy brak z tej listy oznacza grę
+Cel: MG prowadzi prawdziwą sesję bez podręcznika i bez własnych notatek na papierze (gracze grają
+z kartek, aplikacja jest źródłem prawdy). Każdy brak z tej listy oznacza grę
 hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam.
 Rozstrzygnięcia, na których stoi plan, są w `docs/decisions.md` (katalog świata, postać gracza,
 klasy, księgowość i lista przełomów).
@@ -32,7 +28,7 @@ klasy, księgowość i lista przełomów).
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
    - **Aspekty w potworze i przedmiocie** — pogrupowanie pól przed tłumaczeniem SRD; potwór staje
-     się istotą z opcjonalną walką. Karta wygląda tak samo.
+     się stworzeniem z opcjonalną walką (zakładka „Stworzenia”). Karta wygląda tak samo.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
@@ -139,6 +135,12 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PZ
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
 - **Edycja kilku zaznaczonych egzemplarzy naraz** — MG zmienia to samo pole po kolei na kilku.
+- **Rzut inicjatywy potworów** (k20 + mod. ZRĘ z aspektu walki, z rozpisaniem, do poprawienia) —
+  rozstrzygnąć przy pracy nad oknem walki.
+- **Odnowienie „o świcie”** (ładunki przedmiotów): w przełomie długiego odpoczynku z wyłącznikiem —
+  rozstrzygnąć przy pracy nad przełomem odpoczynku. Zegar niczego nie uruchamia.
+- **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
+  zdolność spoza drzewek klas; do tego czasu wybory w klasie są węzłami.
 - **Odnośniki do wiedzy** (klik w zaklęcie albo stan w prozie otwiera kartę; na biurku jako pływające
   okno), słownik „Hasło” i zakładka „Zasady” — MG zbyt często szuka opisu wspomnianego w prozie.
   Znaczniki `[[id|tekst]]` wstawia już tłumaczenie SRD, a karta pokazuje sam tekst.
