@@ -108,6 +108,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Rzeczy świata i wiedza.** Rzeczy świata mają egzemplarze: stworzenie, przedmiot, postać gracza.
   Wiedza ich nie ma i wskazuje się ją identyfikatorem: zaklęcia, zdolności, stany, hasła, lore.
   Zaklęcie nigdy nie leży w katalogu świata — postać je zna, zwój je wskazuje.
+- **Wpis wskazuje inny wpis na dwa sposoby.** Wzmianka w prozie (zaklęcia w statbloku, „cel staje
+  się powalony”, zwój w opisie) to własny tekst ze znacznikiem `[[id|tekst]]`; karta niczego z
+  wpisu wskazanego nie pobiera, a klik — gdy będą odnośniki — otwiera jego kartę. Pole ze strukturą
+  (lista „Stany i efekty”, zaklęcia znane postaci) składa wiersz z pól wpisu wskazanego (ikona,
+  nazwa, skrót, poziom), bo lista jest ich konsumentem. Treści wiedzy nie wkleja się w cudzą kartę:
+  liczby czaru należą do rzucającego (ST, poziom komórki), a karta ma się ułożyć bez paczki wiedzy.
 - **Jeden typ „Stworzenie”** dla potworów, przeciwników i NPC, zakładka „Stworzenia” — termin zasad
   z polskiego podręcznika. Aspekt walki może być pusty (karczmarz bez statbloku). „Nieumarły” to
   pole do filtrowania, nie gałąź.

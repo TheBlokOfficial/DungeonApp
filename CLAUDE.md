@@ -18,6 +18,10 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 3. **Przełomy.** Akcja MG, która zmienia wiele naraz według jawnej reguły (następna tura, odpoczynek,
    handel), działa od razu i pokazuje okienko boczne z każdą zmianą; odznaczenie pozycji ją
    przywraca. Lista przełomów jest zamknięta (`docs/decisions.md`); nowy to decyzja autora.
+   Test: aplikacja wykonuje polecenie, które MG już wydał (licznik, tyknięcie), i rachunek bez
+   decyzji — gdy wejście leży w księdze, reguła jest jedna dla każdej istoty, uruchamia ją akcja MG,
+   wynik da się odznaczyć, a bez tego MG musiałby pamiętać. Wynik niepewny (rzut istoty) albo zależny
+   od sytuacji przy stole (osłona, 0 PZ, „chyba że ogień”) zostaje u MG.
 4. **Stan zmienia się tylko po akcji MG.** Aplikacja nie ma poczucia czasu: bez timerów i pracy
    w tle; zegar, rundę i turę przesuwa MG. Cele wskazuje MG (może kilka naraz), nigdy reguła („w
    obszarze”, „najbliższy”). Zdarzenia powiadamiają widoki, nigdy nie zapisują.
