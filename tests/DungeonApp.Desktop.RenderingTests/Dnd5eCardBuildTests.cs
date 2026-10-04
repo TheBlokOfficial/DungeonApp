@@ -158,6 +158,32 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
+    // 394 is the title column beside the picture: three star columns would be 120.67 wide, and a note
+    // a hair wider than that ("zbroja skórzana, tarcza" in Inter) wrapped while measuring though it
+    // fits as drawn. The headless text stub does not measure like Inter, so the columns themselves are
+    // checked: whole pixels, the remainder to the first ones.
+    [AvaloniaFact]
+    public void Headline_columns_are_whole_pixels_so_tiles_are_measured_as_they_are_drawn()
+    {
+        var row = new HeadlineValuesView { Width = 394, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left };
+        row.Show(
+        [
+            new HeadlineValue("KP", "DungeonIconShield", "15", "zbroja skórzana, tarcza"),
+            new HeadlineValue("PZ", "DungeonIconHeart", "7", "2k6"),
+            new HeadlineValue("Szybkość", "DungeonIconFootprints", "9 m"),
+        ]);
+        var window = Show(new StackPanel { Children = { row } });
+
+        var columns = row.FindControl<Grid>("Columns")!.ColumnDefinitions;
+        Assert.Equal([new GridLength(121), new GridLength(121), new GridLength(120)], columns.Select(column => column.Width));
+
+        var tiles = row.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal([121d, 121d, 120d], tiles.Select(tile => tile.Bounds.Width));
+        Assert.Single(tiles.Select(tile => tile.Bounds.Height).Distinct());
+
+        window.Close();
+    }
+
     private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek" };
 
     private static readonly Gear FullGear = MinimalGear with
