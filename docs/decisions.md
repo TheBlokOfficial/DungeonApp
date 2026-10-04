@@ -72,6 +72,9 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 
 ## Odrzucone
 
+- **Klocek bez dopisku dosuwany do dna obrazka** — rząd dopisku zostaje zarezerwowany zawsze, choć
+  samotny klocek bez dopisku (Kolczuga: KP) zdaje się wisieć; dosunięcie przesuwałoby klocki przy
+  przełączaniu wpisów, co razi bardziej niż pusty rząd.
 - **Skrypty w paczkach (Lua, „poziom 3”)** — formuła deklaratywna bez gałęzi wystarcza i nie wymaga
   piaskownicy.
 - **Osobny system efektów, kaskady zmian, cofanie jako wymóg silnika** — łamią zakazy 3–5; efekt jest
