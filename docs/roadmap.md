@@ -3,26 +3,11 @@
 Kolejność od góry. Pozycja jest opisem potrzeby, nie zleceniem — przed pracą sprawdź w kodzie, czy
 nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka.
 
-## Otwarte — rozstrzygnąć z autorem przed dalszą pracą
-
-Rozmowa o rdzeniu trwa; to, co już rozstrzygnięte (księgowość zamiast procedur, przełomy, pole
-zmiany, znaczniki, kalkulator, tryb edycji), jest w `CLAUDE.md` i `docs/decisions.md`.
-
-1. **Podział kamienia:** „Pierwsza walka przy stole” (treść, katalog świata z kartą istoty, kopie,
-   postacie w minimum, walka z przełomem tury i kalkulator) i „Pełna sesja” (reszta)?
-
-**Do uzgodnienia w dokumentach:** „wartości są płaskie” (`architecture.md`) wobec struktury dla
-księgi i aspektów; dodatki wobec wariantów. Komentarze „never a timer/counter” w `Gear.cs`,
-`Monster.cs`, `StatblockSection.cs` — sprawdzić wobec liczników i tyknięć (żyją w narzędziu walki,
-nie we wpisie).
-
 ## Kamień milowy: pierwsza sesja przy stole
 
 Cel: MG prowadzi prawdziwą sesję bez podręcznika i bez własnych notatek na papierze (gracze grają
-z kartek, aplikacja jest źródłem prawdy). Każdy brak z tej listy oznacza grę
-hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam.
-Rozstrzygnięcia, na których stoi plan, są w `docs/decisions.md` (katalog świata, postać gracza,
-klasy, księgowość i lista przełomów).
+z kartek, aplikacja jest źródłem prawdy). Etapy w kolejności pracy; każdy jest użyteczny sam. W środku
+punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `docs/decisions.md`.
 
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
@@ -30,23 +15,18 @@ klasy, księgowość i lista przełomów).
    - **Aspekty w potworze i przedmiocie** — pogrupowanie pól przed tłumaczeniem SRD; potwór staje
      się stworzeniem z opcjonalną walką (zakładka „Stworzenia”). Karta wygląda tak samo.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
-   - **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
      skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność). Na istocie stan jest
-     pozycją listy „Stany i efekty” (`docs/decisions.md`).
-   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
-     cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
-     magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
-     typie, gdy rekord i karta typu są gotowe. W prozie wstawia znaczniki `[[id|tekst]]` do zaklęć,
-     stanów, przedmiotów i istot (karta pokazuje sam tekst), żeby odnośniki nie wymagały drugiego
-     przejścia przez paczkę. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
-     ma pięć potworów i dziesięć przedmiotów przykładowych; epicki (Pierścień regeneracji)
-     i legendarny (Miecz worpalny) są przykładami ponad zakres paczki. Rzadkość D&D na skalę aplikacji:
-     niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo
-     rzadkie → Epicki, legendarne i artefakty → Legendarny. Przed wyceną przedmiotów ustalić skalę
-     wartości: małe, czytelne liczby z miejscem w dół i w górę (dziś przykłady mają cenę SRD
-     w sztukach złota).
+     pozycją listy „Stany i efekty”.
+   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0). Tłumaczy agent
+     w tle, typ po typie, gdy rekord i karta typu są gotowe; tu stworzenia do wyzwania 5 i stany,
+     resztę etapy 6–9. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów i istot (karta
+     pokazuje sam tekst), żeby odnośniki nie wymagały drugiego przejścia. Odległości w metrach (1,5 m
+     za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
+     Rzadki, bardzo rzadkie → Epicki, legendarne i artefakty → Legendarny. Dziś paczka ma pięć
+     potworów i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
+     zakresem).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
@@ -58,40 +38,60 @@ klasy, księgowość i lista przełomów).
    kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
    separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
    nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni.
-3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
-4. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
-   MG. Zwarty widok istoty (PZ z polem zmiany, lista „Stany i efekty”), karta zostaje do
-   czytania. Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości
-   jako osobne okno biurka.
-5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG
-   tworzy je i zmienia formularzem w aplikacji. Karta postaci jest pełna (aplikacja to jedyne źródło
-   prawdy), a formularz pozwala szybko przepisać istniejącą kartkę gracza. Do paczki dochodzą
-   pochodzenie i tło. Wejście postaci do kampanii tworzy jej entity.
-   Identyfikator `źródło:id` wskazuje odtąd wpis w paczce albo postać.
-6. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
-   i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje.
-7. **Ekwipunek, sakiewka, handel** — entity w entity (plecak postaci jako gałąź drzewa świata), złoto
+3. **Kopie zapasowe kampanii**, rotujące — przed pierwszym prawdziwym użyciem. Przy stole zapis
+   biegnie na żywo po każdej zmianie.
+4. **Postacie w minimum** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach.
+   Na razie nazwa i aspekt walki (KP, PZ, cechy, inicjatywa) z formularza; w etapie 6 postać rośnie
+   o kolejne aspekty. Wejście postaci do kampanii tworzy jej entity. Identyfikator `źródło:id`
+   wskazuje odtąd wpis w paczce albo postać.
+5. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
+   MG. Zwarty widok istoty (PZ z polem zmiany, lista „Stany i efekty”), karta zostaje do czytania.
+   Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości jako
+   osobne okno biurka. Rozstrzygnąć: czy narzędzie rzuca potworom inicjatywę (k20 + mod. ZRĘ
+   z aspektu walki, z rozpisaniem, do poprawienia).
+
+**Punkt kontrolny „Pierwsza walka”:** jedna prawdziwa walka poprowadzona w całości z aplikacji.
+Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pełna postać.
+
+6. **Pełna postać** — pełna karta (aplikacja to jedyne źródło prawdy), wartości liczone
+   z rozpisaniem, formularz do szybkiego przepisania istniejącej kartki gracza. Do paczki dochodzą
+   pochodzenie i tło.
+7. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
+   i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje. SRD: cechy klas
+   i podklas do 5. poziomu.
+8. **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako
+   tagi. SRD: zaklęcia 0–3.
+9. **Ekwipunek, sakiewka, handel** — entity w entity (plecak postaci jako gałąź drzewa świata), złoto
    na entity. Cena i ilość leżą na slocie (sklep, plecak), nie we wpisie. Okno handlu jak w cRPG:
    towar kupca z cenami (z wartości wpisu przez kurs waluty kampanii, sprzedaż za połowę), MG może
    zmienić cenę, „Kup” i „Sprzedaj” przenoszą przedmiot i złoto. Waluta kampanii to lista nominałów
    z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota widać,
-   nie blokuje.
-8. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
-   wartość). Podróż to jedna akcja: drużyna do innego katalogu, zegar o czas wpisany przez MG.
-9. **Fabuła i lore** — zakładka dokumentów. Markdown z paczki, pisany poza aplikacją (np.
-   w Obsidianie). Linki między stronami i do identyfikatorów; klik w identyfikator pokazuje kartę.
-   Odhaczenia decyzji w fabule zapisują się w kampanii, więc jedna przygoda może iść dla kilku grup.
-10. **Ściągawki** — wybór wpisów (cechy klas, zaklęcia, przedmioty, stany) i wydruk A4 przez PDF.
-    Każdy typ ma własny układ na białą kartkę. Zaznaczenia może podpowiedzieć postać (jej węzły,
-    zaklęcia, ekwipunek); MG poprawia je przed drukiem.
+   nie blokuje. SRD: ekwipunek podstawowy, przedmioty magiczne pospolite do rzadkich; przed wyceną
+   ustalić skalę wartości (małe, czytelne liczby z miejscem w dół i w górę).
+10. **Odpoczynek** — przełom krótkiego i długiego odpoczynku z okienkiem: odnowienie PZ, miejsc na
+    zaklęcia i ładunków. Rozstrzygnąć odnowienie „o świcie” (*w długim odpoczynku z wyłącznikiem*;
+    zegar niczego nie uruchamia).
+11. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
+    wartość). Podróż to jedna akcja: drużyna do innego katalogu, zegar o czas wpisany przez MG.
 
-## Porządki w kodzie
+## Po kamieniu milowym
+
+- **Fabuła i lore** — zakładka dokumentów. Markdown z paczki, pisany poza aplikacją (np.
+  w Obsidianie). Linki między stronami i do identyfikatorów; klik w identyfikator pokazuje kartę.
+  Odhaczenia decyzji w fabule zapisują się w kampanii, więc jedna przygoda może iść dla kilku grup.
+- **Ściągawki** — wybór wpisów (cechy klas, zaklęcia, przedmioty, stany) i wydruk A4 przez PDF.
+  Każdy typ ma własny układ na białą kartkę. Zaznaczenia może podpowiedzieć postać (jej węzły,
+  zaklęcia, ekwipunek); MG poprawia je przed drukiem.
+
+## Porządki w kodzie i dokumentach
 
 - **Komentarze po polsku** w ok. 40 plikach — przetłumaczyć na angielski (konwencja: kod i komentarze
   po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
-  (kolejność „panele powłoki, potem narzędzia”).
+  (kolejność „panele powłoki, potem narzędzia”); „never a timer/counter” w `Gear.cs`, `Monster.cs`,
+  `StatblockSection.cs` wobec liczników i efektów (żyją w narzędziu walki, nie we wpisie).
+- **Dokumenty:** „wartości są płaskie” (`architecture.md`) wobec aspektów; dodatki wobec wariantów.
 - Punkt 4 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
   pilnuje ich przegląd.
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
@@ -108,15 +108,14 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
 - Tabela cech: modyfikator zero zostaje „+0” — tak pisze podręcznik, a każdy modyfikator ma znak.
   Do ewentualnej zmiany na „0”, gdyby zaczęło razić.
-- Sekcja opisu przedmiotu z własnym wyglądem: bez kreski i nagłówka „Opis” — opis ma prawie każdy
-  przedmiot, więc nazwa sekcji niczego nie mówi. Ikona pergaminu w lewym górnym rogu, wysoka na
-  dokładnie dwie linie tekstu, a tekst ją opływa jak inicjał w manuskrypcie (w Wordzie: zawijanie „ramka”):
-  obok ikony zaczyna się z odstępem od niej, pod ikoną biegnie od lewej krawędzi. Nadal jest sekcją.
+- Sekcja opisu przedmiotu bez kreski i nagłówka „Opis” (opis ma prawie każdy przedmiot). Ikona
+  pergaminu w lewym górnym rogu, wysoka na dwie linie tekstu, a tekst ją opływa jak inicjał
+  w manuskrypcie: obok ikony z odstępem, pod nią od lewej krawędzi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; potwory: typ) — małe,
-  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka (wpis bez obrazka pokazuje
-  ikonę swojej kategorii). Kategoria spoza listy dostaje ikonę domyślną.
+  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka. Kategoria spoza listy dostaje
+  ikonę domyślną.
 - Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
   gradient po prawej stronie biblioteki kampanii.
 
@@ -129,23 +128,16 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 ## Odłożone, z wyzwalaczem
 
-- **„Zapisz jako nowy wpis”** z karty egzemplarza do własnej paczki MG (tworzonej przy pierwszym
-  użyciu); egzemplarz wskazuje potem nowy wpis — MG chce użyć podkręconego egzemplarza albo
-  improwizowanej istoty w innej przygodzie.
+- **„Zapisz jako nowy wpis”** z karty egzemplarza do własnej paczki MG; egzemplarz wskazuje potem
+  nowy wpis — MG chce użyć podkręconego egzemplarza albo improwizowanej istoty w innej przygodzie.
 - **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PZ
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
 - **Edycja kilku zaznaczonych egzemplarzy naraz** — MG zmienia to samo pole po kolei na kilku.
-- **Rzut inicjatywy potworów** (k20 + mod. ZRĘ z aspektu walki, z rozpisaniem, do poprawienia) —
-  rozstrzygnąć przy pracy nad oknem walki.
-- **Odnowienie „o świcie”** (ładunki przedmiotów): w przełomie długiego odpoczynku z wyłącznikiem —
-  rozstrzygnąć przy pracy nad przełomem odpoczynku. Zegar niczego nie uruchamia.
 - **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
   zdolność spoza drzewek klas; do tego czasu wybory w klasie są węzłami.
 - **Odnośniki do wiedzy** (klik w zaklęcie albo stan w prozie otwiera kartę; na biurku jako pływające
   okno), słownik „Hasło” i zakładka „Zasady” — MG zbyt często szuka opisu wspomnianego w prozie.
-  Znaczniki `[[id|tekst]]` wstawia już tłumaczenie SRD, a karta pokazuje sam tekst.
-- **Formuły w danych paczki** (pola liczone, które dopisuje autor paczki) — po kamieniu milowym
-  „przy stole”.
+- **Formuły w danych paczki** (pola liczone, które dopisuje autor paczki) — po kamieniu milowym.
 - **Edytor treści w aplikacji** (wpisy, przygoda, lore) — pisanie plików poza aplikacją zaczyna
   przeszkadzać w przygotowaniu sesji.
 - **Odległości między lokacjami** (propozycja czasu podróży) — wpisywanie czasu podróży zaczyna męczyć.
