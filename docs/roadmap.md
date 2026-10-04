@@ -40,7 +40,8 @@ klasy, księgowość i lista przełomów).
    - **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
-     skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność).
+     skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność). Na istocie stan jest
+     pozycją listy „Stany i efekty” (`docs/decisions.md`).
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0): zaklęcia 0–3,
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
@@ -64,7 +65,7 @@ klasy, księgowość i lista przełomów).
    nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni.
 3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
 4. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
-   MG. Zwarty widok istoty (PZ z polem zmiany, stany z licznikami, tyknięcia), karta zostaje do
+   MG. Zwarty widok istoty (PZ z polem zmiany, lista „Stany i efekty”), karta zostaje do
    czytania. Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości
    jako osobne okno biurka.
 5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG

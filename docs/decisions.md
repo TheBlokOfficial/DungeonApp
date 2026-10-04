@@ -44,7 +44,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   świata (drugi atak bossa, płonący miecz); zysk — połowy przy wielu celach, ST koncentracji — jest
   mały. Granica w `CLAUDE.md`.
 - **Lista przełomów (zamknięta).** Następna tura: koniec tury istoty (jej liczniki stanów −1, stany
-  na zerze zdjęte, jej tyknięcia końca tury) i początek tury następnej (jej tyknięcia początku).
+  na zerze zdjęte, tyknięcia jej efektów na koniec tury) i początek tury następnej (tyknięcia na
+  początek).
   Odpoczynek krótki i długi: odnowienie PZ, miejsc na zaklęcia i ładunków według podręcznika.
   Handel: cena z wartości (sprzedaż za połowę), którą MG poprawia, potem przeniesienie przedmiotu
   i złota. Podróż: drużyna do innego katalogu i zegar o czas wpisany przez MG. Nowy przełom tylko
@@ -57,10 +58,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   zabiera wtedy jedną turę, a rzut „kończy stan na końcu tury” wypada w tej samej chwili. Podręcznik
   liczy czas od tury źródła; różnica to najwyżej ułamek rundy, a licznik MG poprawia w miejscu.
   Nazwy jak w polskim podręczniku: runda to obieg wszystkich, tura — działanie jednej istoty.
-- **Tyknięcia przypina MG.** Istota może mieć przypięte obrażenia („Płonie: 1k6 ognia, 3 rundy”)
-  albo przypomnienie („Regeneracja 10, chyba że ogień lub kwas”) na początek lub koniec swojej tury;
-  pokazują się w okienku przełomu. To jedyne miejsce, gdzie wchodzi wyzwalacz i czas — dopuszczalne,
-  bo pisze je MG, nie wpis, momenty są dwa, a każde tyknięcie przechodzi przez okienko.
+- **Stany i efekty — jedna lista na istocie.** Pozycja to stan z paczki (wiedza: ikona, nazwa,
+  skrót, odnośnik) albo stan własny MG (nazwa, ikona domyślna), z opcjonalnym licznikiem rund,
+  notatką MG („KON ST 13 kończy”) i tyknięciem: obrażenia albo przypomnienie na początek lub koniec
+  tury („Płonie: 1k6 ognia, 3 rundy”, „Regeneracja 10, chyba że ogień”). Stany domyślne wpisu
+  egzemplarz dziedziczy, dopóki MG ich nie zmieni. Tyknięcie to jedyne miejsce z wyzwalaczem
+  i czasem — dopuszczalne, bo pisze je MG, nie wpis, momenty są dwa, a każde przechodzi przez okienko.
 - **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5` i `=30`; liczba bez znaku nie
   przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PZ na 12. Przy wartości zostaje ostatnia
   zmiana („30, było 42, −12”) do następnej zmiany tej wartości. Rachunek z podręcznika (PZ
