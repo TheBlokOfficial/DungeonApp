@@ -28,13 +28,13 @@
             <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingMd}" />
         </Style>
         <!-- The title (a RevealingTextBlock, styled as a SelectableTextBlock) wraps, unless the card
-             keeps it to one line. -->
+             keeps it to one line - cut at any letter, the ellipsis straight against it. -->
         <Style Selector="SelectableTextBlock.title">
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
         <Style Selector="SelectableTextBlock.title.one-line">
             <Setter Property="TextWrapping" Value="NoWrap" />
-            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="TextTrimming" Value="{x:Static dc:TightCharacterEllipsis.Instance}" />
         </Style>
     </UserControl.Styles>
 
