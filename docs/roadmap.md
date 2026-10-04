@@ -13,8 +13,6 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Karta potwora czeka na przegląd autora w aplikacji:** portret obok nazwy, KP, PZ i Szybkość
-     pod tagami, dwie tabele cech, stałe sekcje prozy z nazwanymi wpisami.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
      po poziomie i szkole; koncentracja i rytuał jako tagi.
