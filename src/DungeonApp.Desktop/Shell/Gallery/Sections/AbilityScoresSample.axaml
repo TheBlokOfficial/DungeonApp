@@ -4,9 +4,10 @@
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.AbilityScoresSample"
              HorizontalAlignment="Left">
     <!-- The abilities table exactly as a card lays it out: two AbilityTableViews (the control a
-         statblock card uses) side by side, DungeonDetailColumnGap apart, three rows each - label,
-         score, modifier in square DungeonAbilityCellSize cells, every line drawn, sharp corners, the
-         modifier tinted by its sign (positive, negative, none for zero). Sample rows in
+         statblock card uses) side by side, DungeonDetailColumnGap apart, one column per ability - the
+         label above the grid, then score and modifier in square DungeonAbilityCellSize cells, every
+         line drawn, sharp corners, the modifier tinted by its sign (positive, negative, none for
+         zero). Sample rows in
          AbilityScoresSample.axaml.cs. Used by the Tables and Compositions sections, so both show the
          same table. -->
     <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">

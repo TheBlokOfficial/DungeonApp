@@ -498,7 +498,9 @@
              potwora). Kolumna obok obrazu ma zmieścić nazwę w jednej linii (42), odstęp (6), tagi
              (do 25), dwa odstępy nad wartością nagłówkową (12) i ją samą z dopiskiem (60) - razem do
              145; 150 to najmniejsza okrągła szerokość ponad tym.
-             AbilityCellSize - bok kwadratowej komórki tabeli cech.
+             AbilityCellSize - bok kwadratowej komórki tabeli cech. Trzy komórki to szerokość obrazu
+             (3 x 50 = DetailPictureWidth): lewa tabela kończy się z prawą krawędzią obrazu, a prawa
+             zaczyna się na linii kolumny tytułu - zmiana jednego tokenu wymaga zmiany drugiego.
              DetailColumnGap - odstęp między obrazem a kolumną tytułu i ten sam między kolumnami
              karty (dwie tabele cech). -->
         <x:Double x:Key="DungeonDetailPictureWidth">150</x:Double>
