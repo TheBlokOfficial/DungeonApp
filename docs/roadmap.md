@@ -82,6 +82,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 - Karta przedmiotu czeka na przegląd autora w aplikacji. Znany brak: odstęp między nagłówkiem
   a pierwszym separatorem jest ok. dwa razy większy niż wokół pozostałych separatorów (widać
   przy linie); wyrównać do ich rytmu, karta potwora bez zmian.
+- Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
+  gradient po prawej stronie biblioteki kampanii.
 
 ## Po stronie autora
 
