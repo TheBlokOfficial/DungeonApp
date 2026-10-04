@@ -42,8 +42,12 @@ powiedz to autorowi.
   dopóki jego kontekst jest mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
   agent `porzadki` (`.claude/agents/`). Autorowi pokazuje się wynik, który architekt sam by przyjął.
 - **Lista zadań** (narzędzie todo Claude Code, włączone eksperymentalnie zmienną
-  `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`): architekt prowadzi na niej etapy pracy, żeby autor widział
-  postęp w interfejsie. Jeśli narzędzia nie ma w sesji, powiedz to autorowi na starcie.
+  `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`) pokazuje autorowi, na jakim etapie jest wykonawca. Wykonawca
+  nie ma narzędzi listy, więc przy każdej zmianie fazy wysyła architektowi jednozdaniowy meldunek
+  (`SendMessage` do `main`), a architekt przestawia listę. Szkielet: rozpoznanie w kodzie → etapy
+  zlecenia → sprawdzenie (build, testy, rendery) → punkt zatrzymania, jeśli zlecenie go ma → raport.
+  Jedno zadanie „w toku” naraz; architekt nie wpisuje tam swoich kroków, a przed nowym zleceniem
+  czyści listę. Jeśli narzędzia nie ma w sesji, powiedz to autorowi na starcie.
 - **Git:** praca w gałęzi → build bez ostrzeżeń i zielone testy → scalenie do `master` → `git push`.
   CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
