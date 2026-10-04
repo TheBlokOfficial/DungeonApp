@@ -3,6 +3,38 @@
 Kolejność od góry. Pozycja jest opisem potrzeby, nie zleceniem — przed pracą sprawdź w kodzie, czy
 nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka.
 
+## Otwarte — rozstrzygnąć z autorem przed dalszą pracą
+
+Audyt zewnętrzny granicy (`CLAUDE.md`): „przyjąć z poprawkami”. Kursywą rekomendacja architekta.
+
+1. **Procedura jako propozycja:** panel wyniku z rozpisaniem i skutkami (też wtórnymi: koncentracja,
+   0 PZ), MG poprawia liczby, „Zastosuj” zapisuje naraz. *Tak — skutki widać przed zapisem.*
+2. **Stan na zerze licznika:** znika wyszarzony na turę z „Przywróć” (*to*) albo „wygasa?” dla MG.
+3. **0 PZ:** panel podpowiada Nieprzytomny / pokonany; rzuty przeciw śmierci zaznacza MG.
+4. **Podział kamienia:** „Pierwsza walka przy stole” (treść, katalog świata, kopie, postacie
+   w minimum, walka z listą startową: inicjatywa, atak, rzut obronny, test umiejętności, obrażenia
+   z odpornością, stany z licznikiem, koncentracja jako znacznik ze ST) i „Pełna sesja” (reszta).
+5. **Kolor znacznika zmiany w turze** — nie zielony (to sukces); *niebieski albo bursztynowy*.
+6. **Zakładka istot:** „Potwory” czy „Stworzenia” — jeden typ dla potworów i NPC; fabuła NPC to lore.
+7. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
+8. **Entity bez statbloku** (karczmarz: imię i notatka) — dopuszczamy?
+9. **Odnośniki jak w Pathfinder WotR:** klik otwiera kartę w pływającym okienku, kilka naraz (to samo
+   okno co entity i lore); z pól ze strukturą same, w prozie jawnym znacznikiem, zerwany widoczny.
+   Słownik „Hasło” i zakładka „Zasady” (stany i hasła)? *W etapie 1, po stanach.*
+10. **Okno walki:** *karta zostaje do czytania, okno ma zwarty widok istoty z akcjami-przyciskami.*
+
+**Poprawki z audytu** (architekt, jeden commit po decyzjach):
+- Test w `CLAUDE.md` p. 2: procedura rozgałęzia się według zasady z podręcznika; warunku,
+  wyzwalacza ani czasu nie niesie pole danych. P. 5: skutki widoczne *przed* zapisem.
+- Model danych (cechy jako zestaw, atak, obrażenia, odporności, właściwości broni) razem z walką,
+  nie w etapie 1; zaklęcia teraz ze strukturą pod filtry. Postacie w minimum przed walką.
+- Lista procedur: dopisać testy umiejętności; rozstrzygnąć „o świcie”, PZ tymczasowe, kiedy tyka
+  licznik, odporność na niemagiczne, wyjątki handlu, KP i ST postaci, krytyk (1, kości dodatkowe).
+- Sprzeczności: „wartości są płaskie” (`architecture.md`, `decisions.md`), skrypty odrzucone przez
+  formuły, dodatki wobec wariantów, bierna Percepcja; wierność dotyczy procedur, nie wyglądu.
+- Karta składa linię ataku ze struktury, dopisek warunkowy zostaje prozą; struktura akcji
+  opcjonalna. Komentarze „never a timer/counter” w `Gear.cs`, `Monster.cs`, `StatblockSection.cs`.
+
 ## Kamień milowy: pierwsza sesja przy stole
 
 Cel: poprowadzić prawdziwą sesję bez podręcznika i bez papieru. Każdy brak z tej listy oznacza grę
@@ -13,13 +45,8 @@ klasy, gramatyka systemu i lista procedur).
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Model danych pod procedury** — przed tłumaczeniem SRD, póki paczka ma kilkanaście wpisów:
-     cechy jako zestaw, atak (premia, zasięg, obrażenia z kością i typem, rzut obronny, stan przy
-     porażce), odporności, właściwości broni, odwołania do stanów i zaklęć. Potwór i przedmiot
-     przechodzą na nowy kształt; karta wygląda tak samo.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
-   - **Zaklęcia**, od razu w nowym kształcie, bez obrazka. Filtry i sortowanie po poziomie i szkole;
-     koncentracja i rytuał jako tagi.
+   - **Zaklęcia** bez obrazka; filtry i sortowanie po poziomie i szkole, koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
      skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność).
