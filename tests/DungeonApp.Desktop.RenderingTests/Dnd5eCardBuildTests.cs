@@ -152,6 +152,9 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
 
+        // The note's line is kept without a note, so Szybkość is as tall as KP and PZ.
+        Assert.Single(tiles.Select(tile => tile.DesiredSize.Height).Distinct());
+
         window.Close();
     }
 
