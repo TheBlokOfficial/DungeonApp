@@ -6,12 +6,14 @@ popraw ten dokument w tym samym commicie.
 ## Czym to jest
 
 Laptop MG przy stole: ile życia ma jeszcze goblin, co drużyna ma w plecaku, co żyje w świecie kampanii.
-Gracze aplikacji nie widzą. To nie jest wirtualny stół, gra, generator treści ani silnik reguł.
+Gracze aplikacji nie widzą. To nie jest wirtualny stół, gra ani generator treści. Narzędzia wykonują
+gramatykę systemu (inicjatywa, atak, rzut obronny, stany), nigdy słownictwo (opis zaklęcia czy
+przedmiotu) — granica w `CLAUDE.md`, lista procedur w `docs/decisions.md`.
 
 Zakres: systemy „trad” — nazwane statystyki, rzut z modyfikatorem, jakaś kolejność działania (D&D,
 Pathfinder, OSR, Call of Cthulhu). Aplikacja **wie, czym jest potwór i jak go pokazać**, bo karta jest
-zaprojektowana; **nie wie, czym jest D&D**, bo wiedza o systemie mieszka w wymienialnym projekcie.
-Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga MG.
+zaprojektowana; **nie wie, czym jest D&D**, bo wiedza o systemie — także procedury — mieszka
+w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je procedura; inaczej jest prozą.
 
 ## Warstwy
 
@@ -150,20 +152,20 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
 
 ## Granica automatyzacji w praktyce
 
-Aplikacja księguje decyzje MG — także jednym kliknięciem i na kilku rzeczach naraz — ale ich nie
-podejmuje. Przykład: MG postanawia, że drużyna sprzedaje miecz, i wskazuje sakiewkę; aplikacja
-przenosi miecz i dopisuje złoto. Aplikacja może **zaproponować** wartość z danych (np. „połowa
-ceny”, bo to arytmetyka), ale MG ją poprawia przed zapisem. Brak złota pokazuje, nie blokuje.
-Wyliczenie jest propozycją, akcja jest zapisem.
+MG uruchamia procedurę, narzędzie wykonuje ją według podręcznika i pokazuje każdy krok. Przykład:
+MG klika „Sprzedaj” przy mieczu; okno handlu bierze cenę z wartości wpisu (sprzedaż za połowę), MG
+może ją zmienić, a zatwierdzenie przenosi miecz i złoto jedną akcją. Atak: „14 = 11 na k20 + 3”
+przeciw KP 13 — trafienie; ułatwienie przełącza MG, bo jego powody to słownictwo. Każdą wartość MG
+poprawia w miejscu, a dziennik walki zapisuje ciąg zdarzeń razem z poprawkami.
 
 ## Kierunek (jeszcze nie zbudowane)
 
 Szczegóły dawnego projektu docelowego: `docs/archive/architecture.md`. Każde z poniższych powstaje
 dopiero razem z pierwszym konsumentem.
 
-- **Formuły:** jeden deklaratywny silnik za polami obliczanymi — bez pętli, gałęzi i efektów
-  ubocznych. Wartość pochodna (bez kości, przeliczana przy odczycie) i rzut (na żądanie, wynik jest
-  zdarzeniem dla MG). Zasięg: własna instancja plus jeden skok do slotów, bez przechodniości.
+- **Procedury i wartości pochodne:** kod systemu. Wartość pochodna (modyfikator cechy, bierna
+  Percepcja) liczy się przy odczycie z pól ze strukturą; rzut jest na żądanie MG, a jego wynik
+  z rozpisaniem trafia do dziennika walki. Formuły w danych paczki są odłożone (roadmapa).
 - **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
   leży w katalogu albo w innym entity — tak wygląda ekwipunek. Katalog niesie tylko nazwę.
 - **Postacie graczy:** obok kampanii, w katalogu systemu; zmieniane formularzem w aplikacji. Postać

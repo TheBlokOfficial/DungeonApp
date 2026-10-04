@@ -1,27 +1,32 @@
 # DungeonApp
 
 Desktopowy panel Mistrza Gry do gry papierowej przy stole. C#/.NET 10, Avalonia 12. Jedna maszyna,
-jeden użytkownik, bez sieci. Aplikacja prowadzi księgowość kampanii — decyzje podejmuje MG.
+jeden użytkownik, bez sieci. Aplikacja prowadzi kampanię i wykonuje procedury systemu — o ich użyciu
+i ostatecznym wyniku decyduje MG.
 
-## Pięć zakazów
+## Granica automatyzacji
 
-Zasada produktu: **aplikacja liczy, MG decyduje, co policzyć**. Złamanie któregokolwiek zakazu
-zamienia aplikację w silnik cRPG. Czytaj je według intencji; gdy litera i intencja się rozjeżdżają,
-powiedz to autorowi.
+Zasada produktu: **narzędzie gra według podręcznika, MG decyduje, czy go użyć, i zawsze może poprawić
+wynik.** Aplikacja automatyzuje gramatykę systemu, nigdy jego słownictwo — inaczej staje się cRPG bez
+grafiki. Czytaj według intencji; gdy litera i intencja się rozjeżdżają, powiedz to autorowi.
 
-1. **Wyrażenie się nie rozgałęzia.** Żaden węzeł, operator ani parametr nie wybiera wartości na
-   podstawie warunku. `min` i `max` to arytmetyka i są dozwolone.
-2. **Czas nie jest niczyim wejściem.** Nic nie wygasa, nie odnawia się ani nie dzieje się dlatego,
-   że minął czas. Zegar świata, numer rundy i wskaźnik tury może trzymać narzędzie, które je pokazuje;
-   przesuwa je tylko akcja MG, a poza tym widokiem nic ich nie odczytuje. Czas może stać w polu
-   rekordu jako napis na karcie („Koncentracja, do 1 minuty”), ale poza kartą nic go nie rozbiera,
-   nie liczy, nie filtruje ani nie sortuje.
-3. **Wkłady do pola sumują się bezwarunkowo.** Bez priorytetów, kolejności i reguł „to się nie
-   kumuluje”.
-4. **Nic nie wybiera celów za MG.** Operacja zmienia wyłącznie to, co MG jawnie wskazał (może to być
-   kilka rzeczy naraz), nigdy zbiór wyznaczony regułą („wszyscy”, „w obszarze”, „najbliższy”).
-5. **Zmiana stanu nie wywołuje kolejnej zmiany stanu.** Zdarzenia powiadamiają widoki, nigdy nie
-   zapisują.
+1. **Gramatyka tak, słownictwo nie.** Procedury z rozdziałów o zasadach, takie same dla każdej istoty
+   i przedmiotu (inicjatywa, atak, obrażenia, rzut obronny, stany), wykonuje narzędzie. Opis
+   konkretnego zaklęcia, atutu, cechy czy przedmiotu zostaje tekstem dla MG; wpis nie niesie logiki.
+2. **Zamknięta lista procedur** jest w `docs/decisions.md`. Nowa przechodzi test: jednolita, częsta,
+   opisana kilkoma polami bez warunków, wyzwalaczy i czasu, z wynikiem, który MG widzi i poprawia.
+   Dopisanie procedury to decyzja autora, nie wykonawcy.
+3. **Wejściem procedury są pola ze strukturą albo przełącznik i liczba od MG**, nigdy tekst opisu.
+   Pole dostaje strukturę tylko wtedy, gdy czyta je procedura z listy. Powody ułatwienia, odporność
+   spoza statbloku, skutki stanów dla rzutów: aplikacja pokazuje, MG przełącza.
+4. **Każda liczba ma rozpisanie.** Wynik pokazuje, skąd się wziął („14 = 11 na k20 + 3 ZRĘ”), dziennik
+   zapisuje ciąg zdarzeń, wartość poprawiona ręcznie jest oznaczona. Liczba bez pochodzenia to błąd.
+5. **Nic nie dzieje się bez akcji MG i nic nie wybiera celów za MG.** Bez czasu rzeczywistego i pracy
+   w tle; zegar, rundę i turę przesuwa MG. Cele wskazuje MG (może kilka naraz), nigdy reguła („w
+   obszarze”, „najbliższy”). Jedna akcja może mieć wiele skutków, wszystkie widoczne; zdarzenia
+   powiadamiają widoki, nigdy nie zapisują.
+6. **Ręczna poprawka jest zawsze w narzędziu.** PZ, licznik, kolejność, wynik rzutu — MG nadpisuje
+   w miejscu. Homebrew to praca bez procedury, nie przełącznik w niej.
 
 ## Jak pracujemy
 
@@ -140,7 +145,7 @@ Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 
 | Plik | Co zawiera | Limit |
 |---|---|---|
-| `CLAUDE.md` | zakazy, sposób pracy, pułapki | 150 linii |
+| `CLAUDE.md` | granica automatyzacji, sposób pracy, pułapki | 150 linii |
 | `docs/architecture.md` | jak aplikacja jest zbudowana dziś i dokąd zmierza | 400 linii |
 | `docs/decisions.md` | rozstrzygnięcia, zwłaszcza odrzucone kierunki; czytaj przed zmianą architektury | wpis ≤ 8 linii |
 | `docs/roadmap.md` | co dalej | 150 linii |

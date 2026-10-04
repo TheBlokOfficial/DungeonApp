@@ -37,14 +37,27 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Właściwości częściowe (C# 14), nie pola z atrybutem. Setter z logiką poza powiadomieniem zostaje
   ręczny, bo `OnXChanged` biegnie przed powiadomieniem o X. *Wyzwalacz:* generator psuje build albo
   edytor.
-- **Zakaz 2 według intencji: czas nie jest niczyim wejściem.** Litera „żaden typ nie niesie czasu”
-  zabraniała zegara świata i rundy w inicjatywie, choć nic ich nie wykonuje. Narzędzie trzyma zegar,
-  rundę i wskaźnik tury, przesuwa je akcja MG, czyta tylko jego widok. Podróż przesuwa zegar
-  wyłącznie jako część jednej akcji MG z czasem, który MG widzi; samo przeniesienie drużyny zegara
-  nie rusza (zakaz 5).
+- **Gramatyka systemu, nie słownictwo.** Narzędzia wykonują procedury z rozdziałów o zasadach —
+  bez nich dane są martwym tekstem, cyfrowym podręcznikiem, który przy stole nie pomaga. Opisy
+  zaklęć, atutów i przedmiotów zostają tekstem: logika per wpis to cRPG bez grafiki. Granica ma
+  sześć punktów w `CLAUDE.md`; każda liczba ma rozpisanie, ręczna poprawka jest zawsze w narzędziu,
+  nic nie dzieje się bez akcji MG.
+- **Lista procedur (zamknięta).** Inicjatywa (k20 + mod. ZRĘ, kolejka, runda, tura); atak (k20 +
+  premia przeciw KP, 20 to krytyk z podwojonymi kośćmi, ułatwienie i utrudnienie przełącza MG);
+  rzut obronny przeciw ST, z „połowa przy sukcesie” z pola; obrażenia z odpornością i podatnością
+  ze statbloku; leczenie i PZ tymczasowe; stany z licznikiem rund; koncentracja (rzut KON, ST =
+  max(10, połowa obrażeń)); miejsca na zaklęcia i ładunki z odnowieniem przy odpoczynku; handel
+  (cena z wartości, sprzedaż za połowę). Nowa procedura tylko po teście z `CLAUDE.md` i za zgodą autora.
+- **Struktura w wartościach tylko dla procedur.** Pole wpisu dostaje kształt (atak: premia, zasięg,
+  obrażenia, rzut obronny, stan przy porażce), gdy czyta je procedura z listy; reszta zostaje prozą.
+  Kształt wpisu i tak ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
+- **Znaczniki zmian w turze.** W walce wszystko, co zmieniło się od ostatniego „Następna tura” —
+  także ręcznie — ma zieloną obwódkę (PZ z różnicą); rzecz zdjęta jest wyszarzona przez jedną turę.
+  To porównanie widoku z migawką z akcji MG, nie zapis w entity. MG pyta „co się zmieniło”, a kto to
+  zrobił, mówi dziennik. Poza walką tur nie ma, więc i znaczników.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
-  i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — zakaz 4). Usuwa się
+  i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — cele wskazuje MG). Usuwa się
   tylko pusty, żeby jedno kliknięcie nie zabrało po cichu części świata.
 - **Postać gracza leży obok kampanii.** Trzeci rodzaj danych obok treści paczek i stanu kampanii:
   tworzy ją MG w aplikacji, może grać w wielu kampaniach. Postać mówi, kim jest (cechy, klasa
@@ -64,7 +77,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Wartość jest we wpisie, cena na slocie.** Wpis przedmiotu niesie wartość: liczbę bez jednostki,
   z ułamkami, która mówi tylko, ile razy coś jest cenniejsze od czegoś innego. Cenę nakłada
   sprzedający — należy do slotu (sklep, plecak) razem z ilością, więc ten sam przedmiot kosztuje
-  różnie w różnych miejscach bez reguły wybierającej cenę według miejsca (zakaz 1). Skala liczb to
+  różnie w różnych miejscach bez reguły wybierającej cenę według miejsca. Skala liczb to
   umowa autora paczki, nie aplikacji. Jednostki (kilogramy i funty, monety kampanii) to listy
   mnożników od jednej bazy. Waga i wartość są obowiązkowe w każdym przedmiocie; zero jest wartością
   i karta je pokazuje („0 kg”) — informacji nie chowa się dlatego, że wynosi zero.
@@ -72,21 +85,21 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 
 ## Odrzucone
 
+- **Aplikacja tylko księguje, zasad nie wykonuje** (dawne pięć zakazów) — dane zostają suchym
+  tekstem, a MG liczy wszystko sam; patrz gramatyka systemu wyżej.
 - **Klocek bez dopisku dosuwany do dna obrazka** — rząd dopisku zostaje zarezerwowany zawsze, choć
   samotny klocek bez dopisku (Kolczuga: KP) zdaje się wisieć; dosunięcie przesuwałoby klocki przy
   przełączaniu wpisów, co razi bardziej niż pusty rząd.
 - **Skrypty w paczkach (Lua, „poziom 3”)** — formuła deklaratywna bez gałęzi wystarcza i nie wymaga
   piaskownicy.
-- **Osobny system efektów, kaskady zmian, cofanie jako wymóg silnika** — łamią zakazy 3–5; efekt jest
-  wkładem do sumy, nie mechanizmem.
+- **Logika per wpis, kaskady zmian, cofanie jako wymóg silnika** — działanie pierścienia czy cechy
+  potwora to słownictwo i zostaje tekstem; skutek należy do akcji MG, nie jest reakcją na zmianę.
 - **Zakładki, nawigacja albo kategorie z danych paczki** — pasek wypełnia skompilowany system.
 - **Karta z listy elementów podanej w danych, generyczne prymitywy UI dla danych, jedna uniwersalna
   forma pośrednia** — to decyzje o układzie przebrane za dane.
 - **Dziedziczenie i osadzanie szablonów, typy treści jako plik danych** — typ treści jest kodem.
 - **Klasy postaci wkompilowane w kod systemu, całe drzewo klasy w jednym wpisie** — wpis nie jest
   kodem, a wartości są płaskie; patrz klasa i węzeł wyżej.
-- **Zagnieżdżone wartości w polu wpisu** — wartości są płaskie; strukturę da slot. Wyjątkiem jest
-  sekcja prozy karty (wstęp i nazwane wpisy): kształt ustala rekord typu, a służy tylko do czytania.
 - **Wpisy lokalne dla kampanii, rejestr wewnątrz kampanii** — treść mieszka w paczkach; autorstwo
   idzie przez własną paczkę MG.
 - **Materializacja wpisu w instancji, nakładka jako miejsce na warianty rzeczy** — patrz nakładka wyżej.
@@ -101,4 +114,5 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Migracja formatu i pola zarezerwowane budowane z wyprzedzeniem** — manifest jest pobłażliwy, więc
   dołożenie pola nie wymaga migracji; pierwsza migracja powstanie z pierwszą niezgodną zmianą po
   pierwszej sesji przy stole (patrz wersje formatów wyżej).
-- **Śledzenie tur jako element karty albo licznik rund w danych** — zakaz 2.
+- **Śledzenie tur jako element karty** — tury, rundy i liczniki efektów trzyma narzędzie walki;
+  karta pokazuje wpis albo entity.

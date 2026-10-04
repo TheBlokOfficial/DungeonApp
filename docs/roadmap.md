@@ -6,16 +6,20 @@ nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka
 ## Kamień milowy: pierwsza sesja przy stole
 
 Cel: poprowadzić prawdziwą sesję bez podręcznika i bez papieru. Każdy brak z tej listy oznacza grę
-hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam. Formuły
-nie są potrzebne — KP czy ST czarów MG wpisuje. Rozstrzygnięcia, na których stoi plan, są
-w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
+hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam.
+Rozstrzygnięcia, na których stoi plan, są w `docs/decisions.md` (katalog świata, postać gracza,
+klasy, gramatyka systemu i lista procedur).
 
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
+   - **Model danych pod procedury** — przed tłumaczeniem SRD, póki paczka ma kilkanaście wpisów:
+     cechy jako zestaw, atak (premia, zasięg, obrażenia z kością i typem, rzut obronny, stan przy
+     porażce), odporności, właściwości broni, odwołania do stanów i zaklęć. Potwór i przedmiot
+     przechodzą na nowy kształt; karta wygląda tak samo.
    - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
-   - **Zaklęcia.** Czas rzucania, zasięg i czas trwania wyłącznie jako napisy; filtry i sortowanie
-     po poziomie i szkole; koncentracja i rytuał jako tagi.
+   - **Zaklęcia**, od razu w nowym kształcie, bez obrazka. Filtry i sortowanie po poziomie i szkole;
+     koncentracja i rytuał jako tagi.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
      skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność).
@@ -38,22 +42,23 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
    Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
    kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
    separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
-   nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni; 0 PZ niczego
-   samo nie dodaje (zakaz 5).
+   nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni.
 3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
-4. **Inicjatywa** — okno: entity i postacie z liczbą wpisaną przez MG, ułożone według niej; runda
-   i wskaźnik tury przesuwane przez MG.
+4. **Inicjatywa i walka** — okno: MG wskazuje uczestników, narzędzie rzuca k20 + mod. ZRĘ (z
+   rozpisaniem, MG może wpisać swoją liczbę) i układa kolejkę; runda i tura przesuwa MG. Ataki
+   i rzuty obronne z karty, PZ, stany z licznikiem rund, koncentracja — procedury z listy. Dziennik
+   walki z ciągiem zdarzeń; znaczniki zmian w turze (zielona obwódka, zdjęte wyszarzone).
 5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG
    tworzy je i zmienia formularzem w aplikacji. Wejście postaci do kampanii tworzy jej entity.
    Identyfikator `źródło:id` wskazuje odtąd wpis w paczce albo postać.
 6. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
    i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje.
 7. **Ekwipunek, sakiewka, handel** — entity w entity (plecak postaci jako gałąź drzewa świata), złoto
-   na entity. Cena i ilość leżą na slocie (sklep, plecak), nie we wpisie. Okno handlu: MG wskazuje
-   sprzedającego, kupującego i sakiewkę, aplikacja proponuje cenę z wartości wpisu przez kurs waluty
-   kampanii, MG ją poprawia, jedno kliknięcie przenosi przedmiot i złoto. Waluta kampanii to lista
-   nominałów z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota
-   widać, nie blokuje.
+   na entity. Cena i ilość leżą na slocie (sklep, plecak), nie we wpisie. Okno handlu jak w cRPG:
+   towar kupca z cenami (z wartości wpisu przez kurs waluty kampanii, sprzedaż za połowę), MG może
+   zmienić cenę, „Kup” i „Sprzedaj” przenoszą przedmiot i złoto. Waluta kampanii to lista nominałów
+   z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota widać,
+   nie blokuje.
 8. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
    wartość). Podróż to jedna akcja: drużyna do innego katalogu, zegar o czas wpisany przez MG.
 9. **Fabuła i lore** — zakładka dokumentów. Markdown z paczki, pisany poza aplikacją (np.
@@ -70,7 +75,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
-- Piąty zakaz nie ma strażnika w kodzie — pilnuje go przegląd.
+- Punkt 5 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
+  pilnuje ich przegląd.
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
   be converted to …”) — potrzebne polskie zdanie, które nazywa pole.
 
@@ -106,7 +112,8 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 ## Odłożone, z wyzwalaczem
 
-- **Formuły** — po kamieniu milowym „przy stole”.
+- **Formuły w danych paczki** (pola liczone, które dopisuje autor paczki) — po kamieniu milowym
+  „przy stole”.
 - **Edytor treści w aplikacji** (wpisy, przygoda, lore) — pisanie plików poza aplikacją zaczyna
   przeszkadzać w przygotowaniu sesji.
 - **Odległości między lokacjami** (propozycja czasu podróży) — wpisywanie czasu podróży zaczyna męczyć.

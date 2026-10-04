@@ -35,7 +35,7 @@ docs/                         architektura, rozstrzygnięcia, plan
 
 ## Dokumenty
 
-- [CLAUDE.md](CLAUDE.md) — pięć zakazów, sposób pracy, pułapki
+- [CLAUDE.md](CLAUDE.md) — granica automatyzacji, sposób pracy, pułapki
 - [docs/architecture.md](docs/architecture.md) — jak to jest zbudowane
 - [docs/decisions.md](docs/decisions.md) — co przesądzone i czego nie robimy
 - [docs/roadmap.md](docs/roadmap.md) — co dalej

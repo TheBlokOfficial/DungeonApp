@@ -10,7 +10,7 @@ Zlecenie podaje zakres plików i reguły — trzymaj się ich dokładnie. Pracuj
 to, czego zadanie wymaga.
 
 Przed pracą:
-- Przeczytaj `CLAUDE.md` (zakazy, konwencje, pułapki). Nie czytaj `docs/archive/`.
+- Przeczytaj `CLAUDE.md` (granica automatyzacji, konwencje, pułapki). Nie czytaj `docs/archive/`.
 - Jeśli zlecenie każe najpierw scalić gałąź (worktree powstaje z `master`), zrób to jako pierwszy krok.
 
 Środowisko (Windows, PowerShell):
