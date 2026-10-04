@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using Avalonia;
@@ -7,6 +7,7 @@ using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
@@ -17,8 +18,9 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// The trimmed text that shows itself whole in place: built in a window, driven by the pointer. The
 /// full line opens only over trimmed text, exactly where the text stands, stays open while the
 /// pointer moves over the text (the overlay takes no pointer input, so nothing flickers) and closes
-/// when the pointer leaves or presses. It stands on the opaque card surface, and the trimmed text
-/// under it is undrawn while it is open, so the two never show together.
+/// when the pointer leaves or presses. It adds only what follows the cut, on the opaque card surface:
+/// the letters before the cut stay the trimmed text's own. Its look follows the text's, however the
+/// text got it. A name is cut at any letter, the ellipsis straight against it.
 /// </summary>
 public sealed class RevealingTextBlockTests
 {
@@ -104,6 +106,9 @@ public sealed class RevealingTextBlockTests
         window.Close();
     }
 
+    // The opaque surface the full line's added part stands on.
+    private static Border Surface(TextBlock fullLine) => ((Panel)fullLine.GetVisualParent()!).Children.OfType<Border>().Single();
+
     [AvaloniaFact]
     public void The_full_line_stands_on_the_opaque_card_surface_not_on_what_is_behind_the_text()
     {
@@ -112,7 +117,7 @@ public sealed class RevealingTextBlockTests
         window.MouseMove(Over(text, window));
         Dispatcher.UIThread.RunJobs();
 
-        var surface = Assert.IsType<Border>(FullLine(window)!.Parent);
+        var surface = Surface(FullLine(window)!);
         Assert.True(window.TryFindResource("DungeonBackstageCardBrush", window.ActualThemeVariant, out var card));
         Assert.Same(card, surface.Background);
         var brush = Assert.IsAssignableFrom<ISolidColorBrush>(surface.Background);
@@ -123,27 +128,122 @@ public sealed class RevealingTextBlockTests
     }
 
     [AvaloniaFact]
-    public void The_trimmed_text_is_undrawn_while_the_full_line_is_open_and_drawn_again_when_it_closes()
+    public void The_full_line_adds_only_what_follows_the_cut_and_the_letters_before_it_stay_the_texts_own()
     {
         var (window, text) = Show(width: 80);
         var bounds = text.Bounds;
+        var textLeft = text.TranslatePoint(default, window)!.Value.X;
 
         window.MouseMove(Over(text, window));
         Dispatcher.UIThread.RunJobs();
-        Assert.True(WaitUntil(() => text.IsTrimmedTextHidden));
-        Assert.Equal(1d, FullLine(window)!.GetVisualParent()!.Opacity);
+        var full = FullLine(window)!;
+        var surface = Surface(full);
+        Assert.True(WaitUntil(() => full.Opacity == 1d && surface.Opacity == 1d));
+
+        // The cut: after the letters kept, before the ellipsis - inside the text, not at its edges.
+        var cut = surface.TranslatePoint(default, window)!.Value.X;
+        Assert.InRange(cut, textLeft + 1, textLeft + bounds.Width - 1);
+        var clip = Assert.IsType<RectangleGeometry>(full.Clip).Rect;
+        Assert.Equal(cut, full.TranslatePoint(new Point(clip.X, 0), window)!.Value.X, precision: 6);
         Assert.Equal(bounds, text.Bounds);
 
-        // Drawn again as soon as the full line starts to go, under it, while it fades.
         window.MouseMove(new Point(790, 290));
         Dispatcher.UIThread.RunJobs();
-        Assert.False(text.IsTrimmedTextHidden);
+        Assert.False(text.IsRevealed);
+
+        // It fades out from fully open, not stands still until it is cut off.
+        Assert.True(WaitUntil(() => full.Opacity < 0.5 && surface.Opacity < 0.5));
         Assert.True(WaitUntil(() => FullLine(window) is null));
-        Assert.False(text.IsTrimmedTextHidden);
         Assert.Equal(bounds, text.Bounds);
 
         window.Close();
     }
+
+    [AvaloniaFact]
+    public void The_full_line_takes_every_property_of_the_texts_look_however_the_text_got_it()
+    {
+        var (window, text) = Show(width: 80);
+        window.Styles.Add(new Style(selector => selector.OfType<SelectableTextBlock>().Class("styled"))
+        {
+            Setters =
+            {
+                new Setter(TextBlock.ForegroundProperty, Brushes.Orange),
+                new Setter(TextBlock.FontWeightProperty, FontWeight.SemiBold),
+                new Setter(TextBlock.FontStyleProperty, FontStyle.Italic),
+                new Setter(TextBlock.FontSizeProperty, 21d),
+                new Setter(TextBlock.LetterSpacingProperty, 0.4),
+                new Setter(TextBlock.LineHeightProperty, 30d),
+                new Setter(TextBlock.FontFeaturesProperty, new FontFeatureCollection { FontFeature.Parse("tnum") }),
+            },
+        });
+        text.Classes.Add("styled");
+        text.FontStretch = FontStretch.Condensed;
+        text.Padding = new Thickness(2, 1, 0, 0);
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(text.IsTrimmed);
+
+        window.MouseMove(Over(text, window));
+        Dispatcher.UIThread.RunJobs();
+        var full = FullLine(window)!;
+
+        Assert.Same(Brushes.Orange, full.Foreground);
+        Assert.Equal(text.FontFamily, full.FontFamily);
+        Assert.Equal(text.FontSize, full.FontSize);
+        Assert.Equal(text.FontWeight, full.FontWeight);
+        Assert.Equal(text.FontStyle, full.FontStyle);
+        Assert.Equal(text.FontStretch, full.FontStretch);
+        Assert.Same(text.FontFeatures, full.FontFeatures);
+        Assert.Equal(text.LetterSpacing, full.LetterSpacing);
+        Assert.Equal(text.LineHeight, full.LineHeight);
+        Assert.Equal(text.LineSpacing, full.LineSpacing);
+        Assert.Equal(text.BaselineOffset, full.BaselineOffset);
+        Assert.Equal(text.TextDecorations, full.TextDecorations);
+        Assert.Equal(text.Padding, full.Padding);
+        Assert.Equal(text.FlowDirection, full.FlowDirection);
+
+        // A change while it is open reaches it too.
+        text.Foreground = Brushes.Teal;
+        Assert.Same(Brushes.Teal, full.Foreground);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_name_is_cut_at_any_letter_with_the_ellipsis_straight_against_the_last_one_kept()
+    {
+        var (window, text) = Show(width: 80);
+        var stockLeavesASpace = false;
+
+        for (var width = 40; width < 400; width++)
+        {
+            text.TextTrimming = TextTrimming.CharacterEllipsis;
+            text.Width = width;
+            Dispatcher.UIThread.RunJobs();
+            stockLeavesASpace |= Shown(text).EndsWith(" …", StringComparison.Ordinal);
+
+            text.TextTrimming = TightCharacterEllipsis.Instance;
+            Dispatcher.UIThread.RunJobs();
+            if (!text.IsTrimmed)
+            {
+                Assert.Equal(LongText, Shown(text));
+                continue;
+            }
+
+            var shown = Shown(text);
+            Assert.EndsWith("…", shown, StringComparison.Ordinal);
+            var kept = shown[..^1];
+            Assert.StartsWith(kept, LongText, StringComparison.Ordinal);
+            Assert.Equal(kept.TrimEnd(), kept);
+        }
+
+        // The sweep crosses a cut right after a space, where the stock ellipsis keeps it.
+        Assert.True(stockLeavesASpace);
+
+        window.Close();
+    }
+
+    private static string Shown(RevealingTextBlock text) =>
+        string.Concat(text.TextLayout.TextLines.SelectMany(line => line.TextRuns).Select(run => run.Text.ToString()));
 
     [AvaloniaFact]
     public void Text_that_fits_opens_nothing()
@@ -174,7 +274,6 @@ public sealed class RevealingTextBlockTests
         Dispatcher.UIThread.RunJobs();
         Assert.False(text.IsRevealed);
         Assert.Null(FullLine(window));
-        Assert.False(text.IsTrimmedTextHidden);
         window.MouseUp(over, MouseButton.Left);
 
         window.Close();
