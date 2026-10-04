@@ -53,8 +53,9 @@ powiedz to autorowi.
   CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
   sprawdzenia w aplikacji (gdzie kliknąć, na co patrzeć). Bez nazw klas, chyba że autor zapyta.
-- **Uwagi autora po obejrzeniu** poprawia się w tej samej sesji, jeśli trwa. Drobna uwaga, której nie
-  robisz od razu, idzie do `docs/roadmap.md`.
+- **Uwagi autora po obejrzeniu** poprawia się w tej samej sesji, jeśli trwa — gdy to błąd. Szlif
+  (działa, ale mogłoby wyglądać lepiej) nie blokuje kamienia milowego: idzie jednym zdaniem do sekcji
+  „Szlif” w `docs/roadmap.md`, a praca idzie dalej.
 
 ## Budowanie i testy
 

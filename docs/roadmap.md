@@ -76,14 +76,22 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
   be converted to …”) — potrzebne polskie zdanie, które nazywa pole.
 
-## Drobne uwagi autora
+## Szlif — po kamieniu milowym
 
+Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego; wracamy, gdy będzie czas.
+
+- Pełna nazwa przedmiotu po najechaniu znika, gdy wskaźnik zjedzie na jej dopisaną część — nie da
+  się jej zaznaczyć. Okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
+- Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
+  obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
+- Sekcja opisu przedmiotu z własnym wyglądem: bez kreski i nagłówka „Opis”, zamiast nich ikona
+  pergaminu — opis ma prawie każdy przedmiot, więc nazwa sekcji niczego nie mówi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - Karta przedmiotu czeka na przegląd autora w aplikacji.
 - Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; potwory: typ) — małe,
-  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka. Kategoria spoza listy dostaje
-  ikonę domyślną.
+  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka (wpis bez obrazka pokazuje
+  ikonę swojej kategorii). Kategoria spoza listy dostaje ikonę domyślną.
 - Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
   gradient po prawej stronie biblioteki kampanii.
 
