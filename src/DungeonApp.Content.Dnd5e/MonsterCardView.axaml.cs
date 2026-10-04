@@ -18,9 +18,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// The portrait and the KP / PZ / Szybkość values belong to the detail header
 /// (<see cref="IEntryCardHeader"/>): the header draws the title and tags for every content type
-/// alike, and this card only lends it those two pieces. The portrait is three ability cells wide
-/// (DungeonAbilityCellSize) and four tall, so the ability table under it is exactly as wide and the
-/// second table starts on the title column's line - the grid the whole card is drawn on.
+/// alike, and this card only lends it those two pieces. The portrait is DungeonDetailPictureWidth
+/// wide at 3:4, and the pairs' values start on the title column's line beside it.
 /// </para>
 /// <para>
 /// Every value on the card comes from a field <see cref="Monster"/> declares; a pair or a section
@@ -39,20 +38,20 @@ public partial class MonsterCardView : UserControl, IEntryCardHeader
     {
         InitializeComponent();
 
-        var cell = ThemeResource.Get<double>("DungeonAbilityCellSize");
+        var width = ThemeResource.Get<double>("DungeonDetailPictureWidth");
         _portrait = new ImageFrame
         {
-            Width = 3 * cell,
-            Height = 4 * cell,
+            Width = width,
+            Height = width * 4 / 3,
             VerticalAlignment = VerticalAlignment.Top,
-            // Sharp, like the ability tables it stands over: one grid, one kind of corner.
+            // Sharp, like the ability tables under it: one kind of corner on the card.
             CornerRadius = default,
             Icon = ThemeResource.Get<DrawingImage>("DungeonIconSkull"),
         };
 
         // The pairs' values start on the title column's line: the label column and the pair's own
         // gap together span the portrait and the gap after it, a long label wrapping inside.
-        Traits.LabelWidth = (3 * cell) + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
+        Traits.LabelWidth = width + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
     }
 
     public Control HeaderVisual => _portrait;

@@ -104,12 +104,14 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
   pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo przed tagami i blok pod tagami
-  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (trzy komórki tabeli cech po
-  50): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
+  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (własny token; trzy komórki
+  tabeli cech po 50 mają tę samą szerokość): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
   w jednej linii, tagi i blok. Blok stoi dnem równo z dolną krawędzią obrazu; gdy kolumna tytułu
   jest wyższa, nagłówek rośnie, nic nie jest przycinane. Wartość w bloku to zawsze trzy rzędy:
   podpis z ikoną, wartość, dopisek — rząd dopisku stoi także pusty, więc wartości mają równą wysokość.
-  Karta potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
+  Karta potwora pod nagłówkiem: dwie tabele cech (SIŁ/ZRĘ/KON pod obrazem, INT/MDR/CHA od linii
+  tytułu), każda cecha w kolumnie — skrót nad kratką, pod nim kwadratowe komórki wartości
+  i modyfikatora; pary pól, sekcje prozy zawsze otwarte (nagłówek
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Przedmiot:
   kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
   ucięta wielokropkiem, a pod wskaźnikiem pokazana cała w tym samym miejscu, na nakładce okna

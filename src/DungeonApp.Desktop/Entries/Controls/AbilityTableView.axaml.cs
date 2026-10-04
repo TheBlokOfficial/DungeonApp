@@ -6,12 +6,12 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Entries.Controls;
 
 /// <summary>
-/// A reusable card control: a square-celled table of abilities (<see cref="AbilityRow"/>), as many
-/// rows as it is given - a card that wants two columns of three lays out two tables. A card view sets
-/// <see cref="Rows"/> as a plain property, like <see cref="TraitListView"/>.
+/// A reusable card control: a square-celled table of abilities (<see cref="AbilityRow"/>), one column
+/// per ability, as many as it is given - a card that wants two groups of three lays out two tables.
+/// A card view sets <see cref="Rows"/> as a plain property, like <see cref="TraitListView"/>.
 /// <para>
-/// The cells are built here rather than templated: the frame's <see cref="Table"/> is a grid whose
-/// every cell names its own row and column, so their number follows <see cref="Rows"/>.
+/// The labels and cells are built here rather than templated: the frame's <see cref="Table"/> is a
+/// grid whose every cell names its own row and column, so their number follows <see cref="Rows"/>.
 /// </para>
 /// </summary>
 public partial class AbilityTableView : UserControl
@@ -42,30 +42,40 @@ public partial class AbilityTableView : UserControl
 
     private void Rebuild()
     {
+        Labels.Children.Clear();
+        Labels.ColumnDefinitions.Clear();
         Cells.Children.Clear();
-        Cells.RowDefinitions.Clear();
+        Cells.ColumnDefinitions.Clear();
 
         for (var index = 0; index < Rows.Count; index++)
         {
             var row = Rows[index];
-            Cells.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            Labels.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            Cells.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
 
-            Cells.Children.Add(Cell(index, 0, row.Label, "label muted"));
-            Cells.Children.Add(Cell(index, 1, row.Score, "stat-value"));
+            var label = Text(row.Label, "label muted ability-label");
+            Grid.SetColumn(label, index);
+            Labels.Children.Add(label);
 
-            var modifier = Cell(index, 2, row.Modifier, "stat-value");
+            Cells.Children.Add(Cell(0, index, row.Score));
+
+            var modifier = Cell(1, index, row.Modifier);
             modifier.Classes.Set("positive", row.ModifierTone == ValueTone.Positive);
             modifier.Classes.Set("negative", row.ModifierTone == ValueTone.Negative);
             Cells.Children.Add(modifier);
         }
     }
 
-    private static TableCell Cell(int row, int column, string text, string textClasses)
+    private static SelectableTextBlock Text(string text, string classes)
     {
         var block = new SelectableTextBlock { Text = text };
-        block.Classes.AddRange(textClasses.Split(' '));
+        block.Classes.AddRange(classes.Split(' '));
+        return block;
+    }
 
-        var cell = new TableCell { Content = block };
+    private static TableCell Cell(int row, int column, string text)
+    {
+        var cell = new TableCell { Content = Text(text, "stat-value") };
         Grid.SetRow(cell, row);
         Grid.SetColumn(cell, column);
         return cell;

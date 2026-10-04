@@ -53,6 +53,14 @@ public sealed class GallerySectionsBuildTests
         Assert.Equal(4, tables.Count);
         Assert.All(tables, table => Assert.Equal(3, table.Rows.Count));
 
+        // Each ability is one column: its label above the grid, its score and modifier as two cells.
+        Assert.All(tables, table =>
+        {
+            var descendants = table.GetVisualDescendants().ToList();
+            Assert.Equal(6, descendants.OfType<TableCell>().Count());
+            Assert.Equal(3, descendants.OfType<SelectableTextBlock>().Count(block => block.Classes.Contains("ability-label")));
+        });
+
         window.Close();
     }
 }

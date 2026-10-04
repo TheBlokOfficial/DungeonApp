@@ -494,14 +494,16 @@
         <Thickness x:Key="DungeonTableCellPadding">10,6</Thickness>
         <!-- Siatka szczegółu wpisu: wszystko w szczegółu staje na trzech pionowych liniach - lewej
              krawędzi, prawej krawędzi obrazu w nagłówku i początku kolumny tytułu.
-             AbilityCellSize - bok kwadratowej komórki tabeli cech; obraz w nagłówku ma szerokość
-             trzech komórek, czyli jednej tabeli. 50 wyznacza obraz, nie liczba w komórce: kolumna
-             obok obrazu ma zmieścić nazwę w jednej linii (42), odstęp (6), tagi (do 25), dwa odstępy
-             nad wartością nagłówkową (12) i ją samą z dopiskiem (60) - razem do 145; 3 x 50 = 150
-             to najmniejsza okrągła szerokość ponad tym, przy której tabela cech dalej ma szerokość
-             obrazu.
+             DetailPictureWidth - szerokość obrazu w nagłówku (kwadrat przedmiotu, portret 3:4
+             potwora). Kolumna obok obrazu ma zmieścić nazwę w jednej linii (42), odstęp (6), tagi
+             (do 25), dwa odstępy nad wartością nagłówkową (12) i ją samą z dopiskiem (60) - razem do
+             145; 150 to najmniejsza okrągła szerokość ponad tym.
+             AbilityCellSize - bok kwadratowej komórki tabeli cech. Trzy komórki to szerokość obrazu
+             (3 x 50 = DetailPictureWidth): lewa tabela kończy się z prawą krawędzią obrazu, a prawa
+             zaczyna się na linii kolumny tytułu - zmiana jednego tokenu wymaga zmiany drugiego.
              DetailColumnGap - odstęp między obrazem a kolumną tytułu i ten sam między kolumnami
-             karty (dwie tabele cech), więc druga kolumna karty zaczyna się na linii tytułu. -->
+             karty (dwie tabele cech). -->
+        <x:Double x:Key="DungeonDetailPictureWidth">150</x:Double>
         <x:Double x:Key="DungeonAbilityCellSize">50</x:Double>
         <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
         <!-- Wartość nagłówkowa (controls:StatTile): ikona przy podpisie 12 px - mniejsza niż ikona

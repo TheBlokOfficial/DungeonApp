@@ -17,8 +17,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// loader and the designer preview need it.
 /// <para>
 /// Four pieces are lent to the detail header (<see cref="IEntryCardHeader"/>): the square picture -
-/// three ability cells wide, like the monster's portrait, so every card's title starts on the same
-/// line; the weight and, under it, the worth at the end of the title's line; the rarity pill at the
+/// as wide as the monster's portrait (DungeonDetailPictureWidth), so every card's title starts on
+/// the same line; the weight and, under it, the worth at the end of the title's line; the rarity pill at the
 /// start of the tags' row, drawn like the list's (the tags after it - "magiczny", the subtype - are
 /// the profile's, <see cref="Dnd5eSystem"/>); and the KP / Obrażenia / Ładunki headline values,
 /// the same block as the monster's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
@@ -42,8 +42,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
     {
         InitializeComponent();
 
-        var cell = ThemeResource.Get<double>("DungeonAbilityCellSize");
-        var side = 3 * cell;
+        var side = ThemeResource.Get<double>("DungeonDetailPictureWidth");
         _picture = new ImageFrame
         {
             Width = side,

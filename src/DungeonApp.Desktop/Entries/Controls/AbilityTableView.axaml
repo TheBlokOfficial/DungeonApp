@@ -5,13 +5,19 @@
              HorizontalAlignment="Left"
              VerticalAlignment="Top">
 
-    <!-- A table of square cells, three columns - label, score, modifier - one row per ability, lines
-         between every cell and sharp corners (the frame's Table with column lines). The cell side is
-         DungeonAbilityCellSize, so a table is exactly three cells wide: the width a card lines its
-         other columns up with. Label muted, score and modifier in the numbers' face; the modifier
-         cell tinted by its ValueTone. Every text selectable. No Margin on this root - spacing
-         between card controls belongs to the card view. -->
+    <!-- One column per ability. The labels stand above the grid, not in it - no line, no fill, each
+         centered over its column and sitting on the grid's top line. Under them two rows of square
+         cells, score then modifier, lines between every cell and sharp corners (the frame's Table
+         with column lines). The cell side is DungeonAbilityCellSize, so a three-ability table is as
+         wide as the header picture. Label muted, score and modifier in the numbers' face; the
+         modifier cell tinted by its ValueTone. Every text selectable. No Margin on this root -
+         spacing between card controls belongs to the card view. -->
     <UserControl.Styles>
+        <Style Selector="SelectableTextBlock.ability-label">
+            <Setter Property="Width" Value="{DynamicResource DungeonAbilityCellSize}" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Bottom" />
+        </Style>
         <Style Selector="dc|TableCell">
             <Setter Property="Width" Value="{DynamicResource DungeonAbilityCellSize}" />
             <Setter Property="Height" Value="{DynamicResource DungeonAbilityCellSize}" />
@@ -28,5 +34,8 @@
         </Style>
     </UserControl.Styles>
 
-    <dc:Table x:Name="Cells" ShowColumnLines="True" ColumnDefinitions="Auto,Auto,Auto" />
+    <Grid RowDefinitions="Auto,Auto" RowSpacing="{DynamicResource DungeonSpacingXs}">
+        <Grid x:Name="Labels" />
+        <dc:Table x:Name="Cells" Grid.Row="1" ShowColumnLines="True" RowDefinitions="Auto,Auto" />
+    </Grid>
 </UserControl>
