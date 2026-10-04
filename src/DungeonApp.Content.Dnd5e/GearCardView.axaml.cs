@@ -22,11 +22,11 @@ namespace DungeonApp.Content.Dnd5e;
 /// start of the tags' row, drawn like the list's (the tags after it - "magiczny", the subtype - are
 /// the profile's, <see cref="Dnd5eSystem"/>); and the KP / Obrażenia / Ładunki headline values,
 /// the same block as the monster's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
-/// with none of those three lends no block, one with neither weight nor worth no title end.
+/// with none of those three lends no block; weight and worth every item has.
 /// </para>
 /// <para>
 /// Every value on the card comes from a field <see cref="Gear"/> declares; a value whose field is
-/// empty is not shown. An icon stands only by a headline value, never in the pairs. Nothing is
+/// empty is not shown, while a zero is a value and is written. An icon stands only by a headline value, never in the pairs. Nothing is
 /// computed: the weight is only written in its scale (<see cref="UnitScale.Weight"/>), the worth as
 /// a bare number (<see cref="PolishNumber"/>).
 /// </para>
@@ -35,7 +35,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 {
     private readonly ImageFrame _picture;
     private readonly WordTag _rarity = new();
-    private GearMetadataView? _metadata;
+    private readonly GearMetadataView _metadata = new();
     private HeadlineValuesView? _headline;
 
     public GearCardView()
@@ -61,7 +61,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
     public Control HeaderVisual => _picture;
 
-    public Control? HeaderTitleEnd => _metadata;
+    public Control HeaderTitleEnd => _metadata;
 
     public Control HeaderTagsStart => _rarity;
 
@@ -77,9 +77,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
     {
         picture.ShowIn(_picture);
 
-        ShowMetadata(
-            gear.Weight is { } weight ? UnitScale.Weight.Format(weight) : null,
-            gear.Value is { } value ? $"wartość {PolishNumber.Format(value)}" : null);
+        _metadata.Show(UnitScale.Weight.Format(gear.Weight), $"wartość {PolishNumber.Format(gear.Value)}");
 
         ShowRarity(gear.Rarity);
 
@@ -113,18 +111,6 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
         DescriptionBlock.IsVisible = gear.Description is not null;
         DescriptionSection.Intro = gear.Description;
-    }
-
-    private void ShowMetadata(string? weight, string? worth)
-    {
-        if (weight is null && worth is null)
-        {
-            _metadata = null;
-            return;
-        }
-
-        _metadata = new GearMetadataView();
-        _metadata.Show(weight, worth);
     }
 
     /// <summary>

@@ -187,7 +187,7 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
-    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek" };
+    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek", Weight = 1, Value = 2 };
 
     private static readonly Gear FullGear = MinimalGear with
     {
@@ -282,13 +282,13 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void An_item_with_only_required_fields_lends_no_title_end_and_no_block_and_shows_no_pairs_or_description()
+    public void An_item_with_only_required_fields_lends_its_weight_and_worth_but_no_block_and_shows_no_pairs_or_description()
     {
         var card = GearCard(MinimalGear);
         var header = (IEntryCardHeader)card;
         var window = ShowGear(card);
 
-        Assert.Null(header.HeaderTitleEnd);
+        Assert.Equal(["1 kg", "wartość 2"], TitleEndTexts(header));
         Assert.Null(header.HeaderBlock);
         Assert.Equal("Pospolity", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
         Assert.Empty(GearTraitLabels(card));
@@ -328,12 +328,12 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void Without_a_weight_the_worth_alone_ends_the_title()
+    public void A_zero_weight_and_worth_are_written_not_hidden()
     {
-        var card = GearCard(MinimalGear with { Value = 75 });
+        var card = GearCard(MinimalGear with { Weight = 0, Value = 0 });
         var window = ShowGear(card);
 
-        Assert.Equal(["wartość 75"], TitleEndTexts(card));
+        Assert.Equal(["0 kg", "wartość 0"], TitleEndTexts(card));
 
         window.Close();
     }
@@ -348,7 +348,7 @@ public sealed class Dnd5eCardBuildTests
     [InlineData("0.0125", "wartość 0,0125")]
     public void The_worth_is_written_as_a_bare_polish_number(string value, string expected)
     {
-        var card = GearCard(MinimalGear with { Weight = 1, Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+        var card = GearCard(MinimalGear with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
         var window = ShowGear(card);
 
         Assert.Equal(expected, TitleEndTexts(card)[1]);

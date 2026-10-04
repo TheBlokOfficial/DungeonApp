@@ -10,6 +10,8 @@
     "category": "Laska",
     "attunement": true,
     "attunementBy": "przez barda, kapłana albo druida",
+    "weight": 2,
+    "value": 2500,
 
     "charges": 10,
     "recharge": "odzyskuje 1k6+4 wydanych ładunków codziennie o świcie",

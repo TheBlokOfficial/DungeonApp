@@ -66,7 +66,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   sprzedający — należy do slotu (sklep, plecak) razem z ilością, więc ten sam przedmiot kosztuje
   różnie w różnych miejscach bez reguły wybierającej cenę według miejsca (zakaz 1). Skala liczb to
   umowa autora paczki, nie aplikacji. Jednostki (kilogramy i funty, monety kampanii) to listy
-  mnożników od jednej bazy.
+  mnożników od jednej bazy. Waga i wartość są obowiązkowe w każdym przedmiocie; zero jest wartością
+  i karta je pokazuje („0 kg”) — informacji nie chowa się dlatego, że wynosi zero.
 - **Rzadkość według skali gier, nie D&D.** Pięć stopni: Pospolity, Niepospolity, Rzadki, Epicki, Legendarny, z kolorami jak w grach komputerowych — przy kilkuset przedmiotach jedna skala czytelna od razu jest ważniejsza niż wierność podręcznikowi. To, czy przedmiot jest magiczny (ważne mechanicznie), niesie osobny znacznik i pigułka „magiczny”, nie rzadkość.
 
 ## Odrzucone

@@ -114,7 +114,7 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
   ucięta wielokropkiem, a pod wskaźnikiem pokazana cała w tym samym miejscu, na nakładce okna
   (`RevealingTextBlock`; nazwa potwora się zawija); na końcu linii nazwy waga
-  z ikoną odważnika, pod nią mniejsza, przygaszona wartość; pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
+  z ikoną odważnika, pod nią mniejsza, przygaszona wartość (obie obowiązkowe, zero też widać); pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
   (ta sama kontrolka co KP / PZ / Szybkość potwora, tylko wypełnione). Pod nagłówkiem, za
   separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech potwora): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
   „Opis” jak sekcje prozy potwora. Rzadkość ma pięć stopni ze skali gier: Pospolity (jasnoszary),
