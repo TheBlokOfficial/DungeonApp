@@ -56,6 +56,9 @@ public sealed class ValidContentDetailViewModel(
     public Control? HeaderBlock { get; } = (card as IEntryCardHeader)?.HeaderBlock;
 
     public bool HasHeaderBlock => HeaderBlock is not null;
+
+    /// <summary>The title on one line, trimmed and shown whole under the pointer; otherwise it wraps.</summary>
+    public bool IsTitleOnOneLine { get; } = (card as IEntryCardHeader)?.HeaderTitleOnOneLine ?? false;
 }
 
 /// <summary>

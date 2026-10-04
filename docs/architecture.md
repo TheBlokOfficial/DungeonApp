@@ -111,7 +111,9 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   podpis z ikoną, wartość, dopisek — rząd dopisku stoi także pusty, więc wartości mają równą wysokość.
   Karta potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Przedmiot:
-  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; na końcu linii nazwy waga
+  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
+  ucięta wielokropkiem, a pod wskaźnikiem pokazana cała w tym samym miejscu, na nakładce okna
+  (`RevealingTextBlock`; nazwa potwora się zawija); na końcu linii nazwy waga
   z ikoną odważnika, pod nią mniejsza, przygaszona wartość; pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
   (ta sama kontrolka co KP / PZ / Szybkość potwora, tylko wypełnione). Pod nagłówkiem, za
   separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech potwora): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja

@@ -152,6 +152,9 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
 
+        // A monster's name wraps: the portrait leaves room for two lines.
+        Assert.False(header.HeaderTitleOnOneLine);
+
         // The note's line is kept without a note, so Szybkość is as tall as KP and PZ.
         Assert.Single(tiles.Select(tile => tile.DesiredSize.Height).Distinct());
 
@@ -255,6 +258,7 @@ public sealed class Dnd5eCardBuildTests
         var window = ShowGear(card);
 
         Assert.IsType<ImageFrame>(header.HeaderVisual);
+        Assert.True(header.HeaderTitleOnOneLine);
         Assert.Equal(["1,5 kg", "wartość 1 500"], TitleEndTexts(header));
 
         var rarity = Assert.IsType<WordTag>(header.HeaderTagsStart);

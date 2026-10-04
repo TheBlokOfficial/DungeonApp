@@ -17,7 +17,8 @@ namespace DungeonApp.Desktop.Entries;
 /// column is shorter than the visual. The title's end stands against the column's right edge,
 /// centred on the title's first line when it is one line tall; a taller one keeps its own first
 /// line on the title's (by centring it within one line of the title's style) and runs down beside
-/// the tags. A long title and the tags both wrap before it, and nothing else moves. The tags' start
+/// the tags. A long title (unless kept to one line, <see cref="HeaderTitleOnOneLine"/>) and the tags
+/// both wrap before it, and nothing else moves. The tags' start
 /// comes before the first tag, in the same wrapping row. Any piece may be null; a card that does
 /// not implement this gets the header with none. Each piece is a control of its own, never a part of
 /// the card's own tree - a control has one parent.
@@ -35,4 +36,11 @@ public interface IEntryCardHeader
 
     /// <summary>The card's headline values under the tags; null - nothing there.</summary>
     Control? HeaderBlock { get; }
+
+    /// <summary>
+    /// Whether the title keeps to one line, trimmed with an ellipsis and shown whole in place under
+    /// the pointer (<see cref="DungeonApp.Desktop.Controls.RevealingTextBlock"/>) - for a card whose visual leaves room
+    /// beside it for one line of title only. False - the title wraps, as it does without a card.
+    /// </summary>
+    bool HeaderTitleOnOneLine => false;
 }

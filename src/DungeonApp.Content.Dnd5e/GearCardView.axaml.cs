@@ -67,6 +67,12 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
     public Control? HeaderBlock => _headline;
 
+    /// <summary>
+    /// The square picture leaves room beside it for one line of title, the tags and the block, so a
+    /// long name is trimmed and shown whole under the pointer instead of pushing the header taller.
+    /// </summary>
+    public bool HeaderTitleOnOneLine => true;
+
     public void SetGear(Gear gear, EntryPicture picture)
     {
         picture.ShowIn(_picture);
