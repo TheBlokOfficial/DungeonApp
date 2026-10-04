@@ -25,7 +25,8 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
      cechy klas i podklas do 5. poziomu, potwory do wyzwania 5, ekwipunek podstawowy, przedmioty
      magiczne pospolite do rzadkich, stany. Tłumaczenie danych to praca dla agenta w tle, typ po
      typie, gdy rekord i karta typu są gotowe. Odległości w metrach (1,5 m za 5 stóp). Dziś paczka
-     ma pięć potworów i osiem przedmiotów przykładowych. Rzadkość D&D na skalę aplikacji:
+     ma pięć potworów i dziesięć przedmiotów przykładowych; epicki (Pierścień regeneracji)
+     i legendarny (Miecz worpalny) są przykładami ponad zakres paczki. Rzadkość D&D na skalę aplikacji:
      niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo
      rzadkie → Epicki, legendarne i artefakty → Legendarny. Przed wyceną przedmiotów ustalić skalę
      wartości: małe, czytelne liczby z miejscem w dół i w górę (dziś przykłady mają cenę SRD
@@ -80,6 +81,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - Karta przedmiotu czeka na przegląd autora w aplikacji.
+- Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; potwory: typ) — małe,
+  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka. Kategoria spoza listy dostaje
+  ikonę domyślną.
 - Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
   gradient po prawej stronie biblioteki kampanii.
 
