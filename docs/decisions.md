@@ -90,15 +90,16 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Rzecz świata składa się z aspektów.** Egzemplarz w drzewie kampanii to tożsamość (id, nazwa,
   miejsce, notatka, wpis źródłowy) i zestaw aspektów; aspekt to paczka pól typowanych jednego
   konsumenta (walka: PZ, KP, cechy, inicjatywa, stany; przedmiot: waga, wartość, ilość; sakiewka;
-  ładunki; miejsca na zaklęcia). Typ treści to zaprojektowana karta, domyślne aspekty i proza.
-  Narzędzie pyta o aspekt, nie o typ. MG dodaje i zdejmuje aspekt na egzemplarzu (skrzynia-mimik
-  dostaje walkę); obcy dla typu aspekt ma zaprojektowaną sekcję u dołu karty. Trzymać coś może każdy
+  ładunki; miejsca na zaklęcia). Narzędzie pyta o aspekt, nie o typ. Trzymać coś może każdy
   egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
-- **Typ to więcej niż aspekty.** Typ niesie zaprojektowaną kartę (portret 3:4 stworzenia, kwadrat
-  przedmiotu — kształt ustawia karta, rama zna tylko pole obrazka), profil zakładki, domyślne aspekty
-  i pola własne, których nie czyta żadne narzędzie (rozmiar, zmysły, wyzwanie, rzadkość, proza). Aspekt
-  nie dotyka układu karty poza własną sekcją, gdy MG doda go typowi, który go nie przewiduje.
-  Egzemplarz bez wpisu też ma typ: karczmarz to stworzenie bez wpisu, z kartą stworzenia.
+- **Typ ma stały kształt; aspekt to dane bez wyglądu.** Typ niesie zaprojektowaną kartę, profil
+  zakładki, stały zestaw aspektów i pola własne, których nie czyta żadne narzędzie (rozmiar,
+  Szybkość, zmysły, wyzwanie, rzadkość, proza). Karta decyduje, gdzie stoi każde pole, także pola
+  aspektów — KP i PZ stworzenia stoją przy portrecie obok Szybkości, która jest polem typu. MG
+  aspektów nie włącza ani nie zdejmuje; aspekt opcjonalny może być pusty (karczmarz bez walki)
+  i wtedy się nie pokazuje. Mimik to stworzenie o stałym kształcie jak szkielet — gracze aplikacji nie
+  widzą, więc przebranie nie potrzebuje innego kształtu. Egzemplarz bez wpisu też ma typ. KP zbroi
+  (ile daje noszącemu) to pole przedmiotu, nie KP walki.
 - **Zakładki według typu, nie aspektu.** Jeden typ to jedna zakładka, w kolejności podręcznika
   (Stworzenia, Przedmioty, Stany, Postacie, Pochodzenia, Klasy, Zaklęcia); MG szuka mimika wśród
   stworzeń, nie wśród „rzeczy, które walczą”. Aspekt bywa filtrem w zakładce („z walką”, „z
@@ -108,7 +109,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Wiedza ich nie ma i wskazuje się ją identyfikatorem: zaklęcia, zdolności, stany, hasła, lore.
   Zaklęcie nigdy nie leży w katalogu świata — postać je zna, zwój je wskazuje.
 - **Jeden typ „Stworzenie”** dla potworów, przeciwników i NPC, zakładka „Stworzenia” — termin zasad
-  z polskiego podręcznika. Aspekt walki jest opcjonalny (karczmarz bez statbloku). „Nieumarły” to
+  z polskiego podręcznika. Aspekt walki może być pusty (karczmarz bez statbloku). „Nieumarły” to
   pole do filtrowania, nie gałąź.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
@@ -152,7 +153,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Dawne pięć zakazów w literze** („nic nie wygasa, bo minął czas”) — licznik stanu to księgowanie
   przy stole; przełom zdejmuje stan na kliknięcie MG i pokazuje to w okienku.
 - **Hierarchia dziedziczenia istot** (Entity → Żywa istota → Nieumarły → Zombie) — D&D przecina
-  gałęzie (mimik, ożywiona zbroja, inteligentny miecz, przemiana druida, NPC wskrzeszony jako zombie),
+  gałęzie (inteligentny miecz, przemiana druida, NPC wskrzeszony jako zombie),
   a zmiana gałęzi to nowy obiekt bez tożsamości; miesza też etykietę z budową. Patrz aspekty wyżej.
 - **Dziennik świata** (wszystkie zmiany w jednym długim logu) — jego potrzeby pokrywają okienko
   przełomu, znaczniki w turze, ostatnia zmiana przy wartości i historia kalkulatora.

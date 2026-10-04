@@ -170,9 +170,9 @@ dopiero razem z pierwszym konsumentem.
 - **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
   leży w katalogu albo w innym entity — tak wygląda ekwipunek. Katalog niesie tylko nazwę.
 - **Aspekty:** rekord typu treści składa się z aspektów systemu (walka, przedmiot, sakiewka,
-  ładunki, miejsca na zaklęcia) zamiast płaskiej listy pól; łatka instancji łata aspekty i może
-  dodać albo zdjąć aspekt. Rama zna instancję, drzewo i łatkę; aspekty i narzędzia, które je czytają,
-  są systemu. Pierwszy krok to pogrupowanie dzisiejszych pól potwora (KP, PZ, cechy) i przedmiotu
+  ładunki, miejsca na zaklęcia) i pól własnych typu zamiast płaskiej listy pól; zestaw aspektów typu
+  jest stały, a łatka instancji łata ich wartości. Aspekt nie ma wyglądu — jego pola rozmieszcza
+  karta typu. Rama zna instancję, drzewo i łatkę; aspekty i narzędzia, które je czytają, są systemu. Pierwszy krok to pogrupowanie dzisiejszych pól potwora (KP, PZ, cechy) i przedmiotu
   (waga, wartość, ładunki), zanim tłumaczenie SRD zwiąże format.
 - **Postacie graczy:** obok kampanii, w katalogu systemu; zmieniane formularzem w aplikacji. Postać
   jest źródłem entity tak jak wpis, więc identyfikator `źródło:id` wskazuje wpis albo postać.
