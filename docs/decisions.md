@@ -94,6 +94,16 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Narzędzie pyta o aspekt, nie o typ. MG dodaje i zdejmuje aspekt na egzemplarzu (skrzynia-mimik
   dostaje walkę); obcy dla typu aspekt ma zaprojektowaną sekcję u dołu karty. Trzymać coś może każdy
   egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
+- **Typ to więcej niż aspekty.** Typ niesie zaprojektowaną kartę (portret 3:4 stworzenia, kwadrat
+  przedmiotu — kształt ustawia karta, rama zna tylko pole obrazka), profil zakładki, domyślne aspekty
+  i pola własne, których nie czyta żadne narzędzie (rozmiar, zmysły, wyzwanie, rzadkość, proza). Aspekt
+  nie dotyka układu karty poza własną sekcją, gdy MG doda go typowi, który go nie przewiduje.
+  Egzemplarz bez wpisu też ma typ: karczmarz to stworzenie bez wpisu, z kartą stworzenia.
+- **Zakładki według typu, nie aspektu.** Jeden typ to jedna zakładka, w kolejności podręcznika
+  (Stworzenia, Przedmioty, Stany, Postacie, Pochodzenia, Klasy, Zaklęcia); MG szuka mimika wśród
+  stworzeń, nie wśród „rzeczy, które walczą”. Aspekt bywa filtrem w zakładce („z walką”, „z
+  ładunkami”). Postacie są w kategorii System, bo grają w wielu kampaniach. Świat kampanii nie jest
+  zakładką treści: egzemplarze leżą w katalogu świata na biurku, w katalogach MG.
 - **Rzeczy świata i wiedza.** Rzeczy świata mają egzemplarze: stworzenie, przedmiot, postać gracza.
   Wiedza ich nie ma i wskazuje się ją identyfikatorem: zaklęcia, zdolności, stany, hasła, lore.
   Zaklęcie nigdy nie leży w katalogu świata — postać je zna, zwój je wskazuje.
