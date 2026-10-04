@@ -84,6 +84,7 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   się jej zaznaczyć. Okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
 - Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
+- Tabela cech: modyfikator zero jako „0” zamiast „+0”? Podręcznik D&D pisze „+0”; rozważyć.
 - Sekcja opisu przedmiotu z własnym wyglądem: bez kreski i nagłówka „Opis” — opis ma prawie każdy
   przedmiot, więc nazwa sekcji niczego nie mówi. Ikona pergaminu w lewym górnym rogu, wysoka na
   dokładnie dwie linie tekstu, a tekst ją opływa jak inicjał w manuskrypcie (w Wordzie: zawijanie „ramka”):
