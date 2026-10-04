@@ -80,8 +80,9 @@ w `docs/decisions.md` (katalog świata, postać gracza, klasy, zakaz 2).
 
 Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego; wracamy, gdy będzie czas.
 
-- Pełna nazwa przedmiotu po najechaniu znika, gdy wskaźnik zjedzie na jej dopisaną część — nie da
-  się jej zaznaczyć. Okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
+- Pełna nazwa przedmiotu po najechaniu znika, gdy wskaźnik zjedzie na jej dopisaną część, i po
+  kliknięciu w tytuł — nie da się zaznaczyć całej nazwy. Okienko musiałoby przyjmować wskaźnik
+  i samo być tekstem do zaznaczenia.
 - Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
 - Tabela cech: modyfikator zero zostaje „+0” — tak pisze podręcznik, a każdy modyfikator ma znak.
@@ -92,7 +93,6 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   obok ikony zaczyna się z odstępem od niej, pod ikoną biegnie od lewej krawędzi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
-- Karta przedmiotu czeka na przegląd autora w aplikacji.
 - Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; potwory: typ) — małe,
   przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka (wpis bez obrazka pokazuje
   ikonę swojej kategorii). Kategoria spoza listy dostaje ikonę domyślną.
