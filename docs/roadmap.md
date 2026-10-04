@@ -84,8 +84,10 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   się jej zaznaczyć. Okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
 - Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
-- Sekcja opisu przedmiotu z własnym wyglądem: bez kreski i nagłówka „Opis”, zamiast nich ikona
-  pergaminu — opis ma prawie każdy przedmiot, więc nazwa sekcji niczego nie mówi. Nadal jest sekcją.
+- Sekcja opisu przedmiotu z własnym wyglądem: bez kreski i nagłówka „Opis” — opis ma prawie każdy
+  przedmiot, więc nazwa sekcji niczego nie mówi. Ikona pergaminu w lewym górnym rogu, wysoka na ok.
+  dwie linie tekstu, a tekst ją opływa jak inicjał w manuskrypcie (w Wordzie: zawijanie „ramka”):
+  obok ikony zaczyna się z odstępem od niej, pod ikoną biegnie od lewej krawędzi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - Karta przedmiotu czeka na przegląd autora w aplikacji.
