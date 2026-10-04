@@ -91,7 +91,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         // Rzadkość: pospolity.
         ["rarity-common"] = new SolidColorBrush(Color.Parse("#D2D0C8")),
         // Rzadkość: niepospolity.
-        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#95BA9C")),
+        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#66C270")),
         // Rzadkość: rzadki.
         ["rarity-rare"] = new SolidColorBrush(Color.Parse("#7AAAD6")),
         // Rzadkość: epicki.
