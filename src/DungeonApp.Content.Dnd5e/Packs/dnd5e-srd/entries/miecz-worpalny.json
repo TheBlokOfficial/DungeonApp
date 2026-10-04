@@ -1,0 +1,21 @@
+{
+  "id": "miecz-worpalny",
+  "name": "Miecz worpalny",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Legendarny",
+    "magical": true,
+    "category": "Broń",
+    "attunement": true,
+    "weight": 1.5,
+    "value": 60000,
+
+    "damage": "1k8",
+    "damageType": "cięte",
+    "properties": "uniwersalna (1k10)",
+
+    "description": "Trafiając tą magiczną bronią, masz premię **+3 do trafienia i obrażeń**, a miecz pomija odporność na obrażenia cięte. Gdy zaatakujesz nim stworzenie mające co najmniej jedną głowę i wyrzucisz 20 na kości ataku, odcinasz mu jedną z głów; stworzenie ginie, jeśli bez niej nie przeżyje. Efekt nie działa na stworzenie niewrażliwe na obrażenia cięte, bez głowy albo jej niepotrzebujące, mające akcje legendarne ani takie, którego głowę MG uzna za zbyt dużą, by odciąć ją tym mieczem; zamiast tego trafienie zadaje mu dodatkowe **6k8** obrażeń ciętych."
+  }
+}

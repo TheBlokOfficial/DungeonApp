@@ -27,6 +27,15 @@
         <Style Selector="Grid.with-title-end">
             <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingMd}" />
         </Style>
+        <!-- The title (a RevealingTextBlock, styled as a SelectableTextBlock) wraps, unless the card
+             keeps it to one line. -->
+        <Style Selector="SelectableTextBlock.title">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="SelectableTextBlock.title.one-line">
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
     </UserControl.Styles>
 
     <UserControl.DataTemplates>
@@ -57,10 +66,13 @@
                                   RowDefinitions="Auto,Auto"
                                   RowSpacing="{DynamicResource DungeonSpacingXs}"
                                   Classes.with-title-end="{Binding HasHeaderTitleEnd}">
-                                <SelectableTextBlock Classes="display-xl"
-                                                     Text="{Binding Name}"
-                                                     TextWrapping="Wrap"
-                                                     Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                                <!-- The title wraps, or - when the card keeps it to one line - ends
+                                     in an ellipsis and opens whole in place under the pointer. -->
+                                <dc:RevealingTextBlock x:Name="Title"
+                                                       Classes="display-xl title"
+                                                       Classes.one-line="{Binding IsTitleOnOneLine}"
+                                                       Text="{Binding Name}"
+                                                       Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
                                 <!-- The title's end, centred on the title's first line: an empty,
                                      zero-wide line of the title's own style gives the cell exactly one
                                      line's height, however many lines the title wraps to. It spans the

@@ -8,7 +8,7 @@
          (entries:ProseSectionView - heading, optional introduction, named entries with a muted note
          and the author's **…** emphasis; a stray ** stays in the text) and the headline value
          (controls:StatTile - borderless column: icon and label, value, optional note), three in equal
-         columns 412 wide - the room a header's title column has beside a three-cell picture.
+         columns 394 wide - the room a header's title column has beside a three-cell picture.
          Sample entries in CardPartsSection.axaml.cs. Nothing here restyles a control. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Elementy karty" />
@@ -26,8 +26,8 @@
             <entries:ProseSectionView x:Name="ProseWithoutIntro" Title="Cechy szczególne" />
         </StackPanel>
 
-        <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: TRZY KOLUMNY (412), DŁUGI DOPISEK SIĘ ZAWIJA" />
-        <Grid Width="412" HorizontalAlignment="Left"
+        <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: TRZY KOLUMNY (394), DŁUGI DOPISEK SIĘ ZAWIJA" />
+        <Grid Width="394" HorizontalAlignment="Left"
               ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="17" Note="zbroja płytowa" />
             <controls:StatTile Grid.Column="1" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
@@ -35,7 +35,7 @@
         </Grid>
 
         <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: BEZ DOPISKU, BEZ IKONY, WYŁĄCZONA" />
-        <Grid Width="412" HorizontalAlignment="Left"
+        <Grid Width="394" HorizontalAlignment="Left"
               ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="12" />
             <controls:StatTile Grid.Column="1" Label="Waga" Value="0,5 kg" />

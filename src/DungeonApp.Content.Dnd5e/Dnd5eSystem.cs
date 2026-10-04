@@ -91,7 +91,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         // Rzadkość: pospolity.
         ["rarity-common"] = new SolidColorBrush(Color.Parse("#D2D0C8")),
         // Rzadkość: niepospolity.
-        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#95BA9C")),
+        ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#66C270")),
         // Rzadkość: rzadki.
         ["rarity-rare"] = new SolidColorBrush(Color.Parse("#7AAAD6")),
         // Rzadkość: epicki.
@@ -326,8 +326,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised tier and
     /// none for anything else; three value filters - "Rzadkość" (<see cref="RarityOrder"/>), "Magia"
     /// ("magiczny" / "niemagiczny") and "Dostrojenie" ("wymaga" / "nie wymaga") - and two sorts:
-    /// "Rzadkość" in the same <see cref="RarityOrder"/>, and "Wartość" by number, an item with no worth
-    /// last in either direction.
+    /// "Rzadkość" in the same <see cref="RarityOrder"/>, and "Wartość" by number (every item has one).
     /// </summary>
     private static ContentTabDefinition BuildGearContentTab(ContentTypeReference gear)
     {
@@ -345,7 +344,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             sorts:
             [
                 new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity)),
-                new ContentSortSpec<Gear>("Wartość", (a, b) => a.Value!.Value.CompareTo(b.Value!.Value), HasKey: gear => gear.Value is not null),
+                new ContentSortSpec<Gear>("Wartość", (a, b) => a.Value.CompareTo(b.Value)),
             ]);
 
         return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");

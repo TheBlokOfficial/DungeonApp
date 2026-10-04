@@ -266,7 +266,7 @@ public sealed class CampaignInstancesToolViewModelTests
     private static RegisteredEntry ResolvedGear(string packId, string entryId, string name)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(new Gear { Rarity = "Pospolity", Category = "Mikstura" }));
+        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(new Gear { Rarity = "Pospolity", Category = "Mikstura", Weight = 0.25m, Value = 50 }));
 
         Assert.True(Dnd5e.TryGet(reference, out var descriptor));
 

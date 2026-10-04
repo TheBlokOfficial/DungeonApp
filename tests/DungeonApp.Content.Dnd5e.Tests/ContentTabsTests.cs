@@ -50,7 +50,7 @@ public sealed class ContentTabsTests
     private static Entry GearEntry(string rarity, Func<Gear, Gear>? change = null)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        var gear = new Gear { Rarity = rarity, Category = "Ekwipunek" };
+        var gear = new Gear { Rarity = rarity, Category = "Ekwipunek", Weight = 1, Value = 1 };
         return new Entry(ContentId.Create("g"), "Testowy przedmiot", reference, 1, ContentValues.From(change is null ? gear : change(gear)));
     }
 
@@ -305,16 +305,15 @@ public sealed class ContentTabsTests
     }
 
     [Fact]
-    public void The_worth_sort_orders_by_number_and_knows_an_item_without_worth_has_no_key()
+    public void The_worth_sort_orders_by_number_with_zero_first()
     {
         var sort = Assert.Single(GearProfile().Sorts, sort => sort.Label == "Wartość");
+        var worthless = GearEntry("Pospolity", gear => gear with { Value = 0m });
         var cheap = GearEntry("Pospolity", gear => gear with { Value = 0.5m });
         var dear = GearEntry("Pospolity", gear => gear with { Value = 15m });
-        var priceless = GearEntry("Pospolity");
 
         Assert.False(sort.IsTextual);
+        Assert.True(sort.Compare(worthless, cheap) < 0);
         Assert.True(sort.Compare(cheap, dear) < 0);
-        Assert.True(sort.HasKey!(cheap));
-        Assert.False(sort.HasKey!(priceless));
     }
 }

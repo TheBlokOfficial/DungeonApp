@@ -33,7 +33,7 @@ public sealed class ContentTabViewBuildTests
     /// <summary>A card that lends the detail header every piece, so the header's full layout builds.</summary>
     private sealed class HeaderLendingCard : TextBlock, IEntryCardHeader
     {
-        public Control HeaderVisual { get; } = new ImageFrame { Width = 132, Height = 176 };
+        public Control HeaderVisual { get; } = new ImageFrame { Width = 150, Height = 200 };
 
         public Control HeaderTitleEnd { get; } = new TextBlock { Text = "1,5 kg" };
 

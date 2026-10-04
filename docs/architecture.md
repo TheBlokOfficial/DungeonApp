@@ -104,13 +104,19 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
   pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo przed tagami i blok pod tagami
-  (u potwora portret oraz KP, PZ i Szybkość).
+  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (trzy komórki tabeli cech po
+  50): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
+  w jednej linii, tagi i blok. Blok stoi dnem równo z dolną krawędzią obrazu; gdy kolumna tytułu
+  jest wyższa, nagłówek rośnie, nic nie jest przycinane. Wartość w bloku to zawsze trzy rzędy:
+  podpis z ikoną, wartość, dopisek — rząd dopisku stoi także pusty, więc wartości mają równą wysokość.
   Karta potwora pod nagłówkiem: dwie tabele cech 3×3, pary pól, sekcje prozy zawsze otwarte (nagłówek
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Przedmiot:
-  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; na końcu linii nazwy waga
-  z ikoną odważnika, pod nią mniejsza, przygaszona wartość; pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
+  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
+  ucięta wielokropkiem, a pod wskaźnikiem pokazana cała w tym samym miejscu, na nakładce okna
+  (`RevealingTextBlock`; nazwa potwora się zawija); na końcu linii nazwy waga
+  z ikoną odważnika, pod nią mniejsza, przygaszona wartość (obie obowiązkowe, zero też widać); pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
   (ta sama kontrolka co KP / PZ / Szybkość potwora, tylko wypełnione). Pod nagłówkiem, za
-  separatorami: pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
+  separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech potwora): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
   „Opis” jak sekcje prozy potwora. Rzadkość ma pięć stopni ze skali gier: Pospolity (jasnoszary),
   Niepospolity (zielony), Rzadki (niebieski), Epicki (fioletowy), Legendarny (pomarańczowy);
   magiczność to osobny znacznik. Proza karty jest tekstem do zaznaczenia; przeciągnięcie zaczęte

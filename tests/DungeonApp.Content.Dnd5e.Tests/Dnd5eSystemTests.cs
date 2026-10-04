@@ -140,17 +140,20 @@ public sealed class Dnd5eSystemTests
         Assert.Equal("odzyskuje 1k6+4 ładunków o świcie", gear.Recharge);
     }
 
-    // The gear record is its own validator, like the monster's: a missing required value, an
-    // unknown key, a who-attunes without attunement, a note without the value it stands under and a
-    // negative worth each reject the entry, whose reason names the offending key.
+    // The gear record is its own validator, like the monster's: a missing required value (weight and
+    // worth included), an unknown key, a who-attunes without attunement, a note without the value it
+    // stands under and a negative worth or weight each reject the entry, whose reason names the key.
     [Theory]
-    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"damageType\": \"cięte\"", "damageType")]
-    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Zbroja\", \"armorClassNote\": \"+ mod. Zr\"", "armorClassNote")]
-    [InlineData("\"rarity\": \"Pospolity\"", "category")]
-    [InlineData("\"category\": \"Broń\"", "rarity")]
-    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"price\": 15", "price")]
-    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"attunementBy\": \"przez maga\"", "attunement")]
-    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"value\": -1", "value")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": 1, \"value\": 1, \"damageType\": \"cięte\"", "damageType")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Zbroja\", \"weight\": 1, \"value\": 1, \"armorClassNote\": \"+ mod. Zr\"", "armorClassNote")]
+    [InlineData("\"rarity\": \"Pospolity\", \"weight\": 1, \"value\": 1", "category")]
+    [InlineData("\"category\": \"Broń\", \"weight\": 1, \"value\": 1", "rarity")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"value\": 1", "weight")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": 1", "value")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": 1, \"value\": 1, \"price\": 15", "price")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": 1, \"value\": 1, \"attunementBy\": \"przez maga\"", "attunement")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": 1, \"value\": -1", "value")]
+    [InlineData("\"rarity\": \"Pospolity\", \"category\": \"Broń\", \"weight\": -1, \"value\": 1", "weight")]
     public async Task A_malformed_gear_entry_is_rejected(string values, string named)
     {
         using var packs = new TemporaryPacks();
@@ -169,12 +172,12 @@ public sealed class Dnd5eSystemTests
     {
         using var packs = new TemporaryPacks();
         packs.WriteFile("pack", "pack.json", PackJson);
-        packs.WriteFile("pack", "entries/e.json", GearEntryJson("\"rarity\": \"Pospolity\", \"category\": \"Ekwipunek\""));
+        packs.WriteFile("pack", "entries/e.json", GearEntryJson("\"rarity\": \"Pospolity\", \"category\": \"Ekwipunek\", \"weight\": 0, \"value\": 0"));
 
         var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
 
         var gear = Assert.Single(registry.Entries).Entry.Values.Read<Gear>();
-        Assert.Equal(new Gear { Rarity = "Pospolity", Category = "Ekwipunek" }, gear);
+        Assert.Equal(new Gear { Rarity = "Pospolity", Category = "Ekwipunek", Weight = 0, Value = 0 }, gear);
     }
 
     private static string GearEntryJson(string values) => $$"""
@@ -266,7 +269,7 @@ public sealed class Dnd5eSystemTests
               "name": "Mikstura",
               "template": "dnd5e:gear",
               "templateVersion": 1,
-              "values": { "rarity": "Pospolity", "category": "Mikstura", "image": "{{image}}" }
+              "values": { "rarity": "Pospolity", "category": "Mikstura", "weight": 0.25, "value": 50, "image": "{{image}}" }
             }
             """);
 

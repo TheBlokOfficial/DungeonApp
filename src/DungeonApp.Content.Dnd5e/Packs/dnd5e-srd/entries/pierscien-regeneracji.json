@@ -1,0 +1,17 @@
+{
+  "id": "pierscien-regeneracji",
+  "name": "Pierścień regeneracji",
+  "template": "dnd5e:gear",
+  "templateVersion": 1,
+
+  "values": {
+    "rarity": "Epicki",
+    "magical": true,
+    "category": "Pierścień",
+    "attunement": true,
+    "weight": 0,
+    "value": 15000,
+
+    "description": "Dopóki nosisz ten pierścień i masz co najmniej 1 punkt wytrzymałości, co 10 minut odzyskujesz **1k6** punktów wytrzymałości. Utracona część ciała odrasta i w pełni odzyskuje sprawność po 1k6+1 dniach, jeśli przez cały ten czas masz co najmniej 1 punkt wytrzymałości."
+  }
+}

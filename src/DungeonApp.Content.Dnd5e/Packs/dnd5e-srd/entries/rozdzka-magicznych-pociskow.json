@@ -8,6 +8,8 @@
     "rarity": "Niepospolity",
     "magical": true,
     "category": "Różdżka",
+    "weight": 0.5,
+    "value": 300,
 
     "charges": 7,
     "recharge": "odzyskuje 1k6+1 wydanych ładunków codziennie o świcie",

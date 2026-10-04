@@ -4,7 +4,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// An item's weight with its icon and its worth under it, built by <see cref="GearCardView"/> for
-/// the detail header when the item has either.
+/// the detail header - every item has both.
 /// </summary>
 public partial class GearMetadataView : UserControl
 {
@@ -13,16 +13,10 @@ public partial class GearMetadataView : UserControl
         InitializeComponent();
     }
 
-    /// <summary>The weight in its scale, and the worth as it reads ("wartość 75"); either may be null, not both.</summary>
-    public void Show(string? weight, string? worth)
+    /// <summary>The weight in its scale ("1,5 kg") and the worth as it reads ("wartość 75").</summary>
+    public void Show(string weight, string worth)
     {
-        Weight.IsVisible = weight is not null;
         WeightText.Text = weight;
-
-        // Without a weight the worth moves up into the first line, where the weight would stand.
-        FirstLineWorthText.IsVisible = weight is null;
-        FirstLineWorthText.Text = weight is null ? worth : null;
-        WorthText.IsVisible = weight is not null && worth is not null;
-        WorthText.Text = weight is not null ? worth : null;
+        WorthText.Text = worth;
     }
 }

@@ -5,7 +5,7 @@
     <!-- A card's headline values - a monster's KP, PZ, Szybkość; an item's KP, Obrażenia, Ładunki -
          as borderless columns of equal width in one row, spaced like the card's columns. Always three
          columns, filled from the left, so every card's values stand on the same lines. Lent to the
-         detail header, under the tags (see MonsterCardView, GearCardView). The tiles are placed from
-         code (HeadlineValuesView.axaml.cs). -->
+         detail header, under the tags (see MonsterCardView, GearCardView). The tiles are placed, and
+         the columns given whole-pixel widths, from code (HeadlineValuesView.axaml.cs). -->
     <Grid x:Name="Columns" ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}" />
 </UserControl>

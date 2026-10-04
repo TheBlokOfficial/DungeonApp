@@ -8,8 +8,8 @@ namespace DungeonApp.Desktop.Controls;
 /// A headline value as a borderless column of text: a label with its icon, the value large, a note
 /// under it ("pancerz naturalny", "2k8+2"). Values of one row stand side by side in equal-width
 /// columns the host lays out, so a long note wraps inside its column instead of pushing the row
-/// apart. Nothing to click: every
-/// text in it is selectable like the rest of a card. The look belongs to the frame's control theme
+/// apart; the note's line is kept even when there is no note, so tiles of one row are equally tall.
+/// Nothing to click: every text in it is selectable like the rest of a card. The look belongs to the frame's control theme
 /// (Themes/Controls/StatTile.axaml).
 /// </summary>
 public sealed class StatTile : TemplatedControl
@@ -44,7 +44,7 @@ public sealed class StatTile : TemplatedControl
         set => SetValue(ValueProperty, value);
     }
 
-    /// <summary>Shown under the value only when set.</summary>
+    /// <summary>Shown under the value when set; its line is reserved either way.</summary>
     public string? Note
     {
         get => GetValue(NoteProperty);

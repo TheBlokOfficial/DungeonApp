@@ -40,15 +40,18 @@ public sealed record Gear : IJsonOnDeserialized
     /// <summary>Who may attune to the item, as written after "wymagane" ("przez czarodzieja").</summary>
     public string? AttunementBy { get; init; }
 
-    /// <summary>In kilograms; shown through <see cref="UnitScale.Weight"/>.</summary>
-    public decimal? Weight { get; init; }
+    /// <summary>
+    /// In kilograms; shown through <see cref="UnitScale.Weight"/>. Every item has one, never negative:
+    /// 0 is a weight like any other and the card writes it ("0 kg") rather than hiding it.
+    /// </summary>
+    public required decimal Weight { get; init; }
 
     /// <summary>
     /// The item's worth on an abstract, relative scale - a number with no unit, never negative, its
     /// scale not bounded either way. Not a price: a price belongs to a particular slot in an
-    /// inventory or a shop.
+    /// inventory or a shop. Every item has one; 0 is shown like any other worth.
     /// </summary>
-    public decimal? Value { get; init; }
+    public required decimal Value { get; init; }
 
     /// <summary>A weapon's damage dice as written ("1k8") - the card's large value.</summary>
     public string? Damage { get; init; }
@@ -96,13 +99,18 @@ public sealed record Gear : IJsonOnDeserialized
     /// Saying who may attune to an item that needs no attunement contradicts itself; the entry is
     /// refused rather than drawn with one of the two silently ignored. So is a note under a value that
     /// is not there (a damage type without dice, an armor class note without an armor class). A
-    /// negative worth means nothing on the scale and is refused too.
+    /// negative worth or weight means nothing and is refused too.
     /// </summary>
     private void OnDeserialized()
     {
         if (Value < 0)
         {
             throw new JsonException("\"value\" cannot be negative.");
+        }
+
+        if (Weight < 0)
+        {
+            throw new JsonException("\"weight\" cannot be negative.");
         }
 
         if (AttunementBy is not null && !Attunement)

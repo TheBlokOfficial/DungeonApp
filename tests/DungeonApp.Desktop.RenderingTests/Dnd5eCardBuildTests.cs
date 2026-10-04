@@ -152,10 +152,42 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
 
+        // A monster's name wraps: the portrait leaves room for two lines.
+        Assert.False(header.HeaderTitleOnOneLine);
+
+        // The note's line is kept without a note, so Szybkość is as tall as KP and PZ.
+        Assert.Single(tiles.Select(tile => tile.DesiredSize.Height).Distinct());
+
         window.Close();
     }
 
-    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek" };
+    // 394 is the title column beside the picture: three star columns would be 120.67 wide, and a note
+    // a hair wider than that ("zbroja skórzana, tarcza" in Inter) wrapped while measuring though it
+    // fits as drawn. The headless text stub does not measure like Inter, so the columns themselves are
+    // checked: whole pixels, the remainder to the first ones.
+    [AvaloniaFact]
+    public void Headline_columns_are_whole_pixels_so_tiles_are_measured_as_they_are_drawn()
+    {
+        var row = new HeadlineValuesView { Width = 394, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left };
+        row.Show(
+        [
+            new HeadlineValue("KP", "DungeonIconShield", "15", "zbroja skórzana, tarcza"),
+            new HeadlineValue("PZ", "DungeonIconHeart", "7", "2k6"),
+            new HeadlineValue("Szybkość", "DungeonIconFootprints", "9 m"),
+        ]);
+        var window = Show(new StackPanel { Children = { row } });
+
+        var columns = row.FindControl<Grid>("Columns")!.ColumnDefinitions;
+        Assert.Equal([new GridLength(121), new GridLength(121), new GridLength(120)], columns.Select(column => column.Width));
+
+        var tiles = row.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal([121d, 121d, 120d], tiles.Select(tile => tile.Bounds.Width));
+        Assert.Single(tiles.Select(tile => tile.Bounds.Height).Distinct());
+
+        window.Close();
+    }
+
+    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek", Weight = 1, Value = 2 };
 
     private static readonly Gear FullGear = MinimalGear with
     {
@@ -226,6 +258,7 @@ public sealed class Dnd5eCardBuildTests
         var window = ShowGear(card);
 
         Assert.IsType<ImageFrame>(header.HeaderVisual);
+        Assert.True(header.HeaderTitleOnOneLine);
         Assert.Equal(["1,5 kg", "wartość 1 500"], TitleEndTexts(header));
 
         var rarity = Assert.IsType<WordTag>(header.HeaderTagsStart);
@@ -249,13 +282,13 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void An_item_with_only_required_fields_lends_no_title_end_and_no_block_and_shows_no_pairs_or_description()
+    public void An_item_with_only_required_fields_lends_its_weight_and_worth_but_no_block_and_shows_no_pairs_or_description()
     {
         var card = GearCard(MinimalGear);
         var header = (IEntryCardHeader)card;
         var window = ShowGear(card);
 
-        Assert.Null(header.HeaderTitleEnd);
+        Assert.Equal(["1 kg", "wartość 2"], TitleEndTexts(header));
         Assert.Null(header.HeaderBlock);
         Assert.Equal("Pospolity", Assert.IsType<WordTag>(header.HeaderTagsStart).Content);
         Assert.Empty(GearTraitLabels(card));
@@ -295,12 +328,12 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void Without_a_weight_the_worth_alone_ends_the_title()
+    public void A_zero_weight_and_worth_are_written_not_hidden()
     {
-        var card = GearCard(MinimalGear with { Value = 75 });
+        var card = GearCard(MinimalGear with { Weight = 0, Value = 0 });
         var window = ShowGear(card);
 
-        Assert.Equal(["wartość 75"], TitleEndTexts(card));
+        Assert.Equal(["0 kg", "wartość 0"], TitleEndTexts(card));
 
         window.Close();
     }
@@ -315,7 +348,7 @@ public sealed class Dnd5eCardBuildTests
     [InlineData("0.0125", "wartość 0,0125")]
     public void The_worth_is_written_as_a_bare_polish_number(string value, string expected)
     {
-        var card = GearCard(MinimalGear with { Weight = 1, Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+        var card = GearCard(MinimalGear with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
         var window = ShowGear(card);
 
         Assert.Equal(expected, TitleEndTexts(card)[1]);

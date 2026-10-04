@@ -8,13 +8,12 @@
          value's caption, and under it the worth, smaller and muted - neither may compete with the
          name. The first line keeps to the title's first line: it is one line of the title's own style
          tall (an empty, zero-wide line of display-xl, the header's title style) with its content
-         centred, so the weight stands where it would alone however tall this block is. Without a
-         weight the worth takes the first line. Numbers in interface type with tabular digits. -->
+         centred, so the weight stands where it would alone however tall this block is. Numbers in
+         interface type with tabular digits. -->
     <StackPanel HorizontalAlignment="Right">
         <Panel>
             <TextBlock Classes="display-xl" Text=" " Width="0" IsHitTestVisible="False" />
-            <StackPanel x:Name="Weight"
-                        Orientation="Horizontal"
+            <StackPanel Orientation="Horizontal"
                         Spacing="{DynamicResource DungeonSpacingXs}"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center">
@@ -29,11 +28,6 @@
                                      VerticalAlignment="Center"
                                      Foreground="{DynamicResource DungeonTextRegularBrush}" />
             </StackPanel>
-            <SelectableTextBlock x:Name="FirstLineWorthText"
-                                 Classes="caption muted"
-                                 FontFeatures="tnum"
-                                 HorizontalAlignment="Right"
-                                 VerticalAlignment="Center" />
         </Panel>
         <SelectableTextBlock x:Name="WorthText"
                              Classes="caption muted"
