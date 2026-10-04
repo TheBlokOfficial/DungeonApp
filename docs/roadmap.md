@@ -68,7 +68,9 @@ klasy, księgowość i lista przełomów).
    czytania. Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości
    jako osobne okno biurka.
 5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG
-   tworzy je i zmienia formularzem w aplikacji. Wejście postaci do kampanii tworzy jej entity.
+   tworzy je i zmienia formularzem w aplikacji. Karta postaci jest pełna (aplikacja to jedyne źródło
+   prawdy), a formularz pozwala szybko przepisać istniejącą kartkę gracza. Do paczki dochodzą
+   pochodzenie i tło. Wejście postaci do kampanii tworzy jej entity.
    Identyfikator `źródło:id` wskazuje odtąd wpis w paczce albo postać.
 6. **Klasy i drzewka** — klasa i każdy węzeł to wpisy w paczce, drzewko to widok. MG zaznacza węzeł
    i odblokowuje go postaci; niespełnione wymaganie widać, ale nie blokuje.

@@ -105,6 +105,13 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   i węzły, zaklęcia, poziom, PZ maks.); jej entity w kampanii — co ma i gdzie jest (aktualne PZ,
   stany, miejsce, ekwipunek, złoto). Awans dociera do każdej kampanii jak poprawka wpisu; przedmioty
   zostają w świecie, w którym je zdobyto. Identyfikator `źródło:id` wskazuje wpis albo postać.
+- **Aplikacja jest jedynym źródłem prawdy o postaci, gracz gra z papieru.** Kartka gracza to gotowy
+  szablon wypełniany ręcznie; aplikacja jej nie drukuje (zmienia się za często), drukuje tylko
+  ściągawki opisów. Gracz przepisuje zmiany z tego, co mówi MG, a przy rozjeździe wygrywa aplikacja.
+  Postać ma więc pełną kartę jak potwór. Wartości liczone (modyfikatory, biegłość z poziomu, rzuty
+  obronne, umiejętności, bierna Percepcja, ST zaklęć) mają rozpisanie, a MG je nadpisuje w trybie
+  edycji ze znacznikiem. Drobny rozjazd w trakcie sesji (zużyte miejsca, strzały) MG wpisuje, gdy się
+  o nim dowie; odpoczynek, handel i łupy i tak idą przez aplikację.
 - **Klasa i węzeł drzewka są wpisami w paczce.** Kształt i wygląd drzewka jest kodem systemu; węzeł
   zna klasę, poziom i węzły poprzedzające. Węzeł ma więc identyfikator (ściągawka drukuje go jak
   zaklęcie), wartości zostają płaskie, a własną klasę dopisuje się bez programisty. Odblokowanie
