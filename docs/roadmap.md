@@ -5,42 +5,31 @@ nadal jest aktualna. Pozycję zrobioną usuwa się w commicie, który ją zamyka
 
 ## Otwarte — rozstrzygnąć z autorem przed dalszą pracą
 
-Audyt zewnętrzny granicy (`CLAUDE.md`): „przyjąć z poprawkami”. Kursywą rekomendacja architekta.
+Rozmowa o rdzeniu trwa; to, co już rozstrzygnięte (księgowość zamiast procedur, przełomy, pole
+zmiany, znaczniki, kalkulator, tryb edycji), jest w `CLAUDE.md` i `docs/decisions.md`.
 
-1. **Procedura jako propozycja:** panel wyniku z rozpisaniem i skutkami (też wtórnymi: koncentracja,
-   0 PZ), MG poprawia liczby, „Zastosuj” zapisuje naraz. *Tak — skutki widać przed zapisem.*
-2. **Stan na zerze licznika:** znika wyszarzony na turę z „Przywróć” (*to*) albo „wygasa?” dla MG.
-3. **0 PZ:** panel podpowiada Nieprzytomny / pokonany; rzuty przeciw śmierci zaznacza MG.
-4. **Podział kamienia:** „Pierwsza walka przy stole” (treść, katalog świata, kopie, postacie
-   w minimum, walka z listą startową: inicjatywa, atak, rzut obronny, test umiejętności, obrażenia
-   z odpornością, stany z licznikiem, koncentracja jako znacznik ze ST) i „Pełna sesja” (reszta).
-5. **Kolor znacznika zmiany w turze** — nie zielony (to sukces); *niebieski albo bursztynowy*.
-6. **Zakładka istot:** „Potwory” czy „Stworzenia” — jeden typ dla potworów i NPC; fabuła NPC to lore.
-7. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
-8. **Entity bez statbloku** (karczmarz: imię i notatka) — dopuszczamy?
-9. **Odnośniki jak w Pathfinder WotR:** klik otwiera kartę w pływającym okienku, kilka naraz (to samo
+1. **Podział kamienia:** „Pierwsza walka przy stole” (treść, katalog świata z kartą istoty, kopie,
+   postacie w minimum, walka z przełomem tury i kalkulator) i „Pełna sesja” (reszta)?
+2. **Rzut inicjatywy potworów:** kolejka z liczb wpisanych przez MG czy narzędzie rzuca potworom
+   k20 + mod. ZRĘ z karty (jedyny rzut z danych wpisu)?
+3. **Odnowienie „o świcie”** (ładunki przedmiotów): część długiego odpoczynku czy przesunięcia zegara?
+4. **Zakładka istot:** „Potwory” czy „Stworzenia” — jeden typ dla potworów i NPC; fabuła NPC to lore.
+5. **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki); cechy klas to węzły.
+6. **Odnośniki jak w Pathfinder WotR:** klik otwiera kartę w pływającym okienku, kilka naraz (to samo
    okno co entity i lore); z pól ze strukturą same, w prozie jawnym znacznikiem, zerwany widoczny.
    Słownik „Hasło” i zakładka „Zasady” (stany i hasła)? *W etapie 1, po stanach.*
-10. **Okno walki:** *karta zostaje do czytania, okno ma zwarty widok istoty z akcjami-przyciskami.*
 
-**Poprawki z audytu** (architekt, jeden commit po decyzjach):
-- Test w `CLAUDE.md` p. 2: procedura rozgałęzia się według zasady z podręcznika; warunku,
-  wyzwalacza ani czasu nie niesie pole danych. P. 5: skutki widoczne *przed* zapisem.
-- Model danych (cechy jako zestaw, atak, obrażenia, odporności, właściwości broni) razem z walką,
-  nie w etapie 1; zaklęcia teraz ze strukturą pod filtry. Postacie w minimum przed walką.
-- Lista procedur: dopisać testy umiejętności; rozstrzygnąć „o świcie”, PZ tymczasowe, kiedy tyka
-  licznik, odporność na niemagiczne, wyjątki handlu, KP i ST postaci, krytyk (1, kości dodatkowe).
-- Sprzeczności: „wartości są płaskie” (`architecture.md`, `decisions.md`), skrypty odrzucone przez
-  formuły, dodatki wobec wariantów, bierna Percepcja; wierność dotyczy procedur, nie wyglądu.
-- Karta składa linię ataku ze struktury, dopisek warunkowy zostaje prozą; struktura akcji
-  opcjonalna. Komentarze „never a timer/counter” w `Gear.cs`, `Monster.cs`, `StatblockSection.cs`.
+**Do uzgodnienia w dokumentach:** „wartości są płaskie” (`architecture.md`) wobec struktury dla
+księgi; dodatki wobec wariantów; bierna Percepcja. Komentarze „never a timer/counter” w `Gear.cs`,
+`Monster.cs`, `StatblockSection.cs` — sprawdzić wobec liczników i tyknięć (żyją w narzędziu walki,
+nie we wpisie).
 
 ## Kamień milowy: pierwsza sesja przy stole
 
 Cel: poprowadzić prawdziwą sesję bez podręcznika i bez papieru. Każdy brak z tej listy oznacza grę
 hybrydową, więc kamień obejmuje całość. Etapy w kolejności pracy; każdy jest użyteczny sam.
 Rozstrzygnięcia, na których stoi plan, są w `docs/decisions.md` (katalog świata, postać gracza,
-klasy, gramatyka systemu i lista procedur).
+klasy, księgowość i lista przełomów).
 
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
@@ -64,17 +53,18 @@ klasy, gramatyka systemu i lista procedur).
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
    Nazwa entity (dziś operacja zmiany nazwy jest, pola w interfejsie nie ma) i notatka MG.
-   Przenoszenie entity i katalogów; usuwa się tylko pusty katalog. Klik w entity otwiera okno jego
-   karty — kilka naraz — z szybkimi PZ: „-7” albo „+5” i Enter zapisuje.
+   Entity bez wpisu (imię, notatka, opcjonalnie PZ i KP). Przenoszenie entity i katalogów; usuwa
+   się tylko pusty katalog. Klik w entity otwiera okno jego karty — kilka naraz — z polem zmiany PZ
+   (`-7`, `+5`, `=30`, Enter zapisuje) i trybem edycji karty.
    Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
    kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
    separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
    nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni.
 3. **Kopie zapasowe kampanii**, rotujące. Przy stole zapis biegnie na żywo po każdej zmianie.
-4. **Inicjatywa i walka** — okno: MG wskazuje uczestników, narzędzie rzuca k20 + mod. ZRĘ (z
-   rozpisaniem, MG może wpisać swoją liczbę) i układa kolejkę; runda i tura przesuwa MG. Ataki
-   i rzuty obronne z karty, PZ, stany z licznikiem rund, koncentracja — procedury z listy. Dziennik
-   walki z ciągiem zdarzeń; znaczniki zmian w turze (zielona obwódka, zdjęte wyszarzone).
+4. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
+   MG. Zwarty widok istoty (PZ z polem zmiany, stany z licznikami, tyknięcia), karta zostaje do
+   czytania. Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości
+   jako osobne okno biurka.
 5. **Postacie graczy** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach. MG
    tworzy je i zmienia formularzem w aplikacji. Wejście postaci do kampanii tworzy jej entity.
    Identyfikator `źródło:id` wskazuje odtąd wpis w paczce albo postać.
@@ -102,7 +92,7 @@ klasy, gramatyka systemu i lista procedur).
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
-- Punkt 5 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
+- Punkt 4 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
   pilnuje ich przegląd.
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
   be converted to …”) — potrzebne polskie zdanie, które nazywa pole.

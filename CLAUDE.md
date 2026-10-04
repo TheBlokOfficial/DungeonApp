@@ -1,32 +1,32 @@
 # DungeonApp
 
 Desktopowy panel Mistrza Gry do gry papierowej przy stole. C#/.NET 10, Avalonia 12. Jedna maszyna,
-jeden użytkownik, bez sieci. Aplikacja prowadzi kampanię i wykonuje procedury systemu — o ich użyciu
-i ostatecznym wyniku decyduje MG.
+jeden użytkownik, bez sieci. Aplikacja prowadzi księgowość kampanii — zasady stosuje MG.
 
 ## Granica automatyzacji
 
-Zasada produktu: **narzędzie gra według podręcznika, MG decyduje, czy go użyć, i zawsze może poprawić
-wynik.** Aplikacja automatyzuje gramatykę systemu, nigdy jego słownictwo — inaczej staje się cRPG bez
-grafiki. Czytaj według intencji; gdy litera i intencja się rozjeżdżają, powiedz to autorowi.
+Zasada produktu: **aplikacja liczy, pamięta i przenosi to, co przy stole się śledzi; zasad nie
+rozstrzyga.** MG liczy atak i obrażenia tak jak gracze na papierze, a aplikacja nie ogranicza go
+w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozjeżdżają, powiedz to autorowi.
 
-1. **Gramatyka tak, słownictwo nie.** Procedury z rozdziałów o zasadach, takie same dla każdej istoty
-   i przedmiotu (inicjatywa, atak, obrażenia, rzut obronny, stany), wykonuje narzędzie. Opis
-   konkretnego zaklęcia, atutu, cechy czy przedmiotu zostaje tekstem dla MG; wpis nie niesie logiki.
-2. **Zamknięta lista procedur** jest w `docs/decisions.md`. Nowa przechodzi test: jednolita, częsta,
-   opisana kilkoma polami bez warunków, wyzwalaczy i czasu, z wynikiem, który MG widzi i poprawia.
-   Dopisanie procedury to decyzja autora, nie wykonawcy.
-3. **Wejściem procedury są pola ze strukturą albo przełącznik i liczba od MG**, nigdy tekst opisu.
-   Pole dostaje strukturę tylko wtedy, gdy czyta je procedura z listy. Powody ułatwienia, odporność
-   spoza statbloku, skutki stanów dla rzutów: aplikacja pokazuje, MG przełącza.
-4. **Każda liczba ma rozpisanie.** Wynik pokazuje, skąd się wziął („14 = 11 na k20 + 3 ZRĘ”), dziennik
-   zapisuje ciąg zdarzeń, wartość poprawiona ręcznie jest oznaczona. Liczba bez pochodzenia to błąd.
-5. **Nic nie dzieje się bez akcji MG i nic nie wybiera celów za MG.** Bez czasu rzeczywistego i pracy
+1. **Zasady i słownictwo są tekstem.** Opis zaklęcia, cechy, ataku, stanu czy przedmiotu czyta MG;
+   wpis nie niesie logiki, a aplikacja nie rozstrzyga ataku, rzutu obronnego ani obrażeń. Strukturę
+   ma tylko pole, które czyta księga albo przełom.
+2. **Księga.** Śledzone wartości (PZ, ładunki, miejsca na zaklęcia, złoto, ilości, liczniki stanów,
+   kolejka, zegar) MG zmienia polem zmiany: `-12`, `+5`, `=30`. Rachunek księgowy z podręcznika
+   (PZ tymczasowe schodzą pierwsze) robi aplikacja i pokazuje rozpisanie.
+3. **Przełomy.** Akcja MG, która zmienia wiele naraz według jawnej reguły (następna tura, odpoczynek,
+   handel), działa od razu i pokazuje okienko boczne z każdą zmianą; odznaczenie pozycji ją
+   przywraca. Lista przełomów jest zamknięta (`docs/decisions.md`); nowy to decyzja autora.
+4. **Stan zmienia się tylko po akcji MG.** Aplikacja nie ma poczucia czasu: bez timerów i pracy
    w tle; zegar, rundę i turę przesuwa MG. Cele wskazuje MG (może kilka naraz), nigdy reguła („w
-   obszarze”, „najbliższy”). Jedna akcja może mieć wiele skutków, wszystkie widoczne; zdarzenia
-   powiadamiają widoki, nigdy nie zapisują.
-6. **Ręczna poprawka jest zawsze w narzędziu.** PZ, licznik, kolejność, wynik rzutu — MG nadpisuje
-   w miejscu. Homebrew to praca bez procedury, nie przełącznik w niej.
+   obszarze”, „najbliższy”). Zdarzenia powiadamiają widoki, nigdy nie zapisują.
+5. **Świat zmienia MG bez ograniczeń.** Każdą wartość istoty, także ze strukturą, MG zmienia na jej
+   karcie; różnica od wpisu jest oznaczona i da się ją przywrócić. Istota i przedmiot działają też
+   bez wpisu z paczki. Stan niezgodny z zasadami (PZ ponad maksimum, ujemne złoto) widać, nie blokuje.
+6. **Liczba ma pochodzenie tam, gdzie stoi.** Przy wartości widać ostatnią zmianę („30, było 42”),
+   rzut w kalkulatorze ma rozpisanie, w walce zmiana od początku tury ma znacznik. Dziennika świata
+   nie ma.
 
 ## Jak pracujemy
 
@@ -109,6 +109,9 @@ Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 - Wygląd składaj z kontrolek i tokenów motywu (`Themes/`, podgląd w zakładce „Galeria”). Nowa kontrolka
   motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Kolor ma jedno znaczenie, zapisane przy
   tokenie; widok sięga po kolor ze względu na znaczenie, nie barwę.
+- Kontrolka w dwóch formach (tekst do czytania i pole w trybie edycji) zajmuje w obu dokładnie to samo
+  miejsce: przełączenie formy nie przesuwa żadnej kontrolki, sekcji ani okna. Każda taka kontrolka ma
+  test bez ekranu, który mierzy obie formy.
 - Testy: zmiana zachowania logiki → test; nowy lub przepisany widok → test budujący go w oknie bez
   ekranu (`RenderingTests`, wzór `ContentTabViewBuildTests`); zapis kampanii i format paczek — zawsze.
   Wyglądu nie dowodzi się testami — sprawdza go autor.

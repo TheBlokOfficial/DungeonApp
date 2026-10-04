@@ -6,14 +6,14 @@ popraw ten dokument w tym samym commicie.
 ## Czym to jest
 
 Laptop MG przy stole: ile życia ma jeszcze goblin, co drużyna ma w plecaku, co żyje w świecie kampanii.
-Gracze aplikacji nie widzą. To nie jest wirtualny stół, gra ani generator treści. Narzędzia wykonują
-gramatykę systemu (inicjatywa, atak, rzut obronny, stany), nigdy słownictwo (opis zaklęcia czy
-przedmiotu) — granica w `CLAUDE.md`, lista procedur w `docs/decisions.md`.
+Gracze aplikacji nie widzą. To nie jest wirtualny stół, gra ani generator treści. Aplikacja prowadzi
+księgowość (wartości, liczniki, kolejka, przełomy tury i odpoczynku), zasady stosuje MG — granica
+w `CLAUDE.md`, lista przełomów w `docs/decisions.md`.
 
 Zakres: systemy „trad” — nazwane statystyki, rzut z modyfikatorem, jakaś kolejność działania (D&D,
 Pathfinder, OSR, Call of Cthulhu). Aplikacja **wie, czym jest potwór i jak go pokazać**, bo karta jest
-zaprojektowana; **nie wie, czym jest D&D**, bo wiedza o systemie — także procedury — mieszka
-w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je procedura; inaczej jest prozą.
+zaprojektowana; **nie wie, czym jest D&D**, bo wiedza o systemie — także przełomy — mieszka
+w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo przełom; inaczej jest prozą.
 
 ## Warstwy
 
@@ -147,25 +147,26 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je procedura; inacz
   Galeria pokazuje każdą kontrolkę motywu w każdym stanie.
 - Konwencje interakcji: strzałka kursora wszędzie poza polem tekstu (ręki nie ma); stan zmienia się
   od razu, animacje najwyżej 150 ms i wyłączają się razem z animacjami systemu; zmiana stanu nie
-  zmienia wymiarów kontrolki; tekst klikany ma co najmniej 12 pt; kontrast tekstu co najmniej 4,5:1;
+  zmienia wymiarów kontrolki, także zmiana formy z tekstu na pole edycji; tekst klikany ma co najmniej 12 pt; kontrast tekstu co najmniej 4,5:1;
   fokus klawiatury nie ma jeszcze widocznego wyglądu.
 
 ## Granica automatyzacji w praktyce
 
-MG uruchamia procedurę, narzędzie wykonuje ją według podręcznika i pokazuje każdy krok. Przykład:
-MG klika „Sprzedaj” przy mieczu; okno handlu bierze cenę z wartości wpisu (sprzedaż za połowę), MG
-może ją zmienić, a zatwierdzenie przenosi miecz i złoto jedną akcją. Atak: „14 = 11 na k20 + 3”
-przeciw KP 13 — trafienie; ułatwienie przełącza MG, bo jego powody to słownictwo. Każdą wartość MG
-poprawia w miejscu, a dziennik walki zapisuje ciąg zdarzeń razem z poprawkami.
+Atak liczy MG: rzuca kośćmi albo kalkulatorem („17 = 13 na k20 + 4”), porównuje z KP z karty
+i wpisuje celowi `-12`. Pole zmiany odejmuje najpierw PZ tymczasowe i zostawia przy wartości „30,
+było 42”. „Następna tura” kończy turę goblina (jego Ogłuszenie schodzi z 1 na 0 i znika) i zaczyna
+turę trolla (przypomnienie o regeneracji); okienko boczne wymienia obie zmiany, a odznaczenie
+przywraca Ogłuszenie. „Sprzedaj” przy mieczu bierze cenę z wartości wpisu (sprzedaż za połowę), MG
+ją zmienia, a zatwierdzenie przenosi miecz i złoto jedną akcją.
 
 ## Kierunek (jeszcze nie zbudowane)
 
 Szczegóły dawnego projektu docelowego: `docs/archive/architecture.md`. Każde z poniższych powstaje
 dopiero razem z pierwszym konsumentem.
 
-- **Procedury i wartości pochodne:** kod systemu. Wartość pochodna (modyfikator cechy, bierna
-  Percepcja) liczy się przy odczycie z pól ze strukturą; rzut jest na żądanie MG, a jego wynik
-  z rozpisaniem trafia do dziennika walki. Formuły w danych paczki są odłożone (roadmapa).
+- **Przełomy i wartości pochodne:** kod systemu. Wartość pochodna (modyfikator cechy, bierna
+  Percepcja) liczy się przy odczycie z pól ze strukturą. Formuły w danych paczki są odłożone
+  (roadmapa).
 - **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
   leży w katalogu albo w innym entity — tak wygląda ekwipunek. Katalog niesie tylko nazwę.
 - **Postacie graczy:** obok kampanii, w katalogu systemu; zmieniane formularzem w aplikacji. Postać
@@ -177,3 +178,7 @@ dopiero razem z pierwszym konsumentem.
   o nich tylko przy składaniu kampanii; żaden kontekst zakładki ani okna ich nie niesie.
 - **Autorstwo treści w aplikacji:** najpierw „skopiuj i zmień” do własnej paczki MG, potem tworzenie
   od zera — formularz projektowany per typ, zapisujący ten sam plik wpisu.
+- **Podział księgi między ramę i system:** pole zmiany liczby, tryb edycji karty, kalkulator kości,
+  okienko przełomu i znaczniki zmian w turze są ramy i nie znają systemu. Reguły rachunku (PZ
+  tymczasowe schodzą pierwsze) i treść przełomów (co tyka na końcu tury, co odnawia odpoczynek) są
+  kodem systemu.

@@ -37,24 +37,51 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Właściwości częściowe (C# 14), nie pola z atrybutem. Setter z logiką poza powiadomieniem zostaje
   ręczny, bo `OnXChanged` biegnie przed powiadomieniem o X. *Wyzwalacz:* generator psuje build albo
   edytor.
-- **Gramatyka systemu, nie słownictwo.** Narzędzia wykonują procedury z rozdziałów o zasadach —
-  bez nich dane są martwym tekstem, cyfrowym podręcznikiem, który przy stole nie pomaga. Opisy
-  zaklęć, atutów i przedmiotów zostają tekstem: logika per wpis to cRPG bez grafiki. Granica ma
-  sześć punktów w `CLAUDE.md`; każda liczba ma rozpisanie, ręczna poprawka jest zawsze w narzędziu,
-  nic nie dzieje się bez akcji MG.
-- **Lista procedur (zamknięta).** Inicjatywa (k20 + mod. ZRĘ, kolejka, runda, tura); atak (k20 +
-  premia przeciw KP, 20 to krytyk z podwojonymi kośćmi, ułatwienie i utrudnienie przełącza MG);
-  rzut obronny przeciw ST, z „połowa przy sukcesie” z pola; obrażenia z odpornością i podatnością
-  ze statbloku; leczenie i PZ tymczasowe; stany z licznikiem rund; koncentracja (rzut KON, ST =
-  max(10, połowa obrażeń)); miejsca na zaklęcia i ładunki z odnowieniem przy odpoczynku; handel
-  (cena z wartości, sprzedaż za połowę). Nowa procedura tylko po teście z `CLAUDE.md` i za zgodą autora.
-- **Struktura w wartościach tylko dla procedur.** Pole wpisu dostaje kształt (atak: premia, zasięg,
-  obrażenia, rzut obronny, stan przy porażce), gdy czyta je procedura z listy; reszta zostaje prozą.
-  Kształt wpisu i tak ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
-- **Znaczniki zmian w turze.** W walce wszystko, co zmieniło się od ostatniego „Następna tura” —
-  także ręcznie — ma zieloną obwódkę (PZ z różnicą); rzecz zdjęta jest wyszarzona przez jedną turę.
-  To porównanie widoku z migawką z akcji MG, nie zapis w entity. MG pyta „co się zmieniło”, a kto to
-  zrobił, mówi dziennik. Poza walką tur nie ma, więc i znaczników.
+- **Księgowość, nie zasady.** Aplikacja śledzi i przelicza wartości, przenosi rzeczy i wykonuje
+  przełomy; ataku, rzutu obronnego ani obrażeń nie rozstrzyga. MG liczy tak jak gracze, którzy
+  zostają przy papierze. Rozstrzyganie na wskazanym celu wymagałoby struktury ataków, obrażeń
+  i odporności w każdym wpisie, a każde pole ze strukturą to miejsce, gdzie MG utyka przy zmianie
+  świata (drugi atak bossa, płonący miecz); zysk — połowy przy wielu celach, ST koncentracji — jest
+  mały. Granica w `CLAUDE.md`.
+- **Lista przełomów (zamknięta).** Następna tura: koniec tury istoty (jej liczniki stanów −1, stany
+  na zerze zdjęte, jej tyknięcia końca tury) i początek tury następnej (jej tyknięcia początku).
+  Odpoczynek krótki i długi: odnowienie PZ, miejsc na zaklęcia i ładunków według podręcznika.
+  Handel: cena z wartości (sprzedaż za połowę), którą MG poprawia, potem przeniesienie przedmiotu
+  i złota. Podróż: drużyna do innego katalogu i zegar o czas wpisany przez MG. Nowy przełom tylko
+  za zgodą autora.
+- **Przełom działa od razu, okienko pozwala go wyłączyć.** Okienko boczne obok narzędzia wymienia
+  każdą zmianę; odznaczenie pozycji ją przywraca, „Cofnij wszystko” — całość. Okienko znika przy
+  następnej akcji w tym narzędziu albo po zamknięciu. Odroczenie zmian do pierwszej interakcji
+  odrzucone: karta pokazywałaby stan, który już wygasa, a moment zapisu byłby niejasny.
+- **Liczniki stanów tykają na końcu tury istoty, która nosi stan.** Ogłuszenie na jedną rundę
+  zabiera wtedy jedną turę, a rzut „kończy stan na końcu tury” wypada w tej samej chwili. Podręcznik
+  liczy czas od tury źródła; różnica to najwyżej ułamek rundy, a licznik MG poprawia w miejscu.
+  Nazwy jak w polskim podręczniku: runda to obieg wszystkich, tura — działanie jednej istoty.
+- **Tyknięcia przypina MG.** Istota może mieć przypięte obrażenia („Płonie: 1k6 ognia, 3 rundy”)
+  albo przypomnienie („Regeneracja 10, chyba że ogień lub kwas”) na początek lub koniec swojej tury;
+  pokazują się w okienku przełomu. To jedyne miejsce, gdzie wchodzi wyzwalacz i czas — dopuszczalne,
+  bo pisze je MG, nie wpis, momenty są dwa, a każde tyknięcie przechodzi przez okienko.
+- **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5` i `=30`; liczba bez znaku nie
+  przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PZ na 12. Przy wartości zostaje ostatnia
+  zmiana („30, było 42, −12”) do następnej zmiany tej wartości. Rachunek z podręcznika (PZ
+  tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
+- **Znaczniki zmian w turze.** „Następna tura” zapamiętuje stan sprzed przełomu; wszystko, co
+  zmieniło się od tej chwili — ręcznie albo przełomem — ma tło znacznika, rzecz zdjęta jest
+  wyszarzona do końca tury. Kolor ma własny token („zmieniło się w tej turze”), nie zielony (sukces)
+  ani czerwony (obrażenia). Zapamiętany stan zapisuje się ze stanem walki. Poza walką tur nie ma.
+- **Kalkulator kości zamiast rzutu z karty.** Okno ramy, niezależne od systemu: wyrażenie („k20+4”,
+  „2k20 wyższy + 4”, „4× k20+2”), wynik z rozpisaniem, kilka ostatnich rzutów na czas sesji. Premię
+  MG przepisuje z karty — przycisk rzutu na karcie wymagałby struktury ataków.
+- **Tryb edycji karty istoty.** Jeden przełącznik zamienia wartości karty w pola (ramka, ciemniejsze
+  tło) w tych samych miejscach i wymiarach. Bieżące PZ mają pole zmiany zawsze. Wartość różna od
+  wpisu ma znacznik i „Przywróć z wpisu”. Odrzucone: ołówek przy każdym polu (szum na karcie, dwa
+  kliknięcia na zmianę) i wszystko edytowalne od razu (formularz, przypadkowe zmiany przy stole).
+- **Istota i przedmiot bez wpisu.** Improwizowany karczmarz to imię, notatka i — jeśli trzeba — PZ
+  i KP wpisane ręcznie. To stan kampanii, nie treść, więc nie jest wpisem lokalnym kampanii.
+- **Struktura tylko dla księgi i przełomów.** Pole wpisu dostaje kształt, gdy czyta je księga albo
+  przełom: maksimum PZ, ładunki i odnowienie, miejsca na zaklęcia, wartość i waga, cechy (modyfikator
+  liczony przy odczycie). Ataki, obrażenia, odporności i rzuty obronne zostają prozą z wyróżnieniami.
+  Kształt wpisu ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
   i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — cele wskazuje MG). Usuwa się
@@ -85,8 +112,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 
 ## Odrzucone
 
-- **Aplikacja tylko księguje, zasad nie wykonuje** (dawne pięć zakazów) — dane zostają suchym
-  tekstem, a MG liczy wszystko sam; patrz gramatyka systemu wyżej.
+- **Procedury systemu i rzut z karty na wskazany cel** (atak przeciw KP, rzut obronny z połową,
+  obrażenia z odpornością, koncentracja) — patrz księgowość, nie zasady.
+- **Dawne pięć zakazów w literze** („nic nie wygasa, bo minął czas”) — licznik stanu to księgowanie
+  przy stole; przełom zdejmuje stan na kliknięcie MG i pokazuje to w okienku.
+- **Dziennik świata** (wszystkie zmiany w jednym długim logu) — jego potrzeby pokrywają okienko
+  przełomu, znaczniki w turze, ostatnia zmiana przy wartości i historia kalkulatora.
 - **Klocek bez dopisku dosuwany do dna obrazka** — rząd dopisku zostaje zarezerwowany zawsze, choć
   samotny klocek bez dopisku (Kolczuga: KP) zdaje się wisieć; dosunięcie przesuwałoby klocki przy
   przełączaniu wpisów, co razi bardziej niż pusty rząd.
