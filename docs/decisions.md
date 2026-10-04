@@ -97,8 +97,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   Szybkość, zmysły, wyzwanie, rzadkość, proza). Karta decyduje, gdzie stoi każde pole, także pola
   aspektów — KP i PZ stworzenia stoją przy portrecie obok Szybkości, która jest polem typu. MG
   aspektów nie włącza ani nie zdejmuje; aspekt opcjonalny może być pusty (karczmarz bez walki)
-  i wtedy się nie pokazuje. Mimik to stworzenie o stałym kształcie jak szkielet — gracze aplikacji nie
-  widzą, więc przebranie nie potrzebuje innego kształtu. Egzemplarz bez wpisu też ma typ. KP zbroi
+  i wtedy się nie pokazuje. Mimik to stworzenie o stałym kształcie jak szkielet; jego forma („w
+  przebraniu: skrzynia”) to pozycja „Stanów i efektów”, nie kształt. Egzemplarz bez wpisu też ma typ. KP zbroi
   (ile daje noszącemu) to pole przedmiotu, nie KP walki.
 - **Zakładki według typu, nie aspektu.** Jeden typ to jedna zakładka, w kolejności podręcznika
   (Stworzenia, Przedmioty, Stany, Postacie, Pochodzenia, Klasy, Zaklęcia); MG szuka mimika wśród
