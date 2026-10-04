@@ -6,7 +6,7 @@
 
     <!-- The designed statblock on one geometric grid. Three vertical lines carry everything: the
          card's left edge, the portrait's right edge, and the title column's start (portrait plus
-         DungeonDetailColumnGap). The portrait (three ability cells wide, 3:4) and the KP / PZ /
+         DungeonDetailColumnGap). The portrait (DungeonDetailPictureWidth, 3:4) and the KP / PZ /
          Szybkość values are lent to the detail header (MonsterCardView.axaml.cs); the card itself,
          top to bottom:
          - two ability tables, SIŁ/ZRĘ/KON under the portrait and INT/MDR/CHA on the title line;

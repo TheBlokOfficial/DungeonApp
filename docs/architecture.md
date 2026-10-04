@@ -104,8 +104,8 @@ Wierność zasadom systemu nie jest celem — pole trafia do rekordu, gdy pomaga
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
   pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo przed tagami i blok pod tagami
-  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (trzy komórki tabeli cech po
-  50): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
+  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (własny token, niezależny od
+  tabeli cech): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
   w jednej linii, tagi i blok. Blok stoi dnem równo z dolną krawędzią obrazu; gdy kolumna tytułu
   jest wyższa, nagłówek rośnie, nic nie jest przycinane. Wartość w bloku to zawsze trzy rzędy:
   podpis z ikoną, wartość, dopisek — rząd dopisku stoi także pusty, więc wartości mają równą wysokość.
