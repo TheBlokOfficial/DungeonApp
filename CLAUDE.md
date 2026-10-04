@@ -38,8 +38,11 @@ powiedz to autorowi.
   Kod piszą wykonawcy (subagenci) w worktree, **zawsze w tle** — autor musi móc w tym czasie pisać.
   Zlecenie ma etapy z punktem zatrzymania i wskazuje pliki; wykonawca czyta tylko to, co zmienia,
   commituje po każdym zamkniętym kroku, a wygląd renderuje i sam porównuje ze specyfikacją przed
-  oddaniem. W jednym worktree pracuje naraz jeden wykonawca. Poprawki idą do tego samego wykonawcy,
-  dopóki jego kontekst jest mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
+  oddaniem. W jednym worktree pracuje naraz jeden wykonawca. Jedno zlecenie to jeden obszar kodu
+  (np. układ karty albo dane paczki); niezależne obszary idą do osobnych wykonawców, równolegle
+  w osobnych worktree, a etap po etapie w tym samym obszarze — kolejny wykonawca dostaje ścieżki
+  i hashe commitów poprzedniego. Poprawki idą do tego samego wykonawcy, dopóki jego kontekst jest
+  mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
   agent `porzadki` (`.claude/agents/`). Autorowi pokazuje się wynik, który architekt sam by przyjął.
 - **Postęp wykonawcy** autor czyta w jego historii. Wykonawca na początku każdej fazy pisze w swojej
   odpowiedzi linię „Faza: …”, a po jej zamknięciu „Zrobione: …”. Fazy: rozpoznanie w kodzie → etapy
