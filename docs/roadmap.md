@@ -134,6 +134,12 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 ## Odłożone, z wyzwalaczem
 
+- **„Zapisz jako nowy wpis”** z karty egzemplarza do własnej paczki MG (tworzonej przy pierwszym
+  użyciu); egzemplarz wskazuje potem nowy wpis — MG chce użyć podkręconego egzemplarza albo
+  improwizowanej istoty w innej przygodzie.
+- **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PZ
+  i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
+- **Edycja kilku zaznaczonych egzemplarzy naraz** — MG zmienia to samo pole po kolei na kilku.
 - **Formuły w danych paczki** (pola liczone, które dopisuje autor paczki) — po kamieniu milowym
   „przy stole”.
 - **Edytor treści w aplikacji** (wpisy, przygoda, lore) — pisanie plików poza aplikacją zaczyna
