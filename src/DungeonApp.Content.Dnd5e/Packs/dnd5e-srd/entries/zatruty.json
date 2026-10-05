@@ -1,0 +1,16 @@
+{
+  "id": "zatruty",
+  "name": "Zatruty",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Ma utrudnienie w testach ataku i testach cech.",
+    "icon": "images/conditions/zatruty.png",
+
+    "rules": {
+      "intro": "Zatruta istota ma **utrudnienie** w testach ataku i testach cech.",
+      "entries": []
+    }
+  }
+}

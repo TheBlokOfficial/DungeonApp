@@ -1,0 +1,16 @@
+{
+  "id": "przerazony",
+  "name": "Przerażony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Gdy widzi źródło strachu, ma utrudnienie w testach cech i ataku. Nie może się do niego zbliżyć.",
+    "icon": "images/conditions/przerazony.png",
+
+    "rules": {
+      "intro": "Przerażona istota ma **utrudnienie** w testach cech i testach ataku, dopóki źródło jej strachu jest w zasięgu jej wzroku.\nIstota nie może z własnej woli zbliżyć się do źródła swojego strachu.",
+      "entries": []
+    }
+  }
+}

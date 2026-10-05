@@ -1,0 +1,16 @@
+{
+  "id": "niewidzialny",
+  "name": "Niewidzialny",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Nie da się jej zobaczyć bez magii ani szczególnego zmysłu. Jej ataki mają ułatwienie, ataki przeciw niej — utrudnienie.",
+    "icon": "images/conditions/niewidzialny.png",
+
+    "rules": {
+      "intro": "Niewidzialnej istoty nie da się zobaczyć bez pomocy magii albo szczególnego zmysłu. Gdy próbuje się ukryć, traktuje się ją tak, jakby była w obszarze mocno przesłoniętym. Jej położenie można wykryć po hałasie, który robi, albo po śladach, które zostawia.\nTesty ataku przeciwko istocie mają **utrudnienie**, a jej testy ataku mają **ułatwienie**.",
+      "entries": []
+    }
+  }
+}

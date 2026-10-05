@@ -1,0 +1,16 @@
+{
+  "id": "pochwycony",
+  "name": "Pochwycony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Szybkość 0. Stan kończy się, gdy chwytający jest obezwładniony albo istota znajdzie się poza jego zasięgiem.",
+    "icon": "images/conditions/pochwycony.png",
+
+    "rules": {
+      "intro": "Szybkość pochwyconej istoty spada do 0 i istota nie korzysta z żadnych premii do szybkości.\nStan kończy się, gdy chwytający zostanie [[obezwladniony|obezwładniony]].\nStan kończy się także wtedy, gdy jakiś efekt wyniesie pochwyconą istotę poza zasięg chwytającego albo efektu, który ją trzyma — na przykład gdy zaklęcie odrzuci ją daleko.",
+      "entries": []
+    }
+  }
+}

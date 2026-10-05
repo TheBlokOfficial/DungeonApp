@@ -10,20 +10,15 @@ z kartek, aplikacja jest źródłem prawdy). Etapy w kolejności pracy; każdy j
 punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `docs/decisions.md`.
 
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
-   z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
-   `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
-     skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
-     skrót. Na istocie stan jest pozycją listy „Stany i efekty”.
-   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku** (CC-BY 4.0), rośnie na żądanie: tu 15 stanów
-     i zestaw startowy stworzeń na pierwsze sesje; reszta, gdy przygoda jej potrzebuje. Słownictwo
-     i spis stworzeń: `tools/srd/`. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów
-     i istot (karta pokazuje sam tekst), żeby odnośniki nie wymagały drugiego przejścia. Odległości
-     w metrach (1,5 m za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
-     Rzadki, bardzo rzadkie → Epicki, legendarne i artefakty → Legendarny. Dziś paczka ma pięć
-     stworzeń i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
-     zakresem) oraz jeden stan (Powalony); ikony stanów z game-icons.net (CC BY 3.0, autorzy
-     w `LICENSE.txt` paczki).
+   z ramką, typy Stworzenie, Przedmiot i Stan (15 stanów SRD z ikonami). Projekt kart jest punktem
+   wyjścia, nie specyfikacją: `docs/archive/zadania/zakladki-tresci.md`, sekcja *C*.
+   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku** (CC-BY 4.0), rośnie na żądanie: zostaje zestaw
+     startowy stworzeń na pierwsze sesje; reszta, gdy przygoda jej potrzebuje. Słownictwo i spis
+     stworzeń: `tools/srd/`. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów i istot
+     (karta pokazuje sam tekst). Odległości w metrach (1,5 m za 5 stóp). Rzadkość: niemagiczne
+     i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo rzadkie → Epicki,
+     legendarne i artefakty → Legendarny. Dziś paczka ma pięć stworzeń i dziesięć przedmiotów
+     przykładowych; ikony z game-icons.net (CC BY 3.0, autorzy w `LICENSE.txt` paczki).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).

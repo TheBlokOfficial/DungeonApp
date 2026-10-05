@@ -1,0 +1,16 @@
+{
+  "id": "unieruchomiony",
+  "name": "Unieruchomiony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Szybkość 0. Jej ataki i rzuty obronne na ZRĘ mają utrudnienie, ataki przeciw niej — ułatwienie.",
+    "icon": "images/conditions/unieruchomiony.png",
+
+    "rules": {
+      "intro": "Szybkość unieruchomionej istoty spada do 0 i istota nie korzysta z żadnych premii do szybkości.\nTesty ataku przeciwko istocie mają **ułatwienie**, a jej testy ataku mają **utrudnienie**.\nIstota ma **utrudnienie** w rzutach obronnych na Zręczność.",
+      "entries": []
+    }
+  }
+}

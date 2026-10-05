@@ -1,0 +1,41 @@
+{
+  "id": "wyczerpanie",
+  "name": "Wyczerpanie",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Sześć narastających poziomów — od utrudnienia w testach cech do śmierci. Długi odpoczynek z jedzeniem i piciem zdejmuje jeden.",
+    "icon": "images/conditions/wyczerpanie.png",
+
+    "rules": {
+      "intro": "Niektóre zdolności i zagrożenia, takie jak głód albo długie przebywanie w skrajnym zimnie lub upale, wywołują wyczerpanie. Wyczerpanie ma sześć poziomów; efekt nakłada jeden lub więcej z nich, zgodnie ze swoim opisem.\nGdy już wyczerpaną istotę dotknie kolejny efekt wywołujący wyczerpanie, jej poziom wyczerpania rośnie o tyle, ile podaje opis efektu.\nIstota podlega skutkom swojego poziomu i wszystkich niższych. Istota na 2. poziomie wyczerpania ma więc zmniejszoną o połowę szybkość i **utrudnienie** w testach cech.\nEfekt, który usuwa wyczerpanie, obniża jego poziom zgodnie ze swoim opisem; gdy poziom spadnie poniżej 1, wyczerpanie znika.\nUkończenie długiego odpoczynku obniża poziom wyczerpania o 1, o ile istota coś zjadła i wypiła.",
+      "entries": [
+        {
+          "name": "Poziom 1",
+          "text": "**Utrudnienie** w testach cech."
+        },
+        {
+          "name": "Poziom 2",
+          "text": "Szybkość zmniejszona o połowę."
+        },
+        {
+          "name": "Poziom 3",
+          "text": "**Utrudnienie** w testach ataku i rzutach obronnych."
+        },
+        {
+          "name": "Poziom 4",
+          "text": "Maksimum punktów wytrzymałości zmniejszone o połowę."
+        },
+        {
+          "name": "Poziom 5",
+          "text": "Szybkość spada do 0."
+        },
+        {
+          "name": "Poziom 6",
+          "text": "Śmierć."
+        }
+      ]
+    }
+  }
+}

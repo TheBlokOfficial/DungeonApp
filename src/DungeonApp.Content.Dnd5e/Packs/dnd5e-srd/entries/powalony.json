@@ -5,7 +5,7 @@
   "templateVersion": 1,
 
   "values": {
-    "summary": "Leży na ziemi: porusza się tylko czołgając, a jego ataki mają utrudnienie. Ataki przeciw niemu z odległości do 1,5 m mają ułatwienie, z dalszej — utrudnienie.",
+    "summary": "Leży na ziemi i porusza się tylko czołgając. Jej ataki mają utrudnienie, ataki przeciw niej z odległości do 1,5 m mają ułatwienie, z dalszej — utrudnienie.",
     "icon": "images/conditions/powalony.png",
 
     "rules": {
