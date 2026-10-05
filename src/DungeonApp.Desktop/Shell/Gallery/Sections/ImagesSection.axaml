@@ -7,7 +7,8 @@
          message) - in both proportions a frame is placed in, square and portrait. The size comes from
          here - the frame has none of its own. The picture is a neutral sample (480 x 300), larger than
          either frame and wider than both, so both frames show it cropped and scaled down - never
-         blurred by scaling up. -->
+         blurred by scaling up. The one-colour icon sample is red on purpose: the frame shows only its
+         shape, in the theme's icon color, so no red may show. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Obrazy" />
         <TextBlock Classes="caption muted" Text="Ramka obrazka nie reaguje na mysz; rozmiar i proporcje daje miejsce, w którym stoi." />
@@ -31,6 +32,13 @@
                                      Icon="{DynamicResource DungeonIconBackpack}"
                                      Message="Brak pliku"
                                      Detail="obrazy/plik.png" />
+            </StackPanel>
+            <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                <TextBlock Classes="caption muted" Text="Ikona jednobarwna" />
+                <controls:ImageFrame x:Name="SquareMask" Width="120" Height="120"
+                                     Icon="{DynamicResource DungeonIconBackpack}"
+                                     SourceIsMask="True"
+                                     Source="avares://DungeonApp.Desktop/Assets/Gallery/sample-mask.png" />
             </StackPanel>
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="caption muted" Text="Brak pliku: długa ścieżka" />

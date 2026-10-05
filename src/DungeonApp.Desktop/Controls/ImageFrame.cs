@@ -19,6 +19,11 @@ namespace DungeonApp.Desktop.Controls;
 /// hands it ready data. It has no size of its own: its size and proportions (square, portrait) come
 /// from the layout it stands in. The look belongs to the frame's control theme
 /// (Themes/Controls/ImageFrame.axaml).
+/// <para>
+/// A picture that is a one-colour icon (<see cref="SourceIsMask"/>) is not drawn in its own colours:
+/// only its transparency is read, and the theme paints it in an icon colour of its own, so the same
+/// file reads right on any theme.
+/// </para>
 /// </summary>
 public sealed class ImageFrame : TemplatedControl
 {
@@ -33,6 +38,11 @@ public sealed class ImageFrame : TemplatedControl
 
     public static readonly StyledProperty<string?> DetailProperty =
         AvaloniaProperty.Register<ImageFrame, string?>(nameof(Detail));
+
+    public static readonly StyledProperty<bool> SourceIsMaskProperty =
+        AvaloniaProperty.Register<ImageFrame, bool>(nameof(SourceIsMask));
+
+    private Border? _mask;
 
     public ImageFrame()
     {
@@ -67,13 +77,32 @@ public sealed class ImageFrame : TemplatedControl
         set => SetValue(DetailProperty, value);
     }
 
+    /// <summary>
+    /// Whether <see cref="Source"/> is a one-colour icon: its shape is shown, centred and whole,
+    /// in the theme's icon colour, instead of the picture filling the frame in its own colours.
+    /// </summary>
+    public bool SourceIsMask
+    {
+        get => GetValue(SourceIsMaskProperty);
+        set => SetValue(SourceIsMaskProperty, value);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+
+        _mask = e.NameScope.Find<Border>("PART_Mask");
+        UpdateMask();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == SourceProperty || change.Property == MessageProperty)
+        if (change.Property == SourceProperty || change.Property == MessageProperty || change.Property == SourceIsMaskProperty)
         {
             UpdateState();
+            UpdateMask();
         }
     }
 
@@ -81,6 +110,25 @@ public sealed class ImageFrame : TemplatedControl
     {
         var hasPicture = Source is not null;
         PseudoClasses.Set(":picture", hasPicture);
+        PseudoClasses.Set(":mask", hasPicture && SourceIsMask);
         PseudoClasses.Set(":error", !hasPicture && !string.IsNullOrEmpty(Message));
+    }
+
+    /// <summary>
+    /// The icon's shape cuts the theme's colour out of a plain fill: the picture becomes the fill's
+    /// opacity mask. Set from code because the mask takes a brush source, which a picture handed to
+    /// <see cref="Source"/> is only when it is a bitmap; any other picture gives no shape, so the fill
+    /// stays hidden rather than painting the whole frame.
+    /// </summary>
+    private void UpdateMask()
+    {
+        if (_mask is null)
+        {
+            return;
+        }
+
+        _mask.OpacityMask = Source is IImageBrushSource shape
+            ? new ImageBrush(shape) { Stretch = Stretch.Uniform }
+            : Brushes.Transparent;
     }
 }
