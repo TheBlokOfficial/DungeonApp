@@ -14,8 +14,7 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
-     skrót. Wpis stworzenia może mieć stany domyślne (np. stała niewidzialność). Na istocie stan jest
-     pozycją listy „Stany i efekty”.
+     skrót. Na istocie stan jest pozycją listy „Stany i efekty”.
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0). Tłumaczy agent
      w tle, typ po typie, gdy rekord i karta typu są gotowe; tu stworzenia do wyzwania 5 i stany,
      resztę etapy 6–9. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów i istot (karta
@@ -34,7 +33,8 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
    kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
    separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
-   nie zmieniają miejsca. Entity dziedziczy stany wpisu, dopóki MG ich nie zmieni.
+   nie zmieniają miejsca. Wpis stworzenia może mieć stany domyślne (np. stała niewidzialność);
+   entity dziedziczy je, dopóki MG ich nie zmieni.
 3. **Kopie zapasowe kampanii**, rotujące — przed pierwszym prawdziwym użyciem. Przy stole zapis
    biegnie na żywo po każdej zmianie.
 4. **Postacie w minimum** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach.
@@ -80,6 +80,12 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 - **Ściągawki** — wybór wpisów (cechy klas, zaklęcia, przedmioty, stany) i wydruk A4 przez PDF.
   Każdy typ ma własny układ na białą kartkę. Zaznaczenia może podpowiedzieć postać (jej węzły,
   zaklęcia, ekwipunek); MG poprawia je przed drukiem.
+- **Galeria wpisów** — zakładka treści na całą szerokość: filtry i sortowanie paskiem u góry, po
+  lewej wąski spis treści (wyszukiwarka, grupy paczek, odrzucone wpisy), obok karty w 1–3 kolumnach
+  stałej szerokości zależnie od okna, ułożone wierszami (karta do najkrótszej kolumny). Długa karta
+  przycięta: dół gaśnie gradientem przezroczystości, przycisk „Rozwiń”. Klik w spisie przewija do
+  karty i oznacza ją ramką akcentu (krótkie rozbłyśnięcie, potem stała ramka); klik w kartę zaznacza
+  wiersz. Wymaga wirtualizacji kart o różnej wysokości (200+ stworzeń).
 
 ## Porządki w kodzie i dokumentach
 
@@ -98,21 +104,18 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 
 Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego; wracamy, gdy będzie czas.
 
-- Pełna nazwa przedmiotu po najechaniu znika, gdy wskaźnik zjedzie na jej dopisaną część, i po
-  kliknięciu w tytuł — nie da się zaznaczyć całej nazwy. Okienko musiałoby przyjmować wskaźnik
-  i samo być tekstem do zaznaczenia.
+- Pełna nazwa przedmiotu po najechaniu znika przy zjechaniu na dopisaną część i po kliknięciu
+  w tytuł — okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
 - Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
-- Tabela cech: modyfikator zero zostaje „+0” — tak pisze podręcznik, a każdy modyfikator ma znak.
-  Do ewentualnej zmiany na „0”, gdyby zaczęło razić.
+- Tabela cech: modyfikator zero „+0” jak w podręczniku — do zmiany na „0”, gdyby zaczęło razić.
 - Sekcja opisu przedmiotu bez kreski i nagłówka „Opis” (opis ma prawie każdy przedmiot). Ikona
   pergaminu w lewym górnym rogu, wysoka na dwie linie tekstu, a tekst ją opływa jak inicjał
   w manuskrypcie: obok ikony z odstępem, pod nią od lewej krawędzi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
-- Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; stworzenia: typ) — małe,
-  przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka. Kategoria spoza listy dostaje
-  ikonę domyślną.
+- Ikony kategorii na liście treści (przedmioty: broń, zbroja…; stworzenia: typ), małe i przygaszone
+  jak ikony stanów; ta sama zamiast zastępczej w pustym polu obrazka, spoza listy — domyślna.
 - Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
   gradient po prawej stronie biblioteki kampanii.
 
