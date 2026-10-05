@@ -13,7 +13,7 @@
         DungeonProgressBarCornerRadius na obu końcach toru i wypełnienia (jak tor suwaka), tor
         przycina wypełnienie do swojego obrysu.
         Tor Background (DungeonBorderBrush), wypełnienie Foreground - domyślnie akcent; układający
-        widok może podać inny kolor (np. pasek PZ). Bez fokusu, kursor strzałka, bez przejść.
+        widok może podać inny kolor (np. pasek PW). Bez fokusu, kursor strzałka, bez przejść.
         Stany - nic więcej:
           określony    - wypełnienie od lewej, szerokość według Value w zakresie Minimum..Maximum;
           nieokreślony - odcinek 40 % toru w kolorze Foreground przesuwa się w pętli

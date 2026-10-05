@@ -3,7 +3,7 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Wartość nagłówkowa (controls:StatTile): KP, PZ, szybkość w nagłówku karty. Bez tła, ramki
+        Wartość nagłówkowa (controls:StatTile): KP, PW, szybkość w nagłówku karty. Bez tła, ramki
         i wcięcia - sama kolumna tekstu na karcie; kilka takich stoi obok siebie w kolumnach równej
         szerokości, a odstęp daje układający. Bez ramki to liczba prowadzi oko, więc od góry:
           podpis - ikona DungeonStatTileIconSize i napis w roli caption, oba przygaszone (TextMuted);

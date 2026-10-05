@@ -15,7 +15,7 @@ public sealed record TraitRow(string Label, string Value, string? Secondary = nu
 {
     /// <summary>
     /// The secondary value in brackets, which is how every trad statblock on paper writes it:
-    /// KP 15 (zbroja skórzana, tarcza), PZ 7 (2k6). Without them "PZ 7 2k6" is three numbers in a
+    /// KP 15 (zbroja skórzana, tarcza), PW 7 (2k6). Without them "PW 7 2k6" is three numbers in a
     /// row and the reader has to guess where the value ends - a delimiter is what makes the pair
     /// readable, not decoration on top of it. Starts with the space that parts it from the value:
     /// both run on in one wrapping line of text.

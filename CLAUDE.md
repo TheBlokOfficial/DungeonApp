@@ -12,22 +12,22 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 1. **Zasady i słownictwo są tekstem.** Opis zaklęcia, cechy, ataku, stanu czy przedmiotu czyta MG;
    wpis nie niesie logiki, a aplikacja nie rozstrzyga ataku, rzutu obronnego ani obrażeń. Strukturę
    ma tylko pole, które czyta księga albo przełom.
-2. **Księga.** Śledzone wartości (PZ, ładunki, miejsca na zaklęcia, złoto, ilości, liczniki stanów,
+2. **Księga.** Śledzone wartości (PW, ładunki, miejsca na zaklęcia, złoto, ilości, liczniki stanów,
    kolejka, zegar) MG zmienia polem zmiany: `-12`, `+5`, `=30`. Rachunek księgowy z podręcznika
-   (PZ tymczasowe schodzą pierwsze) robi aplikacja i pokazuje rozpisanie.
+   (PW tymczasowe schodzą pierwsze) robi aplikacja i pokazuje rozpisanie.
 3. **Przełomy.** Akcja MG, która zmienia wiele naraz według jawnej reguły (następna tura, odpoczynek,
    handel), działa od razu i pokazuje okienko boczne z każdą zmianą; odznaczenie pozycji ją
    przywraca. Lista przełomów jest zamknięta (`docs/decisions.md`); nowy to decyzja autora.
    Test: aplikacja wykonuje polecenie, które MG już wydał (licznik, tyknięcie), i rachunek bez
    decyzji — gdy wejście leży w księdze, reguła jest jedna dla każdej istoty, uruchamia ją akcja MG,
    wynik da się odznaczyć, a bez tego MG musiałby pamiętać. Wynik niepewny (rzut istoty) albo zależny
-   od sytuacji przy stole (osłona, 0 PZ, „chyba że ogień”) zostaje u MG.
+   od sytuacji przy stole (osłona, 0 PW, „chyba że ogień”) zostaje u MG.
 4. **Stan zmienia się tylko po akcji MG.** Aplikacja nie ma poczucia czasu: bez timerów i pracy
    w tle; zegar, rundę i turę przesuwa MG. Cele wskazuje MG (może kilka naraz), nigdy reguła („w
    obszarze”, „najbliższy”). Zdarzenia powiadamiają widoki, nigdy nie zapisują.
 5. **Świat zmienia MG bez ograniczeń.** Każdą wartość istoty, także ze strukturą, MG zmienia na jej
    karcie; różnica od wpisu jest oznaczona i da się ją przywrócić. Istota i przedmiot działają też
-   bez wpisu z paczki. Stan niezgodny z zasadami (PZ ponad maksimum, ujemne złoto) widać, nie blokuje.
+   bez wpisu z paczki. Stan niezgodny z zasadami (PW ponad maksimum, ujemne złoto) widać, nie blokuje.
 6. **Liczba ma pochodzenie tam, gdzie stoi.** Przy wartości widać ostatnią zmianę („30, było 42”),
    rzut w kalkulatorze ma rozpisanie, w walce zmiana od początku tury ma znacznik. Dziennika świata
    nie ma.

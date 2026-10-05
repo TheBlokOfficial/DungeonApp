@@ -21,7 +21,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// the same line; the weight and, under it, the worth at the end of the title's line; the rarity pill at the
 /// start of the tags' row, drawn like the list's (the tags after it - "magiczny", the subtype - are
 /// the profile's, <see cref="Dnd5eSystem"/>); and the KP / Obrażenia / Ładunki headline values,
-/// the same block as the creature's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
+/// the same block as the creature's KP / PW / Szybkość (<see cref="HeadlineValuesView"/>). An item
 /// with none of those three lends no block; weight and worth every item has.
 /// </para>
 /// <para>

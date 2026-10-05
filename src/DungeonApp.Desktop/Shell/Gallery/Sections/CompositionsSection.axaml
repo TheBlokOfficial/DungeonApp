@@ -109,7 +109,7 @@
                              tagami w szczególe wpisu. To wartości z karty, nie liczniki. -->
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
                             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="15" Note="skórzana zbroja, tarcza" />
-                            <controls:StatTile Grid.Column="1" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" />
+                            <controls:StatTile Grid.Column="1" Label="PW" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" />
                             <controls:StatTile Grid.Column="2" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="9 m" />
                         </Grid>
 

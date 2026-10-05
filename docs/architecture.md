@@ -47,10 +47,10 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   (`required`, brak nieznanych kluczy) jest walidatorem. Pole to napis, liczba, znacznik, **aspekt**
   albo **sekcja prozy**.
 - **Aspekt** to paczka pól jednego znaczenia, zapisana jako obiekt w `values`: walka stworzenia
-  (`combat`: KP, PZ, bieżące PZ, cechy), przedmiot (`item`: waga, wartość), ładunki (`charges`).
+  (`combat`: KP, PW, bieżące PW, cechy), przedmiot (`item`: waga, wartość), ładunki (`charges`).
   Każdy to rekord w `Content.Dnd5e`; walka i przedmiot są wymagane we wpisie, ładunki nie; narzędzie pyta
   o aspekt, nie o typ. Aspekt nie ma wyglądu — pola rozmieszcza karta typu. Łatka instancji scala
-  obiekty po kluczu, więc zmiana PZ zapisuje tylko `{"combat":{"currentHp":3}}`, a późniejsza
+  obiekty po kluczu, więc zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`, a późniejsza
   poprawka KP we wpisie dociera do instancji.
 - **Sekcja prozy** (u stworzenia cechy szczególne, akcje, rzucanie czarów, akcje
   dodatkowe, reakcje, akcje legendarne; u stanu zasady) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
@@ -77,7 +77,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
   wzorcowej kampanii.
 - **Instancja** to egzemplarz w kampanii: łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka
-  łatka z samymi odchyleniami (np. aktualne PZ, nazwa własna). Rozwiązuje się ją od nowa przy każdym
+  łatka z samymi odchyleniami (np. aktualne PW, nazwa własna). Rozwiązuje się ją od nowa przy każdym
   odczycie, więc poprawka wpisu w paczce dociera do istniejących kampanii.
 - Format kampanii inny niż bieżący (zbyt nowy albo zbyt stary) oznacza odmowę odczytu, a wpis paczki
   w innej wersji typu niż bieżąca jest oznaczany. Kiedy wersje rosną i kiedy pojawią się migracje:
@@ -115,7 +115,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
   pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo przed tagami i blok pod tagami
-  (u stworzenia portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (własny token; trzy komórki
+  (u stworzenia portret oraz KP, PW i Szybkość). Obraz ma 150 szerokości (własny token; trzy komórki
   tabeli cech po 50 mają tę samą szerokość): kwadrat u przedmiotu, portret 3:4 (150×200) u stworzenia — tyle, żeby obok zmieściły się nazwa
   w jednej linii, tagi i blok. Blok stoi dnem równo z dolną krawędzią obrazu; gdy kolumna tytułu
   jest wyższa, nagłówek rośnie, nic nie jest przycinane. Wartość w bloku to zawsze trzy rzędy:
@@ -130,7 +130,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   od miejsca ucięcia, litery wspólne zostają tytułu); na ten czas zakrywa wagę i wartość
   (`RevealingTextBlock`; nazwa stworzenia się zawija); na końcu linii nazwy waga
   z ikoną odważnika, pod nią mniejsza, przygaszona wartość (obie obowiązkowe, zero też widać); pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
-  (ta sama kontrolka co KP / PZ / Szybkość stworzenia, tylko wypełnione). Pod nagłówkiem, za
+  (ta sama kontrolka co KP / PW / Szybkość stworzenia, tylko wypełnione). Pod nagłówkiem, za
   separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech stworzenia): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
   „Opis” jak sekcje prozy stworzenia. Rzadkość ma pięć stopni ze skali gier: Pospolity (jasnoszary),
   Niepospolity (zielony), Rzadki (niebieski), Epicki (fioletowy), Legendarny (pomarańczowy);
@@ -150,7 +150,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   kolorytem (stworzenie), to mała stopka; opis niosący zasady (przedmiot) to sekcja prozy „Opis”.
   Wygląd sprawdza się renderem (`tools/render`) przed oddaniem autorowi.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
-  system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PZ).
+  system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PW).
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta pod spodem. Tokeny kolorów mają
   zapisane znaczenie; skale należące do systemu (rzadkość przedmiotu) mają własne kolory w systemie.
   Galeria pokazuje każdą kontrolkę motywu w każdym stanie.
@@ -162,7 +162,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
 ## Granica automatyzacji w praktyce
 
 Atak liczy MG: rzuca kośćmi albo kalkulatorem („17 = 13 na k20 + 4”), porównuje z KP z karty
-i wpisuje celowi `-12`. Pole zmiany odejmuje najpierw PZ tymczasowe i zostawia przy wartości „30,
+i wpisuje celowi `-12`. Pole zmiany odejmuje najpierw PW tymczasowe i zostawia przy wartości „30,
 było 42”. „Następna tura” kończy turę goblina (jego Ogłuszenie schodzi z 1 na 0 i znika) i zaczyna
 turę trolla (przypomnienie o regeneracji); okienko boczne wymienia obie zmiany, a odznaczenie
 przywraca Ogłuszenie. „Sprzedaj” przy mieczu bierze cenę z wartości wpisu (sprzedaż za połowę), MG
@@ -173,7 +173,7 @@ ją zmienia, a zatwierdzenie przenosi miecz i złoto jedną akcją.
 Szczegóły dawnego projektu docelowego: `docs/archive/architecture.md`. Każde z poniższych powstaje
 dopiero razem z pierwszym konsumentem.
 
-- **Przełomy i wartości pochodne:** kod systemu. Wartość pochodna (modyfikator cechy, bierna
+- **Przełomy i wartości pochodne:** kod systemu. Wartość pochodna (modyfikator cechy, pasywna
   Percepcja) liczy się przy odczycie z pól ze strukturą. Formuły w danych paczki są odłożone
   (roadmapa).
 - **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
@@ -188,6 +188,6 @@ dopiero razem z pierwszym konsumentem.
 - **Autorstwo treści w aplikacji:** najpierw „skopiuj i zmień” do własnej paczki MG, potem tworzenie
   od zera — formularz projektowany per typ, zapisujący ten sam plik wpisu.
 - **Podział księgi między ramę i system:** pole zmiany liczby, tryb edycji karty, kalkulator kości,
-  okienko przełomu i znaczniki zmian w turze są ramy i nie znają systemu. Reguły rachunku (PZ
+  okienko przełomu i znaczniki zmian w turze są ramy i nie znają systemu. Reguły rachunku (PW
   tymczasowe schodzą pierwsze) i treść przełomów (co tyka na końcu tury, co odnawia odpoczynek) są
   kodem systemu.

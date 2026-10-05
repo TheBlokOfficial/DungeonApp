@@ -85,7 +85,7 @@
             <!-- Liczbowe -->
             <TextBlock Grid.Row="4" Classes="caption muted row-label" Text="Liczbowe" />
             <StackPanel Grid.Row="4" Grid.Column="1" Classes="field-row">
-                <NumericUpDown PlaceholderText="PZ" Minimum="0" />
+                <NumericUpDown PlaceholderText="PW" Minimum="0" />
                 <NumericUpDown Value="27" Minimum="0" />
                 <NumericUpDown Value="1234567" Minimum="0" />
                 <NumericUpDown Value="12" IsEnabled="False" />

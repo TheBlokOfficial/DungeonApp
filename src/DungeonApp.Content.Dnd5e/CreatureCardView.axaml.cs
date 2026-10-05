@@ -16,7 +16,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// after construction, through <see cref="SetCreature"/>: the constructor stays parameterless, as the
 /// XAML loader and the designer preview need it.
 /// <para>
-/// The portrait and the KP / PZ / Szybkość values belong to the detail header
+/// The portrait and the KP / PW / Szybkość values belong to the detail header
 /// (<see cref="IEntryCardHeader"/>): the header draws the title and tags for every content type
 /// alike, and this card only lends it those two pieces. The portrait is DungeonDetailPictureWidth
 /// wide at 3:4, and the pairs' values start on the title column's line beside it.
@@ -74,7 +74,7 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
         _vitals.Show(
         [
             new HeadlineValue("KP", "DungeonIconShield", combat.Ac.ToString(CultureInfo.InvariantCulture), combat.AcSource),
-            new HeadlineValue("PZ", "DungeonIconHeart", combat.Hp.ToString(CultureInfo.InvariantCulture), combat.HpDice),
+            new HeadlineValue("PW", "DungeonIconHeart", combat.Hp.ToString(CultureInfo.InvariantCulture), combat.HpDice),
             new HeadlineValue("Szybkość", "DungeonIconFootprints", creature.Speed),
         ]);
 
@@ -117,8 +117,8 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
         AddIfFilled(rows, "Umiejętności", creature.Skills);
         AddIfFilled(rows, "Podatność na obrażenia", creature.DamageVulnerabilities);
         AddIfFilled(rows, "Odporność na obrażenia", creature.DamageResistances);
-        AddIfFilled(rows, "Niewrażliwość na obrażenia", creature.DamageImmunities);
-        AddIfFilled(rows, "Niewrażliwość na stany", creature.ConditionImmunities);
+        AddIfFilled(rows, "Niepodatność na obrażenia", creature.DamageImmunities);
+        AddIfFilled(rows, "Niepodatność na stany", creature.ConditionImmunities);
         rows.Add(new TraitRow("Zmysły", creature.Senses));
         AddIfFilled(rows, "Języki", creature.Languages);
         rows.Add(new TraitRow(
