@@ -16,20 +16,20 @@ using DungeonApp.Desktop.Themes;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Klocek sortowania listy: odnośnik samodzielny "Sortuj: {pole}" ze strzałką, który otwiera menu pól
-/// (ptaszek przy wybranym, przy nim w przygaszonej kolumnie kierunek), i tuż za nim przycisk kierunku
-/// z ikoną, która odwraca kierunek. Nic nie sortuje - trzyma wybór widoku: pole
-/// (<see cref="SelectedOption"/>) i kierunek (<see cref="IsDescending"/>), oba wiązane w obie strony.
-/// Zmienia je wyłącznie na jawne kliknięcie pozycji menu albo przycisku kierunku.
+/// List sort control: standalone "Sortuj: {pole}" link with arrow opening a field menu
+/// (checkmark beside the selected field, direction in the adjacent muted column), followed by a direction button
+/// with an icon that reverses direction. Sorts nothing - holds the view's selection: field
+/// (<see cref="SelectedOption"/>) and direction (<see cref="IsDescending"/>), both bound two-way.
+/// Changes them only on an explicit menu-item or direction-button click.
 /// </summary>
 /// <remarks>
-/// Napisy kierunku zależą od rodzaju wybranego pola: tekstowe - "A–Z" / "Z–A", liczbowe (wymienione
-/// w <see cref="NumericOptions"/>) - "rosnąco" / "malejąco". Gdy <see cref="NumericOptions"/> jest
-/// puste (null), rodzaj pól jest nieznany: menu nie pokazuje kierunku, a podpowiedź przycisku mówi
-/// "rosnąco" / "malejąco". Zmiana kierunku przewraca ikonę przez oś poziomą (spłaszczenie do zera
-/// i rozłożenie odwróconej, DungeonMotionDuration, z wyhamowaniem); kierunek zmienia się od razu, ruch
-/// go dogania; przy wyłączonych animacjach w systemie (<see cref="SystemMotion.IsReduced"/>) - bez
-/// ruchu. Wygląd należy do motywu ramy (Themes/Controls/SortPicker.axaml).
+/// Direction labels depend on selected field type: text - "A–Z" / "Z–A", numeric (listed
+/// in <see cref="NumericOptions"/>) - "rosnąco" / "malejąco". When <see cref="NumericOptions"/> is
+/// empty (null), field types are unknown: menu shows no direction, button tooltip says
+/// "rosnąco" / "malejąco". Direction change flips the icon across the horizontal axis (flattening to zero
+/// and expanding inverted, DungeonMotionDuration, easing out); direction changes immediately, motion
+/// catches up; with system animations disabled (<see cref="SystemMotion.IsReduced"/>) - no
+/// motion. Appearance belongs to the shell theme (Themes/Controls/SortPicker.axaml).
 /// </remarks>
 [TemplatePart(FieldButtonPartName, typeof(Button))]
 [TemplatePart(DirectionButtonPartName, typeof(Button))]
@@ -40,31 +40,31 @@ public sealed class SortPicker : TemplatedControl
     private const string DirectionButtonPartName = "PART_DirectionButton";
     private const string DirectionGlyphPartName = "PART_DirectionGlyph";
 
-    /// <summary>Nazwy pól, po których można sortować - pozycje menu, w tej kolejności.</summary>
+    /// <summary>Sortable field names - menu items, in this order.</summary>
     public static readonly StyledProperty<IEnumerable<string>?> OptionsProperty =
         AvaloniaProperty.Register<SortPicker, IEnumerable<string>?>(nameof(Options));
 
-    /// <summary>Wybrane pole (jedna z <see cref="Options"/>).</summary>
+    /// <summary>Selected field (one of <see cref="Options"/>).</summary>
     public static readonly StyledProperty<string?> SelectedOptionProperty =
         AvaloniaProperty.Register<SortPicker, string?>(nameof(SelectedOption), defaultBindingMode: BindingMode.TwoWay);
 
-    /// <summary>Kierunek: malejąco (Z–A) zamiast rosnąco (A–Z).</summary>
+    /// <summary>Direction: descending (Z–A) rather than ascending (A–Z).</summary>
     public static readonly StyledProperty<bool> IsDescendingProperty =
         AvaloniaProperty.Register<SortPicker, bool>(nameof(IsDescending), defaultBindingMode: BindingMode.TwoWay);
 
-    /// <summary>Pola liczbowe spośród <see cref="Options"/>; null - rodzaj pól nieznany.</summary>
+    /// <summary>Numeric fields among <see cref="Options"/>; null - field types unknown.</summary>
     public static readonly StyledProperty<IEnumerable<string>?> NumericOptionsProperty =
         AvaloniaProperty.Register<SortPicker, IEnumerable<string>?>(nameof(NumericOptions));
 
-    /// <summary>Czy kierunek da się odwrócić (domyślnie tak); nie - przycisk kierunku wygaszony.</summary>
+    /// <summary>Whether direction can be reversed (true by default); false - direction button disabled.</summary>
     public static readonly StyledProperty<bool> CanReverseProperty =
         AvaloniaProperty.Register<SortPicker, bool>(nameof(CanReverse), defaultValue: true);
 
-    /// <summary>Napis odnośnika: "Sortuj: {pole}".</summary>
+    /// <summary>Link label: "Sortuj: {pole}".</summary>
     public static readonly DirectProperty<SortPicker, string> FieldTextProperty =
         AvaloniaProperty.RegisterDirect<SortPicker, string>(nameof(FieldText), picker => picker.FieldText);
 
-    /// <summary>Podpowiedź przycisku kierunku: "Kierunek: A–Z" itd.</summary>
+    /// <summary>Direction button tooltip: "Kierunek: A–Z", etc.</summary>
     public static readonly DirectProperty<SortPicker, string> DirectionToolTipProperty =
         AvaloniaProperty.RegisterDirect<SortPicker, string>(nameof(DirectionToolTip), picker => picker.DirectionToolTip);
 
@@ -118,8 +118,8 @@ public sealed class SortPicker : TemplatedControl
     }
 
     /// <summary>
-    /// Napis kierunku dla wybranego pola ("A–Z", "Z–A", "rosnąco", "malejąco"), albo null, gdy rodzaj
-    /// pól jest nieznany.
+    /// Direction label for the selected field ("A–Z", "Z–A", "rosnąco", "malejąco"), or null when field
+    /// types are unknown.
     /// </summary>
     internal string? DirectionText(string? option)
     {
@@ -147,8 +147,8 @@ public sealed class SortPicker : TemplatedControl
         _directionButton = e.NameScope.Find<Button>(DirectionButtonPartName);
         _directionGlyph = e.NameScope.Find<Control>(DirectionGlyphPartName);
 
-        // Okienko wysuwane nie jest kontrolką - motyw go nie dosięga; położenie ustala klocek:
-        // pod odnośnikiem, wyrównane do jego lewej krawędzi (odstęp - DungeonFlyoutMargin z motywu menu).
+        // Flyout is not a control - the theme cannot reach it; this control sets placement:
+        // below the link, left-aligned with it (gap - DungeonFlyoutMargin from the menu theme).
         _menu = new MenuFlyout { Placement = PlacementMode.BottomEdgeAlignedLeft };
         if (_fieldButton is not null)
         {
@@ -188,8 +188,8 @@ public sealed class SortPicker : TemplatedControl
 
     private void OnDirectionClick(object? sender, RoutedEventArgs e) => IsDescending = !IsDescending;
 
-    // Pozycje menu - jedna na pole; budowane od nowa tylko przy zmianie listy pól. Wybór i kierunek
-    // odświeżają istniejące pozycje (RefreshMenu), więc kliknięta pozycja nie znika spod myszy.
+    // Menu items - one per field; rebuilt only when the field list changes. Selection and direction
+    // refresh existing items (RefreshMenu), so a clicked item does not disappear under the pointer.
     private void RebuildMenu()
     {
         if (_menu is null)
@@ -202,9 +202,9 @@ public sealed class SortPicker : TemplatedControl
         {
             var item = new MenuItem { Header = option, ToggleType = MenuItemToggleType.CheckBox };
 
-            // Pozycja do zaznaczania przełącza swój ptaszek sama, zanim dojdzie tu kliknięcie - ponowne
-            // kliknięcie wybranego pola zdjęłoby ptaszek bez zmiany wyboru. Ptaszek należy do wyboru,
-            // więc po kliknięciu stan pozycji ustala się od nowa.
+            // A checkable item toggles its own checkmark before the click reaches here - clicking
+            // the selected field again would remove the checkmark without changing selection. Checkmark belongs to selection,
+            // so item state is reapplied after clicking.
             item.Click += (_, _) =>
             {
                 SelectedOption = option;
@@ -216,7 +216,7 @@ public sealed class SortPicker : TemplatedControl
         RefreshMenu();
     }
 
-    // Ptaszek i napis kierunku przy wybranym polu; pozostałe pozycje bez nich.
+    // Checkmark and direction label beside the selected field; other items have neither.
     private void RefreshMenu()
     {
         if (_menu is null)
@@ -244,7 +244,7 @@ public sealed class SortPicker : TemplatedControl
         DirectionToolTip = $"Kierunek: {word}";
     }
 
-    // Rysunek ikony znaczy "malejąco"; "rosnąco" to ten sam rysunek przewrócony przez oś poziomą.
+    // Icon drawing means "malejąco"; "rosnąco" uses the same drawing flipped across the horizontal axis.
     private void SetGlyphScale(bool animate)
     {
         if (_directionGlyph is null)
@@ -268,9 +268,9 @@ public sealed class SortPicker : TemplatedControl
     }
 
     /// <summary>
-    /// Przewrócenie ikony: skala w pionie z <paramref name="from"/> przez zero do <paramref name="to"/>
-    /// w DungeonMotionDuration, z wyhamowaniem. Stan (wartość bazowa skali) jest już ustawiony - ruch
-    /// go tylko dogania. Przy <paramref name="reduced"/> nic się nie rusza.
+    /// Icon flip: vertical scale from <paramref name="from"/> through zero to <paramref name="to"/>
+    /// over DungeonMotionDuration, easing out. State (base scale value) is already set - motion
+    /// only catches up. With <paramref name="reduced"/>, nothing moves.
     /// </summary>
     internal static void Flip(Control glyph, double from, double to, bool reduced)
     {

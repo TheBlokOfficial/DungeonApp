@@ -4,9 +4,9 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Krótki napis w przygaszonej kolumnie po prawej stronie pozycji menu - tej samej, w której menu
-/// pokazuje skrót klawiszowy (np. kierunek sortowania przy wybranym polu w <see cref="SortPicker"/>).
-/// Pozycja nie ma naraz skrótu i takiego napisu. Wygląd należy do motywu MenuItem
+/// Short text in the muted right-hand column of a menu item - the same column used for
+/// keyboard shortcuts (e.g. sort direction beside the selected field in <see cref="SortPicker"/>).
+/// An item never has both a shortcut and this text. Appearance belongs to the MenuItem theme
 /// (Themes/Controls/Menus.axaml, PART_TrailingText).
 /// </summary>
 public static class MenuItemTrailing

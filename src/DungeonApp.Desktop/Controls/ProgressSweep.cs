@@ -8,19 +8,19 @@ using Avalonia.Media;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Wypełnienie nieokreślonego wskaźnika postępu (część szablonu ProgressBar, Themes/Controls/ProgressBar.axaml):
-/// odcinek szerokości <see cref="SegmentFraction"/> toru przesuwa się w pętli od lewej do prawej
-/// w czasie DungeonProgressSweepDuration. To ruch ciągły, nie przejście stanu - rysuje go kod, bo
-/// animacja stylu nie daje się wyłączyć stylem ReducedMotion.axaml. Klatki napędza pętla renderowania
-/// okna (<see cref="TopLevel.RequestAnimationFrame"/>) - odświeżanie idzie z częstotliwością ekranu, nie
-/// z zegara o stałym odstępie; położenie liczy się z upływu czasu, więc nie zależy od liczby klatek.
-/// Spokojny (bez ruchu, cały tor w <see cref="CalmFill"/>): przy wyłączonych animacjach w systemie
-/// (<see cref="Themes.SystemMotion.IsReduced"/>) i gdy kontrolka jest wyłączona.
-/// Zmienia wyłącznie wygląd, nigdy stan aplikacji.
+/// Indeterminate progress fill (part of the ProgressBar template, Themes/Controls/ProgressBar.axaml):
+/// segment spanning <see cref="SegmentFraction"/> of the track loops from left to right
+/// over DungeonProgressSweepDuration. Continuous motion, not a state transition - drawn in code because
+/// a style animation cannot be disabled through ReducedMotion.axaml. The window's rendering loop drives
+/// frames (<see cref="TopLevel.RequestAnimationFrame"/>) - updates follow the display refresh rate, not
+/// a fixed-interval timer; position uses elapsed time, independent of frame count.
+/// Calm (no motion, entire track in <see cref="CalmFill"/>): when system animations are disabled
+/// (<see cref="Themes.SystemMotion.IsReduced"/>) or the control is disabled.
+/// Changes appearance only, never application state.
 /// </summary>
 public sealed class ProgressSweep : Control
 {
-    /// <summary>Szerokość odcinka jako część szerokości toru.</summary>
+    /// <summary>Segment width as a fraction of track width.</summary>
     public const double SegmentFraction = 0.4;
 
     public static readonly StyledProperty<IBrush?> FillProperty =

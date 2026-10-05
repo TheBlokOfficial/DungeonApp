@@ -5,14 +5,14 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Mała tabela w karcie (np. cechy: nazwa, wartość, modyfikator): siatka (<see cref="Grid"/> -
-/// kolumny i wiersze zna widok w czasie kompilacji), której każda pozycja ma <see cref="TableCell"/>.
-/// Obramowanie
-/// zewnętrzne 1 px i linie poziome między wierszami rysują komórki; tabela przed pomiarem ustala
-/// każdej komórce grubość krawędzi z jej położenia: górna tylko w pierwszym wierszu, lewa tylko
-/// w pierwszej kolumnie, dolna zawsze, prawa w ostatniej kolumnie - i między kolumnami, gdy
-/// <see cref="ShowColumnLines"/>. Każda linia leży więc raz, tło wyróżnionej komórki sięga linii,
-/// ale pod nią nie wchodzi. Ostre narożniki. Nieinteraktywna. Wygląd należy do motywu ramy
+/// Small card table (e.g. abilities: name, value, modifier): grid (<see cref="Grid"/> -
+/// view knows columns and rows at compile time), with a <see cref="TableCell"/> at each position.
+/// Cells draw
+/// the 1 px outer border and horizontal row lines; before measurement, table sets
+/// each cell's border thickness from its position: top only in the first row, left only
+/// in the first column, bottom always, right in the last column - and between columns when
+/// <see cref="ShowColumnLines"/>. Each line is therefore drawn once, highlighted cell background reaches the line
+/// but never lies beneath it. Square corners. Non-interactive. Appearance belongs to the shell theme
 /// (Themes/Controls/Table.axaml).
 /// </summary>
 public sealed class Table : Grid
@@ -25,7 +25,7 @@ public sealed class Table : Grid
         AffectsMeasure<Table>(ShowColumnLinesProperty);
     }
 
-    /// <summary>Linie pionowe między kolumnami; domyślnie wyłączone.</summary>
+    /// <summary>Vertical lines between columns; off by default.</summary>
     public bool ShowColumnLines
     {
         get => GetValue(ShowColumnLinesProperty);
