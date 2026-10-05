@@ -23,10 +23,10 @@ namespace DungeonApp.Core.Entries;
 /// <para>
 /// <see cref="Overlay"/>, <see cref="Difference"/> and <see cref="From{T}"/> are what a
 /// <see cref="Instances.CampaignInstance"/>'s sparse patch is built and read through, and they stand on that
-/// same argument. They move whole properties around by the names the envelope already carries; none
-/// of them writes down a name, asks what a name means, or reads a value. Merging two envelopes
-/// key-for-key is no more knowledge of an entry's shape than carrying one envelope unopened is -
-/// which is the only reason the engine is allowed to hold a patch at all.
+/// same argument. They move properties around, at any depth, by the names the envelope already
+/// carries; none of them writes down a name, asks what a name means, or reads a value. Merging two
+/// envelopes key-for-key is no more knowledge of an entry's shape than carrying one envelope
+/// unopened is - which is the only reason the engine is allowed to hold a patch at all.
 /// </para>
 /// </summary>
 [JsonConverter(typeof(ContentValues.Converter))]
@@ -87,12 +87,13 @@ public sealed class ContentValues
     /// over them: same-named properties replaced, new ones added. Neither side is modified - this
     /// is how an instance is read without ever materializing the entry it points at.
     /// <para>
-    /// The merge is <em>shallow</em>, by decision rather than by omission: if a property's value is
-    /// itself an object, the patch replaces that object whole and does not merge into it. A deep
-    /// merge would have to decide what a nested key means - whether two objects under the same name
-    /// describe the same thing and should be combined, or are two different things and should be
-    /// swapped - and that is a judgement only the system may make. The shallow rule needs no
-    /// such judgement, so it is the one the engine can hold.
+    /// The merge is recursive and key-for-key: where both sides hold an object under the same name,
+    /// the patch is merged into that object, so a patch that changes one nested value does not
+    /// freeze its siblings and a later correction to a sibling in the entry still reaches the
+    /// instance. Everything else - arrays, text, numbers, null - is replaced whole; an array has no
+    /// stable keys to merge by. A null in the patch is a value like any other, not a request to
+    /// remove the key. This is the rule of the format, not a judgement about any property, so the
+    /// engine can hold it without knowing what a name means.
     /// </para>
     /// </summary>
     public ContentValues Overlay(ContentValues patch)
@@ -100,40 +101,21 @@ public sealed class ContentValues
         var baseline = RequireObject(this, nameof(Overlay));
         var overlay = RequireObject(patch, nameof(patch));
 
-        return Build(writer =>
-        {
-            foreach (var property in baseline.EnumerateObject())
-            {
-                if (overlay.TryGetProperty(property.Name, out var replacement))
-                {
-                    writer.WritePropertyName(property.Name);
-                    replacement.WriteTo(writer);
-                }
-                else
-                {
-                    property.WriteTo(writer);
-                }
-            }
-
-            foreach (var property in overlay.EnumerateObject())
-            {
-                if (!baseline.TryGetProperty(property.Name, out _))
-                {
-                    property.WriteTo(writer);
-                }
-            }
-        });
+        return Build(writer => WriteMerged(baseline, overlay, writer));
     }
 
     /// <summary>
     /// Returns the sparse patch that turns <paramref name="baseline"/> into
     /// <paramref name="candidate"/>: every property whose value differs, plus every property
-    /// <paramref name="baseline"/> does not have at all.
+    /// <paramref name="baseline"/> does not have at all. Where both sides hold an object under the
+    /// same name, only the nested keys that differ are reported, which is the exact inverse of how
+    /// <see cref="Overlay"/> merges: <c>baseline.Overlay(Difference(baseline, candidate))</c> reads
+    /// back as <paramref name="candidate"/>. Arrays and plain values are reported whole.
     /// <para>
     /// A property present in <paramref name="baseline"/> and absent from
-    /// <paramref name="candidate"/> is deliberately not reported. A patch is an overlay and has no
-    /// way to say "remove this key"; giving it one would make the patch able to reshape an entry
-    /// rather than deviate from it.
+    /// <paramref name="candidate"/> is deliberately not reported, at any depth. A patch is an overlay
+    /// and has no way to say "remove this key"; giving it one would make the patch able to reshape
+    /// an entry rather than deviate from it.
     /// </para>
     /// <para>
     /// Values are compared with <see cref="JsonElement.DeepEquals(JsonElement, JsonElement)"/>
@@ -146,21 +128,84 @@ public sealed class ContentValues
         var original = RequireObject(baseline, nameof(baseline));
         var proposed = RequireObject(candidate, nameof(candidate));
 
-        return Build(writer =>
-        {
-            foreach (var property in proposed.EnumerateObject())
-            {
-                var unchanged = original.TryGetProperty(property.Name, out var previous)
-                                && JsonElement.DeepEquals(previous, property.Value);
-
-                if (!unchanged)
-                {
-                    property.WriteTo(writer);
-                }
-            }
-        });
+        return Build(writer => WriteDifference(original, proposed, writer));
     }
 
+    private static void WriteMerged(JsonElement baseline, JsonElement overlay, Utf8JsonWriter writer)
+    {
+        foreach (var property in baseline.EnumerateObject())
+        {
+            if (!overlay.TryGetProperty(property.Name, out var replacement))
+            {
+                property.WriteTo(writer);
+            }
+            else if (property.Value.ValueKind == JsonValueKind.Object && replacement.ValueKind == JsonValueKind.Object)
+            {
+                writer.WriteStartObject(property.Name);
+                WriteMerged(property.Value, replacement, writer);
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WritePropertyName(property.Name);
+                replacement.WriteTo(writer);
+            }
+        }
+
+        foreach (var property in overlay.EnumerateObject())
+        {
+            if (!baseline.TryGetProperty(property.Name, out _))
+            {
+                property.WriteTo(writer);
+            }
+        }
+    }
+
+    private static void WriteDifference(JsonElement original, JsonElement proposed, Utf8JsonWriter writer)
+    {
+        foreach (var property in proposed.EnumerateObject())
+        {
+            if (!original.TryGetProperty(property.Name, out var previous))
+            {
+                property.WriteTo(writer);
+            }
+            else if (previous.ValueKind == JsonValueKind.Object && property.Value.ValueKind == JsonValueKind.Object)
+            {
+                if (ObjectsDiffer(previous, property.Value))
+                {
+                    writer.WriteStartObject(property.Name);
+                    WriteDifference(previous, property.Value, writer);
+                    writer.WriteEndObject();
+                }
+            }
+            else if (!JsonElement.DeepEquals(previous, property.Value))
+            {
+                property.WriteTo(writer);
+            }
+        }
+    }
+
+    private static bool ObjectsDiffer(JsonElement original, JsonElement proposed)
+    {
+        foreach (var property in proposed.EnumerateObject())
+        {
+            if (!original.TryGetProperty(property.Name, out var previous))
+            {
+                return true;
+            }
+
+            var differs = previous.ValueKind == JsonValueKind.Object && property.Value.ValueKind == JsonValueKind.Object
+                ? ObjectsDiffer(previous, property.Value)
+                : !JsonElement.DeepEquals(previous, property.Value);
+
+            if (differs)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     /// <summary>
     /// Seals a system's record back into an envelope - the return leg of
     /// <see cref="Read{T}"/>, and the only way an edited record becomes something
@@ -177,11 +222,6 @@ public sealed class ContentValues
         return new ContentValues(document.RootElement);
     }
 
-    /// <summary>
-    /// An envelope over anything but a JSON object cannot be merged or differenced, and should
-    /// never have been built. It is not silently tolerated: a store that quietly did nothing with
-    /// one would lose an edit without saying so.
-    /// </summary>
     /// <summary>
     /// Reads one text property by a name the caller was handed - never one this layer writes down
     /// itself: <see cref="ContentTypeDescriptor.ImageProperty"/> is the only such name. False when the
@@ -202,6 +242,11 @@ public sealed class ContentValues
         return false;
     }
 
+    /// <summary>
+    /// An envelope over anything but a JSON object cannot be merged or differenced, and should
+    /// never have been built. It is not silently tolerated: a store that quietly did nothing with
+    /// one would lose an edit without saying so.
+    /// </summary>
     private static JsonElement RequireObject(ContentValues values, string operation)
     {
         if (values._raw.ValueKind != JsonValueKind.Object)

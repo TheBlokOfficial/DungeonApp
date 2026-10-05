@@ -84,16 +84,50 @@ public sealed class ContentValuesTests
     }
 
     [Fact]
-    public void Overlay_replaces_a_nested_object_whole_rather_than_merging_into_it()
+    public void Overlay_merges_a_nested_object_key_by_key()
     {
-        // Freezing the shallow rule as a decision, not as a gap: deciding whether two objects under
-        // the same name are the same thing being amended or a different thing being swapped is a
-        // judgement about content, and the engine is not the one that may make it.
         var merged = Envelope("""{ "note": { "a": 1, "b": 2 } }""").Overlay(Envelope("""{ "note": { "b": 3 } }"""));
 
-        Assert.Equal("""{"b":3}""", Raw(merged, "note"));
+        Assert.Equal("""{"a":1,"b":3}""", Raw(merged, "note"));
     }
 
+    [Fact]
+    public void Overlay_merges_objects_at_every_depth_and_adds_nested_keys_the_entry_lacks()
+    {
+        var merged = Envelope("""{ "outer": { "inner": { "a": 1, "b": 2 }, "c": 3 } }""")
+            .Overlay(Envelope("""{ "outer": { "inner": { "b": 5, "d": 6 } } }"""));
+
+        Assert.Equal("""{"inner":{"a":1,"b":5,"d":6},"c":3}""", Raw(merged, "outer"));
+    }
+
+    [Fact]
+    public void Overlay_replaces_an_array_whole()
+    {
+        // An array has no keys to merge by, so the patch's array is the instance's array.
+        var merged = Envelope("""{ "tags": [1, 2, 3] }""").Overlay(Envelope("""{ "tags": [9] }"""));
+
+        Assert.Equal("[9]", Raw(merged, "tags"));
+    }
+
+    [Fact]
+    public void Overlay_replaces_a_value_whose_kind_differs_on_the_two_sides()
+    {
+        var objectOverText = Envelope("""{ "note": "x" }""").Overlay(Envelope("""{ "note": { "a": 1 } }"""));
+        var textOverObject = Envelope("""{ "note": { "a": 1 } }""").Overlay(Envelope("""{ "note": "x" }"""));
+
+        Assert.Equal("""{"a":1}""", Raw(objectOverText, "note"));
+        Assert.Equal("\"x\"", Raw(textOverObject, "note"));
+    }
+
+    [Fact]
+    public void Overlay_treats_null_as_a_value_not_as_a_removal()
+    {
+        var merged = Envelope("""{ "size": 7, "note": { "a": 1 } }""")
+            .Overlay(Envelope("""{ "size": null, "note": { "a": null } }"""));
+
+        Assert.Equal("null", Raw(merged, "size"));
+        Assert.Equal("""{"a":null}""", Raw(merged, "note"));
+    }
     [Fact]
     public void Overlay_modifies_neither_side()
     {
@@ -142,6 +176,70 @@ public sealed class ContentValuesTests
         Assert.Equal("\"scarred\"", Raw(patch, "note"));
     }
 
+    [Fact]
+    public void Difference_reports_only_the_nested_keys_that_moved()
+    {
+        var patch = ContentValues.Difference(
+            Envelope("""{ "combat": { "hp": 7, "ac": 15, "currentHp": 7 }, "title": "A" }"""),
+            Envelope("""{ "combat": { "hp": 7, "ac": 15, "currentHp": 3 }, "title": "A" }"""));
+
+        Assert.Equal("""{"currentHp":3}""", Raw(patch, "combat"));
+        Assert.Single(Properties(patch));
+    }
+
+    [Fact]
+    public void Difference_leaves_out_a_nested_object_that_still_matches_the_entry()
+    {
+        var patch = ContentValues.Difference(
+            Envelope("""{ "combat": { "hp": 7 }, "size": 1 }"""),
+            Envelope("""{ "combat": { "hp": 7 }, "size": 2 }"""));
+
+        Assert.False(Properties(patch).ContainsKey("combat"));
+    }
+
+    [Fact]
+    public void Difference_reports_a_nested_key_the_entry_does_not_have()
+    {
+        var patch = ContentValues.Difference(
+            Envelope("""{ "combat": { "hp": 7 } }"""),
+            Envelope("""{ "combat": { "hp": 7, "currentHp": 3 } }"""));
+
+        Assert.Equal("""{"currentHp":3}""", Raw(patch, "combat"));
+    }
+
+    [Fact]
+    public void Difference_reports_a_changed_array_whole()
+    {
+        var patch = ContentValues.Difference(
+            Envelope("""{ "tags": [1, 2, 3] }"""),
+            Envelope("""{ "tags": [1, 2, 4] }"""));
+
+        Assert.Equal("[1,2,4]", Raw(patch, "tags"));
+    }
+
+    [Fact]
+    public void Difference_ignores_a_nested_key_the_candidate_dropped()
+    {
+        var patch = ContentValues.Difference(
+            Envelope("""{ "combat": { "hp": 7, "ac": 15 } }"""),
+            Envelope("""{ "combat": { "hp": 7 } }"""));
+
+        Assert.True(patch.IsEmpty);
+    }
+
+    [Fact]
+    public void Overlaying_the_difference_gives_back_the_candidate_for_nested_data()
+    {
+        var baseline = Envelope("""{ "title": "A", "combat": { "hp": 7, "ac": 15, "extra": { "x": 1, "y": 2 } }, "tags": [1, 2] }""");
+        var candidate = Envelope("""{ "title": "A", "combat": { "hp": 7, "ac": 12, "currentHp": 3, "extra": { "x": 1, "y": 5 } }, "tags": [2] }""");
+
+        var restored = baseline.Overlay(ContentValues.Difference(baseline, candidate));
+
+        // Key order inside an object is not part of its meaning, so the comparison is by value.
+        Assert.True(JsonElement.DeepEquals(
+            JsonSerializer.SerializeToElement(Properties(candidate)),
+            JsonSerializer.SerializeToElement(Properties(restored))));
+    }
     [Fact]
     public void Difference_ignores_a_property_the_candidate_dropped()
     {
