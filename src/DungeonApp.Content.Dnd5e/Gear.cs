@@ -51,7 +51,7 @@ public sealed record Gear : IJsonOnDeserialized
     /// <summary>The kind of <see cref="Damage"/> ("cięte"), written under it.</summary>
     public string? DamageType { get; init; }
 
-    /// <summary>A weapon's properties as written ("uniwersalna (1k10)").</summary>
+    /// <summary>A weapon's properties as written ("półtoraręczna (1k10)").</summary>
     public string? Properties { get; init; }
 
     /// <summary>

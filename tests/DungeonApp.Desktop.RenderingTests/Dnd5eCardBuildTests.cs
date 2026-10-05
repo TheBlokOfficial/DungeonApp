@@ -25,7 +25,7 @@ public sealed class Dnd5eCardBuildTests
         Alignment = "bez charakteru",
         Combat = new CombatAspect { Ac = 13, Hp = 11, Str = 12, Dex = 15, Con = 12, Int = 3, Wis = 12, Cha = 6 },
         Speed = "12 m",
-        Senses = "bierna Percepcja 13",
+        Senses = "pasywna Percepcja 13",
         Challenge = "1/4",
         Actions = Section("Ugryzienie"),
     };
@@ -37,7 +37,7 @@ public sealed class Dnd5eCardBuildTests
         Skills = "Percepcja +3",
         DamageVulnerabilities = "obuchowe",
         DamageResistances = "od zimna",
-        DamageImmunities = "od trucizny",
+        DamageImmunities = "od trucizn",
         ConditionImmunities = "zatrucie",
         Languages = "wspólny",
         Xp = 1800,
@@ -100,7 +100,7 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(
             [
                 "Rzuty obronne", "Umiejętności", "Podatność na obrażenia", "Odporność na obrażenia",
-                "Niewrażliwość na obrażenia", "Niewrażliwość na stany", "Zmysły", "Języki", "Wyzwanie",
+                "Niepodatność na obrażenia", "Niepodatność na stany", "Zmysły", "Języki", "Wyzwanie",
             ],
             TraitLabels(card));
         Assert.Equal(
@@ -139,7 +139,7 @@ public sealed class Dnd5eCardBuildTests
         var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock! } });
 
         var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
-        Assert.Equal(["KP", "PZ", "Szybkość"], tiles.Select(tile => tile.Label));
+        Assert.Equal(["KP", "PW", "Szybkość"], tiles.Select(tile => tile.Label));
         Assert.Equal(["13", "11", "12 m"], tiles.Select(tile => tile.Value));
         Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
@@ -147,7 +147,7 @@ public sealed class Dnd5eCardBuildTests
         // A creature's name wraps: the portrait leaves room for two lines.
         Assert.False(header.HeaderTitleOnOneLine);
 
-        // The note's line is kept without a note, so Szybkość is as tall as KP and PZ.
+        // The note's line is kept without a note, so Szybkość is as tall as KP and PW.
         Assert.Single(tiles.Select(tile => tile.DesiredSize.Height).Distinct());
 
         window.Close();
@@ -164,7 +164,7 @@ public sealed class Dnd5eCardBuildTests
         row.Show(
         [
             new HeadlineValue("KP", "DungeonIconShield", "15", "zbroja skórzana, tarcza"),
-            new HeadlineValue("PZ", "DungeonIconHeart", "7", "2k6"),
+            new HeadlineValue("PW", "DungeonIconHeart", "7", "2k6"),
             new HeadlineValue("Szybkość", "DungeonIconFootprints", "9 m"),
         ]);
         var window = Show(new StackPanel { Children = { row } });
@@ -191,7 +191,7 @@ public sealed class Dnd5eCardBuildTests
         Item = new ItemAspect { Weight = 1.5m, Value = 1500 },
         Damage = "1k6",
         DamageType = "obuchowe",
-        Properties = "uniwersalna (1k8)",
+        Properties = "półtoraręczna (1k8)",
         ArmorClass = "11",
         ArmorClassNote = "+ mod. Zr",
         StrengthRequirement = 13,

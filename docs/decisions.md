@@ -46,7 +46,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
 - **Lista przełomów (zamknięta).** Następna tura: koniec tury istoty (jej liczniki stanów −1, stany
   na zerze zdjęte, tyknięcia jej efektów na koniec tury) i początek tury następnej (tyknięcia na
   początek).
-  Odpoczynek krótki i długi: odnowienie PZ, miejsc na zaklęcia i ładunków według podręcznika.
+  Odpoczynek krótki i długi: odnowienie PW, miejsc na zaklęcia i ładunków według podręcznika.
   Handel: cena z wartości (sprzedaż za połowę), którą MG poprawia, potem przeniesienie przedmiotu
   i złota. Podróż: drużyna do innego katalogu i zegar o czas wpisany przez MG. Nowy przełom tylko
   za zgodą autora.
@@ -65,8 +65,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   egzemplarz dziedziczy, dopóki MG ich nie zmieni. Tyknięcie to jedyne miejsce z wyzwalaczem
   i czasem — dopuszczalne, bo pisze je MG, nie wpis, momenty są dwa, a każde przechodzi przez okienko.
 - **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5` i `=30`; liczba bez znaku nie
-  przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PZ na 12. Przy wartości zostaje ostatnia
-  zmiana („30, było 42, −12”) do następnej zmiany tej wartości. Rachunek z podręcznika (PZ
+  przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PW na 12. Przy wartości zostaje ostatnia
+  zmiana („30, było 42, −12”) do następnej zmiany tej wartości. Rachunek z podręcznika (PW
   tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
 - **Znaczniki zmian w turze.** „Następna tura” zapamiętuje stan sprzed przełomu; wszystko, co
   zmieniło się od tej chwili — ręcznie albo przełomem — ma tło znacznika, rzecz zdjęta jest
@@ -76,10 +76,10 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   „2k20 wyższy + 4”, „4× k20+2”), wynik z rozpisaniem, kilka ostatnich rzutów na czas sesji. Premię
   MG przepisuje z karty — przycisk rzutu na karcie wymagałby struktury ataków.
 - **Tryb edycji karty istoty.** Jeden przełącznik zamienia wartości karty w pola (ramka, ciemniejsze
-  tło) w tych samych miejscach i wymiarach. Bieżące PZ mają pole zmiany zawsze. Wartość różna od
+  tło) w tych samych miejscach i wymiarach. Bieżące PW mają pole zmiany zawsze. Wartość różna od
   wpisu ma znacznik i „Przywróć z wpisu”. Odrzucone: ołówek przy każdym polu (szum na karcie, dwa
   kliknięcia na zmianę) i wszystko edytowalne od razu (formularz, przypadkowe zmiany przy stole).
-- **Istota i przedmiot bez wpisu.** Improwizowany karczmarz to imię, notatka i — jeśli trzeba — PZ
+- **Istota i przedmiot bez wpisu.** Improwizowany karczmarz to imię, notatka i — jeśli trzeba — PW
   i KP wpisane ręcznie. To stan kampanii, nie treść, więc nie jest wpisem lokalnym kampanii.
 - **Konsument nadaje polu strukturę.** Trzy poziomy: proza (czyta MG), pole nazwane z tekstem
   (miejsce na zaprojektowanej karcie, wyszukiwanie: „Szybkość 9 m”, „Odporności: ogień”) i pole
@@ -89,15 +89,15 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   prozą. Kształt ustala rekord C#, więc struktura nie otwiera drogi do skryptów w danych.
 - **Rzecz świata składa się z aspektów.** Egzemplarz w drzewie kampanii to tożsamość (id, nazwa,
   miejsce, notatka, wpis źródłowy) i zestaw aspektów; aspekt to paczka pól typowanych jednego
-  konsumenta (walka: PZ, KP, cechy, inicjatywa, stany; przedmiot: waga, wartość, ilość; sakiewka;
+  konsumenta (walka: PW, KP, cechy, inicjatywa, stany; przedmiot: waga, wartość, ilość; sakiewka;
   ładunki; miejsca na zaklęcia). Narzędzie pyta o aspekt, nie o typ. Trzymać coś może każdy
   egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
 - **Typ ma stały kształt; aspekt to dane bez wyglądu.** Typ niesie zaprojektowaną kartę, profil
   zakładki, wymagany rdzeń i pola własne, których nie czyta żadne narzędzie (rozmiar, Szybkość,
   zmysły, wyzwanie, rzadkość, proza). Aspekt to tylko nazwa grupy pól, o którą pyta narzędzie (walka
-  czyta KP i PZ stworzenia i postaci); MG go nie włącza ani nie zdejmuje. Karta decyduje, gdzie stoi
-  każde pole — KP i PZ stworzenia stoją przy portrecie obok Szybkości. Wpis stworzenia ma zawsze
-  walkę (NPC bez walki to statblok pospolitego człowieka); puste KP i PZ zna tylko egzemplarz bez
+  czyta KP i PW stworzenia i postaci); MG go nie włącza ani nie zdejmuje. Karta decyduje, gdzie stoi
+  każde pole — KP i PW stworzenia stoją przy portrecie obok Szybkości. Wpis stworzenia ma zawsze
+  walkę (NPC bez walki to statblok pospolitego człowieka); puste KP i PW zna tylko egzemplarz bez
   wpisu, a jego bloczek pokazuje „—” zamiast znikać, żeby nic nie skakało. KP zbroi to pole przedmiotu.
 - **Egzemplarz nie zmienia typu.** Przemiana to pozycja „Stanów i efektów” (mimik „w przebraniu:
   skrzynia”) albo drugi egzemplarz obok (figurka cudownej mocy ożywa w stworzenie, a sama zostaje
@@ -127,20 +127,20 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   tylko pusty, żeby jedno kliknięcie nie zabrało po cichu części świata.
 - **Postać gracza leży obok kampanii.** Trzeci rodzaj danych obok treści paczek i stanu kampanii:
   tworzy ją MG w aplikacji, może grać w wielu kampaniach. Postać mówi, kim jest (cechy, klasa
-  i węzły, zaklęcia, poziom, PZ maks.); jej entity w kampanii — co ma i gdzie jest (aktualne PZ,
+  i węzły, zaklęcia, poziom, PW maks.); jej entity w kampanii — co ma i gdzie jest (aktualne PW,
   stany, miejsce, ekwipunek, złoto). Awans dociera do każdej kampanii jak poprawka wpisu; przedmioty
   zostają w świecie, w którym je zdobyto. Identyfikator `źródło:id` wskazuje wpis albo postać.
 - **Aplikacja jest jedynym źródłem prawdy o postaci, gracz gra z papieru.** Kartka gracza to gotowy
   szablon wypełniany ręcznie; aplikacja jej nie drukuje (zmienia się za często), drukuje tylko
   ściągawki opisów. Gracz przepisuje zmiany z tego, co mówi MG, a przy rozjeździe wygrywa aplikacja.
   Postać ma więc pełną kartę jak potwór. Wartości liczone (modyfikatory, biegłość z poziomu, rzuty
-  obronne, umiejętności, bierna Percepcja, ST zaklęć) mają rozpisanie, a MG je nadpisuje w trybie
+  obronne, umiejętności, pasywna Percepcja, ST zaklęć) mają rozpisanie, a MG je nadpisuje w trybie
   edycji ze znacznikiem. Drobny rozjazd w trakcie sesji (zużyte miejsca, strzały) MG wpisuje, gdy się
   o nim dowie; odpoczynek, handel i łupy i tak idą przez aplikację.
 - **Klasa i węzeł drzewka są wpisami w paczce.** Kształt i wygląd drzewka jest kodem systemu; węzeł
   zna klasę, poziom i węzły poprzedzające. Węzeł ma więc identyfikator (ściągawka drukuje go jak
   zaklęcie), wartości zostają płaskie, a własną klasę dopisuje się bez programisty. Odblokowanie
-  zapisuje tylko siebie — nie dodaje PZ, zaklęć ani następnych węzłów; niespełnione wymaganie widać,
+  zapisuje tylko siebie — nie dodaje PW, zaklęć ani następnych węzłów; niespełnione wymaganie widać,
   ale nie blokuje.
 - **Wersje formatów nie rosną do pierwszej sesji przy stole.** Dopóki aplikacja nie ma prawdziwego
   użycia (koniec kamienia milowego „pierwsza sesja przy stole”), żaden typ treści ani zapis kampanii
@@ -155,6 +155,12 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   mnożników od jednej bazy. Waga i wartość są obowiązkowe w każdym przedmiocie; zero jest wartością
   i karta je pokazuje („0 kg”) — informacji nie chowa się dlatego, że wynosi zero.
 - **Rzadkość według skali gier, nie D&D.** Pięć stopni: Pospolity, Niepospolity, Rzadki, Epicki, Legendarny, z kolorami jak w grach komputerowych — przy kilkuset przedmiotach jedna skala czytelna od razu jest ważniejsza niż wierność podręcznikowi. To, czy przedmiot jest magiczny (ważne mechanicznie), niesie osobny znacznik i pigułka „magiczny”, nie rzadkość.
+- **Słownictwo z polskiego podręcznika.** Paczka SRD i etykiety kart mówią językiem polskiego
+  wydania (punkty wytrzymałości — PW, niepodatność, pasywna Percepcja, test ataku, krąg zaklęcia),
+  bo gracze czytają te same słowa na swoich kartkach. Wyjątek: skróty cech SIŁ/ZRĘ/KON/INT/MDR/CHA,
+  czytelniejsze w tabeli. Ściągawka tłumacza: `tools/srd/slownik.md`.
+- **Paczka SRD rośnie na żądanie.** Tłumaczy się stworzenia i przedmioty potrzebne w przygodzie,
+  którą MG przygotowuje, nie cały SRD naraz. Spis do wyboru: `tools/srd/stworzenia.md`.
 
 ## Odrzucone
 

@@ -15,11 +15,11 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
      skrót. Na istocie stan jest pozycją listy „Stany i efekty”.
-   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0). Tłumaczy agent
-     w tle, typ po typie, gdy rekord i karta typu są gotowe; tu stworzenia do wyzwania 5 i stany,
-     resztę etapy 6–9. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów i istot (karta
-     pokazuje sam tekst), żeby odnośniki nie wymagały drugiego przejścia. Odległości w metrach (1,5 m
-     za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
+   - **Paczka `dnd5e-srd`: SRD 5.1 po polsku** (CC-BY 4.0), rośnie na żądanie: tu 15 stanów
+     i zestaw startowy stworzeń na pierwsze sesje; reszta, gdy przygoda jej potrzebuje. Słownictwo
+     i spis stworzeń: `tools/srd/`. W prozie znaczniki `[[id|tekst]]` do zaklęć, stanów, przedmiotów
+     i istot (karta pokazuje sam tekst), żeby odnośniki nie wymagały drugiego przejścia. Odległości
+     w metrach (1,5 m za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
      Rzadki, bardzo rzadkie → Epicki, legendarne i artefakty → Legendarny. Dziś paczka ma pięć
      stworzeń i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
      zakresem) oraz jeden stan (Powalony); ikony stanów z game-icons.net (CC BY 3.0, autorzy
@@ -28,22 +28,22 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
    Nazwa entity (dziś operacja zmiany nazwy jest, pola w interfejsie nie ma) i notatka MG.
-   Entity bez wpisu (imię, notatka, opcjonalnie PZ i KP; puste na karcie jako „—”). Przenoszenie entity i katalogów; usuwa
-   się tylko pusty katalog. Klik w entity otwiera okno jego karty — kilka naraz — z polem zmiany PZ
+   Entity bez wpisu (imię, notatka, opcjonalnie PW i KP; puste na karcie jako „—”). Przenoszenie entity i katalogów; usuwa
+   się tylko pusty katalog. Klik w entity otwiera okno jego karty — kilka naraz — z polem zmiany PW
    (`-7`, `+5`, `=30`, Enter zapisuje) i trybem edycji karty.
    Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
-   kwadratowy pasek PZ od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
+   kwadratowy pasek PW od 0 do maksimum z polem szybkiej zmiany) i stanów (pod tabelą cech, za
    separatorem z nagłówkiem) pokazują się, gdy są wypełnione. Breadcrumb, portret, nazwa i tabele
    nie zmieniają miejsca. Wpis stworzenia może mieć stany domyślne (np. stała niewidzialność);
    entity dziedziczy je, dopóki MG ich nie zmieni.
 3. **Kopie zapasowe kampanii**, rotujące — przed pierwszym prawdziwym użyciem. Przy stole zapis
    biegnie na żywo po każdej zmianie.
 4. **Postacie w minimum** — leżą obok kampanii, w katalogu systemu, i mogą grać w wielu kampaniach.
-   Na razie nazwa i aspekt walki (KP, PZ, cechy, inicjatywa) z formularza; w etapie 6 postać rośnie
+   Na razie nazwa i aspekt walki (KP, PW, cechy, inicjatywa) z formularza; w etapie 6 postać rośnie
    o kolejne aspekty. Wejście postaci do kampanii tworzy jej entity. Identyfikator `źródło:id`
    wskazuje odtąd wpis w paczce albo postać.
 5. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
-   MG. Zwarty widok istoty (PZ z polem zmiany, lista „Stany i efekty”), karta zostaje do czytania.
+   MG. Zwarty widok istoty (PW z polem zmiany, lista „Stany i efekty”), karta zostaje do czytania.
    Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości jako
    osobne okno biurka. Rozstrzygnąć: czy narzędzie rzuca stworzeniom inicjatywę (k20 + mod. ZRĘ
    z aspektu walki, z rozpisaniem, do poprawienia).
@@ -67,7 +67,7 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
    nie blokuje. SRD: ekwipunek podstawowy, przedmioty magiczne pospolite do rzadkich; przed wyceną
    ustalić skalę wartości (małe, czytelne liczby z miejscem w dół i w górę). Rozstrzygnąć stworzenie
    na sprzedaż (koń u handlarza): skąd wartość, z której liczy się cena.
-10. **Odpoczynek** — przełom krótkiego i długiego odpoczynku z okienkiem: odnowienie PZ, miejsc na
+10. **Odpoczynek** — przełom krótkiego i długiego odpoczynku z okienkiem: odnowienie PW, miejsc na
     zaklęcia i ładunków. Rozstrzygnąć odnowienie „o świcie” (*w długim odpoczynku z wyłącznikiem*;
     zegar niczego nie uruchamia).
 11. **Czas świata i podróże** — okno zegara przesuwanego przez MG (szybkie przyciski i dowolna
@@ -125,7 +125,7 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - Przenieść stare kampanie do `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs`/`Campaigns` nie są
   czytane) i dopisać stworzeniom pole `group`.
 - Przepisać albo usunąć stworzenia i przedmioty we własnych paczkach w starym formacie — pokazują się
-  jako odrzucone wpisy. Stworzenie: `"template": "dnd5e:creature"`, KP, PZ i cechy w obiekcie `combat`,
+  jako odrzucone wpisy. Stworzenie: `"template": "dnd5e:creature"`, KP, PW i cechy w obiekcie `combat`,
   proza w sekcjach. Przedmiot: waga i wartość w obiekcie `item`, ładunki w `charges` (`max`,
   `recharge`). Wzór: wpisy paczki `dnd5e-srd`.
 
@@ -133,7 +133,7 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 - **„Zapisz jako nowy wpis”** z karty egzemplarza do własnej paczki MG; egzemplarz wskazuje potem
   nowy wpis — MG chce użyć podkręconego egzemplarza albo improwizowanej istoty w innej przygodzie.
-- **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PZ
+- **„Zmień wpis źródłowy”** egzemplarza (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PW
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
 - **Edycja kilku zaznaczonych egzemplarzy naraz** — MG zmienia to samo pole po kolei na kilku.
 - **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
