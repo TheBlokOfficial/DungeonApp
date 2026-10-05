@@ -28,7 +28,7 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
    Nazwa entity (dziś operacja zmiany nazwy jest, pola w interfejsie nie ma) i notatka MG.
-   Entity bez wpisu (imię, notatka, opcjonalnie PZ i KP). Przenoszenie entity i katalogów; usuwa
+   Entity bez wpisu (imię, notatka, opcjonalnie PZ i KP; puste na karcie jako „—”). Przenoszenie entity i katalogów; usuwa
    się tylko pusty katalog. Klik w entity otwiera okno jego karty — kilka naraz — z polem zmiany PZ
    (`-7`, `+5`, `=30`, Enter zapisuje) i trybem edycji karty.
    Karta jest jedna dla wpisu i entity; różnią się tylko danymi. Sekcje wartości bieżących (gruby,
@@ -64,7 +64,8 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
    zmienić cenę, „Kup” i „Sprzedaj” przenoszą przedmiot i złoto. Waluta kampanii to lista nominałów
    z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota widać,
    nie blokuje. SRD: ekwipunek podstawowy, przedmioty magiczne pospolite do rzadkich; przed wyceną
-   ustalić skalę wartości (małe, czytelne liczby z miejscem w dół i w górę).
+   ustalić skalę wartości (małe, czytelne liczby z miejscem w dół i w górę). Rozstrzygnąć stworzenie
+   na sprzedaż (koń u handlarza): skąd wartość, z której liczy się cena.
 10. **Odpoczynek** — przełom krótkiego i długiego odpoczynku z okienkiem: odnowienie PZ, miejsc na
     zaklęcia i ładunków. Rozstrzygnąć odnowienie „o świcie” (*w długim odpoczynku z wyłącznikiem*;
     zegar niczego nie uruchamia).

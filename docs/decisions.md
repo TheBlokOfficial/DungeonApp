@@ -93,13 +93,18 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   ładunki; miejsca na zaklęcia). Narzędzie pyta o aspekt, nie o typ. Trzymać coś może każdy
   egzemplarz — to drzewo, nie aspekt. Aspekty są kodem systemu i powstają z konsumentem.
 - **Typ ma stały kształt; aspekt to dane bez wyglądu.** Typ niesie zaprojektowaną kartę, profil
-  zakładki, stały zestaw aspektów i pola własne, których nie czyta żadne narzędzie (rozmiar,
-  Szybkość, zmysły, wyzwanie, rzadkość, proza). Karta decyduje, gdzie stoi każde pole, także pola
-  aspektów — KP i PZ stworzenia stoją przy portrecie obok Szybkości, która jest polem typu. MG
-  aspektów nie włącza ani nie zdejmuje; aspekt opcjonalny może być pusty (karczmarz bez walki)
-  i wtedy się nie pokazuje. Mimik to stworzenie o stałym kształcie jak szkielet; jego forma („w
-  przebraniu: skrzynia”) to pozycja „Stanów i efektów”, nie kształt. Egzemplarz bez wpisu też ma typ. KP zbroi
-  (ile daje noszącemu) to pole przedmiotu, nie KP walki.
+  zakładki, wymagany rdzeń i pola własne, których nie czyta żadne narzędzie (rozmiar, Szybkość,
+  zmysły, wyzwanie, rzadkość, proza). Aspekt to tylko nazwa grupy pól, o którą pyta narzędzie (walka
+  czyta KP i PZ stworzenia i postaci); MG go nie włącza ani nie zdejmuje. Karta decyduje, gdzie stoi
+  każde pole — KP i PZ stworzenia stoją przy portrecie obok Szybkości. Wpis stworzenia ma zawsze
+  walkę (NPC bez walki to statblok pospolitego człowieka); puste KP i PZ zna tylko egzemplarz bez
+  wpisu, a jego bloczek pokazuje „—” zamiast znikać, żeby nic nie skakało. KP zbroi to pole przedmiotu.
+- **Egzemplarz nie zmienia typu.** Przemiana to pozycja „Stanów i efektów” (mimik „w przebraniu:
+  skrzynia”) albo drugi egzemplarz obok (figurka cudownej mocy ożywa w stworzenie, a sama zostaje
+  przedmiotem). Podmiana statystyk (postać zwierzęcia druida, polimorfia) czeka na pełną postać.
+- **Drzewo świata nie pyta o typ.** Każdy egzemplarz może leżeć w każdym: chowaniec w kieszeni,
+  chochlik w butelce. Sumy (waga plecaka, handel) czytają tylko pola przedmiotu, więc stworzenie
+  w plecaku nic nie waży — ocenę zostawia się MG.
 - **Zakładki według typu, nie aspektu.** Jeden typ to jedna zakładka, w kolejności podręcznika
   (Stworzenia, Przedmioty, Stany, Postacie, Pochodzenia, Klasy, Zaklęcia); MG szuka mimika wśród
   stworzeń, nie wśród „rzeczy, które walczą”. Aspekt bywa filtrem w zakładce („z walką”, „z
@@ -115,8 +120,7 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   nazwa, skrót, poziom), bo lista jest ich konsumentem. Treści wiedzy nie wkleja się w cudzą kartę:
   liczby czaru należą do rzucającego (ST, poziom komórki), a karta ma się ułożyć bez paczki wiedzy.
 - **Jeden typ „Stworzenie”** dla potworów, przeciwników i NPC, zakładka „Stworzenia” — termin zasad
-  z polskiego podręcznika. Aspekt walki może być pusty (karczmarz bez statbloku). „Nieumarły” to
-  pole do filtrowania, nie gałąź.
+  z polskiego podręcznika. „Nieumarły” to pole do filtrowania, nie gałąź.
 - **Katalog świata to porządek, nie warstwa scen.** Entity leżą w drzewie katalogów w stanie
   kampanii. Katalog ma tylko nazwę i zawartość — opis miejsca to strona lore. Nie ma cyklu życia
   i nigdy nie jest celem operacji na swojej zawartości („wszystkim w karczmie” — cele wskazuje MG). Usuwa się

@@ -48,7 +48,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   albo **sekcja prozy**.
 - **Aspekt** to paczka pól jednego znaczenia, zapisana jako obiekt w `values`: walka stworzenia
   (`combat`: KP, PZ, bieżące PZ, cechy), przedmiot (`item`: waga, wartość), ładunki (`charges`).
-  Każdy to rekord w `Content.Dnd5e`; opcjonalny (karczmarz bez walki) bywa pusty, a narzędzie pyta
+  Każdy to rekord w `Content.Dnd5e`; walka i przedmiot są wymagane we wpisie, ładunki nie; narzędzie pyta
   o aspekt, nie o typ. Aspekt nie ma wyglądu — pola rozmieszcza karta typu. Łatka instancji scala
   obiekty po kluczu, więc zmiana PZ zapisuje tylko `{"combat":{"currentHp":3}}`, a późniejsza
   poprawka KP we wpisie dociera do instancji.
