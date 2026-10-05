@@ -777,8 +777,8 @@ public sealed class ContentPackLoaderTests : IDisposable
     [InlineData("../a.png", "image path '../a.png' leads outside the pack.")]
     [InlineData("obrazy/../../a.png", "image path 'obrazy/../../a.png' leads outside the pack.")]
     [InlineData("obrazy\\..\\..\\a.png", "image path 'obrazy\\..\\..\\a.png' leads outside the pack.")]
-    [InlineData("obrazy/a.gif", "image path 'obrazy/a.gif' is not a PNG, JPEG or WebP file.")]
-    [InlineData("obrazy/a", "image path 'obrazy/a' is not a PNG, JPEG or WebP file.")]
+    [InlineData("obrazy/a.gif", "image path 'obrazy/a.gif' is not a PNG, JPEG, WebP or SVG file.")]
+    [InlineData("obrazy/a", "image path 'obrazy/a' is not a PNG, JPEG, WebP or SVG file.")]
     [InlineData("", "image path is empty.")]
     [InlineData("obrazy/..", "image path 'obrazy/..' does not name a file.")]
     public async Task An_entry_whose_picture_path_is_absolute_leaves_the_pack_or_is_not_an_image_is_unresolved_with_the_reason(
@@ -798,6 +798,7 @@ public sealed class ContentPackLoaderTests : IDisposable
     [InlineData("a.png")]
     [InlineData("obrazy/potwory/a.webp")]
     [InlineData("obrazy\\a.JPG")]
+    [InlineData("obrazy/ikony/a.svg")]
     [InlineData("./obrazy/../a.jpeg")]
     public async Task An_entry_whose_picture_path_stays_in_the_pack_resolves_even_when_the_file_is_missing(string picture)
     {

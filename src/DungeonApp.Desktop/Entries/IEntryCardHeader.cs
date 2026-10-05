@@ -14,7 +14,8 @@ namespace DungeonApp.Desktop.Entries;
 /// </code>
 /// The visual stands left of the title column with DungeonDetailColumnGap between them, and the
 /// block sits at the foot of the title column, its bottom on the visual's bottom while the title
-/// column is shorter than the visual. The title's end stands against the column's right edge,
+/// column is shorter than the visual - unless the card keeps it under the tags
+/// (<see cref="HeaderBlockFollowsTitle"/>). The title's end stands against the column's right edge,
 /// centred on the title's first line when it is one line tall; a taller one keeps its own first
 /// line on the title's (by centring it within one line of the title's style) and runs down beside
 /// the tags. A long title (unless kept to one line, <see cref="HeaderTitleOnOneLine"/>) and the tags
@@ -43,4 +44,11 @@ public interface IEntryCardHeader
     /// beside it for one line of title only. False - the title wraps, as it does without a card.
     /// </summary>
     bool HeaderTitleOnOneLine => false;
+
+    /// <summary>
+    /// Whether the block follows the tags directly instead of sitting at the column's foot - for a
+    /// block that is prose about the name (a summary), which reads as detached when pushed down to the
+    /// visual's bottom edge. False - the foot, where headline values line up with the visual.
+    /// </summary>
+    bool HeaderBlockFollowsTitle => false;
 }

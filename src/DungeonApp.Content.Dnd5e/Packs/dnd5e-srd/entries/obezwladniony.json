@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Nie może wykonywać akcji ani reakcji.",
-    "icon": "images/conditions/obezwladniony.png",
+    "icon": "images/conditions/obezwladniony.svg",
 
     "rules": {
       "intro": "Obezwładniona istota nie może wykonywać akcji ani reakcji.",

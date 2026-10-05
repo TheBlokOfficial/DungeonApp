@@ -25,7 +25,7 @@ public sealed partial class ContentRowViewModel : ObservableObject
         ContentSelectionKey key,
         Action<ContentSelectionKey> select,
         bool hasPictureSlot = false,
-        IImage? picture = null)
+        DrawingImage? picture = null)
     {
         Name = name;
         HasPictureSlot = hasPictureSlot;
@@ -49,8 +49,11 @@ public sealed partial class ContentRowViewModel : ObservableObject
     /// </summary>
     public bool HasPictureSlot { get; }
 
-    /// <summary>The entry's one-colour picture for that place; null - the place stays empty.</summary>
-    public IImage? Picture { get; }
+    /// <summary>
+    /// The entry's one-colour (vector) picture for that place; null - the place stays empty, also for
+    /// an entry whose picture is a raster image: a row has room for a shape, not for a photograph.
+    /// </summary>
+    public DrawingImage? Picture { get; }
 
     /// <summary>Null for a row with nothing to show on its right side (never an empty string).</summary>
     public string? BadgeText { get; }

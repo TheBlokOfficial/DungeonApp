@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Obezwładniona, nie rusza się i mówi z trudem, oblewa rzuty obronne na SIŁ i ZRĘ. Ataki przeciw niej mają ułatwienie.",
-    "icon": "images/conditions/ogluszony.png",
+    "icon": "images/conditions/ogluszony.svg",
 
     "rules": {
       "intro": "Ogłuszona istota jest [[obezwladniony|obezwładniona]], nie może się poruszać i mówi z trudem.\nIstota automatycznie ponosi porażkę w rzutach obronnych na Siłę i Zręczność.\nTesty ataku przeciwko istocie mają **ułatwienie**.",

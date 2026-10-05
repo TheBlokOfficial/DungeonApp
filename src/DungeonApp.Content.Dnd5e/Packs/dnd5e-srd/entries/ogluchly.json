@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Nie słyszy i oblewa testy wymagające słuchu.",
-    "icon": "images/conditions/ogluchly.png",
+    "icon": "images/conditions/ogluchly.svg",
 
     "rules": {
       "intro": "Ogłuchła istota nie słyszy i automatycznie ponosi porażkę w każdym teście cechy, który wymaga słuchu.",

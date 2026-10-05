@@ -10,7 +10,7 @@ namespace DungeonApp.Core.Entries;
 /// (<see cref="ContentTypeDescriptor.ImageProperty"/>). Two rules, and nothing else:
 /// <list type="bullet">
 /// <item><see cref="TryValidate"/>, at load time: the path is relative and stays inside the pack
-/// once normalized, and names a PNG, JPEG or WebP file. A path failing either rejects the entry with
+/// once normalized, and names a PNG, JPEG, WebP or SVG file. A path failing either rejects the entry with
 /// a reason, like any other broken entry (<see cref="ContentPackLoader"/>).</item>
 /// <item><see cref="Locate"/>, when the picture is shown: the full path of the file inside the pack's
 /// directory. Whether that file exists is not checked at load - a missing file does not break the
@@ -22,7 +22,7 @@ namespace DungeonApp.Core.Entries;
 public static class EntryImagePath
 {
     /// <summary>The file extensions a picture may have, compared ignoring case.</summary>
-    public static IReadOnlyList<string> Extensions { get; } = [".png", ".jpg", ".jpeg", ".webp"];
+    public static IReadOnlyList<string> Extensions { get; } = [".png", ".jpg", ".jpeg", ".webp", ".svg"];
 
     private static readonly char[] Separators = ['/', '\\'];
 
@@ -74,7 +74,7 @@ public static class EntryImagePath
 
         if (!Extensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
         {
-            error = $"image path '{path}' is not a PNG, JPEG or WebP file.";
+            error = $"image path '{path}' is not a PNG, JPEG, WebP or SVG file.";
             return false;
         }
 

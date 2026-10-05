@@ -350,7 +350,7 @@ public sealed class Dnd5eCardBuildTests
     {
         Summary = "Leży na ziemi.",
         Rules = new StatblockSection { Intro = "Istota ma **utrudnienie** w rzutach ataku.", Entries = [] },
-        Icon = "images/conditions/powalony.png",
+        Icon = "images/conditions/powalony.svg",
     };
 
     private static ConditionCardView ConditionCard(StatusCondition condition, EntryPicture picture)
@@ -368,7 +368,7 @@ public sealed class Dnd5eCardBuildTests
         var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
 
         var frame = Assert.IsType<ImageFrame>(header.HeaderVisual);
-        Assert.True(frame.SourceIsMask);
+        Assert.Equal(150, frame.Width);
         Assert.Equal(frame.Width, frame.Height);
         Assert.NotNull(frame.Icon);
         Assert.DoesNotContain(":picture", frame.Classes);

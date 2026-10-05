@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Nie widzi i oblewa testy wymagające wzroku. Jej ataki mają utrudnienie, ataki przeciw niej — ułatwienie.",
-    "icon": "images/conditions/oslepiony.png",
+    "icon": "images/conditions/oslepiony.svg",
 
     "rules": {
       "intro": "Oślepiona istota nie widzi i automatycznie ponosi porażkę w każdym teście cechy, który wymaga wzroku.\nTesty ataku przeciwko istocie mają **ułatwienie**, a jej testy ataku mają **utrudnienie**.",

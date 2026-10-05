@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Obezwładniona, nie rusza się ani nie mówi, oblewa rzuty obronne na SIŁ i ZRĘ. Trafienie z 1,5 m jest krytyczne.",
-    "icon": "images/conditions/sparalizowany.png",
+    "icon": "images/conditions/sparalizowany.svg",
 
     "rules": {
       "intro": "Sparaliżowana istota jest [[obezwladniony|obezwładniona]] i nie może się poruszać ani mówić.\nIstota automatycznie ponosi porażkę w rzutach obronnych na Siłę i Zręczność.\nTesty ataku przeciwko istocie mają **ułatwienie**.\nKażdy atak, który trafi istotę, jest **trafieniem krytycznym**, jeśli atakujący jest w promieniu 1,5 m od niej.",

@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Ma utrudnienie w testach ataku i testach cech.",
-    "icon": "images/conditions/zatruty.png",
+    "icon": "images/conditions/zatruty.svg",
 
     "rules": {
       "intro": "Zatruta istota ma **utrudnienie** w testach ataku i testach cech.",

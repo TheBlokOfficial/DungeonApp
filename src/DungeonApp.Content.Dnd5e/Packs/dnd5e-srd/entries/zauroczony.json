@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Nie może zaatakować ani skrzywdzić zauroczającego, a ten ma ułatwienie w rozmowie z nią.",
-    "icon": "images/conditions/zauroczony.png",
+    "icon": "images/conditions/zauroczony.svg",
 
     "rules": {
       "intro": "Zauroczona istota nie może zaatakować zauroczającego ani uczynić go celem szkodliwych zdolności czy efektów magicznych.\nZauroczający ma **ułatwienie** w każdym teście cechy związanym z interakcją społeczną z tą istotą.",

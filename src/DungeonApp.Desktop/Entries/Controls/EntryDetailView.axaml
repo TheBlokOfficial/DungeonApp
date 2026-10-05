@@ -54,7 +54,8 @@
                          name and tags (the card's tags start before them), the card's title end against
                          the right edge beside both, and at the column's foot the card's block - pushed
                          down by the star row to the visual's bottom edge while the column is shorter
-                         than the visual. -->
+                         than the visual - or, for a card that keeps it under the title, at the top
+                         of the star row itself (HeaderBlockRow). -->
                     <Grid ColumnDefinitions="Auto,*" Classes.with-visual="{Binding HasHeaderVisual}">
                         <ContentControl Content="{Binding HeaderVisual}"
                                         IsVisible="{Binding HasHeaderVisual}"
@@ -104,7 +105,8 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </Grid>
-                            <ContentControl Grid.Row="2"
+                            <ContentControl Grid.Row="{Binding HeaderBlockRow}"
+                                            VerticalAlignment="Top"
                                             Content="{Binding HeaderBlock}"
                                             IsVisible="{Binding HasHeaderBlock}" />
                         </Grid>

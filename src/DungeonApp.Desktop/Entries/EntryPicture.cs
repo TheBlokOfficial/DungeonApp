@@ -33,7 +33,9 @@ public sealed record EntryPicture(IImage? Source, string? MissingPath)
 
     /// <summary>Reads <paramref name="entry"/>'s picture from its pack in <paramref name="registry"/>.</summary>
     public static EntryPicture Load(ContentRegistry registry, RegisteredEntry entry) =>
-        Load(registry, entry, path => new Bitmap(path));
+        Load(registry, entry, path => path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+            ? SvgIcon.Load(path)
+            : new Bitmap(path));
 
     /// <summary>
     /// As <see cref="Load(ContentRegistry, RegisteredEntry)"/>, with the file read by

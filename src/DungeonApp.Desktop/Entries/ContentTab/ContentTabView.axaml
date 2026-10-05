@@ -41,12 +41,12 @@
                          (Grid.row-picture), and the name starts where it always does. -->
                     <Grid Grid.Column="0" Classes="row-picture" Classes.with-picture="{Binding HasPictureSlot}"
                           ColumnDefinitions="Auto,*">
-                        <dc:MaskIcon IsVisible="{Binding HasPictureSlot}"
-                                     Width="{DynamicResource DungeonListRowIconSize}"
-                                     Height="{DynamicResource DungeonListRowIconSize}"
-                                     VerticalAlignment="Center"
-                                     Source="{Binding Picture}"
-                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        <dc:ForegroundIcon IsVisible="{Binding HasPictureSlot}"
+                                           Width="{DynamicResource DungeonListRowIconSize}"
+                                           Height="{DynamicResource DungeonListRowIconSize}"
+                                           VerticalAlignment="Center"
+                                           Source="{Binding Picture}"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}" />
                         <TextBlock Grid.Column="1" Classes="body row-name"
                                    Text="{Binding Name}"
                                    IsVisible="{Binding !IsBroken}"

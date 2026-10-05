@@ -14,9 +14,9 @@ namespace DungeonApp.Content.Dnd5e;
 /// loader and the designer preview need it.
 /// <para>
 /// Two pieces are lent to the detail header (<see cref="IEntryCardHeader"/>): the condition's icon
-/// in a square frame (DungeonDetailIconSize - about as tall as the name and the summary beside it),
-/// drawn as its shape in the theme's icon color, never in the file's own; and the summary, under the
-/// name. The card itself is the rules. Nothing on it is computed.
+/// in the same square frame as a gear item's picture (DungeonDetailPictureWidth), drawn exactly as
+/// that item's placeholder icon is - its shape, in the frame's dimmed color, never in the file's
+/// own; and the summary, under the name. The card itself is the rules. Nothing on it is computed.
 /// </para>
 /// </summary>
 public partial class ConditionCardView : UserControl, IEntryCardHeader
@@ -33,7 +33,7 @@ public partial class ConditionCardView : UserControl, IEntryCardHeader
     {
         InitializeComponent();
 
-        var side = ThemeResource.Get<double>("DungeonDetailIconSize");
+        var side = ThemeResource.Get<double>("DungeonDetailPictureWidth");
         _icon = new ImageFrame
         {
             Width = side,
@@ -41,7 +41,6 @@ public partial class ConditionCardView : UserControl, IEntryCardHeader
             VerticalAlignment = VerticalAlignment.Top,
             // Sharp, like every bordered block on a card.
             CornerRadius = default,
-            SourceIsMask = true,
             Icon = ThemeResource.Get<DrawingImage>("DungeonIconZap"),
         };
     }
@@ -56,6 +55,9 @@ public partial class ConditionCardView : UserControl, IEntryCardHeader
 
     /// <summary>The summary, under the name.</summary>
     public Control HeaderBlock => _summary;
+
+    /// <summary>The summary is about the name, so it reads right under it, not at the frame's foot.</summary>
+    public bool HeaderBlockFollowsTitle => true;
 
     public void SetCondition(StatusCondition condition, EntryPicture picture)
     {

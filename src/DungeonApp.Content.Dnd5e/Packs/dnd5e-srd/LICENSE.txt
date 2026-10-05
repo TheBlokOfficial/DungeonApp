@@ -2,20 +2,20 @@ This work includes material taken from the System Reference Document 5.1 ("SRD 5
 
 Changes: the material is translated into Polish and adapted - distances are given in metres and weights in kilograms, item worth is written as a plain number (for now, the SRD price in gold pieces), and some entries are rearranged into different sections. The short descriptions of monsters and items and the summaries of conditions are original to this pack.
 
-Icons: the condition icons come from game-icons.net and are licensed under the Creative Commons Attribution 3.0 Unported License available at https://creativecommons.org/licenses/by/3.0/. They are used as published (white on a transparent background, 512 x 512 PNG); the program shows only their shape, in its own color.
+Icons: the condition icons come from game-icons.net and are licensed under the Creative Commons Attribution 3.0 Unported License available at https://creativecommons.org/licenses/by/3.0/. They are used as the published SVG files, with the black background square removed so that each file is a single shape; the program shows only that shape, in its own color.
 
-- images/conditions/powalony.png - "Half body crawling" by Delapouite (https://game-icons.net/1x1/delapouite/half-body-crawling.html)
-- images/conditions/oslepiony.png - "Blindfold" by Delapouite (https://game-icons.net/1x1/delapouite/blindfold.html)
-- images/conditions/zauroczony.png - "Smitten" by Lorc (https://game-icons.net/1x1/lorc/smitten.html)
-- images/conditions/ogluchly.png - "Human ear" by Delapouite (https://game-icons.net/1x1/delapouite/human-ear.html)
-- images/conditions/wyczerpanie.png - "Despair" by Lorc (https://game-icons.net/1x1/lorc/despair.html)
-- images/conditions/przerazony.png - "Terror" by Lorc (https://game-icons.net/1x1/lorc/terror.html)
-- images/conditions/pochwycony.png - "Grab" by Lorc (https://game-icons.net/1x1/lorc/grab.html)
-- images/conditions/obezwladniony.png - "Internal injury" by Lorc (https://game-icons.net/1x1/lorc/internal-injury.html)
-- images/conditions/niewidzialny.png - "Invisible" by Delapouite (https://game-icons.net/1x1/delapouite/invisible.html)
-- images/conditions/sparalizowany.png - "Frozen body" by Delapouite (https://game-icons.net/1x1/delapouite/frozen-body.html)
-- images/conditions/skamienialy.png - "Stone bust" by Delapouite (https://game-icons.net/1x1/delapouite/stone-bust.html)
-- images/conditions/zatruty.png - "Poison bottle" by Lorc (https://game-icons.net/1x1/lorc/poison-bottle.html)
-- images/conditions/unieruchomiony.png - "Spider web" by Lorc (https://game-icons.net/1x1/lorc/spider-web.html)
-- images/conditions/ogluszony.png - "Knocked out stars" by Delapouite (https://game-icons.net/1x1/delapouite/knocked-out-stars.html)
-- images/conditions/nieprzytomny.png - "Sleepy" by Lorc (https://game-icons.net/1x1/lorc/sleepy.html)
+- images/conditions/powalony.svg - "Half body crawling" by Delapouite (https://game-icons.net/1x1/delapouite/half-body-crawling.html)
+- images/conditions/oslepiony.svg - "Blindfold" by Delapouite (https://game-icons.net/1x1/delapouite/blindfold.html)
+- images/conditions/zauroczony.svg - "Smitten" by Lorc (https://game-icons.net/1x1/lorc/smitten.html)
+- images/conditions/ogluchly.svg - "Human ear" by Delapouite (https://game-icons.net/1x1/delapouite/human-ear.html)
+- images/conditions/wyczerpanie.svg - "Despair" by Lorc (https://game-icons.net/1x1/lorc/despair.html)
+- images/conditions/przerazony.svg - "Terror" by Lorc (https://game-icons.net/1x1/lorc/terror.html)
+- images/conditions/pochwycony.svg - "Grab" by Lorc (https://game-icons.net/1x1/lorc/grab.html)
+- images/conditions/obezwladniony.svg - "Internal injury" by Lorc (https://game-icons.net/1x1/lorc/internal-injury.html)
+- images/conditions/niewidzialny.svg - "Invisible" by Delapouite (https://game-icons.net/1x1/delapouite/invisible.html)
+- images/conditions/sparalizowany.svg - "Frozen body" by Delapouite (https://game-icons.net/1x1/delapouite/frozen-body.html)
+- images/conditions/skamienialy.svg - "Stone bust" by Delapouite (https://game-icons.net/1x1/delapouite/stone-bust.html)
+- images/conditions/zatruty.svg - "Poison bottle" by Lorc (https://game-icons.net/1x1/lorc/poison-bottle.html)
+- images/conditions/unieruchomiony.svg - "Spider web" by Lorc (https://game-icons.net/1x1/lorc/spider-web.html)
+- images/conditions/ogluszony.svg - "Knocked out stars" by Delapouite (https://game-icons.net/1x1/delapouite/knocked-out-stars.html)
+- images/conditions/nieprzytomny.svg - "Sleepy" by Lorc (https://game-icons.net/1x1/lorc/sleepy.html)

@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Leży na ziemi i porusza się tylko czołgając. Jej ataki mają utrudnienie, ataki przeciw niej z odległości do 1,5 m mają ułatwienie, z dalszej — utrudnienie.",
-    "icon": "images/conditions/powalony.png",
+    "icon": "images/conditions/powalony.svg",
 
     "rules": {
       "intro": "Jedyny sposób poruszania się powalonej istoty to czołganie, chyba że wstanie i tym samym zakończy ten stan.\nIstota ma **utrudnienie** w testach ataku.\nTest ataku przeciwko istocie ma **ułatwienie**, jeśli atakujący jest w promieniu 1,5 m od niej. W przeciwnym razie test ataku ma **utrudnienie**.",
