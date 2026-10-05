@@ -143,10 +143,10 @@ public sealed class CampaignInstancesToolViewModelTests
         var patch = Assert.Single(fixture.Instances()).Patch;
         Assert.False(patch.IsEmpty);
 
-        // The patch names only the aspect that changed - the type's own fields stay with the entry.
+        // The patch names only the value that changed - the rest of the aspect stays with the entry.
         var keys = patch.Read<Dictionary<string, JsonElement>>();
         Assert.Equal(["combat"], keys.Keys);
-        Assert.Equal(3, keys["combat"].GetProperty("currentHp").GetInt32());
+        Assert.Equal("""{"currentHp":3}""", keys["combat"].GetRawText());
     }
 
     [Fact]
@@ -192,6 +192,42 @@ public sealed class CampaignInstancesToolViewModelTests
         Assert.True(fixture.Find(instanceId)!.Patch.IsEmpty);
     }
 
+    [Fact]
+    public async Task A_later_change_to_the_entrys_armor_class_reaches_an_instance_whose_hit_points_were_saved()
+    {
+        var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
+        var original = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7, ac: 15));
+        await original.AddInstanceAsync(address, label: null);
+
+        var row = Assert.Single(original.CreateViewModel().Instances);
+        row.CurrentHp = 3;
+        await row.SaveHitPointsCommand.ExecuteAsync(null);
+        var patch = Assert.Single(original.Instances()).Patch;
+
+        // The same campaign after the pack was corrected: the entry now ships another armor class.
+        var corrected = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7, ac: 12));
+        await corrected.AddInstanceAsync(address, label: null);
+        await corrected.Context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(Assert.Single(corrected.Instances()), patch));
+
+        var resolved = corrected.Context.Resolver.Resolve(Assert.Single(corrected.Instances()));
+        var combat = resolved.Values!.Read<Creature>().Combat!;
+
+        Assert.Equal(12, combat.Ac);
+        Assert.Equal(3, combat.CurrentHp);
+    }
+
+    [Fact]
+    public async Task A_creature_instance_without_a_combat_aspect_shows_no_hit_points_and_stays_on_the_list()
+    {
+        var fixture = new Fixture(ResolvedInnkeeper("pack", "innkeeper", "Karczmarz"));
+        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("innkeeper")), label: null);
+
+        var row = Assert.Single(fixture.CreateViewModel().Instances);
+
+        Assert.False(row.HasMessage);
+        Assert.False(row.CanEditHitPoints);
+        Assert.False(row.SaveHitPointsCommand.CanExecute(null));
+    }
     [Fact]
     public async Task A_gear_instance_row_cannot_edit_hit_points()
     {
@@ -272,7 +308,7 @@ public sealed class CampaignInstancesToolViewModelTests
         return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
     }
 
-    private static RegisteredEntry ResolvedCreature(string packId, string entryId, string name, int hp)
+    private static RegisteredEntry ResolvedCreature(string packId, string entryId, string name, int hp, int ac = 15)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("creature"));
         var creature = new Creature
@@ -280,7 +316,7 @@ public sealed class CampaignInstancesToolViewModelTests
             Size = "Mały",
             Type = "goblinoid",
             Alignment = "chaotyczne zło",
-            Combat = new CombatAspect { Ac = 15, Hp = hp, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
+            Combat = new CombatAspect { Ac = ac, Hp = hp, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
             Speed = "9 m",
             Senses = "wzrok w ciemności 18 m",
             Challenge = "1/4",
@@ -293,6 +329,16 @@ public sealed class CampaignInstancesToolViewModelTests
         return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
     }
 
+    private static RegisteredEntry ResolvedInnkeeper(string packId, string entryId, string name)
+    {
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("creature"));
+        var creature = new Creature { Size = "Średni", Type = "humanoid", Alignment = "neutralne", Speed = "9 m", Senses = "bierna Percepcja 10" };
+        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(creature));
+
+        Assert.True(Dnd5e.TryGet(reference, out var descriptor));
+
+        return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
+    }
     private sealed class Fixture
     {
         public Fixture(params RegisteredEntry[] entries)

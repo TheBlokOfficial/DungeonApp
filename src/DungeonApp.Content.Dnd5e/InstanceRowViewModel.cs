@@ -14,7 +14,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// it gets a row and a message instead, mirroring how a content tab marks a broken entry rather
 /// than hiding it.
 /// <para>
-/// A resolved monster row also carries its current hit points, changed only through
+/// A resolved row of a creature with a combat aspect also carries its current hit points, changed only through
 /// <see cref="SaveHitPointsCommand"/> - never through the <see cref="CurrentHp"/> setter itself, so a
 /// write is always something a caller can await instead of one that runs unobserved.
 /// </para>
@@ -44,7 +44,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
         DisplayName = displayName;
         Message = message;
 
-        // Branching on a content type's own id ("monster") is legal here and nowhere outside this
+        // Branching on a content type's own id ("creature") is legal here and nowhere outside this
         // system: knowledge of D&D content types lives only in this project.
         if (resolved.Unresolved is null
             && resolved.Source is { } source
@@ -64,7 +64,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 
     public bool HasMessage => Message is not null;
 
-    /// <summary>True only for a resolved instance of this set's own monster content type.</summary>
+    /// <summary>True only for a resolved instance of this set's creature type that has a combat aspect.</summary>
     public bool CanEditHitPoints { get; }
 
     /// <summary>The entry's own maximum, shown next to the editable field - never itself editable here.</summary>
