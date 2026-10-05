@@ -119,8 +119,10 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 - Przenieść stare kampanie do `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs`/`Campaigns` nie są
   czytane) i dopisać stworzeniom pole `group`.
-- Przepisać albo usunąć stworzenia we własnych paczkach w starym formacie (proza jako zwykły napis) —
-  pokazują się jako odrzucone wpisy.
+- Przepisać albo usunąć stworzenia i przedmioty we własnych paczkach w starym formacie — pokazują się
+  jako odrzucone wpisy. Stworzenie: `"template": "dnd5e:creature"`, KP, PZ i cechy w obiekcie `combat`,
+  proza w sekcjach. Przedmiot: waga i wartość w obiekcie `item`, ładunki w `charges` (`max`,
+  `recharge`). Wzór: wpisy paczki `dnd5e-srd`.
 
 ## Odłożone, z wyzwalaczem
 
