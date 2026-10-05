@@ -3,51 +3,51 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Przycisk: jeden motyw, odmiany jako klasy. Stany: spoczynek, najechanie (:pointerover),
-        wciśnięcie (:pressed), wyłączenie (:disabled - DungeonDisabledOpacity dla każdej odmiany).
-        Przezroczystość wyłączenia w tym i każdym innym motywie ramy idzie po :disabled, ale tylko
-        na najwyższej wyłączonej kontrolce (^:disabled:not(:disabled :disabled)) - tak przygasa też
-        przycisk wyłączony komendą (CanExecute fałsz), który IsEnabled zostawia true. Kolory stanu
-        wyłączonego idą po samym :disabled: kontrolka w wyłączonym pojemniku (zakładka, sekcja
-        rozwijana) przygasa raz - przygasza ją pojemnik - a akcent i tak traci.
-        Przycisk z wypełnieniem barwą znaczenia (.primary, .danger) pod myszą nie zmienia wypełnienia:
-        dostaje otoczkę - pas 3 px na zewnątrz krawędzi, bez rozmycia, w zaokrągleniu przycisku
-        (BoxShadow Border tła, tokeny DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
-        Otoczka wychodzi poza granice przycisku: rodzic, który przycina, potrzebuje 3 px odstępu.
-        Wyłączony przycisk otoczki nie ma.
-        Wyłączony przycisk z wypełnieniem (.primary, .danger) jest neutralny: tło, krawędź i tekst
-        zwykłego - wyłączony nie niesie znaczenia "główna akcja" ani "zniszczenie", bo nic nie robi.
-        Wciśnięcie nie ma własnego wyglądu w żadnej odmianie: każdy styl najechania obejmuje też
-        :pressed, więc wciśnięty przycisk wygląda dokładnie jak pod myszą - także wciśnięty z
-        klawiatury albo gdy mysz zjedzie z wciśniętego. Przycisk z otwartym okienkiem (:flyout-open)
-        też wygląda jak pod myszą, w każdej odmianie - dopóki okienko jest otwarte, interakcja trwa,
-        choć mysz jest już nad okienkiem. Po zamknięciu okienka kliknięciem w przycisk przycisk jest
-        w spoczynku, dopóki mysz z niego nie zjedzie (klasa .hover-suppressed, Themes/OpenerHoverRest.cs;
-        to samo w ComboBox i DropDownPicker). Nic nie przygasza treści ani jej nie zmniejsza
-        (RenderTransform i Transitions wyzerowane).
-        Fokus nie ma własnego wyglądu (FocusAdorner pusty). Kursor jest strzałką w każdej odmianie,
-        także w odnośnikach - klikalność pokazuje najechanie.
-        Odmiany:
-          (brak)   - zwykły: tło SurfaceHeader, krawędź Border, tekst TextPrimary;
-          .primary - główny: tło Accent, tekst OnAccent, krawędź przezroczysta;
-          .subtle  - cichy: bez tła, krawędź przezroczysta; pod myszą, wciśnięty i z otwartym okienkiem
-                     tło HoverOverlay (półprzezroczysta jasna nakładka - widać ją na każdej powierzchni);
-          .danger  - niszczący: tło Danger, tekst TextPrimary, krawędź przezroczysta;
-          .link    - odnośnik samodzielny (polecenie poza zdaniem): bez tła i krawędzi, wysokość
-                     z treści, tekst TextRegular bez podkreślenia; pod myszą TextPrimary
-                     i podkreślenie; ikona w nim ma kolor tekstu (ForegroundIcon);
-          .link.inline - odnośnik w zdaniu (w InlineUIContainer TextBlocka): stopień i grubość
-                     otaczającego TextBlocka, tekst Accent, podkreślenie stałe - sam kolor akcentu
-                     obok jasnego tekstu nie daje kontrastu 3:1; pod myszą tekst AccentTextHover
-                     (jaśniejszy akcent), podkreślenie zostaje; na linii bazowej zdania stawia go
-                     styl InlineUIContainer w BuiltInControls.axaml;
-          .icon    - ikonowy, łączy się z pozostałymi: kwadrat DungeonControlHeight, treść
-                     wyśrodkowana (ikona DungeonActionIconSize nadaje sobie rozmiar sama).
-        Krawędź ma zawsze 1 px (w odmianach bez krawędzi - przezroczysta), więc zmiana odmiany ani
-        stanu nie zmienia rozmiaru. Wysokość i szerokość nadaje motyw albo kontener, nie treść:
-        tekst przycina się wielokropkiem.
-        Kolejność stylów ma znaczenie: odmiana i jej stany stoją po stanach zwykłego, żeby je
-        nadpisać.
+        Button: one theme, variants as classes. States: resting, hover (:pointerover),
+        pressed (:pressed), disabled (:disabled - DungeonDisabledOpacity for every variant).
+        Disabled opacity in this and all other shell themes uses :disabled, but only
+        on the outermost disabled control (^:disabled:not(:disabled :disabled)) - this also dims
+        command-disabled buttons (CanExecute false) whose IsEnabled stays true. Disabled-state
+        colours use plain :disabled: a control inside a disabled container (tab, expander)
+        dims once - through its container - but still loses its accent.
+        A button filled with a semantic colour (.primary, .danger) keeps its fill on hover:
+        it gains a halo - a 3 px band outside the border, without blur, matching the button radius
+        (background Border BoxShadow, DungeonAccentHoverHaloShadow / DungeonDangerHoverHaloShadow).
+        The halo extends beyond the button: a clipping parent needs a 3 px gap.
+        Disabled buttons have no halo.
+        Disabled filled buttons (.primary, .danger) are neutral: regular background, border and text
+        - disabled carries neither "primary action" nor "destruction" meaning because it does nothing.
+        Pressed has no separate appearance in any variant: every hover style also covers
+        :pressed, so a pressed button looks exactly as on hover - including keyboard presses
+        or when the pointer leaves a pressed button. A button with an open flyout (:flyout-open)
+        also looks hovered in every variant - interaction continues while the flyout is open,
+        even when the pointer is over the flyout. Clicking the button to close the flyout leaves it
+        resting until the pointer leaves (.hover-suppressed, Themes/OpenerHoverRest.cs;
+        same in ComboBox and DropDownPicker). Nothing dims or shrinks the content
+        (RenderTransform and Transitions cleared).
+        No separate focus appearance (empty FocusAdorner). Arrow cursor for every variant,
+        including links - hover indicates clickability.
+        Variants:
+          (none)   - regular: SurfaceHeader background, Border border, TextPrimary text;
+          .primary - primary: Accent background, OnAccent text, transparent border;
+          .subtle  - subtle: no background, transparent border; hovered, pressed and with an open flyout
+                     uses HoverOverlay (translucent light overlay - visible on any surface);
+          .danger  - destructive: Danger background, TextPrimary text, transparent border;
+          .link    - standalone link (command outside a sentence): no background or border, content-sized
+                     height, TextRegular without underline; hover uses TextPrimary
+                     and underline; its icon uses text colour (ForegroundIcon);
+          .link.inline - link in a sentence (in TextBlock's InlineUIContainer): size and weight
+                     of the surrounding TextBlock, Accent text, permanent underline - accent colour alone
+                     next to light text does not give 3:1 contrast; hover uses AccentTextHover
+                     (lighter accent), keeping the underline; the InlineUIContainer style in
+                     BuiltInControls.axaml aligns it with the sentence baseline;
+          .icon    - icon button, combines with other variants: DungeonControlHeight square, centred
+                     content (DungeonActionIconSize icon sets its own size).
+        Border is always 1 px (transparent in borderless variants), so changing variants or
+        states does not change size. Theme or container sets height and width, not content:
+        text is trimmed with an ellipsis.
+        Style order matters: a variant and its states follow regular states to
+        override them.
     -->
     <ControlTheme x:Key="{x:Type Button}" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -69,9 +69,9 @@
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
-        <!-- Przycisk w Avalonii domyślnie przycina do swoich granic, co ucina otoczkę najechania
-             (BoxShadow Border tła, 3 px na zewnątrz) do ledwo widocznej krawędzi. Treść i tak mieści
-             się w przycisku: tekst przycina się wielokropkiem w ContentPresenterze. -->
+        <!-- Avalonia buttons clip to their bounds by default, cutting the hover halo
+             (background Border BoxShadow, 3 px outside) to a barely visible edge. Content still fits
+             inside the button: ContentPresenter trims text with an ellipsis. -->
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -94,20 +94,20 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Zwykły -->
+        <!-- Regular -->
         <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed, ^:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         </Style>
 
-        <!-- Główny -->
+        <!-- Primary -->
         <Style Selector="^.primary">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonOnAccentBrush}" />
         </Style>
-        <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
-             styl odmiany stoi po stanach zwykłego. -->
+        <!-- Hover fill and border explicitly match rest - independent of the variant
+             style following regular states. -->
         <Style Selector="^.primary:pointerover:not(.hover-suppressed), ^.primary:pressed, ^.primary:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -118,7 +118,7 @@
             <Setter Property="BoxShadow" Value="{DynamicResource DungeonAccentHoverHaloShadow}" />
         </Style>
 
-        <!-- Cichy -->
+        <!-- Subtle -->
         <Style Selector="^.subtle">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -128,13 +128,13 @@
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
 
-        <!-- Niszczący -->
+        <!-- Destructive -->
         <Style Selector="^.danger">
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
         </Style>
-        <!-- Wypełnienie i krawędź pod myszą jawnie takie jak w spoczynku - nie zależą od tego, że
-             styl odmiany stoi po stanach zwykłego. -->
+        <!-- Hover fill and border explicitly match rest - independent of the variant
+             style following regular states. -->
         <Style Selector="^.danger:pointerover:not(.hover-suppressed), ^.danger:pressed, ^.danger:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonDangerBrush}" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -145,7 +145,7 @@
             <Setter Property="BoxShadow" Value="{DynamicResource DungeonDangerHoverHaloShadow}" />
         </Style>
 
-        <!-- Link: bez krawędzi (także przezroczystej), bo stoi w linii tekstu. -->
+        <!-- Link: no border (even transparent), because it sits on a text line. -->
         <Style Selector="^.link">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="MinHeight" Value="0" />
@@ -160,16 +160,16 @@
             <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <!-- Podkreślenie dziedziczy tekst treści przez ContentPresenter. -->
+        <!-- Content text inherits the underline through ContentPresenter. -->
         <Style Selector="^.link:pointerover:not(.hover-suppressed) /template/ ContentPresenter#PART_ContentPresenter,
                        ^.link:pressed /template/ ContentPresenter#PART_ContentPresenter,
                        ^.link:flyout-open /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 
-        <!-- Odnośnik w zdaniu: stopień i grubość bierze z TextBlocka, w którego linii stoi; kolor
-             Accent i stałe podkreślenie. Pod myszą (wciśnięty, z otwartym okienkiem) kolor jaśnieje
-             (AccentTextHover) - podkreślenie stałe, więc najechanie pokazuje sam kolor; wymiary bez zmian. -->
+        <!-- Inline link: size and weight come from the TextBlock containing its line; Accent colour
+             and permanent underline. Hover (pressed, open flyout) lightens the colour
+             (AccentTextHover) - the underline is constant, so colour alone indicates hover; dimensions unchanged. -->
         <Style Selector="^.link.inline">
             <Setter Property="Foreground" Value="{DynamicResource DungeonAccentBrush}" />
         </Style>
@@ -184,14 +184,14 @@
             <Setter Property="TextBlock.TextDecorations" Value="Underline" />
         </Style>
 
-        <!-- Ikonowy -->
+        <!-- Icon button -->
         <Style Selector="^.icon">
             <Setter Property="Width" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
             <Setter Property="Padding" Value="0" />
         </Style>
 
-        <!-- Wyłączony główny i niszczący wyglądają jak wyłączony zwykły. -->
+        <!-- Disabled primary and destructive buttons look like disabled regular buttons. -->
         <Style Selector="^.primary:disabled, ^.danger:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />

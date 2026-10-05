@@ -1,11 +1,11 @@
     <ResourceDictionary xmlns="https://github.com/avaloniaui"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-        <!-- KOLORY ============================================================ -->
-        <!-- Background: tło - najgłębszy poziom, pod całą resztą. -->
+        <!-- COLOURS ============================================================ -->
+        <!-- Background: deepest level, beneath everything else. -->
         <Color x:Key="DungeonBackgroundColor">#151412</Color>
-        <!-- Surface: powierzchnia - poziom nad tłem. -->
+        <!-- Surface: level above the background. -->
         <Color x:Key="DungeonSurfaceColor">#1B1917</Color>
-        <!-- SurfaceHeader: powierzchnia - poziom nad tłem (nagłówek powierzchni). -->
+        <!-- SurfaceHeader: level above the background (surface header). -->
         <Color x:Key="DungeonSurfaceHeaderColor">#1B1917</Color>
         <!--
             Application depth hierarchy. These semantic roles intentionally remain separate from the
@@ -13,123 +13,123 @@
             backstage workspace and live campaign desk may evolve independently without making a
             header or panel change color as a side effect.
         -->
-        <!-- TŁA I OBSZAR ROBOCZY -->
-        <!-- Frame: rama - stałe otoczenie treści (pasek boczny, pasek górny). -->
+        <!-- BACKGROUNDS AND WORKSPACE -->
+        <!-- Frame: permanent content surroundings (sidebar, top bar). -->
         <Color x:Key="DungeonFrameColor">#1B1917</Color>
-        <!-- FrameHover: najechanie na ramie - ten element ramy reaguje na mysz. -->
+        <!-- FrameHover: shell hover - this shell element responds to the pointer. -->
         <Color x:Key="DungeonFrameHoverColor">#282522</Color>
-        <!-- Backstage: zaplecze - tło treści poza kampanią (biblioteka, półka, galeria). -->
+        <!-- Backstage: content background outside a campaign (library, shelf, gallery). -->
         <Color x:Key="DungeonBackstageColor">#151412</Color>
-        <!-- BackstageEdge: zaplecze - tło treści poza kampanią, przy dalekiej krawędzi szerokiego widoku
-             (koniec gradientu BackstageWide). -->
+        <!-- BackstageEdge: content background outside a campaign, at the far edge of a wide view
+             (end of the BackstageWide gradient). -->
         <Color x:Key="DungeonBackstageEdgeColor">#100F0E</Color>
-        <!-- BackstageCard: karta - rzecz wyodrębniona z tła, czytana jako całość. -->
+        <!-- BackstageCard: card - object distinct from the background, read as a whole. -->
         <Color x:Key="DungeonBackstageCardColor">#1F1D1A</Color>
-        <!-- BackstageRow: wiersz - pozycja, którą można wskazać. -->
+        <!-- BackstageRow: row - item that can be selected. -->
         <Color x:Key="DungeonBackstageRowColor">#221F1C</Color>
-        <!-- BackstageRowHover: najechanie - to reaguje na mysz. -->
+        <!-- BackstageRowHover: hover - this responds to the pointer. -->
         <Color x:Key="DungeonBackstageRowHoverColor">#282522</Color>
-        <!-- Desk: biurko - tło treści otwartej kampanii. -->
+        <!-- Desk: content background of an open campaign. -->
         <Color x:Key="DungeonDeskColor">#151412</Color>
-        <!-- SurfaceActive: aktywne - wybrane albo wciśnięte teraz. -->
+        <!-- SurfaceActive: active - currently selected or pressed. -->
         <Color x:Key="DungeonSurfaceActiveColor">#282522</Color>
-        <!-- SurfaceHover: najechanie - to reaguje na mysz. -->
+        <!-- SurfaceHover: hover - this responds to the pointer. -->
         <Color x:Key="DungeonSurfaceHoverColor">#221F1C</Color>
-        <!-- HoverOverlay: najechanie na cichej kontrolce (przycisk .subtle) - biały o nieprzezroczystości
-             8 % (#14FFFFFF), z kanałem alfa: rozjaśnia to, na czym leży, więc najechanie widać na każdej
-             powierzchni, także na wierszu listy pod myszą (BackstageRowHover). Na zapleczu (#151412)
-             daje ok. #272522 - tyle co kryjący SurfaceActive. -->
+        <!-- HoverOverlay: hover on a subtle control (.subtle button) - white at
+             8 % opacity (#14FFFFFF), with alpha: lightens the underlying surface, so hover is visible on any
+             surface, including a hovered list row (BackstageRowHover). On backstage (#151412)
+             gives about #272522 - same as opaque SurfaceActive. -->
         <Color x:Key="DungeonHoverOverlayColor">#14FFFFFF</Color>
-        <!-- Border: linia - dzieli, nie wyróżnia; krawędź powierzchni i separator. -->
+        <!-- Border: line - separates, does not highlight; surface edge and separator. -->
         <Color x:Key="DungeonBorderColor">#302C28</Color>
-        <!-- BorderStrong: obramowanie wyraźne - krawędź, na którą ma paść wzrok: kontrolka pod myszą,
-             aktywne okno, krawędź ramy. -->
+        <!-- BorderStrong: prominent border - edge intended to draw the eye: hovered control,
+             active window, shell edge. -->
         <Color x:Key="DungeonBorderStrongColor">#413C36</Color>
-        <!-- TEKST -->
-        <!-- TextPrimary: tekst podstawowy - treść i wszystko domyślnie. -->
+        <!-- TEXT -->
+        <!-- TextPrimary: primary text - content and the default for everything. -->
         <Color x:Key="DungeonTextPrimaryColor">#E8E4DA</Color>
-        <!-- TextRegular: tekst drugorzędny - opis, uzupełnienie. -->
+        <!-- TextRegular: secondary text - description, supplementary content. -->
         <Color x:Key="DungeonTextRegularColor">#B4B2AC</Color>
-        <!-- TextMuted: tekst przygaszony - podpis, etykieta, metadane. -->
+        <!-- TextMuted: muted text - caption, label, metadata. -->
         <Color x:Key="DungeonTextMutedColor">#8A8983</Color>
         <Color x:Key="DungeonAccentColor">#B8843B</Color>
-        <!-- AccentBright: akcent wyróżniony - odcień Accent, bardziej jaskrawy, nie jaśniejszy: nasycenie
-             +13 punktów, jasność +2 (HSL 35°, 65%, 50% wobec 35°, 51%, 48%). Znak marki na ekranie
-             startowym i pasek postępu; przycisk pod myszą go nie używa (ma otoczkę, DungeonAccentHoverHaloShadow). -->
+        <!-- AccentBright: prominent accent - Accent hue, more vivid rather than lighter: saturation
+             +13 points, lightness +2 (HSL 35°, 65%, 50% versus 35°, 51%, 48%). Brand mark on the startup
+             screen and progress bar; hovered buttons do not use it (they have a halo, DungeonAccentHoverHaloShadow). -->
         <Color x:Key="DungeonAccentBrightColor">#D28D2D</Color>
-        <!-- AccentDim: przygaszony akcent - tło pod tym, co wybrane (wiersz listy, aktywny filtr) albo
-             pod treścią w akcencie (odznaka wyzwania). Accent #B8843B o nieprzezroczystości 16 %
-             (#29B8843B): zapisany z kanałem alfa, a nie przeliczony na tło, bo leży na różnych
-             powierzchniach (zaplecze, karta, okienko filtra) i ma na każdej wyglądać jak ta sama
-             przygaszona barwa, bez szwu. Tekst podstawowy na nim na tle zaplecza (ok. #2F2619)
-             ok. 12:1. Nie do linii ani rysunku - na to jest za słaby; tam idzie Accent. -->
+        <!-- AccentDim: dim accent - background under selected elements (list row, active filter) or
+             accent content (challenge badge). Accent #B8843B at 16 % opacity
+             (#29B8843B): stored with alpha rather than composited against a background, because it overlays different
+             surfaces (backstage, card, filter popup) and must look like the same
+             dim colour on each, without seams. Primary text over it on backstage (about #2F2619)
+             about 12:1. Not for lines or glyphs - too weak for those; use Accent there. -->
         <Color x:Key="DungeonAccentDimColor">#29B8843B</Color>
-        <!-- AccentEdge: krawędź tego, co aktywne na przygaszonym akcencie (włączony chip, aktywny filtr,
-             chip-lista z wyborem) - Accent #B8843B o nieprzezroczystości 40 % (#66B8843B), z kanałem alfa
-             z tego samego powodu co AccentDim. Wyraźnie jaśniejsza od wypełnienia AccentDim (16 %), ale
-             nie krzyczy: pełny Accent przy przygaszonym wypełnieniu robił z niego półprzezroczyste złoto
-             na szarym. Tylko krawędź - nie tekst ani rysunek. -->
+        <!-- AccentEdge: border of active elements on dim accent (checked chip, active filter,
+             selected dropdown chip) - Accent #B8843B at 40 % opacity (#66B8843B), with alpha
+             for the same reason as AccentDim. Clearly lighter than AccentDim fill (16 %), but
+             quiet: full Accent beside dim fill would look like translucent gold
+             on grey. Border only - not text or glyphs. -->
         <Color x:Key="DungeonAccentEdgeColor">#66B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
-        <!-- AccentTextHover: akcent jako tekst pod myszą - odnośnik w zdaniu, na który wskazuje mysz.
-             Ten sam odcień co Accent, jaśniejszy o 10 punktów (HSL 35°, 51%, 58% wobec 48%): najechanie
-             widać po samym kolorze, bo podkreślenie odnośnika w zdaniu jest stałe. Tylko tekst - nie tło
-             i nie zamiast Accent w spoczynku. -->
+        <!-- AccentTextHover: hovered accent text - inline link under the pointer.
+             Same hue as Accent, 10 points lighter (HSL 35°, 51%, 58% versus 48%): colour alone
+             indicates hover, because an inline link's underline is permanent. Text only - no background
+             and not a replacement for resting Accent. -->
         <Color x:Key="DungeonAccentTextHoverColor">#CB9D5D</Color>
-        <!-- Sukces: udało się. -->
+        <!-- Success: the operation succeeded. -->
         <Color x:Key="DungeonSuccessColor">#84A98B</Color>
-        <!-- Ostrzeżenie: wymaga uwagi, ale działa. -->
+        <!-- Warning: needs attention, but works. -->
         <Color x:Key="DungeonWarningColor">#D6B84F</Color>
-        <!-- Niebezpieczeństwo: coś jest zepsute, akcja usuwa albo jest nieodwracalna. -->
+        <!-- Danger: something is broken, the action deletes or is irreversible. -->
         <Color x:Key="DungeonDangerColor">#9C4530</Color>
-        <!-- Niebezpieczeństwo (tekst): to samo znaczenie co Danger (coś jest zepsute, akcja usuwa albo
-             jest nieodwracalna), odmiana czytelna jako tekst i sam rysunek bez tła (kosz w wierszu pod
-             myszą);
-             Danger zostaje dla teł. -->
+        <!-- Danger (text): same meaning as Danger (something is broken, action deletes or
+             is irreversible), variant readable as text and a standalone glyph without background (trash in a hovered
+             row);
+             Danger remains for backgrounds. -->
         <Color x:Key="DungeonDangerTextColor">#D46E54</Color>
-        <!-- Przygaszone kolory stanów: tło pod krótką treścią w kolorze stanu (odznaka, tag). Jak
-             AccentDim - kolor stanu o nieprzezroczystości 16 % (alfa 0x29), zapisany z kanałem alfa,
-             żeby na karcie, wierszu i zapleczu wyglądał jak ta sama przygaszona barwa. Nie do linii
-             ani tekstu. Niebezpieczeństwo z Danger (barwa teł), nie z DangerText. -->
+        <!-- Dim state colours: background under short state-coloured content (badge, tag). Like
+             AccentDim - state colour at 16 % opacity (alpha 0x29), stored with alpha,
+             so it looks like the same dim colour on cards, rows and backstage. Not for lines
+             or text. Danger uses Danger (background colour), not DangerText. -->
         <Color x:Key="DungeonSuccessDimColor">#2984A98B</Color>
         <Color x:Key="DungeonWarningDimColor">#29D6B84F</Color>
         <Color x:Key="DungeonDangerDimColor">#299C4530</Color>
-        <!-- Tekst na przygaszonym tle (odznaka, tag, włączony chip): Accent i DangerText na własnym
-             przygaszonym tle mają na karcie tylko 4,05:1 i 4,40:1 - poniżej 4,5:1 dla tekstu 12.
-             Ten sam odcień, jaśniejszy (HSL +8 / +4 punkty jasności): 5,1:1 i 5,0:1 na karcie, 5,0:1
-             i 4,9:1 na wierszu. Do tekstu na AccentDim / DangerDim, nie zamiast Accent i DangerText. -->
+        <!-- Text on dim backgrounds (badge, tag, checked chip): Accent and DangerText over their own
+             dim backgrounds yield only 4.05:1 and 4.40:1 on a card - below 4.5:1 for size 12 text.
+             Same hue, lighter (HSL +8 / +4 lightness points): 5.1:1 and 5.0:1 on a card, 5.0:1
+             and 4.9:1 on a row. For text on AccentDim / DangerDim, not replacements for Accent and DangerText. -->
         <Color x:Key="DungeonAccentOnDimColor">#C89854</Color>
         <Color x:Key="DungeonDangerOnDimColor">#D87C64</Color>
-        <!-- NeutralDim: neutralne tło pojemnika wartości (odznaka neutralna) - biały o nieprzezroczystości
-             ok. 8 % (alfa 0x14), zapisany z kanałem alfa jak kolory *Dim: działa na każdej powierzchni,
-             bo ją przepuszcza i tylko rozjaśnia - na wybranym wierszu (AccentDim) nie jest ciemną
-             dziurą. Tekst drugorzędny (TextRegular) na nim: 7,1:1 na tle, 6,3:1 na karcie, 6,1:1 na
-             wierszu, 5,7:1 na wierszu pod myszą, 4,9:1 na wybranym wierszu. -->
+        <!-- NeutralDim: neutral value container background (neutral badge) - white at
+             about 8 % opacity (alpha 0x14), stored with alpha like *Dim colours: works on any surface,
+             letting it through and only lightening it - not a dark hole on a selected
+             row (AccentDim). Secondary text (TextRegular) on it: 7.1:1 on background, 6.3:1 on a card, 6.1:1 on a
+             row, 5.7:1 on a hovered row, 4.9:1 on a selected row. -->
         <Color x:Key="DungeonNeutralDimColor">#14FFFFFF</Color>
-        <!-- TableHeader: wiersz nagłówka tabeli w karcie - neutralnie jaśniejszy od karty
-             (BackstageCard #1F1D1A), wyraźniej niż wiersz (#221F1C); nie akcent. Tekst drugorzędny
-             na nim ok. 7,4:1. -->
+        <!-- TableHeader: card table header row - neutrally lighter than the card
+             (BackstageCard #1F1D1A), more distinctly than a row (#221F1C); no accent. Secondary text
+             on it about 7.4:1. -->
         <Color x:Key="DungeonTableHeaderColor">#262320</Color>
-        <!-- Kierunek liczby: ciche tło komórki z liczbą, która coś dodaje (PositiveSubtle, zielone)
-             albo odejmuje (NegativeSubtle, czerwone) - modyfikator cechy w tabeli. Który znak to
-             "dodaje", mówi system, nie rama. Nie stan (to nie sukces ani awaria), więc nie z Success
-             i Danger: przygaszone barwy stanów na ciemnej karcie czytają się jak szarozielona
-             i brązowa. Tu wyraźnie nasycona zieleń #2FBF5B i czerwień #EE3B3B, obie o alfie 0x3D
-             (24 %), z kanałem alfa jak kolory *Dim: barwa czyta się jako zieleń i czerwień, a tło
-             zostaje ciche i obie są równie głośne. Tekst podstawowy na nich na karcie ok. 8,6:1
-             i 10:1. Tylko tło komórki - nie tekst ani linia. -->
+        <!-- Numeric direction: quiet cell background for a number that adds (PositiveSubtle, green)
+             or subtracts (NegativeSubtle, red) - ability modifier in a table. The system, not the shell,
+             determines which sign means "adds". Not a state (neither success nor failure), so not from Success
+             or Danger: dim state colours on a dark card read as grey-green
+             and brown. Clearly saturated green #2FBF5B and red #EE3B3B, both at alpha 0x3D
+             (24 %), with alpha like *Dim colours: hues read as green and red while the backgrounds
+             stay quiet and equally prominent. Primary text on them on a card about 8.6:1
+             and 10:1. Cell background only - not text or lines. -->
         <Color x:Key="DungeonPositiveSubtleColor">#3D2FBF5B</Color>
         <Color x:Key="DungeonNegativeSubtleColor">#3DEE3B3B</Color>
 
-        <!-- PĘDZLE ============================================================= -->
+        <!-- BRUSHES ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceBrush" Color="{DynamicResource DungeonSurfaceColor}" />
         <SolidColorBrush x:Key="DungeonSurfaceHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
         <SolidColorBrush x:Key="DungeonFrameBrush" Color="{DynamicResource DungeonFrameColor}" />
         <SolidColorBrush x:Key="DungeonFrameHoverBrush" Color="{DynamicResource DungeonFrameHoverColor}" />
         <SolidColorBrush x:Key="DungeonBackstageBrush" Color="{DynamicResource DungeonBackstageColor}" />
-        <!-- BackstageWide: zaplecze - tło treści poza kampanią (biblioteka, półka, galeria), w szerokich
-             widokach. -->
+        <!-- BackstageWide: content background outside a campaign (library, shelf, gallery), in wide
+             views. -->
         <!-- Used only by wide, static backstage views. The first half stays calm so the gradient
              does not read as decoration behind the actual content. -->
         <LinearGradientBrush x:Key="DungeonBackstageWideBrush"
@@ -172,106 +172,106 @@
         <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
 
-        <!-- OTOCZKI NAJECHANIA ================================================ -->
-        <!-- Pas 3 px na zewnątrz krawędzi, bez przesunięcia i rozmycia, w zaokrągleniu kontrolki
-             (BoxShadow Border tła, zapis "przesunięcie-x przesunięcie-y rozmycie rozciągnięcie kolor").
-             Kolor stoi w tym samym tokenie, bo cień jest typem wartościowym i nie przyjmuje zasobu
-             koloru z osobnego klucza. -->
-        <!-- AccentHoverHalo: akcent pod myszą - otoczka przycisku wypełnionego Accent: Accent #B8843B
-             o nieprzezroczystości 35 %. Wypełnienie pod myszą się nie zmienia. -->
+        <!-- HOVER HALOS ================================================ -->
+        <!-- 3 px band outside the border, no offset or blur, matching the control radius
+             (background Border BoxShadow, format "offset-x offset-y blur spread colour").
+             Colour stays in the same token because shadow is a value type and cannot accept
+             a colour resource from a separate key. -->
+        <!-- AccentHoverHalo: hover accent - halo for an Accent-filled button: Accent #B8843B
+             at 35 % opacity. Fill does not change on hover. -->
         <BoxShadows x:Key="DungeonAccentHoverHaloShadow">0 0 0 3 #59B8843B</BoxShadows>
-        <!-- DangerHoverHalo: niebezpieczeństwo pod myszą - otoczka przycisku wypełnionego Danger:
-             Danger #9C4530 o nieprzezroczystości 45 %. Wypełnienie pod myszą się nie zmienia. -->
+        <!-- DangerHoverHalo: hover danger - halo for a Danger-filled button:
+             Danger #9C4530 at 45 % opacity. Fill does not change on hover. -->
         <BoxShadows x:Key="DungeonDangerHoverHaloShadow">0 0 0 3 #739C4530</BoxShadows>
 
-        <!-- RUCH ============================================================= -->
-        <!-- MotionDuration: czas każdej animacji ramy - coś się przemieszcza, obraca albo pojawia
-             (gałka przełącznika, strzałka listy rozwijanej); najwyżej 150 ms, zawsze z wyhamowaniem
-             (CubicEaseOut). Stan zmienia się od razu, animacja tylko go dogania. Wyłączone animacje
-             w systemie zdejmuje przejścia w całości (Themes/ReducedMotion.axaml). -->
+        <!-- MOTION ============================================================= -->
+        <!-- MotionDuration: duration of each shell animation - something moves, rotates or appears
+             (toggle knob, dropdown arrow); at most 150 ms, always easing out
+             (CubicEaseOut). State changes immediately, animation only catches up. Disabled system
+             animations remove transitions entirely (Themes/ReducedMotion.axaml). -->
         <x:TimeSpan x:Key="DungeonMotionDuration">0:0:0.15</x:TimeSpan>
-        <!-- PopupOpen: otwarcie okienka wysuwanego i rozwiniętej listy (Themes/PopupOpenMotion.cs) -
-             powierzchnia wyłania się z przezroczystości i dosuwa o Offset od strony otwierającego.
-             Krócej niż MotionDuration (120 wobec 150 ms): to otwarcie, na które użytkownik czeka
-             z kursorem nad wierszami, a przesunięcie jest drobne - dłuższy ruch czytałby się jako
-             opóźnienie. Zamknięcie bez ruchu. -->
+        <!-- PopupOpen: flyout and dropdown opening (Themes/PopupOpenMotion.cs) -
+             surface fades in and slides by Offset from the opener's side.
+             Shorter than MotionDuration (120 versus 150 ms): the user waits for opening
+             with the cursor over the rows, and the offset is small - longer motion would feel like
+             a delay. Closing without motion. -->
         <x:TimeSpan x:Key="DungeonPopupOpenDuration">0:0:0.12</x:TimeSpan>
         <x:Double x:Key="DungeonPopupOpenOffset">4</x:Double>
-        <!-- ProgressSweep: jeden obieg odcinka nieokreślonego wskaźnika postępu (Controls/ProgressSweep.cs)
-             - ruch ciągły w pętli, z przyspieszeniem i wyhamowaniem; nie przejście stanu, więc limit
-             MotionDuration go nie dotyczy. Wyłączone animacje w systemie: bez ruchu. -->
+        <!-- ProgressSweep: one cycle of the indeterminate progress segment (Controls/ProgressSweep.cs)
+             - continuous loop with easing in and out; not a state transition, so the
+             MotionDuration limit does not apply. System animations disabled: no motion. -->
         <x:TimeSpan x:Key="DungeonProgressSweepDuration">0:0:1.6</x:TimeSpan>
-        <!-- NotificationOpenOffset: dymek powiadomienia dosuwa się o tyle od prawej krawędzi okna
-             (w DungeonPopupOpenDuration) - więcej niż okienko, bo dymek pojawia się sam, nie pod
-             kursorem, i ruch ma przyciągnąć wzrok do rogu okna. -->
+        <!-- NotificationOpenOffset: distance a notification toast slides from the window's right edge
+             (over DungeonPopupOpenDuration) - more than a popup, because a toast appears by itself, not under
+             the cursor, and motion should draw the eye to the window corner. -->
         <x:Double x:Key="DungeonNotificationOpenOffset">12</x:Double>
-        <!-- NotificationDismissDelay: po tylu dymek powiadomienia znika sam - stała motywu dla
-             odmiany, nie parametr wywołania. Informacja 5 s (jedno zdanie do przeczytania),
-             ostrzeżenie 8 s (dłużej, bo może wymagać reakcji). Błąd nie znika sam. Mysz nad dymkiem
-             wstrzymuje znikanie. -->
+        <!-- NotificationDismissDelay: time before a notification toast dismisses itself - theme constant for
+             the variant, not an invocation parameter. Information 5 s (one sentence to read),
+             warning 8 s (longer, because it may need a response). Errors do not auto-dismiss. Pointer over a toast
+             pauses dismissal. -->
         <x:TimeSpan x:Key="DungeonNotificationInformationDismissDelay">0:0:5</x:TimeSpan>
         <x:TimeSpan x:Key="DungeonNotificationWarningDismissDelay">0:0:8</x:TimeSpan>
 
-        <!-- CIENIE =========================================================== -->
-        <!-- FlyoutShadow: okienko wysuwane i rozwinięta lista - lekki cień w dół oddziela je od treści
-             pod spodem (czerń o nieprzezroczystości 40 %, przesunięcie 2 px, rozmycie 8 px). Rysuje
-             się tylko w obrębie okna wyskakującego, które mierzy się do okienka. -->
+        <!-- SHADOWS =========================================================== -->
+        <!-- FlyoutShadow: flyout and dropdown - subtle downward shadow separates them from content
+             beneath (black at 40 % opacity, offset 2 px, blur 8 px). Drawn
+             only within the popup window, measured to the flyout. -->
         <BoxShadows x:Key="DungeonFlyoutShadow">0 2 8 0 #66000000</BoxShadows>
 
-        <!-- ZASŁONA ========================================================== -->
-        <!-- Scrim: zasłona nad oknem, gdy trwa pytanie (okno potwierdzenia) - reszta okna jest
-             niedostępna, dopóki pytanie trwa. Czerń o nieprzezroczystości 55 %: treść pod spodem
-             zostaje rozpoznawalna (widać, czego pytanie dotyczy), ale wyraźnie odsunięta. -->
+        <!-- SCRIM ========================================================== -->
+        <!-- Scrim: overlay over the window while asking a question (confirmation dialog) - rest of the window is
+             unavailable until the question is answered. Black at 55 % opacity: underlying content
+             stays recognisable (shows what the question concerns), but clearly recedes. -->
         <SolidColorBrush x:Key="DungeonScrimBrush" Color="#8C000000" />
 
-        <!-- NIEPRZEZROCZYSTOŚĆ ================================================= -->
+        <!-- OPACITY ================================================= -->
         <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style
              that dims rather than recolors, so a second view never has to invent its own number. -->
         <x:Double x:Key="DungeonDisabledOpacity">0.48</x:Double>
 
-        <!-- PĘDZLE KONTROLEK I PANELI ========================================= -->
-        <!-- InputBackground: pole do pisania - tu się wpisuje; tło wgłębione (tło zaplecza) odróżnia
-             pole od przycisku i od karty, na której stoi. -->
+        <!-- CONTROL AND PANEL BRUSHES ========================================= -->
+        <!-- InputBackground: typing field - input goes here; recessed background (backstage background) distinguishes
+             the field from a button and the card it sits on. -->
         <SolidColorBrush x:Key="DungeonInputBackgroundBrush" Color="{DynamicResource DungeonBackstageColor}" />
-        <!-- InputBorder: krawędź pola w spoczynku - granica miejsca do pisania, spokojna jak linia. -->
+        <!-- InputBorder: resting field border - boundary of the typing area, quiet like a line. -->
         <SolidColorBrush x:Key="DungeonInputBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
-        <!-- InputHoverBorder: pole pod myszą - kliknięcie tu zacznie edycję. Ta sama krawędź trzyma się
-             przez całą edycję, także gdy mysz zjedzie z pola: pisanie pokazuje karetka, nie akcent. -->
+        <!-- InputHoverBorder: hovered field - clicking here starts editing. Same border remains
+             throughout editing, even when the pointer leaves: caret indicates typing, not accent. -->
         <SolidColorBrush x:Key="DungeonInputHoverBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-        <!-- InputPlaceholder: tekst zastępczy - podpowiedź, co wpisać; pole jest puste. -->
+        <!-- InputPlaceholder: placeholder - hint about what to enter; field is empty. -->
         <SolidColorBrush x:Key="DungeonInputPlaceholderBrush" Color="{DynamicResource DungeonTextMutedColor}" />
-        <!-- TextSelection: zaznaczony tekst - ten fragment jest wybrany (kopiowanie, zastąpienie).
-             Stonowany stalowy niebieski #2E4C68 (HSL 209°, 38 %, 29 %) - konwencja zaznaczenia ciemnych
-             edytorów, przygaszona do ciepłej palety; nie akcent, bo zaznaczenie to nie "wybrana
-             pozycja". Pełny kolor, więc wygląda tak samo w polu i na karcie; tekst podstawowy #E8E4DA
-             na nim 7,04:1. Odcieniem daleko od neutralnego Highlight (#4A443D, ciepła szarość)
-             i szałwiowego SearchMatch (#84A98B na 35 %, na tle pola ok. #3C483C). Ten sam token
-             w polach tekstowych i w SelectableTextBlock. -->
+        <!-- TextSelection: selected text - this fragment is selected (copying, replacement).
+             Muted steel blue #2E4C68 (HSL 209°, 38 %, 29 %) - dark-editor selection
+             convention, dimmed to suit the warm palette; no accent, because text selection is not a selected
+             item. Opaque colour looks identical in fields and cards; primary text #E8E4DA
+             on it 7.04:1. Hue far from neutral Highlight (#4A443D, warm grey)
+             and sage SearchMatch (#84A98B at 35 %, about #3C483C on a field background). Same token
+             in text fields and SelectableTextBlock. -->
         <SolidColorBrush x:Key="DungeonTextSelectionBrush" Color="#2E4C68" />
-        <!-- Highlight: zakreślenie wyróżnione - ta wartość jest ważna w zdaniu, ale zostaje tekstem
-             (wyzwanie "1/2" na karcie). Neutralne i jasne, nie akcent: nic tu nie jest wybrane.
-             Pełny kolor #4A443D, więc wygląda tak samo na każdej powierzchni; tekst podstawowy na nim
-             7,57:1. -->
+        <!-- Highlight: emphasized text background - value is important in a sentence but remains text
+             (challenge "1/2" on a card). Neutral and light, no accent: nothing is selected.
+             Opaque #4A443D looks identical on every surface; primary text on it
+             7.57:1. -->
         <SolidColorBrush x:Key="DungeonHighlightBrush" Color="#4A443D" />
-        <!-- SearchMatch: zakreślenie trafienia wyszukiwania - ten fragment pasuje do tego, czego
-             szukasz. Szałwiowa zieleń (#84A98B, odcień Success) o nieprzezroczystości 35 % (#5984A98B):
-             odcieniem daleko od niebieskiego zaznaczenia i od szarości wyróżnienia. Tekst podstawowy na
-             niej 7,57:1 na tle pola (#151412). -->
+        <!-- SearchMatch: search hit background - this fragment matches the
+             query. Sage green (#84A98B, Success hue) at 35 % opacity (#5984A98B):
+             hue far from blue selection and grey highlight. Primary text on it
+             7.57:1 on field background (#151412). -->
         <SolidColorBrush x:Key="DungeonSearchMatchBrush" Color="#5984A98B" />
-        <!-- ScrollThumb: uchwyt przewijania - tu jest więcej treści, niż widać; przeciągnij. Kolor mocnej
-             krawędzi (BorderStrong #413C36): widoczny, ale nie woła o uwagę. -->
+        <!-- ScrollThumb: scrollbar thumb - more content than visible; drag. Strong border
+             colour (BorderStrong #413C36): visible, but does not demand attention. -->
         <SolidColorBrush x:Key="DungeonScrollThumbBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
-        <!-- ScrollThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Jaśniejszy od
-             spoczynku o ok. 10 punktów jasności (#5E5750, HSL 30°, 8 %, 34 %), wciąż neutralny,
-             nie akcent. -->
+        <!-- ScrollThumbHover: hovered (and dragged) thumb - responds to the pointer. About
+             10 lightness points brighter than rest (#5E5750, HSL 30°, 8 %, 34 %), still neutral,
+             no accent. -->
         <SolidColorBrush x:Key="DungeonScrollThumbHoverBrush" Color="#5E5750" />
-        <!-- SliderThumb: uchwyt suwaka - tu jest wartość; przeciągnij albo kliknij w tor. Kolor tekstu
-             drugorzędnego (TextRegular #B4B2AC): neutralny, nie akcent - akcent niesie część toru
-             przed uchwytem; przygaszony, żeby pod myszą było dokąd jaśnieć. -->
+        <!-- SliderThumb: slider thumb - value is here; drag or click the track. Secondary text
+             colour (TextRegular #B4B2AC): neutral, no accent - track before the thumb
+             carries accent; muted to leave room for lightening on hover. -->
         <SolidColorBrush x:Key="DungeonSliderThumbBrush" Color="{DynamicResource DungeonTextRegularColor}" />
-        <!-- SliderThumbHover: uchwyt pod myszą (i przeciągany) - to reaguje na mysz. Kolor tekstu
-             podstawowego (TextPrimary #E8E4DA): wyraźne rozjaśnienie wobec spoczynku (jasność z ok. 70 %
-             do ok. 91 %), bez zmiany rozmiaru; zmiana koloru od razu, bez ruchu. -->
+        <!-- SliderThumbHover: hovered (and dragged) thumb - responds to the pointer. Primary text
+             colour (TextPrimary #E8E4DA): clearly lighter than rest (lightness from about 70 %
+             to about 91 %), unchanged size; immediate colour change, no motion. -->
         <SolidColorBrush x:Key="DungeonSliderThumbHoverBrush" Color="{DynamicResource DungeonTextPrimaryColor}" />
 
         <!--
@@ -279,24 +279,24 @@
             floating panel can diverge from other surfaces later without touching any view.
             A minimized panel is the same object in another state, so the deck cards share these.
         -->
-        <!-- PanelWindowBackground: okno biurka - tło okna. -->
+        <!-- PanelWindowBackground: desk window - window background. -->
         <SolidColorBrush x:Key="DungeonPanelWindowBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
-        <!-- PanelWindowHeader: okno biurka - nagłówek okna. -->
+        <!-- PanelWindowHeader: desk window - window header. -->
         <SolidColorBrush x:Key="DungeonPanelWindowHeaderBrush" Color="{DynamicResource DungeonSurfaceHeaderColor}" />
-        <!-- PanelWindowBorder: okno biurka - krawędź okna. -->
+        <!-- PanelWindowBorder: desk window - window border. -->
         <SolidColorBrush x:Key="DungeonPanelWindowBorderBrush" Color="{DynamicResource DungeonBorderColor}" />
         <!--
             The active panel changes only this brush. A stronger neutral border keeps focus legible
             without making ordinary window selection look like a warning or validation state. Changing
             BorderThickness instead would resize the panel every time focus moved.
         -->
-        <!-- PanelWindowActiveBorder: okno biurka - krawędź aktywnego okna. -->
+        <!-- PanelWindowActiveBorder: desk window - active window border. -->
         <SolidColorBrush x:Key="DungeonPanelWindowActiveBorderBrush" Color="{DynamicResource DungeonBorderStrongColor}" />
         <!-- Named so nobody helpfully makes the resize gutters visible: they are hit targets only.
              It must stay Transparent rather than null, because null is not hit-testable. -->
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
-        <!-- TYPOGRAFIA ========================================================= -->
+        <!-- TYPOGRAPHY ========================================================= -->
         <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
         <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/CormorantGaramond#Cormorant Garamond</FontFamily>
         <!-- Fixed-width figures for numbers. Regular, Medium and SemiBold files. -->
@@ -309,10 +309,10 @@
         <!-- Compatibility alias for campaign controls not yet split into card/control variants. -->
         <CornerRadius x:Key="DungeonCornerRadius">5</CornerRadius>
 
-        <!-- ODSTĘPY I ZAOKRĄGLENIA ============================================= -->
+        <!-- SPACING AND RADII ============================================= -->
         <!--
-            Skala odstępów, wyrażona jako literały powtarzające się w widokach.
-            Dwa równoległe zestawy: Double dla Spacing/Width/Height oraz Thickness dla Margin/Padding.
+            Spacing scale expressed as literals recurring in views.
+            Two parallel sets: Double for Spacing/Width/Height and Thickness for Margin/Padding.
         -->
         <x:Double x:Key="DungeonSpacingXs">6</x:Double>
         <x:Double x:Key="DungeonSpacingSm">8</x:Double>
@@ -327,108 +327,108 @@
         <Thickness x:Key="DungeonPaddingMd">12</Thickness>
         <Thickness x:Key="DungeonPaddingLg">16</Thickness>
         <Thickness x:Key="DungeonPaddingXxl">24</Thickness>
-        <!-- Tylko nad i pod - wartość równa DungeonSpacingLg (odstęp separatora .section). -->
+        <!-- Top and bottom only - equals DungeonSpacingLg (.section separator spacing). -->
         <Thickness x:Key="DungeonPaddingLgVertical">0,16,0,16</Thickness>
-        <!-- Tylko z boków - wartość równa DungeonSpacingMd (wcięcie tekstu w polu jednowierszowym). -->
+        <!-- Sides only - equals DungeonSpacingMd (single-line field text padding). -->
         <Thickness x:Key="DungeonPaddingMdHorizontal">12,0,12,0</Thickness>
-        <!-- Wcięcie tekstu w polu z ikoną na początku (controls:IconField - ołówek, lupa): tylko
-             z prawej, DungeonSpacingMd - lewy odstęp niesie ikona w ramce (DungeonPaddingMdHorizontal
-             po obu jej stronach), więc pole tekstowe zaczyna się tuż za nią. -->
+        <!-- Text padding in a field with a leading icon (controls:IconField - pencil, magnifier): right
+             only, DungeonSpacingMd - icon in the frame carries left spacing (DungeonPaddingMdHorizontal
+             on both sides), so the text box starts just after it. -->
         <Thickness x:Key="DungeonInputTextAfterIconMargin">0,0,12,0</Thickness>
-        <!-- Z boków DungeonSpacingMd, nad i pod DungeonSpacingSm (wcięcie tekstu w polu wielowierszowym). -->
+        <!-- DungeonSpacingMd at sides, DungeonSpacingSm above and below (multiline field text padding). -->
         <Thickness x:Key="DungeonPaddingMdHorizontalSmVertical">12,8,12,8</Thickness>
-        <!-- Wcięcie tekstu w polu wielowierszowym po stronie treści przewijanej: DungeonPaddingMdHorizontalSmVertical
-             (12, 8, 12, 8) z prawym wcięciem większym o strefę paska (DungeonScrollBarZone, 16) - tekst
-             zawija się przed paskiem, a pasek stoi przy krawędzi pola. -->
+        <!-- Multiline text padding on the scrollable content: DungeonPaddingMdHorizontalSmVertical
+             (12, 8, 12, 8) with right padding increased by the scrollbar zone (DungeonScrollBarZone, 16) - text
+             wraps before the bar, while the bar sits at the field edge. -->
         <Thickness x:Key="DungeonMultilineInputContentPadding">12,8,28,8</Thickness>
-        <!-- Pole wielowierszowe: trzy linie tekstu 13 px (ok. 17 px każda) + wcięcia 8 + 8 + krawędzie. -->
+        <!-- Multiline field: three lines of 13 px text (about 17 px each) + padding 8 + 8 + borders. -->
         <x:Double x:Key="DungeonMultilineInputMinHeight">70</x:Double>
-        <!-- Pole liczbowe: miejsce na kilka cyfr krojem o stałej szerokości i strzałki; nie zależy od wartości. -->
+        <!-- Numeric field: room for several monospaced digits and arrows; independent of the value. -->
         <x:Double x:Key="DungeonNumericInputWidth">96</x:Double>
-        <!-- Pasek przewijania: nakładka nad treścią (nie zabiera jej miejsca); uchwyt stoi przy
-             zewnętrznej krawędzi paska. Pod myszą uchwyt się poszerza w obrębie paska w stronę treści -
-             pasek nie zmienia grubości, odstęp uchwytu od krawędzi też nie, więc nic nie skacze. -->
+        <!-- Scrollbar: overlay above content (takes no space); thumb sits at
+             the bar's outer edge. On hover the thumb widens within the bar towards content -
+             bar thickness and thumb-edge gap stay unchanged, so nothing jumps. -->
         <x:Double x:Key="DungeonScrollBarSize">10</x:Double>
-        <!-- Odstęp paska od krawędzi obszaru przewijania i od obu jego końców - jednakowy, równy
-             DungeonSpacingXs (6): pasek nie dotyka zaokrąglonych rogów listy ani okienka (promień 6)
-             i nie wygląda, jakby z nich wyjeżdżał. Po stronie odwrotnej od krawędzi nie działa (pasek
-             ma stałą grubość i stoi przy krawędzi). -->
+        <!-- Equal gap from the scroll-area edge and both scrollbar ends, matching
+             DungeonSpacingXs (6): bar does not touch rounded list or popup corners (radius 6)
+             or appear to protrude from them. No inset on the side away from the edge (bar has
+             fixed thickness and sits by the edge). -->
         <Thickness x:Key="DungeonScrollBarInset">6</Thickness>
-        <!-- Strefa paska: grubość paska i jego odstęp od krawędzi (10 + 6 = 16) - o tyle treść
-             przewijanego pojemnika kończy się wcześniej po stronie pionowego paska, żeby pasek nie
-             stanął na napisie; tło wierszy sięga pod pasek. Liczona od krawędzi obszaru przewijania:
-             wiersz stojący przy tej krawędzi dokłada całą strefę (wcięcie wewnątrz wiersza), a wcięcie
-             pojemnika po stronie paska leży w strefie - wiersz dokłada wtedy tylko resztę (niżej
-             DungeonScrollBarZoneInFlyout; lista z własnym wcięciem nadpisuje ten zasób). Tylko po prawej:
-             poziomy pasek jest w ramie wyłączony (Disabled) w każdej liście i polu. -->
+        <!-- Scrollbar zone: bar thickness and edge gap (10 + 6 = 16) - scrollable container content
+             ends this much earlier on the vertical scrollbar side, so the bar does not
+             cover text; row backgrounds extend beneath it. Measured from the scroll-area edge:
+             a row at that edge adds the full zone (inner row padding), while container
+             padding on the scrollbar side is within the zone - the row then adds only the remainder (below,
+             DungeonScrollBarZoneInFlyout; lists with their own padding override this resource). Right only:
+             horizontal scrollbar is Disabled in every shell list and field. -->
         <Thickness x:Key="DungeonScrollBarZone">0,0,16,0</Thickness>
-        <!-- Pas paska liczy się od krawędzi obszaru przewijania, nie od krawędzi wiersza: wcięcie
-             pojemnika po stronie paska leży w pasie, więc wiersz dokłada tylko resztę. Wiersz w okienku
-             wysuwanym (menu, podmenu, ComboBox, DropDownPicker, lista w okienku .list-host) stoi
-             o wcięcie okienka (DungeonFlyoutPadding, 4) od krawędzi obszaru przewijania - dokłada
-             16 - 4 = 12. Tekst kończy się wtedy 16 + wcięcie wiersza od krawędzi, jak w liście bez
-             wcięcia. Okienko, którego treść mieści się bez przewijania, strefy nie ma (klasa .no-bar-zone
-             z Themes/PopupOpenLayout.cs, ustalana przy otwarciu). -->
+        <!-- Scrollbar strip is measured from the scroll-area edge, not the row edge: container
+             padding on the scrollbar side is within the strip, so the row adds only the remainder. A flyout row
+             (menu, submenu, ComboBox, DropDownPicker, .list-host list) is inset
+             by flyout padding (DungeonFlyoutPadding, 4) from the scroll-area edge - adds
+             16 - 4 = 12. Text then ends 16 + row padding from the edge, as in a list without
+             padding. A popup whose content fits without scrolling has no zone (.no-bar-zone
+             from Themes/PopupOpenLayout.cs, fixed on opening). -->
         <Thickness x:Key="DungeonScrollBarZoneInFlyout">0,0,12,0</Thickness>
         <x:Double x:Key="DungeonScrollThumbSize">6</x:Double>
         <x:Double x:Key="DungeonScrollThumbHoverSize">8</x:Double>
-        <!-- Najkrótszy uchwyt przy bardzo długiej treści - wciąż do chwycenia myszą. -->
+        <!-- Shortest thumb for very long content - still large enough to grab. -->
         <x:Double x:Key="DungeonScrollThumbMinLength">24</x:Double>
-        <!-- Uchwyt zaokrąglony w pełni (pigułka) przy każdej szerokości. -->
+        <!-- Fully rounded thumb (pill) at any width. -->
         <CornerRadius x:Key="DungeonScrollThumbCornerRadius">999</CornerRadius>
 
-        <!-- Pole wyboru, przycisk opcji, przełącznik, suwak - wymiary znaczników. Cała kontrolka ma
-             wysokość najmniej DungeonControlHeight (stoi w jednym rzędzie z polem i przyciskiem). -->
-        <!-- Znacznik pola wyboru (kwadrat) i przycisku opcji (koło): bok 16 - wyraźnie mniejszy od
-             linii tekstu z odstępami, a na tyle duży, że ptaszek w nim się czyta. -->
+        <!-- Checkbox, radio button, toggle, slider - marker dimensions. Entire control has
+             minimum height DungeonControlHeight (aligned with a field and button). -->
+        <!-- Checkbox marker (square) and radio button (circle): side 16 - clearly smaller than
+             a text line with spacing, but large enough for a readable checkmark. -->
         <x:Double x:Key="DungeonChoiceMarkSize">16</x:Double>
-        <!-- Zaokrąglenie kwadratu pola wyboru: mniejsze niż kontrolki (5), bo kwadrat jest mały - 3 na
-             bok 16 to ok. 1/5 boku; kwadrat wciąż czyta się jako kwadrat, nie jako koło. -->
+        <!-- Checkbox square radius: smaller than controls (5), because the square is small - 3 for
+             side 16 is about 1/5 of the side; still reads as a square rather than a circle. -->
         <CornerRadius x:Key="DungeonCheckBoxCornerRadius">3</CornerRadius>
-        <!-- Koło przycisku opcji: połowa DungeonChoiceMarkSize - pełne zaokrąglenie. -->
+        <!-- Radio button circle: half DungeonChoiceMarkSize - fully rounded. -->
         <CornerRadius x:Key="DungeonRadioButtonCornerRadius">8</CornerRadius>
-        <!-- Kropka zaznaczonego przycisku opcji: średnica. -->
+        <!-- Selected radio button dot: diameter. -->
         <x:Double x:Key="DungeonRadioDotSize">6</x:Double>
-        <!-- Grubość kreski ptaszka i kreski stanu pośredniego - ta sama liczba co pióro ikon ramy
-             (DungeonIconPen), rysowana w pikselach znacznika 16 px, zaokrąglone końce i złącza. -->
+        <!-- Checkmark and indeterminate-line stroke thickness - same number as shell icon pen
+             (DungeonIconPen), drawn in the 16 px marker's pixels, rounded caps and joins. -->
         <x:Double x:Key="DungeonChoiceGlyphThickness">1.75</x:Double>
-        <!-- Etykieta obok znacznika (pole wyboru, przycisk opcji, przełącznik): z lewej odstęp od
-             znacznika DungeonSpacingSm; nad i pod (36 - linia tekstu 13 px, ok. 16) / 2 = 10 - pierwsza
-             linia stoi na środku wysokości kontrolki, tam gdzie znacznik, a dłuższa etykieta zawija
-             się w dół, znacznik zostaje przy pierwszej linii. -->
+        <!-- Label beside a marker (checkbox, radio button, toggle): left gap from
+             marker DungeonSpacingSm; above and below (36 - 13 px text line, about 16) / 2 = 10 - first
+             line centred on control height, like the marker; longer labels wrap
+             downwards, marker stays with the first line. -->
         <Thickness x:Key="DungeonChoiceLabelPadding">8,10,0,10</Thickness>
-        <!-- Tor przełącznika: 36 x 18, zaokrąglony w pełni; gałka 12, 3 px od krawędzi toru w obu
-             położeniach. Szerokość toru to dwa razy pole gałki (18) - tak jak w szablonie Fluenta
-             (40 x 20, pole gałki 20), z którego kontrolka liczy położenie gałki. -->
+        <!-- Toggle track: 36 x 18, fully rounded; knob 12, 3 px from the track edge in both
+             positions. Track width is twice the knob slot (18) - as in the Fluent template
+             (40 x 20, knob slot 20), from which the control calculates knob position. -->
         <x:Double x:Key="DungeonToggleTrackWidth">36</x:Double>
         <x:Double x:Key="DungeonToggleTrackHeight">18</x:Double>
         <CornerRadius x:Key="DungeonToggleTrackCornerRadius">9</CornerRadius>
         <x:Double x:Key="DungeonToggleKnobSize">12</x:Double>
-        <!-- Tor suwaka: grubość 4, zaokrąglony w pełni na obu końcach toru (promień 2). Tor to dwie
-             części stykające się pod uchwytem: przed uchwytem (zaokrąglony tylko początek) i za nim
-             (zaokrąglony tylko koniec) - styk pod uchwytem jest prosty, więc przy uchwycie nie
-             widać przerwy ani wcięcia. -->
+        <!-- Slider track: thickness 4, fully rounded at both ends (radius 2). Track consists of two
+             parts meeting beneath the thumb: before it (only start rounded) and after it
+             (only end rounded) - straight join beneath the thumb leaves no visible
+             gap or notch beside it. -->
         <x:Double x:Key="DungeonSliderTrackThickness">4</x:Double>
         <CornerRadius x:Key="DungeonSliderTrackStartCornerRadius">2,0,0,2</CornerRadius>
         <CornerRadius x:Key="DungeonSliderTrackEndCornerRadius">0,2,2,0</CornerRadius>
-        <!-- Uchwyt suwaka: koło o średnicy 14, zaokrąglenie połowa. -->
+        <!-- Slider thumb: circle of diameter 14, radius half of that. -->
         <x:Double x:Key="DungeonSliderThumbSize">14</x:Double>
         <CornerRadius x:Key="DungeonSliderThumbCornerRadius">7</CornerRadius>
 
-        <!-- WYMIARY POWŁOKI I PANELI ========================================== -->
-        <!-- Pasek postępu ładowania (kurtyna startowa): szerokość. -->
+        <!-- SHELL AND PANEL DIMENSIONS ========================================== -->
+        <!-- Loading progress bar (startup curtain): width. -->
         <x:Double x:Key="DungeonLoadingProgressBarWidth">192</x:Double>
-        <!-- Wskaźnik postępu (ProgressBar): cienki pasek grubości toru suwaka, zaokrąglony w pełni na
-             obu końcach (promień połowa grubości) - spójnie z torem suwaka. -->
+        <!-- ProgressBar: thin bar matching slider track thickness, fully rounded at
+             both ends (radius half the thickness) - consistent with the slider track. -->
         <x:Double x:Key="DungeonProgressBarThickness">4</x:Double>
         <CornerRadius x:Key="DungeonProgressBarCornerRadius">2</CornerRadius>
-        <!-- Okno potwierdzenia: karta najwyżej tak szeroka (w wąskim oknie węższa, z odstępem
-             DungeonSpacingXxl od krawędzi okna). -->
+        <!-- Confirmation dialog: maximum card width (narrower in a small window, with
+             DungeonSpacingXxl from window edges). -->
         <x:Double x:Key="DungeonConfirmationDialogMaxWidth">400</x:Double>
-        <!-- Dymek powiadomienia: stała szerokość - dłuższa treść zawija się, nie rozpycha dymku. -->
+        <!-- Notification toast: fixed width - longer content wraps rather than expanding the toast. -->
         <x:Double x:Key="DungeonNotificationWidth">340</x:Double>
 
-        <!-- Stałe wymiary interfejsu. -->
+        <!-- Fixed UI dimensions. -->
         <x:Double x:Key="DungeonBaseFontSize">13</x:Double>
         <x:Double x:Key="DungeonHelperFontSize">12</x:Double>
         <x:Double x:Key="DungeonEyebrowFontSize">10</x:Double>
@@ -446,66 +446,66 @@
         <GridLength x:Key="DungeonSidebarWidth">224</GridLength>
         <GridLength x:Key="DungeonStatusBarHeight">24</GridLength>
         <x:Double x:Key="DungeonControlHeight">36</x:Double>
-        <!-- Najmniejsza szerokość pola tekstowego (TextBox; w polu z ikoną - obszaru tekstu, więc
-             całość to ta wartość plus pasy ikony i czyszczenia). Konwencja WinUI
-             (TextControlThemeMinWidth). Szerokość właściwą nadaje kontener: pole rozciągnięte albo
-             z szerokością z układu, nigdy mierzone do wpisanego tekstu. -->
+        <!-- Minimum text field width (TextBox; in an icon field - text area, so
+             total adds icon and clear-button strips to this value). WinUI convention
+             (TextControlThemeMinWidth). Container assigns actual width: stretched field or
+             layout-defined width, never measured to entered text. -->
         <x:Double x:Key="DungeonInputMinWidth">64</x:Double>
-        <!-- Wiersz listy (ListBoxItem): gęściej niż kontrolka (36) - lista to wiele pozycji jedna pod
-             drugą, a wiersz niesie jedną linię tekstu 13 px. -->
+        <!-- List row (ListBoxItem): denser than a control (36) - many items stacked
+             vertically, each row carrying one line of 13 px text. -->
         <x:Double x:Key="DungeonListRowHeight">32</x:Double>
         <!-- ListRowIconSize - an entry's own icon before its name in a list row: about as tall as the
              row's line of 13 px text (20), so it reads as part of the line, not as a picture. -->
         <x:Double x:Key="DungeonListRowIconSize">18</x:Double>
-        <!-- Podświetlenie wiersza listy (najechanie, wybrany; ListBoxItem, ComboBoxItem, wiersze
-             DropDownPicker) jest o 1 px węższe z góry i z dołu niż wiersz: sąsiednie podświetlenia
-             dzieli 2 px odstępu zamiast stykania się zaokrąglonymi rogami; wiersz dalej zajmuje
+        <!-- List-row highlight (hover, selected; ListBoxItem, ComboBoxItem, DropDownPicker
+             rows) is inset 1 px at top and bottom: adjacent highlights
+             have a 2 px gap rather than touching rounded corners; row still occupies
              DungeonListRowHeight. -->
         <Thickness x:Key="DungeonListRowHighlightInset">0,1</Thickness>
-        <!-- Akcja w wierszu listy (kosz, DungeonRowAction): pas na pełnej wysokości wiersza i do końca
-             jego treści - wychodzi przez odstęp podświetlenia (1 z góry i z dołu) i prawe wcięcie
-             wiersza (DungeonPaddingMdHorizontal, 12); strefy paska przewijania (DungeonScrollBarZone)
-             nie zajmuje - pas kończy się przed nią. -->
+        <!-- List-row action (trash, DungeonRowAction): full-height strip up to the end of
+             row content - extends through highlight gap (1 at top and bottom) and right row
+             padding (DungeonPaddingMdHorizontal, 12); leaves the scrollbar zone (DungeonScrollBarZone)
+             free - strip ends before it. -->
         <Thickness x:Key="DungeonListRowActionMargin">0,-1,-12,-1</Thickness>
-        <!-- Zaokrąglenie podświetlenia wiersza: wyraźnie drobniejsze niż okienka (3 wobec 6), żeby
-             podświetlenie czytało się jako jedno pole w okienku, nie pudełko w pudełku. -->
+        <!-- Row highlight radius: clearly smaller than popup radius (3 versus 6), so
+             highlight reads as one field in a popup, not a box inside a box. -->
         <CornerRadius x:Key="DungeonListRowHighlightCornerRadius">3</CornerRadius>
-        <!-- Kreska zaznaczenia wiersza listy (ListRow z ShowsSelectionStripe): kolor akcentu, grubość 3,
-             zaokrąglona. Stoi w pasie wcięcia po lewej stronie wiersza (tło wiersza zaczyna się za
-             pasem), przy lewej krawędzi pasa - odstęp od krawędzi tła to szerokość pasa. Szerokość pasa
-             i wcięcia pionowe kreski podaje układający listę (zasoby na poziomie listy); tu wartości
-             listy treści (pas 10, wcięcie kreski 5 nad i pod). -->
+        <!-- List-row selection stripe (ListRow with ShowsSelectionStripe): accent colour, thickness 3,
+             rounded. In the row's left gutter (row background starts after
+             the gutter), at its left edge - distance from the background edge equals gutter width. The list
+             supplies gutter width and vertical stripe insets (list-level resources); values here
+             are for the content list (gutter 10, stripe inset 5 above and below). -->
         <x:Double x:Key="DungeonListRowStripeWidth">3</x:Double>
         <CornerRadius x:Key="DungeonListRowStripeCornerRadius">1.5</CornerRadius>
         <x:Double x:Key="DungeonListRowStripeGutter">10</x:Double>
         <Thickness x:Key="DungeonListRowStripeInset">0,5</Thickness>
-        <!-- Odznaka (wartość) i tag (słowo): jedna wysokość 22 - mieści linię tekstu 12 z oddechem 3-4 px
-             i stoi na środku wiersza listy (32) i linii tekstu 13. Odznaka to prostokąt o drobnym
-             zaokrągleniu 4 (jak nawigacja), tag - pigułka (połowa wysokości). Wcięcie odznaki 8,
-             tagu 10: pigułka potrzebuje więcej miejsca, żeby tekst nie dotykał łuku. -->
+        <!-- Badge (value) and tag (word): shared height 22 - fits a size 12 line with 3-4 px breathing room
+             and centres in a list row (32) and size 13 text line. Badge is a rectangle with small
+             radius 4 (like navigation), tag - pill (half height). Badge padding 8,
+             tag padding 10: a pill needs more space to keep text away from its curve. -->
         <x:Double x:Key="DungeonBadgeHeight">22</x:Double>
         <CornerRadius x:Key="DungeonBadgeCornerRadius">4</CornerRadius>
         <Thickness x:Key="DungeonBadgePadding">8,0</Thickness>
         <CornerRadius x:Key="DungeonTagCornerRadius">11</CornerRadius>
         <Thickness x:Key="DungeonTagPadding">10,0</Thickness>
-        <!-- Chip filtra: zwarta kontrolka w rzędzie filtrów - niższa od przycisku (36), wcięcie
-             poziome 10, zaokrąglenie jak kontrolki (DungeonControlCornerRadius). -->
+        <!-- Filter chip: compact control in a filter row - shorter than a button (36), horizontal
+             padding 10, radius matching controls (DungeonControlCornerRadius). -->
         <x:Double x:Key="DungeonChipHeight">28</x:Double>
         <Thickness x:Key="DungeonChipPadding">10,0</Thickness>
-        <!-- Tabela w karcie: komórka najmniej 28 wysokości, wcięcie 10 z boków i 6 nad i pod. -->
+        <!-- Card table: cell minimum height 28, padding 10 at sides and 6 above and below. -->
         <x:Double x:Key="DungeonTableCellMinHeight">28</x:Double>
         <Thickness x:Key="DungeonTableCellPadding">10,6</Thickness>
-        <!-- Siatka szczegółu wpisu: wszystko w szczegółu staje na trzech pionowych liniach - lewej
-             krawędzi, prawej krawędzi obrazu w nagłówku i początku kolumny tytułu.
-             DetailPictureWidth - szerokość obrazu w nagłówku (kwadrat przedmiotu, portret 3:4
-             potwora). Kolumna obok obrazu ma zmieścić nazwę w jednej linii (42), odstęp (6), tagi
-             (do 25), dwa odstępy nad wartością nagłówkową (12) i ją samą z dopiskiem (60) - razem do
-             145; 150 to najmniejsza okrągła szerokość ponad tym.
-             AbilityCellSize - bok kwadratowej komórki tabeli cech. Trzy komórki to szerokość obrazu
-             (3 x 50 = DetailPictureWidth): lewa tabela kończy się z prawą krawędzią obrazu, a prawa
-             zaczyna się na linii kolumny tytułu - zmiana jednego tokenu wymaga zmiany drugiego.
-             DetailColumnGap - odstęp między obrazem a kolumną tytułu i ten sam między kolumnami
-             karty (dwie tabele cech). -->
+        <!-- Entry detail grid: everything aligns to three vertical lines - left
+             edge, right edge of the header image and start of the title column.
+             DetailPictureWidth - header image width (square item image, 3:4
+             monster portrait). Column beside the image must fit a single-line name (42), gap (6), tags
+             (up to 25), two gaps above the header value (12) and the value with note (60) - up to
+             145 total; 150 is the smallest round width above that.
+             AbilityCellSize - side of a square ability-table cell. Three cells equal image width
+             (3 x 50 = DetailPictureWidth): left table ends at the image's right edge, right table
+             starts at the title-column line - changing either token requires changing the other.
+             DetailColumnGap - gap between image and title column, also between card
+             columns (two ability tables). -->
         <x:Double x:Key="DungeonDetailPictureWidth">150</x:Double>
         <x:Double x:Key="DungeonAbilityCellSize">50</x:Double>
         <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
@@ -514,87 +514,87 @@
              line of title (42), the gap (6) and a line or so of body text under it (20), so the icon
              stands beside the name and its short note rather than over them. -->
         <x:Double x:Key="DungeonDetailIconSize">72</x:Double>
-        <!-- Wartość nagłówkowa (controls:StatTile): ikona przy podpisie 12 px - mniejsza niż ikona
-             akcji (16), bo stoi w podpisie 11 px. -->
+        <!-- Header value (controls:StatTile): caption icon 12 px - smaller than an action
+             icon (16), because it sits in an 11 px caption. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>
-        <!-- Nagłówek sekcji (controls:SectionHeading): kreska akcentu 3 x 18. -->
+        <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
         <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>
-        <!-- Okienko wysuwane i rozwinięta lista: zaokrąglenie powierzchni (6, jak karta) i wewnętrzne
-             wcięcie (4 - mniej niż DungeonPaddingXs, żeby podświetlenie wiersza leżało blisko
-             krawędzi okienka, bez "ramki w ramce"). Przyciski i pola dalej mają
+        <!-- Flyout and dropdown: surface radius (6, like a card) and inner
+             padding (4 - less than DungeonPaddingXs, keeping row highlight near
+             the popup edge, without a frame inside a frame). Buttons and fields retain
              DungeonControlCornerRadius. -->
         <CornerRadius x:Key="DungeonFlyoutCornerRadius">6</CornerRadius>
         <Thickness x:Key="DungeonFlyoutPadding">4</Thickness>
-        <!-- Okienko wysuwane i rozwinięta lista rozwijana: najwyższa wysokość - dziesięć wierszy listy
-             (10 x 32) z wcięciem okienka (2 x 4) i krawędzią (2 x 1); dłuższa treść przewija się
-             w środku. -->
+        <!-- Flyout and dropdown: maximum height - ten list rows
+             (10 x 32) with popup padding (2 x 4) and border (2 x 1); longer content scrolls
+             inside. -->
         <x:Double x:Key="DungeonFlyoutMaxHeight">330</x:Double>
-        <!-- Odstęp okienka wysuwanego i rozwiniętej listy od elementu, który je otworzył:
-             przezroczysty margines nad i pod powierzchnią okienka (motyw FlyoutPresenter), więc
-             działa tak samo, gdy okienko wysuwa się w dół, jak gdy brak miejsca odwraca je nad
-             element; daje też miejsce na cień w pionie. Wartość równa DungeonSpacingXs - najmniejszy
-             stopień skali. W poziomie zero, żeby lewa krawędź okienka stała równo z lewą krawędzią
-             elementu. -->
+        <!-- Flyout and dropdown gap from the opener:
+             transparent margin above and below the popup surface (FlyoutPresenter theme), so
+             works equally when opening downwards and when limited space flips it above
+             the element; also leaves vertical room for shadow. Equals DungeonSpacingXs - smallest
+             scale value. Horizontal zero aligns the popup's left edge with the opener's left
+             edge. -->
         <Thickness x:Key="DungeonFlyoutMargin">0,6</Thickness>
-        <!-- Podpowiedź (ToolTip): wcięcie 8 w poziomie (DungeonSpacingSm) i 4 w pionie - jedna linia
-             pisma 12 daje ok. 24 wysokości; najwyższa szerokość 320 (ok. 50 znaków pisma 12), dłuższy
-             tekst zawija się - podpowiedź nigdy nie przycina. -->
+        <!-- Tooltip (ToolTip): padding 8 horizontally (DungeonSpacingSm) and 4 vertically - one line
+             of size 12 gives about 24 height; maximum width 320 (about 50 size-12 characters), longer
+             text wraps - tooltip never trims. -->
         <Thickness x:Key="DungeonToolTipPadding">8,4</Thickness>
         <x:Double x:Key="DungeonToolTipMaxWidth">320</x:Double>
-        <!-- Menu (MenuFlyout, ContextMenu i podmenu): najmniejsza szerokość 160, najwyższa 320;
-             szerokość z najdłuższej pozycji, dłuższy napis przycina się wielokropkiem. -->
+        <!-- Menu (MenuFlyout, ContextMenu and submenu): minimum width 160, maximum 320;
+             width from the longest item, longer labels trim with an ellipsis. -->
         <x:Double x:Key="DungeonMenuMinWidth">160</x:Double>
         <x:Double x:Key="DungeonMenuMaxWidth">320</x:Double>
-        <!-- Podmenu stoi górnym wierszem na wysokości pozycji-rodzica: przesunięte w górę o wcięcie
-             powierzchni menu (DungeonFlyoutPadding, 4) i jej krawędź (1). -->
+        <!-- Submenu top row aligns with the parent item: shifted up by menu
+             surface padding (DungeonFlyoutPadding, 4) and border (1). -->
         <x:Double x:Key="DungeonSubmenuVerticalOffset">-5</x:Double>
-        <!-- Podmenu stoi obok menu, z którego wyszło, nie na nim: pozycja-rodzic kończy się przed
-             prawą krawędzią menu o jego wcięcie (DungeonFlyoutPadding, 4) i krawędź (1), a za krawędzią
-             jest odstęp okienka od otwierającego (DungeonFlyoutMargin, 6) - razem 4 + 1 + 6. -->
+        <!-- Submenu sits beside its parent menu, not on it: parent item ends before
+             the menu's right edge by its padding (DungeonFlyoutPadding, 4) and border (1), beyond the edge
+             is the popup-opener gap (DungeonFlyoutMargin, 6) - total 4 + 1 + 6. -->
         <x:Double x:Key="DungeonSubmenuHorizontalOffset">11</x:Double>
-        <!-- Odstęp kolumny skrótu klawiszowego od napisu pozycji menu (DungeonSpacingXxl). -->
+        <!-- Gap between shortcut column and menu-item label (DungeonSpacingXxl). -->
         <Thickness x:Key="DungeonMenuGestureMargin">24,0,0,0</Thickness>
-        <!-- Odstęp kolumny ikony od napisu i strzałki podmenu od napisu (DungeonSpacingSm). -->
+        <!-- Gap from icon column to label and label to submenu arrow (DungeonSpacingSm). -->
         <Thickness x:Key="DungeonMenuIconMargin">0,0,8,0</Thickness>
         <Thickness x:Key="DungeonMenuChevronMargin">8,0,0,0</Thickness>
-        <!-- Separator w menu: odstęp 4 nad i pod linią. -->
+        <!-- Menu separator: gap 4 above and below the line. -->
         <Thickness x:Key="DungeonMenuSeparatorMargin">0,4</Thickness>
-        <!-- Okruszki (controls:Breadcrumbs): strzałka między odcinkami 8 px - mniejsza niż ikona
-             akcji (16), bo stoi w tekście 12 px i tylko rozdziela. Odstęp po obu stronach strzałki
-             DungeonSpacingXs. -->
+        <!-- Breadcrumbs (controls:Breadcrumbs): inter-segment arrow 8 px - smaller than an action
+             icon (16), because it sits in 12 px text and only separates. DungeonSpacingXs
+             on both sides of the arrow. -->
         <x:Double x:Key="DungeonBreadcrumbSeparatorSize">8</x:Double>
-        <!-- Zakładka (TabItem, TabStripItem): wysokość 32 - jak wiersz listy (8 px + linia 13 px
-             + 8 px daje ok. 32). Wcięcie poziome 12 (DungeonSpacingMd). -->
+        <!-- Tab (TabItem, TabStripItem): height 32 - like a list row (8 px + 13 px line
+             + 8 px gives about 32). Horizontal padding 12 (DungeonSpacingMd). -->
         <x:Double x:Key="DungeonTabHeight">32</x:Double>
         <Thickness x:Key="DungeonTabPadding">12,0</Thickness>
-        <!-- Najwyższa szerokość zakładki: ok. 30 znaków pisma 13. Dłuższa nazwa przycina się
-             wielokropkiem i pokazuje pełną w podpowiedzi. -->
+        <!-- Maximum tab width: about 30 size-13 characters. Longer names trim
+             with an ellipsis and show full text in a tooltip. -->
         <x:Double x:Key="DungeonTabMaxWidth">240</x:Double>
-        <!-- Odstęp między zakładkami w pasku (w poziomie i między liniami po zawinięciu) idzie ze
-             skali: DungeonSpacingXs. -->
-        <!-- Przełącznik segmentowy (ListBox z motywem DungeonSegmentedControl): pojemnik ma wysokość
-             i krawędź pola (DungeonControlHeight, Input*), segmenty leżą w nim z wcięciem 3 px od
-             krawędzi i zaokrągleniem 3 - mniejszym niż pojemnik (5), żeby wybrany segment czytał się
-             jako pole w polu, nie drugie pole. -->
+        <!-- Tab strip spacing (horizontal and between wrapped lines) uses the
+             scale: DungeonSpacingXs. -->
+        <!-- Segmented control (ListBox with DungeonSegmentedControl theme): container has field height
+             and border (DungeonControlHeight, Input*), segments inset 3 px from
+             the edge with radius 3 - smaller than the container (5), so a selected segment reads
+             as an area within the field, not a second field. -->
         <Thickness x:Key="DungeonSegmentedInset">3</Thickness>
         <CornerRadius x:Key="DungeonSegmentCornerRadius">3</CornerRadius>
-        <!-- Sekcja rozwijana (Expander): nagłówek wysokości wiersza listy (32); strzałka 16 px
-             (DungeonActionIconSize) z odstępem DungeonSpacingSm do napisu. Treść wcięta o szerokość
-             strzałki i odstęp (12 + 16 + 8 = 36), żeby stała równo z napisem nagłówka, nie ze
-             strzałką. -->
+        <!-- Expander: header at list-row height (32); arrow 16 px
+             (DungeonActionIconSize), DungeonSpacingSm from label. Content inset by arrow
+             width and gap (12 + 16 + 8 = 36) to align with the header label rather than
+             the arrow. -->
         <x:Double x:Key="DungeonExpanderHeaderHeight">32</x:Double>
         <Thickness x:Key="DungeonExpanderContentPadding">36,8,12,8</Thickness>
         <x:Double x:Key="DungeonCampaignRowHeight">40</x:Double>
         <x:Double x:Key="DungeonCampaignListViewportHeight">258</x:Double>
         <x:Double x:Key="DungeonActionIconSize">16</x:Double>
-        <!-- Ramka obrazka (controls:ImageFrame): ikona zastępcza w miejscu obrazka - duża, bo stoi
-             sama na środku pustej ramki i mówi, czego tu brakuje. -->
+        <!-- Image frame (controls:ImageFrame): placeholder icon - large because it sits
+             alone at the centre of an empty frame and identifies what is missing. -->
         <x:Double x:Key="DungeonImageFrameIconSize">48</x:Double>
-        <!-- InlineIconButton: przycisk ikony stojący w rzędzie tekstu (przycisk kierunku za odnośnikiem
-             sortowania) - kwadrat 24: ikona 16 z pasem 4 na tło najechania i obszar trafienia większy
-             od samej ikony. Overhang ściąga jego wysokość w układzie do wysokości ikony (24 - 2 x 4 = 16),
-             żeby nie podwyższał rzędu tekstu; tło najechania wystaje po 4 nad i pod rząd. -->
+        <!-- InlineIconButton: icon button in a text row (direction button after the sort
+             link) - square 24: icon 16 with a 4-wide band for hover background and a hit area larger
+             than the icon itself. Overhang reduces layout height to icon height (24 - 2 x 4 = 16),
+             avoiding a taller text row; hover background protrudes 4 above and below the row. -->
         <x:Double x:Key="DungeonInlineIconButtonSize">24</x:Double>
         <Thickness x:Key="DungeonInlineIconButtonOverhang">0,-4</Thickness>
         <!-- The smallest supported desktop workspace still shows its complete chrome, the campaign
@@ -613,7 +613,7 @@
         <x:Double x:Key="DungeonPanelGap">12</x:Double>
         <Thickness x:Key="DungeonDeckEdgeInsetThickness">12</Thickness>
 
-        <!-- TEKSTY ============================================================= -->
+        <!-- TEXT STRINGS ============================================================= -->
         <x:String x:Key="DungeonStringMinimizeToolTip">Zminimalizuj</x:String>
         <x:String x:Key="DungeonStringMaximizeToolTip">Maksymalizuj</x:String>
         <x:String x:Key="DungeonStringRestoreToolTip">Przywróć</x:String>

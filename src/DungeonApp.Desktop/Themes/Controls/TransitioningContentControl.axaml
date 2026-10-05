@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Pojemnik z przejściem między treściami: dwa prezentery, między którymi biegnie przejście. -->
+    <!-- Container with a content transition: two presenters between which the transition runs. -->
     <ControlTheme x:Key="{x:Type TransitioningContentControl}" TargetType="TransitioningContentControl">
         <Setter Property="Template">
             <ControlTemplate>

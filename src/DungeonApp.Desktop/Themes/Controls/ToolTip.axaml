@@ -2,14 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Podpowiedź (ToolTip). Szablon napisany od nowa; nazwa części z ToolTip.xaml Fluenta
-        (Avalonia 12.0.5, MIT): PART_ContentPresenter. Tło SurfaceHeader, tekst TextPrimary, krawędź
-        1 px BorderStrong, zaokrąglenie DungeonControlCornerRadius, cień DungeonFlyoutShadow; krój
-        interfejsu 12 (DungeonHelperFontSize), wcięcie DungeonToolTipPadding. Najwyższa szerokość
-        DungeonToolTipMaxWidth - dłuższy tekst się zawija, podpowiedź nigdy nie przycina. Tekst się
-        nie zaznacza. Bez animacji: pojawia się od razu po opóźnieniu biblioteki, przy wskaźniku
-        (domyślne położenie). Przezroczysty margines DungeonFlyoutMargin daje miejsce na cień.
-        Nie ma stanów - nie reaguje na mysz.
+        Tooltip (ToolTip). Part name from Fluent ToolTip.xaml
+        (Avalonia 12.0.5, MIT): PART_ContentPresenter. SurfaceHeader background, TextPrimary text,
+        1 px BorderStrong, DungeonControlCornerRadius, DungeonFlyoutShadow; UI font
+        12 (DungeonHelperFontSize), DungeonToolTipPadding. Maximum width
+        DungeonToolTipMaxWidth - longer text wraps, tooltip never trims. Text cannot
+        be selected. No animation: appears immediately after the library delay, at the pointer
+        (default placement). Transparent DungeonFlyoutMargin leaves room for the shadow.
+        No states - no pointer response.
     -->
     <ControlTheme x:Key="{x:Type ToolTip}" TargetType="ToolTip">
         <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHeaderBrush}" />

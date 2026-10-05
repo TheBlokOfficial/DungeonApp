@@ -8,15 +8,15 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Konwencja interakcji ramy, raz dla całej aplikacji: kliknięcie poza polem, w którym trwa edycja,
-/// i klawisz Escape w polu zdejmują z niego fokus - karetka przestaje migać, pole wraca do
-/// spoczynku. To samo dotyczy tekstu do zaznaczenia (SelectableTextBlock): kliknięcie obok zdejmuje
-/// z niego fokus, a z nim zaznaczenie. Zmienia wyłącznie fokus widoku, nigdy stan aplikacji.
+/// Shell interaction convention applied once across the application: clicking outside an edited field
+/// or pressing Escape inside removes its focus - the caret stops blinking, the field returns to
+/// rest. The same applies to selectable text (SelectableTextBlock): clicking outside removes
+/// focus and selection. Changes view focus only, never application state.
 /// </summary>
 /// <remarks>
-/// Obsługa klasowa na <see cref="TopLevel"/> obejmuje każde okno i każde okienko wysuwane (jego
-/// PopupRoot też jest TopLevel), bez rejestracji w widokach. Kliknięcie przechodzi dalej
-/// nieobsłużone, więc przycisk albo inne pole działa od pierwszego kliknięcia.
+/// Class handling on <see cref="TopLevel"/> covers every window and flyout (its
+/// PopupRoot is also a TopLevel), without registration in views. The click continues
+/// unhandled, so a button or another field works on the first click.
 /// </remarks>
 internal static class EditFocusRelease
 {
@@ -39,11 +39,11 @@ internal static class EditFocusRelease
             return;
         }
 
-        // Kliknięcie wciąż w tym samym polu (także w przycisku wewnątrz pola, np. czyszczenia) nie
-        // przerywa edycji. Pole złożone z szablonu kontrolki (np. pole liczbowe ze strzałkami) liczy
-        // się w całości - granicą jest kontrolka, której szablon je zawiera.
-        // Pole z ikoną (IconField) liczy się w całości: ikona, krawędź ramki i przycisk czyszczenia
-        // należą do pola, choć leżą poza polem tekstowym.
+        // Clicking within the same field (including an inner button, e.g. clear) does not
+        // interrupt editing. A field composed by a control template (e.g. numeric field with arrows) counts
+        // as a whole - its boundary is the control whose template contains it.
+        // An icon field (IconField) counts as a whole: icon, frame border and clear button
+        // belong to the field even though they sit outside the text box.
         var field = ((Visual)focused).FindAncestorOfType<IconField>()
                     ?? (focused as StyledElement)?.TemplatedParent as Visual
                     ?? (Visual)focused;
@@ -52,13 +52,13 @@ internal static class EditFocusRelease
             return;
         }
 
-        // Kliknięcie w menu (np. menu kontekstowe pola: wklej) działa na polu - fokus zostaje.
+        // Clicking a menu (e.g. the field's context menu: paste) acts on the field - focus stays.
         if (e.Source is Visual menuSource && (menuSource is MenuBase || menuSource.FindAncestorOfType<MenuBase>() is not null))
         {
             return;
         }
 
-        // Avalonia 12.0.5 zdejmuje fokus przez ustawienie fokusu na null; osobne ClearFocus jest nowsze.
+        // Avalonia 12.0.5 removes focus by setting it to null; a separate ClearFocus requires a newer version.
         topLevel.FocusManager!.Focus(null, NavigationMethod.Pointer, e.KeyModifiers);
     }
 
@@ -69,7 +69,7 @@ internal static class EditFocusRelease
             return;
         }
 
-        // Escape nie czyści tekstu - tylko kończy edycję.
+        // Escape does not clear text - only ends editing.
         TopLevel.GetTopLevel(textBox)?.FocusManager?.Focus(null, NavigationMethod.Unspecified, e.KeyModifiers);
         e.Handled = true;
     }

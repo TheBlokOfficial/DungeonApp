@@ -3,17 +3,17 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Klocek sortowania (controls:SortPicker): w jednym rzędzie odnośnik otwierający "Sortuj: {pole}"
-        (DungeonLinkOpener z .link) i tuż za nim, w odstępie DungeonSpacingXs, przycisk kierunku -
-        przycisk ikony bez wypełnienia (.subtle: pod myszą, wciśnięty tło HoverOverlay), kwadrat
-        DungeonInlineIconButtonSize z ikoną DungeonIconSortDirection (DungeonActionIconSize, kolor
-        tekstu przycisku - TextRegular, pod myszą TextPrimary). Przycisk nie podwyższa rzędu: jego
-        wysokość jest ściągnięta ujemnym marginesem pionowym (DungeonInlineIconButtonOverhang) do
-        wysokości ikony, obszar trafienia zostaje pełny. Środki odnośnika, strzałki i przycisku leżą na
-        jednej linii (VerticalAlignment Center). Podpowiedź przycisku - kierunek ("Kierunek: A–Z").
-        Menu pól - menu z motywu ramy, pod odnośnikiem. Przycisk wyłączony (CanReverse=False) -
-        DungeonDisabledOpacity; cały klocek wyłączony - DungeonDisabledOpacity raz, na klocku.
-        Fokus bez wyglądu, kursor strzałka.
+        Sort control (controls:SortPicker): one row with "Sortuj: {pole}" link opener
+        (DungeonLinkOpener with .link) and direction button immediately after, DungeonSpacingXs apart -
+        unfilled icon button (.subtle: HoverOverlay background when hovered or pressed),
+        DungeonInlineIconButtonSize square with DungeonIconSortDirection (DungeonActionIconSize, button
+        text colour - TextRegular, TextPrimary on hover). Button does not increase row height: a
+        negative vertical margin (DungeonInlineIconButtonOverhang) reduces its height to
+        icon height, keeping the full hit area. Link, arrow and button centres lie on
+        one line (VerticalAlignment Center). Button tooltip - direction ("Kierunek: A–Z").
+        Field menu - shell-themed menu below the link. Disabled button (CanReverse=False) -
+        DungeonDisabledOpacity; disabled whole control - DungeonDisabledOpacity once, on the control.
+        No focus appearance, arrow cursor.
     -->
     <ControlTheme x:Key="{x:Type controls:SortPicker}" TargetType="controls:SortPicker">
         <Setter Property="HorizontalAlignment" Value="Left" />

@@ -3,25 +3,25 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Sekcja rozwijana (Expander). Szablon napisany od nowa; układ i nazwy z Expander.xaml Fluenta
-        (Avalonia 12.0.5, MIT): przycisk nagłówka ExpanderHeader (ToggleButton związany z IsExpanded),
-        obszar treści ExpanderContent i PART_ContentPresenter. Obsługiwane jest wyłącznie rozwijanie
-        w dół (ExpandDirection Down) - szablon nie czyta ExpandDirection.
-        Nagłówek (motyw DungeonExpanderHeader): cały wiersz szerokości sekcji, wysokość najmniej
-        DungeonExpanderHeaderHeight, wcięcie poziome 12, zaokrąglenie DungeonCornerRadius, bez
-        krawędzi. Po lewej strzałka DungeonIconChevronDown (DungeonActionIconSize, kolor tekstu
-        nagłówka): zamknięta obrócona w prawo, otwarta w dół - obrót ruchem jak strzałka ComboBox
-        (DungeonMotionDuration, z wyhamowaniem; wpis w ReducedMotion.axaml). Odstęp strzałka-napis
-        DungeonSpacingSm. Napis: tekst podstawowy, 13, SemiBold, jedna linia z wielokropkiem.
-        Kursor strzałka, tekst się nie zaznacza, fokus bez wyglądu.
-        Stany nagłówka:
-          spoczynek   - bez tła;
-          najechanie  - tło SurfaceHover; wciśnięcie - jak najechanie;
-          rozwinięta  - bez osobnego wyglądu, zmienia się tylko strzałka;
-          wyłączona   - cała sekcja (nagłówek i treść) DungeonDisabledOpacity raz, bez reakcji na mysz.
-        Treść: wcięcie DungeonExpanderContentPadding (równo z napisem nagłówka). Po rozwinięciu
-        wyłania się jak okienko - z przezroczystości, dosuwając się z góry (Themes/ExpanderContentMotion.cs);
-        wysokość się nie animuje, zwinięcie natychmiastowe, bez ContentTransition.
+        Expandable section (Expander). Layout and names based on Fluent Expander.xaml
+        (Avalonia 12.0.5, MIT): ExpanderHeader button (ToggleButton bound to IsExpanded),
+        ExpanderContent area and PART_ContentPresenter. Only downward expansion
+        (ExpandDirection Down) is supported - the template does not read ExpandDirection.
+        Header (DungeonExpanderHeader theme): full-width section row, minimum height
+        DungeonExpanderHeaderHeight, horizontal padding 12, DungeonCornerRadius, no
+        border. Left arrow DungeonIconChevronDown (DungeonActionIconSize, header text
+        colour): rotated right when closed, down when open - animated rotation like the ComboBox arrow
+        (DungeonMotionDuration, easing out; entry in ReducedMotion.axaml). Arrow-label gap
+        DungeonSpacingSm. Label: regular text, 13, SemiBold, single line with ellipsis.
+        Arrow cursor, text cannot be selected, no focus appearance.
+        Header states:
+          resting   - no background;
+          hover     - SurfaceHover background; pressed - same as hover;
+          expanded  - no separate appearance, only the arrow changes;
+          disabled  - entire section (header and content) DungeonDisabledOpacity once, no pointer response.
+        Content: DungeonExpanderContentPadding (aligned with the header label). On expansion,
+        appears like a popup - fading in, sliding from above (Themes/ExpanderContentMotion.cs);
+        height is not animated, collapse is immediate, no ContentTransition.
     -->
     <ControlTheme x:Key="DungeonExpanderHeader" TargetType="ToggleButton">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -74,8 +74,8 @@
         <Style Selector="^:pointerover:not(.hover-suppressed), ^:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
         </Style>
-        <!-- Strzałka: zamknięta w prawo, otwarta w dół; obrót ruchem - stan zmienia się od razu,
-             obrót go dogania. -->
+        <!-- Arrow: right when closed, down when open; animated rotation - state changes immediately,
+             rotation catches up. -->
         <Style Selector="^ /template/ controls|ForegroundIcon#PART_Chevron">
             <Setter Property="RenderTransform" Value="rotate(-90deg)" />
             <Setter Property="Transitions">
@@ -92,7 +92,7 @@
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="Transparent" />
         </Style>
-        <!-- Przygasza tylko nagłówek wyłączony sam; w wyłączonej sekcji przygasza ją raz cała sekcja. -->
+        <!-- Dims only an independently disabled header; a disabled section dims everything once. -->
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
@@ -144,7 +144,7 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Wyłączona sekcja przygasza całość - nagłówek i treść - raz. -->
+        <!-- Disabled section dims everything - header and content - once. -->
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>

@@ -8,24 +8,24 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Konwencja interakcji ramy, raz dla całej aplikacji: to, co otworzyło okienko wysuwane albo
-/// listę rozwijaną (przycisk, ComboBox, DropDownPicker), po zamknięciu kliknięciem w siebie
-/// przechodzi w spoczynek i zostaje w nim, dopóki mysz z niego nie zjedzie - najechanie wraca
-/// dopiero po ponownym wjechaniu. Kliknięcie w tym stanie otwiera normalnie.
+/// Shell interaction convention applied once across the application: a flyout or dropdown
+/// opener (button, ComboBox, DropDownPicker), when clicked to close itself,
+/// returns to rest until the pointer leaves - hover returns
+/// only on re-entry. Clicking in this state opens normally.
 /// </summary>
 /// <remarks>
-/// Przyczyna mignięcia (zmierzona w Avalonii 12.0.5, test OpenerHoverRestTests): otwarte okno
-/// wyskakujące kładzie na oknie warstwę zamykania kliknięciem obok (LightDismissOverlayLayer), więc
-/// otwierający traci :pointerover; wciśnięcie, które trafia w tę warstwę i zamyka okno, zdejmuje
-/// :flyout-open (:dropdownopen), a :pointerover wraca dopiero z następnym zdarzeniem wskaźnika
-/// (puszczenie albo ruch) - spoczynek na czas wciśnięcia, potem znów najechanie.
-/// Obsługa klasowa na <see cref="TopLevel"/> dokłada przy tym wciśnięciu klasę
-/// <see cref="SuppressedClass"/>; motyw ramy nie pokazuje najechania kontrolki z tą klasą
-/// (<c>:pointerover:not(.hover-suppressed)</c>). Klasę zdejmuje zjechanie myszy z kontrolki albo
-/// jej następne wciśnięcie. Zmienia wyłącznie wygląd widoku, nigdy stan aplikacji.
-/// Zamknięcie Escape przy myszy stojącej nad otwierającym nie jest objęte: najechanie wraca
-/// z następnym ruchem myszy. Otwarte jest naraz najwyżej jedno okienko - zapamiętany jest jeden
-/// otwierający.
+/// Flicker mechanism (Avalonia 12.0.5, OpenerHoverRestTests): an open popup
+/// adds a light-dismiss layer (LightDismissOverlayLayer) to the window, so
+/// the opener loses :pointerover; a press hitting that layer closes the popup and removes
+/// :flyout-open (:dropdownopen), while :pointerover returns only with the next pointer event
+/// (release or movement) - rest during the press, then hover again.
+/// Class handling on <see cref="TopLevel"/> adds
+/// <see cref="SuppressedClass"/> on that press; the shell theme hides hover for a control with this class
+/// (<c>:pointerover:not(.hover-suppressed)</c>). Pointer exit or the next press
+/// removes the class. Changes view appearance only, never application state.
+/// Escape dismissal with the pointer over the opener is not covered: hover returns
+/// on the next pointer movement. At most one popup is open at a time - one opener
+/// is remembered.
 /// </remarks>
 internal static class OpenerHoverRest
 {
@@ -62,9 +62,9 @@ internal static class OpenerHoverRest
         }
     }
 
-    // Wciśnięcie trafia w warstwę zamykania kliknięciem obok (LightDismissOverlayLayer), nie
-    // w otwierającego, i ta obsługa biegnie przed zamknięciem - dlatego otwierający rozpoznaje się
-    // po położeniu wciśnięcia w jego granicach, nie po źródle zdarzenia.
+    // The press hits the light-dismiss layer (LightDismissOverlayLayer), not
+    // the opener, and this handler runs before dismissal - identify the opener
+    // by the press position within its bounds, not by the event source.
     private static void OnPointerPressed(TopLevel topLevel, PointerPressedEventArgs e)
     {
         Release();

@@ -3,20 +3,20 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Okno potwierdzenia (controls:ConfirmationDialog) - wywołanie i zachowanie w Controls/ConfirmationDialog.cs.
-        Zasłona DungeonScrimBrush na całym oknie (warstwa controls:WindowOverlay); kliknięcie w nią
-        nic nie robi. Karta na środku: powierzchnia jak okienko wysuwane (DungeonBackstageCardBrush,
-        krawędź 1 px InputBorder, DungeonFlyoutShadow, DungeonFlyoutCornerRadius), szerokość najwyżej
-        DungeonConfirmationDialogMaxWidth, w wąskim oknie węższa - odstęp DungeonSpacingXxl od
-        krawędzi; wcięcie DungeonPaddingXxl. Tytuł stylem display-md (20, krój nagłówków - jak tytuł
-        okna dialogowego Windows), treść tekstem drugorzędnym (TextRegular) 13, oba zawijają się;
-        odstęp tytuł-treść DungeonSpacingSm, treść-przyciski DungeonSpacingXxl. Przyciski w prawym
-        dolnym rogu, odstęp DungeonSpacingSm: "Anuluj" (zwykły) i akcja (.primary albo - niszcząca
-        - .danger). Tab krąży po karcie (TabNavigation Cycle); fokus startowy na "Anuluj"; sama
-        kontrolka przyjmuje fokus (bez wyglądu), żeby klawisze trafiały do niej także po kliknięciu
-        w zasłonę. Pojawienie: całość z przezroczystości, karta dosuwa się o DungeonPopupOpenOffset
-        z dołu (DungeonPopupOpenDuration, wyhamowanie); zamknięcie natychmiast; wyłączone animacje
-        w systemie - od razu. Kursor strzałka.
+        Confirmation dialog (controls:ConfirmationDialog) - invocation and behaviour in Controls/ConfirmationDialog.cs.
+        DungeonScrimBrush covers the entire window (controls:WindowOverlay layer); clicking it
+        does nothing. Centred card: flyout surface (DungeonBackstageCardBrush,
+        1 px InputBorder, DungeonFlyoutShadow, DungeonFlyoutCornerRadius), maximum width
+        DungeonConfirmationDialogMaxWidth, narrower in small windows - DungeonSpacingXxl from
+        the edges; DungeonPaddingXxl padding. Title uses display-md (20, heading font - like a Windows
+        dialog title), body uses secondary text (TextRegular) 13, both wrap;
+        DungeonSpacingSm between title and body, DungeonSpacingXxl between body and buttons. Buttons in the bottom
+        right, DungeonSpacingSm apart: "Anuluj" (regular) and action (.primary or - destructive
+        - .danger). Tab cycles within the card (TabNavigation Cycle); initial focus on "Anuluj"; the
+        control itself accepts focus (without an indicator), so it receives keys even after clicking
+        the scrim. Opening: everything fades in, the card slides up by DungeonPopupOpenOffset
+        from below (DungeonPopupOpenDuration, easing out); closing is immediate; system animations
+        disabled - immediate opening. Arrow cursor.
     -->
     <ControlTheme x:Key="{x:Type controls:ConfirmationDialog}" TargetType="controls:ConfirmationDialog">
         <Setter Property="Background" Value="{DynamicResource DungeonScrimBrush}" />

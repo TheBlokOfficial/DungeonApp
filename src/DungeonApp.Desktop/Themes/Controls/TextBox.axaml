@@ -3,44 +3,44 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Pole tekstowe: jeden motyw, odmiany jako klasy. Szablon wycięty z TextBox.xaml Fluenta
-        (Avalonia 12.0.5, MIT): zostały prezenter tekstu, przewijanie, tekst zastępczy i miejsca na
-        treść po lewej (InnerLeftContent) i prawej (InnerRightContent); wypadły DataValidationErrors
-        (w aplikacji nie ma walidacji), pływający tekst zastępczy i przyciski hasła.
-        Stany: spoczynek, najechanie (:pointerover), edycja (:focus - fokus w polu), wyłączenie
-        (:disabled). Nic więcej.
-          spoczynek  - tło InputBackground, krawędź InputBorder;
-          najechanie - krawędź InputHoverBorder;
-          edycja     - krawędź InputHoverBorder (ta z najechania, neutralna, bez akcentu) przez całą
-                       edycję, także gdy mysz zjedzie z pola. Pisanie pokazuje karetka; to nie jest
-                       wskaźnik fokusu klawiatury;
-          wyłączenie - DungeonDisabledOpacity jak przyciski, bez reakcji na mysz.
-        Krawędź ma zawsze 1 px, więc zmiana stanu nie przesuwa układu. Tekst zastępczy
-        (InputPlaceholder) nie zmienia się w żadnym stanie. Pole z ikoną na początku (ołówek, lupa)
-        i z przyciskiem czyszczenia to osobna kontrolka ramy - controls:IconField (IconField.axaml): ikona
-        i przycisk nie leżą w polu tekstowym. Fokus klawiatury nie ma własnego
-        wyglądu (FocusAdorner pusty). Kliknięcie obok i Escape zdejmują fokus z pola - rama,
+        Text field: one theme, variants as classes. Template based on Fluent TextBox.xaml
+        (Avalonia 12.0.5, MIT): text presenter, scrolling, placeholder and slots for
+        left (InnerLeftContent) and right (InnerRightContent) content; no DataValidationErrors
+        (the application has no validation), floating placeholder or password buttons.
+        States: resting, hover (:pointerover), editing (:focus - field focused), disabled
+        (:disabled). No others.
+          resting  - InputBackground fill, InputBorder;
+          hover    - InputHoverBorder;
+          editing  - InputHoverBorder (same as hover, neutral, no accent) throughout
+                     editing, even when the pointer leaves. Caret indicates typing; this is not
+                     a keyboard focus indicator;
+          disabled - DungeonDisabledOpacity like buttons, no pointer response.
+        Border is always 1 px, so state changes do not shift layout. Placeholder
+        (InputPlaceholder) is unchanged in every state. A field with leading icon (pencil, magnifier)
+        and clear button is a separate shell control - controls:IconField (IconField.axaml): icon
+        and button are outside the text box. Keyboard focus has no separate
+        appearance (empty FocusAdorner). Clicking outside or Escape removes field focus - shell,
         Themes/EditFocusRelease.cs.
-        Pole jednowierszowe ma wysokość DungeonControlHeight; za długi tekst przewija się w środku,
-        pole się nie rozpycha. Tekst i tekst zastępczy wyśrodkowane w pionie, z tym samym wcięciem;
-        tekst zastępczy ma krój, stopień i grubość (Regular) tekstu pola - wiązane w szablonie, więc
-        żaden styl TextBlocka z widoku ich nie zmieni - i różni się wyłącznie kolorem.
-        Menu kontekstowe (wytnij/kopiuj/wklej) - DungeonTextBoxContextFlyout
+        Single-line field has DungeonControlHeight; long text scrolls inside,
+        without expanding the field. Text and placeholder vertically centred with equal padding;
+        placeholder has the field text's font, size and weight (Regular) - template bindings ensure
+        no view TextBlock style changes them - and differs only in colour.
+        Context menu (cut/copy/paste) - DungeonTextBoxContextFlyout
         (TextContextFlyouts.axaml).
-        Odmiany:
-          (brak)          - jednowierszowe;
-          AcceptsReturn   - wielowierszowe: zawija wiersze, wysokość najmniej
-                            DungeonMultilineInputMinHeight, tekst od góry, pionowy pasek przewijania
-                            tylko przy potrzebie; pasek to nakładka ramy przy krawędzi pola, a tekst
-                            ma po jego stronie wcięcie większe o strefę paska, więc zawija się
-                            przed nim, a nie pod nim.
+        Variants:
+          (none)        - single-line;
+          AcceptsReturn - multiline: wraps lines, minimum height
+                          DungeonMultilineInputMinHeight, text at top, vertical scrollbar
+                          only when needed; shell overlay scrollbar at the field edge, while text
+                          padding on that side increases by the scrollbar zone, so it wraps
+                          before the bar, not beneath it.
     -->
     <!--
-        Przycisk-rysunek w polu (czyszczenie x): stoi obok obszaru tekstu i nie wygląda jak przycisk.
-        Sam rysunek - bez tła, bez krawędzi, bez wyglądu wciśnięcia; pod myszą (i wciśnięty) rysunek
-        jaśnieje z przygaszonego do podstawowego. Obszar trafiania to cała wysokość wnętrza pola
-        i wcięcie do krawędzi (tło przezroczyste). Nie przyjmuje fokusu - fokus zostaje w polu;
-        kursor strzałka. Wyłączenie niesie pole w całości (DungeonDisabledOpacity pola).
+        Field glyph button (clear x): beside the text area, without button appearance.
+        Glyph only - no background, border or pressed appearance; hovered (and pressed) glyph
+        lightens from muted to regular. Hit area spans the field's full inner height
+        and padding to its edge (transparent background). Does not accept focus - focus stays in the field;
+        arrow cursor. The entire field handles disabling (field's DungeonDisabledOpacity).
     -->
     <ControlTheme x:Key="DungeonFieldGlyphButton" TargetType="Button">
         <Setter Property="Focusable" Value="False" />
@@ -168,16 +168,16 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Najechanie i edycja: ta sama krawędź; w edycji trzyma się także bez myszy nad polem. -->
+        <!-- Hover and editing: same border; editing keeps it even without the pointer over the field. -->
         <Style Selector="^:pointerover /template/ Border#PART_BorderElement,
                        ^:focus /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
 
-        <!-- Wielowierszowe. Wcięcie tekstu należy do przewijanej treści (PART_ContentInset), nie do
-             obszaru przewijania: pasek stoi przy krawędzi pola, a tekst kończy się przed jego strefą
-             (DungeonMultilineInputContentPadding - wcięcie pola z prawym większym o DungeonScrollBarZone).
-             Padding pola nie działa w tej odmianie. -->
+        <!-- Multiline. Text padding belongs to scrollable content (PART_ContentInset), not the
+             scroll area: scrollbar sits at the field edge, text ends before its zone
+             (DungeonMultilineInputContentPadding - field padding with DungeonScrollBarZone added on the right).
+             Field Padding has no effect in this variant. -->
         <Style Selector="^[AcceptsReturn=True]">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="MinHeight" Value="{DynamicResource DungeonMultilineInputMinHeight}" />

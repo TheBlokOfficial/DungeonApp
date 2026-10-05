@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Okno: tło ramy (DungeonFrameBrush), pismo i kolor tekstu podstawowego. VisualLayerManager
-        niesie warstwy, w których rysują się okienka, podpowiedzi i warstwa WindowOverlay.
+        Window: shell background (DungeonFrameBrush), regular text font and colour. VisualLayerManager
+        hosts the layers used to draw popups, tooltips and WindowOverlay.
     -->
     <ControlTheme x:Key="{x:Type Window}" TargetType="Window">
         <Setter Property="Background" Value="{DynamicResource DungeonFrameBrush}" />

@@ -10,23 +10,23 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Otwarcie okienka wysuwanego, rozwiniętej listy i menu (każde okno wyskakujące, którego treścią jest
-/// FlyoutPresenter - Flyout, ComboBox, DropDownPicker - albo MenuFlyoutPresenter, ContextMenu
-/// i powierzchnia podmenu MenuItem), raz dla całej aplikacji:
+/// Flyout, dropdown and menu opening (every popup whose content is
+/// FlyoutPresenter - Flyout, ComboBox, DropDownPicker - or MenuFlyoutPresenter, ContextMenu
+/// and MenuItem submenu surface), applied once across the application:
 /// <list type="bullet">
-/// <item>ustala, czy okno stanęło pod otwierającym, czy nad nim, i daje otwierającemu klasę
-/// <see cref="OpensUpClass"/>, gdy nad - motyw obraca po niej strzałkę listy w górę;</item>
-/// <item>wyłania powierzchnię z przezroczystości i dosuwa ją o DungeonPopupOpenOffset od strony
-/// otwierającego w DungeonPopupOpenDuration. Menu kontekstowe i podmenu nie mają strony
-/// otwierającego - tylko wyłaniają się z przezroczystości. Okno jest otwarte i klikalne od pierwszej klatki -
-/// ruch tylko dogania stan. Zamknięcie jest natychmiastowe (nic tu go nie dotyczy).</item>
+/// <item>determines whether the popup sits below or above the opener, and gives the opener
+/// <see cref="OpensUpClass"/> when above - the theme rotates the dropdown arrow upwards;</item>
+/// <item>fades the surface in and slides it by DungeonPopupOpenOffset from the opener's
+/// side over DungeonPopupOpenDuration. Context menus and submenus have no opener
+/// side - fade in only. Popup is open and clickable from the first frame -
+/// motion only catches up with state. Closing is immediate (not handled here).</item>
 /// </list>
-/// Wyłączone animacje w systemie: ReducedMotion.axaml ustawia <see cref="IsEnabledProperty"/>
-/// na false i ruch się nie uruchamia; kierunek strzałki działa dalej.
+/// System animations disabled: ReducedMotion.axaml sets <see cref="IsEnabledProperty"/>
+/// to false and motion does not start; arrow direction still works.
 /// </summary>
 /// <remarks>
-/// Obsługa klasowa zmiany Popup.IsOpen biegnie po otwarciu okna, więc jego położenie na ekranie
-/// jest już ustalone. Zmienia wyłącznie wygląd widoku, nigdy stan aplikacji.
+/// Class handling of Popup.IsOpen changes runs after popup opening, so its screen position
+/// is already fixed. Changes view appearance only, never application state.
 /// </remarks>
 internal static class PopupOpenMotion
 {
@@ -59,7 +59,7 @@ internal static class PopupOpenMotion
             return;
         }
 
-        // Menu kontekstowe i podmenu: bez strony otwierającego - samo wyłonienie.
+        // Context menus and submenus: no opener side - fade only.
         if (presenter is ContextMenu || popup.TemplatedParent is MenuItem)
         {
             if (GetIsEnabled(presenter))
@@ -80,8 +80,8 @@ internal static class PopupOpenMotion
         var targetTop = target?.PointToScreen(default).Y;
         var opensUp = targetTop is { } top && popupTop < top;
 
-        // Otwierający: kontrolka, której szablon zawiera okno (ComboBox, DropDownPicker), albo cel
-        // okienka wysuwanego (przycisk).
+        // Opener: control whose template contains the popup (ComboBox, DropDownPicker), or flyout
+        // target (button).
         var opener = popup.TemplatedParent as Control ?? target;
         opener?.Classes.Set(OpensUpClass, opensUp);
 
@@ -95,19 +95,19 @@ internal static class PopupOpenMotion
     {
         offset ??= Offset(presenter);
 
-        // Otwarte w dół - z góry (ujemne przesunięcie), otwarte w górę - z dołu.
+        // Opens down - from above (negative offset), opens up - from below.
         Appear(presenter, opensUp ? offset.Value : -offset.Value);
     }
 
-    /// <summary>DungeonPopupOpenOffset - o ile powierzchnia dosuwa się od strony otwierającego.</summary>
+    /// <summary>DungeonPopupOpenOffset - distance the surface slides from the opener's side.</summary>
     internal static double Offset(Control control) =>
         control.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
 
     /// <summary>
-    /// Ruch wyłonienia wspólny dla okienka i treści rozwiniętej sekcji (Themes/ExpanderContentMotion.cs):
-    /// z przezroczystości i z przesunięcia <paramref name="fromY"/> do położenia w
-    /// DungeonPopupOpenDuration, z wyhamowaniem. Nic nie blokuje - treść jest klikalna od pierwszej
-    /// klatki, ruch tylko dogania stan.
+    /// Appearance motion shared by popups and expanded section content (Themes/ExpanderContentMotion.cs):
+    /// fades in and moves from <paramref name="fromY"/> to its position over
+    /// DungeonPopupOpenDuration, easing out. Blocks nothing - content is clickable from the first
+    /// frame, motion only catches up with state.
     /// </summary>
     internal static void Appear(Control target, double fromY)
     {
@@ -115,8 +115,8 @@ internal static class PopupOpenMotion
             ? span
             : TimeSpan.FromMilliseconds(120);
 
-        // Animacja przesunięcia działa na TranslateTransform w RenderTransform (animator przekształceń
-        // Avalonii 12 nie animuje RenderTransform zapisanego jako TransformOperations).
+        // Offset animation uses TranslateTransform in RenderTransform (Avalonia 12's transform animator
+        // does not animate RenderTransform stored as TransformOperations).
         if (target.RenderTransform is not TranslateTransform)
         {
             target.RenderTransform = new TranslateTransform();

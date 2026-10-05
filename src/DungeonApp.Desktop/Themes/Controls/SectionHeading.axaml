@@ -3,13 +3,13 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Nagłówek sekcji (controls:SectionHeading): początek sekcji tekstu karty. W jednym rzędzie, na
-        środku w pionie: kreska akcentu (Accent - tu zaczyna się sekcja; DungeonSectionHeadingBarWidth
-        x DungeonSectionHeadingBarHeight, ostre końce) i tytuł w roli display-md (krój ozdobny 20,
-        SemiBold), tekst podstawowy. Bez ikony: sekcję rozpoznaje się po tytule, a obrazek przy
-        każdym nagłówku tylko dokłada szumu. Odstęp między częściami DungeonSpacingSm. Kreska stoi
-        przy lewej krawędzi - na tej samej linii co treść sekcji pod nagłówkiem.
-        Bez stanów: niczego nie zwija, nie reaguje na mysz, nie przyjmuje fokusu; tytuł się zaznacza.
+        Section heading (controls:SectionHeading): start of a card text section. One row, vertically
+        centred: accent bar (Accent - section starts here; DungeonSectionHeadingBarWidth
+        x DungeonSectionHeadingBarHeight, square ends) and display-md title (decorative font 20,
+        SemiBold), regular text. No icon: title identifies the section, while an image at
+        every heading only adds noise. DungeonSpacingSm between parts. Bar sits
+        at the left edge - aligned with section content below the heading.
+        No states: does not collapse anything, respond to the pointer or accept focus; title is selectable.
     -->
     <ControlTheme x:Key="{x:Type controls:SectionHeading}" TargetType="controls:SectionHeading">
         <Setter Property="Focusable" Value="False" />

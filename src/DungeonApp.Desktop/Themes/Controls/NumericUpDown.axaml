@@ -2,18 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Pole liczbowe (NumericUpDown): wygląd i stany pola tekstowego - spoczynek, najechanie, edycja
-        (fokus gdziekolwiek w polu, :focus-within; krawędź z najechania, bez akcentu), wyłączenie. Szablony wycięte z NumericUpDown.xaml
-        i ButtonSpinner.xaml Fluenta (Avalonia 12.0.5, MIT): zostały ButtonSpinner (PART_Spinner - to on
-        zamienia strzałki klawiatury i przyciski w zmianę wartości) i wewnętrzne pole PART_TextBox;
-        wypadły DataValidationErrors i przyciski obok siebie. Ramkę i tło rysuje ButtonSpinner;
-        wewnętrzne pole jest bez krawędzi i tła, więc jego własne stany są niewidoczne.
-        Wartość krojem o stałej szerokości (DungeonMonoFont), domyślnie jako liczba całkowita
-        (FormatString "0", Increment 1). Strzałki góra/dół po prawej wewnątrz
-        pola, jedna nad drugą, w kolorze tekstu przygaszonego, pod myszą w kolorze tekstu
-        podstawowego, sam rysunek bez tła; nie przyjmują fokusu i nie zabierają go polu, nie
-        zaznaczają tekstu, kursor strzałka. Szerokość z motywu
-        (DungeonNumericInputWidth), nie z wartości.
+        Numeric field (NumericUpDown): text-field appearance and states - resting, hover, editing
+        (focus anywhere inside, :focus-within; hover border, no accent), disabled. Templates based on Fluent NumericUpDown.xaml
+        and ButtonSpinner.xaml (Avalonia 12.0.5, MIT): ButtonSpinner (PART_Spinner - translates
+        keyboard arrows and button presses into value changes) and inner PART_TextBox;
+        no DataValidationErrors or side-by-side buttons. ButtonSpinner draws the border and background;
+        the inner field has neither, so its own states are invisible.
+        Value in a monospaced font (DungeonMonoFont), integer by default
+        (FormatString "0", Increment 1). Up/down arrows on the right inside
+        the field, stacked vertically, muted text colour, regular text colour
+        on hover, glyphs only without background; do not accept or take focus from the field, do not
+        select text, arrow cursor. Width from the theme
+        (DungeonNumericInputWidth), not the value.
     -->
     <StreamGeometry x:Key="DungeonSpinnerIncreaseGeometry">M0,9 L10,0 20,9 19,10 10,2 1,10 z</StreamGeometry>
 
@@ -108,17 +108,17 @@
         <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
         <Setter Property="FontFamily" Value="{DynamicResource DungeonMonoFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
-        <!-- Liczba całkowita domyślnie: bez części ułamkowej ("27", nie "27,0") i krok 1 bez miejsca
-             po przecinku. Pole, które chce ułamków, ustawia FormatString i Increment jawnie. -->
+        <!-- Integer by default: no fractional part ("27", not "27,0") and increment 1 without decimal
+             places. Fields needing fractions set FormatString and Increment explicitly. -->
         <Setter Property="FormatString" Value="0" />
         <Setter Property="Increment" Value="1" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
-        <!-- Fokus przyjmuje tylko wewnętrzne pole. Kliknięcie strzałki (nie przyjmuje fokusu) oddaje
-             fokus najbliższemu przodkowi, który go przyjmuje; gdyby to było pole liczbowe albo
-             ButtonSpinner, pole liczbowe przekazałoby go wewnętrznemu polu z zaznaczeniem tekstu.
-             Tak strzałka zmienia wartość i zostawia fokus tam, gdzie był. -->
+        <!-- Only the inner field accepts focus. Clicking an arrow (not focusable) gives
+             focus to the nearest focusable ancestor; if that were NumericUpDown or
+             ButtonSpinner, the numeric field would forward it to the inner field and select text.
+             This way an arrow changes the value while leaving focus where it was. -->
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -128,8 +128,8 @@
                                AllowSpin="{TemplateBinding AllowSpin}"
                                ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
                                ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}">
-                    <!-- MinWidth 0: szerokość pola liczby ustala jego motyw, nie najmniejsza szerokość
-                         zwykłego pola tekstowego (DungeonInputMinWidth). -->
+                    <!-- MinWidth 0: numeric field width comes from its theme, not the minimum width
+                         of a regular text field (DungeonInputMinWidth). -->
                     <TextBox Name="PART_TextBox"
                              Height="NaN"
                              MinWidth="0"

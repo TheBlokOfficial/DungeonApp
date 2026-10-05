@@ -2,28 +2,28 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Suwak (Slider), tylko poziomy. Szablon wycięty z Slider.xaml Fluenta (Avalonia 12.0.5, MIT):
-        zostały PART_Track z częściami toru PART_DecreaseButton i PART_IncreaseButton (RepeatButton)
-        i uchwytem (Thumb); wypadły podziałki (TickBar), DataValidationErrors, podpowiedź z wartością
-        i szablon pionowy. Suwak pionowy nie ma konsumenta: Orientation="Vertical" dostaje ten sam
-        poziomy szablon - pionowy dopisze pierwszy konsument.
-        Wysokość najmniej DungeonControlHeight (stoi w rzędzie z polem i przyciskiem), szerokość
-        z kontenera. Tor DungeonSliderTrackThickness, wyśrodkowany w pionie, zaokrąglony na obu
-        końcach: część przed uchwytem w kolorze Foreground (Accent), za uchwytem - Background
-        (InputBorder, kolor krawędzi pola). Uchwyt: koło DungeonSliderThumbSize w SliderThumb -
-        neutralny, w spoczynku przygaszony (tekst drugorzędny). Bez podziałki i bez wyświetlanej wartości - wartość pokazuje ten, kto
-        układa widok. Kliknięcie w dowolnym miejscu wysokości kontrolki przenosi uchwyt w to
-        miejsce - Slider Avalonii robi to sam (nie ma przełącznika IsMoveToPointEnabled jak w WPF);
-        części toru mają przezroczyste tło na całej wysokości, więc trafia każde kliknięcie.
-        Kursor strzałka, fokus bez wyglądu (FocusAdorner pusty), bez animacji.
-        Stany - nic więcej:
-          spoczynek   - jak wyżej;
-          najechanie  - uchwyt SliderThumbHover (tekst podstawowy, wyraźnie jaśniejszy), bez zmiany rozmiaru; mysz nad całą
-                        kontrolką, bo kliknięcie w dowolnym jej miejscu rusza uchwyt; tor bez zmian;
-          przeciąganie - jak najechanie, także gdy mysz zjedzie z kontrolki;
-          wyłączenie  - DungeonDisabledOpacity na całości, bez reakcji na mysz; część przed uchwytem
-                        traci akcent - tekst przygaszony (TextMuted), neutralna, wciąż odróżnialna
-                        od reszty toru.
+        Slider, horizontal only. Template based on Fluent Slider.xaml (Avalonia 12.0.5, MIT):
+        PART_Track with PART_DecreaseButton and PART_IncreaseButton (RepeatButton)
+        and Thumb; no ticks (TickBar), DataValidationErrors, value tooltip
+        or vertical template. No vertical consumer: Orientation="Vertical" receives the same
+        horizontal template.
+        Minimum height DungeonControlHeight (aligned with fields and buttons), width
+        from container. DungeonSliderTrackThickness track, vertically centred, rounded at both
+        ends: before the thumb uses Foreground (Accent), after the thumb - Background
+        (InputBorder, field border colour). Thumb: DungeonSliderThumbSize circle in SliderThumb -
+        neutral, muted at rest (secondary text). No ticks or displayed value - the view
+        displays the value. Clicking anywhere within the control height moves the thumb
+        there - Avalonia Slider handles this (no IsMoveToPointEnabled switch as in WPF);
+        track parts have a transparent background at full height, so every click hits.
+        Arrow cursor, no focus appearance (empty FocusAdorner), no animation.
+        States - no others:
+          resting  - as above;
+          hover    - SliderThumbHover thumb (regular text, clearly lighter), unchanged size; pointer over the whole
+                     control, because clicking anywhere moves the thumb; track unchanged;
+          dragging - same as hover, even when the pointer leaves the control;
+          disabled - DungeonDisabledOpacity on the whole control, no pointer response; track before the thumb
+                     loses accent - muted text (TextMuted), neutral, still distinguishable
+                     from the rest of the track.
     -->
     <ControlTheme x:Key="DungeonSliderTrackPart" TargetType="RepeatButton">
         <Setter Property="Focusable" Value="False" />

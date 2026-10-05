@@ -3,30 +3,30 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Wiersz listy, który jest poleceniem (controls:ListRow - Button z IsSelected i opcjonalną kreską
-        zaznaczenia): do list zbudowanych jako ItemsControl, gdzie wybór, otwarcie albo nawigację niesie
-        polecenie modelu widoku. Wygląd i stany dokładnie jak wiersz ListBoxItem (ListBox.axaml) - te same pędzle,
-        pismo, wcięcia, zaokrąglenie i odstęp podświetlenia (DungeonListRowHighlightInset); tło sięga pod
-        pasek przewijania, treść kończy się przed jego strefą (DungeonScrollBarZone), tekst w jednej
-        linii przycięty wielokropkiem.
-        Wysokość DungeonListRowHeight ustawiona jawnie - należy do wiersza, nie do zawartości; inną
-        podaje układający stylem listy w widoku.
-        Kreska zaznaczenia (ShowsSelectionStripe, domyślnie wyłączona): pas wcięcia po lewej szerokości
-        DungeonListRowStripeGutter, tło wiersza zaczyna się za nim i kończy przed takim samym pasem
-        po prawej (tło w równym odstępie od obu krawędzi listy; pasek przewijania leży nad prawym
-        końcem tła, treść kończy się przed strefą paska liczoną od krawędzi wiersza); w pasie, przy jego lewej krawędzi,
-        kreska akcentu grubości DungeonListRowStripeWidth, zaokrąglona, wcięta z góry i z dołu o
-        DungeonListRowStripeInset - widoczna tylko przy IsSelected. Pas leży w granicach wiersza (nie
-        ujemny margines), więc lista z przewijaniem go nie przycina. Szerokość pasa i wcięcie podaje
-        układający listy zasobami na poziomie listy.
-        Stany:
-          spoczynek   - tło przezroczyste;
-          najechanie  - tło BackstageRowHover, także nad akcją wiersza (DungeonRowAction);
-          wybrany     - tło AccentDim, także pod myszą (styl stoi po najechaniu), kreska widoczna;
-          wciśnięcie  - bez własnego wyglądu: jak najechanie (niewybrany) albo jak wybrany;
-          wyłączenie  - DungeonDisabledOpacity, tło przezroczyste, bez reakcji na mysz.
-        Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka, bez animacji i bez przesunięcia
-        przy wciśnięciu.
+        Command list row (controls:ListRow - Button with IsSelected and optional selection
+        stripe): for ItemsControl lists where a view-model command handles selection, opening or
+        navigation. Appearance and states exactly match ListBoxItem (ListBox.axaml) - same brushes,
+        font, padding, radius and highlight gap (DungeonListRowHighlightInset); background extends under
+        the scrollbar, content ends before its zone (DungeonScrollBarZone), text is single-line
+        and trimmed with an ellipsis.
+        DungeonListRowHeight set explicitly - belongs to the row, not content; the view's list
+        style can supply another height.
+        Selection stripe (ShowsSelectionStripe, off by default): left gutter of width
+        DungeonListRowStripeGutter, row background starts after it and ends before an equal gutter
+        on the right (background equally inset from both list edges; scrollbar overlays its right
+        end, content ends before the scrollbar zone measured from the row edge); at the gutter's left edge,
+        accent stripe of thickness DungeonListRowStripeWidth, rounded, inset at top and bottom by
+        DungeonListRowStripeInset - visible only when IsSelected. Gutter stays within row bounds (no
+        negative margin), so a scrolling list does not clip it. The list's resources provide
+        gutter width and inset.
+        States:
+          resting   - transparent background;
+          hover     - BackstageRowHover background, including over the row action (DungeonRowAction);
+          selected  - AccentDim background, also on hover (style follows hover), visible stripe;
+          pressed   - no separate appearance: hovered (unselected) or selected appearance;
+          disabled  - DungeonDisabledOpacity, transparent background, no pointer response.
+        No focus appearance (empty FocusAdorner), arrow cursor, no animation or movement
+        when pressed.
     -->
     <ControlTheme x:Key="{x:Type controls:ListRow}" TargetType="controls:ListRow">
         <Setter Property="Background" Value="Transparent" />
@@ -49,8 +49,8 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <!-- Przezroczyste tło zewnętrznej siatki łapie mysz także w odstępie podświetlenia i w
-                     pasie kreski - najechanie nie gaśnie między wierszami. -->
+                <!-- The outer grid's transparent background catches the pointer in the highlight gap and
+                     stripe gutter too - hover does not disappear between rows. -->
                 <Grid Name="PART_Root" Background="Transparent" ColumnDefinitions="Auto,*,Auto">
                     <Panel Name="PART_StripeGutter"
                            Width="{DynamicResource DungeonListRowStripeGutter}"
@@ -63,8 +63,8 @@
                                 Background="{DynamicResource DungeonAccentBrush}"
                                 IsVisible="{TemplateBinding IsSelected}" />
                     </Panel>
-                    <!-- Pas po prawej tej samej szerokości co pas kreski: tło wiersza kończy się w tym
-                         samym odstępie od prawej krawędzi, w jakim zaczyna się od lewej. -->
+                    <!-- Right gutter has the same width as the stripe gutter: row background ends at the
+                         same distance from the right edge as it starts from the left. -->
                     <Panel Name="PART_EndGutter"
                            Grid.Column="2"
                            Width="{DynamicResource DungeonListRowStripeGutter}"
@@ -74,8 +74,8 @@
                             Margin="{DynamicResource DungeonListRowHighlightInset}"
                             Background="{TemplateBinding Background}"
                             CornerRadius="{TemplateBinding CornerRadius}" />
-                    <!-- Treść leży nad tłem i prawym pasem: kończy się przed strefą paska liczoną od
-                         prawej krawędzi wiersza (DungeonScrollBarZone), niezależnie od prawego pasa. -->
+                    <!-- Content overlays the background and right gutter: ends before the scrollbar zone measured from
+                         the row's right edge (DungeonScrollBarZone), independent of the right gutter. -->
                     <Border Name="PART_ContentZone"
                             Grid.Column="1"
                             Grid.ColumnSpan="2"

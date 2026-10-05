@@ -2,10 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Hosty okienek (okienko jako osobne okno systemu i jako nakładka w oknie): bez tła - tło, ramkę
-        i cień rysuje prezenter okienka (FlyoutPresenter, MenuFlyoutPresenter, ToolTip, ContextMenu);
-        pismo i kolor tekstu podstawowego ramy, żeby treść okienka nie dziedziczyła wyglądu z miejsca,
-        nad którym się otwiera.
+        Popup hosts (separate native window and in-window overlay): no background - the presenter
+        (FlyoutPresenter, MenuFlyoutPresenter, ToolTip, ContextMenu) draws background, border and shadow;
+        shell font and regular text colour prevent popup content from inheriting appearance from
+        the area over which it opens.
     -->
     <ControlTheme x:Key="{x:Type PopupRoot}" TargetType="PopupRoot">
         <Setter Property="Background" Value="{x:Null}" />

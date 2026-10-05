@@ -5,17 +5,17 @@ using Avalonia.Markup.Xaml.Styling;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Jedno miejsce w ramie, które czyta systemowe ustawienie animacji: gdy Windows ma je wyłączone
-/// ("Pokaż animacje w systemie Windows"), przy starcie dołącza style ReducedMotion.axaml, które
-/// zdejmują przejścia motywu ramy. Czyta raz; zmiana ustawienia działa od następnego uruchomienia.
-/// Ruch żyjący w kodzie (wskaźnik postępu nieokreślony, okno potwierdzenia, powiadomienie) sprawdza
-/// <see cref="IsReduced"/> - wynik tego samego jednego odczytu.
+/// Single shell location reading the system animation setting: when Windows animations are disabled
+/// ("Pokaż animacje w systemie Windows"), includes ReducedMotion.axaml styles at startup to
+/// remove shell-theme transitions. Reads once; setting changes take effect on the next launch.
+/// Code-based motion (indeterminate progress, confirmation dialog, notification) checks
+/// <see cref="IsReduced"/> - result of the same single read.
 /// </summary>
 internal static class SystemMotion
 {
     private const uint SpiGetClientAreaAnimation = 0x1042;
 
-    /// <summary>Windows ma animacje wyłączone (ustalone raz, w <see cref="Apply"/>).</summary>
+    /// <summary>Windows animations are disabled (determined once in <see cref="Apply"/>).</summary>
     public static bool IsReduced { get; private set; }
 
     public static void Apply(Avalonia.Application application)

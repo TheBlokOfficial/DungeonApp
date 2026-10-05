@@ -2,30 +2,30 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Pole wyboru (CheckBox) i przycisk opcji (RadioButton). Szablony wycięte z CheckBox.xaml
-        i RadioButton.xaml Fluenta (Avalonia 12.0.5, MIT): zostały znacznik i prezenter etykiety
-        (PART_ContentPresenter); wygląd i stany napisane od nowa z tokenów.
-        Układ: znacznik (kwadrat albo koło DungeonChoiceMarkSize) po lewej, etykieta (Content) po
-        prawej z odstępem DungeonSpacingSm. Wysokość najmniej DungeonControlHeight - kontrolka stoi
-        w jednym rzędzie z polem i przyciskiem; znacznik jest wyśrodkowany z pierwszą linią etykiety
-        (wcięcie etykiety DungeonChoiceLabelPadding), długa etykieta zawija się w dół, a znacznik
-        zostaje przy pierwszej linii. Bez etykiety kontrolka to sam znacznik w wysokości kontrolki.
-        Klikalny jest cały element razem z etykietą (tło przezroczyste, nie puste). Kursor strzałka.
-        Właściwości kontrolki niosą wygląd znacznika: Background - wypełnienie, BorderBrush - krawędź
-        (zawsze 1 px, więc stan nie przesuwa układu), Foreground - kolor etykiety.
-        Stany - nic więcej:
-          spoczynek          - tło InputBackground, krawędź InputBorder;
-          najechanie         - (niezaznaczone) krawędź InputHoverBorder;
-          zaznaczone         - wypełnienie i krawędź Accent; na nim znak w OnAccent: ptaszek (pole
-                               wyboru), kropka DungeonRadioDotSize (przycisk opcji); pod myszą bez
-                               zmian - bez otoczki i bez zmiany koloru;
-          pośrednie          - (IsThreeState) jak zaznaczone, znak: pozioma kreska;
-          wciśnięcie         - wygląda jak najechanie (zaznaczone - jak zaznaczone);
-          wyłączenie         - DungeonDisabledOpacity na całości, bez reakcji na mysz; zaznaczone
-                               traci akcent jak wyłączony przycisk główny: znacznik neutralny (tło
-                               i krawędź Input), znak w kolorze tekstu podstawowego.
-        Ptaszek i kreska są konturowe, jak ikony ramy: pióro DungeonChoiceGlyphThickness, zaokrąglone
-        końce i złącza. Fokus nie ma własnego wyglądu (FocusAdorner pusty); bez animacji przejść.
+        CheckBox and RadioButton. Templates based on Fluent CheckBox.xaml
+        and RadioButton.xaml (Avalonia 12.0.5, MIT): marker and label presenter
+        (PART_ContentPresenter), with appearance and states defined by tokens.
+        Layout: marker (DungeonChoiceMarkSize square or circle) on the left, label (Content) on
+        the right with DungeonSpacingSm between them. Minimum height DungeonControlHeight aligns
+        the control with fields and buttons; the marker is centred on the first label line
+        (DungeonChoiceLabelPadding), long labels wrap downwards while the marker
+        stays by the first line. Without a label, only the marker occupies the control height.
+        The entire element including the label is clickable (transparent background, not null). Arrow cursor.
+        Control properties style the marker: Background - fill, BorderBrush - border
+        (always 1 px, so states do not shift layout), Foreground - label colour.
+        States - no others:
+          resting           - InputBackground fill, InputBorder border;
+          hover             - (unchecked) InputHoverBorder border;
+          checked           - Accent fill and border; OnAccent glyph: checkmark (checkbox),
+                               DungeonRadioDotSize dot (radio button); hover stays
+                               unchanged - no halo or colour change;
+          indeterminate     - (IsThreeState) same as checked, glyph: horizontal line;
+          pressed           - same as hover (checked - same as checked);
+          disabled          - DungeonDisabledOpacity on the whole control, no pointer response; checked
+                               loses accent like a disabled primary button: neutral marker (Input fill
+                               and border), glyph in regular text colour.
+        Checkmark and line are outlined, like shell icons: DungeonChoiceGlyphThickness stroke, rounded
+        caps and joins. No separate focus appearance (empty FocusAdorner); no transition animations.
     -->
     <ControlTheme x:Key="{x:Type CheckBox}" TargetType="CheckBox">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -58,8 +58,8 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="{TemplateBinding CornerRadius}">
                             <Panel>
-                                <!-- Ptaszek i kreska w układzie 16 x 16 znacznika (krawędź 1 px
-                                     odjęta: rysunek 14 x 14 przesunięty o -1). -->
+                                <!-- Checkmark and line in the marker's 16 x 16 coordinates (1 px border
+                                     subtracted: 14 x 14 drawing offset by -1). -->
                                 <Path Name="PART_CheckGlyph"
                                       IsVisible="False"
                                       Data="M3.5,7.5 L6,10 L10.5,4.5"
@@ -91,7 +91,7 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Bez etykiety: sam znacznik, bez odstępu na etykietę. -->
+        <!-- Without a label: marker only, no label spacing. -->
         <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter:empty">
             <Setter Property="Padding" Value="0" />
         </Style>
@@ -100,7 +100,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
 
-        <!-- Zaznaczone i pośrednie - pod myszą bez zmian (styl stoi po najechaniu). -->
+        <!-- Checked and indeterminate - unchanged on hover (style follows the hover style). -->
         <Style Selector="^:checked, ^:indeterminate">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentBrush}" />
@@ -112,7 +112,7 @@
             <Setter Property="IsVisible" Value="True" />
         </Style>
 
-        <!-- Wyłączone: bez akcentu - znacznik neutralny, znak w kolorze tekstu podstawowego. -->
+        <!-- Disabled: no accent - neutral marker, glyph in regular text colour. -->
         <Style Selector="^:disabled">
             <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputBorderBrush}" />

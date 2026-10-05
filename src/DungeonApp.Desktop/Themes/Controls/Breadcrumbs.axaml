@@ -3,16 +3,16 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Okruszki (controls:Breadcrumbs): ścieżka tego, co pokazane, w jednej linii, stopień
-        DungeonHelperFontSize (12), krój tekstu interfejsu. Ślad (wszystkie odcinki poza ostatnim) -
-        tekst przygaszony; ostatni, bieżący - tekst drugorzędny.
-        Między odcinkami strzałka w prawo DungeonIconChevronRight, DungeonBreadcrumbSeparatorSize,
-        kolorem tekstu przygaszonego, z odstępem DungeonSpacingXs po obu stronach.
-        Za mało miejsca: bieżący odcinek zostaje w całości, odcinki śladu skracają się wielokropkiem
-        (krótki zachowuje pełną szerokość, dłuższe dzielą resztę po równo); gdy obok bieżącego nie
-        mieszczą się nawet strzałki - ślad znika, a dopiero potem skraca się bieżący.
-        Nie ma stanów: odcinki nie są klikalne (nie ma dziś dokąd nawigować), nie przyjmuje fokusu,
-        nie reaguje na mysz (kursor tego, na czym leży); tekst się nie zaznacza.
+        Breadcrumbs (controls:Breadcrumbs): single-line path of the displayed content, size
+        DungeonHelperFontSize (12), UI font. Ancestors (all segments except the last) -
+        muted text; last, current segment - secondary text.
+        Right arrow DungeonIconChevronRight between segments, DungeonBreadcrumbSeparatorSize,
+        muted text colour, DungeonSpacingXs on both sides.
+        Limited space: current segment stays complete, ancestors trim with an ellipsis
+        (short segments retain their full width, longer ones share the remainder equally); when even
+        arrows do not fit beside the current segment, ancestors disappear before the current segment trims.
+        No states: segments are not clickable (no navigation target), no focus,
+        no pointer response (inherits the underlying cursor); text cannot be selected.
     -->
     <ControlTheme x:Key="{x:Type controls:Breadcrumbs}" TargetType="controls:Breadcrumbs">
         <Setter Property="Focusable" Value="False" />

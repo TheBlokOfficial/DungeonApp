@@ -7,18 +7,18 @@ using Avalonia.VisualTree;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Rozwinięcie sekcji (Expander), raz dla całej aplikacji: treść rozwiniętej sekcji wyłania się
-/// jak okienko - z przezroczystości,
-/// dosuwając się o DungeonPopupOpenOffset od strony nagłówka (z góry), w DungeonPopupOpenDuration,
-/// z wyhamowaniem (ten sam ruch co otwarcie okienka, <see cref="PopupOpenMotion.Appear"/>).
-/// Wysokość się nie animuje - to, co pod sekcją, przesuwa się od razu; treść jest klikalna od
-/// pierwszej klatki; zwinięcie jest natychmiastowe (nic tu go nie dotyczy).
-/// Wyłączone animacje w systemie (<see cref="SystemMotion.IsReduced"/>) - ruch się nie uruchamia.
+/// Section expansion (Expander), applied once across the application: expanded content appears
+/// like a popup - fading in,
+/// sliding by DungeonPopupOpenOffset from the header side (above), over DungeonPopupOpenDuration,
+/// easing out (same motion as popup opening, <see cref="PopupOpenMotion.Appear"/>).
+/// Height is not animated - content below the section moves immediately; expanded content is clickable from
+/// the first frame; collapse is immediate (not handled here).
+/// System animations disabled (<see cref="SystemMotion.IsReduced"/>) - motion does not start.
 /// </summary>
 /// <remarks>
-/// Rusza się prezenter treści z szablonu sekcji (PART_ContentPresenter). Sekcja rozwinięta już przy
-/// budowie nie ma jeszcze szablonu - pojawia się bez ruchu. Zmienia wyłącznie wygląd widoku, nigdy
-/// stan aplikacji.
+/// Moves the section template's content presenter (PART_ContentPresenter). A section expanded during
+/// construction has no template yet - appears without motion. Changes view appearance only, never
+/// application state.
 /// </remarks>
 internal static class ExpanderContentMotion
 {

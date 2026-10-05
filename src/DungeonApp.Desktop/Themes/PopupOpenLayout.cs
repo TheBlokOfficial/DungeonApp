@@ -12,27 +12,27 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Układ okienka ustalany przy otwarciu i niezmienny do zamknięcia (pasek przewijania jest
-/// nakładką):
+/// Popup layout fixed on opening and unchanged until closing (scrollbar is
+/// an overlay):
 /// <list type="bullet">
-/// <item>strefa paska przewijania w okienku (menu, menu kontekstowe, podmenu, ComboBox,
-/// DropDownPicker, okienko .list-host) jest tylko wtedy, gdy treść się nie mieści - okienko, którego
-/// treść mieści się bez przewijania, dostaje klasę <see cref="NoBarZoneClass"/>, a style
-/// w BuiltInControls.axaml zdejmują po niej strefę z wierszy;</item>
-/// <item>szerokość okienka listy (ComboBox, DropDownPicker) bierze się z najdłuższej pozycji całej
-/// listy, nie z wierszy, które akurat istnieją (wirtualizacja tworzy tylko widoczne): pomiar
-/// napisów pismem wiersza plus to, co wiersz i okienko dokładają wokół napisu. Nie mniej niż
-/// otwierający, nie dalej niż do prawej krawędzi okna aplikacji; dłuższe pozycje się przycinają
-/// (podpowiedź pełnego napisu - TrimmedLabelToolTip).</item>
+/// <item>popup scrollbar zone (menu, context menu, submenu, ComboBox,
+/// DropDownPicker, .list-host flyout) exists only when content overflows - a popup whose
+/// content fits without scrolling gets <see cref="NoBarZoneClass"/>, and styles
+/// in BuiltInControls.axaml remove the zone from its rows;</item>
+/// <item>list popup width (ComboBox, DropDownPicker) comes from the longest item in the entire
+/// list, not currently existing rows (virtualisation creates only visible ones): measure
+/// labels in the row font plus what the row and popup add around them. At least as wide as
+/// the opener, no further than the application window's right edge; longer items trim
+/// (full-text tooltip - TrimmedLabelToolTip).</item>
 /// </list>
-/// Wyszukiwanie ani przewijanie nie zmienia ani strefy, ani szerokości otwartego okienka.
+/// Searching and scrolling change neither zone nor width of an open popup.
 /// </summary>
 /// <remarks>
-/// Klasa trafia tam, skąd style ją widzą w drzewie logicznym wierszy: na powierzchnię okienka
-/// (wiersze menu, wiersze DropDownPicker, lista w .list-host) i na kontrolkę, której szablon zawiera
-/// okno (ComboBox - jego wiersze są jego dziećmi logicznymi; MenuItem - wiersze podmenu są jego
-/// dziećmi). Obsługa zmiany Popup.IsOpen biegnie po pierwszym układzie okna, zanim okno się narysuje
-/// (ruch otwarcia i tak zaczyna od przezroczystości). Zmienia wyłącznie wygląd widoku.
+/// Class is set where styles can see it in the rows' logical tree: on the popup surface
+/// (menu rows, DropDownPicker rows, .list-host list) and the control whose template contains
+/// the popup (ComboBox - rows are its logical children; MenuItem - submenu rows are its
+/// children). Popup.IsOpen handling runs after the first popup layout, before it is drawn
+/// (opening motion starts transparent anyway). Changes view appearance only.
 /// </remarks>
 internal static class PopupOpenLayout
 {
@@ -87,7 +87,7 @@ internal static class PopupOpenLayout
         }
     }
 
-    // Przewija któraś warstwa okienka: jego własny obszar przewijania albo lista w .list-host.
+    // One popup layer scrolls: its own scroll area or the list in .list-host.
     private static bool Overflows(Control surface)
     {
         surface.UpdateLayout();
@@ -117,8 +117,8 @@ internal static class PopupOpenLayout
         var names = owner is DropDownPicker picker ? picker.ItemNames() : ComboBoxNames((ComboBox)owner);
         var longest = names.Select(Measure).DefaultIfEmpty(0d).Max();
 
-        // Wokół napisu: wcięcia wiersza, pole wyboru, strefa paska (z wiersza, który istnieje), wcięcie
-        // i krawędź okienka (różnica szerokości okienka i wiersza).
+        // Around the label: row padding, checkbox, scrollbar zone (from an existing row), popup padding
+        // and border (difference between popup and row widths).
         var aroundText = row.DesiredSize.Width - Measure(label.Text!) + (presenter.Bounds.Width - row.Bounds.Width);
         var width = Math.Max(Math.Ceiling(longest + aroundText), owner.Bounds.Width);
 

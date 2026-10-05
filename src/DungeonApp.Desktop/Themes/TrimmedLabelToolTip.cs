@@ -7,21 +7,21 @@ using Avalonia.Controls.Presenters;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Konwencja ramy: etykieta przycięta wielokropkiem (zakładka, segment, przycisk) pokazuje pełny
-/// napis w podpowiedzi - wyłącznie wtedy, gdy jest rzeczywiście przycięta. Włączane w szablonie
-/// kontrolki na jej prezenterze treści (TrimmedLabelToolTip.IsEnabled="True"), nie w widokach.
-/// Po każdym przebiegu układu sprawdza napis prezentera (TextBlock tworzony dla treści tekstowej),
-/// więc zmiana szerokości okna albo zawinięcie paska przelicza podpowiedź na bieżąco.
-/// Podpowiedź ustawiona jawnie przez widok (ToolTip.Tip) ma pierwszeństwo: zachowanie ustawia
-/// podpowiedź tylko wtedy, gdy żadnej nie ma, i zdejmuje wyłącznie tę, którą samo ustawiło.
-/// Zmienia wyłącznie podpowiedź w widoku, nigdy stan aplikacji.
+/// Shell convention: label trimmed with an ellipsis (tab, segment, button) shows its full
+/// text in a tooltip - only when actually trimmed. Enabled in the control template
+/// on its content presenter (TrimmedLabelToolTip.IsEnabled="True"), not in views.
+/// Checks presenter text after every layout pass (TextBlock created for text content),
+/// so window width changes or strip wrapping update the tooltip immediately.
+/// An explicit view tooltip (ToolTip.Tip) takes precedence: this behaviour sets
+/// a tooltip only when none exists, and removes only the one it set itself.
+/// Changes view tooltip only, never application state.
 /// </summary>
 internal static class TrimmedLabelToolTip
 {
     public static readonly AttachedProperty<bool> IsEnabledProperty =
         AvaloniaProperty.RegisterAttached<Control, bool>("IsEnabled", typeof(TrimmedLabelToolTip));
 
-    // Napis, który zachowanie samo wstawiło w ToolTip.Tip - odróżnia własną podpowiedź od jawnej.
+    // Text this behaviour placed in ToolTip.Tip - distinguishes its own tooltip from an explicit one.
     private static readonly AttachedProperty<string?> OwnTipProperty =
         AvaloniaProperty.RegisterAttached<Control, string?>("OwnTip", typeof(TrimmedLabelToolTip));
 
@@ -48,8 +48,8 @@ internal static class TrimmedLabelToolTip
 
     private static void OnLayoutUpdated(object? sender, EventArgs e)
     {
-        // Prezenter treści w szablonie: podpowiedź na kontrolce. Sam napis (wiersz w szablonie danych,
-        // np. pozycja DropDownPicker): podpowiedź na nim.
+        // Template content presenter: tooltip on the control. Plain text (row in a data template,
+        // e.g. DropDownPicker item): tooltip on the text itself.
         var (host, label) = sender switch
         {
             ContentPresenter { TemplatedParent: Control parent } presenter => (parent, presenter.Child as TextBlock),
@@ -67,7 +67,7 @@ internal static class TrimmedLabelToolTip
 
         if (currentTip is not null && !ReferenceEquals(currentTip, ownTip))
         {
-            // Podpowiedź jawna z widoku - nie nadpisujemy jej ani nie czyścimy.
+            // Explicit view tooltip - neither overwrite nor clear it.
             return;
         }
 

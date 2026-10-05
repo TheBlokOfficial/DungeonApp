@@ -3,20 +3,20 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Kafelek: Button z Theme="{StaticResource DungeonTile}" - przycisk-rzecz (np. zminimalizowany
-        panel na biurku), nie polecenie z napisem. Osobny motyw, nie odmiana przycisku: nie dziedziczy
-        stałej wysokości ani wcięcia zwykłego przycisku. Wymiar wyłącznie od układającego - motyw nie
-        ustawia wysokości, szerokości ani wyrównania; Padding 0, treść wyśrodkowana w obu osiach
-        i przycięta wielokropkiem. Powierzchnia karty (tło BackstageCard - rzecz wyodrębniona z tła,
-        czytana jako całość; krawędź Border 1 px - linia), zaokrąglenie DungeonCornerRadius.
-        Tekst TextPrimary, krój interfejsu 13; ikona w kafelku bierze kolor tekstu (ForegroundIcon).
-        Stany:
-          spoczynek   - tło BackstageCard, krawędź Border;
-          najechanie  - tło SurfaceHover, krawędź BorderStrong; wciśnięcie i otwarte okienko
-                        (:flyout-open) - jak najechanie;
-          wyłączony   - DungeonDisabledOpacity (treść w kolorze wyłączonym), bez reakcji na mysz.
-        Bez przejść i bez transformacji (Fluent skaluje wciśnięty przycisk - tu nie). Fokus bez
-        wyglądu, kursor strzałka.
+        Tile: Button with Theme="{StaticResource DungeonTile}" - object button (e.g. minimised
+        desk panel), rather than a labelled command. Separate theme, not a button variant: does not inherit
+        regular button fixed height or padding. Dimensions supplied only by the view - theme sets
+        no height, width or alignment; Padding 0, content centred on both axes
+        and trimmed with an ellipsis. Card surface (BackstageCard background - object distinct from its surroundings,
+        read as a whole; 1 px Border line), DungeonCornerRadius.
+        TextPrimary text, UI font 13; tile icon uses text colour (ForegroundIcon).
+        States:
+          resting  - BackstageCard background, Border border;
+          hover    - SurfaceHover background, BorderStrong border; pressed and open flyout
+                     (:flyout-open) - same as hover;
+          disabled - DungeonDisabledOpacity (disabled content colour), no pointer response.
+        No transitions or transforms (Fluent scales pressed buttons - this theme does not). No focus
+        appearance, arrow cursor.
     -->
     <ControlTheme x:Key="DungeonTile" TargetType="Button">
         <Setter Property="HorizontalContentAlignment" Value="Center" />

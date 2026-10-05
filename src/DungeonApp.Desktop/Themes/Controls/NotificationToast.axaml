@@ -3,25 +3,25 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Powiadomienie (controls:NotificationToast) - wywołanie i zachowanie w Controls/NotificationToast.cs.
-        Dymek w stosie w prawym dolnym rogu okna (controls:WindowOverlay: odstęp od prawej krawędzi i od paska stanu
-        DungeonPaddingLg, między dymkami DungeonSpacingSm, najnowszy na dole). Powierzchnia jak
-        okienko wysuwane (DungeonBackstageCardBrush, krawędź 1 px InputBorder, DungeonFlyoutShadow,
-        DungeonFlyoutCornerRadius), stała szerokość DungeonNotificationWidth, wcięcie
-        DungeonPaddingMd. Układ: ikona odmiany (DungeonActionIconSize) | treść tekstem podstawowym 13,
-        zawija się, pod nią odnośnik akcji (odnośnik samodzielny .link, tylko gdy jest napis) |
-        krzyżyk zamknięcia - sam rysunek jak x w polu wyszukiwania (DungeonFieldGlyphButton: jaśnieje
-        pod myszą), bez fokusu. Ikona i krzyżyk stoją przy pierwszej linii treści.
-        Odmiany:
-          :information - ikona "i" w kolorze tekstu drugorzędnego (TextRegular) - informacja nie
-                         niesie stanu, akcent zostaje dla wybranego i głównego;
-          :warning     - trójkąt w DungeonWarningBrush;
-          :error       - koło z wykrzyknikiem w DungeonDangerTextBrush; treść da się zaznaczyć
-                         (SelectableTextBlock - komunikat błędu).
-        Dymek nie przyjmuje fokusu i nie ma stanów najechania (mysz nad nim tylko wstrzymuje
-        znikanie). Pojawienie: z przezroczystości i dosunięcie o DungeonNotificationOpenOffset od
-        prawej (DungeonPopupOpenDuration, wyhamowanie); zniknięcie natychmiast; wyłączone animacje
-        w systemie - od razu. Kursor strzałka (tekst błędu - tekstowy, styl SelectableTextBlock).
+        Notification (controls:NotificationToast) - invocation and behaviour in Controls/NotificationToast.cs.
+        Toast stack at the window's bottom right (controls:WindowOverlay: DungeonPaddingLg from the right edge and status
+        bar, DungeonSpacingSm between toasts, newest at the bottom). Flyout-like surface
+        (DungeonBackstageCardBrush, 1 px InputBorder, DungeonFlyoutShadow,
+        DungeonFlyoutCornerRadius), fixed DungeonNotificationWidth, DungeonPaddingMd
+        padding. Layout: variant icon (DungeonActionIconSize) | regular body text 13,
+        wrapping, with action link below (standalone .link, only when labelled) |
+        close cross - glyph only, like x in the search field (DungeonFieldGlyphButton: lightens
+        on hover), no focus. Icon and cross align with the first body line.
+        Variants:
+          :information - "i" icon in secondary text colour (TextRegular) - information carries no
+                         state, accent stays reserved for selected and primary elements;
+          :warning     - triangle in DungeonWarningBrush;
+          :error       - circle with exclamation mark in DungeonDangerTextBrush; body is selectable
+                         (SelectableTextBlock - error message).
+        Toast does not accept focus and has no hover states (pointer over it only pauses
+        dismissal). Opening: fade in and slide by DungeonNotificationOpenOffset from
+        the right (DungeonPopupOpenDuration, easing out); immediate dismissal; system animations
+        disabled - immediate opening. Arrow cursor (error text - text cursor, SelectableTextBlock style).
     -->
     <ControlTheme x:Key="{x:Type controls:NotificationToast}" TargetType="controls:NotificationToast">
         <Setter Property="Width" Value="{DynamicResource DungeonNotificationWidth}" />
