@@ -37,6 +37,10 @@ public sealed class GallerySectionsBuildTests
         Assert.Equal(2, sections.Count);
         Assert.All(sections, section => Assert.Equal(2, section.Items.Count));
 
+        var initials = window.GetVisualDescendants().OfType<InitialProse>().ToList();
+        Assert.Equal(2, initials.Count);
+        Assert.All(initials, initial => Assert.NotNull(initial.Icon));
+
         var tiles = window.GetVisualDescendants().OfType<StatTile>().ToList();
         Assert.Equal(6, tiles.Count);
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));

@@ -6,7 +6,8 @@
     <!-- The pieces a card's text is built from, live and exactly as a card uses them: the section
          heading (controls:SectionHeading - accent bar and title), the prose section
          (entries:ProseSectionView - heading, optional introduction, named entries with a muted note
-         and the author's **…** emphasis; a stray ** stays in the text) and the headline value
+         and the author's **…** emphasis; a stray ** stays in the text), the paragraph opened by an
+         icon as its initial (controls:InitialProse - two lines beside it, the rest under it) and the headline value
          (controls:StatTile - borderless column: icon and label, value, optional note), three in equal
          columns 394 wide - the room a header's title column has beside a three-cell picture.
          Sample entries in CardPartsSection.axaml.cs. Nothing here restyles a control. -->
@@ -24,6 +25,12 @@
         <StackPanel Width="560" HorizontalAlignment="Left" Spacing="{DynamicResource DungeonSpacingXxl}">
             <entries:ProseSectionView x:Name="ProseWithIntro" Title="Akcje legendarne" />
             <entries:ProseSectionView x:Name="ProseWithoutIntro" Title="Cechy szczególne" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="TEKST Z INICJAŁEM (560): DŁUGI OPŁYWA IKONĘ, KRÓTKI STOI OBOK NIEJ" />
+        <StackPanel Width="560" HorizontalAlignment="Left" Spacing="{DynamicResource DungeonSpacingXxl}">
+            <controls:InitialProse x:Name="InitialLong" Icon="{DynamicResource DungeonIconScrollText}" />
+            <controls:InitialProse x:Name="InitialShort" Icon="{DynamicResource DungeonIconScrollText}" />
         </StackPanel>
 
         <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ NAGŁÓWKOWA: TRZY KOLUMNY (394), DŁUGI DOPISEK SIĘ ZAWIJA" />

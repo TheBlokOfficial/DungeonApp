@@ -63,7 +63,12 @@ public partial class ConditionCardView : UserControl, IEntryCardHeader
 
         _summary.Text = condition.Summary;
 
-        RulesSection.Intro = condition.Rules.Intro;
-        RulesSection.Items = [.. condition.Rules.Entries.Select(entry => new ProseItem(entry.Name, entry.Note, entry.Text))];
+        // Without an introduction there is no initial: the scroll opens a paragraph, and a named
+        // part's first line is its name in the strong role - an initial beside it would read as part
+        // of that one level rather than of the whole rules.
+        RulesIntro.Text = condition.Rules.Intro;
+        RulesIntro.IsVisible = !string.IsNullOrEmpty(condition.Rules.Intro);
+        RulesEntries.Items = [.. condition.Rules.Entries.Select(entry => new ProseItem(entry.Name, entry.Note, entry.Text))];
+        RulesEntries.IsVisible = RulesEntries.Items.Count > 0;
     }
 }

@@ -95,11 +95,12 @@ public static class EmphasisMarkup
         }
     }
 
-    private static void Apply(TextBlock block, string? text)
+    /// <summary>The inlines a text block shows for <paramref name="runs"/>: an emphasized run gets the <c>emphasis</c> class.</summary>
+    public static InlineCollection ToInlines(IEnumerable<EmphasisRun> runs)
     {
         var inlines = new InlineCollection();
 
-        foreach (var run in Parse(text ?? string.Empty))
+        foreach (var run in runs)
         {
             var inline = new Run(run.Text);
             if (run.IsEmphasized)
@@ -110,6 +111,8 @@ public static class EmphasisMarkup
             inlines.Add(inline);
         }
 
-        block.Inlines = inlines;
+        return inlines;
     }
+
+    private static void Apply(TextBlock block, string? text) => block.Inlines = ToInlines(Parse(text ?? string.Empty));
 }
