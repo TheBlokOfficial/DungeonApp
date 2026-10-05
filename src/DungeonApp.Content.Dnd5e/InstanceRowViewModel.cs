@@ -14,7 +14,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// it gets a row and a message instead, mirroring how a content tab marks a broken entry rather
 /// than hiding it.
 /// <para>
-/// A resolved row of a creature with a combat aspect also carries its current hit points, changed only through
+/// A resolved row of a creature also carries its current hit points, changed only through
 /// <see cref="SaveHitPointsCommand"/> - never through the <see cref="CurrentHp"/> setter itself, so a
 /// write is always something a caller can await instead of one that runs unobserved.
 /// </para>
@@ -49,9 +49,9 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
         if (resolved.Unresolved is null
             && resolved.Source is { } source
             && source.Entry.Type.Set == ownerSet
-            && source.Entry.Type.Type.Value == Dnd5eSystem.CreatureTypeId
-            && resolved.Values!.Read<Creature>().Combat is { } combat)
+            && source.Entry.Type.Type.Value == Dnd5eSystem.CreatureTypeId)
         {
+            var combat = resolved.Values!.Read<Creature>().Combat;
             CanEditHitPoints = true;
             CurrentHp = combat.CurrentHp ?? combat.Hp;
             MaxHp = combat.Hp;
@@ -64,7 +64,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 
     public bool HasMessage => Message is not null;
 
-    /// <summary>True only for a resolved instance of this set's creature type that has a combat aspect.</summary>
+    /// <summary>True only for a resolved instance of this set's creature type.</summary>
     public bool CanEditHitPoints { get; }
 
     /// <summary>The entry's own maximum, shown next to the editable field - never itself editable here.</summary>
@@ -98,7 +98,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
         // whatever the instance already deviated on.
         var entryValues = _resolved.Source!.Entry.Values;
         var creature = _resolved.Values!.Read<Creature>();
-        var candidate = ContentValues.From(creature with { Combat = creature.Combat! with { CurrentHp = CurrentHp } });
+        var candidate = ContentValues.From(creature with { Combat = creature.Combat with { CurrentHp = CurrentHp } });
         var patch = ContentValues.Difference(baseline: entryValues, candidate: candidate);
 
         await _context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(_instance, patch));

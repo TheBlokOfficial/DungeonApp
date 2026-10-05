@@ -217,18 +217,6 @@ public sealed class CampaignInstancesToolViewModelTests
     }
 
     [Fact]
-    public async Task A_creature_instance_without_a_combat_aspect_shows_no_hit_points_and_stays_on_the_list()
-    {
-        var fixture = new Fixture(ResolvedInnkeeper("pack", "innkeeper", "Karczmarz"));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("innkeeper")), label: null);
-
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
-
-        Assert.False(row.HasMessage);
-        Assert.False(row.CanEditHitPoints);
-        Assert.False(row.SaveHitPointsCommand.CanExecute(null));
-    }
-    [Fact]
     public async Task A_gear_instance_row_cannot_edit_hit_points()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
@@ -329,16 +317,6 @@ public sealed class CampaignInstancesToolViewModelTests
         return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
     }
 
-    private static RegisteredEntry ResolvedInnkeeper(string packId, string entryId, string name)
-    {
-        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("creature"));
-        var creature = new Creature { Size = "Średni", Type = "humanoid", Alignment = "neutralne", Speed = "9 m", Senses = "bierna Percepcja 10" };
-        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(creature));
-
-        Assert.True(Dnd5e.TryGet(reference, out var descriptor));
-
-        return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
-    }
     private sealed class Fixture
     {
         public Fixture(params RegisteredEntry[] entries)

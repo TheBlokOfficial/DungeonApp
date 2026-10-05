@@ -24,9 +24,8 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// Every value on the card comes from a field <see cref="Creature"/> declares, its
 /// <see cref="CombatAspect"/> included; a pair or a section whose field is empty is not shown at
-/// all. A creature without the combat aspect shows neither KP and PZ nor the ability tables, and
-/// Szybkość keeps its own column, so nothing else on the card moves. Ability modifiers are D&amp;D
-/// 5e's own arithmetic (<see cref="AbilityModifier"/>), tinted by their sign.
+/// all. Ability modifiers are D&amp;D 5e's own arithmetic (<see cref="AbilityModifier"/>), tinted
+/// by their sign.
 /// </para>
 /// </summary>
 public partial class CreatureCardView : UserControl, IEntryCardHeader
@@ -72,35 +71,25 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
 
         var combat = creature.Combat;
 
-        // Szybkość keeps the third column with or without KP and PZ before it, so the header of a
-        // creature without a statblock stands exactly as a fighting one's does.
         _vitals.Show(
         [
-            combat is null
-                ? null
-                : new HeadlineValue("KP", "DungeonIconShield", combat.Ac.ToString(CultureInfo.InvariantCulture), combat.AcSource),
-            combat is null
-                ? null
-                : new HeadlineValue("PZ", "DungeonIconHeart", combat.Hp.ToString(CultureInfo.InvariantCulture), combat.HpDice),
+            new HeadlineValue("KP", "DungeonIconShield", combat.Ac.ToString(CultureInfo.InvariantCulture), combat.AcSource),
+            new HeadlineValue("PZ", "DungeonIconHeart", combat.Hp.ToString(CultureInfo.InvariantCulture), combat.HpDice),
             new HeadlineValue("Szybkość", "DungeonIconFootprints", creature.Speed),
         ]);
 
-        AbilitiesBlock.IsVisible = combat is not null;
-        if (combat is not null)
-        {
-            PhysicalAbilities.Rows =
-            [
-                Ability("SIŁ", combat.Str),
-                Ability("ZRĘ", combat.Dex),
-                Ability("KON", combat.Con),
-            ];
-            MentalAbilities.Rows =
-            [
-                Ability("INT", combat.Int),
-                Ability("MDR", combat.Wis),
-                Ability("CHA", combat.Cha),
-            ];
-        }
+        PhysicalAbilities.Rows =
+        [
+            Ability("SIŁ", combat.Str),
+            Ability("ZRĘ", combat.Dex),
+            Ability("KON", combat.Con),
+        ];
+        MentalAbilities.Rows =
+        [
+            Ability("INT", combat.Int),
+            Ability("MDR", combat.Wis),
+            Ability("CHA", combat.Cha),
+        ];
 
         Traits.Rows = BuildTraitRows(creature);
 
@@ -111,19 +100,14 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
         Show(ReactionsSection, creature.Reactions);
         Show(LegendaryActionsSection, creature.LegendaryActions);
 
-        // The separator under the pairs parts them from the sections; with no section under them it
-        // would stand alone before the footer's own.
-        SectionsSeparator.IsVisible = Sections.Children.Any(section => section.IsVisible);
-
         Footer.IsVisible = creature.Description is not null;
         DescriptionText.Text = creature.Description;
     }
 
     /// <summary>
-    /// The pairs in statblock order. Zmysły is a required field, so it always shows; Wyzwanie shows
-    /// whenever the creature has one - every creature that fights does; every other pair only when
-    /// its field is filled. Wyzwanie is the one value the GM looks for first, so it is drawn
-    /// highlighted.
+    /// The pairs in statblock order. Zmysły and Wyzwanie are required fields, so they always show;
+    /// every other pair only when its field is filled. Wyzwanie is the one value the GM looks for
+    /// first, so it is drawn highlighted.
     /// </summary>
     private static IReadOnlyList<TraitRow> BuildTraitRows(Creature creature)
     {
@@ -137,14 +121,11 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
         AddIfFilled(rows, "Niewrażliwość na stany", creature.ConditionImmunities);
         rows.Add(new TraitRow("Zmysły", creature.Senses));
         AddIfFilled(rows, "Języki", creature.Languages);
-        if (creature.Challenge is { } challenge)
-        {
-            rows.Add(new TraitRow(
-                "Wyzwanie",
-                challenge,
-                creature.Xp is { } xp ? $"{xp.ToString("N0", Polish)} PD" : null,
-                IsHighlighted: true));
-        }
+        rows.Add(new TraitRow(
+            "Wyzwanie",
+            creature.Challenge,
+            creature.Xp is { } xp ? $"{xp.ToString("N0", Polish)} PD" : null,
+            IsHighlighted: true));
 
         return rows;
     }

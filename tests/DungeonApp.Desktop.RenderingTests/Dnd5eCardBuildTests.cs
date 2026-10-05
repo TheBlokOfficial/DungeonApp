@@ -153,38 +153,6 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
-    [AvaloniaFact]
-    public void A_creature_without_the_combat_aspect_builds_without_KP_PZ_and_ability_tables_and_keeps_Szybkosc_in_its_column()
-    {
-        var innkeeper = new Creature
-        {
-            Size = "Średni",
-            Type = "humanoid",
-            Alignment = "praworządny dobry",
-            Speed = "9 m",
-            Senses = "bierna Percepcja 11",
-            Languages = "wspólny",
-            Description = "Zna każdą plotkę w okolicy.",
-        };
-        var card = CreatureCard(innkeeper, EntryPicture.None);
-        var header = (IEntryCardHeader)card;
-        var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
-
-        var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
-        Assert.Equal(["Szybkość"], tiles.Select(tile => tile.Label));
-        Assert.Equal(["9 m"], tiles.Select(tile => tile.Value));
-        Assert.Equal([2], tiles.Select(Grid.GetColumn));
-
-        Assert.False(card.FindControl<Control>("AbilitiesBlock")!.IsVisible);
-        Assert.DoesNotContain(card.GetVisualDescendants().OfType<AbilityTableView>(), table => table.IsEffectivelyVisible);
-        Assert.Equal(["Zmysły", "Języki"], TraitLabels(card));
-        Assert.Empty(VisibleSections(card));
-        Assert.False(card.FindControl<Control>("SectionsSeparator")!.IsVisible);
-        Assert.True(card.FindControl<Control>("Footer")!.IsVisible);
-
-        window.Close();
-    }
-
     // 394 is the title column beside the picture: three star columns would be 120.67 wide, and a note
     // a hair wider than that ("zbroja skórzana, tarcza" in Inter) wrapped while measuring though it
     // fits as drawn. The headless text stub does not measure like Inter, so the columns themselves are

@@ -45,16 +45,6 @@ public sealed class ContentTabsTests
         return new Entry(ContentId.Create("c"), "Testowe stworzenie", reference, 1, ContentValues.From(creature));
     }
 
-    /// <summary>An innkeeper: no combat aspect, so no challenge either.</summary>
-    private static Entry InnkeeperEntry() => CreatureEntry(new Creature
-    {
-        Size = "Średni",
-        Type = "humanoid (człowiek)",
-        Alignment = "praworządny neutralny",
-        Speed = "9 m",
-        Senses = "bierna Percepcja 12",
-    });
-
     private static Entry GearEntry(string rarity, Func<Gear, Gear>? change = null)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
@@ -182,23 +172,6 @@ public sealed class ContentTabsTests
 
         Assert.True(sort.Compare(low, high) < 0);
         Assert.True(sort.Compare(high, low) > 0);
-    }
-
-    /// <summary>
-    /// A creature without a statblock has no challenge: no badge, no "Wyzwanie" option, and the sort
-    /// knows it has no key, so it lists after every creature that has one.
-    /// </summary>
-    [Fact]
-    public void A_creature_without_a_challenge_has_no_badge_no_challenge_option_and_no_challenge_sort_key()
-    {
-        var innkeeper = InnkeeperEntry();
-        var sort = Assert.Single(CreatureProfile().Sorts, sort => sort.Label == "Wyzwanie");
-        var filter = Assert.Single(CreatureProfile().ValueFilters, filter => filter.Label == "Wyzwanie");
-
-        Assert.Null(CreatureProfile().Badge(innkeeper).Text);
-        Assert.Null(filter.Value(innkeeper));
-        Assert.False(sort.HasKey!(innkeeper));
-        Assert.True(sort.HasKey(CreatureEntry("1/8 (25 PD)")));
     }
 
     // -----------------------------------------------------------------------------------------

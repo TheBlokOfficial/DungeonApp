@@ -79,44 +79,19 @@ public sealed class Dnd5eSystemTests
     }
 
     /// <summary>
-    /// An innkeeper with no statblock: no combat aspect, so neither actions nor a challenge are
-    /// needed - the type's own required fields are all it takes.
-    /// </summary>
-    [Fact]
-    public async Task A_creature_without_the_combat_aspect_needs_no_actions_and_no_challenge()
-    {
-        using var packs = new TemporaryPacks();
-        packs.WriteFile("pack", "pack.json", PackJson);
-        packs.WriteFile("pack", "entries/e.json", CreatureEntryJson("""
-            "size": "Średni", "type": "humanoid (człowiek)", "alignment": "praworządny neutralny",
-            "speed": "9 m", "senses": "bierna Percepcja 12", "languages": "wspólny",
-            "description": "Gospodarz karczmy pod Złotym Kuflem."
-            """));
-
-        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
-
-        var entry = Assert.Single(registry.Entries);
-        Assert.Null(entry.UnresolvedDetail);
-        var creature = entry.Entry.Values.Read<Creature>();
-        Assert.Null(creature.Combat);
-        Assert.Null(creature.Actions);
-        Assert.Null(creature.Challenge);
-        Assert.Equal("wspólny", creature.Languages);
-    }
-
-    /// <summary>
-    /// The combat aspect carries its own required values; a creature with it needs actions and a
-    /// challenge; an actions section without an entry is refused with or without it. Each reason
+    /// The combat aspect carries its own required values; a creature needs the aspect, actions and a
+    /// challenge, and an actions section without an entry is refused like a missing one. Each reason
     /// names the key.
     /// </summary>
     [Theory]
+    [InlineData("\"challenge\": \"0\", \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "combat")]
     [InlineData("\"combat\": { \"ac\": 10, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10 }, \"challenge\": \"0\", \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "hp")]
     [InlineData("\"combat\": { \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10 }, \"challenge\": \"0\", \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "ac")]
     [InlineData("\"combat\": { \"ac\": 10, \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10 }, \"challenge\": \"0\", \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "cha")]
     [InlineData("\"combat\": { \"ac\": 10, \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10, \"initiative\": 2 }, \"challenge\": \"0\", \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "initiative")]
     [InlineData("\"combat\": { \"ac\": 10, \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10 }, \"challenge\": \"0\"", "actions")]
     [InlineData("\"combat\": { \"ac\": 10, \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10 }, \"actions\": { \"entries\": [{ \"name\": \"A\", \"text\": \"B\" }] }", "challenge")]
-    [InlineData("\"actions\": { \"intro\": \"Nic.\", \"entries\": [] }", "actions")]
+    [InlineData("\"combat\": { \"ac\": 10, \"hp\": 5, \"str\": 10, \"dex\": 10, \"con\": 10, \"int\": 10, \"wis\": 10, \"cha\": 10 }, \"challenge\": \"0\", \"actions\": { \"intro\": \"Nic.\", \"entries\": [] }", "actions")]
     public async Task A_malformed_creature_entry_is_rejected(string values, string named)
     {
         using var packs = new TemporaryPacks();

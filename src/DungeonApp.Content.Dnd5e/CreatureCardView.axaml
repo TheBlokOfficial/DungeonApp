@@ -10,10 +10,10 @@
          Szybkość values are lent to the detail header (CreatureCardView.axaml.cs); the card itself,
          top to bottom:
          - two ability tables, one column per ability: SIŁ/ZRĘ/KON exactly as wide as the portrait
-           (three DungeonAbilityCellSize cells) and INT/MDR/CHA from the title line - only for a
-           creature with the combat aspect;
+           (three DungeonAbilityCellSize cells) and INT/MDR/CHA from the title line;
          - pairs, one row per filled field, their values on the title line; wyzwanie as a badge;
-         - the rules sections in statblock order, each shown only when filled, always open;
+         - the rules sections in statblock order, each shown only when filled (actions always are),
+           always open;
          - the description as a small italic footer, only when filled.
          Size, type and alignment are not on this card - they are this content type's tags, shown
          once in the detail header. Spacing between controls is set here, on the host, never carried
@@ -30,22 +30,20 @@
     </UserControl.Styles>
 
     <StackPanel>
-        <!-- ===== abilities: the combat aspect's, absent with it ===== -->
-        <StackPanel x:Name="AbilitiesBlock">
-            <Grid ColumnDefinitions="Auto,Auto"
-                  ColumnSpacing="{DynamicResource DungeonDetailColumnGap}"
-                  HorizontalAlignment="Left">
-                <controls:AbilityTableView x:Name="PhysicalAbilities" />
-                <controls:AbilityTableView x:Name="MentalAbilities" Grid.Column="1" />
-            </Grid>
+        <!-- ===== abilities: the combat aspect's ===== -->
+        <Grid ColumnDefinitions="Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonDetailColumnGap}"
+              HorizontalAlignment="Left">
+            <controls:AbilityTableView x:Name="PhysicalAbilities" />
+            <controls:AbilityTableView x:Name="MentalAbilities" Grid.Column="1" />
+        </Grid>
 
-            <Separator Classes="section" />
-        </StackPanel>
+        <Separator Classes="section" />
 
         <!-- ===== pairs ===== -->
         <controls:TraitListView x:Name="Traits" />
 
-        <Separator x:Name="SectionsSeparator" Classes="section" />
+        <Separator Classes="section" />
 
         <!-- ===== rules sections ===== -->
         <StackPanel x:Name="Sections" Spacing="{DynamicResource DungeonSpacingXxl}">

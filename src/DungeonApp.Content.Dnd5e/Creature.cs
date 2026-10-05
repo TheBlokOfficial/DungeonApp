@@ -18,8 +18,9 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// The properties here are the type's own - read by the card and the content tab, by no tool. What a
 /// fight reads (armor class, hit points, ability scores) is the <see cref="Combat"/> aspect, kept
-/// under its own key. It is optional: an innkeeper with no statblock is a creature too, and then
-/// neither <see cref="Actions"/> nor <see cref="Challenge"/> is required (<see cref="OnDeserialized"/>).
+/// under its own key. Every creature has it, as it has <see cref="Actions"/> and
+/// <see cref="Challenge"/>: the card and the fight tool read them unconditionally, and a commoner is
+/// a creature with a statblock of its own.
 /// </para>
 /// <para>
 /// The six blocks of rules prose are <see cref="StatblockSection"/>s - named entries the pack author
@@ -43,8 +44,8 @@ public sealed record Creature : IJsonOnDeserialized
 
     public required string Alignment { get; init; }
 
-    /// <summary>What a fight reads; null for a creature with no statblock.</summary>
-    public CombatAspect? Combat { get; init; }
+    /// <summary>What a fight reads.</summary>
+    public required CombatAspect Combat { get; init; }
 
     public required string Speed { get; init; }
 
@@ -67,9 +68,8 @@ public sealed record Creature : IJsonOnDeserialized
     /// <summary>
     /// The challenge rating exactly as written ("1/4", "5") - a label the card shows and the list
     /// orders by, never a number anything computes with. Experience points are <see cref="Xp"/>.
-    /// Required of a creature that fights (<see cref="OnDeserialized"/>).
     /// </summary>
-    public string? Challenge { get; init; }
+    public required string Challenge { get; init; }
 
     /// <summary>Experience points for defeating this creature, shown next to <see cref="Challenge"/>.</summary>
     public int? Xp { get; init; }
@@ -77,10 +77,9 @@ public sealed record Creature : IJsonOnDeserialized
     public StatblockSection? SpecialAbilities { get; init; }
 
     /// <summary>
-    /// The one section every creature that fights has, with at least one entry
-    /// (<see cref="OnDeserialized"/>).
+    /// The one section every creature has, with at least one entry (<see cref="OnDeserialized"/>).
     /// </summary>
-    public StatblockSection? Actions { get; init; }
+    public required StatblockSection Actions { get; init; }
 
     /// <summary>
     /// The preamble (ability, save DC, attack bonus) as the introduction; each group of spells cast
@@ -112,25 +111,14 @@ public sealed record Creature : IJsonOnDeserialized
     void IJsonOnDeserialized.OnDeserialized() => OnDeserialized();
 
     /// <summary>
-    /// A creature that fights with no action at all has nothing the GM can run at the table, and
-    /// one with no challenge cannot be weighed against the party - so with <see cref="Combat"/> both
-    /// are required, and an <see cref="Actions"/> section with an introduction alone is refused like
-    /// a missing one. A creature without a statblock needs neither, but an actions section it does
-    /// carry still needs an entry.
+    /// A creature with no action at all has nothing the GM can run at the table, so an
+    /// <see cref="Actions"/> section with an introduction alone is refused like a missing one. The
+    /// callback runs before the missing-required-property check, so it must tolerate an unset
+    /// section and leave that refusal to the deserializer, which names the key.
     /// </summary>
     private void OnDeserialized()
     {
-        if (Combat is not null && Actions is null)
-        {
-            throw new JsonException("\"actions\" is required with \"combat\".");
-        }
-
-        if (Combat is not null && Challenge is null)
-        {
-            throw new JsonException("\"challenge\" is required with \"combat\".");
-        }
-
-        if (Actions is not null && Actions.Entries.Count == 0)
+        if (Actions?.Entries.Count == 0)
         {
             throw new JsonException("\"actions\" needs at least one entry.");
         }

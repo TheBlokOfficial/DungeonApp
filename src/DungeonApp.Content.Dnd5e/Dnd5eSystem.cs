@@ -299,9 +299,8 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// "Stworzenia": category "Grupa" = <see cref="Creature.Group"/>, never <see cref="Creature.Type"/> -
     /// a creature with no declared group has no category; tags = size, type, alignment; badge =
-    /// challenge, no color key, none for a creature without one; two value filters - "Typ"
-    /// (<see cref="Creature.Type"/>, alphabetical) before "Wyzwanie" (<see cref="ChallengeOrder"/>) -
-    /// and one sort, "Wyzwanie", which lists a creature without a challenge last.
+    /// challenge, no color key; two value filters - "Typ" (<see cref="Creature.Type"/>, alphabetical)
+    /// before "Wyzwanie" (<see cref="ChallengeOrder"/>) - and one sort, "Wyzwanie".
     /// </summary>
     private static ContentTabDefinition BuildCreatureContentTab(ContentTypeReference creature)
     {
@@ -309,7 +308,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             creature,
             category: new ContentCategorySpec<Creature>("Grupa", creature => creature.Group),
             tags: creature => [creature.Size, creature.Type, creature.Alignment],
-            badge: creature => creature.Challenge is { } challenge ? new ContentBadge(challenge) : default,
+            badge: creature => new ContentBadge(creature.Challenge),
             valueFilters:
             [
                 new ContentValueFilterSpec<Creature>("Typ", creature => creature.Type, PolishAlphabeticalOrder),
@@ -319,8 +318,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             [
                 new ContentSortSpec<Creature>(
                     "Wyzwanie",
-                    (a, b) => ChallengeOrder.Compare(a.Challenge!, b.Challenge!),
-                    HasKey: creature => creature.Challenge is not null),
+                    (a, b) => ChallengeOrder.Compare(a.Challenge, b.Challenge)),
             ]);
 
         return new ContentTabDefinition("Stworzenia", [profile], "Żadna paczka nie ma jeszcze stworzeń.");

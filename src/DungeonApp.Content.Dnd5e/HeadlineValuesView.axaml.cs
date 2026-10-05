@@ -30,11 +30,9 @@ public partial class HeadlineValuesView : UserControl
     }
 
     /// <summary>
-    /// Places the values left to right, one per column; at most <see cref="ColumnCount"/>. A null
-    /// leaves its column empty, so a value that has a column of its own keeps it whatever stands
-    /// before it.
+    /// Places the values left to right, one per column; at most <see cref="ColumnCount"/>.
     /// </summary>
-    public void Show(IReadOnlyList<HeadlineValue?> values)
+    public void Show(IReadOnlyList<HeadlineValue> values)
     {
         ArgumentNullException.ThrowIfNull(values);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(values.Count, ColumnCount);
@@ -42,11 +40,7 @@ public partial class HeadlineValuesView : UserControl
         Columns.Children.Clear();
         for (var column = 0; column < values.Count; column++)
         {
-            if (values[column] is not { } value)
-            {
-                continue;
-            }
-
+            var value = values[column];
             var tile = new StatTile
             {
                 Label = value.Label,

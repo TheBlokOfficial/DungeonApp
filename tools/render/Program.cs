@@ -79,8 +79,8 @@ internal static class Program
 
     /// <summary>
     /// A packs directory with one pack the tool builds itself, in a throwaway location, for the cards neither the bundled pack
-    /// nor the fixtures have: a creature without the combat aspect, to see the card with no KP, PZ or
-    /// ability tables. Written fresh on every run so no earlier file lingers.
+    /// nor the fixtures have: a commoner's statblock, to see the card of a creature with the plainest
+    /// values. Written fresh on every run so no earlier file lingers.
     /// </summary>
     private static string WriteToolPack()
     {
@@ -111,9 +111,20 @@ internal static class Program
                 "size": "Średni",
                 "type": "humanoid",
                 "alignment": "praworządny dobry",
+                "combat": { "ac": 10, "hp": 4, "hpDice": "1k8", "str": 10, "dex": 10, "con": 10, "int": 10, "wis": 10, "cha": 10 },
                 "speed": "9 m",
                 "senses": "bierna Percepcja 11",
                 "languages": "wspólny",
+                "challenge": "0",
+                "xp": 10,
+                "actions": {
+                  "entries": [
+                    {
+                      "name": "Pałka",
+                      "text": "Atak bronią w zwarciu: **+2 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **2 (1k4)** obrażeń obuchowych."
+                    }
+                  ]
+                },
                 "description": "Zna każdą plotkę w okolicy i każdego, kto jej nie zna, wita jak starego znajomego."
               }
             }
