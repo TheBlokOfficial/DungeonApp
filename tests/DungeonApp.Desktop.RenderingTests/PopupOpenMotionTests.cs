@@ -8,8 +8,8 @@ using DungeonApp.Desktop.Themes;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Lista rozwijana, pod którą brak miejsca, otwiera się nad polem, a pole dostaje klasę opens-up
-/// (motyw obraca po niej strzałkę w górę); z miejscem pod spodem - bez klasy.
+/// A drop-down with no room below opens above the field, and the field gets the opens-up class
+/// (the theme uses it to turn the arrow upward); with room below, it gets no class.
 /// </summary>
 public sealed class PopupOpenMotionTests
 {

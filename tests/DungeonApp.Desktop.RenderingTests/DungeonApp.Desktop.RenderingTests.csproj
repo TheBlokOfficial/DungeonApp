@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Osobny projekt, bo Avalonia.Headless.XUnit wymaga xUnit v3, a reszta testów stoi na v2. -->
+    <!-- Separate project because Avalonia.Headless.XUnit requires xUnit v3, while the other tests use v2. -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

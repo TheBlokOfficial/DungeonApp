@@ -6,10 +6,10 @@ using CommunityToolkit.Mvvm.Input;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Przygaszenie wyłączenia w motywie ramy idzie po :disabled na najwyższej wyłączonej kontrolce.
-/// Przycisk wyłączony komendą (CanExecute fałsz) ma IsEnabled true - przygaszenie po
-/// [IsEnabled=False] zostawiłoby go wyglądającym jak włączony. Kontrolka w wyłączonym pojemniku nie
-/// przygasa drugi raz: przygasza ją pojemnik.
+/// Disabled dimming in the frame theme uses :disabled on the topmost disabled control.
+/// A button disabled by a command (CanExecute false) has IsEnabled true; dimming through
+/// [IsEnabled=False] would leave it looking enabled. A control in a disabled container does not
+/// dim a second time: the container already dims it.
 /// </summary>
 public sealed class DisabledOpacityTests
 {

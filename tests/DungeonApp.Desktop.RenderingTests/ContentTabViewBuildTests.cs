@@ -12,9 +12,9 @@ using DungeonApp.Desktop.Entries.ContentTab;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Zakładka treści budowana w oknie: zasób złego typu w XAML-u (liczba tam, gdzie siatka chce
-/// <see cref="GridLength"/>) kompiluje się i wywraca zakładkę dopiero przy utworzeniu widoku —
-/// testy modelu widoku go nie widzą. Stawia widok z każdym rodzajem wiersza i szczegółu.
+/// Builds the content tab in a window: a wrongly typed XAML resource (a number where the grid expects
+/// <see cref="GridLength"/>) compiles but crashes the tab when the view is created;
+/// view-model tests cannot catch it. Builds the view with every kind of row and detail.
 /// </summary>
 public sealed class ContentTabViewBuildTests
 {

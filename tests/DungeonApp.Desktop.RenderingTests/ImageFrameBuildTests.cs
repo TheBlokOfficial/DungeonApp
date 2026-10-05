@@ -13,9 +13,9 @@ using DungeonApp.Desktop.Entries;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Ramka obrazka budowana w oknie: błąd w motywie albo zasób złego typu wywraca kontrolkę dopiero
-/// przy utworzeniu. Stawia próbkę galerii (wszystkie trzy stany w obu proporcjach i ikonę
-/// jednobarwną) i przeprowadza jedną ramkę przez każdy stan - bez asercji o wyglądzie.
+/// Builds the image frame in a window: a theme error or wrongly typed resource crashes the control
+/// only when it is created. Builds the gallery sample (all three states in both aspect ratios and a
+/// monochrome icon) and takes one frame through every state, without assertions about appearance.
 /// </summary>
 public sealed class ImageFrameBuildTests
 {

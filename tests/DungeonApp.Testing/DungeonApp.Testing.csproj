@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Wspólne pomocniki testów: bez xUnit, żeby mogły z nich korzystać projekty na xUnit v2 i v3. -->
+    <!-- Shared test helpers: no xUnit dependency, so both xUnit v2 and v3 projects can use them. -->
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>

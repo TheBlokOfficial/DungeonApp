@@ -11,9 +11,9 @@ using DungeonApp.Desktop.Themes;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Otwierający okienko albo listę po zamknięciu kliknięciem w siebie przechodzi w spoczynek i zostaje
-/// w nim, dopóki mysz z niego nie zjedzie (OpenerHoverRest). Motyw pokazuje najechanie tylko przy
-/// :pointerover bez klasy hover-suppressed, więc test sprawdza tę parę po każdym zdarzeniu wskaźnika.
+/// A popup or drop-down opener returns to rest when clicked to close and stays there until the
+/// pointer leaves it (OpenerHoverRest). The theme shows hover only with :pointerover and without
+/// hover-suppressed, so the test checks that pair after every pointer event.
 /// </summary>
 public sealed class OpenerHoverRestTests
 {
@@ -80,7 +80,7 @@ public sealed class OpenerHoverRestTests
         _ => false,
     };
 
-    // Najechanie w motywie ramy: :pointerover bez hover-suppressed, albo wciśnięty, albo otwarty.
+    // Hover in the frame theme: :pointerover without hover-suppressed, or pressed, or open.
     private static string Look(Control opener)
     {
         var classes = opener.Classes;
