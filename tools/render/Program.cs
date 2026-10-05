@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -22,7 +23,7 @@ namespace DungeonApp.Tools.Render;
 /// <summary>
 /// Boots the real shell (real App, real main window, the real system reading the bundled pack) on
 /// the headless platform with Skia rasterization, so a look can be checked without a screen. Writes
-/// one PNG per content card and per gallery section into the directory given as the only argument.
+/// one PNG per content card and per gallery section into the directory given as the first argument.
 /// Nothing reads the GM's Documents: packs come from the build output, desk layouts go to a
 /// throwaway directory.
 /// </summary>
@@ -41,10 +42,31 @@ internal static class Program
 
     private static readonly HashSet<string> _written = new(StringComparer.Ordinal);
 
-    /// <summary>Arguments: the output directory, then any number of extra pack directories.</summary>
+    /// <summary>
+    /// The file-name pattern from <c>--only=</c>, or null to render everything. Selecting a row and
+    /// letting it settle is what a run spends its time on, so a row whose file would not match is
+    /// never selected.
+    /// </summary>
+    private static Regex? _only;
+
+    private static string _onlyHead = "";
+
+    /// <summary>
+    /// Arguments: the output directory, then any number of extra pack directories, and optionally
+    /// <c>--only=&lt;pattern&gt;</c> - a wildcard over file names without the extension.
+    /// </summary>
     [STAThread]
     private static int Main(string[] args)
     {
+        var only = args.FirstOrDefault(arg => arg.StartsWith("--only=", StringComparison.Ordinal))?["--only=".Length..];
+        if (!string.IsNullOrEmpty(only))
+        {
+            _only = new Regex("^" + Regex.Escape(only).Replace(@"\*", ".*", StringComparison.Ordinal).Replace(@"\?", ".", StringComparison.Ordinal) + "$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            _onlyHead = only[..(only.IndexOfAny(['*', '?']) is var wildcard and >= 0 ? wildcard : only.Length)];
+        }
+
+        args = [.. args.Where(arg => !arg.StartsWith("--only=", StringComparison.Ordinal))];
         _outDir = Path.GetFullPath(args.Length > 0 ? args[0] : "out");
         _extraPacks = [.. args.Skip(1).Select(Path.GetFullPath), WriteToolPack()];
         Directory.CreateDirectory(_outDir);
@@ -72,11 +94,25 @@ internal static class Program
         RenderCards(window, shell, "Stworzenia", "creature");
         RenderCards(window, shell, "Przedmioty", "gear");
         RenderCards(window, shell, "Stany", "condition");
-        RenderGallery(window, shell);
+        if (MayMatch("gallery_"))
+        {
+            RenderGallery(window, shell);
+        }
 
-        Console.WriteLine("Done.");
+        Console.WriteLine(_written.Count == 0 ? "Nothing matched the pattern." : $"Done: {_written.Count} file(s).");
         return 0;
     }
+
+    private static bool Wants(string stem) => _only?.IsMatch(stem) ?? true;
+
+    /// <summary>
+    /// Whether any file starting with <paramref name="prefix"/> could match the pattern, judged by its
+    /// literal head: a whole tab or the gallery is skipped without being opened.
+    /// </summary>
+    private static bool MayMatch(string prefix) =>
+        _only is null
+        || _onlyHead.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+        || prefix.StartsWith(_onlyHead, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// A packs directory with one pack the tool builds itself, in a throwaway location, for the cards neither the bundled pack
@@ -167,6 +203,11 @@ internal static class Program
     /// </summary>
     private static void RenderCards(Window window, AppShellViewModel shell, string tabTitle, string prefix)
     {
+        if (!MayMatch($"{prefix}_") && !MayMatch($"tab_{prefix}"))
+        {
+            return;
+        }
+
         shell.Sidebar!.SystemTabItems.Single(item => item.Label == tabTitle).SelectCommand.Execute(null);
         Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: ContentTabViewModel tab } && tab.Title == tabTitle, tabTitle);
         Settle();
@@ -175,6 +216,11 @@ internal static class Program
         var tabModel = (ContentTabViewModel)tabView.DataContext!;
         foreach (var row in tabModel.Sections.SelectMany(section => section.Rows).ToList())
         {
+            if (!Wants($"{prefix}_{Slug(row.Name)}"))
+            {
+                continue;
+            }
+
             row.SelectCommand.Execute(null);
             SetSize(window, WindowWidth, WindowHeight);
             GrowToFit(window, tabView);
@@ -187,8 +233,11 @@ internal static class Program
         }
 
         SetSize(window, WindowWidth, WindowHeight);
-        tabModel.Sections.SelectMany(section => section.Rows).FirstOrDefault()?.SelectCommand.Execute(null);
-        SaveCrop(window, tabView, UniqueName($"tab_{prefix}"));
+        if (Wants($"tab_{prefix}"))
+        {
+            tabModel.Sections.SelectMany(section => section.Rows).FirstOrDefault()?.SelectCommand.Execute(null);
+            SaveCrop(window, tabView, UniqueName($"tab_{prefix}"));
+        }
     }
 
     /// <summary>
@@ -220,7 +269,11 @@ internal static class Program
             .First(panel => panel.Children.Count > 0 && panel.Children.All(child => child.GetType().Name.EndsWith("Section", StringComparison.Ordinal)));
         foreach (var section in list.Children)
         {
-            SaveCrop(window, section, $"gallery_{Slug(section.GetType().Name.Replace("Section", "", StringComparison.Ordinal))}.png");
+            var stem = $"gallery_{Slug(section.GetType().Name.Replace("Section", "", StringComparison.Ordinal))}";
+            if (Wants(stem))
+            {
+                SaveCrop(window, section, UniqueName(stem));
+            }
         }
 
         SetSize(window, WindowWidth, WindowHeight);
@@ -279,7 +332,7 @@ internal static class Program
             data.SaveTo(file);
         }
 
-        Console.WriteLine($"Saved {target} ({right - left}x{bottom - top})");
+        Console.WriteLine($"Saved {name} ({right - left}x{bottom - top})");
     }
 
     /// <summary>Runs the dispatcher and render ticks for a while, so asynchronous work and transitions finish.</summary>
