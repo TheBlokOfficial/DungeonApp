@@ -46,7 +46,7 @@ internal static class Program
     private static int Main(string[] args)
     {
         _outDir = Path.GetFullPath(args.Length > 0 ? args[0] : "out");
-        _extraPacks = [.. args.Skip(1).Select(Path.GetFullPath)];
+        _extraPacks = [.. args.Skip(1).Select(Path.GetFullPath), WriteToolPack()];
         Directory.CreateDirectory(_outDir);
 
         var lifetime = new ClassicDesktopStyleApplicationLifetime { ShutdownMode = ShutdownMode.OnExplicitShutdown };
@@ -75,6 +75,50 @@ internal static class Program
 
         Console.WriteLine("Done.");
         return 0;
+    }
+
+    /// <summary>
+    /// A packs directory with one pack the tool builds itself, in a throwaway location, for the cards neither the bundled pack
+    /// nor the fixtures have: a creature without the combat aspect, to see the card with no KP, PZ or
+    /// ability tables. Written fresh on every run so no earlier file lingers.
+    /// </summary>
+    private static string WriteToolPack()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "DungeonAppRender", "tool-packs");
+        if (Directory.Exists(root))
+        {
+            Directory.Delete(root, recursive: true);
+        }
+
+        var pack = Path.Combine(root, "render-tool");
+        Directory.CreateDirectory(Path.Combine(pack, "entries"));
+        var utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+        File.WriteAllText(Path.Combine(pack, "pack.json"), """
+            {
+              "formatVersion": 1,
+              "id": "render-tool",
+              "name": "Karty narzędzia",
+              "version": { "major": 1, "minor": 0 }
+            }
+            """, utf8);
+        File.WriteAllText(Path.Combine(pack, "entries", "karczmarz.json"), """
+            {
+              "id": "karczmarz",
+              "name": "Karczmarz",
+              "template": "dnd5e:creature",
+              "templateVersion": 1,
+              "values": {
+                "size": "Średni",
+                "type": "humanoid",
+                "alignment": "praworządny dobry",
+                "speed": "9 m",
+                "senses": "bierna Percepcja 11",
+                "languages": "wspólny",
+                "description": "Zna każdą plotkę w okolicy i każdego, kto jej nie zna, wita jak starego znajomego."
+              }
+            }
+            """, utf8);
+        return root;
     }
 
     private static IReadOnlyList<IGameSystem> BuildSystems()
