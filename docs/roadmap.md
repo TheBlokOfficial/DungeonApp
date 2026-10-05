@@ -18,7 +18,11 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
      (karta pokazuje sam tekst). Odległości w metrach (1,5 m za 5 stóp). Rzadkość: niemagiczne
      i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo rzadkie → Epicki,
      legendarne i artefakty → Legendarny. Dziś paczka ma pięć stworzeń i dziesięć przedmiotów
-     przykładowych; ikony z game-icons.net (CC BY 3.0, autorzy w `LICENSE.txt` paczki).
+     przykładowych; ikony stanów to SVG z game-icons.net (CC BY 3.0, autorzy w `LICENSE.txt` paczki).
+   - **Biblioteka rośnie w bajzel płaskich zakładek** (stany, zaklęcia, manewry, atuty). Kierunek
+     autora: zakładki zostają, część grupuje się w rozwijaną listę (Stany nie na pierwszym poziomie).
+     Rozstrzygnąć przed etapem 8; zmienia „Zakładki według typu” w `docs/decisions.md`. Osobno: każda
+     zakładka ma ten sam szkielet (filtry, lista, szczegół) — za generyczny, do przemyślenia.
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).
@@ -61,7 +65,8 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
    z mnożnikami (uniwersalna moneta albo własne monety); funty to samo dla wagi. Brak złota widać,
    nie blokuje. SRD: ekwipunek podstawowy, przedmioty magiczne pospolite do rzadkich; przed wyceną
    ustalić skalę wartości (małe, czytelne liczby z miejscem w dół i w górę). Rozstrzygnąć stworzenie
-   na sprzedaż (koń u handlarza): skąd wartość, z której liczy się cena.
+   na sprzedaż (koń u handlarza): skąd wartość, z której liczy się cena. Rozstrzygnąć też, czy
+   ekwipunek to egzemplarze w drzewie świata, czy — jak widzi to autor — lista wewnątrz istoty.
 10. **Odpoczynek** — przełom krótkiego i długiego odpoczynku z okienkiem: odnowienie PW, miejsc na
     zaklęcia i ładunków. Rozstrzygnąć odnowienie „o świcie” (*w długim odpoczynku z wyłącznikiem*;
     zegar niczego nie uruchamia).
@@ -103,9 +108,9 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek ponad
   obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
 - Tabela cech: modyfikator zero „+0” jak w podręczniku — do zmiany na „0”, gdyby zaczęło razić.
-- Sekcja opisu przedmiotu bez kreski i nagłówka „Opis” (opis ma prawie każdy przedmiot). Ikona
-  pergaminu w lewym górnym rogu, wysoka na dwie linie tekstu, a tekst ją opływa jak inicjał
-  w manuskrypcie: obok ikony z odstępem, pod nią od lewej krawędzi. Nadal jest sekcją.
+- Opis przedmiotu bez kreski i nagłówka „Opis”, z inicjałem pergaminu jak zasady na karcie stanu.
+- Akapity w prozie: po twardym Enter nowa linia trochę niżej, jak w edytorze tekstu (także obok
+  inicjału pergaminu).
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - Ikony kategorii na liście treści (przedmioty: broń, zbroja…; stworzenia: typ), małe i przygaszone
