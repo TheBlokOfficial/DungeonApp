@@ -56,7 +56,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   dodatkowe, reakcje, akcje legendarne; u stanu zasady) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
   `intro` i `note` są opcjonalne; sekcja bez wstępu i bez wpisów, wpis bez nazwy albo tekstu, a proza
   zapisana zwykłym napisem odrzucają wpis. W `intro` i `text` `**…**` wyróżnia fragment (premia,
-  obrażenia, ST). Strukturę pisze autor paczki — karta niczego nie wyczytuje z tekstu i nic jej nie liczy.
+  obrażenia, ST), a `[[id|tekst]]` wskazuje inny wpis — karta pokazuje sam tekst. Strukturę pisze autor paczki — karta niczego nie wyczytuje z tekstu i nic jej nie liczy.
 - **Zepsuta treść jest widoczna, nie znika**: wadliwy wpis dostaje powód, a reszta paczki się
   wczytuje. Zepsuty manifest odrzuca całą paczkę z powodem.
 - Obrazek wpisu: pole wskazane przez deskryptor typu (`ImageProperty`); ścieżka względem katalogu

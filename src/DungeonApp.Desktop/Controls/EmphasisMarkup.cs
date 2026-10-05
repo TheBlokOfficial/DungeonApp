@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -12,13 +13,16 @@ namespace DungeonApp.Desktop.Controls;
 public readonly record struct EmphasisRun(string Text, bool IsEmphasized);
 
 /// <summary>
-/// The one piece of markup a pack's prose may carry: <c>**…**</c> marks a run the reader's eye
-/// should land on (an attack bonus, a damage roll, a save DC). Nothing else is markup, and the
-/// application never finds such runs by itself - only what the author marked is emphasized.
+/// The markup a pack's prose may carry. <c>**…**</c> marks a run the reader's eye should land on (an
+/// attack bonus, a damage roll, a save DC); the application never finds such runs by itself - only
+/// what the author marked is emphasized. <c>[[id|text]]</c> names another entry: the card shows only
+/// the text. The id is in the pack so that a later link needs no second pass over the prose.
+/// Nothing else is markup.
 /// <para>
 /// A <c>**</c> opens a run and the next <c>**</c> closes it. A <c>**</c> left without a partner, and a
 /// pair with nothing between them, stay in the text as written: a stray pair of asterisks is
-/// something to see and fix, not a reason for the rest of the paragraph to turn bold.
+/// something to see and fix, not a reason for the rest of the paragraph to turn bold. A reference
+/// without an id or a text stays as written for the same reason.
 /// </para>
 /// <para>
 /// <see cref="TextProperty"/> puts the parsed runs into a <see cref="TextBlock"/> (a
@@ -29,6 +33,8 @@ public readonly record struct EmphasisRun(string Text, bool IsEmphasized);
 public static class EmphasisMarkup
 {
     private const string Marker = "**";
+
+    private static readonly Regex Reference = new(@"\[\[[^\[\]|]+\|([^\[\]|]+)\]\]", RegexOptions.CultureInvariant);
 
     public static readonly AttachedProperty<string?> TextProperty =
         AvaloniaProperty.RegisterAttached<TextBlock, string?>("Text", typeof(EmphasisMarkup));
@@ -45,6 +51,7 @@ public static class EmphasisMarkup
     /// <summary>Splits <paramref name="text"/> into plain and emphasized runs, in order; empty runs are left out.</summary>
     public static IReadOnlyList<EmphasisRun> Parse(string text)
     {
+        text = Reference.Replace(text, "$1");
         var runs = new List<EmphasisRun>();
         var plainStart = 0;
         var position = 0;
