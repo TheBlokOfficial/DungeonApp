@@ -6,16 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" />
-    <!-- Własna referencja, nie przechodnia przez Desktop: generator kodu Toolkitu nie przechodzi
-         na projekty zależne. -->
+    <!-- Direct reference, not transitive through Desktop: the Toolkit's code generator does not
+         propagate to dependent projects. -->
     <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
 
   <!--
-    Paczki dostarczane z tym systemem: zwykłe paczki w formacie paczek MG, kopiowane do
-    <wyjście>\dnd5e\packs\ - tam, gdzie wskazuje
-    SystemDirectories.BundledPacks(AppContext.BaseDirectory, Dnd5eSystem.IdValue). Katalog "dnd5e"
-    musi być równy Dnd5eSystem.IdValue; pilnuje tego test w DungeonApp.Content.Dnd5e.Tests.
+    Packs bundled with this system: regular packs in the GM's pack format, copied to
+    <output>\dnd5e\packs\ - the location returned by
+    SystemDirectories.BundledPacks(AppContext.BaseDirectory, Dnd5eSystem.IdValue). The "dnd5e"
+    directory must match Dnd5eSystem.IdValue; a test in DungeonApp.Content.Dnd5e.Tests checks this.
   -->
   <ItemGroup>
     <None Remove="Packs\**" />
