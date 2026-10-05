@@ -1,0 +1,16 @@
+{
+  "id": "nieprzytomny",
+  "name": "Nieprzytomny",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Obezwładniona i nieświadoma, upuszcza to, co trzyma, i pada powalona. Trafienie z 1,5 m jest krytyczne.",
+    "icon": "images/conditions/nieprzytomny.png",
+
+    "rules": {
+      "intro": "Nieprzytomna istota jest [[obezwladniony|obezwładniona]], nie może się poruszać ani mówić i nie jest świadoma otoczenia.\nIstota upuszcza wszystko, co trzyma, i pada [[powalony|powalona]].\nIstota automatycznie ponosi porażkę w rzutach obronnych na Siłę i Zręczność.\nTesty ataku przeciwko istocie mają **ułatwienie**.\nKażdy atak, który trafi istotę, jest **trafieniem krytycznym**, jeśli atakujący jest w promieniu 1,5 m od niej.",
+      "entries": []
+    }
+  }
+}

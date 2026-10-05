@@ -63,7 +63,7 @@ public sealed class Dnd5eSystemTests
         Assert.Equal("Kon +4, Mdr +2", creature.SavingThrows);
         Assert.Equal("obuchowe", creature.DamageVulnerabilities);
         Assert.Equal("od zimna", creature.DamageResistances);
-        Assert.Equal("od trucizny", creature.DamageImmunities);
+        Assert.Equal("od trucizn", creature.DamageImmunities);
         Assert.Equal("zatrucie", creature.ConditionImmunities);
         Assert.Equal(1800, creature.Xp);
         Assert.Equal("Wrodzone rzucanie czarów.", creature.Spellcasting!.Intro);
@@ -192,7 +192,7 @@ public sealed class Dnd5eSystemTests
             "item": { "weight": 2, "value": 0.5 },
             "damage": "1k6",
             "damageType": "obuchowe",
-            "properties": "uniwersalna (1k8)",
+            "properties": "półtoraręczna (1k8)",
             "armorClass": "11",
             "armorClassNote": "+ mod. Zr",
             "strengthRequirement": 13,
@@ -215,7 +215,7 @@ public sealed class Dnd5eSystemTests
         Assert.Equal(0.5m, gear.Item.Value);
         Assert.Equal("1k6", gear.Damage);
         Assert.Equal("obuchowe", gear.DamageType);
-        Assert.Equal("uniwersalna (1k8)", gear.Properties);
+        Assert.Equal("półtoraręczna (1k8)", gear.Properties);
         Assert.Equal("11", gear.ArmorClass);
         Assert.Equal("+ mod. Zr", gear.ArmorClassNote);
         Assert.Equal(13, gear.StrengthRequirement);
@@ -547,9 +547,9 @@ public sealed class Dnd5eSystemTests
             "savingThrows": "Kon +4, Mdr +2",
             "damageVulnerabilities": "obuchowe",
             "damageResistances": "od zimna",
-            "damageImmunities": "od trucizny",
+            "damageImmunities": "od trucizn",
             "conditionImmunities": "zatrucie",
-            "senses": "bierna Percepcja 13",
+            "senses": "pasywna Percepcja 13",
             "challenge": "5",
             "xp": 1800,
             "actions": { "entries": [{ "name": "Róg", "text": "**+7 do trafienia**." }] },

@@ -1,9 +1,8 @@
 # Słowniczek SRD 5.1 → paczka `dnd5e-srd`
 
 Źródła słownictwa: polski wyciąg z zasad SRD 5.1 (Black Monk Games na podstawie materiałów Rebel, terminy
-Podręcznika Gracza; oznaczony niżej „SRD-PL”) i 15 wpisów w `entries/`. Gdy jedno z drugim się rozjeżdża,
-pozycja jest w sekcji „Do decyzji” — do jej rozstrzygnięcia pisz jak w kolumnie „Pisz”. Termin z „?” nie
-był sprawdzony z polskim podręcznikiem. Lista stworzeń i partii: `tools/srd/stworzenia.md`.
+Podręcznika Gracza; oznaczony niżej „SRD-PL”) i 15 wpisów w `entries/`. SRD-PL wygrywa z wpisami (sekcja
+„Rozstrzygnięte”). Termin z „?” nie był sprawdzony z polskim podręcznikiem. Lista stworzeń i partii: `tools/srd/stworzenia.md`.
 
 ## Stany
 
@@ -61,8 +60,7 @@ Restrained = Unieruchomiony**; **Incapacitated = Obezwładniony**. Wyczerpanie m
 - Bez znacznika: nazwa samego stworzenia we własnym wpisie, rodzaje obrażeń, cechy, umiejętności,
   ogólne słowa („trucizna” jako substancja, „niewidzialny” w znaczeniu potocznym — znacznik tylko
   przy stanie z zasad).
-- Pola krótkie (`conditionImmunities`, `damageImmunities` itd.) — bez znaczników do rozstrzygnięcia
-  („Do decyzji”, pkt 12).
+- Pola krótkie (`conditionImmunities`, `damageImmunities` itd.) — bez znaczników.
 
 ## Cechy, rzuty, testy
 
@@ -82,16 +80,16 @@ Restrained = Unieruchomiony**; **Incapacitated = Obezwładniony**. Wyczerpanie m
 | DC | ST (Stopień Trudności) |
 | succeed / fail a save | odnieść sukces / ponieść porażkę w rzucie obronnym |
 | advantage / disadvantage | ułatwienie / utrudnienie |
-| attack roll | test ataku (wpis `wilk` ma „rzut ataku” — „Do decyzji”, pkt 7) |
+| attack roll | test ataku |
 | proficiency bonus | premia z biegłości |
-| hit points / Hit Dice | punkty wytrzymałości (PW) / Kości Wytrzymałości — „Do decyzji”, pkt 1 |
+| hit points / Hit Dice | punkty wytrzymałości (PW) / Kości Wytrzymałości |
 | Armor Class | Klasa Pancerza (KP) |
 | natural armor | pancerz naturalny |
 | critical hit | trafienie krytyczne |
 | opportunity attack | atak okazyjny |
 | short / long rest | krótki / długi odpoczynek |
 | concentration | koncentracja |
-| cantrip / spell slot / Nth level | sztuczka / komórka czarów / N. krąg — „Do decyzji”, pkt 8 |
+| cantrip / spell slot / Nth level | sztuczka / komórka czarów / N. krąg |
 | spellcasting ability | cecha bazowa (do rzucania czarów) |
 | Dungeon Master | Mistrz Podziemi (MP) |
 
@@ -115,7 +113,7 @@ Restrained = Unieruchomiony**; **Incapacitated = Obezwładniony**. Wyczerpanie m
 |---|---|---|---|
 | acid | od kwasu | necrotic | nekrotycznych |
 | bludgeoning | obuchowych | piercing | kłutych |
-| cold | od zimna | poison | od trucizn (pkt 4) |
+| cold | od zimna | poison | od trucizn |
 | fire | od ognia | psychic | psychicznych |
 | force | od mocy | radiant | od światłości |
 | lightning | od elektryczności | slashing | ciętych |
@@ -182,10 +180,10 @@ i **Likantropy**. Roje → Zwierzęta. Grupę każdego stworzenia podaje `stworz
 | darkvision 60 ft. | widzenie w ciemności 18 m |
 | tremorsense 60 ft. | wyczuwanie drgań 18 m ? |
 | truesight 120 ft. | prawdziwe widzenie 36 m |
-| passive Perception 13 | bierna Percepcja 13 (pkt 6) |
+| passive Perception 13 | pasywna Percepcja 13 |
 
 `speed`: „9 m”; kilka rodzajów po przecinku: „9 m, latanie 18 m (unoszenie się)”, „pływanie 12 m”,
-„wspinanie się 9 m”, „kopanie 3 m” ? (walk/fly/swim/climb/burrow; pkt 11).
+„wspinanie się 9 m”, „kopanie 3 m” ? (walk/fly/swim/climb/burrow; „Otwarte”).
 
 | EN | PL | EN | PL |
 |---|---|---|---|
@@ -207,7 +205,7 @@ Język spoza tabeli: przymiotnik od nazwy ludu („gnollowy”, „sahuagiński�
 
 | EN | PL |
 |---|---|
-| Melee Weapon Attack | Atak bronią w zwarciu (pkt 7) |
+| Melee Weapon Attack | Atak bronią w zwarciu |
 | Ranged Weapon Attack | Atak bronią dystansową |
 | Melee or Ranged Weapon Attack | Atak bronią w zwarciu lub dystansową |
 | Melee / Ranged Spell Attack | Atak czarem w zwarciu / Dystansowy atak czarem |
@@ -223,7 +221,7 @@ Język spoza tabeli: przymiotnik od nazwy ludu („gnollowy”, „sahuagiński�
 | Legendary Actions | Akcje legendarne — `intro` jak w `jednorozec.json` |
 | Costs 2 Actions | `note`: „kosztuje 2 akcje” |
 | (3/Day), (1/Day each) | `note`: „3 na dzień”; nagłówek grupy czarów „Raz na dzień każdy” |
-| (Recharge 5–6) | `note`: „odnawia się przy 5–6” (pkt 13) |
+| (Recharge 5–6) | `note`: „odnawia się przy 5–6” („Otwarte”) |
 | (Recharges after a Short or Long Rest) | `note`: „odnawia się po krótkim lub długim odpoczynku” |
 | Breath Weapon | Zionięcie |
 | cone / line / sphere / cube / radius | stożek / linia / kula / sześcian / promień |
@@ -288,41 +286,18 @@ Szablon: `{"id", "name", "template": "dnd5e:creature", "templateVersion": 1, "va
 Sekcja bez `intro` i bez pozycji jest odrzucana; pusta sekcja — pomiń klucz. Likantrop: jeden wpis, liczby
 postaci zwierzęcej i hybrydy w tekście zdolności „Zmiennokształtność”.
 
-## Do decyzji
+## Rozstrzygnięte
 
-1. **Punkty wytrzymałości czy punkty życia.** SRD-PL i wpisy przedmiotów: „punkty wytrzymałości” (PW);
-   `jednorozec.json` w tekście: „punktów życia”; karta ma etykietę „PZ”. Trzeba jednego terminu (i skrótu).
-2. **Charmed:** SRD-PL „zauroczony/zauroczenie”; `jednorozec.json` (`conditionImmunities`): „oczarowanie”.
-3. **Frightened:** SRD-PL „przerażony/przerażenie”; `rycerz.json` (Odwaga): „przeciwko przestraszeniu”.
-4. **Poison:** SRD-PL w definicjach „obrażenia od trucizn” (raz „od trucizny”); `szkielet.json`,
-   `jednorozec.json`: „od trucizny”.
-5. **Immunity:** SRD-PL w zasadach „niepodatność”; karta pisze „Niewrażliwość na obrażenia/stany”.
-   Dotyczy etykiet karty, nie wartości wpisów.
-6. **Passive Perception:** SRD-PL „test pasywny” (więc „pasywna Percepcja”); wszystkie wpisy: „bierna
-   Percepcja”.
-7. **Atak:** SRD-PL używa „test ataku” i „atak wręcz”; `wilk.json`: „w rzucie ataku”, wzór statbloku
-   wszystkich wpisów: „Atak bronią w zwarciu”. Brzmienia statbloku z Księgi Potworów nie sprawdzałem.
-8. **Krąg czy poziom zaklęcia; cecha bazowa.** SRD-PL: „komórki 1. kręgu”, „cecha bazowa”; `kaplan.json`:
-   „1. poziom” + „4 komórki”, „cechą do rzucania czarów jest Mądrość”.
-9. **Nazwy przedmiotów w istniejących wpisach** (SRD-PL → wpis): Mikstura leczenia → „Eliksir leczenia”
-   (id `eliksir-leczenia` — rozstrzygnąć, zanim partie zaczną stawiać do niego znaczniki); Buława →
-   „Buzdygan” (`kaplan.json`); Miecz krótki → „Krótki miecz” (`szkielet.json`); Kusza ciężka → „Ciężka
-   kusza” (`rycerz.json`); właściwość versatile „półtoraręczna” → „uniwersalna” (`miecz-dlugi.json`,
-   `miecz-worpalny.json`); kolczuga 27 kg w SRD-PL, 27,5 kg we wpisie (zasada 1 lb = 0,5 kg daje 27,5).
-10. **Języki w `jednorozec.json`:** „celestialny, sylwański” — SRD-PL: „niebiański, leśny”.
-11. **Skrót Zręczności i prędkości.** SRD-PL skraca Zręczność „Zrc”, karta „ZRĘ” (słowniczek: „Zrę”).
-    SRD-PL nazywa ruch „szybkość chodzenia/latania”, „wspinanie się”, „pływanie” — stąd „latanie 18 m”
-    zamiast „lot 18 m”; „kopanie” (burrow) i „unoszenie się” (hover) niesprawdzone.
-12. **Znaczniki w polach krótkich.** Czy `conditionImmunities` i listy czarów w `spellcasting` niosą
-    `[[id|tekst]]`? Proponuję tak dla list czarów (decisions.md wymienia „zaklęcia w statbloku”), nie dla
-    pól cech — wymaga, żeby karta zdejmowała znaczniki także w wierszach cech.
-13. **Recharge:** brzmienie notatki („odnawia się przy 5–6”) niesprawdzone z Księgą Potworów.
-14. **Nazwy stworzeń z „?”** w `stworzenia.md` (106 z 234) i typy z „?” (aberracja, fey, czart, monstrum)
-    nie były porównane z Księgą Potworów — nie miałem dostępu do jej tekstu. Najbardziej ryzykowne
-    wzorce: „Pisklę … smoka” (wyrmling), „… wiedźma” (hag), „Olbrzymi …” (giant beast), Tryton (merfolk),
-    Imp, Quasit, Upiór/Zjawa/Widmo (wight/wraith/specter). Grupa potwierdzająca rozstrzyga raz dla całej
-    listy przed partią 1.
-15. **PD odbiegające od tabeli w danych 5e-database:** Dretch 25, Koń wierzchowy 25, Gnom głębinowy 50,
-    Pisklę mosiężnego smoka 100. Proponuję tabelę (50, 50, 100, 200), chyba że tekst SRD 5.1 mówi inaczej.
-16. **Wariant „chory olbrzymi szczur”** (Giant Rat (Diseased)) — w liście jako zdolność wpisu
-    `olbrzymi-szczur`, nie osobny wpis.
+Słownictwo z polskiego podręcznika (SRD-PL) wygrywa z istniejącymi wpisami; wpisy są poprawione.
+Punkty wytrzymałości (PW), zauroczenie, przerażenie, „od trucizn”, niepodatność, pasywna Percepcja,
+test ataku, krąg zaklęcia i cecha bazowa, Mikstura leczenia (`mikstura-leczenia`), Buława, Miecz krótki,
+Kusza ciężka, „półtoraręczna”, języki niebiański i leśny. Wyjątki: skróty cech na karcie zostają
+SIŁ/ZRĘ/KON/INT/MDR/CHA; wzór statbloku „Atak bronią w zwarciu” zostaje; kolczuga 27,5 kg (1 lb =
+0,5 kg). Znaczniki `[[id|tekst]]` w prozie i w listach czarów, nie w krótkich polach cech. PD z tabeli
+wyzwań, nie z 5e-database. Chory olbrzymi szczur to zdolność wpisu `olbrzymi-szczur`.
+
+## Otwarte
+
+- Nazwy stworzeń z „?” w `stworzenia.md` i typy aberracja, fey, czart, monstrum — nieporównane
+  z Księgą Potworów. Tłumaczy się je przy pierwszym użyciu; MG poprawia to, co zgrzyta.
+- Brzmienie Recharge („odnawia się przy 5–6”), ruch „kopanie” i „unoszenie się”.

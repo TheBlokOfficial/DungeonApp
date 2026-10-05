@@ -3,7 +3,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <summary>
 /// The combat aspect: the typed fields a fight reads - armor class, hit points and the six ability
 /// scores. Data without a look: the card of the type that carries it decides where each field
-/// stands (<see cref="CreatureCardView"/> puts KP and PZ by the portrait, the scores in the ability
+/// stands (<see cref="CreatureCardView"/> puts KP and PW by the portrait, the scores in the ability
 /// tables). Optional on a <see cref="Creature"/>; a creature without it shows none of these.
 /// </summary>
 public sealed record CombatAspect

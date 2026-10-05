@@ -1,0 +1,16 @@
+{
+  "id": "ogluszony",
+  "name": "Ogłuszony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Obezwładniona, nie rusza się i mówi z trudem, oblewa rzuty obronne na SIŁ i ZRĘ. Ataki przeciw niej mają ułatwienie.",
+    "icon": "images/conditions/ogluszony.png",
+
+    "rules": {
+      "intro": "Ogłuszona istota jest [[obezwladniony|obezwładniona]], nie może się poruszać i mówi z trudem.\nIstota automatycznie ponosi porażkę w rzutach obronnych na Siłę i Zręczność.\nTesty ataku przeciwko istocie mają **ułatwienie**.",
+      "entries": []
+    }
+  }
+}

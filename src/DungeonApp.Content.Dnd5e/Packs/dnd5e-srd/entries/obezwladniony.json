@@ -1,0 +1,16 @@
+{
+  "id": "obezwladniony",
+  "name": "Obezwładniony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Nie może wykonywać akcji ani reakcji.",
+    "icon": "images/conditions/obezwladniony.png",
+
+    "rules": {
+      "intro": "Obezwładniona istota nie może wykonywać akcji ani reakcji.",
+      "entries": []
+    }
+  }
+}

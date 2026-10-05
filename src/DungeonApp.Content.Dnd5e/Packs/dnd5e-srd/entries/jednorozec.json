@@ -23,10 +23,10 @@
     },
     "speed": "15 m",
 
-    "damageImmunities": "od trucizny",
-    "conditionImmunities": "oczarowanie, sparaliżowanie, zatrucie",
-    "senses": "widzenie w ciemności 18 m, bierna Percepcja 13",
-    "languages": "celestialny, elfi, sylwański, telepatia 18 m",
+    "damageImmunities": "od trucizn",
+    "conditionImmunities": "zauroczenie, sparaliżowanie, zatrucie",
+    "senses": "widzenie w ciemności 18 m, pasywna Percepcja 13",
+    "languages": "niebiański, elfi, leśny, telepatia 18 m",
     "challenge": "5",
     "xp": 1800,
 
@@ -63,7 +63,7 @@
         {
           "name": "Leczący dotyk",
           "note": "3 na dzień",
-          "text": "Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje **11 (2k8+2)** punktów życia. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel."
+          "text": "Jednorożec dotyka rogiem innego stworzenia. Cel magicznie odzyskuje **11 (2k8+2)** punktów wytrzymałości. Dotyk usuwa też wszystkie choroby i neutralizuje wszystkie trucizny, które dotykają cel."
         },
         {
           "name": "Teleportacja",
@@ -100,7 +100,7 @@
         {
           "name": "Uleczenie siebie",
           "note": "kosztuje 3 akcje",
-          "text": "Jednorożec magicznie odzyskuje **11 (2k8+2)** punktów życia."
+          "text": "Jednorożec magicznie odzyskuje **11 (2k8+2)** punktów wytrzymałości."
         }
       ]
     },

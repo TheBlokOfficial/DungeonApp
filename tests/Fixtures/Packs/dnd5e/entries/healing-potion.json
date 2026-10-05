@@ -1,6 +1,6 @@
 {
   "id": "healing-potion",
-  "name": "Eliksir leczenia",
+  "name": "Mikstura leczenia",
   "template": "dnd5e:gear",
   "templateVersion": 1,
 
@@ -12,6 +12,6 @@
       "weight": 0.25,
       "value": 50
     },
-    "description": "Wypity eliksir przywraca 2k4+2 punkty wytrzymałości. Płyn błyszczy i lekko się pieni w fiolce."
+    "description": "Wypita mikstura przywraca 2k4+2 punkty wytrzymałości. Płyn błyszczy i lekko się pieni w fiolce."
   }
 }

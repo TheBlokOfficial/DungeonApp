@@ -72,7 +72,7 @@
             <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="caption muted" Text="Długa etykieta (kolumna 240)" />
                 <StackPanel Width="240">
-                    <ToggleSwitch Content="Pokazuj graczom punkty życia potworów na wspólnym ekranie przy stole" />
+                    <ToggleSwitch Content="Pokazuj graczom punkty wytrzymałości potworów na wspólnym ekranie przy stole" />
                 </StackPanel>
                 <TextBlock Classes="caption muted" Text="Bez etykiety" />
                 <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">

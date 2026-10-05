@@ -25,9 +25,9 @@
     "speed": "9 m",
 
     "damageVulnerabilities": "obuchowe",
-    "damageImmunities": "od trucizny",
+    "damageImmunities": "od trucizn",
     "conditionImmunities": "wyczerpanie, zatrucie",
-    "senses": "widzenie w ciemności 18 m, bierna Percepcja 9",
+    "senses": "widzenie w ciemności 18 m, pasywna Percepcja 9",
     "languages": "rozumie języki, którymi władał za życia, ale nie mówi",
     "challenge": "1/4",
     "xp": 50,
@@ -35,7 +35,7 @@
     "actions": {
       "entries": [
         {
-          "name": "Krótki miecz",
+          "name": "Miecz krótki",
           "text": "Atak bronią w zwarciu: **+4 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **5 (1k6+2)** obrażeń kłutych."
         },
         {

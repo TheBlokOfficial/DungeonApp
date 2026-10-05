@@ -111,7 +111,7 @@
                         <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                             <TextBlock Classes="label" Text="Ukrywanie się w cieniu i skradanie się między namiotami" />
                             <TextBlock Classes="label" Text="Zręczność 14" />
-                            <TextBlock Classes="label" Text="Percepcja bierna w ciemności, bez źródła światła" />
+                            <TextBlock Classes="label" Text="Percepcja pasywna w ciemności, bez źródła światła" />
                         </StackPanel>
                     </Border>
                     <TextBlock Classes="caption muted" Text="surface-section · pusta" />

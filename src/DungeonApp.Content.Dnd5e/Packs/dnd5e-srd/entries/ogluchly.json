@@ -1,0 +1,16 @@
+{
+  "id": "ogluchly",
+  "name": "Ogłuchły",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Nie słyszy i oblewa testy wymagające słuchu.",
+    "icon": "images/conditions/ogluchly.png",
+
+    "rules": {
+      "intro": "Ogłuchła istota nie słyszy i automatycznie ponosi porażkę w każdym teście cechy, który wymaga słuchu.",
+      "entries": []
+    }
+  }
+}

@@ -30,7 +30,7 @@
         <Grid Width="394" HorizontalAlignment="Left"
               ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="17" Note="zbroja płytowa" />
-            <controls:StatTile Grid.Column="1" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
+            <controls:StatTile Grid.Column="1" Label="PW" Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
             <controls:StatTile Grid.Column="2" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="9 m" Note="lot 18 m, pływanie 9 m, wspinaczka 6 m" />
         </Grid>
 
@@ -39,7 +39,7 @@
               ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="12" />
             <controls:StatTile Grid.Column="1" Label="Waga" Value="0,5 kg" />
-            <controls:StatTile Grid.Column="2" Label="PZ" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" IsEnabled="False" />
+            <controls:StatTile Grid.Column="2" Label="PW" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" IsEnabled="False" />
         </Grid>
     </StackPanel>
 </UserControl>

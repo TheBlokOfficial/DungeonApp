@@ -25,7 +25,7 @@
     "speed": "7,5 m",
 
     "skills": "Medycyna +7, Perswazja +3, Religia +4",
-    "senses": "bierna Percepcja 13",
+    "senses": "pasywna Percepcja 13",
     "languages": "dowolne dwa",
     "challenge": "2",
     "xp": 450,
@@ -33,13 +33,13 @@
     "actions": {
       "entries": [
         {
-          "name": "Buzdygan",
+          "name": "Buława",
           "text": "Atak bronią w zwarciu: **+2 do trafienia**, zasięg 1,5 m, jeden cel. Trafienie: **3 (1k6)** obrażeń obuchowych."
         }
       ]
     },
     "spellcasting": {
-      "intro": "Kapłan rzuca czary jak postać 5. poziomu. Jego cechą do rzucania czarów jest Mądrość (**ST 13** rzutu obronnego, **+5 do trafienia** atakami czarami). Ma przygotowane następujące czary kleryka:",
+      "intro": "Kapłan rzuca czary jak postać 5. poziomu. Jego cechą bazową jest Mądrość (**ST 13** rzutu obronnego, **+5 do trafienia** atakami czarami). Ma przygotowane następujące czary kleryka:",
       "entries": [
         {
           "name": "Sztuczki",
@@ -47,17 +47,17 @@
           "text": "światło, święty płomień, taumaturgia"
         },
         {
-          "name": "1. poziom",
+          "name": "1. krąg",
           "note": "4 komórki",
           "text": "leczenie ran, smuga prowadząca, azyl"
         },
         {
-          "name": "2. poziom",
+          "name": "2. krąg",
           "note": "3 komórki",
           "text": "pomniejsze przywrócenie, duchowa broń"
         },
         {
-          "name": "3. poziom",
+          "name": "3. krąg",
           "note": "2 komórki",
           "text": "rozproszenie magii, duchowi strażnicy"
         }

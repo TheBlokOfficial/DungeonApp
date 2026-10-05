@@ -25,7 +25,7 @@
     "speed": "12 m",
 
     "skills": "Percepcja +3, Skradanie się +4",
-    "senses": "bierna Percepcja 13",
+    "senses": "pasywna Percepcja 13",
     "challenge": "1/4",
     "xp": 50,
 
@@ -37,7 +37,7 @@
         },
         {
           "name": "Taktyka stada",
-          "text": "Wilk ma ułatwienie w rzucie ataku przeciwko stworzeniu, jeśli w promieniu 1,5 m od tego stworzenia stoi co najmniej jeden sojusznik wilka, który nie jest obezwładniony."
+          "text": "Wilk ma ułatwienie w teście ataku przeciwko stworzeniu, jeśli w promieniu 1,5 m od tego stworzenia stoi co najmniej jeden sojusznik wilka, który nie jest obezwładniony."
         }
       ]
     },

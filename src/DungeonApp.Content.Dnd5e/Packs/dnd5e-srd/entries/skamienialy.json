@@ -1,0 +1,16 @@
+{
+  "id": "skamienialy",
+  "name": "Skamieniały",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Zamieniona w kamień: obezwładniona i nieświadoma, oblewa rzuty obronne na SIŁ i ZRĘ, ma odporność na wszystkie obrażenia.",
+    "icon": "images/conditions/skamienialy.png",
+
+    "rules": {
+      "intro": "Skamieniała istota zostaje przemieniona — razem z każdym niemagicznym przedmiotem, który ma na sobie albo przy sobie — w stałą, nieożywioną substancję, zwykle kamień. Jej waga rośnie dziesięciokrotnie, a istota przestaje się starzeć.\nIstota jest [[obezwladniony|obezwładniona]], nie może się poruszać ani mówić i nie jest świadoma otoczenia.\nTesty ataku przeciwko istocie mają **ułatwienie**.\nIstota automatycznie ponosi porażkę w rzutach obronnych na Siłę i Zręczność.\nIstota ma **odporność** na wszystkie obrażenia.\nIstota jest niepodatna na trucizny i choroby. Trucizna albo choroba, która już jest w jej organizmie, zostaje wstrzymana, ale nie zneutralizowana.",
+      "entries": []
+    }
+  }
+}

@@ -38,7 +38,7 @@
                                                 IsVisible="{Binding CanEditHitPoints}">
                                         <TextBlock VerticalAlignment="Center"
                                                    Foreground="{DynamicResource DungeonTextMutedBrush}"
-                                                   Text="PZ:" />
+                                                   Text="PW:" />
                                         <NumericUpDown Minimum="0"
                                                        Value="{Binding CurrentHp}" />
                                         <TextBlock VerticalAlignment="Center"
