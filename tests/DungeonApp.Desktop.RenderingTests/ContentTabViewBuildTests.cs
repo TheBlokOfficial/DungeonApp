@@ -1,4 +1,5 @@
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
@@ -23,9 +24,10 @@ public sealed class ContentTabViewBuildTests
 
     private sealed record Sample(string Tier);
 
-    private sealed class FakePresentation : IContentPresentation
+    private sealed class FakePresentation(bool blockFollowsTitle = false) : IContentPresentation
     {
-        public Control CreateCard(Entry entry, EntryPicture picture) => new HeaderLendingCard { Text = entry.Name };
+        public Control CreateCard(Entry entry, EntryPicture picture) =>
+            new HeaderLendingCard { Text = entry.Name, HeaderBlockFollowsTitle = blockFollowsTitle };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
     }
@@ -40,9 +42,11 @@ public sealed class ContentTabViewBuildTests
         public Control HeaderTagsStart { get; } = new WordTag { Content = "Rzadki" };
 
         public Control HeaderBlock { get; } = new StatTile { Label = "Próbka", Value = "1", Note = "dopisek" };
+
+        public bool HeaderBlockFollowsTitle { get; init; }
     }
 
-    private static ContentTabViewModel BuildViewModel(ContentRegistry registry)
+    private static ContentTabViewModel BuildViewModel(ContentRegistry registry, bool blockFollowsTitle = false)
     {
         var profile = new ContentTypeProfile<Sample>(
             SampleType,
@@ -56,7 +60,7 @@ public sealed class ContentTabViewBuildTests
             ],
             sorts: [new ContentSortSpec<Sample>("Poziom", (a, b) => string.CompareOrdinal(a.Tier, b.Tier))]);
         return new ContentTabViewModel(
-            registry, new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation());
+            registry, new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation(blockFollowsTitle));
     }
 
     private static Entry MakeEntry(string id, string name) =>
@@ -115,6 +119,34 @@ public sealed class ContentTabViewBuildTests
         }
 
         Assert.Equal(3, viewModel.Sections.SelectMany(section => section.Rows).Count());
+        window.Close();
+    }
+
+    [AvaloniaTheory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void The_header_block_sits_at_the_visual_foot_or_under_the_title(bool followsTitle)
+    {
+        var viewModel = BuildViewModel(FullRegistry(), followsTitle);
+        var window = Show(viewModel);
+        viewModel.Sections.SelectMany(section => section.Rows).First().SelectCommand.Execute(null);
+        Dispatcher.UIThread.RunJobs();
+
+        var detail = Assert.IsType<ValidContentDetailViewModel>(viewModel.Detail);
+        var visual = detail.HeaderVisual!;
+        var block = detail.HeaderBlock!;
+        var visualBottom = visual.TranslatePoint(new Point(0, visual.Bounds.Height), window)!.Value.Y;
+        var blockBottom = block.TranslatePoint(new Point(0, block.Bounds.Height), window)!.Value.Y;
+
+        if (followsTitle)
+        {
+            Assert.True(blockBottom < visualBottom - 40, $"block ends at {blockBottom}, visual at {visualBottom}");
+        }
+        else
+        {
+            Assert.Equal(visualBottom, blockBottom, 1.0);
+        }
+
         window.Close();
     }
 

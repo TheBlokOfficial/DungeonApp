@@ -57,6 +57,12 @@ public sealed class ValidContentDetailViewModel(
 
     public bool HasHeaderBlock => HeaderBlock is not null;
 
+    /// <summary>
+    /// The title column's row the block stands in: 2, the foot, or 1 - the stretching row right under
+    /// the tags - for a card that keeps it there (<see cref="IEntryCardHeader.HeaderBlockFollowsTitle"/>).
+    /// </summary>
+    public int HeaderBlockRow { get; } = (card as IEntryCardHeader)?.HeaderBlockFollowsTitle == true ? 1 : 2;
+
     /// <summary>The title on one line, trimmed and shown whole under the pointer; otherwise it wraps.</summary>
     public bool IsTitleOnOneLine { get; } = (card as IEntryCardHeader)?.HeaderTitleOnOneLine ?? false;
 }

@@ -56,6 +56,9 @@ public partial class ConditionCardView : UserControl, IEntryCardHeader
     /// <summary>The summary, under the name.</summary>
     public Control HeaderBlock => _summary;
 
+    /// <summary>The summary is about the name, so it reads right under it, not at the frame's foot.</summary>
+    public bool HeaderBlockFollowsTitle => true;
+
     public void SetCondition(StatusCondition condition, EntryPicture picture)
     {
         picture.ShowIn(_icon);
