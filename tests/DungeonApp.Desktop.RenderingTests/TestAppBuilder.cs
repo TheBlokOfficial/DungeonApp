@@ -15,11 +15,12 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// <c>GlobalSidebarViewModel</c> directly.
 /// <para>
 /// Default headless options: layout and styling work, nothing is rasterized to an offscreen bitmap.
+/// Motion is always on, whatever the Windows animation setting of the machine running the tests.
 /// </para>
 /// </summary>
 public static class TestAppBuilder
 {
     public static AppBuilder BuildAvaloniaApp() =>
-        AppBuilder.Configure(() => new App([new EmptyGameSystem()]))
+        AppBuilder.Configure(() => new App([new EmptyGameSystem()]) { FollowsSystemMotion = false })
             .UseHeadless(new AvaloniaHeadlessPlatformOptions());
 }
