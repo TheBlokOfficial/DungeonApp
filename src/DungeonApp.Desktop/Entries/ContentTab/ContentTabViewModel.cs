@@ -24,7 +24,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
     private readonly IReadOnlyDictionary<ContentId, string> _packNames;
     private readonly int _totalCount;
     private readonly bool _rowsShowPictures;
-    private readonly Dictionary<EntryAddress, Avalonia.Media.IImage?> _rowPictures = [];
+    private readonly Dictionary<EntryAddress, Avalonia.Media.DrawingImage?> _rowPictures = [];
 
     private ContentListState _state = new();
     private bool _anyFilterNarrows;
@@ -278,11 +278,20 @@ public sealed partial class ContentTabViewModel : ObservableObject
     /// An entry's picture for its row, read from its file once per tab: the rows are built anew on
     /// every search and filter, and the file is not read again each time.
     /// </summary>
-    private Avalonia.Media.IImage? RowPicture(RegisteredEntry entry)
+    private Avalonia.Media.DrawingImage? RowPicture(RegisteredEntry entry)
     {
         if (!_rowPictures.TryGetValue(entry.Address, out var picture))
         {
-            picture = EntryPicture.Load(_registry, entry).Source;
+            // A row shows only a one-colour shape; a raster picture is too small to read in a row
+            // and is not drawn there (the card shows it), so it is released at once.
+            var source = EntryPicture.Load(_registry, entry).Source;
+            picture = source as Avalonia.Media.DrawingImage;
+
+            if (picture is null)
+            {
+                (source as IDisposable)?.Dispose();
+            }
+
             _rowPictures[entry.Address] = picture;
         }
 
@@ -300,7 +309,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
 
     private ContentRowViewModel BuildRow(
         string name, string? badgeText, Avalonia.Media.IBrush? badgeBrush, bool isBroken, ContentSelectionKey key,
-        Avalonia.Media.IImage? picture = null)
+        Avalonia.Media.DrawingImage? picture = null)
     {
         var row = new ContentRowViewModel(name, badgeText, badgeBrush, isBroken, key, Select, _rowsShowPictures, picture);
         row.IsSelected = _state.Selected == key;

@@ -9,7 +9,8 @@ namespace DungeonApp.Desktop.Controls;
 /// A frame for one picture, in exactly one of three states, chosen by what it is given:
 /// <list type="bullet">
 /// <item><b>picture</b> - <see cref="Source"/> is set: the picture fills the frame, cropped to the
-/// frame's proportions, never stretched out of shape;</item>
+/// frame's proportions, never stretched out of shape (scaled down smoothly, so a large portrait
+/// has no stair-steps);</item>
 /// <item><b>placeholder</b> - no <see cref="Source"/> and no <see cref="Message"/>: <see cref="Icon"/>,
 /// large and dimmed, in the middle;</item>
 /// <item><b>error</b> - no <see cref="Source"/>, a <see cref="Message"/>: the same icon, under it the
@@ -20,9 +21,10 @@ namespace DungeonApp.Desktop.Controls;
 /// from the layout it stands in. The look belongs to the frame's control theme
 /// (Themes/Controls/ImageFrame.axaml).
 /// <para>
-/// A picture that is a one-colour icon (<see cref="SourceIsMask"/>) is not drawn in its own colours:
-/// only its transparency is read, and the theme paints it in an icon colour of its own, so the same
-/// file reads right on any theme.
+/// A <see cref="Source"/> that is a <see cref="DrawingImage"/> is a one-colour shape (a vector icon),
+/// not a picture to fill the frame: it is drawn exactly where and as large as the placeholder icon,
+/// in the same dimmed foreground, so a frame with the entry's own icon and one with the system's
+/// placeholder look alike, and the same file reads right on any theme.
 /// </para>
 /// </summary>
 public sealed class ImageFrame : TemplatedControl
@@ -39,8 +41,9 @@ public sealed class ImageFrame : TemplatedControl
     public static readonly StyledProperty<string?> DetailProperty =
         AvaloniaProperty.Register<ImageFrame, string?>(nameof(Detail));
 
-    public static readonly StyledProperty<bool> SourceIsMaskProperty =
-        AvaloniaProperty.Register<ImageFrame, bool>(nameof(SourceIsMask));
+    /// <summary>What the template's icon place draws: the vector <see cref="Source"/>, else <see cref="Icon"/>.</summary>
+    public static readonly StyledProperty<DrawingImage?> ShownIconProperty =
+        AvaloniaProperty.Register<ImageFrame, DrawingImage?>(nameof(ShownIcon));
 
     public ImageFrame()
     {
@@ -75,21 +78,18 @@ public sealed class ImageFrame : TemplatedControl
         set => SetValue(DetailProperty, value);
     }
 
-    /// <summary>
-    /// Whether <see cref="Source"/> is a one-colour icon: its shape is shown, centred and whole,
-    /// in the theme's icon colour, instead of the picture filling the frame in its own colours.
-    /// </summary>
-    public bool SourceIsMask
+    /// <summary>The drawing the template's icon place shows; for the theme's template, not for callers.</summary>
+    public DrawingImage? ShownIcon
     {
-        get => GetValue(SourceIsMaskProperty);
-        set => SetValue(SourceIsMaskProperty, value);
+        get => GetValue(ShownIconProperty);
+        private set => SetValue(ShownIconProperty, value);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == SourceProperty || change.Property == MessageProperty || change.Property == SourceIsMaskProperty)
+        if (change.Property == SourceProperty || change.Property == MessageProperty || change.Property == IconProperty)
         {
             UpdateState();
         }
@@ -98,8 +98,10 @@ public sealed class ImageFrame : TemplatedControl
     private void UpdateState()
     {
         var hasPicture = Source is not null;
+        var vector = Source as DrawingImage;
         PseudoClasses.Set(":picture", hasPicture);
-        PseudoClasses.Set(":mask", hasPicture && SourceIsMask);
+        PseudoClasses.Set(":vector", vector is not null);
         PseudoClasses.Set(":error", !hasPicture && !string.IsNullOrEmpty(Message));
+        ShownIcon = vector ?? Icon;
     }
 }

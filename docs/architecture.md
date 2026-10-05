@@ -60,11 +60,12 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
 - **Zepsuta treść jest widoczna, nie znika**: wadliwy wpis dostaje powód, a reszta paczki się
   wczytuje. Zepsuty manifest odrzuca całą paczkę z powodem.
 - Obrazek wpisu: pole wskazane przez deskryptor typu (`ImageProperty`); ścieżka względem katalogu
-  paczki, tylko PNG/JPG/WebP. Ścieżka poza paczkę odrzuca wpis; brak pliku pokazuje się na karcie.
+  paczki, tylko PNG/JPG/WebP/SVG. Ścieżka poza paczkę odrzuca wpis; brak pliku pokazuje się na karcie.
   Plik czyta biblioteka przy pokazaniu karty i podaje go karcie gotowy (`EntryPicture`); karta stawia
   ramkę i ikonę zastępczą, ale nie wie, gdzie leży paczka. Obrazek może być ikoną jednobarwną
-  (u stanu): ramka pokazuje wtedy sam kształt w kolorze motywu, a profil typu w zakładce może kazać
-  wierszom listy stawiać tę ikonę przed nazwą.
+  (SVG, u stanu; `SvgIcon` czyta podzbiór: `path` z `viewBox`): ramka rysuje wtedy sam kształt
+  w miejscu ikony zastępczej, tym samym rozmiarem i kolorem, a profil typu w zakładce może kazać
+  wierszom listy stawiać tę ikonę przed nazwą (obrazek rastrowy w wierszu nie jest rysowany).
 - Rejestr (`ContentRegistry`) jest tylko do odczytu. Każdy system wczytuje własny.
 
 ## Kampania i stan

@@ -15,9 +15,10 @@
         the same icon with the message under it (caption role, danger text color - the one thing that
         is wrong) and the detail under that (caption, muted - secondary to the message; wraps even
         inside a path without spaces, at most three lines, then an ellipsis), centered.
-        :mask - a picture that is a one-colour icon (SourceIsMask): its shape, whole (Uniform),
-        centered inside the frame's padding, in the secondary text color - the icon accompanies the
-        name beside it, it does not replace it - whatever color the file itself has.
+        :vector - the picture is a one-colour shape (a DrawingImage): it is not a picture filling the
+        frame but takes the placeholder icon's place - same size, same muted color, centered - so an
+        entry's own icon and the system's placeholder look alike, whatever color the file has.
+        A raster picture is scaled with high-quality interpolation, so a shrunk portrait has no steps.
         No interaction states: takes no focus, ignores the pointer (the cursor is whatever it lies
         on), its text does not select.
     -->
@@ -41,14 +42,10 @@
                             <Image Name="PART_Picture"
                                    Source="{TemplateBinding Source}"
                                    Stretch="UniformToFill"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    IsVisible="False" />
-                            <controls:MaskIcon Name="PART_Mask"
-                                               Margin="{TemplateBinding Padding}"
-                                               Source="{TemplateBinding Source}"
-                                               Foreground="{DynamicResource DungeonTextRegularBrush}"
-                                               IsVisible="False" />
                             <StackPanel Name="PART_Placeholder"
                                         Margin="{TemplateBinding Padding}"
                                         HorizontalAlignment="Stretch"
@@ -58,7 +55,7 @@
                                                          Width="{DynamicResource DungeonImageFrameIconSize}"
                                                          Height="{DynamicResource DungeonImageFrameIconSize}"
                                                          HorizontalAlignment="Center"
-                                                         Source="{TemplateBinding Icon}"
+                                                         Source="{TemplateBinding ShownIcon}"
                                                          Foreground="{TemplateBinding Foreground}" />
                                 <!-- Message and path with no gap between them: one note on two lines. -->
                                 <StackPanel Name="PART_Error"
@@ -90,19 +87,13 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:picture /template/ Image#PART_Picture">
+        <Style Selector="^:picture:not(:vector) /template/ Image#PART_Picture">
             <Setter Property="IsVisible" Value="True" />
         </Style>
-        <Style Selector="^:picture /template/ StackPanel#PART_Placeholder">
+        <Style Selector="^:picture:not(:vector) /template/ StackPanel#PART_Placeholder">
             <Setter Property="IsVisible" Value="False" />
         </Style>
         <Style Selector="^:error /template/ StackPanel#PART_Error">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
-        <Style Selector="^:mask /template/ Image#PART_Picture">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="^:mask /template/ controls|MaskIcon#PART_Mask">
             <Setter Property="IsVisible" Value="True" />
         </Style>
     </ControlTheme>

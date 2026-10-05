@@ -6,7 +6,7 @@
 
   "values": {
     "summary": "Sześć narastających poziomów — od utrudnienia w testach cech do śmierci. Długi odpoczynek z jedzeniem i piciem zdejmuje jeden.",
-    "icon": "images/conditions/wyczerpanie.png",
+    "icon": "images/conditions/wyczerpanie.svg",
 
     "rules": {
       "intro": "Niektóre zdolności i zagrożenia, takie jak głód albo długie przebywanie w skrajnym zimnie lub upale, wywołują wyczerpanie. Wyczerpanie ma sześć poziomów; efekt nakłada jeden lub więcej z nich, zgodnie ze swoim opisem.\nGdy już wyczerpaną istotę dotknie kolejny efekt wywołujący wyczerpanie, jej poziom wyczerpania rośnie o tyle, ile podaje opis efektu.\nIstota podlega skutkom swojego poziomu i wszystkich niższych. Istota na 2. poziomie wyczerpania ma więc zmniejszoną o połowę szybkość i **utrudnienie** w testach cech.\nEfekt, który usuwa wyczerpanie, obniża jego poziom zgodnie ze swoim opisem; gdy poziom spadnie poniżej 1, wyczerpanie znika.\nUkończenie długiego odpoczynku obniża poziom wyczerpania o 1, o ile istota coś zjadła i wypiła.",

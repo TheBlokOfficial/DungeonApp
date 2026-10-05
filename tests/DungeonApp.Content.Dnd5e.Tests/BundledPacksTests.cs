@@ -48,6 +48,6 @@ public sealed class BundledPacksTests
             registry.Entries.Where(entry => EntryImagePath.Declared(entry) is not null),
             entry => Assert.True(File.Exists(EntryImagePath.Locate(pack, entry)), $"{entry.Address}: {EntryImagePath.Declared(entry)}"));
         var prone = Assert.Single(registry.Entries, entry => entry.Address.Entry.Value == "powalony");
-        Assert.Equal("images/conditions/powalony.png", EntryImagePath.Declared(prone));
+        Assert.Equal("images/conditions/powalony.svg", EntryImagePath.Declared(prone));
     }
 }

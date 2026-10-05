@@ -190,6 +190,11 @@ public sealed class ContentTabViewBuildTests
         window.Close();
     }
 
+    /// <summary>The visible icons standing before the rows' names (not the tab's other icons).</summary>
+    private static System.Collections.Generic.List<ForegroundIcon> RowIcons(Window window) =>
+        [.. window.GetVisualDescendants().OfType<ForegroundIcon>()
+            .Where(icon => icon.IsEffectivelyVisible && icon.Parent is Grid grid && grid.Classes.Contains("row-picture"))];
+
     [AvaloniaFact]
     public void A_tab_whose_rows_show_no_picture_keeps_no_place_for_one()
     {
@@ -197,7 +202,7 @@ public sealed class ContentTabViewBuildTests
         var window = Show(viewModel);
 
         Assert.All(viewModel.Sections.SelectMany(section => section.Rows), row => Assert.False(row.HasPictureSlot));
-        Assert.DoesNotContain(window.GetVisualDescendants().OfType<MaskIcon>(), icon => icon.IsEffectivelyVisible);
+        Assert.Empty(RowIcons(window));
         window.Close();
     }
 
@@ -234,14 +239,11 @@ public sealed class ContentTabViewBuildTests
             System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "pack.json"),
                 """{ "formatVersion": 1, "id": "p", "name": "Paczka", "version": { "major": 1, "minor": 0 } }""");
             System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "entries", "a.json"),
-                """{ "id": "a", "name": "Alfa", "template": "test:sample", "templateVersion": 1, "values": { "picture": "ikony/a.png" } }""");
+                """{ "id": "a", "name": "Alfa", "template": "test:sample", "templateVersion": 1, "values": { "picture": "ikony/a.svg" } }""");
             System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "entries", "b.json"),
                 """{ "id": "b", "name": "Beta", "template": "test:sample", "templateVersion": 1, "values": {} }""");
-            using (var asset = Avalonia.Platform.AssetLoader.Open(new System.Uri("avares://DungeonApp.Desktop/Assets/Gallery/sample-mask.png")))
-            using (var file = System.IO.File.Create(System.IO.Path.Combine(packs, "p", "ikony", "a.png")))
-            {
-                asset.CopyTo(file);
-            }
+            System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "ikony", "a.svg"),
+                """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 0h512v512H0z"/></svg>""");
 
             var registry = await new ContentPackLoader(packs, new PicturedCatalog()).LoadAsync();
             var profile = new ContentTypeProfile<object>(SampleType, showsPictureInRow: true);
@@ -255,13 +257,12 @@ public sealed class ContentTabViewBuildTests
             Assert.NotNull(rows[0].Picture);
             Assert.Null(rows[1].Picture);
 
-            var icons = window.GetVisualDescendants().OfType<MaskIcon>().Where(icon => icon.IsEffectivelyVisible).ToList();
+            var icons = RowIcons(window);
             Assert.Equal(2, icons.Count);
             Assert.Single(icons, icon => icon.Source is not null);
             Assert.Single(icons.Select(icon => icon.Bounds.X).Distinct());
 
             window.Close();
-            (rows[0].Picture as System.IDisposable)?.Dispose();
         }
         finally
         {

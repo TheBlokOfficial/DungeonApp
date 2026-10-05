@@ -509,11 +509,6 @@
         <x:Double x:Key="DungeonDetailPictureWidth">150</x:Double>
         <x:Double x:Key="DungeonAbilityCellSize">50</x:Double>
         <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
-        <!-- DetailIconSize - the side of the square frame for a one-colour icon in the header, where
-             a card has an icon instead of a picture: as tall as the title column beside it with one
-             line of title (42), the gap (6) and a line or so of body text under it (20), so the icon
-             stands beside the name and its short note rather than over them. -->
-        <x:Double x:Key="DungeonDetailIconSize">72</x:Double>
         <!-- Header value (controls:StatTile): caption icon 12 px - smaller than an action
              icon (16), because it sits in an 11 px caption. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>

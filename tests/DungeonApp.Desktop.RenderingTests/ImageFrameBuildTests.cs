@@ -35,36 +35,36 @@ public sealed class ImageFrameBuildTests
         var frames = window.GetVisualDescendants().OfType<ImageFrame>().ToList();
         Assert.Equal(8, frames.Count);
         Assert.All(frames, frame => Assert.NotEmpty(frame.GetVisualChildren()));
-        Assert.Equal(3, frames.Count(frame => frame.Source is not null));
+        // Two bitmaps and one vector icon.
+        Assert.Equal(3,frames.Count(frame => frame.Source is not null));
 
         window.Close();
     }
 
     /// <summary>
-    /// A one-colour icon is drawn as its shape in the theme's color, never as the picture itself:
-    /// the picture is hidden and the mask icon shows the same source. Turning the flag off gives the
-    /// plain picture back.
+    /// A vector icon takes the placeholder icon's place - same icon control, same size and
+    /// foreground - and the raster picture stays hidden; without it the placeholder shows the
+    /// frame's own icon again.
     /// </summary>
     [AvaloniaFact]
-    public void A_one_colour_icon_is_shown_as_its_shape_in_the_themes_color()
+    public void A_vector_icon_is_drawn_where_the_placeholder_icon_is()
     {
         var window = Show(new ImagesSection());
-        var frame = window.GetVisualDescendants().OfType<ImageFrame>().Single(candidate => candidate.Name == "SquareMask");
+        var frame = window.GetVisualDescendants().OfType<ImageFrame>().Single(candidate => candidate.Name == "SquareVector");
 
         var picture = frame.GetVisualDescendants().OfType<Image>().Single(image => image.Name == "PART_Picture");
-        var mask = frame.GetVisualDescendants().OfType<MaskIcon>().Single(icon => icon.Name == "PART_Mask");
-        Assert.Contains(":picture", frame.Classes);
-        Assert.Contains(":mask", frame.Classes);
+        var icon = frame.GetVisualDescendants().OfType<ForegroundIcon>().Single(candidate => candidate.Name == "PART_Icon");
+        Assert.Contains(":vector", frame.Classes);
         Assert.False(picture.IsVisible);
-        Assert.True(mask.IsVisible);
-        Assert.Same(frame.Source, mask.Source);
-        Assert.NotNull(mask.Foreground);
+        Assert.True(icon.IsEffectivelyVisible);
+        Assert.Same(frame.Source, icon.Source);
+        Assert.NotSame(frame.Icon, icon.Source);
+        Assert.Same(frame.Foreground, icon.Foreground);
 
-        frame.SourceIsMask = false;
+        frame.Source = null;
         Dispatcher.UIThread.RunJobs();
-        Assert.DoesNotContain(":mask", frame.Classes);
-        Assert.True(picture.IsVisible);
-        Assert.False(mask.IsVisible);
+        Assert.DoesNotContain(":vector", frame.Classes);
+        Assert.Same(frame.Icon, icon.Source);
 
         window.Close();
     }
