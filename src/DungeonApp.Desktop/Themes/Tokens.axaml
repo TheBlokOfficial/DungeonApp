@@ -498,7 +498,7 @@
         <!-- Entry detail grid: everything aligns to three vertical lines - left
              edge, right edge of the header image and start of the title column.
              DetailPictureWidth - header image width (square item image, 3:4
-             monster portrait). Column beside the image must fit a single-line name (42), gap (6), tags
+             portrait). Column beside the image must fit a single-line name (42), gap (6), tags
              (up to 25), two gaps above the header value (12) and the value with note (60) - up to
              145 total; 150 is the smallest round width above that.
              AbilityCellSize - side of a square ability-table cell. Three cells equal image width

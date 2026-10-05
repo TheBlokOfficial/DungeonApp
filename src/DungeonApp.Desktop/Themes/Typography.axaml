@@ -39,7 +39,7 @@
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="LineHeight" Value="32" />
     </Style>
-    <!-- Decorative-font note: short flavour text below content (monster description below its rules).
+    <!-- Decorative-font note: short flavour text below content (an entry's description below its rules).
          Only decorative-font style below 20 - italic footer, so 15 suffices, and the smaller
          size separates it from the rules prose above. -->
     <Style Selector="TextBlock.display-note, SelectableTextBlock.display-note">
