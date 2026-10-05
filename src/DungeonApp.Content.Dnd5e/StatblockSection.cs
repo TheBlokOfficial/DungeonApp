@@ -30,7 +30,7 @@ public sealed record StatblockSection : IJsonOnDeserialized
     /// <summary>
     /// Required even when empty (<c>"entries": []</c> under an introduction alone): a key the reader
     /// filled in by itself would be written back out when an instance's patch is diffed against its
-    /// entry, and would freeze this whole section in the patch.
+    /// entry, and would show up in the patch as a deviation nobody made.
     /// </summary>
     public required IReadOnlyList<StatblockEntry> Entries { get; init; }
 
@@ -51,7 +51,7 @@ public sealed record StatblockSection : IJsonOnDeserialized
 /// <summary>
 /// One named entry of a <see cref="StatblockSection"/>: "Kopyta", "Leczący dotyk" with its note
 /// "3 na dzień", "Bez ograniczeń" with a list of spells. <see cref="Note"/> is a short label the card
-/// shows muted after the name - text the GM reads, never a counter anything spends.
+/// shows muted after the name - text the GM reads.
 /// <para>
 /// <see cref="Name"/> and <see cref="Text"/> are both required and must say something: an entry with
 /// either missing, null or blank is refused when its pack loads.

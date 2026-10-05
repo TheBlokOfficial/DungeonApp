@@ -12,12 +12,9 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
 1. **Treść.** Gotowe: lista z wyszukiwaniem, filtrami i sortowaniem, szczegół wpisu, pole obrazka
    z ramką. Projekt kart jest punktem wyjścia, nie specyfikacją:
    `docs/archive/zadania/zakladki-tresci.md`, sekcja *C. Projekt szkieletu i kart*.
-   - **Aspekty w potworze i przedmiocie** — pogrupowanie pól przed tłumaczeniem SRD; potwór staje
-     się stworzeniem z opcjonalną walką (zakładka „Stworzenia”). Karta wygląda tak samo.
-   - **Wczytanie paczek od nowa** bez restartu; wybór zostaje, jeśli wpis o tym id nadal istnieje.
    - **Stany** (Powalony, Ogłuszony…) jako typ wpisu — przy stole i na ściągawce. Wpis stanu ma
      skrót (jedno–dwa zdania) i ikonę z paczki, bo karta pokazuje stan wierszem: ikona, nazwa,
-     skrót. Wpis potwora może mieć stany domyślne (np. stała niewidzialność). Na istocie stan jest
+     skrót. Wpis stworzenia może mieć stany domyślne (np. stała niewidzialność). Na istocie stan jest
      pozycją listy „Stany i efekty”.
    - **Paczka `dnd5e-srd`: SRD 5.1 po polsku do 5. poziomu postaci** (CC-BY 4.0). Tłumaczy agent
      w tle, typ po typie, gdy rekord i karta typu są gotowe; tu stworzenia do wyzwania 5 i stany,
@@ -25,7 +22,7 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
      pokazuje sam tekst), żeby odnośniki nie wymagały drugiego przejścia. Odległości w metrach (1,5 m
      za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
      Rzadki, bardzo rzadkie → Epicki, legendarne i artefakty → Legendarny. Dziś paczka ma pięć
-     potworów i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
+     stworzeń i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
      zakresem).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
@@ -47,7 +44,7 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
 5. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa
    MG. Zwarty widok istoty (PZ z polem zmiany, lista „Stany i efekty”), karta zostaje do czytania.
    Przełom „Następna tura” z okienkiem bocznym, znaczniki zmian w turze. Kalkulator kości jako
-   osobne okno biurka. Rozstrzygnąć: czy narzędzie rzuca potworom inicjatywę (k20 + mod. ZRĘ
+   osobne okno biurka. Rozstrzygnąć: czy narzędzie rzuca stworzeniom inicjatywę (k20 + mod. ZRĘ
    z aspektu walki, z rozpisaniem, do poprawienia).
 
 **Punkt kontrolny „Pierwsza walka”:** jedna prawdziwa walka poprowadzona w całości z aplikacji.
@@ -89,9 +86,8 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
   po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
-  (kolejność „panele powłoki, potem narzędzia”); „never a timer/counter” w `Gear.cs`, `Monster.cs`,
-  `StatblockSection.cs` wobec liczników i efektów (żyją w narzędziu walki, nie we wpisie).
-- **Dokumenty:** „wartości są płaskie” (`architecture.md`) wobec aspektów; dodatki wobec wariantów.
+  (kolejność „panele powłoki, potem narzędzia”).
+- **Dokumenty:** dodatki wobec wariantów.
 - Punkt 4 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
   pilnuje ich przegląd.
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not
@@ -113,7 +109,7 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   w manuskrypcie: obok ikony z odstępem, pod nią od lewej krawędzi. Nadal jest sekcją.
 - Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
 - Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
-- Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; potwory: typ) — małe,
+- Ikony kategorii na liście treści (przedmioty: broń, zbroja, różdżka…; stworzenia: typ) — małe,
   przygaszone; ta sama ikona zamiast zastępczej w pustym polu obrazka. Kategoria spoza listy dostaje
   ikonę domyślną.
 - Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
@@ -122,8 +118,8 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 ## Po stronie autora
 
 - Przenieść stare kampanie do `Dokumenty\DungeonApp\dnd5e\campaigns\` (stare `Packs`/`Campaigns` nie są
-  czytane) i dopisać potworom pole `group`.
-- Przepisać albo usunąć potwory we własnych paczkach w starym formacie (proza jako zwykły napis) —
+  czytane) i dopisać stworzeniom pole `group`.
+- Przepisać albo usunąć stworzenia we własnych paczkach w starym formacie (proza jako zwykły napis) —
   pokazują się jako odrzucone wpisy.
 
 ## Odłożone, z wyzwalaczem
@@ -144,4 +140,6 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - **Dodatki (warianty zasad)** — pierwszy wariant, który autor chce mieć w konkretnej kampanii.
 - **Dodanie paczki przeciągnięciem do okna** — kolizja nazwy daje odmowę z komunikatem, nigdy
   nadpisanie.
+- **Wczytanie paczek od nowa** — przycisk w zakładce treści i F5; wybór zostaje, jeśli wpis o tym id
+  nadal istnieje. Restart po każdej poprawce paczki zaczyna przeszkadzać przy przygotowaniu sesji.
 - **Pomiar startu** — pierwsze zacięcie zauważone przez autora; wtedy najpierw liczby, potem poprawka.

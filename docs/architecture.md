@@ -41,11 +41,18 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   czyta się jednym przebiegiem do jednego rejestru. Powtórzone id paczki odrzuca obie.
 - **Wpis** to plik JSON: `id`, `name`, `template` (`system:typ`), `templateVersion`, `values`.
   Format koperty jest stały; zmieniają się tylko pola `values` danego typu.
-- **Typ treści** to para: rekord C# (np. `Monster`) i zaprojektowana karta (np. `MonsterCardView`).
+- **Typ treści** to para: rekord C# (np. `Creature`) i zaprojektowana karta (np. `CreatureCardView`).
   Deklaruje go system w swoim katalogu typów (`IContentTypeCatalog`) — to jedyne legalne miejsce
   rozgałęzienia po identyfikatorze typu. `values` deserializuje się wprost w rekord; deserializator
-  (`required`, brak nieznanych kluczy) jest walidatorem. Wartości są płaskie: napisy, liczby, znaczniki.
-- Wyjątek od płaskości: **sekcja prozy** (u potwora cechy szczególne, akcje, rzucanie czarów, akcje
+  (`required`, brak nieznanych kluczy) jest walidatorem. Pole to napis, liczba, znacznik, **aspekt**
+  albo **sekcja prozy**.
+- **Aspekt** to paczka pól jednego znaczenia, zapisana jako obiekt w `values`: walka stworzenia
+  (`combat`: KP, PZ, bieżące PZ, cechy), przedmiot (`item`: waga, wartość), ładunki (`charges`).
+  Każdy to rekord w `Content.Dnd5e`; opcjonalny (karczmarz bez walki) bywa pusty, a narzędzie pyta
+  o aspekt, nie o typ. Aspekt nie ma wyglądu — pola rozmieszcza karta typu. Łatka instancji scala
+  obiekty po kluczu, więc zmiana PZ zapisuje tylko `{"combat":{"currentHp":3}}`, a późniejsza
+  poprawka KP we wpisie dociera do instancji.
+- **Sekcja prozy** (u stworzenia cechy szczególne, akcje, rzucanie czarów, akcje
   dodatkowe, reakcje, akcje legendarne) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
   `intro` i `note` są opcjonalne; sekcja bez wstępu i bez wpisów, wpis bez nazwy albo tekstu, a proza
   zapisana zwykłym napisem odrzucają wpis. W `intro` i `text` `**…**` wyróżnia fragment (premia,
@@ -106,29 +113,29 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości. Karta może
   pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na lewo od nazwy, wartość na końcu
   pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo przed tagami i blok pod tagami
-  (u potwora portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (własny token; trzy komórki
-  tabeli cech po 50 mają tę samą szerokość): kwadrat u przedmiotu, portret 3:4 (150×200) u potwora — tyle, żeby obok zmieściły się nazwa
+  (u stworzenia portret oraz KP, PZ i Szybkość). Obraz ma 150 szerokości (własny token; trzy komórki
+  tabeli cech po 50 mają tę samą szerokość): kwadrat u przedmiotu, portret 3:4 (150×200) u stworzenia — tyle, żeby obok zmieściły się nazwa
   w jednej linii, tagi i blok. Blok stoi dnem równo z dolną krawędzią obrazu; gdy kolumna tytułu
   jest wyższa, nagłówek rośnie, nic nie jest przycinane. Wartość w bloku to zawsze trzy rzędy:
   podpis z ikoną, wartość, dopisek — rząd dopisku stoi także pusty, więc wartości mają równą wysokość.
-  Karta potwora pod nagłówkiem: dwie tabele cech (SIŁ/ZRĘ/KON pod obrazem, INT/MDR/CHA od linii
+  Karta stworzenia pod nagłówkiem: dwie tabele cech (SIŁ/ZRĘ/KON pod obrazem, INT/MDR/CHA od linii
   tytułu), każda cecha w kolumnie — skrót nad kratką, pod nim kwadratowe komórki wartości
   i modyfikatora; pary pól, sekcje prozy zawsze otwarte (nagłówek
   z paskiem akcentu, nazwa wpisu wyróżniona, notatka przygaszona), opis jako stopka. Przedmiot:
-  kategoria w ścieżce (jak grupa potwora), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
+  kategoria w ścieżce (jak grupa stworzenia), w nagłówku kwadratowy obrazek; nazwa w jednej linii,
   ucięta na dowolnej literze wielokropkiem bez spacji, a pod wskaźnikiem pokazana cała w tym samym
   miejscu, na nakładce okna z kryjącym tłem karty, z krótkim przenikaniem (dorysowuje tylko część
   od miejsca ucięcia, litery wspólne zostają tytułu); na ten czas zakrywa wagę i wartość
-  (`RevealingTextBlock`; nazwa potwora się zawija); na końcu linii nazwy waga
+  (`RevealingTextBlock`; nazwa stworzenia się zawija); na końcu linii nazwy waga
   z ikoną odważnika, pod nią mniejsza, przygaszona wartość (obie obowiązkowe, zero też widać); pigułki rzadkość, „magiczny”, podtyp; u dołu kolumny tytułu blok główny KP / Obrażenia / Ładunki
-  (ta sama kontrolka co KP / PZ / Szybkość potwora, tylko wypełnione). Pod nagłówkiem, za
-  separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech potwora): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
-  „Opis” jak sekcje prozy potwora. Rzadkość ma pięć stopni ze skali gier: Pospolity (jasnoszary),
+  (ta sama kontrolka co KP / PZ / Szybkość stworzenia, tylko wypełnione). Pod nagłówkiem, za
+  separatorami (pierwszy w odstępie nagłówka od karty, jak tabele cech stworzenia): pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
+  „Opis” jak sekcje prozy stworzenia. Rzadkość ma pięć stopni ze skali gier: Pospolity (jasnoszary),
   Niepospolity (zielony), Rzadki (niebieski), Epicki (fioletowy), Legendarny (pomarańczowy);
   magiczność to osobny znacznik. Proza karty jest tekstem do zaznaczenia; przeciągnięcie zaczęte
   obok tekstu zaznacza najbliższy blok (`TextSelectionArea`) — zaznaczenia przez kilka bloków naraz
   nie ma.
-- **Zasady wyglądu kart** (przyjęte przez autora na karcie potwora; obowiązują każdą kartę):
+- **Zasady wyglądu kart** (przyjęte przez autora na karcie stworzenia; obowiązują każdą kartę):
   układ stoi na kilku pionowych liniach, do których wyrównuje się wszystko (portret ma szerokość
   bloku pod nim, wartości par zaczynają się na linii nazwy). Sekcje są statyczne — bez rozwijania,
   strzałek i wcięć; to, co puste, się nie pokazuje. Karta nie reaguje na mysz. Bloki z obramowaniem
@@ -138,7 +145,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   Wysokość wiersza wyznacza linia tekstu — plakietka jej nie podnosi. Nazwa wpisu prozy pogrubiona,
   w osobnej linii, z kropką; wyróżnienia w tekście zaznacza paczka (`**…**`). Odcień wartości:
   nasycona barwa przy małej nieprzezroczystości, nie barwa przygaszona. Opis, który jest tylko
-  kolorytem (potwór), to mała stopka; opis niosący zasady (przedmiot) to sekcja prozy „Opis”.
+  kolorytem (stworzenie), to mała stopka; opis niosący zasady (przedmiot) to sekcja prozy „Opis”.
   Wygląd sprawdza się renderem (`tools/render`) przed oddaniem autorowi.
 - **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
   system. Układ zapisuje się per kampania. Dziś jest jedno narzędzie: „Świat kampanii” (instancje, PZ).
@@ -169,11 +176,6 @@ dopiero razem z pierwszym konsumentem.
   (roadmapa).
 - **Katalog świata:** drzewo katalogów w stanie kampanii. Instancja (w rozmowie z autorem: entity)
   leży w katalogu albo w innym entity — tak wygląda ekwipunek. Katalog niesie tylko nazwę.
-- **Aspekty:** rekord typu treści składa się z aspektów systemu (walka, przedmiot, sakiewka,
-  ładunki, miejsca na zaklęcia) i pól własnych typu zamiast płaskiej listy pól; zestaw aspektów typu
-  jest stały, a łatka instancji łata ich wartości. Aspekt nie ma wyglądu — jego pola rozmieszcza
-  karta typu. Rama zna instancję, drzewo i łatkę; aspekty i narzędzia, które je czytają, są systemu. Pierwszy krok to pogrupowanie dzisiejszych pól potwora (KP, PZ, cechy) i przedmiotu
-  (waga, wartość, ładunki), zanim tłumaczenie SRD zwiąże format.
 - **Postacie graczy:** obok kampanii, w katalogu systemu; zmieniane formularzem w aplikacji. Postać
   jest źródłem entity tak jak wpis, więc identyfikator `źródło:id` wskazuje wpis albo postać.
 - **Sloty:** pole, którego wartością jest lista referencji (we wpisie) albo instancji (w kampanii).

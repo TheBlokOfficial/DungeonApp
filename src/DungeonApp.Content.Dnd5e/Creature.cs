@@ -24,7 +24,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// <para>
 /// The six blocks of rules prose are <see cref="StatblockSection"/>s - named entries the pack author
 /// wrote out, so the card can set each name apart without reading it out of the text. An entry that
-/// still holds a section as plain text fails deserialization and is rejected rather than misread.
+/// holds a section as plain text fails deserialization and is rejected rather than misread.
 /// </para>
 /// </summary>
 public sealed record Creature : IJsonOnDeserialized
