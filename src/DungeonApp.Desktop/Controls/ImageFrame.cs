@@ -19,6 +19,11 @@ namespace DungeonApp.Desktop.Controls;
 /// hands it ready data. It has no size of its own: its size and proportions (square, portrait) come
 /// from the layout it stands in. The look belongs to the frame's control theme
 /// (Themes/Controls/ImageFrame.axaml).
+/// <para>
+/// A picture that is a one-colour icon (<see cref="SourceIsMask"/>) is not drawn in its own colours:
+/// only its transparency is read, and the theme paints it in an icon colour of its own, so the same
+/// file reads right on any theme.
+/// </para>
 /// </summary>
 public sealed class ImageFrame : TemplatedControl
 {
@@ -33,6 +38,9 @@ public sealed class ImageFrame : TemplatedControl
 
     public static readonly StyledProperty<string?> DetailProperty =
         AvaloniaProperty.Register<ImageFrame, string?>(nameof(Detail));
+
+    public static readonly StyledProperty<bool> SourceIsMaskProperty =
+        AvaloniaProperty.Register<ImageFrame, bool>(nameof(SourceIsMask));
 
     public ImageFrame()
     {
@@ -67,11 +75,21 @@ public sealed class ImageFrame : TemplatedControl
         set => SetValue(DetailProperty, value);
     }
 
+    /// <summary>
+    /// Whether <see cref="Source"/> is a one-colour icon: its shape is shown, centred and whole,
+    /// in the theme's icon colour, instead of the picture filling the frame in its own colours.
+    /// </summary>
+    public bool SourceIsMask
+    {
+        get => GetValue(SourceIsMaskProperty);
+        set => SetValue(SourceIsMaskProperty, value);
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == SourceProperty || change.Property == MessageProperty)
+        if (change.Property == SourceProperty || change.Property == MessageProperty || change.Property == SourceIsMaskProperty)
         {
             UpdateState();
         }
@@ -81,6 +99,7 @@ public sealed class ImageFrame : TemplatedControl
     {
         var hasPicture = Source is not null;
         PseudoClasses.Set(":picture", hasPicture);
+        PseudoClasses.Set(":mask", hasPicture && SourceIsMask);
         PseudoClasses.Set(":error", !hasPicture && !string.IsNullOrEmpty(Message));
     }
 }

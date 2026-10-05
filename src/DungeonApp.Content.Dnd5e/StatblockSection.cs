@@ -6,8 +6,9 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// One block of a creature's rules prose - its special abilities, actions, spellcasting, bonus
-/// actions, reactions or legendary actions: an optional paragraph that introduces the block, then
-/// its named entries. Every such block has this one shape, so the card draws all six the same way.
+/// actions, reactions or legendary actions - and a condition's rules (<see cref="StatusCondition.Rules"/>):
+/// an optional paragraph that introduces the block, then its named entries. Every such block has this
+/// one shape, so the cards draw them all the same way.
 /// <para>
 /// The structure is the pack author's, not something the application reads out of the prose: the
 /// card never guesses where a name ends or which parenthesis is a usage note. It exists only for

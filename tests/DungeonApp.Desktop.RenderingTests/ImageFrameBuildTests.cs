@@ -14,8 +14,8 @@ namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
 /// Ramka obrazka budowana w oknie: błąd w motywie albo zasób złego typu wywraca kontrolkę dopiero
-/// przy utworzeniu. Stawia próbkę galerii (wszystkie trzy stany w obu proporcjach) i przeprowadza
-/// jedną ramkę przez każdy stan - bez asercji o wyglądzie.
+/// przy utworzeniu. Stawia próbkę galerii (wszystkie trzy stany w obu proporcjach i ikonę
+/// jednobarwną) i przeprowadza jedną ramkę przez każdy stan - bez asercji o wyglądzie.
 /// </summary>
 public sealed class ImageFrameBuildTests
 {
@@ -33,9 +33,38 @@ public sealed class ImageFrameBuildTests
         var window = Show(new ImagesSection());
 
         var frames = window.GetVisualDescendants().OfType<ImageFrame>().ToList();
-        Assert.Equal(7, frames.Count);
+        Assert.Equal(8, frames.Count);
         Assert.All(frames, frame => Assert.NotEmpty(frame.GetVisualChildren()));
-        Assert.Equal(2, frames.Count(frame => frame.Source is not null));
+        Assert.Equal(3, frames.Count(frame => frame.Source is not null));
+
+        window.Close();
+    }
+
+    /// <summary>
+    /// A one-colour icon is drawn as its shape in the theme's color, never as the picture itself:
+    /// the picture is hidden and the mask icon shows the same source. Turning the flag off gives the
+    /// plain picture back.
+    /// </summary>
+    [AvaloniaFact]
+    public void A_one_colour_icon_is_shown_as_its_shape_in_the_themes_color()
+    {
+        var window = Show(new ImagesSection());
+        var frame = window.GetVisualDescendants().OfType<ImageFrame>().Single(candidate => candidate.Name == "SquareMask");
+
+        var picture = frame.GetVisualDescendants().OfType<Image>().Single(image => image.Name == "PART_Picture");
+        var mask = frame.GetVisualDescendants().OfType<MaskIcon>().Single(icon => icon.Name == "PART_Mask");
+        Assert.Contains(":picture", frame.Classes);
+        Assert.Contains(":mask", frame.Classes);
+        Assert.False(picture.IsVisible);
+        Assert.True(mask.IsVisible);
+        Assert.Same(frame.Source, mask.Source);
+        Assert.NotNull(mask.Foreground);
+
+        frame.SourceIsMask = false;
+        Dispatcher.UIThread.RunJobs();
+        Assert.DoesNotContain(":mask", frame.Classes);
+        Assert.True(picture.IsVisible);
+        Assert.False(mask.IsVisible);
 
         window.Close();
     }

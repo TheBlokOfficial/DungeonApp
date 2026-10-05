@@ -23,9 +23,11 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
         Func<TRecord, IReadOnlyList<string>>? tags = null,
         Func<TRecord, ContentBadge>? badge = null,
         IReadOnlyList<ContentValueFilterSpec<TRecord>>? valueFilters = null,
-        IReadOnlyList<ContentSortSpec<TRecord>>? sorts = null)
+        IReadOnlyList<ContentSortSpec<TRecord>>? sorts = null,
+        bool showsPictureInRow = false)
     {
         Type = type;
+        ShowsPictureInRow = showsPictureInRow;
         _category = category?.Value;
         CategoryLabel = category?.Label;
         _tags = tags ?? (_ => []);
@@ -56,6 +58,8 @@ public sealed class ContentTypeProfile<TRecord> : IContentTypeProfile
     public IReadOnlyList<string> Tags(Entry entry) => _tags(entry.Values.Read<TRecord>());
 
     public ContentBadge Badge(Entry entry) => _badge is null ? default : _badge(entry.Values.Read<TRecord>());
+
+    public bool ShowsPictureInRow { get; }
 
     public IReadOnlyList<ContentValueFilterDefinition> ValueFilters { get; }
 

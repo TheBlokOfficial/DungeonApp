@@ -1,0 +1,16 @@
+{
+  "id": "powalony",
+  "name": "Powalony",
+  "template": "dnd5e:condition",
+  "templateVersion": 1,
+
+  "values": {
+    "summary": "Leży na ziemi: porusza się tylko czołgając, a jego ataki mają utrudnienie. Ataki przeciw niemu z odległości do 1,5 m mają ułatwienie, z dalszej — utrudnienie.",
+    "icon": "images/conditions/powalony.png",
+
+    "rules": {
+      "intro": "Jedyny sposób poruszania się powalonej istoty to czołganie, chyba że wstanie i tym samym zakończy ten stan.\nIstota ma **utrudnienie** w rzutach ataku.\nRzut ataku przeciwko istocie ma **ułatwienie**, jeśli atakujący jest w promieniu 1,5 m od niej. W przeciwnym razie rzut ataku ma **utrudnienie**.",
+      "entries": []
+    }
+  }
+}

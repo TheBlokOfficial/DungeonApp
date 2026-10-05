@@ -48,9 +48,11 @@ public sealed class ContentPackLoaderTests : IDisposable
     {
         var creature = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("creature"));
         var gear = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("gear"));
+        var condition = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("condition"));
         var types = FakeContentTypeCatalog.Of(
-            new ContentTypeDescriptor(creature, "Creature", 1),
-            new ContentTypeDescriptor(gear, "Gear", 1));
+            new ContentTypeDescriptor(creature, "Creature", 1, "image"),
+            new ContentTypeDescriptor(gear, "Gear", 1, "image"),
+            new ContentTypeDescriptor(condition, "Condition", 1, "icon"));
 
         var registry = await new ContentPackLoader(
             [RepositoryRoot.PackFixtures, RepositoryRoot.Dnd5eBundledPacks], types).LoadAsync();

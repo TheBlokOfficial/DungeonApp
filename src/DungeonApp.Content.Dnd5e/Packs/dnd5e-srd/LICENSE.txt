@@ -1,3 +1,7 @@
 This work includes material taken from the System Reference Document 5.1 ("SRD 5.1") by Wizards of the Coast LLC and available at https://dnd.wizards.com/resources/systems-reference-document. The SRD 5.1 is licensed under the Creative Commons Attribution 4.0 International License available at https://creativecommons.org/licenses/by/4.0/legalcode.
 
-Changes: the material is translated into Polish and adapted - distances are given in metres and weights in kilograms, item worth is written as a plain number (for now, the SRD price in gold pieces), and some entries are rearranged into different sections. The short descriptions of monsters and items are original to this pack.
+Changes: the material is translated into Polish and adapted - distances are given in metres and weights in kilograms, item worth is written as a plain number (for now, the SRD price in gold pieces), and some entries are rearranged into different sections. The short descriptions of monsters and items and the summaries of conditions are original to this pack.
+
+Icons: the condition icons come from game-icons.net and are licensed under the Creative Commons Attribution 3.0 Unported License available at https://creativecommons.org/licenses/by/3.0/. They are used as published (white on a transparent background, 512 x 512 PNG); the program shows only their shape, in its own color.
+
+- images/conditions/powalony.png - "Half body crawling" by Delapouite (https://game-icons.net/1x1/delapouite/half-body-crawling.html)

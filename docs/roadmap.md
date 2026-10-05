@@ -22,7 +22,8 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
      za 5 stóp). Rzadkość: niemagiczne i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie →
      Rzadki, bardzo rzadkie → Epicki, legendarne i artefakty → Legendarny. Dziś paczka ma pięć
      stworzeń i dziesięć przedmiotów przykładowych (Pierścień regeneracji i Miecz worpalny ponad
-     zakresem).
+     zakresem) oraz jeden stan (Powalony); ikony stanów z game-icons.net (CC BY 3.0, autorzy
+     w `LICENSE.txt` paczki).
 2. **Katalog świata** — okno biurka zamiast testowego „Świata kampanii”. Drzewo w zapisie kampanii:
    jeden katalog główny, podkatalogi, entity (dziś instancja) w katalogach. Katalog to nazwa
    i zawartość, bez opisu. Dodawanie z wyszukiwaniem, kilka sztuk naraz z numeracją („Goblin 1–4”).

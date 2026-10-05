@@ -20,10 +20,11 @@ using DungeonApp.Desktop.Workspace.Panels;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The one place in the application allowed to know what a creature or a piece of gear is. Declares
-/// two content types - <c>creature</c> ("Stworzenie", version 1) and <c>gear</c> ("Przedmiot", version
-/// 1) - builds their cards, and declares this system's tabs: "Stworzenia" and "Przedmioty" in the
-/// System category, "Biurko" in the Campaign category.
+/// The one place in the application allowed to know what a creature, a piece of gear or a condition
+/// is. Declares three content types - <c>creature</c> ("Stworzenie", version 1), <c>gear</c>
+/// ("Przedmiot", version 1) and <c>condition</c> ("Stan", version 1) - builds their cards, and
+/// declares this system's tabs: "Stworzenia", "Przedmioty" and "Stany" in the System category,
+/// "Biurko" in the Campaign category.
 /// <para>
 /// Every content type is one row of a table, looked up by its reference in <see cref="TryGet"/>,
 /// <see cref="TryValidate"/> and <see cref="CreateCard"/>. Knowing what each type is belongs here and
@@ -45,9 +46,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     // duplicating the literal there instead would let the two silently drift.
     internal const string CreatureTypeId = "creature";
     private const string GearTypeId = "gear";
+    private const string ConditionTypeId = "condition";
 
     /// <summary>The JSON name of <see cref="Creature.Image"/> and <see cref="Gear.Image"/>.</summary>
     private const string ImagePropertyName = "image";
+
+    /// <summary>The JSON name of <see cref="StatusCondition.Icon"/> - a condition's picture is its icon.</summary>
+    private const string IconPropertyName = "icon";
 
     // Public, not internal: DungeonApp.App/Program.cs - the one place allowed to name a system by
     // name - is a separate assembly, and reads this to compute this system's packs directory from
@@ -151,7 +156,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             card.SetGear(gear, picture);
             return card;
         });
-        _contentTypes = new[] { creature, gear }.ToDictionary(type => type.Descriptor.Reference);
+        var condition = Register<StatusCondition>(ConditionTypeId, "Stan", version: 1, (condition, picture) =>
+        {
+            var card = new ConditionCardView();
+            card.SetCondition(condition, picture);
+            return card;
+        }, IconPropertyName);
+        _contentTypes = new[] { creature, gear, condition }.ToDictionary(type => type.Descriptor.Reference);
 
         _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPaths, this));
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
@@ -161,6 +172,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         [
             ("dnd5e.creatures", "DungeonIconSkull", BuildCreatureContentTab(creature.Descriptor.Reference)),
             ("dnd5e.gear", "DungeonIconBackpack", BuildGearContentTab(gear.Descriptor.Reference)),
+            ("dnd5e.conditions", "DungeonIconZap", BuildConditionContentTab(condition.Descriptor.Reference)),
         ];
         ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
         SystemTabs =
@@ -189,7 +201,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
 
     /// <summary>
-    /// This system's two content tabs - "Stworzenia" and "Przedmioty" - as data: a title and the content
+    /// This system's content tabs - "Stworzenia", "Przedmioty" and "Stany" - as data: a title and the content
     /// type profile(s) that fill it. <see cref="SystemTabs"/> builds each tab's view from one of these.
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
@@ -263,14 +275,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         RarityColorKeys.TryGetValue(rarity, out var colorKey) ? RarityBrushes.GetValueOrDefault(colorKey) : null;
 
     /// <summary>
-    /// One row of the content-type table. Every type declares "image" (<see cref="Creature.Image"/>,
-    /// <see cref="Gear.Image"/>) as its picture, so the loader checks its path at load time without
-    /// knowing what the type is, and every card stands a frame for it.
+    /// One row of the content-type table. Every type declares a picture - "image" for a creature and
+    /// an item (<see cref="Creature.Image"/>, <see cref="Gear.Image"/>), "icon" for a condition
+    /// (<see cref="StatusCondition.Icon"/>) - so the loader checks its path at load time without knowing
+    /// what the type is, and every card stands a frame for it.
     /// </summary>
     private ContentTypeRegistration Register<TRecord>(
-        string typeId, string name, int version, Func<TRecord, EntryPicture, Control> createCard) =>
+        string typeId, string name, int version, Func<TRecord, EntryPicture, Control> createCard,
+        string imageProperty = ImagePropertyName) =>
         new(
-            new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(typeId)), name, version, ImagePropertyName),
+            new ContentTypeDescriptor(new ContentTypeReference(ContentSetId, ContentId.Create(typeId)), name, version, imageProperty),
             values => values.Read<TRecord>(),
             (values, picture) => createCard(values.Read<TRecord>(), picture));
 
@@ -353,6 +367,18 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             ]);
 
         return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");
+    }
+
+    /// <summary>
+    /// "Stany": no category, no tags, no badge, no filters and no sorts beyond the library's own by
+    /// name - a short list the GM finds a condition in by its name and its icon, which every row shows
+    /// before the name.
+    /// </summary>
+    private static ContentTabDefinition BuildConditionContentTab(ContentTypeReference condition)
+    {
+        var profile = new ContentTypeProfile<StatusCondition>(condition, showsPictureInRow: true);
+
+        return new ContentTabDefinition("Stany", [profile], "Żadna paczka nie ma jeszcze stanów.");
     }
 
     /// <summary>

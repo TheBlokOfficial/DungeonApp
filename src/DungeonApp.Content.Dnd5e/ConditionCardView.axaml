@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
+             x:Class="DungeonApp.Content.Dnd5e.ConditionCardView">
+
+    <!-- The condition card. The icon's square frame and the summary under the name are lent to the
+         detail header (ConditionCardView.axaml.cs); the card itself is the rules as one prose section
+         ("Zasady", like the creature's sections), headed by a line as every part of the other cards
+         is - the line takes no margin of its own, the rhythm of a .section separator. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <Separator />
+        <controls:ProseSectionView x:Name="RulesSection" Title="Zasady" />
+    </StackPanel>
+</UserControl>

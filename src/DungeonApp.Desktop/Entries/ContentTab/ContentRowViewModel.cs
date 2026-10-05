@@ -23,9 +23,13 @@ public sealed partial class ContentRowViewModel : ObservableObject
         IBrush? badgeBrush,
         bool isBroken,
         ContentSelectionKey key,
-        Action<ContentSelectionKey> select)
+        Action<ContentSelectionKey> select,
+        bool hasPictureSlot = false,
+        IImage? picture = null)
     {
         Name = name;
+        HasPictureSlot = hasPictureSlot;
+        Picture = picture;
         BadgeText = badgeText;
         BadgeBrush = badgeBrush;
         IsBroken = isBroken;
@@ -37,6 +41,16 @@ public sealed partial class ContentRowViewModel : ObservableObject
     internal ContentSelectionKey Key { get; }
 
     public string Name { get; }
+
+    /// <summary>
+    /// Whether the row keeps a place for a small picture before the name - in a tab whose content
+    /// types show their entries' pictures in rows (<see cref="IContentTypeProfile.ShowsPictureInRow"/>),
+    /// every row keeps it, with a picture or without, so the names stand in one column.
+    /// </summary>
+    public bool HasPictureSlot { get; }
+
+    /// <summary>The entry's one-colour picture for that place; null - the place stays empty.</summary>
+    public IImage? Picture { get; }
 
     /// <summary>Null for a row with nothing to show on its right side (never an empty string).</summary>
     public string? BadgeText { get; }

@@ -189,4 +189,83 @@ public sealed class ContentTabViewBuildTests
         Assert.True(viewModel.HasNoEntries);
         window.Close();
     }
+
+    [AvaloniaFact]
+    public void A_tab_whose_rows_show_no_picture_keeps_no_place_for_one()
+    {
+        var viewModel = BuildViewModel(FullRegistry());
+        var window = Show(viewModel);
+
+        Assert.All(viewModel.Sections.SelectMany(section => section.Rows), row => Assert.False(row.HasPictureSlot));
+        Assert.DoesNotContain(window.GetVisualDescendants().OfType<MaskIcon>(), icon => icon.IsEffectivelyVisible);
+        window.Close();
+    }
+
+    private sealed class PicturedCatalog : IContentTypeCatalog
+    {
+        public bool HasSet(ContentId set) => set == TestSet;
+
+        public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)
+        {
+            descriptor = new ContentTypeDescriptor(SampleType, "Sample", 1, "picture");
+            return reference == SampleType;
+        }
+
+        public bool TryValidate(ContentTypeReference reference, ContentValues values, out string? error)
+        {
+            error = null;
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// A type that shows its pictures in rows: every row keeps the place before its name - the entry
+    /// with an icon shows it there, the one without leaves it empty, so the names stand in one column.
+    /// The icon is read from the pack with the real decoder.
+    /// </summary>
+    [AvaloniaFact]
+    public async System.Threading.Tasks.Task A_tab_whose_rows_show_pictures_puts_each_icon_before_its_name()
+    {
+        var packs = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"dungeonapp-row-pictures-{System.Guid.NewGuid():N}");
+        try
+        {
+            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(packs, "p", "entries"));
+            System.IO.Directory.CreateDirectory(System.IO.Path.Combine(packs, "p", "ikony"));
+            System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "pack.json"),
+                """{ "formatVersion": 1, "id": "p", "name": "Paczka", "version": { "major": 1, "minor": 0 } }""");
+            System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "entries", "a.json"),
+                """{ "id": "a", "name": "Alfa", "template": "test:sample", "templateVersion": 1, "values": { "picture": "ikony/a.png" } }""");
+            System.IO.File.WriteAllText(System.IO.Path.Combine(packs, "p", "entries", "b.json"),
+                """{ "id": "b", "name": "Beta", "template": "test:sample", "templateVersion": 1, "values": {} }""");
+            using (var asset = Avalonia.Platform.AssetLoader.Open(new System.Uri("avares://DungeonApp.Desktop/Assets/Gallery/sample-mask.png")))
+            using (var file = System.IO.File.Create(System.IO.Path.Combine(packs, "p", "ikony", "a.png")))
+            {
+                asset.CopyTo(file);
+            }
+
+            var registry = await new ContentPackLoader(packs, new PicturedCatalog()).LoadAsync();
+            var profile = new ContentTypeProfile<object>(SampleType, showsPictureInRow: true);
+            var viewModel = new ContentTabViewModel(
+                registry, new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation());
+            var window = Show(viewModel);
+
+            var rows = viewModel.Sections.SelectMany(section => section.Rows).ToList();
+            Assert.Equal(["Alfa", "Beta"], rows.Select(row => row.Name));
+            Assert.All(rows, row => Assert.True(row.HasPictureSlot));
+            Assert.NotNull(rows[0].Picture);
+            Assert.Null(rows[1].Picture);
+
+            var icons = window.GetVisualDescendants().OfType<MaskIcon>().Where(icon => icon.IsEffectivelyVisible).ToList();
+            Assert.Equal(2, icons.Count);
+            Assert.Single(icons, icon => icon.Source is not null);
+            Assert.Single(icons.Select(icon => icon.Bounds.X).Distinct());
+
+            window.Close();
+            (rows[0].Picture as System.IDisposable)?.Dispose();
+        }
+        finally
+        {
+            System.IO.Directory.Delete(packs, recursive: true);
+        }
+    }
 }
