@@ -82,14 +82,14 @@ class Program
 
         var layoutStore = new WorkspaceLayoutStore(appDataDirectory);
 
-        // Paczki treści są dokumentem użytkownika tak samo jak kampanie - obok, nie pod danymi
-        // aplikacji. Paczka należy do systemu, w którego katalogu leży: SystemDirectories wylicza
-        // ten sam układ ramy dla kampanii i paczek, podany tu jednym identyfikatorem, którym ten
-        // system przedstawia się ramie (Dnd5eSystem.IdValue), zamiast wpisywać "dnd5e" tu drugi raz.
+        // Content packs are user documents just like campaigns, stored alongside them rather than
+        // under application data. A pack belongs to the system whose directory contains it:
+        // SystemDirectories computes the shared campaign and pack layout from the id this system
+        // presents to the frame (Dnd5eSystem.IdValue), avoiding a second literal "dnd5e" here.
         //
-        // Drugie źródło to paczki dostarczane z programem - ten sam układ <system>\packs\, tylko pod
-        // katalogiem programu (AppContext.BaseDirectory), tylko do odczytu. System dostaje obie
-        // ścieżki jedną listą i czyta je jednym skanem do jednego rejestru, nie wiedząc, która skąd.
+        // The other source is bundled packs: the same <system>\packs\ layout, read-only under the
+        // program directory (AppContext.BaseDirectory). The system receives both paths as one
+        // list and scans them into one registry without knowing which source each comes from.
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var dnd5e = SystemId.Create(Dnd5eSystem.IdValue);
         string[] packsPaths =
