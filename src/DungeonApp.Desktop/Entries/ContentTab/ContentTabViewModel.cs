@@ -23,6 +23,8 @@ public sealed partial class ContentTabViewModel : ObservableObject
     private readonly IReadOnlyDictionary<ContentTypeReference, IContentTypeProfile> _profilesByType;
     private readonly IReadOnlyDictionary<ContentId, string> _packNames;
     private readonly int _totalCount;
+    private readonly bool _rowsShowPictures;
+    private readonly Dictionary<EntryAddress, Avalonia.Media.IImage?> _rowPictures = [];
 
     private ContentListState _state = new();
     private bool _anyFilterNarrows;
@@ -42,6 +44,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
         _registry = registry;
         _presentation = presentation;
         _profilesByType = tab.ContentTypes.ToDictionary(profile => profile.Type);
+        _rowsShowPictures = tab.ContentTypes.Any(profile => profile.ShowsPictureInRow);
         _packNames = registry.Packs.ToDictionary(pack => pack.Id, pack => pack.Name);
         _model = new ContentListModel(registry, tab, allKnownTypes);
         EmptyText = tab.EmptyText ?? "Żadna paczka nie ma jeszcze wpisów tego rodzaju.";
@@ -266,8 +269,24 @@ public sealed partial class ContentTabViewModel : ObservableObject
         var badge = profile.Badge(entry.Entry);
         var badgeText = badge.Text is { Length: > 0 } text ? text : null;
         var badgeBrush = badge.ColorKey is { } colorKey ? _presentation.ResolveBadgeBrush(colorKey) : null;
+        var picture = profile.ShowsPictureInRow ? RowPicture(entry) : null;
 
-        return BuildRow(entry.Entry.Name, badgeText, badgeBrush, isBroken: false, new EntrySelectionKey(entry.Address));
+        return BuildRow(entry.Entry.Name, badgeText, badgeBrush, isBroken: false, new EntrySelectionKey(entry.Address), picture);
+    }
+
+    /// <summary>
+    /// An entry's picture for its row, read from its file once per tab: the rows are built anew on
+    /// every search and filter, and the file is not read again each time.
+    /// </summary>
+    private Avalonia.Media.IImage? RowPicture(RegisteredEntry entry)
+    {
+        if (!_rowPictures.TryGetValue(entry.Address, out var picture))
+        {
+            picture = EntryPicture.Load(_registry, entry).Source;
+            _rowPictures[entry.Address] = picture;
+        }
+
+        return picture;
     }
 
     private ContentRowViewModel BuildBrokenRow(ContentBrokenRow row)
@@ -280,9 +299,10 @@ public sealed partial class ContentTabViewModel : ObservableObject
     }
 
     private ContentRowViewModel BuildRow(
-        string name, string? badgeText, Avalonia.Media.IBrush? badgeBrush, bool isBroken, ContentSelectionKey key)
+        string name, string? badgeText, Avalonia.Media.IBrush? badgeBrush, bool isBroken, ContentSelectionKey key,
+        Avalonia.Media.IImage? picture = null)
     {
-        var row = new ContentRowViewModel(name, badgeText, badgeBrush, isBroken, key, Select);
+        var row = new ContentRowViewModel(name, badgeText, badgeBrush, isBroken, key, Select, _rowsShowPictures, picture);
         row.IsSelected = _state.Selected == key;
 
         return row;

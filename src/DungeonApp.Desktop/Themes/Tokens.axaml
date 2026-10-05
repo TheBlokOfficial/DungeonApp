@@ -454,6 +454,9 @@
         <!-- Wiersz listy (ListBoxItem): gęściej niż kontrolka (36) - lista to wiele pozycji jedna pod
              drugą, a wiersz niesie jedną linię tekstu 13 px. -->
         <x:Double x:Key="DungeonListRowHeight">32</x:Double>
+        <!-- ListRowIconSize - an entry's own icon before its name in a list row: about as tall as the
+             row's line of 13 px text (20), so it reads as part of the line, not as a picture. -->
+        <x:Double x:Key="DungeonListRowIconSize">18</x:Double>
         <!-- Podświetlenie wiersza listy (najechanie, wybrany; ListBoxItem, ComboBoxItem, wiersze
              DropDownPicker) jest o 1 px węższe z góry i z dołu niż wiersz: sąsiednie podświetlenia
              dzieli 2 px odstępu zamiast stykania się zaokrąglonymi rogami; wiersz dalej zajmuje
@@ -506,6 +509,11 @@
         <x:Double x:Key="DungeonDetailPictureWidth">150</x:Double>
         <x:Double x:Key="DungeonAbilityCellSize">50</x:Double>
         <x:Double x:Key="DungeonDetailColumnGap">16</x:Double>
+        <!-- DetailIconSize - the side of the square frame for a one-colour icon in the header, where
+             a card has an icon instead of a picture: as tall as the title column beside it with one
+             line of title (42), the gap (6) and a line or so of body text under it (20), so the icon
+             stands beside the name and its short note rather than over them. -->
+        <x:Double x:Key="DungeonDetailIconSize">72</x:Double>
         <!-- Wartość nagłówkowa (controls:StatTile): ikona przy podpisie 12 px - mniejsza niż ikona
              akcji (16), bo stoi w podpisie 11 px. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>

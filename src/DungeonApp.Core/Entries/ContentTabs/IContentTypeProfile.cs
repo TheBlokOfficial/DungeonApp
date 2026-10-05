@@ -31,6 +31,12 @@ public interface IContentTypeProfile
     /// <summary>The entry's row badge.</summary>
     ContentBadge Badge(Entry entry);
 
+    /// <summary>
+    /// Whether a row of this content type shows the entry's picture (<see cref="ContentTypeDescriptor.ImageProperty"/>),
+    /// small, before the name - for a type whose picture is an icon the GM tells entries apart by.
+    /// </summary>
+    bool ShowsPictureInRow { get; }
+
     /// <summary>Zero or more filterable value dimensions this content type offers.</summary>
     IReadOnlyList<ContentValueFilterDefinition> ValueFilters { get; }
 

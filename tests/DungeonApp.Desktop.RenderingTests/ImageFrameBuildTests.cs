@@ -41,23 +41,24 @@ public sealed class ImageFrameBuildTests
     }
 
     /// <summary>
-    /// A one-colour icon is drawn as the shape of a fill in the theme's color, never as the picture
-    /// itself: the picture is hidden and the fill carries the picture as its opacity mask. Turning
-    /// the flag off gives the plain picture back.
+    /// A one-colour icon is drawn as its shape in the theme's color, never as the picture itself:
+    /// the picture is hidden and the mask icon shows the same source. Turning the flag off gives the
+    /// plain picture back.
     /// </summary>
     [AvaloniaFact]
-    public void A_one_colour_icon_is_shown_as_a_mask_over_the_themes_fill()
+    public void A_one_colour_icon_is_shown_as_its_shape_in_the_themes_color()
     {
         var window = Show(new ImagesSection());
         var frame = window.GetVisualDescendants().OfType<ImageFrame>().Single(candidate => candidate.Name == "SquareMask");
 
         var picture = frame.GetVisualDescendants().OfType<Image>().Single(image => image.Name == "PART_Picture");
-        var mask = frame.GetVisualDescendants().OfType<Border>().Single(border => border.Name == "PART_Mask");
+        var mask = frame.GetVisualDescendants().OfType<MaskIcon>().Single(icon => icon.Name == "PART_Mask");
         Assert.Contains(":picture", frame.Classes);
         Assert.Contains(":mask", frame.Classes);
         Assert.False(picture.IsVisible);
         Assert.True(mask.IsVisible);
-        Assert.Same(frame.Source, Assert.IsType<Avalonia.Media.ImageBrush>(mask.OpacityMask).Source);
+        Assert.Same(frame.Source, mask.Source);
+        Assert.NotNull(mask.Foreground);
 
         frame.SourceIsMask = false;
         Dispatcher.UIThread.RunJobs();

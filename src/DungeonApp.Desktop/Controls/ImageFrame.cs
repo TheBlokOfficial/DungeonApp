@@ -42,8 +42,6 @@ public sealed class ImageFrame : TemplatedControl
     public static readonly StyledProperty<bool> SourceIsMaskProperty =
         AvaloniaProperty.Register<ImageFrame, bool>(nameof(SourceIsMask));
 
-    private Border? _mask;
-
     public ImageFrame()
     {
         UpdateState();
@@ -87,14 +85,6 @@ public sealed class ImageFrame : TemplatedControl
         set => SetValue(SourceIsMaskProperty, value);
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-
-        _mask = e.NameScope.Find<Border>("PART_Mask");
-        UpdateMask();
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -102,7 +92,6 @@ public sealed class ImageFrame : TemplatedControl
         if (change.Property == SourceProperty || change.Property == MessageProperty || change.Property == SourceIsMaskProperty)
         {
             UpdateState();
-            UpdateMask();
         }
     }
 
@@ -112,23 +101,5 @@ public sealed class ImageFrame : TemplatedControl
         PseudoClasses.Set(":picture", hasPicture);
         PseudoClasses.Set(":mask", hasPicture && SourceIsMask);
         PseudoClasses.Set(":error", !hasPicture && !string.IsNullOrEmpty(Message));
-    }
-
-    /// <summary>
-    /// The icon's shape cuts the theme's colour out of a plain fill: the picture becomes the fill's
-    /// opacity mask. Set from code because the mask takes a brush source, which a picture handed to
-    /// <see cref="Source"/> is only when it is a bitmap; any other picture gives no shape, so the fill
-    /// stays hidden rather than painting the whole frame.
-    /// </summary>
-    private void UpdateMask()
-    {
-        if (_mask is null)
-        {
-            return;
-        }
-
-        _mask.OpacityMask = Source is IImageBrushSource shape
-            ? new ImageBrush(shape) { Stretch = Stretch.Uniform }
-            : Brushes.Transparent;
     }
 }

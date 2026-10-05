@@ -35,18 +35,31 @@
                         Command="{Binding SelectCommand}"
                         ToolTip.Tip="{Binding Name}">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
-                    <TextBlock Grid.Column="0" Classes="body row-name"
-                               Text="{Binding Name}"
-                               IsVisible="{Binding !IsBroken}"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource DungeonTextRegularBrush}" />
-                    <TextBlock Grid.Column="0" Classes="body row-name"
-                               Text="{Binding Name}"
-                               IsVisible="{Binding IsBroken}"
-                               VerticalAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
-                               Foreground="{DynamicResource DungeonDangerTextBrush}" />
+                    <!-- The entry's own one-colour icon before the name, muted like the row's metadata,
+                         when the tab's types show one; the place stays when an entry has none, so the
+                         names stand in one column. Without the place there is no gap either
+                         (Grid.row-picture), and the name starts where it always does. -->
+                    <Grid Grid.Column="0" Classes="row-picture" Classes.with-picture="{Binding HasPictureSlot}"
+                          ColumnDefinitions="Auto,*">
+                        <dc:MaskIcon IsVisible="{Binding HasPictureSlot}"
+                                     Width="{DynamicResource DungeonListRowIconSize}"
+                                     Height="{DynamicResource DungeonListRowIconSize}"
+                                     VerticalAlignment="Center"
+                                     Source="{Binding Picture}"
+                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        <TextBlock Grid.Column="1" Classes="body row-name"
+                                   Text="{Binding Name}"
+                                   IsVisible="{Binding !IsBroken}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                        <TextBlock Grid.Column="1" Classes="body row-name"
+                                   Text="{Binding Name}"
+                                   IsVisible="{Binding IsBroken}"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource DungeonDangerTextBrush}" />
+                    </Grid>
 
                     <!-- Odznaka bez koloru (wyzwanie): zwykły tekst krojem liczb, przygaszony. -->
                     <TextBlock Grid.Column="1" Classes="mono muted"
@@ -80,6 +93,9 @@
         </Style>
         <Style Selector="dc|ListRow:selected TextBlock.row-name">
             <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="Grid.row-picture.with-picture">
+            <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingSm}" />
         </Style>
         <!-- Podpis wyłączonego filtra przygasa razem z polem (ta sama przezroczystość wyłączenia). -->
         <Style Selector="TextBlock.filter-label:disabled">

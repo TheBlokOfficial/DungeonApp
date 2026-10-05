@@ -44,12 +44,11 @@
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
                                    IsVisible="False" />
-                            <!-- The one-colour icon: a fill in the icon colour, cut to the picture's
-                                 shape by its opacity mask (set by the frame itself). -->
-                            <Border Name="PART_Mask"
-                                    Margin="{TemplateBinding Padding}"
-                                    Background="{DynamicResource DungeonTextRegularBrush}"
-                                    IsVisible="False" />
+                            <controls:MaskIcon Name="PART_Mask"
+                                               Margin="{TemplateBinding Padding}"
+                                               Source="{TemplateBinding Source}"
+                                               Foreground="{DynamicResource DungeonTextRegularBrush}"
+                                               IsVisible="False" />
                             <StackPanel Name="PART_Placeholder"
                                         Margin="{TemplateBinding Padding}"
                                         HorizontalAlignment="Stretch"
@@ -103,7 +102,7 @@
         <Style Selector="^:mask /template/ Image#PART_Picture">
             <Setter Property="IsVisible" Value="False" />
         </Style>
-        <Style Selector="^:mask /template/ Border#PART_Mask">
+        <Style Selector="^:mask /template/ controls|MaskIcon#PART_Mask">
             <Setter Property="IsVisible" Value="True" />
         </Style>
     </ControlTheme>
