@@ -41,5 +41,13 @@ public sealed class BundledPacksTests
         // shipped as a broken row.
         Assert.NotEmpty(registry.Entries);
         Assert.All(registry.Entries, entry => Assert.Null(entry.Unresolved));
+
+        // Every picture an entry names is copied with the pack - a missing one would show as an
+        // error in its frame, not as a rejected entry.
+        Assert.All(
+            registry.Entries.Where(entry => EntryImagePath.Declared(entry) is not null),
+            entry => Assert.True(File.Exists(EntryImagePath.Locate(pack, entry)), $"{entry.Address}: {EntryImagePath.Declared(entry)}"));
+        var prone = Assert.Single(registry.Entries, entry => entry.Address.Entry.Value == "powalony");
+        Assert.Equal("images/conditions/powalony.png", EntryImagePath.Declared(prone));
     }
 }

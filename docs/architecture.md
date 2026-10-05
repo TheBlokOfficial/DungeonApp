@@ -53,7 +53,7 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
   obiekty po kluczu, więc zmiana PZ zapisuje tylko `{"combat":{"currentHp":3}}`, a późniejsza
   poprawka KP we wpisie dociera do instancji.
 - **Sekcja prozy** (u stworzenia cechy szczególne, akcje, rzucanie czarów, akcje
-  dodatkowe, reakcje, akcje legendarne) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
+  dodatkowe, reakcje, akcje legendarne; u stanu zasady) to `{ "intro": "…", "entries": [{ "name", "note", "text" }] }`.
   `intro` i `note` są opcjonalne; sekcja bez wstępu i bez wpisów, wpis bez nazwy albo tekstu, a proza
   zapisana zwykłym napisem odrzucają wpis. W `intro` i `text` `**…**` wyróżnia fragment (premia,
   obrażenia, ST). Strukturę pisze autor paczki — karta niczego nie wyczytuje z tekstu i nic jej nie liczy.
@@ -62,7 +62,9 @@ w wymienialnym projekcie. Pole dostaje strukturę, gdy czyta je księga albo prz
 - Obrazek wpisu: pole wskazane przez deskryptor typu (`ImageProperty`); ścieżka względem katalogu
   paczki, tylko PNG/JPG/WebP. Ścieżka poza paczkę odrzuca wpis; brak pliku pokazuje się na karcie.
   Plik czyta biblioteka przy pokazaniu karty i podaje go karcie gotowy (`EntryPicture`); karta stawia
-  ramkę i ikonę zastępczą, ale nie wie, gdzie leży paczka.
+  ramkę i ikonę zastępczą, ale nie wie, gdzie leży paczka. Obrazek może być ikoną jednobarwną
+  (u stanu): ramka pokazuje wtedy sam kształt w kolorze motywu, a profil typu w zakładce może kazać
+  wierszom listy stawiać tę ikonę przed nazwą.
 - Rejestr (`ContentRegistry`) jest tylko do odczytu. Każdy system wczytuje własny.
 
 ## Kampania i stan

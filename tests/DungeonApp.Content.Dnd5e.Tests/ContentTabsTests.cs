@@ -7,8 +7,8 @@ using DungeonApp.Desktop.Workspace.Layout;
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// The two content tab definitions this system declares as data, tested as data: what "Stworzenia" and
-/// "Przedmioty" read off their own records, and the "Wyzwanie"/"Rzadkość" option orders.
+/// The content tab definitions this system declares as data, tested as data: what "Stworzenia",
+/// "Przedmioty" and "Stany" read off their own records, and the "Wyzwanie"/"Rzadkość" option orders.
 /// </summary>
 public sealed class ContentTabsTests
 {
@@ -21,6 +21,9 @@ public sealed class ContentTabsTests
 
     private static IContentTypeProfile GearProfile() =>
         Dnd5e.ContentTabDefinitions.Single(tab => tab.Title == "Przedmioty").ContentTypes.Single();
+
+    private static IContentTypeProfile ConditionProfile() =>
+        Dnd5e.ContentTabDefinitions.Single(tab => tab.Title == "Stany").ContentTypes.Single();
 
     private static Entry CreatureEntry(string challenge, string size = "Mały", string type = "goblinoid", string alignment = "chaotyczne zło", string? group = null)
     {
@@ -53,13 +56,14 @@ public sealed class ContentTabsTests
     }
 
     // -----------------------------------------------------------------------------------------
-    // Declarations: two tabs.
+    // Declarations: three tabs.
     // -----------------------------------------------------------------------------------------
 
     [Fact]
-    public void The_system_declares_exactly_two_content_tabs_named_for_their_content()
+    public void The_system_declares_exactly_three_content_tabs_named_for_their_content()
     {
-        Assert.Equal(["Stworzenia", "Przedmioty"], Dnd5e.ContentTabDefinitions.Select(tab => tab.Title));
+        Assert.Equal(["Stworzenia", "Przedmioty", "Stany"], Dnd5e.ContentTabDefinitions.Select(tab => tab.Title));
+        Assert.Equal(["Stworzenia", "Przedmioty", "Stany"], Dnd5e.SystemTabs.Select(tab => tab.Title));
     }
 
     [Fact]
@@ -67,9 +71,39 @@ public sealed class ContentTabsTests
     {
         var creatureReference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("creature"));
         var gearReference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
+        var conditionReference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("condition"));
 
         Assert.Equal(creatureReference, CreatureProfile().Type);
         Assert.Equal(gearReference, GearProfile().Type);
+        Assert.Equal(conditionReference, ConditionProfile().Type);
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // Condition profile: a plain list by name, an icon in every row.
+    // -----------------------------------------------------------------------------------------
+
+    [Fact]
+    public void The_conditions_tab_has_no_category_tags_badge_filters_or_sorts_of_its_own()
+    {
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("condition"));
+        var condition = new StatusCondition { Summary = "Leży.", Rules = new StatblockSection { Intro = "Czołga się.", Entries = [] } };
+        var entry = new Entry(ContentId.Create("s"), "Powalony", reference, 1, ContentValues.From(condition));
+
+        Assert.Null(ConditionProfile().CategoryLabel);
+        Assert.Null(ConditionProfile().Category(entry));
+        Assert.Empty(ConditionProfile().Tags(entry));
+        Assert.Null(ConditionProfile().Badge(entry).Text);
+        Assert.Empty(ConditionProfile().ValueFilters);
+        Assert.Empty(ConditionProfile().Sorts);
+        Assert.Equal("Żadna paczka nie ma jeszcze stanów.", Dnd5e.ContentTabDefinitions.Single(tab => tab.Title == "Stany").EmptyText);
+    }
+
+    [Fact]
+    public void Only_a_condition_row_shows_the_entrys_picture()
+    {
+        Assert.True(ConditionProfile().ShowsPictureInRow);
+        Assert.False(CreatureProfile().ShowsPictureInRow);
+        Assert.False(GearProfile().ShowsPictureInRow);
     }
 
     // -----------------------------------------------------------------------------------------

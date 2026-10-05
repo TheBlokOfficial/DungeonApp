@@ -372,6 +372,93 @@ public sealed class Dnd5eSystemTests
     }
 
     [Fact]
+    public void A_condition_declares_its_icon_as_its_picture()
+    {
+        var reference = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("condition"));
+
+        Assert.True(NewSystem().TryGet(reference, out var descriptor));
+        Assert.Equal("Stan", descriptor.Name);
+        Assert.Equal(1, descriptor.Version);
+        Assert.Equal("icon", descriptor.ImageProperty);
+    }
+
+    [Fact]
+    public async Task A_condition_entry_deserializes_with_its_summary_icon_and_rules()
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", ConditionEntryJson("""
+            "summary": "Leży na ziemi.",
+            "icon": "ikony/powalony.png",
+            "rules": {
+              "intro": "Istota ma **utrudnienie** w rzutach ataku.",
+              "entries": [{ "name": "Poziom 1", "text": "Utrudnienie w testach cech." }]
+            }
+            """));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Null(entry.UnresolvedDetail);
+        var condition = entry.Entry.Values.Read<StatusCondition>();
+
+        Assert.Equal("Leży na ziemi.", condition.Summary);
+        Assert.Equal("ikony/powalony.png", condition.Icon);
+        Assert.Equal("Istota ma **utrudnienie** w rzutach ataku.", condition.Rules.Intro);
+        Assert.Equal("Poziom 1", Assert.Single(condition.Rules.Entries).Name);
+    }
+
+    [Fact]
+    public async Task A_condition_without_an_icon_is_read_with_none()
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", ConditionEntryJson("""
+            "summary": "Leży na ziemi.", "rules": { "intro": "Czołga się.", "entries": [] }
+            """));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.Null(entry.UnresolvedDetail);
+        Assert.Null(entry.Entry.Values.Read<StatusCondition>().Icon);
+    }
+
+    // The condition record is its own validator: a missing or blank summary, missing rules, rules
+    // saying nothing, rules written as plain text, an unknown key and an icon reaching outside the
+    // pack each reject the entry; the reason names the key where there is one.
+    [Theory]
+    [InlineData("\"rules\": { \"intro\": \"Czołga się.\", \"entries\": [] }", "summary")]
+    [InlineData("\"summary\": \" \", \"rules\": { \"intro\": \"Czołga się.\", \"entries\": [] }", "summary")]
+    [InlineData("\"summary\": \"Leży.\"", "rules")]
+    [InlineData("\"summary\": \"Leży.\", \"rules\": { \"entries\": [] }", "intro")]
+    [InlineData("\"summary\": \"Leży.\", \"rules\": \"Czołga się.\"", "rules")]
+    [InlineData("\"summary\": \"Leży.\", \"rules\": { \"intro\": \"Czołga się.\", \"entries\": [] }, \"image\": \"a.png\"", "image")]
+    [InlineData("\"summary\": \"Leży.\", \"rules\": { \"intro\": \"Czołga się.\", \"entries\": [] }, \"icon\": \"../poza.png\"", "")]
+    public async Task A_malformed_condition_entry_is_rejected(string values, string named)
+    {
+        using var packs = new TemporaryPacks();
+        packs.WriteFile("pack", "pack.json", PackJson);
+        packs.WriteFile("pack", "entries/e.json", ConditionEntryJson(values));
+
+        var registry = await new ContentPackLoader(packs.Path, NewSystem()).LoadAsync();
+
+        var entry = Assert.Single(registry.Entries);
+        Assert.NotNull(entry.Unresolved);
+        Assert.Contains(named, entry.UnresolvedDetail, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ConditionEntryJson(string values) => $$"""
+        {
+          "id": "s1",
+          "name": "Powalony",
+          "template": "dnd5e:condition",
+          "templateVersion": 1,
+          "values": { {{values}} }
+        }
+        """;
+
+    [Fact]
     public void A_content_type_the_system_does_not_declare_is_neither_found_nor_validated()
     {
         var system = NewSystem();

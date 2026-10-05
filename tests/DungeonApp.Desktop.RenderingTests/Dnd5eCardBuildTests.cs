@@ -13,8 +13,8 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// <summary>
 /// The D&amp;D 5e cards built in a window: a mistyped resource or a broken template in a card
 /// compiles and only fails when the card is created. Builds the creature card with only its required
-/// fields and with every field, in each state of its portrait, and the gear card - no assertions
-/// about looks, only about which pairs and sections a card shows.
+/// fields and with every field, in each state of its portrait, the gear card and the condition card -
+/// no assertions about looks, only about which pairs and sections a card shows.
 /// </summary>
 public sealed class Dnd5eCardBuildTests
 {
@@ -342,6 +342,77 @@ public sealed class Dnd5eCardBuildTests
         var window = ShowGear(card);
 
         Assert.Equal(expected, TitleEndTexts(card)[1]);
+
+        window.Close();
+    }
+
+    private static readonly StatusCondition Prone = new()
+    {
+        Summary = "Leży na ziemi.",
+        Rules = new StatblockSection { Intro = "Istota ma **utrudnienie** w rzutach ataku.", Entries = [] },
+        Icon = "images/conditions/powalony.png",
+    };
+
+    private static ConditionCardView ConditionCard(StatusCondition condition, EntryPicture picture)
+    {
+        var card = new ConditionCardView();
+        card.SetCondition(condition, picture);
+        return card;
+    }
+
+    [AvaloniaFact]
+    public void A_condition_lends_its_icon_frame_and_summary_and_shows_its_rules()
+    {
+        var card = ConditionCard(Prone, EntryPicture.None);
+        var header = (IEntryCardHeader)card;
+        var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock!, card } });
+
+        var frame = Assert.IsType<ImageFrame>(header.HeaderVisual);
+        Assert.True(frame.SourceIsMask);
+        Assert.Equal(frame.Width, frame.Height);
+        Assert.NotNull(frame.Icon);
+        Assert.DoesNotContain(":picture", frame.Classes);
+        Assert.Null(header.HeaderTitleEnd);
+        Assert.Null(header.HeaderTagsStart);
+        Assert.False(header.HeaderTitleOnOneLine);
+
+        Assert.Equal("Leży na ziemi.", Assert.IsType<SelectableTextBlock>(header.HeaderBlock).Text);
+
+        var rules = card.FindControl<ProseSectionView>("RulesSection")!;
+        Assert.Equal(("Zasady", "Istota ma **utrudnienie** w rzutach ataku."), (rules.Title, rules.Intro));
+        Assert.Empty(rules.Items);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_conditions_rules_in_named_parts_show_each_part()
+    {
+        var levels = Prone with
+        {
+            Rules = new StatblockSection
+            {
+                Intro = "Wyczerpanie ma sześć poziomów.",
+                Entries = [new StatblockEntry { Name = "Poziom 1", Text = "Utrudnienie w testach cech." }, new StatblockEntry { Name = "Poziom 2", Text = "Szybkość zmniejszona o połowę." }],
+            },
+        };
+        var card = ConditionCard(levels, EntryPicture.None);
+        var window = Show(card);
+
+        Assert.Equal(["Poziom 1", "Poziom 2"], card.FindControl<ProseSectionView>("RulesSection")!.Items.Select(item => item.Name));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_condition_icon_missing_from_the_pack_puts_its_frame_in_the_error_state()
+    {
+        var card = ConditionCard(Prone, new EntryPicture(null, "images/conditions/powalony.png"));
+        var window = Show(new StackPanel { Children = { ((IEntryCardHeader)card).HeaderVisual!, card } });
+
+        var frame = Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
+        Assert.Contains(":error", frame.Classes);
+        Assert.Equal("images/conditions/powalony.png", frame.Detail);
 
         window.Close();
     }
