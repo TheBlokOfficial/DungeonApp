@@ -20,10 +20,10 @@ using DungeonApp.Desktop.Workspace.Panels;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// The one place in the application allowed to know what a monster or a piece of gear is. Declares
-/// two content types - <c>monster</c> ("Potwór", version 1) and <c>gear</c> ("Przedmiot", version 1)
-/// - builds their cards, and declares this system's tabs: "Potwory" and "Przedmioty" in the System
-/// category, "Biurko" in the Campaign category.
+/// The one place in the application allowed to know what a creature or a piece of gear is. Declares
+/// two content types - <c>creature</c> ("Stworzenie", version 1) and <c>gear</c> ("Przedmiot", version
+/// 1) - builds their cards, and declares this system's tabs: "Stworzenia" and "Przedmioty" in the
+/// System category, "Biurko" in the Campaign category.
 /// <para>
 /// Every content type is one row of a table, looked up by its reference in <see cref="TryGet"/>,
 /// <see cref="TryValidate"/> and <see cref="CreateCard"/>. Knowing what each type is belongs here and
@@ -41,12 +41,12 @@ namespace DungeonApp.Content.Dnd5e;
 public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
     // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
-    // whether a row is a monster, and branching on this id is allowed only inside this system -
+    // whether a row is a creature, and branching on this id is allowed only inside this system -
     // duplicating the literal there instead would let the two silently drift.
-    internal const string MonsterTypeId = "monster";
+    internal const string CreatureTypeId = "creature";
     private const string GearTypeId = "gear";
 
-    /// <summary>The JSON name of <see cref="Monster.Image"/> and <see cref="Gear.Image"/>.</summary>
+    /// <summary>The JSON name of <see cref="Creature.Image"/> and <see cref="Gear.Image"/>.</summary>
     private const string ImagePropertyName = "image";
 
     // Public, not internal: DungeonApp.App/Program.cs - the one place allowed to name a system by
@@ -139,10 +139,10 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         Id = SystemId.Create(IdValue);
         ContentSetId = ContentId.Create(IdValue);
 
-        var monster = Register<Monster>(MonsterTypeId, "Potwór", version: 1, (monster, picture) =>
+        var creature = Register<Creature>(CreatureTypeId, "Stworzenie", version: 1, (creature, picture) =>
         {
-            var card = new MonsterCardView();
-            card.SetMonster(monster, picture);
+            var card = new CreatureCardView();
+            card.SetCreature(creature, picture);
             return card;
         });
         var gear = Register<Gear>(GearTypeId, "Przedmiot", version: 1, (gear, picture) =>
@@ -151,7 +151,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             card.SetGear(gear, picture);
             return card;
         });
-        _contentTypes = new[] { monster, gear }.ToDictionary(type => type.Descriptor.Reference);
+        _contentTypes = new[] { creature, gear }.ToDictionary(type => type.Descriptor.Reference);
 
         _loadPacksStep = new LoadContentPacksStep(new ContentPackLoader(packsPaths, this));
         var warmCardsStep = new WarmContentCardsStep(() => _loadPacksStep.Registry, this);
@@ -159,7 +159,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         (string Id, string IconResourceKey, ContentTabDefinition Definition)[] contentTabs =
         [
-            ("dnd5e.monsters", "DungeonIconSkull", BuildMonsterContentTab(monster.Descriptor.Reference)),
+            ("dnd5e.creatures", "DungeonIconSkull", BuildCreatureContentTab(creature.Descriptor.Reference)),
             ("dnd5e.gear", "DungeonIconBackpack", BuildGearContentTab(gear.Descriptor.Reference)),
         ];
         ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
@@ -189,7 +189,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
 
     /// <summary>
-    /// This system's two content tabs - "Potwory" and "Przedmioty" - as data: a title and the content
+    /// This system's two content tabs - "Stworzenia" and "Przedmioty" - as data: a title and the content
     /// type profile(s) that fill it. <see cref="SystemTabs"/> builds each tab's view from one of these.
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
@@ -263,7 +263,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         RarityColorKeys.TryGetValue(rarity, out var colorKey) ? RarityBrushes.GetValueOrDefault(colorKey) : null;
 
     /// <summary>
-    /// One row of the content-type table. Every type declares "image" (<see cref="Monster.Image"/>,
+    /// One row of the content-type table. Every type declares "image" (<see cref="Creature.Image"/>,
     /// <see cref="Gear.Image"/>) as its picture, so the loader checks its path at load time without
     /// knowing what the type is, and every card stands a frame for it.
     /// </summary>
@@ -297,31 +297,38 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         ContentTabDefinitions.SelectMany(tab => tab.ContentTypes).Select(profile => profile.Type).Distinct().ToArray();
 
     /// <summary>
-    /// "Potwory": category "Grupa" = <see cref="Monster.Group"/>, never <see cref="Monster.Type"/> -
-    /// a monster with no declared group has no category; tags = size, type, alignment; badge =
-    /// challenge, no color key; two value filters - "Typ" (<see cref="Monster.Type"/>, alphabetical)
-    /// before "Wyzwanie" (<see cref="ChallengeOrder"/>) - and one sort, "Wyzwanie".
+    /// "Stworzenia": category "Grupa" = <see cref="Creature.Group"/>, never <see cref="Creature.Type"/> -
+    /// a creature with no declared group has no category; tags = size, type, alignment; badge =
+    /// challenge, no color key, none for a creature without one; two value filters - "Typ"
+    /// (<see cref="Creature.Type"/>, alphabetical) before "Wyzwanie" (<see cref="ChallengeOrder"/>) -
+    /// and one sort, "Wyzwanie", which lists a creature without a challenge last.
     /// </summary>
-    private static ContentTabDefinition BuildMonsterContentTab(ContentTypeReference monster)
+    private static ContentTabDefinition BuildCreatureContentTab(ContentTypeReference creature)
     {
-        var profile = new ContentTypeProfile<Monster>(
-            monster,
-            category: new ContentCategorySpec<Monster>("Grupa", monster => monster.Group),
-            tags: monster => [monster.Size, monster.Type, monster.Alignment],
-            badge: monster => new ContentBadge(monster.Challenge),
+        var profile = new ContentTypeProfile<Creature>(
+            creature,
+            category: new ContentCategorySpec<Creature>("Grupa", creature => creature.Group),
+            tags: creature => [creature.Size, creature.Type, creature.Alignment],
+            badge: creature => creature.Challenge is { } challenge ? new ContentBadge(challenge) : default,
             valueFilters:
             [
-                new ContentValueFilterSpec<Monster>("Typ", monster => monster.Type, PolishAlphabeticalOrder),
-                new ContentValueFilterSpec<Monster>("Wyzwanie", monster => monster.Challenge, ChallengeOrder),
+                new ContentValueFilterSpec<Creature>("Typ", creature => creature.Type, PolishAlphabeticalOrder),
+                new ContentValueFilterSpec<Creature>("Wyzwanie", creature => creature.Challenge, ChallengeOrder),
             ],
-            sorts: [new ContentSortSpec<Monster>("Wyzwanie", (a, b) => ChallengeOrder.Compare(a.Challenge, b.Challenge))]);
+            sorts:
+            [
+                new ContentSortSpec<Creature>(
+                    "Wyzwanie",
+                    (a, b) => ChallengeOrder.Compare(a.Challenge!, b.Challenge!),
+                    HasKey: creature => creature.Challenge is not null),
+            ]);
 
-        return new ContentTabDefinition("Potwory", [profile], "Żadna paczka nie ma jeszcze potworów.");
+        return new ContentTabDefinition("Stworzenia", [profile], "Żadna paczka nie ma jeszcze stworzeń.");
     }
 
     /// <summary>
     /// "Przedmioty": category "Kategoria" = <see cref="Gear.Category"/> - the breadcrumb's middle
-    /// segment and the tab's category filter, like a monster's group; tags = "magiczny" for a magical
+    /// segment and the tab's category filter, like a creature's group; tags = "magiczny" for a magical
     /// item, then the subtype, each only when there is one (the card puts the rarity pill before them);
     /// badge = rarity, with a color key per <see cref="RarityColorKeys"/> for a recognised tier and
     /// none for anything else; three value filters - "Rzadkość" (<see cref="RarityOrder"/>), "Magia"
@@ -344,7 +351,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             sorts:
             [
                 new ContentSortSpec<Gear>("Rzadkość", (a, b) => RarityOrder.Compare(a.Rarity, b.Rarity)),
-                new ContentSortSpec<Gear>("Wartość", (a, b) => a.Value.CompareTo(b.Value)),
+                new ContentSortSpec<Gear>("Wartość", (a, b) => a.Item.Value.CompareTo(b.Item.Value)),
             ]);
 
         return new ContentTabDefinition("Przedmioty", [profile], "Żadna paczka nie ma jeszcze przedmiotów.");

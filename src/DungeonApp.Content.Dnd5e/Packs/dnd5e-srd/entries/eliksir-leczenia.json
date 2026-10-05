@@ -8,8 +8,10 @@
     "rarity": "Pospolity",
     "magical": true,
     "category": "Mikstura",
-    "weight": 0.25,
-    "value": 50,
+    "item": {
+      "weight": 0.25,
+      "value": 50
+    },
 
     "description": "Kto wypije eliksir, odzyskuje 2k4+2 punkty wytrzymałości. Czerwony płyn połyskuje, gdy zakołysać fiolką."
   }

@@ -1,7 +1,7 @@
 {
   "id": "goblin",
   "name": "Goblin",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -9,18 +9,19 @@
     "type": "humanoid (goblinoid)",
     "alignment": "neutralny zły",
 
-    "ac": 15,
-    "acSource": "zbroja skórzana, tarcza",
-    "hp": 7,
-    "hpDice": "2k6",
+    "combat": {
+      "ac": 15,
+      "acSource": "zbroja skórzana, tarcza",
+      "hp": 7,
+      "hpDice": "2k6",
+      "str": 8,
+      "dex": 14,
+      "con": 10,
+      "int": 10,
+      "wis": 8,
+      "cha": 8
+    },
     "speed": "30 stóp",
-
-    "str": 8,
-    "dex": 14,
-    "con": 10,
-    "int": 10,
-    "wis": 8,
-    "cha": 8,
 
     "skills": "Skradanie się +6",
     "senses": "widzenie w ciemności 60 stóp, pasywna Percepcja 9",

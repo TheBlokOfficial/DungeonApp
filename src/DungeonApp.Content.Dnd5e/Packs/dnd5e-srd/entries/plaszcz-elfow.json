@@ -9,8 +9,10 @@
     "magical": true,
     "category": "Przedmiot cudowny",
     "attunement": true,
-    "weight": 0.5,
-    "value": 250,
+    "item": {
+      "weight": 0.5,
+      "value": 250
+    },
 
     "description": "Z naciągniętym kapturem noszący ma ułatwienie w testach Zręczności (Skradanie się), a testy Mądrości (Percepcja), by go dostrzec, mają utrudnienie. Naciągnięcie albo zsunięcie kaptura wymaga akcji."
   }

@@ -46,16 +46,15 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 
         // Branching on a content type's own id ("monster") is legal here and nowhere outside this
         // system: knowledge of D&D content types lives only in this project.
-        CanEditHitPoints = resolved.Unresolved is null
+        if (resolved.Unresolved is null
             && resolved.Source is { } source
             && source.Entry.Type.Set == ownerSet
-            && source.Entry.Type.Type.Value == Dnd5eSystem.MonsterTypeId;
-
-        if (CanEditHitPoints)
+            && source.Entry.Type.Type.Value == Dnd5eSystem.CreatureTypeId
+            && resolved.Values!.Read<Creature>().Combat is { } combat)
         {
-            var monster = resolved.Values!.Read<Monster>();
-            CurrentHp = monster.CurrentHp ?? monster.Hp;
-            MaxHp = monster.Hp;
+            CanEditHitPoints = true;
+            CurrentHp = combat.CurrentHp ?? combat.Hp;
+            MaxHp = combat.Hp;
         }
     }
 
@@ -98,8 +97,8 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
         // merged record would compare it to itself and always produce an empty patch, dropping
         // whatever the instance already deviated on.
         var entryValues = _resolved.Source!.Entry.Values;
-        var monster = _resolved.Values!.Read<Monster>();
-        var candidate = ContentValues.From(monster with { CurrentHp = CurrentHp });
+        var creature = _resolved.Values!.Read<Creature>();
+        var candidate = ContentValues.From(creature with { Combat = creature.Combat! with { CurrentHp = CurrentHp } });
         var patch = ContentValues.Difference(baseline: entryValues, candidate: candidate);
 
         await _context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(_instance, patch));

@@ -3,18 +3,18 @@
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Content.Dnd5e.GearCardView">
 
-    <!-- The designed item card, on the monster card's grid: the card's left edge, the picture's right
+    <!-- The designed item card, on the creature card's grid: the card's left edge, the picture's right
          edge, and the title column's start. The square picture, the weight and worth (end of the
          title's line), the rarity (start of the tags' row) and the KP / Obrażenia / Ładunki values
          are lent to the detail header (GearCardView.axaml.cs); the card itself, top to bottom, parted
-         by lines as the monster card's parts are:
+         by lines as the creature card's parts are:
          - the item's other rules values as pairs, no icons, their values on the title line, each
            shown only when filled - the whole table and its line only when one is;
-         - the description as a prose section ("Opis", like the monster's sections), only when filled.
+         - the description as a prose section ("Opis", like the creature's sections), only when filled.
          Every part starts with its line. The card begins with a line, so the line takes no margin of
          its own: the parts stand DungeonSpacingLg apart and the line DungeonSpacingLg from what it
          heads - the rhythm of a .section separator (16 + 1 + 16) - while the header keeps its own
-         gap to the card above the first line, as it does above the monster's ability tables.
+         gap to the card above the first line, as it does above the creature's ability tables.
          Spacing between controls is set here, on the host, never carried by a control itself. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <!-- ===== pairs ===== -->

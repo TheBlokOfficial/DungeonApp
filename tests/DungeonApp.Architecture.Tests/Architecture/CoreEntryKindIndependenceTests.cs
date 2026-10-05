@@ -117,8 +117,8 @@ public sealed class CoreEntryKindIndependenceTests
             .Where(file => !IsBuildOutput(file));
 
     /// <summary>
-    /// Every name a content assembly introduces for a kind of thing: today <c>Monster</c> and
-    /// <c>Gear</c> from DungeonApp.Content.Dnd5e. The assembly of <see cref="Content.Dnd5e.Monster"/>
+    /// Every name a content assembly introduces for a kind of thing: today <c>Creature</c> and
+    /// <c>Gear</c> from DungeonApp.Content.Dnd5e. The assembly of <see cref="Content.Dnd5e.Creature"/>
     /// is placed in the scanned list explicitly rather than looked up in the <see cref="AppDomain"/>:
     /// whether another test has already loaded it depends on test order, and a discarded
     /// <c>typeof</c> is removed by the compiler, so only a use of the assembly makes the dictionary
@@ -130,7 +130,7 @@ public sealed class CoreEntryKindIndependenceTests
         return
         [
             .. AppDomain.CurrentDomain.GetAssemblies()
-                .Prepend(typeof(Content.Dnd5e.Monster).Assembly)
+                .Prepend(typeof(Content.Dnd5e.Creature).Assembly)
                 .Distinct()
                 .Where(assembly => assembly.GetName().Name?.StartsWith(
                     "DungeonApp.Content.", StringComparison.Ordinal) == true)

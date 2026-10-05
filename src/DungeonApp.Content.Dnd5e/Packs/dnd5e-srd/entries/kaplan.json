@@ -1,7 +1,7 @@
 {
   "id": "kaplan",
   "name": "Kapłan",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -10,18 +10,19 @@
     "group": "Ludzie",
     "alignment": "dowolny charakter",
 
-    "ac": 13,
-    "acSource": "koszulka kolcza",
-    "hp": 27,
-    "hpDice": "5k8+5",
+    "combat": {
+      "ac": 13,
+      "acSource": "koszulka kolcza",
+      "hp": 27,
+      "hpDice": "5k8+5",
+      "str": 10,
+      "dex": 10,
+      "con": 12,
+      "int": 13,
+      "wis": 16,
+      "cha": 13
+    },
     "speed": "7,5 m",
-
-    "str": 10,
-    "dex": 10,
-    "con": 12,
-    "int": 13,
-    "wis": 16,
-    "cha": 13,
 
     "skills": "Medycyna +7, Perswazja +3, Religia +4",
     "senses": "bierna Percepcja 13",

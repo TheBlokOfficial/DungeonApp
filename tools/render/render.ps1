@@ -1,5 +1,5 @@
 # Renders the real application offscreen and saves PNGs to tools\render\out\:
-#   monster_<name>.png  - every monster card, header included: the bundled SRD pack and the test
+#   creature_<name>.png - every creature card, header included: the bundled SRD pack and the test
 #                         fixture packs (tests\Fixtures\Packs)
 #   gear_<name>.png     - every gear card: the bundled SRD pack and the test fixture packs
 #   gallery_<section>.png - every section of the controls gallery

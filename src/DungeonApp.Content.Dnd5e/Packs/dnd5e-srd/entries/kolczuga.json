@@ -8,8 +8,10 @@
     "rarity": "Pospolity",
     "category": "Zbroja",
     "subtype": "ciężka",
-    "weight": 27.5,
-    "value": 75,
+    "item": {
+      "weight": 27.5,
+      "value": 75
+    },
 
     "armorClass": "16",
     "strengthRequirement": 13,

@@ -1,7 +1,7 @@
 {
   "id": "jednorozec",
   "name": "Jednorożec",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -10,17 +10,18 @@
     "group": "Niebianie",
     "alignment": "praworządny dobry",
 
-    "ac": 12,
-    "hp": 67,
-    "hpDice": "9k10+18",
+    "combat": {
+      "ac": 12,
+      "hp": 67,
+      "hpDice": "9k10+18",
+      "str": 18,
+      "dex": 14,
+      "con": 15,
+      "int": 11,
+      "wis": 17,
+      "cha": 16
+    },
     "speed": "15 m",
-
-    "str": 18,
-    "dex": 14,
-    "con": 15,
-    "int": 11,
-    "wis": 17,
-    "cha": 16,
 
     "damageImmunities": "od trucizny",
     "conditionImmunities": "oczarowanie, sparaliżowanie, zatrucie",

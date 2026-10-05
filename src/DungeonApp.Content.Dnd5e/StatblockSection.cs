@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// One block of a monster's rules prose - its special abilities, actions, spellcasting, bonus
+/// One block of a creature's rules prose - its special abilities, actions, spellcasting, bonus
 /// actions, reactions or legendary actions: an optional paragraph that introduces the block, then
 /// its named entries. Every such block has this one shape, so the card draws all six the same way.
 /// <para>

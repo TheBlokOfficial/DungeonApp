@@ -1,7 +1,7 @@
 {
   "id": "wilk",
   "name": "Wilk",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -10,18 +10,19 @@
     "group": "Zwierzęta",
     "alignment": "bez charakteru",
 
-    "ac": 13,
-    "acSource": "pancerz naturalny",
-    "hp": 11,
-    "hpDice": "2k8+2",
+    "combat": {
+      "ac": 13,
+      "acSource": "pancerz naturalny",
+      "hp": 11,
+      "hpDice": "2k8+2",
+      "str": 12,
+      "dex": 15,
+      "con": 12,
+      "int": 3,
+      "wis": 12,
+      "cha": 6
+    },
     "speed": "12 m",
-
-    "str": 12,
-    "dex": 15,
-    "con": 12,
-    "int": 3,
-    "wis": 12,
-    "cha": 6,
 
     "skills": "Percepcja +3, Skradanie się +4",
     "senses": "bierna Percepcja 13",

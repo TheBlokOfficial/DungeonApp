@@ -1,7 +1,7 @@
 {
   "id": "hobgoblin",
   "name": "Hobgoblin",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -9,18 +9,19 @@
     "type": "humanoid (goblinoid)",
     "alignment": "porządkowy zły",
 
-    "ac": 18,
-    "acSource": "zbroja łuskowa, tarcza",
-    "hp": 11,
-    "hpDice": "2k8+2",
+    "combat": {
+      "ac": 18,
+      "acSource": "zbroja łuskowa, tarcza",
+      "hp": 11,
+      "hpDice": "2k8+2",
+      "str": 13,
+      "dex": 12,
+      "con": 12,
+      "int": 10,
+      "wis": 10,
+      "cha": 9
+    },
     "speed": "30 stóp",
-
-    "str": 13,
-    "dex": 12,
-    "con": 12,
-    "int": 10,
-    "wis": 10,
-    "cha": 9,
 
     "skills": "Zastraszanie +1",
     "senses": "widzenie w ciemności 60 stóp, pasywna Percepcja 10",

@@ -12,35 +12,27 @@ namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
 /// The D&amp;D 5e cards built in a window: a mistyped resource or a broken template in a card
-/// compiles and only fails when the card is created. Builds the monster card with only its required
+/// compiles and only fails when the card is created. Builds the creature card with only its required
 /// fields and with every field, in each state of its portrait, and the gear card - no assertions
 /// about looks, only about which pairs and sections a card shows.
 /// </summary>
 public sealed class Dnd5eCardBuildTests
 {
-    private static readonly Monster Required = new()
+    private static readonly Creature Required = new()
     {
         Size = "Średni",
         Type = "bestia",
         Alignment = "bez charakteru",
-        Ac = 13,
-        Hp = 11,
+        Combat = new CombatAspect { Ac = 13, Hp = 11, Str = 12, Dex = 15, Con = 12, Int = 3, Wis = 12, Cha = 6 },
         Speed = "12 m",
-        Str = 12,
-        Dex = 15,
-        Con = 12,
-        Int = 3,
-        Wis = 12,
-        Cha = 6,
         Senses = "bierna Percepcja 13",
         Challenge = "1/4",
         Actions = Section("Ugryzienie"),
     };
 
-    private static readonly Monster Full = Required with
+    private static readonly Creature Full = Required with
     {
-        AcSource = "pancerz naturalny",
-        HpDice = "2k8+2",
+        Combat = Required.Combat! with { AcSource = "pancerz naturalny", HpDice = "2k8+2" },
         SavingThrows = "Kon +4",
         Skills = "Percepcja +3",
         DamageVulnerabilities = "obuchowe",
@@ -68,10 +60,10 @@ public sealed class Dnd5eCardBuildTests
         return window;
     }
 
-    private static MonsterCardView MonsterCard(Monster monster, EntryPicture picture)
+    private static CreatureCardView CreatureCard(Creature creature, EntryPicture picture)
     {
-        var card = new MonsterCardView();
-        card.SetMonster(monster, picture);
+        var card = new CreatureCardView();
+        card.SetCreature(creature, picture);
         return card;
     }
 
@@ -82,9 +74,9 @@ public sealed class Dnd5eCardBuildTests
         [.. card.FindControl<TraitListView>("Traits")!.Rows.Select(row => row.Label)];
 
     [AvaloniaFact]
-    public void A_monster_with_only_required_fields_shows_only_the_required_pairs_and_sections()
+    public void A_creature_with_only_required_fields_shows_only_the_required_pairs_and_sections()
     {
-        var card = MonsterCard(Required, EntryPicture.None);
+        var card = CreatureCard(Required, EntryPicture.None);
         var window = Show(card);
 
         Assert.Equal(["Zmysły", "Wyzwanie"], TraitLabels(card));
@@ -100,9 +92,9 @@ public sealed class Dnd5eCardBuildTests
     }
 
     [AvaloniaFact]
-    public void A_monster_with_every_field_shows_every_pair_and_section_in_statblock_order()
+    public void A_creature_with_every_field_shows_every_pair_and_section_in_statblock_order()
     {
-        var card = MonsterCard(Full, EntryPicture.None);
+        var card = CreatureCard(Full, EntryPicture.None);
         var window = Show(card);
 
         Assert.Equal(
@@ -126,7 +118,7 @@ public sealed class Dnd5eCardBuildTests
     [AvaloniaFact]
     public void A_picture_missing_from_the_pack_puts_the_portrait_in_its_error_state()
     {
-        var card = MonsterCard(Required, new EntryPicture(null, "obrazy/wilk.png"));
+        var card = CreatureCard(Required, new EntryPicture(null, "obrazy/wilk.png"));
         var window = Show(card);
 
         var portrait = Assert.IsType<ImageFrame>(((IEntryCardHeader)card).HeaderVisual);
@@ -140,9 +132,9 @@ public sealed class Dnd5eCardBuildTests
     // The pieces a card lends the detail header are controls of their own, outside the card's tree,
     // so building the card does not build them: they are placed in a window here.
     [AvaloniaFact]
-    public void The_pieces_a_monster_card_lends_the_header_build_with_its_headline_values()
+    public void The_pieces_a_creature_card_lends_the_header_build_with_its_headline_values()
     {
-        var card = MonsterCard(Full, EntryPicture.None);
+        var card = CreatureCard(Full, EntryPicture.None);
         var header = (IEntryCardHeader)card;
         var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock! } });
 
@@ -152,7 +144,7 @@ public sealed class Dnd5eCardBuildTests
         Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
 
-        // A monster's name wraps: the portrait leaves room for two lines.
+        // A creature's name wraps: the portrait leaves room for two lines.
         Assert.False(header.HeaderTitleOnOneLine);
 
         // The note's line is kept without a note, so Szybkość is as tall as KP and PZ.
@@ -187,7 +179,7 @@ public sealed class Dnd5eCardBuildTests
         window.Close();
     }
 
-    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek", Weight = 1, Value = 2 };
+    private static readonly Gear MinimalGear = new() { Rarity = "Pospolity", Category = "Ekwipunek", Item = new ItemAspect { Weight = 1, Value = 2 } };
 
     private static readonly Gear FullGear = MinimalGear with
     {
@@ -196,8 +188,7 @@ public sealed class Dnd5eCardBuildTests
         Subtype = "kostur",
         Attunement = true,
         AttunementBy = "przez czarodzieja",
-        Weight = 1.5m,
-        Value = 1500,
+        Item = new ItemAspect { Weight = 1.5m, Value = 1500 },
         Damage = "1k6",
         DamageType = "obuchowe",
         Properties = "uniwersalna (1k8)",
@@ -205,8 +196,7 @@ public sealed class Dnd5eCardBuildTests
         ArmorClassNote = "+ mod. Zr",
         StrengthRequirement = 13,
         StealthDisadvantage = true,
-        Charges = 7,
-        Recharge = "odzyskuje 1k6+1 ładunków o świcie",
+        Charges = new ChargesAspect { Max = 7, Recharge = "odzyskuje 1k6+1 ładunków o świcie" },
         Description = "Gładki kij.",
     };
 
@@ -300,7 +290,7 @@ public sealed class Dnd5eCardBuildTests
     [AvaloniaFact]
     public void An_item_with_only_headline_values_shows_the_filled_ones_from_the_left_and_no_pairs()
     {
-        var card = GearCard(MinimalGear with { Damage = "1k8", Charges = 3 });
+        var card = GearCard(MinimalGear with { Damage = "1k8", Charges = new ChargesAspect { Max = 3 } });
         var header = (IEntryCardHeader)card;
         var window = ShowGear(card);
 
@@ -330,7 +320,7 @@ public sealed class Dnd5eCardBuildTests
     [AvaloniaFact]
     public void A_zero_weight_and_worth_are_written_not_hidden()
     {
-        var card = GearCard(MinimalGear with { Weight = 0, Value = 0 });
+        var card = GearCard(MinimalGear with { Item = new ItemAspect { Weight = 0, Value = 0 } });
         var window = ShowGear(card);
 
         Assert.Equal(["0 kg", "wartość 0"], TitleEndTexts(card));
@@ -348,7 +338,7 @@ public sealed class Dnd5eCardBuildTests
     [InlineData("0.0125", "wartość 0,0125")]
     public void The_worth_is_written_as_a_bare_polish_number(string value, string expected)
     {
-        var card = GearCard(MinimalGear with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) });
+        var card = GearCard(MinimalGear with { Item = MinimalGear.Item with { Value = decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture) } });
         var window = ShowGear(card);
 
         Assert.Equal(expected, TitleEndTexts(card)[1]);

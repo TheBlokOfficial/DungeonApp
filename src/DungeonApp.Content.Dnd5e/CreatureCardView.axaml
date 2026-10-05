@@ -2,15 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
              xmlns:dc="using:DungeonApp.Desktop.Controls"
-             x:Class="DungeonApp.Content.Dnd5e.MonsterCardView">
+             x:Class="DungeonApp.Content.Dnd5e.CreatureCardView">
 
     <!-- The designed statblock on one geometric grid. Three vertical lines carry everything: the
          card's left edge, the portrait's right edge, and the title column's start (portrait plus
          DungeonDetailColumnGap). The portrait (DungeonDetailPictureWidth, 3:4) and the KP / PZ /
-         Szybkość values are lent to the detail header (MonsterCardView.axaml.cs); the card itself,
+         Szybkość values are lent to the detail header (CreatureCardView.axaml.cs); the card itself,
          top to bottom:
          - two ability tables, one column per ability: SIŁ/ZRĘ/KON exactly as wide as the portrait
-           (three DungeonAbilityCellSize cells) and INT/MDR/CHA from the title line;
+           (three DungeonAbilityCellSize cells) and INT/MDR/CHA from the title line - only for a
+           creature with the combat aspect;
          - pairs, one row per filled field, their values on the title line; wyzwanie as a badge;
          - the rules sections in statblock order, each shown only when filled, always open;
          - the description as a small italic footer, only when filled.
@@ -29,20 +30,22 @@
     </UserControl.Styles>
 
     <StackPanel>
-        <!-- ===== abilities ===== -->
-        <Grid ColumnDefinitions="Auto,Auto"
-              ColumnSpacing="{DynamicResource DungeonDetailColumnGap}"
-              HorizontalAlignment="Left">
-            <controls:AbilityTableView x:Name="PhysicalAbilities" />
-            <controls:AbilityTableView x:Name="MentalAbilities" Grid.Column="1" />
-        </Grid>
+        <!-- ===== abilities: the combat aspect's, absent with it ===== -->
+        <StackPanel x:Name="AbilitiesBlock">
+            <Grid ColumnDefinitions="Auto,Auto"
+                  ColumnSpacing="{DynamicResource DungeonDetailColumnGap}"
+                  HorizontalAlignment="Left">
+                <controls:AbilityTableView x:Name="PhysicalAbilities" />
+                <controls:AbilityTableView x:Name="MentalAbilities" Grid.Column="1" />
+            </Grid>
 
-        <Separator Classes="section" />
+            <Separator Classes="section" />
+        </StackPanel>
 
         <!-- ===== pairs ===== -->
         <controls:TraitListView x:Name="Traits" />
 
-        <Separator Classes="section" />
+        <Separator x:Name="SectionsSeparator" Classes="section" />
 
         <!-- ===== rules sections ===== -->
         <StackPanel x:Name="Sections" Spacing="{DynamicResource DungeonSpacingXxl}">
@@ -54,7 +57,7 @@
             <controls:ProseSectionView x:Name="LegendaryActionsSection" Title="Akcje legendarne" />
         </StackPanel>
 
-        <!-- ===== footer: the monster's flavor, not its rules ===== -->
+        <!-- ===== footer: the creature's flavor, not its rules ===== -->
         <StackPanel x:Name="Footer">
             <Separator Classes="section" />
             <SelectableTextBlock x:Name="DescriptionText"

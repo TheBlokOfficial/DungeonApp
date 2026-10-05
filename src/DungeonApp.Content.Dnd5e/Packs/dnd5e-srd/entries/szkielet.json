@@ -1,7 +1,7 @@
 {
   "id": "szkielet",
   "name": "Szkielet",
-  "template": "dnd5e:monster",
+  "template": "dnd5e:creature",
   "templateVersion": 1,
 
   "values": {
@@ -10,18 +10,19 @@
     "group": "Nieumarli",
     "alignment": "praworządny zły",
 
-    "ac": 13,
-    "acSource": "strzępy zbroi",
-    "hp": 13,
-    "hpDice": "2k8+4",
+    "combat": {
+      "ac": 13,
+      "acSource": "strzępy zbroi",
+      "hp": 13,
+      "hpDice": "2k8+4",
+      "str": 10,
+      "dex": 14,
+      "con": 15,
+      "int": 6,
+      "wis": 8,
+      "cha": 5
+    },
     "speed": "9 m",
-
-    "str": 10,
-    "dex": 14,
-    "con": 15,
-    "int": 6,
-    "wis": 8,
-    "cha": 5,
 
     "damageVulnerabilities": "obuchowe",
     "damageImmunities": "od trucizny",

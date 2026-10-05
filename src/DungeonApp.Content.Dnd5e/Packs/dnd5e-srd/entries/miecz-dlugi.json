@@ -8,8 +8,10 @@
     "rarity": "Pospolity",
     "category": "Broń",
     "subtype": "żołnierska, do walki wręcz",
-    "weight": 1.5,
-    "value": 15,
+    "item": {
+      "weight": 1.5,
+      "value": 15
+    },
 
     "damage": "1k8",
     "damageType": "cięte",

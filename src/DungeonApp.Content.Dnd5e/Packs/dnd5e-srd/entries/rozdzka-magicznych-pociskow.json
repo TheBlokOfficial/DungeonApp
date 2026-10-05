@@ -8,11 +8,15 @@
     "rarity": "Niepospolity",
     "magical": true,
     "category": "Różdżka",
-    "weight": 0.5,
-    "value": 300,
+    "item": {
+      "weight": 0.5,
+      "value": 300
+    },
 
-    "charges": 7,
-    "recharge": "odzyskuje 1k6+1 wydanych ładunków codziennie o świcie",
+    "charges": {
+      "max": 7,
+      "recharge": "odzyskuje 1k6+1 wydanych ładunków codziennie o świcie"
+    },
 
     "description": "Akcją można wydać od 1 do 3 ładunków, by rzucić z różdżki magiczny pocisk; każdy ładunek ponad pierwszy podnosi poziom zaklęcia o jeden. Gdy wydasz ostatni ładunek, rzuć k20: na 1 różdżka rozsypuje się w popiół."
   }

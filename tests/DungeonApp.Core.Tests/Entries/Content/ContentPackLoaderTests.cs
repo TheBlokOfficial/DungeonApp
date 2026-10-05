@@ -46,10 +46,10 @@ public sealed class ContentPackLoaderTests : IDisposable
     [Fact]
     public async Task Loads_the_fixture_packs_cleanly()
     {
-        var monster = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("monster"));
+        var creature = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("creature"));
         var gear = new ContentTypeReference(ContentId.Create("dnd5e"), ContentId.Create("gear"));
         var types = FakeContentTypeCatalog.Of(
-            new ContentTypeDescriptor(monster, "Monster", 1),
+            new ContentTypeDescriptor(creature, "Creature", 1),
             new ContentTypeDescriptor(gear, "Gear", 1));
 
         var registry = await new ContentPackLoader(
@@ -68,14 +68,14 @@ public sealed class ContentPackLoaderTests : IDisposable
         var goblin = registry.Entries.Single(entry => entry.Address.Entry.Value == "goblin");
 
         Assert.Equal("goblinoids", goblin.Address.Pack.Value);
-        Assert.Equal(monster, goblin.Entry.Type);
-        Assert.Equal("Monster", goblin.Type!.Value.Name);
+        Assert.Equal(creature, goblin.Entry.Type);
+        Assert.Equal("Creature", goblin.Type!.Value.Name);
 
         // A plain Dictionary<string, JsonElement> is not a stand-in for any content type's own
         // record - it just proves ContentValues.Read<T> deserializes whatever T a caller asks for,
         // without this test ever naming a content type's shape.
         var values = goblin.Entry.Values.Read<Dictionary<string, JsonElement>>();
-        Assert.Equal(15, values["ac"].GetInt32());
+        Assert.Equal(15, values["combat"].GetProperty("ac").GetInt32());
         Assert.Equal("1/4 (50 PD)", values["challenge"].GetString());
     }
 

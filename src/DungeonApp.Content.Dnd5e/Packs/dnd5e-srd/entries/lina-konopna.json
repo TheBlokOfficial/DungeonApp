@@ -7,8 +7,10 @@
   "values": {
     "rarity": "Pospolity",
     "category": "Ekwipunek",
-    "weight": 5,
-    "value": 1,
+    "item": {
+      "weight": 5,
+      "value": 1
+    },
 
     "description": "Zwój mocnej liny skręconej z konopi. Lina ma 2 punkty wytrzymałości; zerwać ją można testem Siły o ST 17."
   }

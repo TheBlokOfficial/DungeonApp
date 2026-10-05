@@ -10,11 +10,15 @@
     "category": "Laska",
     "attunement": true,
     "attunementBy": "przez barda, kapłana albo druida",
-    "weight": 2,
-    "value": 2500,
+    "item": {
+      "weight": 2,
+      "value": 2500
+    },
 
-    "charges": 10,
-    "recharge": "odzyskuje 1k6+4 wydanych ładunków codziennie o świcie",
+    "charges": {
+      "max": 10,
+      "recharge": "odzyskuje 1k6+4 wydanych ładunków codziennie o świcie"
+    },
 
     "description": "Akcją można wydać ładunki, by rzucić z laski zaklęcie z własnym modyfikatorem rzucania czarów: leczenie ran (1 ładunek za poziom zaklęcia, najwyżej 4.), pomniejsze przywrócenie (2 ładunki) albo masowe leczenie ran (5 ładunków). Gdy wydasz ostatni ładunek, rzuć k20: na 1 laska znika w rozbłysku światła."
   }

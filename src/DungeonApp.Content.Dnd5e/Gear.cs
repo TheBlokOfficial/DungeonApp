@@ -4,11 +4,13 @@ using System.Text.Json.Serialization;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// A D&amp;D 5e item's values. Its card, like a monster's, is designed rather than assembled from
-/// data. Named properties for the same reason as <see cref="Monster"/> - see its remarks.
+/// A D&amp;D 5e item's values. Its card, like a creature's, is designed rather than assembled from
+/// data. Named properties for the same reason as <see cref="Creature"/> - see its remarks.
 /// <para>
-/// Every value is text the GM reads or a number the card formats; nothing here is ever computed
-/// with. <see cref="Recharge"/> in particular is a line on the card, never a timer.
+/// The properties here are the type's own, read by the card and the content tab. What carrying and
+/// trading read is the required <see cref="Item"/> aspect; what the ledger counts is the optional
+/// <see cref="Charges"/> aspect. An armor's <see cref="ArmorClass"/> - what it gives its wearer - is
+/// the item's own field, not a fight's armor class.
 /// </para>
 /// </summary>
 public sealed record Gear : IJsonOnDeserialized
@@ -40,18 +42,8 @@ public sealed record Gear : IJsonOnDeserialized
     /// <summary>Who may attune to the item, as written after "wymagane" ("przez czarodzieja").</summary>
     public string? AttunementBy { get; init; }
 
-    /// <summary>
-    /// In kilograms; shown through <see cref="UnitScale.Weight"/>. Every item has one, never negative:
-    /// 0 is a weight like any other and the card writes it ("0 kg") rather than hiding it.
-    /// </summary>
-    public required decimal Weight { get; init; }
-
-    /// <summary>
-    /// The item's worth on an abstract, relative scale - a number with no unit, never negative, its
-    /// scale not bounded either way. Not a price: a price belongs to a particular slot in an
-    /// inventory or a shop. Every item has one; 0 is shown like any other worth.
-    /// </summary>
-    public required decimal Value { get; init; }
+    /// <summary>The item's weight and worth - every item has both.</summary>
+    public required ItemAspect Item { get; init; }
 
     /// <summary>A weapon's damage dice as written ("1k8") - the card's large value.</summary>
     public string? Damage { get; init; }
@@ -76,14 +68,12 @@ public sealed record Gear : IJsonOnDeserialized
 
     public bool StealthDisadvantage { get; init; }
 
-    public int? Charges { get; init; }
-
-    /// <summary>How the charges come back, as text the GM reads ("odzyskuje 1k6+1 ładunków o świcie").</summary>
-    public string? Recharge { get; init; }
+    /// <summary>The item's charges; null for an item that holds none.</summary>
+    public ChargesAspect? Charges { get; init; }
 
     /// <summary>
     /// The item's flavor and rules prose, shown as the card's "Opis" section; emphasis marked by the
-    /// pack as in a monster's sections (<c>**…**</c>).
+    /// pack as in a creature's sections (<c>**…**</c>).
     /// </summary>
     public string? Description { get; init; }
 
@@ -98,21 +88,10 @@ public sealed record Gear : IJsonOnDeserialized
     /// <summary>
     /// Saying who may attune to an item that needs no attunement contradicts itself; the entry is
     /// refused rather than drawn with one of the two silently ignored. So is a note under a value that
-    /// is not there (a damage type without dice, an armor class note without an armor class). A
-    /// negative worth or weight means nothing and is refused too.
+    /// is not there (a damage type without dice, an armor class note without an armor class).
     /// </summary>
     private void OnDeserialized()
     {
-        if (Value < 0)
-        {
-            throw new JsonException("\"value\" cannot be negative.");
-        }
-
-        if (Weight < 0)
-        {
-            throw new JsonException("\"weight\" cannot be negative.");
-        }
-
         if (AttunementBy is not null && !Attunement)
         {
             throw new JsonException("\"attunementBy\" needs \"attunement\": true.");

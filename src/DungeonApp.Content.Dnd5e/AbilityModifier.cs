@@ -2,7 +2,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// D&amp;D 5e's own ability-modifier arithmetic: floor((score - 10) / 2), and the "+2"/"−1"/"+0" text
-/// the monster card shows next to a score. Pure arithmetic over a value the entry's own record
+/// the creature card shows next to a score. Pure arithmetic over a value the entry's own record
 /// already carries - a derived value, not a rule the Mistrz Gry would otherwise apply by hand.
 /// </summary>
 public static class AbilityModifier

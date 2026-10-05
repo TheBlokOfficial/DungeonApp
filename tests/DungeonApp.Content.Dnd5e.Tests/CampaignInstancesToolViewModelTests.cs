@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Entries;
@@ -130,7 +131,7 @@ public sealed class CampaignInstancesToolViewModelTests
     [Fact]
     public async Task Saving_current_hit_points_writes_a_sparse_patch_carrying_only_the_changed_field()
     {
-        var fixture = new Fixture(ResolvedMonster("pack", "goblin", "Goblin", hp: 7));
+        var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
 
         var row = Assert.Single(fixture.CreateViewModel().Instances);
@@ -142,18 +143,16 @@ public sealed class CampaignInstancesToolViewModelTests
         var patch = Assert.Single(fixture.Instances()).Patch;
         Assert.False(patch.IsEmpty);
 
-        // A narrow shape naming only the changed field plus one field the entry itself always
-        // carries - reading the patch through it proves the patch has the first and lacks the
-        // second, without needing every one of Monster's twenty-one properties to deserialize it.
-        var shape = patch.Read<SparsePatchShape>();
-        Assert.Equal(3, shape.CurrentHp);
-        Assert.Null(shape.Actions);
+        // The patch names only the aspect that changed - the type's own fields stay with the entry.
+        var keys = patch.Read<Dictionary<string, JsonElement>>();
+        Assert.Equal(["combat"], keys.Keys);
+        Assert.Equal(3, keys["combat"].GetProperty("currentHp").GetInt32());
     }
 
     [Fact]
     public async Task After_saving_hit_points_the_merged_values_show_the_new_current_hp_and_the_entrys_max_is_untouched()
     {
-        var fixture = new Fixture(ResolvedMonster("pack", "goblin", "Goblin", hp: 7));
+        var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
         await fixture.AddInstanceAsync(address, label: null);
 
@@ -163,16 +162,16 @@ public sealed class CampaignInstancesToolViewModelTests
 
         var instance = Assert.Single(fixture.Instances());
         var resolved = fixture.Context.Resolver.Resolve(instance);
-        var monster = resolved.Values!.Read<Monster>();
+        var combat = resolved.Values!.Read<Creature>().Combat!;
 
-        Assert.Equal(3, monster.CurrentHp);
-        Assert.Equal(7, monster.Hp);
+        Assert.Equal(3, combat.CurrentHp);
+        Assert.Equal(7, combat.Hp);
     }
 
     [Fact]
     public async Task Setting_current_hit_points_back_to_the_entrys_own_value_leaves_the_patch_empty()
     {
-        var fixture = new Fixture(ResolvedMonster("pack", "goblin", "Goblin", hp: 7));
+        var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
         await fixture.AddInstanceAsync(address, label: null);
 
@@ -237,7 +236,7 @@ public sealed class CampaignInstancesToolViewModelTests
     [Fact]
     public async Task A_rows_commands_are_inactive_after_dispose()
     {
-        var fixture = new Fixture(ResolvedMonster("pack", "goblin", "Goblin", hp: 7));
+        var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
 
         var row = Assert.Single(fixture.CreateViewModel().Instances);
@@ -266,51 +265,32 @@ public sealed class CampaignInstancesToolViewModelTests
     private static RegisteredEntry ResolvedGear(string packId, string entryId, string name)
     {
         var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("gear"));
-        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(new Gear { Rarity = "Pospolity", Category = "Mikstura", Weight = 0.25m, Value = 50 }));
+        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(new Gear { Rarity = "Pospolity", Category = "Mikstura", Item = new ItemAspect { Weight = 0.25m, Value = 50 } }));
 
         Assert.True(Dnd5e.TryGet(reference, out var descriptor));
 
         return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
     }
 
-    private static RegisteredEntry ResolvedMonster(string packId, string entryId, string name, int hp)
+    private static RegisteredEntry ResolvedCreature(string packId, string entryId, string name, int hp)
     {
-        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("monster"));
-        var monster = new Monster
+        var reference = new ContentTypeReference(Dnd5e.ContentSetId, ContentId.Create("creature"));
+        var creature = new Creature
         {
             Size = "Mały",
             Type = "goblinoid",
             Alignment = "chaotyczne zło",
-            Ac = 15,
-            Hp = hp,
+            Combat = new CombatAspect { Ac = 15, Hp = hp, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
             Speed = "9 m",
-            Str = 8,
-            Dex = 14,
-            Con = 10,
-            Int = 10,
-            Wis = 8,
-            Cha = 8,
             Senses = "wzrok w ciemności 18 m",
             Challenge = "1/4",
             Actions = new StatblockSection { Entries = [new StatblockEntry { Name = "Tasak", Text = "Tnie." }] },
         };
-        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(monster));
+        var entry = new Entry(ContentId.Create(entryId), name, reference, 1, ContentValues.From(creature));
 
         Assert.True(Dnd5e.TryGet(reference, out var descriptor));
 
         return RegisteredEntry.CreateResolved(new EntryAddress(ContentId.Create(packId), ContentId.Create(entryId)), entry, descriptor);
-    }
-
-    /// <summary>
-    /// Two of <see cref="Monster"/>'s properties, both optional here regardless of how they are
-    /// declared on <see cref="Monster"/> itself - just enough to read a sparse patch without needing
-    /// every required property present to deserialize it.
-    /// </summary>
-    private sealed record SparsePatchShape
-    {
-        public string? Actions { get; init; }
-
-        public int? CurrentHp { get; init; }
     }
 
     private sealed class Fixture

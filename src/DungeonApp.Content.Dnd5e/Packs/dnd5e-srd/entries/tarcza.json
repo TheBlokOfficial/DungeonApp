@@ -8,8 +8,10 @@
     "rarity": "Pospolity",
     "category": "Zbroja",
     "subtype": "tarcza",
-    "weight": 3,
-    "value": 10,
+    "item": {
+      "weight": 3,
+      "value": 10
+    },
 
     "armorClass": "+2",
 

@@ -69,7 +69,7 @@ internal static class Program
         Pump(() => shell.IsSystemChosen && shell.Sidebar is not null, "system choice");
         Settle();
 
-        RenderCards(window, shell, "Potwory", "monster");
+        RenderCards(window, shell, "Stworzenia", "creature");
         RenderCards(window, shell, "Przedmioty", "gear");
         RenderGallery(window, shell);
 

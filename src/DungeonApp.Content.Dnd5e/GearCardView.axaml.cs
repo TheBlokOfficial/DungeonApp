@@ -17,11 +17,11 @@ namespace DungeonApp.Content.Dnd5e;
 /// loader and the designer preview need it.
 /// <para>
 /// Four pieces are lent to the detail header (<see cref="IEntryCardHeader"/>): the square picture -
-/// as wide as the monster's portrait (DungeonDetailPictureWidth), so every card's title starts on
+/// as wide as the creature's portrait (DungeonDetailPictureWidth), so every card's title starts on
 /// the same line; the weight and, under it, the worth at the end of the title's line; the rarity pill at the
 /// start of the tags' row, drawn like the list's (the tags after it - "magiczny", the subtype - are
 /// the profile's, <see cref="Dnd5eSystem"/>); and the KP / Obrażenia / Ładunki headline values,
-/// the same block as the monster's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
+/// the same block as the creature's KP / PZ / Szybkość (<see cref="HeadlineValuesView"/>). An item
 /// with none of those three lends no block; weight and worth every item has.
 /// </para>
 /// <para>
@@ -53,7 +53,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
             Icon = ThemeResource.Get<DrawingImage>("DungeonIconBackpack"),
         };
 
-        // The pairs' values start on the title column's line, as on the monster card: the label
+        // The pairs' values start on the title column's line, as on the creature card: the label
         // column and the pair's own gap together span the picture and the gap after it.
         Traits.LabelWidth = side + ThemeResource.Get<double>("DungeonDetailColumnGap") - ThemeResource.Get<double>("DungeonSpacingSm");
     }
@@ -76,7 +76,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
     {
         picture.ShowIn(_picture);
 
-        _metadata.Show(UnitScale.Weight.Format(gear.Weight), $"wartość {PolishNumber.Format(gear.Value)}");
+        _metadata.Show(UnitScale.Weight.Format(gear.Item.Weight), $"wartość {PolishNumber.Format(gear.Item.Value)}");
 
         ShowRarity(gear.Rarity);
 
@@ -93,7 +93,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
         if (gear.Charges is { } charges)
         {
-            headline.Add(new HeadlineValue("Ładunki", "DungeonIconZap", charges.ToString(CultureInfo.InvariantCulture)));
+            headline.Add(new HeadlineValue("Ładunki", "DungeonIconZap", charges.Max.ToString(CultureInfo.InvariantCulture)));
         }
 
         _headline = headline.Count > 0 ? new HeadlineValuesView() : null;
@@ -104,7 +104,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
             ("Właściwości", gear.Properties),
             ("Siła", gear.StrengthRequirement?.ToString(CultureInfo.InvariantCulture)),
             ("Skradanie się", gear.StealthDisadvantage ? "utrudnienie" : null),
-            ("Odnawianie", gear.Recharge));
+            ("Odnawianie", gear.Charges?.Recharge));
         TraitsBlock.IsVisible = traits.Count > 0;
         Traits.Rows = traits;
 

@@ -9,8 +9,10 @@
     "magical": true,
     "category": "Broń",
     "attunement": true,
-    "weight": 1.5,
-    "value": 60000,
+    "item": {
+      "weight": 1.5,
+      "value": 60000
+    },
 
     "damage": "1k8",
     "damageType": "cięte",
