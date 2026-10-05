@@ -6,10 +6,10 @@ using DungeonApp.Desktop.Features.CampaignLibrary;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa dane każdej kampanii z półki (odczyt repozytorium) - czysta praca w tle, bez dotknięcia
-/// UI. Zapamiętuje pierwszą kampanię z półki dla wizualnej rozgrzewki strony kampanii, biurka i
-/// zakładek kampanii każdego systemu (<see cref="WarmFrameChromeStep"/>,
-/// <see cref="WarmSystemTabsStep"/>) - wizualnie tylko jedną, pierwszą kampanię, nigdy całą półkę.
+/// Warms every shelf campaign's data (repository read) - background work without touching
+/// UI. Remembers the first shelf campaign for visual warmup of the campaign page, desk and
+/// each system's campaign tabs (<see cref="WarmFrameChromeStep"/>,
+/// <see cref="WarmSystemTabsStep"/>) - visually only the first campaign, never the whole shelf.
 /// </summary>
 public sealed class WarmCampaignDataStep(
     CampaignPreparationCache preparations,

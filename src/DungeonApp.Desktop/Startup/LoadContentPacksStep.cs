@@ -5,14 +5,14 @@ using DungeonApp.Core.Entries;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Wczytuje i waliduje paczki treści jednego systemu. Wynik trzyma we własnym polu i udostępnia jako
-/// <see cref="Registry"/> - krok startowy, który ten system sam zgłasza ramie
-/// (<c>IGameSystem.StartupSteps</c>). Rama tylko go uruchamia, nie wiedząc, co robi.
+/// Loads and validates one system's content packs. Holds the result in its own field and exposes
+/// <see cref="Registry"/> - startup step supplied to the shell by the system itself
+/// (<c>IGameSystem.StartupSteps</c>). The shell only runs it, without knowing what it does.
 /// <para>
-/// Nie ma tu własnego try/catch: <see cref="ContentPackLoader.LoadAsync"/> nigdy nie rzuca z powodu
-/// wadliwej paczki - odkłada ją do <see cref="ContentRegistry.RejectedPacks"/> i ładuje dalej. Gdyby
-/// mimo to rzucił, byłby to błąd loadera, a nie coś do wyciszenia tutaj - degradacja z
-/// <c>AppShellViewModel.RunStartupAsync</c> ma to pokazać, nie druga, cichsza warstwa łapania.
+/// No local try/catch: <see cref="ContentPackLoader.LoadAsync"/> never throws for
+/// an invalid pack - adds it to <see cref="ContentRegistry.RejectedPacks"/> and continues loading. Any
+/// exception would be a loader bug, not something to silence here - degraded startup in
+/// <c>AppShellViewModel.RunStartupAsync</c> should show it rather than a second, quieter catch layer.
 /// </para>
 /// </summary>
 public sealed class LoadContentPacksStep(ContentPackLoader packLoader) : IStartupStep
