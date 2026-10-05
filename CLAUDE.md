@@ -35,51 +35,38 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 ## Jak pracujemy
 
 - **Autor mówi, co ma powstać, i ogląda wynik w działającej aplikacji.** Pytaj go wyłącznie o decyzje
-  produktowe: co ma istnieć i jak ma działać dla MG. O implementację, strukturę i wygląd kontrolek
-  decydujesz sam, wiedzą, i krótko to raportujesz.
-- **Jednostka pracy to funkcja widoczna w aplikacji**, zrobiona w jednej sesji od kodu do commita.
-  Nie dziel pracy na porcje tylko po to, żeby je dzielić.
-- **Przed większą funkcją** daj w rozmowie 5–10 linii planu: co autor zobaczy i co się zmieni w kodzie.
-  Nie zapisuj planów jako dokumentów w repozytorium.
-- **Czytaj kod.** Kod jest źródłem prawdy; dokumenty są tylko tam, gdzie kod nie wystarcza.
-- **Architekt i wykonawcy.** Główna sesja jest architektem: rozmawia z autorem, pisze specyfikację,
-  ogląda rendery (`tools/render`) i decyduje; sama nie czyta szczegółów kodu ponad potrzebę decyzji.
-  Kod piszą wykonawcy (subagenci) w worktree, **zawsze w tle** — autor musi móc w tym czasie pisać.
-  Zlecenie ma etapy z punktem zatrzymania i wskazuje pliki; wykonawca czyta tylko to, co zmienia,
-  commituje po każdym zamkniętym kroku, a wygląd renderuje i sam porównuje ze specyfikacją przed
-  oddaniem. W jednym worktree pracuje naraz jeden wykonawca. Jedno zlecenie to jeden obszar kodu
-  (np. układ karty albo dane paczki); niezależne obszary idą do osobnych wykonawców, równolegle
-  w osobnych worktree, a etap po etapie w tym samym obszarze — kolejny wykonawca dostaje ścieżki
-  i hashe commitów poprzedniego. Poprawki idą do tego samego wykonawcy, dopóki jego kontekst jest
-  mały; potem nowy dostaje ścieżki plików. Prace czysto mechaniczne bierze
-  agent `porzadki` (`.claude/agents/`). Autorowi pokazuje się wynik, który architekt sam by przyjął.
-- **Postęp wykonawcy** autor czyta w jego historii. Wykonawca na początku każdej fazy pisze w swojej
-  odpowiedzi linię „Faza: …”, a po jej zamknięciu „Zrobione: …”. Fazy: rozpoznanie w kodzie → etapy
-  zlecenia → sprawdzenie (build, testy, rendery) → raport. Architektowi wysyła tylko raport (na
-  punkcie zatrzymania i na końcu) — meldunki faz tylko rozdmuchałyby kontekst architekta. Listy
-  zadań nie prowadzimy.
-- **Git:** praca w gałęzi → build bez ostrzeżeń i zielone testy → scalenie do `master` → `git push`.
-  CI (`.github/workflows/ci.yml`) musi być zielone. Commity po polsku, małe i logiczne.
+  produktowe; implementację, strukturę i wygląd kontrolek wybierasz sam i krótko raportujesz.
+- **Jedna sesja to jeden wycinek** (funkcja widoczna w aplikacji), od planu do scalenia; następny
+  wycinek to nowa sesja. Najpierw 5–10 linii planu: co autor zobaczy, co się zmieni w kodzie. Wygląd
+  uzgadniasz z autorem na piśmie i na renderze obecnego stanu, zanim powstanie kod.
+- **Architekt** (główna sesja) rozmawia z autorem, czyta kod potrzebny do decyzji i zlecenia, przegląda
+  wyniki i scala. Drobne, lokalne zmiany robi sam; fakt z kodu, którego nie zmienia, zbiera agentem
+  Explore. Autorowi pokazuje wynik, który sam by przyjął.
+- **Wykonawca** (agent `wykonawca` z `.claude/agents/`: Sonnet, w tle, worktree z HEAD architekta)
+  dostaje zamkniętą część pracy. Zlecenie: cel, nazwa gałęzi, pliki i miejsca w nich, znane fakty
+  (wzór, tokeny, pułapki), kryteria z nazwami renderów, czego nie robić, punkt zatrzymania; przed
+  zleceniem commit. Opus (`model: "opus"`) tylko do zadania z otwartym projektem albo szukania
+  nieznanej przyczyny; pracę mechaniczną według reguły bierze `porzadki`. Niezależne obszary — równolegle.
+- **Kolejna runda:** etap przyjęty na renderach scalasz; drobne poprawki robisz sam w worktree
+  wykonawcy (ścieżki bezwzględne i `git -C`, bez `cd` — sesja przeniosłaby się do worktree), dłuższą
+  listę dostaje nowy wykonawca ze ścieżkami i hashami. Wykonawcy z dużym kontekstem nie wznawiaj.
+- **Uwagi autora** po obejrzeniu poprawiasz od razu, gdy to błąd; szlif (działa, ale mogłoby wyglądać
+  lepiej) idzie jednym zdaniem do „Szlif” w `docs/roadmap.md`. Roadmapę i rozstrzygnięcia aktualizujesz
+  raz na wycinek, przy scaleniu, jednym commitem; `docs/architecture.md` — w gałęzi, która zmienia kod.
+- **Git:** każdy commit przechodzi `tools/check.ps1`; gałąź → scalenie do `master` („Scalenie: …”) →
+  `git push` (CI musi być zielone) → usunięcie worktree i gałęzi. Główny katalog stoi zawsze na `master`;
+  każdy agent, także Codex, pracuje we własnej gałęzi i worktree. Commity po polsku, małe i logiczne.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
   sprawdzenia w aplikacji (gdzie kliknąć, na co patrzeć). Bez nazw klas, chyba że autor zapyta.
-- **Uwagi autora po obejrzeniu** poprawia się w tej samej sesji, jeśli trwa — gdy to błąd. Szlif
-  (działa, ale mogłoby wyglądać lepiej) nie blokuje kamienia milowego: idzie jednym zdaniem do sekcji
-  „Szlif” w `docs/roadmap.md`, a praca idzie dalej.
 
 ## Budowanie i testy
 
-```bash
-dotnet build DungeonApp.sln
-dotnet test DungeonApp.sln
-dotnet run --project src/DungeonApp.App
-```
-
-Błąd `MSB3021`/`MSB3027` na `bin/` projektu wykonywalnego to blokada pliku przez podgląd XAML w Riderze
-albo uruchomioną aplikację autora, nie błąd kodu. Nie zabijaj procesów. Buduj wtedy i testuj projekty
-testowe; one nie zależą od `DungeonApp.App`.
-
-Wygląd bez ekranu: `powershell -File tools/render/render.ps1` renderuje karty i sekcje galerii do
-`tools/render/out/*.png` (poza solucją, buduje do `tools/render/artifacts/`; `zoom.ps1` powiększa wycinek).
+`powershell -File tools/check.ps1` buduje i testuje, wypisując tylko błędy, ostrzeżenia i podsumowania
+(`-Tests Core`, `-Filter <nazwa>`, `-NoTest`); blokadę `bin/` aplikacji (`MSB3021`/`MSB3027`: podgląd
+XAML w Riderze albo uruchomiona aplikacja autora) obchodzi sam — nie zabijaj procesów. Aplikacja:
+`dotnet run --project src/DungeonApp.App`. Render bez ekranu: `powershell -File tools/render/render.ps1
+-Only '<wzorzec>'` → `tools/render/out/` (bez `-Only` wszystkie karty i galeria, kilka minut; `zoom.ps1`
+powiększa wycinek). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write — PowerShell psuje polskie znaki.
 
 ## Struktura
 
@@ -95,8 +82,8 @@ tests/                        Core, Desktop, Desktop.RenderingTests (okno bez ek
 ```
 
 Granic pilnują testy: Core nie referencuje Avalonii; Core i Desktop nie referencują `Content.*`; skan
-słownictwa nie pozwala, żeby w Core i Desktop padła nazwa typu z systemu (także w galerii kontrolek).
-Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
+słownictwa nie pozwala, żeby w Core i Desktop padła nazwa typu z systemu (także w komentarzach
+i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 
 ## Konwencje
 
@@ -158,6 +145,6 @@ Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 | `docs/roadmap.md` | co dalej | 150 linii |
 | `docs/archive/` | dokumenty sprzed przebudowy obiegu pracy | nie czytaj przy zwykłej pracy |
 
-Dokument opisuje stan, nie historię: bez dat, „wcześniej”, „autor powiedział”. Aktualizuje się go
-w tym samym commicie co kod. Przekroczony limit znaczy: przytnij, zamiast dopisywać. Wiedzy
+Kod jest źródłem prawdy; dokument jest tam, gdzie kod nie wystarcza, i opisuje stan, nie historię: bez
+dat, „wcześniej”, „autor powiedział”. Przekroczony limit znaczy: przytnij, zamiast dopisywać. Wiedzy
 o projekcie nie zapisuje się w pamięci asystenta — tylko w tych plikach.

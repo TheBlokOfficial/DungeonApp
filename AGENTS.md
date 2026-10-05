@@ -1,8 +1,12 @@
 # DungeonApp
 
-Zasady projektu są w `CLAUDE.md` — przeczytaj go w całości przed pracą; obowiązuje każdego agenta,
-nie tylko Claude. Ten plik tylko odsyła, żeby nie powstały dwie wersje tych samych zasad.
+Zasady projektu są w `CLAUDE.md` — obowiązują każdego agenta, nie tylko Claude; ten plik tylko
+odsyła, żeby nie powstały dwie wersje tych samych zasad. Ciebie dotyczą: granica automatyzacji,
+budowanie i testy, struktura, konwencje i pułapki. Sekcja „Jak pracujemy” opisuje sesje Claude
+z wykonawcami; z niej obowiązuje cię punkt o gicie.
 
-Sekcja „Architekt i wykonawcy” w `CLAUDE.md` opisuje pracę sesji Claude z podagentami. Pracując
-z autorem bezpośrednio, jesteś wykonawcą: zlecenie dostajesz od autora, pracujesz w osobnej gałęzi,
-commitujesz po każdym zamkniętym kroku i nie scalasz do `master` bez jego zgody.
+Pracujesz z autorem bezpośrednio, jako wykonawca:
+- własna gałąź we własnym worktree, nigdy w głównym katalogu — ten stoi na `master` i z niego
+  autor uruchamia aplikację;
+- commit po każdym zamkniętym kroku, każdy przechodzi `powershell -File tools/check.ps1`;
+- do `master` nie scalasz — scala sesja Claude po przeglądzie.
