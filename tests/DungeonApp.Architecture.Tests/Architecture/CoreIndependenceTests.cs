@@ -5,8 +5,8 @@ using System.Reflection;
 namespace DungeonApp.Architecture.Tests;
 
 /// <summary>
-/// Granica, na której stoi cały podział na dwa projekty: logika gry nie może wiedzieć o UI.
-/// Referencja do Avalonia w Core oznacza, że reguły przestały być testowalne bez okna.
+/// The boundary behind the split into two projects: game logic must not know about the UI.
+/// An Avalonia reference in Core means the rules can no longer be tested without a window.
 /// </summary>
 public sealed class CoreIndependenceTests
 {

@@ -13,9 +13,9 @@
     <UserControl.Resources>
         <controls:ResourceKeyToImageConverter x:Key="IconResourceConverter" />
 
-        <!-- Pas kreski zaznaczenia wierszy nawigacji (ListRow): odstęp kreski od tła wiersza 12,
-             wcięcie z góry i z dołu 6. Pasek nie ma przewijania: strefa paska w wierszu to tylko
-             prawy pas wiersza (12, szerokość pasa kreski) - treść kończy się tam, gdzie tło. -->
+        <!-- Selection-marker lane for navigation rows (ListRow): 12 between the marker and row background,
+             6 inset at the top and bottom. The sidebar does not scroll: the row's scrollbar zone is just
+             its right-hand lane (12, matching the marker lane) - content ends at the background edge. -->
         <x:Double x:Key="DungeonListRowStripeGutter">12</x:Double>
         <Thickness x:Key="DungeonListRowStripeInset">0,6</Thickness>
         <Thickness x:Key="DungeonScrollBarZone">0,0,12,0</Thickness>
@@ -23,8 +23,8 @@
              a System-category tab, and an Aplikacja row alike - so a row's category never shows in
              its own visual shape, only in which group on the page it sits in. -->
         <DataTemplate x:Key="NavigationItemTemplate" x:DataType="vm:NavigationItemViewModel">
-            <!-- Wiersz ramy (ListRow) z kreską; aktywna pozycja = wybrana. Ikona na środku kolumny 40
-                 za pasem kreski (12) - na środku zwiniętego paska (64), tło wiersza kwadratem 40. -->
+            <!-- Frame row (ListRow) with a marker; the active item is selected. The icon is centered in
+                 the 40-wide column after the marker lane (12), centered in the collapsed sidebar (64), with a 40-square background. -->
             <controls:ListRow ShowsSelectionStripe="True"
                               IsSelected="{Binding IsActive}"
                               Command="{Binding SelectCommand}"
@@ -64,9 +64,9 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- Wymiary wierszy nawigacji (styl listy): wysokość 40 zamiast wysokości wiersza listy ramy,
-             bez wcięcia treści (kolumny siatki wiersza dają położenie ikony i etykiety). Tło wiersza
-             stoi symetrycznie między pasem kreski a krawędzią paska - prawy pas (12) niesie motyw wiersza. -->
+        <!-- Navigation-row dimensions (list style): height 40 instead of the frame's list-row height,
+             with no content inset (the row's grid columns position the icon and label). The background
+             sits symmetrically between the marker lane and sidebar edge - the row theme supplies the right-hand lane (12). -->
         <Style Selector="controls|ListRow">
             <Setter Property="Height" Value="40" />
             <Setter Property="Padding" Value="0" />

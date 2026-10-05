@@ -4,27 +4,27 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Chip z listą wyboru: Button z okienkiem wysuwanym (Button.Flyout) i
-        Theme="{StaticResource DungeonChipOpener}" - filtr, którego wartość wybiera się z listy.
-        Wygląd chipa filtra (DungeonChip): wysokość DungeonChipHeight (28, jawnie), zaokrąglenie
-        DungeonControlCornerRadius, wcięcie DungeonChipPadding, pismo interfejsu 12 Medium, krawędź
-        zawsze 1 px. Za napisem strzałka jak w liście rozwijanej (ComboBox, DropDownPicker) - ten sam
-        rysunek i rozmiar, w kolorze tekstu chipa: zamknięta w prawo, otwarta wskazuje kierunek
-        otwarcia (w dół albo w górę - klasa .opens-up z Themes/PopupOpenMotion.cs), obrót ruchem
-        (DungeonMotionDuration, z wyhamowaniem; ReducedMotion.axaml go zdejmuje). Napis w jednej
-        linii, zbyt długi przycina się wielokropkiem z podpowiedzią. Położenie okienka (Placement)
-        ustawia widok; okienko z listą - FlyoutPresenterClasses="list-host".
-        Stany:
-          spoczynek        - tło BackstageRow, krawędź Border, tekst TextRegular;
-          najechanie       - krawędź BorderStrong, tekst TextPrimary (:pointerover:not(.hover-suppressed));
-                             wciśnięcie - jak najechanie;
-          otwarty          - jak najechanie (:flyout-open); po zamknięciu kliknięciem w siebie spoczynek,
-                             dopóki mysz nie zjedzie (Themes/OpenerHoverRest.cs);
-          aktywny (.active - filtr zawęża listę) - tło AccentDim, krawędź AccentEdge, tekst i strzałka
-                             AccentOnDim; pod myszą, wciśnięty i otwarty bez zmian (jak włączony DungeonChip);
-          wyłączony        - DungeonDisabledOpacity, wygląd spoczynku; aktywny wyłączony traci akcent
-                             (tło SurfaceActive, krawędź Border).
-        Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka.
+        Chip with a choice list: Button with a flyout (Button.Flyout) and
+        Theme="{StaticResource DungeonChipOpener}" - a filter whose value is selected from a list.
+        Filter chip appearance (DungeonChip): DungeonChipHeight (28, explicit),
+        DungeonControlCornerRadius, DungeonChipPadding, UI font 12 Medium, border
+        always 1 px. The arrow after the label matches dropdowns (ComboBox, DropDownPicker) in
+        shape and size, using the chip's text colour: right when closed, pointing towards
+        the popup when open (down or up - .opens-up from Themes/PopupOpenMotion.cs), animated rotation
+        (DungeonMotionDuration, easing out; disabled by ReducedMotion.axaml). Single-line text,
+        trimmed with an ellipsis and tooltip when too long. The view sets popup Placement;
+        list flyouts use FlyoutPresenterClasses="list-host".
+        States:
+          resting          - BackstageRow background, Border border, TextRegular text;
+          hover            - BorderStrong border, TextPrimary text (:pointerover:not(.hover-suppressed));
+                             pressed - same as hover;
+          open             - same as hover (:flyout-open); clicking itself closed restores rest
+                             until the pointer leaves (Themes/OpenerHoverRest.cs);
+          active (.active - filter narrows the list) - AccentDim background, AccentEdge border, text and arrow
+                             AccentOnDim; hover, pressed and open stay unchanged (as with an enabled DungeonChip);
+          disabled         - DungeonDisabledOpacity, resting appearance; active disabled loses its accent
+                             (SurfaceActive background, Border border).
+        No visible focus indicator (empty FocusAdorner), arrow cursor.
     -->
     <ControlTheme x:Key="DungeonChipOpener" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -82,7 +82,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <!-- Aktywny: w każdym stanie myszy i otwarcia ten sam - jawnie, nie przez kolejność stylów. -->
+        <!-- Active: identical across pointer and open states - explicit, independent of style order. -->
         <Style Selector="^.active, ^.active:pointerover, ^.active:pressed, ^.active:flyout-open">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />
@@ -101,7 +101,7 @@
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
-        <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę; obrót ruchem. -->
+        <!-- Arrow: right when closed, down or up when open; animated rotation. -->
         <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-90deg)" />
             <Setter Property="Transitions">

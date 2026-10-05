@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Tekst do zaznaczenia: menu podręczne z kopiowaniem, gdy włączony. Kursor i barwę zaznaczenia
-        nadaje styl w Typography.axaml.
+        Selectable text: context menu with copy when enabled. Cursor and selection colour
+        come from the style in Typography.axaml.
     -->
     <ControlTheme x:Key="{x:Type SelectableTextBlock}" TargetType="SelectableTextBlock">
         <Style Selector="^[IsEnabled=True]">

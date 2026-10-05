@@ -7,8 +7,8 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// DropDownPicker na obiektach: nazwa pozycji w wierszach i w tekście zamkniętej listy pochodzi
-/// z DisplayMemberBinding, nie z ToString().
+/// DropDownPicker with object items: names in the rows and closed-list text come from
+/// DisplayMemberBinding, not ToString().
 /// </summary>
 public sealed class DropDownPickerDisplayMemberTests
 {

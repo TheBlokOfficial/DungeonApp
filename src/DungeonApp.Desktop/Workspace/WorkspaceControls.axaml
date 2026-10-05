@@ -3,7 +3,7 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls"
                     xmlns:workspace="using:DungeonApp.Desktop.Workspace.Controls">
 
-    <!-- Konwertery i pędzle używane wyłącznie przez motywy biurka i pływającego okna poniżej. -->
+    <!-- Converters and brushes used only by the workspace and floating-window themes below. -->
     <controls:ResourceKeyToImageConverter x:Key="DungeonIconResourceConverter" />
 
     <SolidColorBrush x:Key="DungeonWorkspaceGridLineBrush"
@@ -36,7 +36,7 @@
     </ControlTheme>
 
     <!-- =================================================================== -->
-    <!-- OBSZAR ROBOCZY (WORKSPACE)                                          -->
+    <!-- WORKSPACE                                                         -->
     <!-- =================================================================== -->
 
     <ControlTheme x:Key="{x:Type workspace:WorkspaceSurface}" TargetType="workspace:WorkspaceSurface">
@@ -63,7 +63,7 @@
     </ControlTheme>
 
     <!-- =================================================================== -->
-    <!-- PŁYWAJĄCE OKNO (PANEL WINDOW)                                       -->
+    <!-- FLOATING WINDOW (PANEL WINDOW)                                     -->
     <!-- =================================================================== -->
 
     <ControlTheme x:Key="{x:Type workspace:PanelWindow}" TargetType="workspace:PanelWindow">
@@ -85,13 +85,13 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid>
-                    <!-- Główna struktura okna -->
+                    <!-- Main window structure -->
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid RowDefinitions="Auto,*">
-                            <!-- Pasek tytułowy -->
+                            <!-- Title bar -->
                             <Border Name="PART_TitleBar"
                                     Background="{DynamicResource DungeonPanelWindowHeaderBrush}"
                                     Height="{DynamicResource DungeonPanelHeaderHeight}">
@@ -118,7 +118,7 @@
                                 </Grid>
                             </Border>
 
-                            <!-- Zawartość okna -->
+                            <!-- Window content -->
                             <ContentPresenter Grid.Row="1"
                                               Name="PART_ContentPresenter"
                                               Content="{TemplateBinding Content}"
@@ -126,7 +126,7 @@
                         </Grid>
                     </Border>
 
-                    <!-- Siatka uchwytów zmiany rozmiaru (Zoptymalizowana klasami) -->
+                    <!-- Resize-grip grid (shared styles through classes) -->
                     <Grid Name="PART_ResizeGrid"
                           RowDefinitions="Auto,*,Auto"
                           ColumnDefinitions="Auto,*,Auto"
@@ -141,7 +141,7 @@
                         <Border Name="PART_ResizeSE" Grid.Row="2" Grid.Column="2" Classes="grip-corner" Cursor="BottomRightCorner" />
                     </Grid>
 
-                    <!-- Przyciski akcji nagłówka -->
+                    <!-- Header action buttons -->
                     <StackPanel HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
@@ -175,7 +175,7 @@
                         </Button>
                     </StackPanel>
 
-                    <!-- Ramka i krawędź nagłówka -->
+                    <!-- Frame and header border -->
                     <Border Height="{DynamicResource DungeonPanelHeaderHeight}"
                             VerticalAlignment="Top"
                             BorderBrush="{DynamicResource DungeonBorderBrush}"
@@ -191,7 +191,7 @@
         </Setter>
 
         <!-- =============================================================== -->
-        <!-- STYLE I SELEKTORY STANÓW                                         -->
+        <!-- STYLES AND STATE SELECTORS                                      -->
         <!-- =============================================================== -->
 
         <!-- Reusable Grips Styles -->
@@ -212,7 +212,7 @@
             <Setter Property="Width" Value="{DynamicResource DungeonPanelResizeBorderThickness}" />
         </Style>
 
-        <!-- Stany interakcji i aktywacji okna -->
+        <!-- Window interaction and activation states -->
         <Style Selector="^:active">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonPanelWindowActiveBorderBrush}" />
         </Style>
@@ -227,7 +227,7 @@
             <Setter Property="IsHitTestVisible" Value="False" />
         </Style>
 
-        <!-- Stany ikon przycisków nagłówka -->
+        <!-- Header button icon states -->
         <Style Selector="^ /template/ Image#PART_RestoreIcon">
             <Setter Property="IsVisible" Value="False" />
         </Style>
@@ -241,7 +241,7 @@
             <Setter Property="ToolTip.Tip" Value="{DynamicResource DungeonStringRestoreToolTip}" />
         </Style>
 
-        <!-- Połączony selektor blokady myszy przy manipulacji oknem -->
+        <!-- Combined selector blocking pointer input during window manipulation -->
         <Style Selector="^:dragging /template/ ContentPresenter#PART_ContentPresenter,
                        ^:resizing /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="IsHitTestVisible" Value="False" />

@@ -3,9 +3,9 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Odznaka: krótka wartość przy rzeczy - liczba, wyzwanie "1/2", "+3" - krojem liczb. Słowo
-/// (kategoria, typ, rzadkość) to <see cref="WordTag"/>. Nieklikalna. Wygląd i odmiany po znaczeniu
-/// (klasy .accent, .success, .warning, .danger, .custom) należą do motywu ramy
+/// Badge: short value beside an object - number, challenge "1/2", "+3" - in the numeric font. A word
+/// (category, type, rarity) uses <see cref="WordTag"/>. Non-clickable. Appearance and semantic variants
+/// (.accent, .success, .warning, .danger, .custom classes) belong to the shell theme
 /// (Themes/Controls/BadgeAndWordTag.axaml).
 /// </summary>
 public sealed class Badge : ContentControl

@@ -3,18 +3,18 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Wartość nagłówkowa (controls:StatTile): KP, PW, szybkość w nagłówku karty. Bez tła, ramki
-        i wcięcia - sama kolumna tekstu na karcie; kilka takich stoi obok siebie w kolumnach równej
-        szerokości, a odstęp daje układający. Bez ramki to liczba prowadzi oko, więc od góry:
-          podpis - ikona DungeonStatTileIconSize i napis w roli caption, oba przygaszone (TextMuted);
-          wartość - stat-value-lg (ten krój i grubość co liczba w tabeli cech, stopień większy),
-            tekst podstawowy;
-          dopisek - caption, przygaszony; jego linia stoi zawsze, także pusta (puste, zerowej
-            szerokości „ ” w tym samym stylu), więc wartości jednego rzędu mają równą wysokość
-            i stoją dnem w jednej linii, z dopiskiem czy bez.
-        Każdy tekst zawija się w swojej kolumnie.
-        Bez stanów: nie reaguje na mysz i nie przyjmuje fokusu; tekst się zaznacza (SelectableTextBlock).
-        Wyłączony - DungeonDisabledOpacity, gdy nic wyżej nie przygasza.
+        Header value (controls:StatTile): "KP", "PW", speed in the card header. No background, border
+        or padding - just a text column on the card; several sit side by side in equal-width
+        columns, with spacing supplied by the view. Without a border the number leads the eye, so top to bottom:
+          label - DungeonStatTileIconSize icon and caption text, both muted (TextMuted);
+          value - stat-value-lg (same font and weight as ability-table numbers, larger size),
+            regular text;
+          note - muted caption; its line always exists, even when empty (empty, zero-width
+            " " in the same style), so values in one row have equal height
+            and bottom alignment, with or without a note.
+        Each text wraps within its column.
+        No states: no pointer response or focus; text is selectable (SelectableTextBlock).
+        Disabled - DungeonDisabledOpacity unless an ancestor already dims it.
     -->
     <ControlTheme x:Key="{x:Type controls:StatTile}" TargetType="controls:StatTile">
         <Setter Property="Focusable" Value="False" />

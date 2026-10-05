@@ -4,27 +4,27 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Odznaka (controls:Badge) i tag (controls:WordTag): dwa klocki dla rzeczy nieklikalnych,
-        rozróżnione tym, czym jest treść. Odznaka niesie wartość (liczba, wyzwanie "1/2", "+3"):
-        prostokąt DungeonBadgeCornerRadius, wcięcie DungeonBadgePadding, krój liczb DungeonMonoFont,
-        12 (DungeonHelperFontSize), SemiBold. Tag niesie słowo (kategoria, typ, rzadkość): pigułka
-        DungeonTagCornerRadius (połowa wysokości), wcięcie DungeonTagPadding, pismo interfejsu 12,
-        Medium. Oba: wysokość DungeonBadgeHeight, na środku linii w pionie (wiersz listy 32, tekst
-        13), szerokość z treści albo od kontenera; treść się nie zawija - zbyt długa przycina się
-        wielokropkiem z pełnym napisem w podpowiedzi (Themes/TrimmedLabelToolTip.cs). Krawędź zawsze
-        1 px (w odmianach bez krawędzi przezroczysta) - odmiana nie zmienia wymiarów.
-        Bez stanów: nie reagują na mysz, nie przyjmują fokusu, kursor strzałka, tekst się nie
-        zaznacza. Wyłączone - DungeonDisabledOpacity, gdy nic wyżej nie przygasza.
-        Odmiany po znaczeniu (klasy, te same dla obu):
-          (brak)   - neutralna: odznaka - tło NeutralDim (półprzezroczyste, na każdej powierzchni),
-                     krawędź Border, tekst TextRegular;
-                     tag - bez tła, krawędź BorderStrong, tekst TextRegular;
-          .accent  - tło AccentDim, tekst AccentOnDim, bez krawędzi;
-          .success - tło SuccessDim, tekst Success, bez krawędzi;
-          .warning - tło WarningDim, tekst Warning, bez krawędzi;
-          .danger  - tło DangerDim, tekst DangerOnDim, bez krawędzi;
-          .custom  - kolor podany przez układającego (skale systemu, np. rzadkość): bez krawędzi,
-                     tło i tekst ustawia widok wprost - Background i Foreground z tokenów systemu.
+        Badge (controls:Badge) and tag (controls:WordTag): two non-interactive building blocks,
+        distinguished by their content. A badge carries a value (number, challenge "1/2", "+3"):
+        rectangle with DungeonBadgeCornerRadius, DungeonBadgePadding, numeric DungeonMonoFont,
+        12 (DungeonHelperFontSize), SemiBold. A tag carries a word (category, type, rarity): pill
+        with DungeonTagCornerRadius (half its height), DungeonTagPadding, UI font size 12,
+        Medium. Both: DungeonBadgeHeight, vertically centred on the line (list row 32, text
+        13), width from content or container; content does not wrap - long text is trimmed
+        with an ellipsis and shown in full in a tooltip (Themes/TrimmedLabelToolTip.cs). The border is always
+        1 px (transparent in borderless variants) - variants do not change dimensions.
+        No interaction states: no mouse response or focus, arrow cursor, text cannot be
+        selected. Disabled - DungeonDisabledOpacity, unless an ancestor already dims it.
+        Semantic variants (classes, shared by both):
+          (none)   - neutral: badge - NeutralDim background (translucent on any surface),
+                     Border border, TextRegular text;
+                     tag - no background, BorderStrong border, TextRegular text;
+          .accent  - AccentDim background, AccentOnDim text, no border;
+          .success - SuccessDim background, Success text, no border;
+          .warning - WarningDim background, Warning text, no border;
+          .danger  - DangerDim background, DangerOnDim text, no border;
+          .custom  - colour supplied by the view (system scales, e.g. rarity): no border,
+                     background and text set directly by the view - Background and Foreground from system tokens.
     -->
     <ControlTheme x:Key="{x:Type controls:Badge}" TargetType="controls:Badge">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -102,7 +102,7 @@
         <Setter Property="Padding" Value="{DynamicResource DungeonTagPadding}" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonTagCornerRadius}" />
         <Setter Property="BorderThickness" Value="1" />
-        <!-- Przezroczyste, nie puste: podpowiedź przyciętego napisu potrzebuje trafienia myszą. -->
+        <!-- Transparent, not null: the trimmed-text tooltip needs mouse hit testing. -->
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />

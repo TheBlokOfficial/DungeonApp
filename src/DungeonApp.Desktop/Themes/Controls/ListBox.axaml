@@ -3,29 +3,29 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Lista (ListBox) i wiersz listy (ListBoxItem). Szablony wycięte z ListBox.xaml
-        i ListBoxItem.xaml Fluenta (Avalonia 12.0.5, MIT): zostały obszar przewijania
-        (PART_ScrollViewer - pasek z motywu ScrollViewer ramy), prezenter elementów
-        (PART_ItemsPresenter) i prezenter treści wiersza (PART_ContentPresenter).
-        Lista leży na powierzchni, na której ją położono: tło przezroczyste, bez krawędzi, bez
-        wewnętrznego wcięcia. Nie ma własnych stanów; fokus bez wyglądu (FocusAdorner pusty).
-        Wiersz: wysokość najmniej DungeonListRowHeight - jedna linia tekstu albo ikona nie zmienia
-        jej ani o piksel; wyższy jest tylko wiersz, którego szablon składa się z kilku kontrolek (np.
-        świat kampanii). Wcięcie poziome DungeonSpacingMd, po prawej większe o strefę paska
-        przewijania (DungeonScrollBarZone) - tło wiersza sięga pod pasek, treść nie; treść wyśrodkowana
-        w pionie z założenia,
-        tekst w jednej linii przycięty wielokropkiem (szablon wiersza może to jawnie zmienić), stopień
-        i grubość tekstu interfejsu (Normal) w każdym stanie. Zaokrąglenie wyróżnienia
-        DungeonNavigationCornerRadius, bez krawędzi. Kursor strzałka.
-        Stany:
-          spoczynek          - tło przezroczyste;
-          najechanie         - tło BackstageRowHover, także nad akcją wiersza (DungeonRowAction);
-          wybrane            - tło AccentDim, także pod myszą i wciśnięte - wybrany wiersz nie ma
-                               najechania (klik w niego nic nie zmienia; styl stoi po najechaniu);
-          wciśnięcie         - wygląda jak pod myszą (niewybrany);
-          wyłączenie         - DungeonDisabledOpacity jak każda wyłączona kontrolka, tło
-                               przezroczyste, bez reakcji na mysz.
-        Fokus wiersza nie ma wyglądu (FocusAdorner pusty) - przyjdzie z obsługą klawiatury.
+        List (ListBox) and list row (ListBoxItem). Templates based on Fluent ListBox.xaml
+        and ListBoxItem.xaml (Avalonia 12.0.5, MIT): scroll area
+        (PART_ScrollViewer - scrollbar from the shell ScrollViewer theme), item presenter
+        (PART_ItemsPresenter) and row content presenter (PART_ContentPresenter).
+        List uses its underlying surface: transparent background, no border or
+        internal padding. No separate states; no focus appearance (empty FocusAdorner).
+        Row: minimum height DungeonListRowHeight - a single text line or icon does not change
+        it by a pixel; only rows with several controls in their template are taller (e.g.
+        campaign world). Horizontal padding DungeonSpacingMd, increased on the right by the scrollbar
+        zone (DungeonScrollBarZone) - row background extends under the bar, content does not; content vertically
+        centred by default,
+        text on one line trimmed with an ellipsis (row template can explicitly override this), UI text size
+        and weight (Normal) in every state. Highlight radius
+        DungeonNavigationCornerRadius, no border. Arrow cursor.
+        States:
+          resting           - transparent background;
+          hover             - BackstageRowHover background, including over the row action (DungeonRowAction);
+          selected          - AccentDim background, including hover and pressed - selected rows have no
+                               hover (clicking changes nothing; style follows hover);
+          pressed           - looks hovered (unselected);
+          disabled          - DungeonDisabledOpacity like any disabled control, transparent
+                               background, no pointer response.
+        Row focus has no appearance (empty FocusAdorner).
     -->
     <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
         <Setter Property="Background" Value="Transparent" />
@@ -64,11 +64,11 @@
     </ControlTheme>
 
     <!--
-        Lista z polami wyboru (ListBox z Theme="{StaticResource DungeonCheckList}", zwykle
-        SelectionMode="Multiple,Toggle", wiersz z CheckBox związanym z IsSelected wiersza): stan wiersza
-        niesie samo pole wyboru - wybrany wiersz nie dostaje tła AccentDim, najechanie jak w zwykłym
-        wierszu. Ten sam wygląd mają wiersze DropDownPicker wielokrotnego - oba biorą go z motywu
-        ListBoxItem przez znacznik themes:CheckList.IsCheckList.
+        Checkbox list (ListBox with Theme="{StaticResource DungeonCheckList}", usually
+        SelectionMode="Multiple,Toggle", row CheckBox bound to the row's IsSelected): only the checkbox
+        indicates row state - selected rows have no AccentDim background, hover matches regular
+        rows. Multiple-selection DropDownPicker rows have the same appearance - both obtain it from the
+        ListBoxItem theme via themes:CheckList.IsCheckList.
     -->
     <ControlTheme x:Key="DungeonCheckList" TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
         <Setter Property="themes:CheckList.IsCheckList" Value="True" />
@@ -91,12 +91,12 @@
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <!-- Podświetlenie o DungeonListRowHighlightInset węższe z góry i z dołu niż wiersz:
-                     sąsiednie podświetlenia dzieli odstęp, wiersz dalej zajmuje DungeonListRowHeight.
-                     Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie - najechanie nie
-                     gaśnie między wierszami. Podświetlenie sięga na całą szerokość wiersza, także pod
-                     pasek przewijania; treść kończy się przed strefą paska (DungeonScrollBarZone
-                     dokładane do wcięcia wiersza). -->
+                <!-- Highlight inset by DungeonListRowHighlightInset at top and bottom:
+                     adjacent highlights have a gap, while the row still occupies DungeonListRowHeight.
+                     The outer border's transparent background catches the pointer in the gap too - hover does not
+                     disappear between rows. Highlight spans the full row width, including under
+                     the scrollbar; content ends before the scrollbar zone (DungeonScrollBarZone
+                     added to row padding). -->
                 <Border Background="Transparent">
                     <Border Name="PART_Highlight"
                             Margin="{DynamicResource DungeonListRowHighlightInset}"
@@ -115,8 +115,8 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Strefa paska stylem, nie wartością w szablonie: wiersz w okienku wysuwanym (ComboBoxItem,
-             wiersze w FlyoutPresenter - BuiltInControls.axaml) nadpisuje ją DungeonScrollBarZoneInFlyout. -->
+        <!-- Scrollbar zone set by style, not a template value: flyout rows (ComboBoxItem,
+             rows in FlyoutPresenter - BuiltInControls.axaml) override it with DungeonScrollBarZoneInFlyout. -->
         <Style Selector="^ /template/ Border#PART_Highlight">
             <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZone}" />
         </Style>
@@ -126,8 +126,8 @@
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
         </Style>
-        <!-- Lista z polami wyboru (themes:CheckList.IsCheckList - motyw DungeonCheckList, wiersze
-             DropDownPicker wielokrotnego): stan niesie pole, wybrany wiersz wygląda jak niewybrany. -->
+        <!-- Checkbox list (themes:CheckList.IsCheckList - DungeonCheckList theme, multiple-selection
+             DropDownPicker rows): checkbox indicates state, selected row looks unselected. -->
         <Style Selector="^[(themes|CheckList.IsCheckList)=True]:selected">
             <Setter Property="Background" Value="Transparent" />
         </Style>

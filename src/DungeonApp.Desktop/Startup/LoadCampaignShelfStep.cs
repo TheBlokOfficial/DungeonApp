@@ -7,10 +7,10 @@ using DungeonApp.Desktop.Features.CampaignLibrary;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Wczytuje półkę kampanii, zanim cokolwiek wizualne o niej wie. Wynik trzyma we własnym polu i
-/// udostępnia następnym krokom - <see cref="WarmCampaignDataStep"/> potrzebuje tych samych
-/// podsumowań, a rozgrzewka biurka i strony kampanii (<see cref="WarmFrameChromeStep"/>,
-/// <see cref="WarmSystemTabsStep"/>) - pierwszej kampanii z tej listy, jeśli jakaś istnieje.
+/// Loads the campaign shelf before any visual component knows about it. Holds the result in its own field
+/// and exposes it to subsequent steps - <see cref="WarmCampaignDataStep"/> needs the same
+/// summaries, while desk and campaign-page warmup (<see cref="WarmFrameChromeStep"/>,
+/// <see cref="WarmSystemTabsStep"/>) needs the first campaign in this list, if one exists.
 /// </summary>
 public sealed class LoadCampaignShelfStep(CampaignLibraryViewModel campaignLibrary) : IStartupStep
 {

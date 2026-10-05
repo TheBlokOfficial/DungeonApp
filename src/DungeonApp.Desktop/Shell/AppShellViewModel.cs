@@ -174,8 +174,8 @@ public sealed partial class AppShellViewModel : ObservableObject
     /// </summary>
     public void FlushPendingState() => _session?.ReleaseAll();
 
-    // Internal, nie private: korzeń kompozycji (App.Initialize) domyka na tę metodę wskaźnik
-    // zwrotny biblioteki kampanii, zanim ta instancja powłoki w ogóle powstanie.
+    // Internal, not private: the composition root (App.Initialize) closes the campaign-library
+    // callback over this method before this shell instance is created.
     internal async Task OpenCampaignAsync(CampaignSummary summary)
     {
         if (_session is null)

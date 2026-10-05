@@ -26,7 +26,7 @@
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
-            <!-- Zwykły -->
+            <!-- Default -->
             <TextBlock Grid.Row="0" Classes="caption muted row-label" Text="Zwykły" />
             <StackPanel Grid.Row="0" Grid.Column="1" Classes="button-row">
                 <Button Content="Zapisz" />
@@ -39,11 +39,11 @@
                     </StackPanel>
                 </Button>
                 <Button Content="Wyłączony" IsEnabled="False" />
-                <!-- Wyłączony przez komendę: CanExecute fałsz, IsEnabled zostaje true - przygasza :disabled. -->
+                <!-- Disabled by the command: CanExecute is false, IsEnabled stays true - :disabled dims it. -->
                 <Button x:Name="DisabledByCommandSample" Content="Wyłączony przez komendę" />
             </StackPanel>
 
-            <!-- Główny -->
+            <!-- Primary -->
             <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Główny · primary" />
             <StackPanel Grid.Row="1" Grid.Column="1" Classes="button-row">
                 <Button Classes="primary" Content="Utwórz" />
@@ -58,7 +58,7 @@
                 <Button Classes="primary" Content="Wyłączony" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Cichy -->
+            <!-- Quiet -->
             <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Cichy · subtle" />
             <StackPanel Grid.Row="2" Grid.Column="1" Classes="button-row">
                 <Button Classes="subtle" Content="Anuluj" />
@@ -73,7 +73,7 @@
                 <Button Classes="subtle" Content="Wyłączony" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Niszczący -->
+            <!-- Destructive -->
             <TextBlock Grid.Row="3" Classes="caption muted row-label" Text="Niszczący · danger" />
             <StackPanel Grid.Row="3" Grid.Column="1" Classes="button-row">
                 <Button Classes="danger" Content="Usuń" />
@@ -100,8 +100,8 @@
                 </TextBlock>
             </StackPanel>
 
-            <!-- Sortowanie: odnośnik otwierający menu pól i przycisk kierunku (controls:SortPicker).
-                 Pola i ich rodzaje ustawia ButtonsSection.axaml.cs - przykładowe, neutralne. -->
+            <!-- Sorting: a link opening the field menu and a direction button (controls:SortPicker).
+                 ButtonsSection.axaml.cs supplies neutral sample fields and their types. -->
             <TextBlock Grid.Row="5" Classes="caption muted row-label" Text="Sortowanie" />
             <StackPanel Grid.Row="5" Grid.Column="1" Classes="button-row">
                 <controls:SortPicker x:Name="SortSample" />
@@ -109,7 +109,7 @@
                 <controls:SortPicker x:Name="SortSampleDisabled" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Ikonowy -->
+            <!-- Icon-only -->
             <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Ikonowy · icon" />
             <StackPanel Grid.Row="6" Grid.Column="1" Classes="button-row">
                 <Button Classes="icon" ToolTip.Tip="Ustawienia">
@@ -134,7 +134,7 @@
                 </Button>
             </StackPanel>
 
-            <!-- Przycięcie: wyjście awaryjne, gdy kontener wymusza wąskie miejsce. -->
+            <!-- Trimming: a fallback when the container forces a narrow width. -->
             <TextBlock Grid.Row="7" Classes="caption muted row-label" Text="Gdy brakuje miejsca" />
             <!-- Local on purpose: the narrow container that forces the trim. -->
             <Border Grid.Row="7" Grid.Column="1" Width="120" HorizontalAlignment="Left">

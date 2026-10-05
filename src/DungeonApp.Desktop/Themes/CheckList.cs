@@ -4,11 +4,11 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Themes;
 
 /// <summary>
-/// Znacznik listy, której wiersze mają pole wyboru (ListBox z motywem DungeonCheckList, wiersze
-/// DropDownPicker w trybie wielokrotnym). Dziedziczy się w dół drzewa - ustawiony na liście
-/// obejmuje jej wiersze. Motyw wiersza listy (ListBoxItem w Themes/Controls/ListBox.axaml) czyta go:
-/// stan wiersza niesie wtedy samo pole wyboru, wybrany wiersz nie dostaje tła akcentu, a najechanie
-/// wygląda jak w zwykłym wierszu. Zmienia wyłącznie wygląd.
+/// Marker for lists whose rows contain checkboxes (ListBox with DungeonCheckList theme,
+/// DropDownPicker in multiple-selection mode). Inherits down the tree - set on a list,
+/// applies to its rows. The list-row theme (ListBoxItem in Themes/Controls/ListBox.axaml) reads it:
+/// only the checkbox indicates row state, selected rows have no accent background, and hover
+/// looks like a regular row. Changes appearance only.
 /// </summary>
 public static class CheckList
 {

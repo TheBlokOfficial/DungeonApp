@@ -1,13 +1,13 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        Powierzchnie ramy: klasy na Border, wyłącznie z tokenów w Themes/Tokens.axaml. Znaczenie
-        każdego koloru jest zapisane tam, nad kolorem.
-        Klasa nadaje tło, krawędź, promień i wnętrze - nigdy rozmiaru: rozmiar daje układ, w którym
-        powierzchnia stoi, a treść dłuższa niż powierzchnia przycina się albo zawija w środku.
+        Shell surfaces: Border classes using only tokens from Themes/Tokens.axaml. Each colour's
+        meaning is documented there, above the colour.
+        Class sets background, border, radius and padding - never size: the surrounding layout
+        sets surface size, and overflowing content trims or wraps inside.
     -->
 
-    <!-- Karta: rzecz wyodrębniona z tła, czytana jako całość. -->
+    <!-- Card: object distinct from the background, read as a whole. -->
     <Style Selector="Border.surface-card">
         <Setter Property="Background" Value="{DynamicResource DungeonBackstageCardBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
@@ -16,7 +16,7 @@
         <Setter Property="Padding" Value="{DynamicResource DungeonPaddingLg}" />
     </Style>
 
-    <!-- Sekcja z obramowaniem: grupa na powierzchni, na której stoi - bez własnego tła. -->
+    <!-- Bordered section: group on its underlying surface - no background of its own. -->
     <Style Selector="Border.surface-section">
         <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
@@ -25,8 +25,8 @@
         <Setter Property="Padding" Value="{DynamicResource DungeonPaddingMd}" />
     </Style>
 
-    <!-- Panel ramy: stałe otoczenie treści. Bez krawędzi - linię między panelem a treścią stawia
-         układ, w którym panel stoi, bo tylko on wie, z której strony leży treść. -->
+    <!-- Shell panel: permanent content surroundings. No border - the surrounding layout draws
+         the line between panel and content, because only it knows which side contains content. -->
     <Style Selector="Border.surface-panel">
         <Setter Property="Background" Value="{DynamicResource DungeonFrameBrush}" />
         <Setter Property="BorderThickness" Value="0" />

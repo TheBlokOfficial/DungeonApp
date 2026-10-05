@@ -14,18 +14,18 @@ using DungeonApp.Desktop.Shell.TopBar;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa ramę - wszystko, co GM widzi niezależnie od tego, jaki system wybierze, i zanim wybierze
-/// jakikolwiek: ekran wyboru systemu, półkę, pasek boczny w obu stanach zwinięcia (dla każdego
-/// wkompilowanego systemu - to jego deklaracje zakładek nadają paskowi kształt), pasek górny i pustą
-/// zakładkę "Ustawienia" (żadne z nich nie zależy od zwinięcia paska bocznego, więc każde rozgrzewa
-/// się raz) oraz stronę kampanii, jeśli na półce jest choć jedna kampania. Zawartość poszczególnych
-/// systemów rozgrzewają osobno <see cref="WarmSystemTabsStep"/> (zakładki, w tym biurko) i kroki
-/// startowe samych systemów (karty wpisów);
-/// ten krok nigdy nie buduje niczego przez tymczasową sesję kampanii.
+/// Warms the shell - everything the GM sees regardless of the chosen system and before choosing
+/// any: system selection, shelf, sidebar in both collapse states (for every
+/// compiled-in system - its tab declarations determine the sidebar shape), top bar and empty
+/// "Ustawienia" tab (neither depends on sidebar collapse, so each warms
+/// once), plus the campaign page if the shelf contains a campaign. Individual system
+/// content is warmed separately by <see cref="WarmSystemTabsStep"/> (tabs, including the desk) and the systems'
+/// own startup steps (entry cards);
+/// this step never builds anything through a temporary campaign session.
 /// <para>
-/// Każda rozgrzewana kontrolka jest egzemplarzem rzucanym - powiązanym z prawdziwym modelem tam, gdzie
-/// jeden już istnieje (półka), albo z tymczasowym, wyrzucanym zaraz po rozgrzewce (ekran wyboru, pasek,
-/// strona kampanii) - nigdy nie trafia do żadnej pamięci podręcznej, którą później czytałby
+/// Every warmed control is disposable - bound to a real model where
+/// one exists (shelf), or a temporary model discarded after warmup (selection screen, sidebar,
+/// campaign page) - never placed in a cache later read by
 /// <c>AppShellViewModel</c>.
 /// </para>
 /// </summary>

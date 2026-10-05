@@ -2,8 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Menu podręczne tekstu: pole tekstowe (wytnij, kopiuj, wklej) i tekst do zaznaczenia (kopiuj).
-        Pozycje przygaszone, gdy nie ma czego wyciąć, skopiować albo wkleić.
+        Text context menu: text field (cut, copy, paste) and selectable text (copy).
+        Items dim when there is nothing to cut, copy or paste.
     -->
     <MenuFlyout x:Key="DungeonTextBoxContextFlyout">
         <MenuItem Header="Wytnij"

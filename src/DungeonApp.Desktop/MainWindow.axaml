@@ -17,8 +17,8 @@
 
         <!--
             Full-window startup curtain: covers topbar, sidebar and workspace alike, not just the
-            workspace cell. Układ: oś pionowa, wszystko wyśrodkowane - marka, nazwa, pasek
-            postępu, tekst kroku.
+            workspace cell. Layout: vertical axis, everything centred - brand, name, progress
+            bar, step text.
 
             IsHitTestVisible drops the instant AppShellViewModel.IsReady flips; the fade itself is a
             transition on Opacity and is not waited on.
@@ -77,8 +77,8 @@
             </StackPanel>
         </Border>
 
-        <!-- Warstwa nad całym oknem: dymki powiadomień i okno potwierdzenia (Controls/WindowOverlay.cs).
-             Pusta nie łapie myszy. -->
+        <!-- Layer above the entire window: notification toasts and confirmation dialog (Controls/WindowOverlay.cs).
+             When empty, does not intercept the pointer. -->
         <controls:WindowOverlay />
     </Panel>
 </Window>

@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Domena bez UI: kampanie, stan, zapis, wpisy i paczki. Nie może referencować Avalonii ani żadnego systemu. -->
+    <!-- Domain without UI: campaigns, state, persistence, entries and packs. Must not reference Avalonia or any game system. -->
 
 </Project>

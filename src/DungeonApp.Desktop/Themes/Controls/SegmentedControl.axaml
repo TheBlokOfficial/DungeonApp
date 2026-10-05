@@ -4,27 +4,27 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Przełącznik segmentowy: ListBox z Theme="{StaticResource DungeonSegmentedControl}"; segmenty
-        to jego wiersze (motyw kontenera DungeonSegment). Szablon napisany od nowa; nazwa części
-        z ListBox.xaml Fluenta (Avalonia 12.0.5, MIT): PART_ItemsPresenter - bez obszaru
-        przewijania, przełącznik nie przewija.
-        Pojemnik: wysokość DungeonControlHeight, tło InputBackground, krawędź InputBorder 1 px,
-        zaokrąglenie DungeonCornerRadius, wcięcie DungeonSegmentedInset. Szerokość z treści albo od
-        układającego; segmenty równej szerokości (UniformGrid w jednym wierszu). Pojemnik nie ma
-        stanów - wyłączony przełącznik zostawia go bez zmian, wyłączone są segmenty.
-        Pojedynczy wybór; brak wyboru dozwolony (żaden segment nie jest podświetlony).
-        Segment: zaokrąglenie DungeonSegmentCornerRadius, wcięcie poziome 12, tekst wyśrodkowany
-        w obu osiach, jedna linia z wielokropkiem (przycięty - pełny w podpowiedzi), krój interfejsu
-        13. Szerokość rezerwuje pogrubiony napis (controls:BoldTextReserve). Kursor strzałka, fokus bez
-        wyglądu, bez przejść - bez przesuwanej wkładki, kolor zmienia się od razu.
-        Stany segmentu (zasada wspólna z zakładką):
-          spoczynek   - bez tła, tekst TextRegular;
-          najechanie  - tło SurfaceHover, tekst TextPrimary; wciśnięcie - jak najechanie;
-          wybrany     - tło AccentDim, tekst AccentOnDim, SemiBold; pod myszą bez zmian;
-          wyłączony   - DungeonDisabledOpacity, bez tła, tekst TextRegular, bez reakcji na mysz;
-                        wybrany wyłączony traci akcent: tło neutralne InputBackground (jak znacznik
-                        wyłączonego zaznaczonego pola wyboru - to samo co tło pojemnika, więc
-                        wybrany wyłączony odróżnia tylko SemiBold), tekst TextRegular.
+        Segmented control: ListBox with Theme="{StaticResource DungeonSegmentedControl}"; segments
+        are its rows (DungeonSegment container theme). Part name from
+        Fluent ListBox.xaml (Avalonia 12.0.5, MIT): PART_ItemsPresenter - no scroll area,
+        the control does not scroll.
+        Container: DungeonControlHeight, InputBackground fill, 1 px InputBorder,
+        DungeonCornerRadius, DungeonSegmentedInset. Width from content or
+        the view; equal-width segments (single-row UniformGrid). Container has no
+        states - disabling the control leaves it unchanged, segments are disabled.
+        Single selection; no selection allowed (no segment highlighted).
+        Segment: DungeonSegmentCornerRadius, horizontal padding 12, text centred
+        on both axes, single line with ellipsis (trimmed - full text in tooltip), UI font
+        13. Width reserves bold text (controls:BoldTextReserve). Arrow cursor, no focus
+        appearance or transitions - no sliding indicator, colour changes immediately.
+        Segment states (same rule as tabs):
+          resting   - no background, TextRegular text;
+          hover     - SurfaceHover background, TextPrimary text; pressed - same as hover;
+          selected  - AccentDim background, AccentOnDim text, SemiBold; unchanged on hover;
+          disabled  - DungeonDisabledOpacity, no background, TextRegular text, no pointer response;
+                      selected disabled loses accent: neutral InputBackground (like the marker of
+                      a disabled checked checkbox - same as container background, so
+                      only SemiBold distinguishes selected disabled), TextRegular text.
     -->
     <ControlTheme x:Key="DungeonSegment" TargetType="ListBoxItem">
         <Setter Property="HorizontalAlignment" Value="Stretch" />

@@ -61,14 +61,14 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <!-- Ekran wyboru systemu: pełnoekranowy, bez paska bocznego. -->
+            <!-- System selection: full screen, without a sidebar. -->
             <ContentControl Content="{Binding SystemSelection}" IsVisible="{Binding !IsSystemChosen}" />
 
-            <!-- Pasek boczny + (pasek górny nad treścią), dopiero po wyborze systemu. Pasek boczny
-                 dokowany jako pierwszy zajmuje pełną wysokość tego DockPanela; pasek górny i treść
-                 dzielą to, co zostaje, w zagnieżdżonym DockPanelu zaczynającym się na tej samej
-                 wysokości co nagłówek paska bocznego - stąd wspólny token DungeonTopBarHeight daje im
-                 jedną ciągłą linię obramowania (TopBarView.axaml, GlobalSidebarView.axaml). -->
+            <!-- Sidebar + (top bar above content), only after system selection. Sidebar
+                 docked first occupies the full height of this DockPanel; top bar and content
+                 share the remainder in a nested DockPanel starting at the same
+                 height as the sidebar header - shared DungeonTopBarHeight therefore gives them
+                 one continuous border line (TopBarView.axaml, GlobalSidebarView.axaml). -->
             <DockPanel LastChildFill="True" IsVisible="{Binding IsSystemChosen}">
                 <ContentControl DockPanel.Dock="Left" Content="{Binding Sidebar}" />
 
@@ -86,9 +86,9 @@
                 </DockPanel>
             </DockPanel>
 
-            <!-- Niewidoczny host rozgrzewki - używany zarówno przez wczytanie paczek (przed
-                 ekranem wyboru), jak i przez rozgrzewkę zakładek kampanii pierwszej kampanii z
-                 półki (po wyborze systemu), więc żyje poza obiema gałęziami powyżej. -->
+            <!-- Invisible warmup host - used for system content and campaign-tab warmup with
+                 the first shelf campaign, so it lives outside both
+                 branches above. -->
             <ContentControl Name="WarmupHost" ZIndex="99" IsHitTestVisible="False" />
         </Grid>
 

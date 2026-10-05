@@ -2,9 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Ikona z geometrii (strzałki przycisków liczby): kształt wypełniony kolorem tekstu kontrolki,
-        dopasowany do rozmiaru, który nadaje miejsce użycia. Bez domyślnego rozmiaru - ikona ramy ma
-        zawsze rozmiar z układu.
+        Geometry icon (numeric button arrows): shape filled with the control's text colour,
+        fitted to the size assigned at the usage site. No default size - shell icons always
+        receive their size from layout.
     -->
     <ControlTheme x:Key="{x:Type PathIcon}" TargetType="PathIcon">
         <Setter Property="Background" Value="Transparent" />

@@ -11,13 +11,13 @@ using Avalonia.VisualTree;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Okno potwierdzenia: pytanie nad całym oknem aplikacji - zasłona (DungeonScrimBrush) na reszcie
-/// okna, karta na środku z tytułem, treścią i przyciskami "Anuluj" oraz akcji. Wygląd należy do motywu
-/// ramy (Themes/Controls/ConfirmationDialog.axaml). Widok wywołuje je jedną metodą <see cref="ShowAsync"/>.
-/// Zachowanie: Escape = Anuluj; kliknięcie w zasłonę nie zamyka; Enter potwierdza tylko akcję główną,
-/// przy niszczącej nic nie robi. Zasłona zabiera mysz treści pod spodem, Tab krąży po karcie; po
-/// zamknięciu fokus wraca tam, gdzie był przed otwarciem. Okno jest widokiem: zwraca odpowiedź, stan
-/// zmienia wywołujący.
+/// Confirmation dialog: question over the whole application window - scrim (DungeonScrimBrush) over the rest
+/// of the window, centred card with title, body, "Anuluj" and action buttons. Appearance belongs to the shell
+/// theme (Themes/Controls/ConfirmationDialog.axaml). The view invokes it through <see cref="ShowAsync"/>.
+/// Behaviour: Escape = "Anuluj"; clicking the scrim does not close; Enter confirms only a primary action,
+/// doing nothing for destructive actions. Scrim intercepts the pointer above underlying content, Tab cycles within the card;
+/// closing restores focus to its previous location. Dialog is a view: returns an answer, caller
+/// changes state.
 /// </summary>
 [TemplatePart(CancelButtonPart, typeof(Button))]
 [TemplatePart(ConfirmButtonPart, typeof(Button))]
@@ -70,7 +70,7 @@ public sealed class ConfirmationDialog : TemplatedControl
         set => SetValue(ActionTextProperty, value);
     }
 
-    /// <summary>Akcja niszcząca: przycisk akcji w odmianie .danger, Enter nic nie robi.</summary>
+    /// <summary>Destructive action: .danger action button, Enter does nothing.</summary>
     public bool IsDestructive
     {
         get => GetValue(IsDestructiveProperty);
@@ -78,8 +78,8 @@ public sealed class ConfirmationDialog : TemplatedControl
     }
 
     /// <summary>
-    /// Pokazuje pytanie nad oknem, w którym stoi <paramref name="origin"/>; kończy się true, gdy
-    /// potwierdzono, false, gdy anulowano.
+    /// Shows a question over the window containing <paramref name="origin"/>; completes with true when
+    /// confirmed, false when cancelled.
     /// </summary>
     public static Task<bool> ShowAsync(Visual origin, string title, string message, string actionText, bool isDestructive)
     {
@@ -147,7 +147,7 @@ public sealed class ConfirmationDialog : TemplatedControl
         OverlayAppearMotion.Run(this, card ?? this, 0d, offset);
     }
 
-    // Zasłona zabiera kliknięcie - nie zamyka okna i nie przepuszcza go dalej.
+    // Scrim consumes the click - neither closes the dialog nor passes it through.
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -199,7 +199,7 @@ public sealed class ConfirmationDialog : TemplatedControl
                 Close(confirmed: false);
                 break;
             case Key.Enter:
-                // Przy akcji niszczącej Enter nic nie robi - także na przycisku z fokusem.
+                // Enter does nothing for destructive actions - even on a focused button.
                 e.Handled = true;
                 if (!IsDestructive)
                 {

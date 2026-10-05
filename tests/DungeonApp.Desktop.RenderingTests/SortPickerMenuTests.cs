@@ -12,8 +12,8 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Ptaszek w menu klocka sortowania należy do wyboru: ponowne kliknięcie wybranego pola nie zdejmuje
-/// ptaszka (pozycja do zaznaczania przełącza się sama przed kliknięciem).
+/// The sort picker's menu checkmark reflects the selection: clicking the selected field again must
+/// keep the checkmark (a checkable item toggles itself before its click handler runs).
 /// </summary>
 public sealed class SortPickerMenuTests
 {

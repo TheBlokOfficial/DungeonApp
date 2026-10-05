@@ -2,27 +2,27 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Akcja w wierszu listy: Button z Theme="{StaticResource DungeonRowAction}" - np. kosz na końcu
-        wiersza. Treść (rysunek, np. ForegroundIcon) daje widok. Osobny motyw, nie odmiana przycisku:
-        nie dziedziczy stałej wysokości przycisku (DungeonControlHeight).
-        Obszar trafienia to cały pas na końcu wiersza: kolumna szerokości DungeonListRowHeight
-        (kwadrat wiersza listy), pełnej wysokości wiersza, tło przezroczyste do trafiania myszą.
-        Wymiary dla wiersza listy ramy (ListBoxItem, ListRow): wysokość najmniej DungeonListRowHeight
-        (w wyższym rekordzie pas rośnie z nim - VerticalAlignment Stretch), a margines
-        DungeonListRowActionMargin wyprowadza pas przez odstęp podświetlenia i prawe wcięcie wiersza
-        do końca treści wiersza (przed strefą paska przewijania). Wiersz o innej budowie (własny
-        Border w widoku) nadpisuje Margin stylem widoku.
-        Sam rysunek, bez tła, bez krawędzi, bez zaokrąglenia i bez otoczki; bez podpowiedzi (znak
-        powszechny mówi sam). Widoczna zawsze.
-        Stany:
-          spoczynek   - rysunek TextMuted (jak data i strzałka w wierszu);
-          najechanie  - rysunek DangerText (barwa znaczenia: akcja usuwa), bez tła; wciśnięcie jak
-                        najechanie. Akcja należy do wiersza: wiersz pod nią zostaje podświetlony;
-          wyłączenie  - DungeonDisabledOpacity.
-        Bez animacji. Fokus bez wyglądu, kursor strzałka.
-        Kontrast rysunku w spoczynku (TextMuted #8A8983, ikona - próg 3:1): 4,8:1 na karcie (wiersz
-        ListBoxItem w spoczynku), 4,7:1 na wierszu (BackstageRow), 4,3:1 na wierszu pod myszą
-        (BackstageRowHover), 3,8:1 na wybranym wierszu (AccentDim na karcie, #382E1F).
+        List-row action: Button with Theme="{StaticResource DungeonRowAction}" - e.g. trash at the end
+        of a row. View supplies content (glyph, e.g. ForegroundIcon). Separate theme, not a button variant:
+        does not inherit fixed button height (DungeonControlHeight).
+        Hit area is the entire strip at the row end: DungeonListRowHeight-wide column
+        (list-row square), full row height, transparent background for pointer hit testing.
+        Dimensions for shell list rows (ListBoxItem, ListRow): minimum height DungeonListRowHeight
+        (grows with taller records - VerticalAlignment Stretch), while
+        DungeonListRowActionMargin extends the strip through the highlight gap and right row padding
+        to the end of row content (before the scrollbar zone). Differently structured rows (custom
+        Border in the view) override Margin through a view style.
+        Glyph only, no background, border, radius or halo; no tooltip (the common
+        symbol speaks for itself). Always visible.
+        States:
+          resting  - TextMuted glyph (like row date and arrow);
+          hover    - DangerText glyph (semantic colour: action deletes), no background; pressed matches
+                     hover. Action belongs to the row: the row beneath it stays highlighted;
+          disabled - DungeonDisabledOpacity.
+        No animation. No focus appearance, arrow cursor.
+        Resting glyph contrast (TextMuted #8A8983, icon - 3:1 threshold): 4.8:1 on a card (resting
+        ListBoxItem), 4.7:1 on a row (BackstageRow), 4.3:1 on a hovered row
+        (BackstageRowHover), 3.8:1 on a selected row (AccentDim on a card, #382E1F).
     -->
     <ControlTheme x:Key="DungeonRowAction" TargetType="Button">
         <Setter Property="Width" Value="{DynamicResource DungeonListRowHeight}" />

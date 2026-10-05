@@ -3,11 +3,11 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Minimalny nośnik referencji UI dla kroków startowych - tyle, żeby faza <see
-/// cref="IStartupStep.ApplyAsync"/> nie musiała znać typu <c>AppShellView</c>.
+/// Minimal UI reference carrier for startup steps - enough for the <see
+/// cref="IStartupStep.ApplyAsync"/> phase to remain unaware of the <c>AppShellView</c> type.
 /// </summary>
 public sealed class StartupUiContext(ContentControl warmupHost)
 {
-    /// <summary>Niewidoczny host, do którego kroki wizualne podpinają swoje kontrolki na czas rozgrzewki.</summary>
+    /// <summary>Invisible host where visual steps attach their controls during warmup.</summary>
     public ContentControl WarmupHost { get; } = warmupHost;
 }

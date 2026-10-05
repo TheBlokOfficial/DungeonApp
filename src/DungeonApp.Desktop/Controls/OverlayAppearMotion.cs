@@ -9,11 +9,11 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Pojawienie się elementu warstwy okna (okno potwierdzenia, dymek powiadomienia): wyłania się
-/// z przezroczystości i dosuwa o podane przesunięcie w DungeonPopupOpenDuration, z wyhamowaniem.
-/// Element jest klikalny od pierwszej klatki - ruch tylko dogania stan; zniknięcie jest natychmiastowe.
-/// Przy wyłączonych animacjach w systemie (<see cref="Themes.SystemMotion.IsReduced"/>) nic się nie
-/// rusza. Zmienia wyłącznie wygląd widoku.
+/// Window-overlay element appearance (confirmation dialog, notification toast): fades in
+/// and slides by the supplied offset over DungeonPopupOpenDuration, easing out.
+/// Element is clickable from the first frame - motion only catches up with state; dismissal is immediate.
+/// With system animations disabled (<see cref="Themes.SystemMotion.IsReduced"/>), nothing
+/// moves. Changes view appearance only.
 /// </summary>
 internal static class OverlayAppearMotion
 {
@@ -28,7 +28,7 @@ internal static class OverlayAppearMotion
             ? span
             : TimeSpan.FromMilliseconds(120);
 
-        // Animator przekształceń Avalonii 12 animuje TranslateTransform, nie TransformOperations.
+        // Avalonia 12's transform animator animates TranslateTransform, not TransformOperations.
         if (sliding.RenderTransform is not TranslateTransform)
         {
             sliding.RenderTransform = new TranslateTransform();

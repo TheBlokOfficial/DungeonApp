@@ -8,11 +8,11 @@ using Avalonia.VisualTree;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Warstwa nad całą treścią okna (MainWindow.axaml, ostatnie dziecko głównego panelu): nosi dymki
-/// powiadomień (<see cref="NotificationToast"/>) w prawym dolnym rogu nad paskiem stanu i otwarte okno potwierdzenia
-/// (<see cref="ConfirmationDialog"/>) nad wszystkim. Pusta nie ma tła, więc nie łapie myszy - klik
-/// trafia w treść pod nią. Widoki jej nie znają: znajdują ją metody pokazujące przez element, z
-/// którego je wywołano (<see cref="Find"/>).
+/// Layer over all window content (MainWindow.axaml, last child of the main panel): hosts notification
+/// toasts (<see cref="NotificationToast"/>) at bottom right above the status bar, and an open confirmation dialog
+/// (<see cref="ConfirmationDialog"/>) above everything. When empty has no background, so does not intercept the pointer - clicks
+/// reach underlying content. Views do not know it: display methods locate it through the element
+/// from which they were invoked (<see cref="Find"/>).
 /// </summary>
 public sealed class WindowOverlay : Panel
 {
@@ -40,16 +40,16 @@ public sealed class WindowOverlay : Panel
     private Thickness toastGap;
     private double statusBarHeight;
 
-    /// <summary>Stos dymków: najnowszy na dole.</summary>
+    /// <summary>Toast stack: newest at the bottom.</summary>
     internal StackPanel Toasts { get; }
 
-    /// <summary>Warstwa okna, w którym stoi <paramref name="origin"/>; null, gdy okno jej nie ma.</summary>
+    /// <summary>Overlay of the window containing <paramref name="origin"/>; null if it has none.</summary>
     internal static WindowOverlay? Find(Visual origin) =>
         TopLevel.GetTopLevel(origin)?.GetVisualDescendants().OfType<WindowOverlay>().FirstOrDefault();
 
     /// <summary>
-    /// Stos stoi nad paskiem stanu (DungeonStatusBarHeight, Shell/AppShellView.axaml) z tym samym
-    /// odstępem DungeonPaddingLg, jaki ma od prawej krawędzi okna - dymek nie zasłania paska.
+    /// Stack sits above the status bar (DungeonStatusBarHeight, Shell/AppShellView.axaml) with the same
+    /// DungeonPaddingLg gap as from the window's right edge - toast does not cover the bar.
     /// </summary>
     private void UpdateToastMargin() =>
         Toasts.Margin = new Thickness(toastGap.Left, toastGap.Top, toastGap.Right, toastGap.Bottom + statusBarHeight);

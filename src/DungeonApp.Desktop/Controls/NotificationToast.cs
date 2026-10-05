@@ -9,29 +9,29 @@ using Avalonia.Threading;
 
 namespace DungeonApp.Desktop.Controls;
 
-/// <summary>Odmiana powiadomienia - po znaczeniu.</summary>
+/// <summary>Notification variant by meaning.</summary>
 public enum NotificationKind
 {
-    /// <summary>Informacja: nie niesie stanu; znika sama.</summary>
+    /// <summary>Information: carries no state; auto-dismisses.</summary>
     Information,
 
-    /// <summary>Ostrzeżenie: znika samo.</summary>
+    /// <summary>Warning: auto-dismisses.</summary>
     Warning,
 
-    /// <summary>Błąd: zostaje do zamknięcia, treść da się zaznaczyć.</summary>
+    /// <summary>Error: stays until dismissed, body is selectable.</summary>
     Error,
 }
 
 /// <summary>
-/// Powiadomienie: dymek w prawym dolnym rogu okna (stos w <see cref="WindowOverlay"/>, najnowszy na
-/// dole) z ikoną odmiany, treścią, krzyżykiem zamknięcia i najwyżej jednym odnośnikiem akcji. Wygląd
-/// należy do motywu ramy (Themes/Controls/NotificationToast.axaml). Widok wywołuje je jedną metodą
+/// Notification: toast at the window's bottom right (stack in <see cref="WindowOverlay"/>, newest at
+/// bottom) with variant icon, body, close cross and at most one action link. Appearance
+/// belongs to the shell theme (Themes/Controls/NotificationToast.axaml). View invokes it through
 /// <see cref="Show"/>.
-/// Informacja i ostrzeżenie znikają same po czasie, który jest stałą motywu dla odmiany
-/// (DungeonNotificationInformationDismissDelay, DungeonNotificationWarningDismissDelay) - nie
-/// parametrem wywołania ani polem powiadomienia; mysz nad dymkiem wstrzymuje znikanie, a po jej
-/// zjechaniu odlicza się ono od nowa. Błąd zostaje do zamknięcia. Kliknięcie akcji wykonuje ją
-/// i zamyka dymek. Powiadomienie jest widokiem: samo z siebie nie zmienia stanu kampanii.
+/// Information and warning auto-dismiss after a delay defined by variant theme constants
+/// (DungeonNotificationInformationDismissDelay, DungeonNotificationWarningDismissDelay) - not
+/// an invocation parameter or notification field; pointer over a toast pauses dismissal, and leaving
+/// restarts the countdown. Error stays until dismissed. Clicking an action runs it
+/// and closes the toast. Notification is a view: does not change campaign state by itself.
 /// </summary>
 [TemplatePart(CloseButtonPart, typeof(Button))]
 [TemplatePart(ActionButtonPart, typeof(Button))]
@@ -75,7 +75,7 @@ public sealed class NotificationToast : TemplatedControl
         set => SetValue(MessageProperty, value);
     }
 
-    /// <summary>Napis odnośnika akcji; bez napisu odnośnika nie ma.</summary>
+    /// <summary>Action-link label; no label means no link.</summary>
     public string? ActionText
     {
         get => GetValue(ActionTextProperty);
@@ -83,8 +83,8 @@ public sealed class NotificationToast : TemplatedControl
     }
 
     /// <summary>
-    /// Pokazuje powiadomienie w oknie, w którym stoi <paramref name="origin"/>. Akcja (napis
-    /// i działanie) jest opcjonalna; odnośnik stoi tylko, gdy podano oba.
+    /// Shows a notification in the window containing <paramref name="origin"/>. Action (label
+    /// and callback) is optional; link appears only when both are supplied.
     /// </summary>
     public static void Show(Visual origin, NotificationKind kind, string message, string? actionText = null, Action? action = null)
     {

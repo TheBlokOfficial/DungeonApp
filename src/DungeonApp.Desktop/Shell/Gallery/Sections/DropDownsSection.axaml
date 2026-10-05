@@ -20,7 +20,7 @@
                     </Flyout>
                 </Button.Flyout>
             </Button>
-            <!-- Lista w okienku .list-host: przewija sama lista, okienko nie - jeden pasek. -->
+            <!-- List in a .list-host flyout: only the list scrolls, not the flyout - one scrollbar. -->
             <Button Content="Długa lista">
                 <Button.Flyout>
                     <Flyout Placement="BottomEdgeAlignedLeft" FlyoutPresenterClasses="list-host">
@@ -33,7 +33,7 @@
         <TextBlock Classes="overline-sm muted" Text="CHIP Z LISTĄ WYBORU" />
         <TextBlock Classes="caption muted" Text="Button z okienkiem i motywem DungeonChipOpener. Najedź, żeby zobaczyć najechanie; kliknij, żeby otworzyć - otwarty wygląda jak pod myszą, strzałka obraca się z prawej w dół. Aktywny filtr ma przygaszony akcent." />
         <WrapPanel>
-            <!-- Napis chipa: wybrana wartość, a bez wyboru nazwa filtra. -->
+            <!-- Chip label: the selected value, or the filter name when nothing is selected. -->
             <Button Theme="{StaticResource DungeonChipOpener}" Margin="0,0,6,6"
                     Content="{Binding #ChipRestList.SelectedItem, TargetNullValue=Kolor, FallbackValue=Kolor}">
                 <Button.Flyout>

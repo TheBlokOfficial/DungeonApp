@@ -2,44 +2,44 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Obszar przewijania (ScrollViewer) i pasek przewijania (ScrollBar). Szablony wycięte
-        z ScrollViewer.xaml i ScrollBar.xaml Fluenta (Avalonia 12.0.5, MIT): zostały prezenter treści
-        z gestem przewijania (PART_ContentPresenter), paski (PART_HorizontalScrollBar,
-        PART_VerticalScrollBar) i ścieżka z uchwytem (Track, PART_PageUpButton/PART_PageDownButton -
-        kliknięcie w pas poza uchwytem przewija stroną); wypadły przyciski krokowe, tor, separator
-        pasków i animacje rozwijania.
-        Pasek jest nakładką nad treścią: nie zabiera jej miejsca, więc pojawienie się ani zniknięcie
-        paska nie zmienia układu. Widoczny zawsze, gdy treść się nie mieści (domyślnie w pionie Auto,
-        w poziomie Disabled), niewidoczny, gdy się mieści; przy Disabled i Hidden nie ma go wcale.
-        Nie chowa się sam (AllowAutoHide wyłączone). Stoi przy krawędzi obszaru z jednakowym odstępem
-        od niej i od obu swoich końców (DungeonScrollBarInset); oba paski naraz nie zachodzą na siebie
-        (pionowy kończy się nad wierszem poziomego). Kliknięcia przyjmuje tylko w swoim pasie - warstwa
-        pasków nie ma tła, więc poza paskiem mysz trafia w treść pod spodem.
-        Treść nie wchodzi pod pasek, tło wierszy tak: wiersz sięga na całą szerokość, a jego treść ma
-        po stronie paska wcięcie większe o strefę paska (DungeonScrollBarZone = grubość + odstęp).
-        To niesie pojemnik przewijanej treści (motyw wiersza listy, pozycji menu, pole wielowierszowe,
-        widok z własnymi wierszami), nie obszar przewijania.
-        Pasek ma grubość DungeonScrollBarSize, tło przezroczyste (bez toru); w nim sam uchwyt,
-        zaokrąglony (DungeonScrollThumbCornerRadius), przy zewnętrznej krawędzi pasa (pionowy - przy
-        prawej, poziomy - przy dolnej): rysowany uchwyt stoi od krawędzi obszaru dokładnie o
-        DungeonScrollBarInset, tyle co od obu końców. Obszar trafienia to cały pas (szerszy niż
-        rysunek).
-        Stany:
-          spoczynek  - uchwyt DungeonScrollThumbSize, kolor DungeonScrollThumbBrush (mocna krawędź);
-          najechanie - mysz nad pasem (nie tylko nad uchwytem): uchwyt DungeonScrollThumbHoverSize,
-                       kolor DungeonScrollThumbHoverBrush; poszerza się w obrębie pasa w stronę
-                       treści (odstęp od krawędzi się nie zmienia), więc układ nie skacze;
-          przeciąganie - jak najechanie, także gdy mysz zjedzie z pasa (Thumb:pressed);
-          wyłączenie - DungeonDisabledOpacity.
-        Pasek nie przyjmuje fokusu (FocusAdorner pusty, przyciski ścieżki Focusable=False); kursor
-        strzałka.
+        Scroll area (ScrollViewer) and scrollbar (ScrollBar). Templates based on Fluent
+        ScrollViewer.xaml and ScrollBar.xaml (Avalonia 12.0.5, MIT): content presenter
+        with scrolling gesture (PART_ContentPresenter), scrollbars (PART_HorizontalScrollBar,
+        PART_VerticalScrollBar) and track with thumb (Track, PART_PageUpButton/PART_PageDownButton -
+        clicking the strip outside the thumb scrolls by a page); no step buttons, track background,
+        scrollbar separator or expansion animations.
+        Scrollbar overlays content: takes no space, so appearing or disappearing
+        does not change layout. Always visible when content overflows (vertical Auto,
+        horizontal Disabled by default), invisible when it fits; absent for Disabled and Hidden.
+        Does not auto-hide (AllowAutoHide off). Sits by the area's edge with equal gaps
+        from it and both ends (DungeonScrollBarInset); two visible bars do not overlap
+        (vertical ends above the horizontal row). Accepts clicks only in its strip - the scrollbar
+        layer has no background, so outside the bar the pointer hits content beneath.
+        Content stays outside the scrollbar, row backgrounds extend beneath: rows span full width, content
+        padding on the scrollbar side increases by its zone (DungeonScrollBarZone = thickness + gap).
+        The scrollable content container supplies this (list-row theme, menu item, multiline field,
+        view with custom rows), not the scroll area.
+        Bar thickness DungeonScrollBarSize, transparent background (no track); thumb only,
+        rounded (DungeonScrollThumbCornerRadius), at the strip's outer edge (vertical -
+        right, horizontal - bottom): drawn thumb is exactly DungeonScrollBarInset
+        from the area's edge, as from both ends. Hit area is the entire strip (wider than
+        the drawing).
+        States:
+          resting  - DungeonScrollThumbSize thumb, DungeonScrollThumbBrush colour (strong border);
+          hover    - pointer over the strip (not just the thumb): DungeonScrollThumbHoverSize thumb,
+                     DungeonScrollThumbHoverBrush colour; widens within the strip towards
+                     content (edge gap unchanged), so layout does not jump;
+          dragging - same as hover, even when the pointer leaves the strip (Thumb:pressed);
+          disabled - DungeonDisabledOpacity.
+        Scrollbar does not accept focus (empty FocusAdorner, track buttons Focusable=False); arrow
+        cursor.
     -->
     <ControlTheme x:Key="{x:Type ScrollViewer}" TargetType="ScrollViewer">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="AllowAutoHide" Value="False" />
-        <!-- Kółko myszy nie przechodzi do obszaru wyżej: dojechany do końca zatrzymuje przewijanie. -->
+        <!-- Mouse wheel does not bubble to the parent scroll area: scrolling stops at the end. -->
         <Setter Property="IsScrollChainingEnabled" Value="False" />
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Template">
@@ -59,9 +59,9 @@
                                                      IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                         </ScrollContentPresenter.GestureRecognizers>
                     </ScrollContentPresenter>
-                    <!-- Warstwa pasków nad treścią, bez tła: trafia ją mysz tylko w samym pasku. Kolumna
-                         i wiersz Auto mają wymiar paska z odstępami, gdy pasek jest widoczny, i zero,
-                         gdy się schował - wtedy drugi pasek sięga do końca obszaru. -->
+                    <!-- Scrollbar layer above content, no background: pointer hits only the bar itself. Auto column
+                         and row have the bar's size plus gaps when visible, and zero
+                         when hidden - the other bar then reaches the area's end. -->
                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
                         <ScrollBar Name="PART_HorizontalScrollBar"
                                    Grid.Row="1"

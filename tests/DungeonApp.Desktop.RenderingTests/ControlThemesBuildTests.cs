@@ -10,11 +10,11 @@ using DungeonApp.Testing;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Każdy wpis słownika motywów kontrolek ramy daje się zbudować. Wpisy są odroczone: kompilator XAML
-/// przepuszcza błąd, który wychodzi dopiero przy pierwszym użyciu kontrolki - na przykład selektor
-/// potomka w motywie pola tekstowego wywraca aplikację przy pierwszym polu wyszukiwania, choć build
-/// i pozostałe testy przechodzą. Motywy leżą w osobnych plikach, więc test pilnuje też, że spis
-/// (Themes/DungeonControls.axaml) scala każdy z nich: plik spoza spisu to kontrolka bez motywu.
+/// Every entry in the frame's control-theme dictionary can be built. Entries are deferred: the XAML
+/// compiler can accept errors that surface only on first use, such as a descendant selector
+/// in a text-field theme crashing the application at the first search field while the build
+/// and other tests pass. Themes live in separate files, so the test also checks that the index
+/// (Themes/DungeonControls.axaml) merges them all: a file missing from it leaves a control without a theme.
 /// </summary>
 public sealed class ControlThemesBuildTests
 {

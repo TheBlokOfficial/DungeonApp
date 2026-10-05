@@ -62,17 +62,17 @@ public partial class App : Avalonia.Application
         AvaloniaXamlLoader.Load(this);
         Themes.SystemMotion.Apply(this);
 
-        // Kampanie leżą z dokumentami użytkownika, nie w danych aplikacji: kampania ma być widocznym,
-        // przenośnym, kopiowalnym dokumentem, a nie ukrytym stanem programu. Jeden magazyn na
-        // wkompilowany system, w jego własnym katalogu: kampania należy do jednego systemu - tego,
-        // w którego katalogu leży. SystemDirectories wylicza tę ścieżkę generycznie z każdego
-        // IGameSystem.Id, nigdy z nazwy konkretnego systemu.
+        // Campaigns live with user documents, not application data: a campaign should be a visible,
+        // portable, copyable document rather than hidden program state. One repository per
+        // compiled-in system, in its own directory: a campaign belongs to the system
+        // whose directory contains it. SystemDirectories derives this path generically from each
+        // IGameSystem.Id, never from a specific system name.
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        // Usunięcie kampanii w działającej aplikacji trafia do Kosza systemu, nie znika trwale - tak,
-        // żeby przypadkowe kliknięcie dało się cofnąć. JsonCampaignRepository nie zna Kosza - to
-        // wybór korzenia kompozycji, wstrzyknięty, żeby testy (które budują ten magazyn same, z
-        // wariantem trwałym) nigdy nie mogły trafić do prawdziwego Kosza użytkownika.
+        // Deleting a campaign in the running app sends it to the system Recycle Bin rather than deleting permanently,
+        // so an accidental click can be undone. JsonCampaignRepository knows nothing about the Bin - this
+        // is a composition-root choice, injected so tests (which build their own repository with
+        // permanent deletion) can never touch the user's real Recycle Bin.
         _repositoriesBySystem = _systems.ToDictionary(
             system => system.Id,
             system => (ICampaignRepository)new JsonCampaignRepository(
@@ -80,19 +80,19 @@ public partial class App : Avalonia.Application
                 SystemDirectories.Campaigns(documentsPath, system.Id),
                 DeleteDirectoryToRecycleBin));
 
-        // Cache dzielony przez rozgrzewkę pierwszej kampanii po wyborze systemu i przez otwarcie
-        // prawdziwej kampanii później - to ta sama instancja, żeby rozgrzewka nie liczyła się drugi
-        // raz przy pierwszym otwarciu. Nie zna magazynu układów biurka - ten wystawia wyłącznie
-        // system, w swoim własnym konstruktorze (DungeonApp.App/Program.cs), bo rama nie stawia
-        // biurka. Deklaracje, którymi czyta jedną konkretną kampanię, nie są tu z góry ustalone -
-        // każda kampania niesie własny system w manifeście, więc cache sam dopasowuje go do jednego
-        // z `_systems` przy każdym odczycie.
+        // Cache shared by first-campaign warmup after system selection and later opening of
+        // a real campaign - same instance so warmup is not repeated
+        // on first opening. Knows nothing about desk layout storage - only the system exposes
+        // that in its own constructor (DungeonApp.App/Program.cs), because the shell does not build
+        // the desk. Declarations used to read a particular campaign are not fixed here -
+        // each campaign carries its own system in the manifest, so the cache matches it to one
+        // of `_systems` on every read.
         _preparations = new CampaignPreparationCache(_repositoriesBySystem, _systems);
 
-        // Biblioteka kampanii zgłasza się tutaj, w korzeniu kompozycji, mimo że wywołanie zwrotne
-        // otwierające kampanię prowadzi do metody na powłoce, która jeszcze nie istnieje - domyka się
-        // nad polem `_shell` i rozstrzyga dopiero przy pierwszym kliknięciu, długo po tym jak
-        // OnFrameworkInitializationCompleted zdąży tę powłokę zbudować.
+        // Campaign library is registered here in the composition root even though the callback
+        // opening a campaign targets a method on a shell that does not exist yet - closes
+        // over `_shell` and resolves only on the first click, long after
+        // OnFrameworkInitializationCompleted builds the shell.
         _campaignLibrary = new CampaignLibraryViewModel(
             _repositoriesBySystem,
             new CreateCampaign(_repositoriesBySystem, TimeProvider.System),
@@ -100,14 +100,14 @@ public partial class App : Avalonia.Application
             _systems,
             summary => _shell!.OpenCampaignAsync(summary));
 
-        // Jawna tablica - kolejność w niej JEST kolejnością wykonania. Wszystko wizualne, co GM mógłby
-        // zobaczyć po raz pierwszy tuż po wyborze systemu, rozgrzewa się tutaj, za kurtyną
-        // startową, przed pokazaniem ekranu wyboru jako interaktywnego - inaczej wybór systemu
-        // zamroziłby okno: najpierw każdy wkompilowany system przygotowuje własną treść (paczki,
-        // karty - jego własne kroki startowe, rama nie wie, co robią), potem półka, dane każdej
-        // kampanii z półki, chrom ramy (ekran wyboru, półka, pasek boczny w obu stanach, strona
-        // kampanii) i na końcu zakładki każdego wkompilowanego systemu (jego zakładki treści, jego
-        // biurko z narzędziami).
+        // Explicit array - its order IS execution order. Every visual the GM could first
+        // see immediately after system selection warms here, behind the startup
+        // curtain, before the selection screen becomes interactive - otherwise system selection
+        // would freeze the window: first each compiled-in system prepares its own content (packs,
+        // cards - its own startup steps, whose work the shell does not know), then the shelf, data for each
+        // shelf campaign, shell chrome (selection screen, shelf, sidebar in both states, campaign
+        // page), and finally each compiled-in system's tabs (its content tabs,
+        // desk with tools).
         var shelfStep = new LoadCampaignShelfStep(_campaignLibrary);
         var dataStep = new WarmCampaignDataStep(_preparations, shelfStep);
 

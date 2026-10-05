@@ -9,31 +9,31 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Aplikacja nie ma motywu domyślnego biblioteki - każdy wbudowany typ kontrolki z
-/// szablonem, którego używa, ma motyw ramy. Kontrolka bez motywu nie rysuje się wcale, a w rzadko
-/// otwieranym miejscu (okienko, menu podręczne) nikt tego nie zauważy, dopóki tam nie kliknie.
-/// Lista jawna: nowy wbudowany typ w widoku albo w szablonie dopisuje się tutaj.
-/// Typy używane wyłącznie z motywem nazwanym (ToggleButton, RepeatButton, Thumb) tu nie należą -
-/// ich motyw wskazuje miejsce użycia, nie typ.
+/// The application has no library-default theme: every built-in templated control type it uses
+/// has a frame theme. A control without a theme draws nothing, which can go unnoticed in a rarely
+/// opened location (a popup or context menu) until someone clicks there.
+/// Explicit list: add each new built-in type used in a view or template here.
+/// Types used only with a named theme (ToggleButton, RepeatButton, Thumb) do not belong here;
+/// their usage site selects the theme rather than their type.
 /// </summary>
 public sealed class BuiltInControlThemesTests
 {
     private static readonly Type[] TemplatedTypesInUse =
     [
-        // Infrastruktura: okno, hosty okienek, pojemniki.
+        // Infrastructure: window, popup hosts, containers.
         typeof(Window),
         typeof(PopupRoot),
         typeof(OverlayPopupHost),
         typeof(ItemsControl),
         typeof(TransitioningContentControl),
         typeof(PathIcon),
-        // Okienka.
+        // Popups.
         typeof(FlyoutPresenter),
         typeof(MenuFlyoutPresenter),
         typeof(ContextMenu),
         typeof(MenuItem),
         typeof(ToolTip),
-        // Kontrolki widoków.
+        // View controls.
         typeof(Button),
         typeof(TextBox),
         typeof(ButtonSpinner),
@@ -73,8 +73,8 @@ public sealed class BuiltInControlThemesTests
         && resource is ControlTheme theme
         && SetsTemplate(theme);
 
-    // Szablon bywa w motywie bazowym (ComboBoxItem na ListBoxItem) albo w stylu motywu
-    // (ScrollBar: osobny szablon dla :vertical i :horizontal).
+    // The template may live in the base theme (ComboBoxItem on ListBoxItem) or in a theme style
+    // (ScrollBar: separate templates for :vertical and :horizontal).
     private static bool SetsTemplate(StyleBase style) =>
         style.Setters.OfType<Setter>().Any(setter => setter.Property == TemplatedControl.TemplateProperty)
         || style.Children.OfType<StyleBase>().Any(SetsTemplate)

@@ -7,12 +7,12 @@ using Avalonia.Threading;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Wspólna mechanika kroków rozgrzewki wizualnej: podepnij kontrolkę pod niewidoczny host, poczekaj
-/// na jej <see cref="Control.Loaded"/>, oddaj sterowanie dispatcherowi, odepnij. Wydzielone, żeby
-/// każdy krok per typ panelu nie powtarzał tej samej sekwencji.
+/// Shared visual warmup mechanics: attach a control to the invisible host, wait
+/// for its <see cref="Control.Loaded"/>, yield to the dispatcher, detach. Shared so
+/// each panel-type step does not repeat the same sequence.
 /// <para>
-/// Publiczne, nie <c>internal</c>: krok startowy zgłaszany przez system mieszka w innym zestawie i
-/// potrzebuje dokładnie tej samej sekwencji do rozgrzewki kart, których treść zna tylko on.
+/// Public, not <c>internal</c>: a system-provided startup step lives in another assembly and
+/// needs the same sequence to warm up cards whose content only it knows.
 /// </para>
 /// </summary>
 public static class VisualWarmupHost

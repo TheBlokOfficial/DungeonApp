@@ -4,32 +4,32 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Lista rozwijana pojedyncza (ComboBox) i jej wiersz (ComboBoxItem). Szablony wycięte
-        z ComboBox.xaml i ComboBoxItem.xaml Fluenta (Avalonia 12.0.5, MIT): zostały okno wyskakujące
-        (PART_Popup) i prezenter elementów (PART_ItemsPresenter); wypadły DataValidationErrors, pole
-        edycji (IsEditable - lista w ramie się nie edytuje) i podświetlenie fokusu.
-        Zamknięta wygląda jak pole tekstowe: wysokość DungeonControlHeight, tło, krawędź 1 px
-        i zaokrąglenie pola, wcięcie jak w polu; tekst wybranej pozycji wyśrodkowany w pionie,
-        w jednej linii przycięty wielokropkiem; bez wyboru - PlaceholderText kolorem zastępczym pola.
-        Po prawej chevron w prawo (DungeonIconChevronDown obrócony o -90°, rozmiar ikony akcji, kolor tekstu
-        przygaszonego, 12 px od krawędzi jak lupa w polu wyszukiwania), sam rysunek bez tła.
-        Szerokość nadaje układ (rozciąga się jak pole), nie zawartość. Kursor strzałka.
-        Stany:
-          spoczynek  - krawędź InputBorder;
-          najechanie - krawędź InputHoverBorder (jak pole);
-          wciśnięcie - jak najechanie;
-          otwarta    - jak najechanie, także bez myszy nad polem (bez akcentu, jak pole w edycji);
-                       chevron w dół (zamknięta - w prawo), obrót ruchem;
-          wyłączenie - DungeonDisabledOpacity.
-        Fokus nie ma wyglądu (FocusAdorner pusty); bez animacji otwierania - rusza się tylko chevron.
-        Rozwinięta lista: powierzchnia okienka wysuwanego (ten sam motyw FlyoutPresenter - tło,
-        krawędź, wcięcie, cień, najwyższa wysokość DungeonFlyoutMaxHeight, przewijanie w środku),
-        co najmniej tak szeroka jak pole, pod nim i wyrównana do jego lewej krawędzi (nad nim, gdy pod
-        spodem brak miejsca), odstęp to margines motywu FlyoutPresenter; najwyższą wysokość trzyma
-        sama powierzchnia (MaxHeight okna wyskakującego obcinałoby margines). Zamyka ją wybór, kliknięcie
-        obok albo Escape (zachowanie ComboBox).
-        Wiersz (ComboBoxItem) to motyw wiersza listy (BasedOn ListBoxItem): te same wysokość,
-        wcięcia, najechanie, wybrany = AccentDim bez najechania, wyłączenie.
+        Single-selection dropdown (ComboBox) and its row (ComboBoxItem). Templates based
+        on Fluent ComboBox.xaml and ComboBoxItem.xaml (Avalonia 12.0.5, MIT): popup
+        (PART_Popup) and item presenter (PART_ItemsPresenter), without DataValidationErrors, editing
+        field (IsEditable - shell dropdowns are not editable) or focus highlight.
+        Closed appearance matches a text field: DungeonControlHeight, field background, 1 px border,
+        radius and padding; selected item text vertically centred,
+        single-line, trimmed with an ellipsis; without selection - PlaceholderText in field placeholder colour.
+        Right-pointing chevron on the right (DungeonIconChevronDown rotated -90°, action icon size, muted
+        text colour, 12 px from the edge like the search-field magnifier), glyph only without background.
+        Layout determines width (stretches like a field), not content. Arrow cursor.
+        States:
+          resting  - InputBorder;
+          hover    - InputHoverBorder (like a field);
+          pressed  - same as hover;
+          open     - same as hover, even without the pointer over the field (no accent, like a field being edited);
+                     downward chevron (closed - right), animated rotation;
+          disabled - DungeonDisabledOpacity.
+        No focus appearance (empty FocusAdorner); no opening animation - only the chevron moves.
+        Expanded list: flyout surface (same FlyoutPresenter theme - background,
+        border, padding, shadow, DungeonFlyoutMaxHeight maximum height, internal scrolling),
+        at least as wide as the field, below and left-aligned with it (above when there is no space
+        below), gap from the FlyoutPresenter theme margin; the surface itself limits height
+        (popup MaxHeight would clip the margin). Selection, clicking outside or Escape closes it
+        (ComboBox behaviour).
+        Row (ComboBoxItem) uses the list-row theme (BasedOn ListBoxItem): same height,
+        padding, hover, selected = AccentDim without hover, disabled state.
     -->
     <ControlTheme x:Key="{x:Type ComboBox}" TargetType="ComboBox">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -114,8 +114,8 @@
                        ^:dropdownopen /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>
-        <!-- Strzałka: zamknięta w prawo, otwarta w dół albo w górę (tam, gdzie lista się pojawiła); obrót ruchem (DungeonMotionDuration,
-             z wyhamowaniem) - stan zmienia się od razu, obrót go dogania. -->
+        <!-- Arrow: right when closed, down or up when open (towards the list); animated rotation (DungeonMotionDuration,
+             easing out) - state changes immediately, rotation catches up. -->
         <Style Selector="^ /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-90deg)" />
             <Setter Property="Transitions">
@@ -129,8 +129,8 @@
         <Style Selector="^:dropdownopen /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(0deg)" />
         </Style>
-        <!-- Lista otwarta w górę (brak miejsca pod polem; klasa .opens-up z Themes/PopupOpenMotion.cs):
-             strzałka wskazuje w górę - z "w prawo" o 90 stopni w przeciwną stronę niż w dół. -->
+        <!-- List opens upwards (no room below the field; .opens-up from Themes/PopupOpenMotion.cs):
+             arrow points up - 90 degrees from right in the opposite direction to down. -->
         <Style Selector="^:dropdownopen.opens-up /template/ controls|ForegroundIcon#PART_DropDownGlyph">
             <Setter Property="RenderTransform" Value="rotate(-180deg)" />
         </Style>
@@ -142,12 +142,12 @@
     <ControlTheme x:Key="{x:Type ComboBoxItem}"
                   TargetType="ComboBoxItem"
                   BasedOn="{StaticResource {x:Type ListBoxItem}}">
-        <!-- Wiersz w okienku: strefa paska liczona od krawędzi obszaru przewijania okienka. -->
+        <!-- Popup row: scrollbar zone measured from the popup scroll area's edge. -->
         <Style Selector="^ /template/ Border#PART_Highlight">
             <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
         </Style>
-        <!-- Pozycja dłuższa niż okienko (szerokość ustalona przy otwarciu - Themes/PopupOpenLayout.cs)
-             przycina się i pokazuje pełny napis w podpowiedzi. -->
+        <!-- Items longer than the popup (width fixed on opening - Themes/PopupOpenLayout.cs)
+             are trimmed and show their full text in a tooltip. -->
         <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="themes:TrimmedLabelToolTip.IsEnabled" Value="True" />
         </Style>

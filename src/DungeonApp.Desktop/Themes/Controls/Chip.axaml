@@ -3,22 +3,22 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Chip: klikalny przełącznik filtra - ToggleButton z Theme="{StaticResource DungeonChip}"
-        (IsChecked - filtr włączony). Zwarta kontrolka w rzędzie filtrów: wysokość DungeonChipHeight
-        (28, jawnie - niższa od przycisku 36), zaokrąglenie DungeonControlCornerRadius, wcięcie
-        DungeonChipPadding, pismo interfejsu 12 (DungeonHelperFontSize), Medium. Opcjonalna ikona
-        przed napisem - jak w przycisku: StackPanel z ForegroundIcon (DungeonActionIconSize, kolor
-        tekstu chipa) i TextBlock. Napis w jednej linii, zbyt długi przycina się wielokropkiem
-        z podpowiedzią (Themes/TrimmedLabelToolTip.cs). Krawędź zawsze 1 px i zawsze widoczna,
-        jaśniejsza od tła (włączony - pełny akcent), więc zmiana stanu nie zmienia wymiarów.
-        Stany:
-          spoczynek          - tło BackstageRow, krawędź Border, tekst TextRegular;
-          najechanie         - krawędź BorderStrong, tekst TextPrimary; wciśnięcie - jak najechanie;
-          włączony (:checked) - tło AccentDim, krawędź AccentEdge, tekst AccentOnDim; pod myszą i wciśnięty
-                               bez zmian;
-          wyłączony          - DungeonDisabledOpacity, gdy nic wyżej nie przygasza, wygląd spoczynku;
-          włączony wyłączony - traci akcent: tło SurfaceActive, krawędź Border, tekst TextRegular.
-        Fokus bez wyglądu (FocusAdorner pusty), kursor strzałka, bez strzałki i listy wyboru.
+        Chip: clickable filter toggle - ToggleButton with Theme="{StaticResource DungeonChip}"
+        (IsChecked - filter enabled). Compact control in a filter row: DungeonChipHeight
+        (28, explicit - shorter than a 36-high button), DungeonControlCornerRadius,
+        DungeonChipPadding, UI font 12 (DungeonHelperFontSize), Medium. Optional icon
+        before the label - as in a button: StackPanel with ForegroundIcon (DungeonActionIconSize, chip
+        text colour) and TextBlock. Single-line text, trimmed with an ellipsis
+        and tooltip when too long (Themes/TrimmedLabelToolTip.cs). The border is always 1 px and visible,
+        lighter than the background (checked - full accent), so state changes do not change dimensions.
+        States:
+          resting           - BackstageRow background, Border border, TextRegular text;
+          hover             - BorderStrong border, TextPrimary text; pressed - same as hover;
+          checked (:checked) - AccentDim background, AccentEdge border, AccentOnDim text; hover and pressed
+                               stay unchanged;
+          disabled          - DungeonDisabledOpacity unless an ancestor dims it, resting appearance;
+          checked disabled  - loses accent: SurfaceActive background, Border border, TextRegular text.
+        No visible focus indicator (empty FocusAdorner), arrow cursor, no arrow or choice list.
     -->
     <ControlTheme x:Key="DungeonChip" TargetType="ToggleButton">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -65,7 +65,7 @@
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderStrongBrush}" />
             <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <!-- Włączony: w każdym stanie myszy ten sam - jawnie, nie przez kolejność stylów. -->
+        <!-- Checked: identical across pointer states - explicit, independent of style order. -->
         <Style Selector="^:checked, ^:checked:pointerover, ^:checked:pressed">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />

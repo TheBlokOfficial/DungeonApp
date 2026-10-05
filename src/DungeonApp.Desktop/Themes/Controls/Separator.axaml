@@ -2,13 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Linia (DungeonBorderBrush): dzieli, nie wyróżnia. Separator nie ma stanów - nie przyjmuje
-        fokusu i nie reaguje na mysz, więc kursor nad nim jest kursorem tego, na czym leży.
-        Odmiany:
-          domyślna   - pozioma, 1 px, pełna szerokość, bez marginesu (linia w liście, między grupami);
-          .section   - pozioma, z odstępem DungeonSpacingLg nad i pod linią (między sekcjami karty);
-          .vertical  - pionowa, 1 px, pełna wysokość, bez marginesu.
-        Odstęp odmiany .section to Margin z tokenu DungeonPaddingLgVertical (0,16,0,16 - wartość równa
+        Line (DungeonBorderBrush): separates, does not highlight. Separator has no states - no focus
+        or pointer response, so it inherits the underlying cursor.
+        Variants:
+          default    - horizontal, 1 px, full width, no margin (line in a list, between groups);
+          .section   - horizontal, DungeonSpacingLg above and below (between card sections);
+          .vertical  - vertical, 1 px, full height, no margin.
+        .section spacing is Margin from DungeonPaddingLgVertical (0,16,0,16 - equal to
         DungeonSpacingLg): 16 + 1 + 16.
     -->
     <ControlTheme x:Key="{x:Type Separator}" TargetType="Separator">

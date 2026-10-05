@@ -14,22 +14,22 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Rozgrzewa każdą zakładkę każdego wkompilowanego systemu, żeby wybór systemu nie budował ich na
-/// wątku UI w chwili kliknięcia. Dla każdego systemu: jego zakładki kategorii
-/// System (rama nie wie, co która buduje - tylko że każda jest deklaracją bez parametru, więc nie może
-/// sięgnąć po kampanię), i jego zakładki kategorii Kampania wobec pierwszej kampanii z półki, jeśli
-/// jakaś istnieje.
+/// Warms every tab of every compiled-in system so choosing a system does not build them on
+/// the UI thread at click time. For each system: its System-category
+/// tabs (shell does not know what each builds - only that each is a parameterless declaration, so cannot
+/// access a campaign), and its Campaign-category tabs using the first shelf campaign, if
+/// one exists.
 /// <para>
-/// Rozgrzewka kart i wczytywanie paczek treści nie należą tutaj - każdy system sam wczytuje własne
-/// paczki i ma własny rejestr, więc to jego własne kroki startowe
-/// (<see cref="IGameSystem.StartupSteps"/>), nie coś, co rama umiałaby zrobić za niego bez
-/// znajomości treści.
+/// Card warmup and content-pack loading do not belong here - each system loads its own
+/// packs and owns its registry, so these are its own startup steps
+/// (<see cref="IGameSystem.StartupSteps"/>), not something the shell could perform without
+/// knowing the content.
 /// </para>
 /// <para>
-/// Każda zawartość jest egzemplarzem rzucanym, budowanym przez tymczasowy kontekst - nigdy przez
-/// <see cref="ActiveSystemSession"/>, która przy wyborze systemu zbuduje swój własny, prawdziwy
-/// egzemplarz przy pierwszym pokazaniu. Nic zbudowane tutaj nie zostaje w żadnej pamięci
-/// podręcznej, którą później czytałby wybór systemu.
+/// Each content instance is disposable, built through a temporary context - never through
+/// <see cref="ActiveSystemSession"/>, which builds its own real instance on first display
+/// after system selection. Nothing built here remains in any cache
+/// later read during system selection.
 /// </para>
 /// </summary>
 public sealed class WarmSystemTabsStep(

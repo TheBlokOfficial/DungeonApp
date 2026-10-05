@@ -1,7 +1,7 @@
  <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:DungeonApp.Desktop.Controls">
-    <!-- Okno ma pismo i kolor tekstu w swoim motywie (Controls/Window.axaml). -->
+    <!-- Window font and text colour come from its own theme (Controls/Window.axaml). -->
     <Style Selector="UserControl">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
@@ -21,12 +21,12 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
-    <!-- Pole tekstowe w polu z ikoną (controls:IconField): ramkę, tło, wysokość i przygaszenie niesie
-         ramka pola z ikoną, więc pole tekstowe w środku jest bez krawędzi i tła, wypełnia wnętrze
-         ramki na pełnej wysokości, nie przygasza się drugi raz (Opacity 1 także wyłączone), a tekst
-         zaczyna się tuż za odstępem ikony (DungeonInputTextAfterIconMargin). Mieszka tu, a nie
-         w motywie pola z ikoną (Controls/IconField.axaml), bo ControlTheme nie dopuszcza selektora
-         potomka. -->
+    <!-- Text box in an icon field (controls:IconField): the icon field frame supplies border,
+         background, height and dimming, so the inner text box has no border or background, fills the
+         frame at full inner height, does not dim again (Opacity 1 even when disabled), and text
+         starts just after the icon gap (DungeonInputTextAfterIconMargin). Defined here rather than
+         in the icon field theme (Controls/IconField.axaml), because ControlTheme does not allow
+         descendant selectors. -->
     <Style Selector="controls|IconField > TextBox">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -37,34 +37,34 @@
         <Setter Property="Opacity" Value="1" />
     </Style>
 
-    <!-- Wiersz listy z kolumnami (controls:ListRow z Grid jako treścią, np. nazwa wpisu i odznaka):
-         każda kolumna wyśrodkowana w pionie niezależnie. Siatka wiersza ma wysokość najwyższej
-         kolumny, a rozciągnięty TextBlock rysuje tekst u góry swojego pola - bez tego wyższa odznaka
-         w sąsiedniej kolumnie przesuwała tytuł w górę. Mieszka tu, a nie w motywie wiersza
-         (Controls/ListRow.axaml), bo ControlTheme nie dopuszcza selektora potomka.
-         Korzeń szablonu wiersza (Grid PART_Root) też jest logicznym dzieckiem wiersza - wyłączony
-         z selektora, bo pas kreski i tło PART_Highlight mają się rozciągać na wysokość wiersza. -->
+    <!-- List row with columns (controls:ListRow with Grid content, e.g. entry name and badge):
+         each column vertically centred independently. Row grid is as high as the tallest
+         column, while a stretched TextBlock draws text at its top - otherwise a taller badge
+         in the neighbouring column shifts the title upwards. Defined here rather than in the row theme
+         (Controls/ListRow.axaml), because ControlTheme does not allow descendant selectors.
+         Row template root (Grid PART_Root) is also a logical child of the row - excluded
+         from the selector because stripe gutter and PART_Highlight background must stretch to row height. -->
     <Style Selector="controls|ListRow > Grid:not(#PART_Root) > :is(Control)">
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
-    <!-- Lista w okienku .list-host: wcięcie okienka (DungeonFlyoutPadding) niesie lista wewnątrz
-         przewijanej treści - okienko .list-host nie ma własnego (motyw FlyoutPresenter), więc pasek
-         listy stoi przy krawędzi okienka jak w każdym innym okienku. -->
+    <!-- List in a .list-host flyout: the list carries flyout padding (DungeonFlyoutPadding) inside
+         scrollable content - .list-host has none of its own (FlyoutPresenter theme), so the list
+         scrollbar sits at the flyout edge as in every other flyout. -->
     <Style Selector="FlyoutPresenter.list-host > ListBox">
         <Setter Property="Padding" Value="{DynamicResource DungeonFlyoutPadding}" />
     </Style>
-    <!-- Wiersz listy w okienku wysuwanym (lista w .list-host, wiersze DropDownPicker): stoi o wcięcie
-         okienka od krawędzi obszaru przewijania, więc strefa paska w wierszu to reszta pasa
-         (DungeonScrollBarZoneInFlyout). ComboBoxItem ma to we własnym motywie. -->
+    <!-- List row in a flyout (.list-host list, DropDownPicker rows): inset by flyout padding
+         from the scroll area's edge, so the row's scrollbar zone is the remaining strip
+         (DungeonScrollBarZoneInFlyout). ComboBoxItem sets this in its own theme. -->
     <Style Selector="FlyoutPresenter ListBoxItem /template/ Border#PART_Highlight">
         <Setter Property="Padding" Value="{DynamicResource DungeonScrollBarZoneInFlyout}" />
     </Style>
-    <!-- Okienko, którego treść mieści się bez przewijania (klasa .no-bar-zone ustawiana przy otwarciu
-         przez Themes/PopupOpenLayout.cs i trzymana do zamknięcia): wiersze nie zostawiają strefy
-         paska - treść kończy się tak samo daleko od prawej krawędzi, jak zaczyna od lewej. Klasa stoi
-         na powierzchni okienka, a przy ComboBox i podmenu także na kontrolce, której dziećmi
-         logicznymi są wiersze. -->
+    <!-- Popup whose content fits without scrolling (.no-bar-zone set on opening
+         by Themes/PopupOpenLayout.cs and retained until closing): rows reserve no scrollbar
+         zone - content ends as far from the right edge as it starts from the left. Class is set
+         on the popup surface and, for ComboBox and submenus, also on the control whose logical
+         children are the rows. -->
     <Style Selector="FlyoutPresenter.no-bar-zone ListBoxItem /template/ Border#PART_Highlight,
                      ComboBox.no-bar-zone > ComboBoxItem /template/ Border#PART_Highlight">
         <Setter Property="Padding" Value="0" />
@@ -84,18 +84,18 @@
     </Style>
 
     <!--
-        Kontrolka w linii tekstu (np. odnośnik w zdaniu, Button.link.inline): domyślnie Avalonia
-        stawia jej dolną krawędź na linii bazowej zdania, więc tekst w środku - wysoki na całą linię
-        z jego własnym zejściem - stoi wyżej o to zejście. Dolna krawędź na dolnej krawędzi tekstu
-        kładzie linię bazową treści na linii bazowej zdania, a podkreślenie tuż pod literami.
+        Inline control (e.g. sentence link, Button.link.inline): Avalonia defaults
+        its bottom edge to the sentence baseline, so inner text - occupying a full line
+        with its own descent - sits higher by that descent. Aligning bottom edges with the text bottom
+        puts the content baseline on the sentence baseline and the underline just below the letters.
     -->
     <Style Selector="InlineUIContainer">
         <Setter Property="BaselineAlignment" Value="TextBottom" />
     </Style>
 
-    <!-- Separator w menu (MenuFlyout, ContextMenu, podmenu): linia 1 px na pełną szerokość wnętrza
-         menu, odstęp 4 nad i pod. Mieszka tu, a nie w motywie menu (Controls/Menus.axaml), bo
-         ControlTheme nie dopuszcza selektora potomka. -->
+    <!-- Menu separator (MenuFlyout, ContextMenu, submenu): 1 px line across the menu's full inner
+         width, gap 4 above and below. Defined here rather than in the menu theme (Controls/Menus.axaml), because
+         ControlTheme does not allow descendant selectors. -->
     <Style Selector="MenuFlyoutPresenter > Separator, ContextMenu > Separator, MenuItem > Separator">
         <Setter Property="Margin" Value="{DynamicResource DungeonMenuSeparatorMargin}" />
     </Style>

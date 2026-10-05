@@ -53,7 +53,7 @@ public partial class DropDownsSection : UserControl
         ChipPickerOne.ItemsSource = rarities;
         ChipPickerOne.SelectedItems = new AvaloniaList<object> { "Rzadki" };
         ChipPickerSeveral.ItemsSource = rarities;
-        // Kliknięte w innej kolejności niż na liście - napis bierze pierwszą z listy.
+        // Selected in a different order from the list - the label uses the first in list order.
         ChipPickerSeveral.SelectedItems = new AvaloniaList<object> { "Legendarny", "Rzadki", "Bardzo rzadki" };
         ChipPickerDisabled.ItemsSource = colors;
         ChipPickerDisabledSelected.ItemsSource = colors;

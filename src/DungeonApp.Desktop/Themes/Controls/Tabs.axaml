@@ -4,37 +4,37 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Zakładki: pasek z treścią (TabControl + TabItem) i sam pasek (TabStrip + TabStripItem).
-        Szablony napisane od nowa; nazwy części z TabControl.xaml, TabItem.xaml, TabStrip.xaml
-        i TabStripItem.xaml Fluenta (Avalonia 12.0.5, MIT): PART_ItemsPresenter,
-        PART_SelectedContentHost (i PART_SelectedContentHost2 - drugi prezenter, którego kontrolka
-        używa przy przejściu stron; tu ukryty, przejścia nie ma), PART_LayoutRoot,
-        PART_ContentPresenter. Wypadła kreska zaznaczenia (PART_SelectedPipe) - wybraną zakładkę
-        niesie tło.
-        Zakładka (TabItem i TabStripItem wyglądają tak samo - wspólna podstawa DungeonTabHeaderBase):
-        wysokość DungeonTabHeight, wcięcie DungeonTabPadding, zaokrąglenie DungeonCornerRadius, bez
-        krawędzi, krój interfejsu 13. Szerokość z napisu, najwyżej DungeonTabMaxWidth; dłuższy napis
-        przycina się wielokropkiem i pokazuje pełny w podpowiedzi (Themes/TrimmedLabelToolTip.cs).
-        Szerokość rezerwuje pogrubiony napis (controls:BoldTextReserve), więc wybór nie zmienia
-        szerokości zakładki. Kursor strzałka, tekst się nie zaznacza,
-        fokus bez wyglądu (FocusAdorner pusty), bez przejść - zmiana wyboru zmienia kolor od razu.
-        Stany:
-          spoczynek          - bez tła, tekst TextRegular;
-          najechanie         - tło SurfaceHover, tekst TextPrimary;
-          wciśnięcie         - jak najechanie;
-          wybrana            - tło AccentDim, tekst AccentOnDim, SemiBold; pod myszą bez zmian (styl stoi
-                               po najechaniu);
-          wyłączona          - DungeonDisabledOpacity (tylko zakładka wyłączona sama - w wyłączonym
-                               pasku albo TabControl przygasza raz całość), bez tła, tekst
-                               TextRegular, bez reakcji na mysz; wybrana wyłączona traci akcent: tło neutralne InputBackground
-                               (jak znacznik wyłączonego zaznaczonego pola wyboru), tekst
-                               TextRegular, zostaje SemiBold.
-        Pasek: od lewej, zawija się do nowej linii (WrapPanel), odstęp DungeonSpacingXs w poziomie
-        i między liniami. Bez tła i krawędzi.
-        TabControl: pasek u góry, pod nim treść wybranej zakładki z odstępem DungeonSpacingLg (bez
-        zakładek - bez paska i odstępu); obszar treści bez tła i krawędzi. Wyłączony TabControl
-        przygasza całość raz. Obsługiwana jest wyłącznie pozycja paska u góry (TabStripPlacement
-        Top) - szablon nie czyta TabStripPlacement.
+        Tabs: strip with content (TabControl + TabItem) and strip alone (TabStrip + TabStripItem).
+        Part names from Fluent TabControl.xaml, TabItem.xaml, TabStrip.xaml
+        and TabStripItem.xaml (Avalonia 12.0.5, MIT): PART_ItemsPresenter,
+        PART_SelectedContentHost (and PART_SelectedContentHost2 - second presenter used by the control
+        for page transitions; hidden here, no transition), PART_LayoutRoot,
+        PART_ContentPresenter. No selection stripe (PART_SelectedPipe) - background
+        indicates the selected tab.
+        Tab (TabItem and TabStripItem look identical - shared DungeonTabHeaderBase):
+        DungeonTabHeight, DungeonTabPadding, DungeonCornerRadius, no
+        border, UI font 13. Label-sized width up to DungeonTabMaxWidth; longer labels
+        trim with an ellipsis and show full text in a tooltip (Themes/TrimmedLabelToolTip.cs).
+        Width reserves bold text (controls:BoldTextReserve), so selection does not change
+        tab width. Arrow cursor, text cannot be selected,
+        no focus appearance (empty FocusAdorner), no transitions - selection changes colour immediately.
+        States:
+          resting   - no background, TextRegular text;
+          hover     - SurfaceHover background, TextPrimary text;
+          pressed   - same as hover;
+          selected  - AccentDim background, AccentOnDim text, SemiBold; unchanged on hover (style
+                      follows hover);
+          disabled  - DungeonDisabledOpacity (only independently disabled tabs - disabled
+                      strip or TabControl dims everything once), no background,
+                      TextRegular text, no pointer response; selected disabled loses accent: neutral InputBackground
+                      (like the marker of a disabled checked checkbox),
+                      TextRegular text, SemiBold retained.
+        Strip: left-aligned, wraps to a new line (WrapPanel), DungeonSpacingXs horizontally
+        and between lines. No background or border.
+        TabControl: strip at the top, selected tab content below with DungeonSpacingLg gap (no
+        tabs - no strip or gap); content area has no background or border. Disabled TabControl
+        dims everything once. Only top strip placement (TabStripPlacement
+        Top) is supported - template does not read TabStripPlacement.
     -->
     <ControlTheme x:Key="DungeonTabHeaderBase" TargetType="ContentControl">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -75,8 +75,8 @@
         <Style Selector="^:disabled:selected">
             <Setter Property="Background" Value="{DynamicResource DungeonSurfaceActiveBrush}" />
         </Style>
-        <!-- Przygasza tylko zakładka wyłączona sama (IsEnabled="False"); zakładka w wyłączonym pasku
-             też jest :disabled, ale przygasza ją raz cały pasek - bez podwójnego przygaszenia. -->
+        <!-- Only independently disabled tabs (IsEnabled="False") dim themselves; tabs in a disabled strip
+             are also :disabled, but the whole strip dims them once - no double dimming. -->
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
@@ -212,12 +212,12 @@
             </ControlTemplate>
         </Setter>
 
-        <!-- Bez zakładek pasek nie zajmuje miejsca: znika też odstęp nad treścią. -->
+        <!-- With no tabs, the strip takes no space: the gap above content disappears too. -->
         <Style Selector="^:empty /template/ Panel#PART_TabStripSpacing">
             <Setter Property="IsVisible" Value="False" />
         </Style>
-        <!-- Wyłączony TabControl przygasza całość - pasek i treść - raz; zakładki w nim nie
-             przygaszają się drugi raz (przygasza tylko najwyższa wyłączona kontrolka). -->
+        <!-- Disabled TabControl dims everything - strip and content - once; tabs inside do not
+             dim again (only the outermost disabled control dims). -->
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>

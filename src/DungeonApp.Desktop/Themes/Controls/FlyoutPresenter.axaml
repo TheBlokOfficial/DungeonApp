@@ -2,23 +2,23 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--
-        Okienko wysuwane (FlyoutPresenter - treść Flyout). Szablon wycięty z FlyoutPresenter.xaml
-        Fluenta (Avalonia 12.0.5, MIT): zostały obramowanie, obszar przewijania i prezenter treści
-        (PART_ContentPresenter); wygląd od nowa z tokenów.
-        Powierzchnia jak pole: tło InputBackground, krawędź InputBorder 1 px, zaokrąglenie
-        DungeonFlyoutCornerRadius; wcięcie wewnętrzne DungeonFlyoutPadding, żeby wiersze listy nie
-        dotykały krawędzi; lekki cień
-        DungeonFlyoutShadow. Wysokość najwyżej DungeonFlyoutMaxHeight - dłuższa treść przewija się
-        w środku paskiem ramy (motyw ScrollViewer), pasek tylko przy potrzebie. Szerokość z treści.
-        Nie ma stanów: nie przyjmuje fokusu i nie ma wyglądu fokusu. Otwarcie jest ruchem, zamknięcie
-        natychmiast (Themes/PopupOpenMotion.cs).
-        Zamykanie kliknięciem obok i klawiszem Escape to zachowanie samego Flyout.
-        Położenie: pod elementem, który je otworzył, wyrównane do jego lewej krawędzi - miejsce użycia
-        ustawia Flyout Placement="BottomEdgeAlignedLeft" (Flyout nie jest kontrolką i motywu nie ma);
-        gdy pod spodem brak miejsca, okno wyskakujące odwraca się nad element. Odstęp od elementu to
-        przezroczysty margines DungeonFlyoutMargin nad i pod powierzchnią (Margin tego motywu), nie
-        VerticalOffset - przesunięcie działa zawsze w dół, więc okienko odwrócone w górę nachodziłoby
-        na element; margines jest symetryczny i działa w obu kierunkach.
+        Flyout (FlyoutPresenter - Flyout content). Template based on Fluent FlyoutPresenter.xaml
+        (Avalonia 12.0.5, MIT): border, scroll area and content presenter
+        (PART_ContentPresenter), with appearance defined by tokens.
+        Field-like surface: InputBackground fill, 1 px InputBorder, DungeonFlyoutCornerRadius;
+        DungeonFlyoutPadding inside keeps list rows away from
+        the edges; subtle DungeonFlyoutShadow.
+        Maximum height DungeonFlyoutMaxHeight - longer content scrolls
+        inside with the shell scrollbar (ScrollViewer theme), shown only when needed. Content-sized width.
+        No states: no focus or focus appearance. Animated opening, immediate closing
+        (Themes/PopupOpenMotion.cs).
+        Clicking outside or pressing Escape closes it through Flyout behaviour.
+        Placement: below the opener, left-aligned - the usage site
+        sets Flyout Placement="BottomEdgeAlignedLeft" (Flyout is not a control and has no theme);
+        when there is no space below, the popup flips above the element. Gap from the element uses
+        transparent DungeonFlyoutMargin above and below the surface (this theme's Margin), not
+        VerticalOffset - the offset always moves down, so an upward popup would overlap
+        the opener; the margin is symmetric and works in both directions.
     -->
     <ControlTheme x:Key="{x:Type FlyoutPresenter}" TargetType="FlyoutPresenter">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -61,12 +61,12 @@
                 </Border>
             </ControlTemplate>
         </Setter>
-        <!-- .list-host (Flyout FlyoutPresenterClasses="list-host"): treścią okienka jest lista, która
-             przewija się sama - okienko nie przewija, więc jest jeden pas paska, przy liście. Lista
-             dostaje skończoną wysokość (DungeonFlyoutMaxHeight). Okienko nie ma własnego wcięcia -
-             wcięcie niesie lista wewnątrz przewijanej treści (styl "FlyoutPresenter.list-host > ListBox"
-             w BuiltInControls.axaml), więc obszar przewijania listy sięga krawędzi okienka i pasek stoi
-             w tym samym miejscu co w każdym innym okienku (DungeonScrollBarInset od krawędzi, góry i dołu). -->
+        <!-- .list-host (Flyout FlyoutPresenterClasses="list-host"): content is a self-scrolling list
+             - the flyout does not scroll, leaving a single scrollbar zone beside the list. The list
+             receives a finite height (DungeonFlyoutMaxHeight). The flyout has no padding of its own -
+             the list carries padding inside its scrollable content ("FlyoutPresenter.list-host > ListBox"
+             style in BuiltInControls.axaml), so its scroll area reaches the flyout edge and the scrollbar
+             sits as in every other flyout (DungeonScrollBarInset from the side, top and bottom). -->
         <Style Selector="^.list-host">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
             <Setter Property="Padding" Value="0" />

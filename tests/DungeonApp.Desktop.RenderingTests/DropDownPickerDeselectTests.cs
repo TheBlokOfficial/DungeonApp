@@ -8,8 +8,8 @@ using DungeonApp.Desktop.Controls;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Wybór pojedynczy: w stroju chipa (filtr, nic = wszystko) ponowne kliknięcie wybranej wartości ją
-/// odznacza i zamyka okienko; zwykła lista rozwijana w formularzu trzyma wybór.
+/// Single selection: in chip form (a filter where nothing means everything), clicking the selected
+/// value again deselects it and closes the flyout; a regular form drop-down keeps its selection.
 /// </summary>
 public sealed class DropDownPickerDeselectTests
 {

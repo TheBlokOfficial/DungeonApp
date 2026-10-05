@@ -4,21 +4,21 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Tabela w karcie (controls:Table - siatka Grid, każda pozycja to controls:TableCell).
-        Obramowanie zewnętrzne 1 px i linie poziome między wierszami w kolorze Border; linie pionowe
-        między kolumnami - ShowColumnLines (domyślnie bez). Grubość krawędzi każdej komórki ustala
-        tabela z jej położenia (Controls/Table.cs), więc każda linia leży raz. Ostre narożniki.
-        Komórka: wysokość najmniej DungeonTableCellMinHeight, wcięcie DungeonTableCellPadding,
-        treść na środku w pionie, wyrównanie poziome per komórka (HorizontalContentAlignment, domyślnie
-        z lewej); tekst podstawowy 13 pismem interfejsu, w jednej linii - zbyt długi przycina się
-        wielokropkiem z podpowiedzią (Themes/TrimmedLabelToolTip.cs). Tło bez wyróżnienia
-        przezroczyste (karta pod spodem); wyróżnienie - Background podany przez układającego (kolory
-        systemu), wypełnia komórkę do linii.
-        Klasy komórki:
-          .header - wiersz nagłówka: tło TableHeader, tekst TextRegular 12, SemiBold;
-          .mono   - liczby krojem DungeonMonoFont.
-        Nieinteraktywna: bez najechania i zaznaczania, bez fokusu, kursor strzałka, tekst się nie
-        zaznacza. Wyłączona - DungeonDisabledOpacity raz na całej tabeli (najwyższa wyłączona).
+        Card table (controls:Table - Grid, each item is a controls:TableCell).
+        1 px outer border and horizontal row lines in Border colour; vertical column
+        lines controlled by ShowColumnLines (off by default). Table sets each cell's border thickness
+        from its position (Controls/Table.cs), so each line is drawn once. Square corners.
+        Cell: minimum height DungeonTableCellMinHeight, DungeonTableCellPadding,
+        content vertically centred, horizontal alignment per cell (HorizontalContentAlignment, left
+        by default); regular text 13 in UI font, single line - long text trimmed with an
+        ellipsis and tooltip (Themes/TrimmedLabelToolTip.cs). Unhighlighted background is
+        transparent (card beneath); highlight - Background supplied by the view (system
+        colours), fills the cell up to its lines.
+        Cell classes:
+          .header - header row: TableHeader background, TextRegular 12, SemiBold;
+          .mono   - numbers in DungeonMonoFont.
+        Non-interactive: no hover, selection or focus, arrow cursor, text cannot be
+        selected. Disabled - DungeonDisabledOpacity once on the whole table (outermost disabled).
     -->
     <ControlTheme x:Key="{x:Type controls:Table}" TargetType="controls:Table">
         <Setter Property="Cursor" Value="Arrow" />
@@ -35,7 +35,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="MinHeight" Value="{DynamicResource DungeonTableCellMinHeight}" />
         <Setter Property="Padding" Value="{DynamicResource DungeonTableCellPadding}" />
-        <!-- Przezroczyste, nie puste: podpowiedź przyciętego napisu potrzebuje trafienia myszą. -->
+        <!-- Transparent, not null: the trimmed-text tooltip needs mouse hit testing. -->
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="{DynamicResource DungeonBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />

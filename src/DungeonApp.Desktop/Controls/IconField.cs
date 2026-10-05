@@ -8,29 +8,29 @@ using Avalonia.Media;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Pole z ikoną: ramka pola (tło, krawędź, zaokrąglenie, wysokość) z ikoną na początku i polem
-/// tekstowym widoku w środku - pole tekstowe (<see cref="ContentControl.Content"/>, zwykły
-/// <see cref="TextBox"/> z wiązaniami widoku) zaczyna się za ikoną i nie ma własnej krawędzi ani tła.
-/// Ikona nie leży w polu tekstowym, więc kliknięcie w nią, obok niej ani w krawędź ramki nie stawia
-/// karetki i nie zaczyna zaznaczania. <see cref="IsClearable"/> dokłada na końcu ramki przycisk
-/// czyszczenia (x), widoczny tylko przy niepustym polu; czyszczenie zostawia fokus w polu. Wygląd
-/// i stany należą do motywu ramy (Themes/Controls/IconField.axaml). Zmienia wyłącznie tekst pola
-/// tekstowego na jawne kliknięcie przycisku czyszczenia.
+/// Icon field: field frame (background, border, radius, height) with a leading icon and the view's
+/// text box inside - text box (<see cref="ContentControl.Content"/>, regular
+/// <see cref="TextBox"/> with view bindings) starts after the icon and has no border or background of its own.
+/// Icon is outside the text box, so clicking it, beside it or on the frame border neither places
+/// the caret nor starts selection. <see cref="IsClearable"/> adds a clear button
+/// (x) at the frame end, visible only for a non-empty field; clearing keeps field focus. Appearance
+/// and states belong to the shell theme (Themes/Controls/IconField.axaml). Changes only text-box
+/// text on an explicit clear-button click.
 /// </summary>
 [TemplatePart(ClearButtonPartName, typeof(Button))]
 public sealed class IconField : ContentControl
 {
     private const string ClearButtonPartName = "PART_ClearButton";
 
-    /// <summary>Ikona na początku pola (rysunek z zestawu ikon, w kolorze z motywu).</summary>
+    /// <summary>Leading field icon (glyph from the icon set, in the theme colour).</summary>
     public static readonly StyledProperty<DrawingImage?> IconProperty =
         AvaloniaProperty.Register<IconField, DrawingImage?>(nameof(Icon));
 
-    /// <summary>Czy pole ma przycisk czyszczenia na końcu (domyślnie nie).</summary>
+    /// <summary>Whether the field has a trailing clear button (false by default).</summary>
     public static readonly StyledProperty<bool> IsClearableProperty =
         AvaloniaProperty.Register<IconField, bool>(nameof(IsClearable));
 
-    /// <summary>Czy przycisk czyszczenia jest widoczny: pole go ma i tekst nie jest pusty.</summary>
+    /// <summary>Whether the clear button is visible: field has one and text is non-empty.</summary>
     public static readonly DirectProperty<IconField, bool> CanClearProperty =
         AvaloniaProperty.RegisterDirect<IconField, bool>(nameof(CanClear), field => field.CanClear);
 

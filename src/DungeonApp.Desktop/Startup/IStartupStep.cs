@@ -4,26 +4,26 @@ using System.Threading.Tasks;
 namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
-/// Jeden krok sekwencji startowej aplikacji. Cały kontrakt żyje w warstwie Desktop - <see
-/// cref="ApplyAsync"/> dotyka drzewa Avalonii, więc rdzeń pozostaje nieświadomy istnienia startu.
-/// Stan potrzebny między fazami trzyma krok we własnym prywatnym polu, nie generyczny mechanizm
-/// współdzielony przez kontrakt.
+/// One step in the application startup sequence. The whole contract belongs to Desktop - <see
+/// cref="ApplyAsync"/> touches the Avalonia tree, so Core remains unaware of startup.
+/// Each step holds state needed between phases in its own private field, rather than a generic mechanism
+/// shared by the contract.
 /// </summary>
 public interface IStartupStep
 {
-    /// <summary>Komunikat po polsku, pokazywany użytkownikowi zanim krok zacznie działać.</summary>
+    /// <summary>Polish message shown to the user before the step starts.</summary>
     string Describe();
 
-    /// <summary>Praca bez dotykania UI: odczyt z dysku, sieć, obliczenia.</summary>
+    /// <summary>Work without touching UI: disk reads, networking, computations.</summary>
     Task PrepareAsync(CancellationToken cancellationToken);
 
-    /// <summary>Zastosowanie efektu kroku na żywym drzewie interfejsu.</summary>
+    /// <summary>Applies the step's result to the live UI tree.</summary>
     Task ApplyAsync(StartupUiContext ui, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Komunikat pokazywany na pasku stanu, gdy ten krok zawiedzie i przerwie sekwencję startową
-    /// (rama nigdy nie zna przyczyny awarii - to krok ją nazywa). Domyślny tekst, ogólny, wystarcza
-    /// krokom samej ramy; krok zgłaszany przez system nadpisuje go własnym, konkretnym tekstem.
+    /// Status-bar message when this step fails and interrupts the startup sequence
+    /// (the shell never knows the failure reason - the step names it). Default generic text suffices
+    /// for shell steps; a system-provided step overrides it with its own specific text.
     /// </summary>
     string FailureWarning =>
         "Nie udało się w pełni przygotować startu aplikacji. Zostanie uruchomiona mimo to.";

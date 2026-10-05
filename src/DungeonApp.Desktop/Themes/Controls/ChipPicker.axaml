@@ -3,37 +3,37 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Lista rozwijana w stroju chipa filtra (controls:DropDownPicker z
-        Theme="{StaticResource DungeonChipPicker}"): rząd filtrów, w którym każdy filtr wybiera z listy.
-        Ten sam szablon co DropDownPicker (DropDownPicker.axaml) (okienko, wiersze, wyszukiwanie, ruch otwarcia,
-        strzałka) - motyw ustawia tylko wygląd zamkniętego z zasobów chipa (DungeonChip,
-        DungeonChipOpener): wysokość DungeonChipHeight (28, jawnie), zaokrąglenie
-        DungeonControlCornerRadius, wcięcie DungeonChipPadding, pismo interfejsu 12 Medium, krawędź
-        zawsze 1 px, strzałka w kolorze tekstu, odstęp przed nią DungeonSpacingXs.
-        Treść zamkniętego - reguły DropDownPicker, jednakowe dla wyboru pojedynczego i wielokrotnego: nic
-        nie wybrane - nazwa filtra (PlaceholderText, kolorem tekstu chipa); jedna - ta wartość (w wyborze
-        pojedynczym ponowne kliknięcie wybranej wartości ją odznacza - AllowsDeselect); więcej
-        (wielokrotny) - pierwsza wybrana w kolejności listy i odznaka neutralna "+N", podpowiedź "Nazwa:
-        wszystkie wybrane". Szerokość z treści, najwyżej DungeonTabMaxWidth (240, jak zakładka) - dłuższy
-        napis przycina się wielokropkiem z podpowiedzią pełnego (podpowiedź z "+N" wygrywa); odznaka
-        się nie przycina.
-        Stany (jak DungeonChipOpener):
-          spoczynek        - tło BackstageRow, krawędź Border, tekst i strzałka TextRegular;
-          najechanie       - krawędź BorderStrong, tekst i strzałka TextPrimary
-                             (:pointerover:not(.hover-suppressed)); wciśnięcie - jak najechanie;
-          otwarty          - jak najechanie (:dropdownopen); po zamknięciu kliknięciem w siebie spoczynek,
-                             dopóki mysz nie zjedzie (Themes/OpenerHoverRest.cs);
-          coś wybrane (:has-selection) - tło AccentDim, krawędź AccentEdge, tekst i strzałka AccentOnDim; pod
-                             myszą, wciśnięty i otwarty bez zmian;
-          wyłączony        - DungeonDisabledOpacity, wygląd spoczynku; z wyborem traci akcent (tło
-                             SurfaceActive, krawędź Border, tekst TextRegular).
-        Fokus bez wyglądu, kursor strzałka.
+        Dropdown styled as a filter chip (controls:DropDownPicker with
+        Theme="{StaticResource DungeonChipPicker}"): a filter row with a choice list for each filter.
+        Same template as DropDownPicker (DropDownPicker.axaml) (popup, rows, search, opening motion,
+        arrow) - the theme only sets its closed appearance from chip resources (DungeonChip,
+        DungeonChipOpener): DungeonChipHeight (28, explicit),
+        DungeonControlCornerRadius, DungeonChipPadding, UI font 12 Medium, border
+        always 1 px, arrow in text colour, DungeonSpacingXs before it.
+        Closed content follows DropDownPicker rules for both single and multiple selection: nothing
+        selected - filter name (PlaceholderText, in chip text colour); one - that value (in single
+        selection, clicking the selected value again deselects it - AllowsDeselect); more
+        (multiple) - first selected value in list order and neutral "+N" badge, tooltip "Nazwa:
+        wszystkie wybrane". Content-sized width up to DungeonTabMaxWidth (240, as for a tab) - longer
+        text is trimmed with an ellipsis and a full-text tooltip (the "+N" tooltip takes precedence); the badge
+        is not trimmed.
+        States (as in DungeonChipOpener):
+          resting          - BackstageRow background, Border border, TextRegular text and arrow;
+          hover            - BorderStrong border, TextPrimary text and arrow
+                             (:pointerover:not(.hover-suppressed)); pressed - same as hover;
+          open             - same as hover (:dropdownopen); clicking itself closed restores rest
+                             until the pointer leaves (Themes/OpenerHoverRest.cs);
+          selected (:has-selection) - AccentDim background, AccentEdge border, AccentOnDim text and arrow; hover,
+                             pressed and open stay unchanged;
+          disabled         - DungeonDisabledOpacity, resting appearance; with a selection, loses accent (SurfaceActive
+                             background, Border border, TextRegular text).
+        No visible focus indicator, arrow cursor.
     -->
     <ControlTheme x:Key="DungeonChipPicker"
                   TargetType="controls:DropDownPicker"
                   BasedOn="{StaticResource {x:Type controls:DropDownPicker}}">
-        <!-- Filtr: nic wybrane = wszystko, więc ponowne kliknięcie wybranej wartości (wybór pojedynczy)
-             ją odznacza i zamyka okienko - chip wraca do nazwy filtra. -->
+        <!-- Filter: nothing selected = all, so clicking the selected value again (single selection)
+             deselects it and closes the popup - the chip returns to the filter name. -->
         <Setter Property="AllowsDeselect" Value="True" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="Height" Value="{DynamicResource DungeonChipHeight}" />
@@ -57,7 +57,7 @@
             <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
             <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <!-- Coś wybrane: w każdym stanie myszy i otwarcia ten sam - jawnie, nie przez kolejność stylów. -->
+        <!-- Selected: identical across pointer and open states - explicit, independent of style order. -->
         <Style Selector="^:has-selection, ^:has-selection:pointerover, ^:has-selection:pressed, ^:has-selection:dropdownopen">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonAccentEdgeBrush}" />

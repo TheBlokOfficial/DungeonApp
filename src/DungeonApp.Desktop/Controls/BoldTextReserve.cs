@@ -5,19 +5,19 @@ using Avalonia.Media;
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
-/// Niewidoczna, ale mierzona pogrubiona kopia napisu etykiety (zakładka, segment). Leży w szablonie
-/// pod widocznym napisem w tym samym panelu i wyznacza jego szerokość w każdym stanie - pogrubienie
-/// wybranej etykiety nie zmienia więc jej szerokości i nie przesuwa sąsiadów.
-/// Działa wyłącznie dla treści tekstowej: treść niebędąca tekstem (kontrolka) nie może mieć dwóch
-/// rodziców, więc kopii nie ma i miejsca się nie rezerwuje.
+/// Invisible but measured bold copy of label text (tab, segment). Sits in the template
+/// beneath visible text in the same panel and determines width in every state - bolding
+/// the selected label therefore does not change its width or move neighbours.
+/// Works only for text content: non-text content (control) cannot have two
+/// parents, so no copy is created and no space is reserved.
 /// </summary>
 public sealed class BoldTextReserve : TextBlock
 {
     public static readonly StyledProperty<object?> LabelProperty =
         AvaloniaProperty.Register<BoldTextReserve, object?>(nameof(Label));
 
-    // Wartości lokalne, nie domyślne: grubość i zawijanie są dziedziczone, więc wartość domyślna
-    // przegrałaby z grubością etykiety (Normal w spoczynku) i kopia nie byłaby pogrubiona.
+    // Local values, not defaults: weight and wrapping are inherited, so a default
+    // would lose to label weight (Normal at rest) and the copy would not be bold.
     public BoldTextReserve()
     {
         FontWeight = FontWeight.SemiBold;

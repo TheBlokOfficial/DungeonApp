@@ -3,29 +3,29 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Pole z ikoną (controls:IconField): ramka pola z ikoną na początku i polem tekstowym widoku
-        w środku. Ikona nie leży w polu tekstowym - pole tekstowe zaczyna się za nią i wypełnia resztę
-        ramki na pełnej wysokości wnętrza, bez własnej krawędzi i tła (styl "controls|IconField >
-        TextBox" w BuiltInControls.axaml - ControlTheme nie dopuszcza selektora potomka). Kliknięcie
-        w ikonę, obok niej i w krawędź ramki nie trafia w pole tekstowe: nie stawia karetki, nie
-        zaczyna zaznaczania.
-        Wygląd jak pole tekstowe: te same zasoby tła, krawędzi, zaokrąglenia i wysokości
-        (DungeonControlHeight). Ikona DungeonActionIconSize, odstęp DungeonSpacingMd z obu stron,
-        kolor tekstu przygaszonego, nie reaguje na mysz (nie jest celem trafienia - kursor strzałka
-        ramki). Tekst pola zaczyna się tuż za odstępem ikony (wcięcie DungeonInputTextAfterIconMargin),
-        tekst zastępczy tak samo.
-        Przycisk czyszczenia (IsClearable): sam rysunek (DungeonFieldGlyphButton) na końcu ramki, poza
-        polem tekstowym, na pełnej wysokości wnętrza; widoczny tylko przy niepustym polu (CanClear).
-        Nie przyjmuje fokusu, więc czyszczenie zostawia fokus w polu; kliknięcie w niego ani w ikonę
-        nie kończy edycji (Themes/EditFocusRelease.cs liczy ramkę pola z ikoną jako pole).
-        Stany:
-          spoczynek  - tło InputBackground, krawędź InputBorder;
-          najechanie - mysz nad ramką (także nad ikoną i przyciskiem): krawędź InputHoverBorder;
-          edycja     - fokus w polu (:focus-within): krawędź InputHoverBorder przez całą edycję;
-          wyłączenie - DungeonDisabledOpacity raz, na ramce (najwyższa wyłączona); pole tekstowe w środku
-                       nie przygasza drugi raz.
-        Odmiany:
-          .search    - wyszukiwania: lupa i przycisk czyszczenia.
+        Icon field (controls:IconField): field frame with a leading icon and the view's text box
+        inside. The icon is outside the text box - the text box starts after it and fills the remaining
+        frame at full inner height, without its own border or background ("controls|IconField >
+        TextBox" style in BuiltInControls.axaml - ControlTheme does not allow a descendant selector). Clicking
+        the icon, beside it or on the frame border does not hit the text box: it does not place the caret
+        or start selection.
+        Text-box appearance: the same background, border, radius and height resources
+        (DungeonControlHeight). DungeonActionIconSize icon, DungeonSpacingMd on both sides,
+        muted text colour, no pointer response (not a hit-test target - the frame's arrow
+        cursor). Field text starts just after the icon spacing (DungeonInputTextAfterIconMargin),
+        as does the placeholder.
+        Clear button (IsClearable): glyph only (DungeonFieldGlyphButton) at the end of the frame, outside
+        the text box, at full inner height; visible only when the field is non-empty (CanClear).
+        Does not accept focus, so clearing keeps focus in the field; clicking it or the icon
+        does not end editing (Themes/EditFocusRelease.cs treats the icon field frame as a field).
+        States:
+          resting  - InputBackground fill, InputBorder border;
+          hover    - pointer over the frame (including icon and button): InputHoverBorder border;
+          editing  - focus in the field (:focus-within): InputHoverBorder throughout editing;
+          disabled - DungeonDisabledOpacity once, on the frame (outermost disabled); the inner text box
+                     does not dim again.
+        Variants:
+          .search  - search field: magnifier and clear button.
     -->
     <ControlTheme x:Key="{x:Type controls:IconField}" TargetType="controls:IconField">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -33,9 +33,9 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Height" Value="{DynamicResource DungeonControlHeight}" />
-        <!-- Najmniejszą szerokość wyznacza zawartość: pole tekstowe w środku ma co najmniej
-             DungeonInputMinWidth (jak zwykłe pole), więc całość to ta wartość plus pasy ikony
-             i czyszczenia. -->
+        <!-- Content determines minimum width: the inner text box is at least
+             DungeonInputMinWidth (like a regular field), so the total adds the icon
+             and clear-button areas to that value. -->
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="CornerRadius" Value="{DynamicResource DungeonControlCornerRadius}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -86,7 +86,7 @@
             <Setter Property="IsClearable" Value="True" />
         </Style>
 
-        <!-- Najechanie i edycja: ta sama krawędź co pole tekstowe; w edycji trzyma się bez myszy. -->
+        <!-- Hover and editing: same border as the text box; editing keeps it without the pointer. -->
         <Style Selector="^:pointerover, ^:focus-within">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonInputHoverBorderBrush}" />
         </Style>

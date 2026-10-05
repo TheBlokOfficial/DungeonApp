@@ -49,8 +49,8 @@
         <Style Selector="StackPanel.campaign-dim:disabled, TextBlock.campaign-dim:disabled, Image.campaign-dim:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
-        <!-- Wiersz otwarcia (ListRow, bez wyboru i kreski) wypełnia rekord: wysokość z rekordu
-             (DungeonCampaignRowHeight), nie z wiersza listy ramy - styl listy, nie zawartość. -->
+        <!-- Open row (ListRow, no selection or stripe) fills the record: height from the record
+             (DungeonCampaignRowHeight), not the shell list row - list style, not content. -->
         <Style Selector="ScrollViewer.campaign-list controls|ListRow">
             <Setter Property="Height" Value="NaN" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -225,7 +225,7 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <!-- Pusta biblioteka: komunikat ramy u góry obszaru listy, tuż pod formularzem. -->
+                <!-- Empty library: shell message at the top of the list area, just below the form. -->
                 <controls:EmptyState IsVisible="{Binding IsEmpty}"
                                      Message="Nie ma jeszcze żadnej kampanii."
                                      Hint="Nazwij pierwszą w polu powyżej i utwórz ją." />

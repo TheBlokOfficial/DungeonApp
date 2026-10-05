@@ -3,25 +3,25 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Wskaźnik postępu (ProgressBar), tylko poziomy. Szablon wycięty z ProgressBar.xaml Fluenta
-        (Avalonia 12.0.5, MIT): zostały tor i PART_Indicator (szerokość ustawia sam ProgressBar po
-        wartości); wypadły napis z procentem (ShowProgressText - wartość pokazuje ten, kto układa
-        widok), szablon pionowy i animacje nieokreślonego stanu ze stylu (zastępuje je
-        controls:ProgressSweep - ruch w kodzie, który wyłączone animacje w systemie zatrzymują).
-        Orientation="Vertical" dostaje ten sam poziomy szablon - pierwszy konsument dopisze pionowy.
-        Wymiar: grubość DungeonProgressBarThickness, szerokość z kontenera; zaokrąglenie
-        DungeonProgressBarCornerRadius na obu końcach toru i wypełnienia (jak tor suwaka), tor
-        przycina wypełnienie do swojego obrysu.
-        Tor Background (DungeonBorderBrush), wypełnienie Foreground - domyślnie akcent; układający
-        widok może podać inny kolor (np. pasek PW). Bez fokusu, kursor strzałka, bez przejść.
-        Stany - nic więcej:
-          określony    - wypełnienie od lewej, szerokość według Value w zakresie Minimum..Maximum;
-          nieokreślony - odcinek 40 % toru w kolorze Foreground przesuwa się w pętli
-                         (DungeonProgressSweepDuration); przy wyłączonych animacjach w systemie
-                         spokojny: cały tor w przygaszonym akcencie (DungeonAccentDimBrush), bez ruchu;
-          wyłączony    - DungeonDisabledOpacity (najwyższa wyłączona), wypełnienie traci akcent:
-                         tekst przygaszony (TextMuted), neutralne - jak część toru suwaka przed
-                         uchwytem; nieokreślony wyłączony stoi (cały tor w TextMuted).
+        Progress indicator (ProgressBar), horizontal only. Template based on Fluent ProgressBar.xaml
+        (Avalonia 12.0.5, MIT): track and PART_Indicator (ProgressBar itself sets width from
+        the value); no percentage text (ShowProgressText - the view displays the value),
+        vertical template or style-based indeterminate animations (handled by
+        controls:ProgressSweep - code-based motion stopped when system animations are disabled).
+        Orientation="Vertical" receives the same horizontal template.
+        Dimensions: DungeonProgressBarThickness, width from container; DungeonProgressBarCornerRadius
+        at both ends of track and fill (like the slider track), track
+        clips fill to its outline.
+        Track Background (DungeonBorderBrush), fill Foreground - accent by default; the view
+        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor, no transitions.
+        States - no others:
+          determinate   - fill from the left, width according to Value in Minimum..Maximum;
+          indeterminate - segment of 40 % of the track in Foreground moves in a loop
+                          (DungeonProgressSweepDuration); with system animations disabled,
+                          static: entire track in dim accent (DungeonAccentDimBrush), no motion;
+          disabled      - DungeonDisabledOpacity (outermost disabled), fill loses accent:
+                          muted text (TextMuted), neutral - like the slider track before
+                          the thumb; disabled indeterminate stays still (entire track in TextMuted).
     -->
     <ControlTheme x:Key="{x:Type ProgressBar}" TargetType="ProgressBar">
         <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />

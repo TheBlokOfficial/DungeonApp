@@ -3,46 +3,46 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls"
                     xmlns:converters="using:Avalonia.Controls.Converters">
 
-    <!-- Skrót klawiszowy pozycji menu zapisany po konwencji platformy (Ctrl+S). -->
+    <!-- Menu-item keyboard shortcut formatted using platform conventions (Ctrl+S). -->
     <converters:PlatformKeyGestureConverter x:Key="DungeonKeyGestureConverter" />
 
     <!--
-        Menu rozwijane z przycisku (MenuFlyout -> MenuFlyoutPresenter) i menu kontekstowe
-        (ContextMenu) z pozycjami (MenuItem) i separatorem. Pasek menu (Menu) nie ma motywu ramy -
-        rama nawiguje paskiem bocznym. Szablony napisane od nowa; nazwy części z MenuFlyoutPresenter.xaml,
-        ContextMenu.xaml i MenuItem.xaml Fluenta (Avalonia 12.0.5, MIT): PART_ItemsPresenter,
+        Button dropdown menu (MenuFlyout -> MenuFlyoutPresenter) and context menu
+        (ContextMenu) with items (MenuItem) and separator. Menu bar (Menu) has no shell theme -
+        the shell navigates through a sidebar. Part names from Fluent MenuFlyoutPresenter.xaml,
+        ContextMenu.xaml and MenuItem.xaml (Avalonia 12.0.5, MIT): PART_ItemsPresenter,
         PART_Popup, PART_HeaderPresenter, PART_InputGestureText.
-        Powierzchnia (menu i podmenu): jak okienko wysuwane (FlyoutPresenter) - tło InputBackground,
-        krawędź InputBorder 1 px, zaokrąglenie DungeonFlyoutCornerRadius, wcięcie DungeonFlyoutPadding,
-        cień DungeonFlyoutShadow, najwyższa wysokość DungeonFlyoutMaxHeight z przewijaniem w środku
-        (pasek - nakładka ramy - tylko przy potrzebie). Szerokość z najdłuższej pozycji, od DungeonMenuMinWidth do
+        Surface (menu and submenu): like a flyout (FlyoutPresenter) - InputBackground fill,
+        1 px InputBorder, DungeonFlyoutCornerRadius, DungeonFlyoutPadding,
+        DungeonFlyoutShadow, DungeonFlyoutMaxHeight maximum height with internal scrolling
+        (shell overlay scrollbar - only when needed). Width from the longest item, from DungeonMenuMinWidth to
         DungeonMenuMaxWidth.
-        Położenie: menu z przycisku jak okienko (widok ustawia MenuFlyout Placement=
-        "BottomEdgeAlignedLeft" - MenuFlyout nie jest kontrolką i motywu nie ma; margines
-        DungeonFlyoutMargin, odwrócone nad przycisk, gdy brak miejsca); menu kontekstowe przy
-        wskaźniku (zachowanie biblioteki); podmenu w prawo, obok krawędzi menu z odstępem okienka
-        (DungeonSubmenuHorizontalOffset - nie nachodzi na menu), górnym wierszem na wysokości pozycji
-        (DungeonSubmenuVerticalOffset), w lewo, gdy brak miejsca. Otwarcie ruchem
-        (Themes/PopupOpenMotion.cs): menu z przycisku od strony przycisku, menu kontekstowe i podmenu
-        samym wyłonieniem; zamknięcie natychmiast.
-        Pozycja: wysokość DungeonListRowHeight, podświetlenie jak wiersz listy (pędzel
-        BackstageRowHover, wcięcie DungeonListRowHighlightInset, zaokrąglenie
-        DungeonListRowHighlightCornerRadius) sięga pod pasek przewijania; wcięcie tekstu 12, po prawej
-        większe o resztę pasa paska liczonego od krawędzi obszaru przewijania (DungeonScrollBarZoneInFlyout
-        - pozycja stoi o wcięcie menu od tej krawędzi). Kolumny wspólne dla menu
-        (SharedSizeGroup): [ikona 16 / ptaszek] [napis] [skrót albo strzałka podmenu - jedna kolumna przy
-        prawym wcięciu, pozycja z podmenu nie ma skrótu]; kolumna ikony ma
-        szerokość tylko wtedy, gdy któraś pozycja ma ikonę albo jest do zaznaczania. Napis 13,
-        TextPrimary, jedna linia z wielokropkiem, nie do zaznaczania. Skrót (InputGesture) albo krótki
-        napis pozycji (controls:MenuItemTrailing.Text, np. kierunek sortowania) do prawej,
-        12, TextMuted, odstęp DungeonMenuGestureMargin. Ikona i ptaszek kolorem tekstu pozycji.
-        Stany pozycji:
-          spoczynek   - bez tła;
-          najechanie  - podświetlenie; wskazana klawiaturą (:selected) i wciśnięta - jak najechanie;
-          otwarte podmenu (:open) - jak najechanie, dopóki podmenu jest otwarte;
-          wyłączona   - DungeonDisabledOpacity, bez podświetlenia;
-          .danger     - napis i ikona DangerText, podświetlenie neutralne; wyłączona traci czerwień.
-        Fokus bez własnego wyglądu (FocusAdorner pusty); kursor strzałka.
+        Placement: button menu like a flyout (view sets MenuFlyout Placement=
+        "BottomEdgeAlignedLeft" - MenuFlyout is not a control and has no theme; margin
+        DungeonFlyoutMargin, flips above the button if space is limited); context menu at
+        the pointer (library behaviour); submenu to the right, beside the menu edge with a flyout gap
+        (DungeonSubmenuHorizontalOffset - no menu overlap), top row aligned with the item
+        (DungeonSubmenuVerticalOffset), to the left if space is limited. Animated opening
+        (Themes/PopupOpenMotion.cs): button menu from the button's side, context menu and submenu
+        fade only; immediate closing.
+        Item: DungeonListRowHeight, list-row highlight (BackstageRowHover brush,
+        DungeonListRowHighlightInset, DungeonListRowHighlightCornerRadius)
+        extends under the scrollbar; text padding 12, increased on the right
+        by the remaining scrollbar zone measured from the scroll area's edge (DungeonScrollBarZoneInFlyout
+        - item is inset by menu padding from that edge). Columns shared across the menu
+        (SharedSizeGroup): [icon 16 / checkmark] [label] [shortcut or submenu arrow - one column at
+        right padding, submenu items have no shortcut]; icon column has
+        width only when an item has an icon or can be checked. Label 13,
+        TextPrimary, single line with ellipsis, not selectable. Shortcut (InputGesture) or short
+        item text (controls:MenuItemTrailing.Text, e.g. sort direction) aligned right,
+        12, TextMuted, DungeonMenuGestureMargin gap. Icon and checkmark use item text colour.
+        Item states:
+          resting   - no background;
+          hover     - highlight; keyboard-selected (:selected) and pressed - same as hover;
+          open submenu (:open) - same as hover while the submenu is open;
+          disabled  - DungeonDisabledOpacity, no highlight;
+          .danger   - DangerText label and icon, neutral highlight; disabled loses red.
+        No separate focus appearance (empty FocusAdorner); arrow cursor.
     -->
     <ControlTheme x:Key="{x:Type MenuFlyoutPresenter}" TargetType="MenuFlyoutPresenter">
         <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />
@@ -133,22 +133,22 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <!-- Przezroczyste tło zewnętrznej ramki łapie mysz także w odstępie między
-                         podświetleniami - najechanie nie gaśnie między pozycjami. -->
+                    <!-- The outer border's transparent background catches the pointer in the gap between
+                         highlights too - hover does not disappear between items. -->
                     <Border Background="Transparent">
                         <Border Name="PART_LayoutRoot"
                                 Margin="{DynamicResource DungeonListRowHighlightInset}"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 Padding="{TemplateBinding Padding}">
-                            <!-- Podświetlenie pod paskiem przewijania menu, treść przed jego strefą
-                                 (liczoną od krawędzi obszaru przewijania - DungeonScrollBarZoneInFlyout). -->
+                            <!-- Highlight under the menu scrollbar, content before its zone
+                                 (measured from the scroll area's edge - DungeonScrollBarZoneInFlyout). -->
                             <Grid Name="ItemContent" Margin="{DynamicResource DungeonScrollBarZoneInFlyout}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemIcon" />
                                     <ColumnDefinition Width="*" />
-                                    <!-- Skrót i strzałka podmenu dzielą jedną kolumnę przy prawym wcięciu
-                                         (pozycja z podmenu nie ma skrótu) - oba kończą się w jednej linii. -->
+                                    <!-- Shortcut and submenu arrow share one column at the right padding
+                                         (submenu items have no shortcut) - both end on the same line. -->
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="DungeonMenuItemTrailing" />
                                 </Grid.ColumnDefinitions>
                                 <Panel Name="PART_IconColumn"
@@ -184,8 +184,8 @@
                                            TextWrapping="NoWrap"
                                            IsVisible="{TemplateBinding InputGesture, Converter={x:Static ObjectConverters.IsNotNull}}"
                                            Text="{TemplateBinding InputGesture, Converter={StaticResource DungeonKeyGestureConverter}}" />
-                                <!-- Napis w kolumnie skrótu (controls:MenuItemTrailing.Text, np. kierunek
-                                     sortowania) - wygląd skrótu; pozycja nie ma naraz obu. -->
+                                <!-- Text in the shortcut column (controls:MenuItemTrailing.Text, e.g. sort
+                                     direction) - shortcut appearance; an item never has both. -->
                                 <TextBlock Name="PART_TrailingText"
                                            Grid.Column="2"
                                            Margin="{DynamicResource DungeonMenuGestureMargin}"

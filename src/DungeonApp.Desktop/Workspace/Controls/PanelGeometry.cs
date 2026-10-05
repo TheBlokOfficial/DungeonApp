@@ -242,7 +242,7 @@ public static class PanelGeometry
         var availableWidth = Math.Max(constraints.MinWidth, surfaceWidth - (2 * metrics.EdgeMargin));
         var availableHeight = Math.Max(constraints.MinHeight, surfaceHeight - (2 * metrics.EdgeMargin));
 
-        // Maksimum obowiązuje także przy odtwarzaniu zapisanego układu, nie tylko podczas resize.
+        // The maximum also applies when restoring a saved layout, not just during a resize.
         var width = Math.Clamp(
             Math.Min(desired.Width, availableWidth),
             constraints.MinWidth,

@@ -6,9 +6,9 @@ using Avalonia.Styling;
 namespace DungeonApp.Desktop.RenderingTests;
 
 /// <summary>
-/// Style zdejmujące przejścia (Themes/ReducedMotion.axaml) dołącza się tylko na komputerze
-/// z wyłączonymi animacjami - błąd w nich nie wyszedłby w aplikacji autora. Ten sam adres, który
-/// podaje SystemMotion, daje się wczytać.
+/// Styles removing transitions (Themes/ReducedMotion.axaml) are included only on computers
+/// with animations disabled, so errors can go unnoticed in the author's application. The same URI
+/// supplied by SystemMotion must load successfully.
 /// </summary>
 public sealed class ReducedMotionStylesTests
 {

@@ -93,15 +93,15 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// </summary>
     private static readonly IReadOnlyDictionary<string, IBrush> RarityBrushes = new Dictionary<string, IBrush>(StringComparer.Ordinal)
     {
-        // Rzadkość: pospolity.
+        // Rarity: common.
         ["rarity-common"] = new SolidColorBrush(Color.Parse("#D2D0C8")),
-        // Rzadkość: niepospolity.
+        // Rarity: uncommon.
         ["rarity-uncommon"] = new SolidColorBrush(Color.Parse("#66C270")),
-        // Rzadkość: rzadki.
+        // Rarity: rare.
         ["rarity-rare"] = new SolidColorBrush(Color.Parse("#7AAAD6")),
-        // Rzadkość: epicki.
+        // Rarity: epic.
         ["rarity-epic"] = new SolidColorBrush(Color.Parse("#BA9EDC")),
-        // Rzadkość: legendarny.
+        // Rarity: legendary.
         ["rarity-legendary"] = new SolidColorBrush(Color.Parse("#E8A060")),
     };
 

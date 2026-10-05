@@ -4,17 +4,17 @@
                     xmlns:themes="using:DungeonApp.Desktop.Themes">
 
     <!--
-        Odnośnik otwierający: Button z okienkiem wysuwanym (Flyout) i Theme="{StaticResource
-        DungeonLinkOpener}" razem z Classes="link" - odnośnik samodzielny ("Sortuj: nazwa"), który
-        otwiera menu albo listę. Wygląd i stany odnośnika samodzielnego z motywu Button (.link:
-        TextRegular bez podkreślenia; pod myszą, wciśnięty i otwarty TextPrimary z podkreśleniem;
-        po zamknięciu kliknięciem w siebie spoczynek do ponownego wjechania - Themes/OpenerHoverRest.cs).
-        Za napisem strzałka jak w liście rozwijanej: DungeonIconChevronDown, DungeonActionIconSize,
-        w kolorze tekstu, bez podkreślenia, odstęp DungeonSpacingXs; zamknięta w prawo, otwarta
-        wskazuje kierunek otwarcia (w dół albo w górę - klasa .opens-up z Themes/PopupOpenMotion.cs),
-        obrót ruchem (DungeonMotionDuration, z wyhamowaniem; ReducedMotion.axaml go zdejmuje - reguła
-        strzałek list obejmuje każdy Button z PART_DropDownGlyph). Napis w jednej linii, zbyt długi
-        przycina się wielokropkiem z podpowiedzią. Fokus bez wyglądu, kursor strzałka.
+        Link opener: Button with a flyout (Flyout) and Theme="{StaticResource
+        DungeonLinkOpener}" plus Classes="link" - standalone link ("Sortuj: nazwa") that
+        opens a menu or list. Appearance and states from the Button theme's standalone link (.link:
+        TextRegular without underline; hover, pressed and open use TextPrimary with underline;
+        clicking itself closed restores rest until pointer re-entry - Themes/OpenerHoverRest.cs).
+        Arrow after the label matches dropdowns: DungeonIconChevronDown, DungeonActionIconSize,
+        in text colour, without underline, DungeonSpacingXs gap; right when closed, pointing
+        towards the popup when open (down or up - .opens-up from Themes/PopupOpenMotion.cs),
+        animated rotation (DungeonMotionDuration, easing out; disabled by ReducedMotion.axaml - the
+        dropdown arrow rule covers every Button with PART_DropDownGlyph). Single-line text, trimmed
+        with an ellipsis and tooltip when too long. No visible focus indicator, arrow cursor.
     -->
     <ControlTheme x:Key="DungeonLinkOpener" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Template">

@@ -34,7 +34,7 @@
         <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXxxl}"
                    LineSpacing="{DynamicResource DungeonSpacingXxxl}">
 
-            <!-- A + B: lista z filtrami i usuwaniem -->
+            <!-- A + B: list with filters and deletion -->
             <StackPanel Width="520" Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="overline-sm muted" Text="LISTA Z FILTRAMI" />
                 <controls:IconField Classes="search">
@@ -69,8 +69,8 @@
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                                         <controls:WordTag Grid.Column="1" Content="{Binding Type}" />
-                                        <!-- Wyzwanie to pojedyncza wartość w kolumnie: zwykły tekst krojem
-                                             liczb, kolorem nazwy w wierszu - bez zakreślenia i bez odznaki. -->
+                                        <!-- "Wyzwanie" is a single column value: plain text in the numeric
+                                             font and row-name colour, with no highlight or badge. -->
                                         <TextBlock Grid.Column="2" Classes="mono" HorizontalAlignment="Right" VerticalAlignment="Center"
                                                    Text="{Binding Challenge}" />
                                         <Button Grid.Column="3" Theme="{StaticResource DungeonRowAction}" Click="OnDeleteClick">
@@ -90,7 +90,7 @@
                 </Border>
             </StackPanel>
 
-            <!-- C: karta -->
+            <!-- C: card -->
             <StackPanel Width="360" Spacing="{DynamicResource DungeonSpacingSm}">
                 <TextBlock Classes="overline-sm muted" Text="KARTA" />
                 <Border Classes="surface-card">
@@ -105,8 +105,8 @@
                             </WrapPanel>
                         </StackPanel>
 
-                        <!-- Wartości nagłówkowe: trzy kolumny równej szerokości, bez ramek - jak pod
-                             tagami w szczególe wpisu. To wartości z karty, nie liczniki. -->
+                        <!-- Headline values: three equal-width columns with no borders, as below
+                             the tags in an entry detail. These are card values, not counters. -->
                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
                             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="15" Note="skórzana zbroja, tarcza" />
                             <controls:StatTile Grid.Column="1" Label="PW" Icon="{DynamicResource DungeonIconHeart}" Value="7" Note="2k6" />

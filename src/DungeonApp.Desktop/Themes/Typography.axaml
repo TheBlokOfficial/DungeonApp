@@ -39,9 +39,9 @@
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="LineHeight" Value="32" />
     </Style>
-    <!-- Dopisek krojem ozdobnym: krótki tekst nastroju pod treścią (opis potwora pod jego regułami).
-         Jedyny styl kroju ozdobnego poniżej 20 - kursywa i stopka, więc 15 wystarcza, a mniejszy
-         stopień oddziela go od prozy reguł nad nim. -->
+    <!-- Decorative-font note: short flavour text below content (an entry's description below its rules).
+         Only decorative-font style below 20 - italic footer, so 15 suffices, and the smaller
+         size separates it from the rules prose above. -->
     <Style Selector="TextBlock.display-note, SelectableTextBlock.display-note">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="15" />
@@ -50,7 +50,7 @@
         <Setter Property="LineHeight" Value="22" />
     </Style>
 
-    <!-- TEKST ============================================================= -->
+    <!-- TEXT ============================================================= -->
     <Style Selector="TextBlock.body, SelectableTextBlock.body">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontSize" Value="13" />
@@ -91,11 +91,11 @@
         <Setter Property="LetterSpacing" Value="0.44" />
     </Style>
 
-    <!-- LICZBY ============================================================ -->
-    <!-- stat-value i stat-value-lg: ta sama liczba w dwóch stopniach - wartość w komórce tabeli
-         i wartość nagłówkowa (bez ramki, więc to ona prowadzi oko - stopień 26). Pismo interfejsu, nie krój o stałej szerokości: wartość z jednostką
-         („7,5 m”) czyta się jak tekst, a cyfry tabelaryczne (tnum) i tak trzymają kolumny liczb
-         równo. Jeden krój i grubość, żeby równoważne liczby wyglądały jednakowo. -->
+    <!-- NUMBERS ============================================================ -->
+    <!-- stat-value and stat-value-lg: same number in two sizes - table-cell value
+         and header value (no frame, so it leads the eye - size 26). UI font, not monospaced: a value with units
+         ("7,5 m") reads like text, while tabular figures (tnum) keep number columns
+         aligned anyway. Same font and weight make equivalent numbers look alike. -->
     <Style Selector="TextBlock.stat-value, SelectableTextBlock.stat-value">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
         <Setter Property="FontFeatures" Value="tnum" />
@@ -124,7 +124,7 @@
         <Setter Property="FontWeight" Value="Normal" />
     </Style>
 
-    <!-- KOLOR ============================================================= -->
+    <!-- COLOUR ============================================================= -->
     <!-- Color only - never typeface or size, so it combines with any style above. The default text
          color (BuiltInControls.axaml) is DungeonTextPrimaryBrush; "secondary" is the second role. -->
     <Style Selector="TextBlock.secondary, SelectableTextBlock.secondary">
@@ -132,10 +132,10 @@
     </Style>
 
     <!--
-        Tekst do zaznaczenia (SelectableTextBlock): dłuższa treść kart i komunikaty błędów. Kursor
-        tekstowy, zaznaczenie kolorem DungeonTextSelectionBrush - tym samym co w polach tekstowych;
-        Ctrl+C kopiuje (zachowanie kontrolki). Kliknięcie obok zdejmuje z niego fokus, a z nim
-        zaznaczenie - rama, Themes/EditFocusRelease.cs.
+        Selectable text (SelectableTextBlock): longer card content and error messages. Text
+        cursor, DungeonTextSelectionBrush selection - same as text fields;
+        Ctrl+C copies (control behaviour). Clicking outside removes focus and
+        selection - shell, Themes/EditFocusRelease.cs.
     -->
     <Style Selector="SelectableTextBlock">
         <Setter Property="Cursor" Value="IBeam" />
@@ -144,20 +144,20 @@
     </Style>
 
     <!--
-        Zakreślenie: styl tekstu na fragmencie (Run albo Span w TextBlocku), jak pogrubienie - tło
-        przylega do liter i płynie z tekstem; bez wcięcia i zaokrąglenia (pojemnik z wcięciem to
-        odznaka). Odmiany po znaczeniu:
-          .highlight    - wyróżnione: wartość ważna w zdaniu, która zostaje tekstem (DungeonHighlightBrush);
-          .search-match - trafienie wyszukiwania: fragment pasujący do szukanego (DungeonSearchMatchBrush).
+        Highlight: text style on a fragment (Run or Span in TextBlock), like bold - background
+        hugs the letters and flows with text; no padding or rounding (a padded container is a
+        badge). Semantic variants:
+          .highlight    - emphasis: important value in a sentence that remains text (DungeonHighlightBrush);
+          .search-match - search hit: fragment matching the query (DungeonSearchMatchBrush).
     -->
     <Style Selector="Run.highlight, Span.highlight">
         <Setter Property="Background" Value="{DynamicResource DungeonHighlightBrush}" />
     </Style>
 
     <!--
-        Wyróżnienie autora (Run.emphasis, controls:EmphasisMarkup): fragment, który autor treści
-        oznaczył **…** - premia do trafienia, rzut obrażeń, ST. Pogrubienie (SemiBold) w kolorze tekstu
-        podstawowego, także w zdaniu tekstem drugorzędnym - oko ląduje na liczbie, nie na tle.
+        Content emphasis (Run.emphasis, controls:EmphasisMarkup): fragment marked by the content
+        author with **…** - attack bonus, damage roll, "ST". Bold (SemiBold) in regular text
+        colour, even in a secondary-text sentence - the eye lands on the number, not the background.
     -->
     <Style Selector="Run.emphasis">
         <Setter Property="FontWeight" Value="SemiBold" />

@@ -3,12 +3,12 @@
                     xmlns:controls="using:DungeonApp.Desktop.Controls">
 
     <!--
-        Pusta lista (controls:EmptyState): komunikat zamiast wierszy - tekst podstawowy w stopniu
-        i kroju tekstu interfejsu - i opcjonalna podpowiedź pod nim, co zrobić (tekst przygaszony,
-        DungeonHelperFontSize), widoczna tylko przy niepustej. Stoi u góry obszaru listy (nie na
-        środku wysokiej listy) z wcięciem DungeonPaddingMd; bez ilustracji i bez ikony. Tekst zawija
-        się w szerokości listy. Nie ma stanów: nie przyjmuje fokusu i nie reaguje na mysz (kursor
-        tego, na czym leży); tekst się nie zaznacza.
+        Empty list (controls:EmptyState): message in place of rows - regular text in the UI font
+        and size - with an optional hint below explaining what to do (muted text,
+        DungeonHelperFontSize), visible only when non-empty. Sits at the top of the list area (not in
+        the middle of a tall list) with DungeonPaddingMd; no illustration or icon. Text wraps
+        to the list width. No states: no focus or pointer response (inherits the underlying
+        cursor); text cannot be selected.
     -->
     <ControlTheme x:Key="{x:Type controls:EmptyState}" TargetType="controls:EmptyState">
         <Setter Property="Focusable" Value="False" />

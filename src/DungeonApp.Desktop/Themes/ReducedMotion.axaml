@@ -3,10 +3,10 @@
         xmlns:controls="using:DungeonApp.Desktop.Controls"
         xmlns:themes="using:DungeonApp.Desktop.Themes">
     <!--
-        Wyłączone animacje w systemie wyłączają je w aplikacji. Dołącza je SystemMotion przy
-        starcie, tylko gdy Windows ma animacje wyłączone; style stoją nad motywami kontrolek, więc
-        zdejmują ich przejścia - stan zmienia się od razu, bez ruchu. Każde przejście motywu ramy
-        (DungeonMotionDuration) ma tu swój wpis.
+        Disabled system animations disable application animations. SystemMotion includes these styles at
+        startup only when Windows animations are off; styles override control themes,
+        removing their transitions - state changes immediately, without motion. Every shell-theme transition
+        (DungeonMotionDuration) has an entry here.
     -->
     <Style Selector="ToggleSwitch">
         <Setter Property="KnobTransitions" Value="{x:Null}" />
@@ -20,7 +20,7 @@
                      Expander /template/ ToggleButton#ExpanderHeader /template/ controls|ForegroundIcon#PART_Chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
-    <!-- Otwarcie okienka, rozwiniętej listy i menu bez ruchu (Themes/PopupOpenMotion.cs). -->
+    <!-- Flyout, dropdown and menu opening without motion (Themes/PopupOpenMotion.cs). -->
     <Style Selector="FlyoutPresenter, MenuFlyoutPresenter, ContextMenu, MenuItem /template/ Border#PART_SubmenuSurface">
         <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />
     </Style>
