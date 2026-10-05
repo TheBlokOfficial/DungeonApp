@@ -18,12 +18,17 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   odrzucenia wpisu, nie cicho zignorowana wartość.
 - **Nakładka instancji to rzadka łatka rozwiązywana przy odczycie**, nie kopia wpisu: zmiana wpisu
   działa jak patch balansujący grę i dociera do zapisanych kampanii.
-- **Model subagentów: Opus 5.5 także do pracy mechanicznej.** Pomiar na porządkach komentarzy (trzy
-  rozłączne paczki, worktree, ten sam opis zadania): Sonnet 5.5 — 80 kroków, 12,3 min, 14,4 mln
-  odczytu, przerwany przed buildem, 6 poprawek po przeglądzie; Opus 5.5 — 66 i 64 kroki, ok. 9,5 min,
-  12,7 i 11,0 mln odczytu, build i testy zielone, 3 i 0 poprawek. Opus wyszedł taniej w odczycie
-  i bez dokańczania. Subagent biegnie zawsze w tle, żeby autor mógł w tym czasie pytać.
-  Liczby: `tools/subagent-usage.py`. *Wyzwalacz:* nowy model albo pomiar z Sonnetem bez poprawek.
+- **Sposób pracy: architekt z wykonawcami w granicach.** Krok agenta wysyła cały jego kontekst, więc
+  koszt to liczba kroków razy rozmiar kontekstu. Jedna sesja prowadzi jeden wycinek; architekt czyta
+  kod potrzebny do zlecenia z adresami i sam robi drobne poprawki po przeglądzie; wykonawca to agent
+  `wykonawca` (sześć narzędzi, limit kroków, worktree z HEAD architekta, raport do 15 linii);
+  roadmapę i rozstrzygnięcia zmienia się raz na wycinek. Liczby: `tools/usage.py`. *Wyzwalacz:*
+  wykonawcy regularnie dochodzą do limitu kroków albo wycinek potrzebuje więcej niż dwóch.
+- **Model wykonawców: Sonnet do zleceń z adresami, Opus do porządków i zadań otwartych.** Odczyt
+  kontekstu (połowa kosztu) kosztuje w obu tyle samo, więc model zmienia koszt kroku o ok. 30%,
+  a kształt pracy — kilkukrotnie. Porządki komentarzy: Sonnet 80 kroków i 6 poprawek, Opus 66 i 64
+  kroki, 3 i 0 poprawek; trzy zlecenia z adresami na Sonnecie przeszły bez poprawek. Subagent biegnie
+  zawsze w tle. *Wyzwalacz:* wykonawca na Sonnecie wymaga poprawek dwa razy z rzędu.
 - **Zapis po każdej zmianie**, bez ręcznego „Zapisz”. *Wyzwalacz:* MG chce wrócić do wcześniejszego
   stanu → najpierw rotujące kopie zapasowe.
 - **Błąd nie zamyka programu.** Przy stole zamknięcie kosztuje więcej niż błąd, a kampania jest
@@ -202,3 +207,8 @@ zmień wpis. Pełne argumenty sprzed przebudowy obiegu pracy: `docs/archive/deci
   pierwszej sesji przy stole (patrz wersje formatów wyżej).
 - **Śledzenie tur jako element karty** — tury, rundy i liczniki efektów trzyma narzędzie walki;
   karta pokazuje wpis albo entity.
+- **Architekt bez czytania kodu, każda runda poprawek u nowego wykonawcy** — zlecenie bez adresów
+  i ok. 150 tys. tokenów na start wykonawcy przy każdej poprawce; dwie karty kosztowały tak 77 ze
+  186 USD całej pracy w tym trybie.
+- **Cała praca w głównej sesji** — kontekst rośnie bez końca, a autor traci rozmowę w trakcie pracy.
+- **Meldunki faz, lista zadań, dokumenty jako dziennik** — tokeny bez czytelnika; stan niesie git.

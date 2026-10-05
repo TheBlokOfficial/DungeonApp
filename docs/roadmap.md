@@ -85,8 +85,6 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 
 ## Porządki w kodzie i dokumentach
 
-- **Komentarze po polsku** w ok. 40 plikach — przetłumaczyć na angielski (konwencja: kod i komentarze
-  po angielsku). `tools/comment-hits.py` wskazuje też komentarze z historią.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
