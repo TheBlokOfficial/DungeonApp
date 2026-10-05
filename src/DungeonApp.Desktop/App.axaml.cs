@@ -37,6 +37,13 @@ public partial class App : Avalonia.Application
     }
 
     /// <summary>
+    /// Whether the Windows animation setting decides motion. Headless tests turn it off, so the
+    /// motion they check does not depend on the machine running them (CI runners have animations
+    /// disabled).
+    /// </summary>
+    internal bool FollowsSystemMotion { get; init; } = true;
+
+    /// <summary>
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
     /// class - it never runs in the shipped app, which always goes through the constructor above,
     /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
@@ -60,7 +67,10 @@ public partial class App : Avalonia.Application
         }
 
         AvaloniaXamlLoader.Load(this);
-        Themes.SystemMotion.Apply(this);
+        if (FollowsSystemMotion)
+        {
+            Themes.SystemMotion.Apply(this);
+        }
 
         // Campaigns live with user documents, not application data: a campaign should be a visible,
         // portable, copyable document rather than hidden program state. One repository per

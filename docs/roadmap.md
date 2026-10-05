@@ -85,9 +85,6 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 
 ## Porządki w kodzie i dokumentach
 
-- **CI czerwone od scalenia „pełnej nazwy” przedmiotu** (krok Test; lokalnie zielone). Log widać tylko
-  po zalogowaniu — potrzebny `gh` z `gh auth login`. Podejrzane: `RevealingTextBlockTests`, które
-  czekają na przejścia z limitem 2 s.
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
