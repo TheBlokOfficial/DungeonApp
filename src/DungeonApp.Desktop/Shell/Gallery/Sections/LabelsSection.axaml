@@ -7,7 +7,7 @@
          state (rest, on, disabled, on-disabled, with an icon, long label). The only local colours are
          the "given by the layout" samples, defined here as a system scale would define them. -->
     <UserControl.Resources>
-        <!-- Kolor podany przez układającego: przykładowa skala systemu (rzadkość "Rzadki"). -->
+        <!-- Colour supplied by the layout: a sample system scale (rarity "Rzadki"). -->
         <SolidColorBrush x:Key="GalleryRareBackgroundBrush" Color="#2E5B8FD6" />
         <SolidColorBrush x:Key="GalleryRareTextBrush" Color="#9CBDEB" />
     </UserControl.Resources>
@@ -20,8 +20,8 @@
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Odznaki, tagi, chipy" />
 
-        <!-- Odznaka niesie licznik przypięty do czegoś (liczba wpisów przy filtrze, nieprzeczytane),
-             nie wartość z karty - wartość z karty zostaje tekstem (wyzwanie: zakreślenie). -->
+        <!-- A badge carries an attached counter (entry count by a filter, unread count),
+             not a card value - card values stay as text (challenge: a highlight). -->
         <TextBlock Classes="overline-sm muted" Text="ODZNAKA - LICZNIK" />
         <WrapPanel Classes="label-row">
             <controls:Badge Content="12" />
@@ -56,8 +56,8 @@
             <controls:WordTag MaxWidth="120" Classes="accent" Content="Bardzo długa kategoria wpisu" />
         </StackPanel>
 
-        <!-- W wierszu listy odznaka jest neutralna, stanu albo w kolorze systemu - nie akcentu (akcent
-             to wybrany wiersz). -->
+        <!-- In a list row a badge is neutral, status-coloured or system-coloured, not accent-coloured
+             (the accent denotes the selected row). -->
         <TextBlock Classes="caption muted" Text="W wierszu listy obok nazwy i obok tekstu 13" />
         <ListBox Width="360" SelectedIndex="1" HorizontalAlignment="Left">
             <ListBoxItem>

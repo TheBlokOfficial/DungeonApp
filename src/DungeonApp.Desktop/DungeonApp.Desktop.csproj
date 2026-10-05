@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <!-- Testy bez ekranu sprawdzają konwencje interakcji ramy (Themes/*.cs) wprost. -->
+      <!-- Headless tests check shell interaction conventions (Themes/*.cs) directly. -->
       <InternalsVisibleTo Include="DungeonApp.Desktop.RenderingTests" />
     </ItemGroup>
 

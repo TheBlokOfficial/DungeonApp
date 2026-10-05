@@ -5,8 +5,8 @@ namespace DungeonApp.Desktop.Shell.Gallery.Sections;
 
 public partial class ButtonsSection : UserControl
 {
-    // Przykładowe pola sortowania: jedno tekstowe (napisy A–Z / Z–A) i dwa liczbowe (rosnąco /
-    // malejąco). Neutralne - rama nie nazywa rodzajów wpisu.
+    // Sample sort fields: one textual (labels A–Z / Z–A) and two numeric ("rosnąco" /
+    // "malejąco"). Neutral - the frame does not name entry types.
     private static readonly string[] SortOptions = ["Nazwa", "Waga", "Cena"];
     private static readonly string[] NumericSortOptions = ["Waga", "Cena"];
 
@@ -23,7 +23,7 @@ public partial class ButtonsSection : UserControl
 
         SortSampleDisabled.SelectedOption = SortOptions[1];
 
-        // Komenda, której nie da się wykonać - przycisk wyłącza ona, nie IsEnabled.
+        // A command that cannot execute - it disables the button, rather than IsEnabled.
         DisabledByCommandSample.Command = new RelayCommand(() => { }, () => false);
     }
 }

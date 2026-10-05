@@ -12,8 +12,8 @@
             <Setter Property="Orientation" Value="Horizontal" />
             <Setter Property="Spacing" Value="{DynamicResource DungeonSpacingMd}" />
         </Style>
-        <!-- Pole z ikoną (IconField) dostaje tę samą szerokość co pole tekstowe - bez niej, w poziomym
-             StackPanel, mierzyło się do zawartości i puste ściskało się do samej ikony. -->
+        <!-- IconField gets the same width as the text field; without it, a horizontal StackPanel
+             measures it to content, shrinking an empty field to just the icon. -->
         <Style Selector="StackPanel.field-row > TextBox, StackPanel.field-row > controls|IconField">
             <Setter Property="Width" Value="200" />
         </Style>
@@ -30,7 +30,7 @@
               RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               ColumnSpacing="{DynamicResource DungeonSpacingLg}"
               RowSpacing="{DynamicResource DungeonSpacingLg}">
-            <!-- Jednowierszowe -->
+            <!-- Single-line -->
             <TextBlock Grid.Row="0" Classes="caption muted row-label" Text="Jednowierszowe" />
             <StackPanel Grid.Row="0" Grid.Column="1" Classes="field-row">
                 <TextBox PlaceholderText="Nazwa kampanii" />
@@ -39,7 +39,7 @@
                 <TextBox Text="Wyłączone" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Z ikoną na początku -->
+            <!-- Leading icon -->
             <TextBlock Grid.Row="1" Classes="caption muted row-label" Text="Z ikoną" />
             <StackPanel Grid.Row="1" Grid.Column="1" Classes="field-row">
                 <controls:IconField Icon="{StaticResource DungeonIconPencil}">
@@ -56,7 +56,7 @@
                 </controls:IconField>
             </StackPanel>
 
-            <!-- Wyszukiwania -->
+            <!-- Search -->
             <TextBlock Grid.Row="2" Classes="caption muted row-label" Text="Wyszukiwania" />
             <StackPanel Grid.Row="2" Grid.Column="1" Classes="field-row">
                 <controls:IconField Classes="search">
@@ -73,7 +73,7 @@
                 </controls:IconField>
             </StackPanel>
 
-            <!-- Wielowierszowe -->
+            <!-- Multiline -->
             <TextBlock Grid.Row="3" Classes="caption muted row-label" VerticalAlignment="Top" Text="Wielowierszowe" />
             <StackPanel Grid.Row="3" Grid.Column="1" Classes="field-row">
                 <TextBox AcceptsReturn="True" PlaceholderText="Notatka Mistrza Gry" />
@@ -82,7 +82,7 @@
                 <TextBox AcceptsReturn="True" Text="Wyłączone" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Liczbowe -->
+            <!-- Numeric -->
             <TextBlock Grid.Row="4" Classes="caption muted row-label" Text="Liczbowe" />
             <StackPanel Grid.Row="4" Grid.Column="1" Classes="field-row">
                 <NumericUpDown PlaceholderText="PW" Minimum="0" />
@@ -91,12 +91,12 @@
                 <NumericUpDown Value="12" IsEnabled="False" />
             </StackPanel>
 
-            <!-- Tekst do zaznaczenia -->
+            <!-- Selectable text -->
             <TextBlock Grid.Row="5" Classes="caption muted row-label" VerticalAlignment="Top" Text="Tekst do zaznaczenia" />
             <SelectableTextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" MaxWidth="560" TextWrapping="Wrap"
                                  Text="Zaznacz fragment myszą i skopiuj Ctrl+C. Kliknięcie obok zdejmuje zaznaczenie. Tak zachowuje się dłuższa treść kart - opisy, akcje, cechy - i komunikaty błędów." />
 
-            <!-- Zakreślenie -->
+            <!-- Highlight -->
             <TextBlock Grid.Row="6" Classes="caption muted row-label" Text="Zakreślenie" VerticalAlignment="Top" />
             <SelectableTextBlock Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" MaxWidth="560" TextWrapping="Wrap">
                 <Run Text="Goblin ma wyzwanie " /><Run Classes="highlight" Text="1/4" /><Run Text=", a szukany " /><Run Classes="search-match" Text="gob" /><Run Text="lin stoi na liście jako trafienie wyszukiwania. Zaznacz zdanie, żeby porównać oba z zaznaczeniem." />

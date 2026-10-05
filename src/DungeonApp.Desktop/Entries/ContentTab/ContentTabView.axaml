@@ -7,26 +7,26 @@
              x:Class="DungeonApp.Desktop.Entries.ContentTab.ContentTabView"
              x:DataType="ct:ContentTabViewModel">
 
-    <!-- Szkielet zakładki treści: nagłówek zakładki na całą szerokość, pod linią
-         panel listy o stałej szerokości i obszar szczegółu z klockiem EntryDetailView. Wymiary ze
-         skali motywu, pismo z ról galerii (Typography.axaml). -->
+    <!-- Content-tab skeleton: full-width tab header, below the line
+         a fixed-width list panel and detail area with EntryDetailView. Dimensions from the
+         theme scale, fonts from gallery roles (Typography.axaml). -->
     <UserControl.Resources>
         <conv:DimBrushConverter x:Key="DimBrush" />
         <conv:UpperCaseConverter x:Key="UpperCase" />
 
-        <!-- Szerokość panelu listy. -->
+        <!-- List panel width. -->
         <GridLength x:Key="ContentListColumnWidth">320</GridLength>
 
-        <!-- Nagłówek zakładki: 20 u góry, 24 po bokach, 16 nad linią. -->
+        <!-- Tab header: 20 at top, 24 at sides, 16 above the line. -->
         <Thickness x:Key="ContentTabHeaderMargin">24,20,24,16</Thickness>
 
-        <!-- Obszar szczegółu: 32 u góry, z lewej i u dołu; z prawej strefa paska przewijania
-             (DungeonScrollBarZone) ustawiona na tym samym elemencie jako Padding. -->
+        <!-- Detail area: 32 at top, left and bottom; right scrollbar zone
+             (DungeonScrollBarZone) set as Padding on the same element. -->
         <Thickness x:Key="ContentDetailMargin">32,32,0,32</Thickness>
 
-        <!-- Nagłówek sekcji: z lewej tam, gdzie zaczyna się tekst wiersza (pas kreski
-             DungeonListRowStripeGutter 10 + wcięcie wiersza DungeonPaddingMdHorizontal 12); 12 nad
-             każdym nagłówkiem, także pierwszym, 6 pod. -->
+        <!-- Section heading: left-aligned with row text (stripe gutter
+             DungeonListRowStripeGutter 10 + row padding DungeonPaddingMdHorizontal 12); 12 above
+             every heading, including the first, 6 below. -->
         <Thickness x:Key="ContentSectionHeaderMargin">22,12,16,6</Thickness>
 
         <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
@@ -61,19 +61,19 @@
                                    Foreground="{DynamicResource DungeonDangerTextBrush}" />
                     </Grid>
 
-                    <!-- Odznaka bez koloru (wyzwanie): zwykły tekst krojem liczb, przygaszony. -->
+                    <!-- Uncoloured badge (challenge): plain muted text in the numeric font. -->
                     <TextBlock Grid.Column="1" Classes="mono muted"
                                Text="{Binding BadgeText}"
                                IsVisible="{Binding HasPlainBadge}"
                                VerticalAlignment="Center" />
-                    <!-- Odznaka w kolorze systemu (rzadkość): klocek WordTag w odmianie custom - tekst
-                         w kolorze, tło to samo przygaszone; wymiary, pismo i położenie z motywu. -->
+                    <!-- System-coloured badge (rarity): custom WordTag - coloured text,
+                         same dim background; dimensions, font and position from the theme. -->
                     <dc:WordTag Grid.Column="1" Classes="custom"
                                 IsVisible="{Binding HasColoredBadge}"
                                 Content="{Binding BadgeText}"
                                 Background="{Binding BadgeBrush, Converter={StaticResource DimBrush}}"
                                 Foreground="{Binding BadgeBrush}" />
-                    <!-- Rzecz zepsuta: w miejscu odznaki ostrzeżenie kolorem treści niewczytanej. -->
+                    <!-- Broken item: warning in unloaded-content colour replaces the badge. -->
                     <dc:ForegroundIcon Grid.Column="1"
                                        IsVisible="{Binding IsBroken}"
                                        Width="{DynamicResource DungeonActionIconSize}"
@@ -87,7 +87,7 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
-        <!-- Wysokość wiersza ustawia lista, nie zawartość: stała biblioteki DungeonListRowHeight (32). -->
+        <!-- List sets row height, not content: library constant DungeonListRowHeight (32). -->
         <Style Selector="ItemsControl.content-rows dc|ListRow">
             <Setter Property="Height" Value="{DynamicResource DungeonListRowHeight}" />
         </Style>
@@ -97,7 +97,7 @@
         <Style Selector="Grid.row-picture.with-picture">
             <Setter Property="ColumnSpacing" Value="{DynamicResource DungeonSpacingSm}" />
         </Style>
-        <!-- Podpis wyłączonego filtra przygasa razem z polem (ta sama przezroczystość wyłączenia). -->
+        <!-- Disabled filter label dims with the field (same disabled opacity). -->
         <Style Selector="TextBlock.filter-label:disabled">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
@@ -105,9 +105,9 @@
 
     <Grid Background="{DynamicResource DungeonBackstageBrush}" RowDefinitions="Auto,Auto,*" MinHeight="0">
 
-        <!-- ===== Nagłówek zakładki: nazwa i licznik na jednej linii bazowej (jeden TextBlock). Licznik:
-             liczby krojem liczb, słowa ("z", "wpisy") pismem interfejsu - ta sama wielkość i kolor.
-             Części licznika stoją bez białych znaków między elementami: odstępy niosą same części. ===== -->
+        <!-- ===== Tab header: name and counter on one baseline (one TextBlock). Counter:
+             numbers in numeric font, words ("z", "wpisy") in UI font - same size and colour.
+             No whitespace between counter elements: parts carry their own spaces. ===== -->
         <TextBlock Grid.Row="0"
                    Margin="{StaticResource ContentTabHeaderMargin}"
                    Classes="display-lg"
@@ -143,14 +143,14 @@
                 BorderBrush="{DynamicResource DungeonBorderBrush}"
                 BorderThickness="0,0,0,1" />
 
-        <!-- ===== Ciało: panel listy (stała szerokość) + obszar szczegółu. ===== -->
+        <!-- ===== Body: list panel (fixed width) + detail area. ===== -->
         <Grid Grid.Row="2" MinHeight="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{StaticResource ContentListColumnWidth}" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- ===== Panel listy ===== -->
+            <!-- ===== List panel ===== -->
             <Border Grid.Column="0"
                     BorderBrush="{DynamicResource DungeonBorderBrush}"
                     BorderThickness="0,0,1,0">
@@ -162,13 +162,13 @@
                                      PlaceholderText="Szukaj po nazwie…" />
                         </dc:IconField>
 
-                        <!-- Filtry jako pola z podpisem: kategoria, filtry systemu, "Paczka".
-                             Rząd = podpis z lewej (rola label, kolor drugorzędny) i lista rozwijana
-                             wielokrotna w motywie domyślnym na resztę szerokości. Kolumna podpisów wspólna
-                             dla rzędów (SharedSizeGroup), szerokość z najdłuższego podpisu; 12 między
-                             podpisem a polem, 8 między rzędami. Nic nie zaznaczone = filtr nie zawęża
-                             (tekst zastępczy "Wszystkie"); wybór trzymany po napisie wartości
-                             (SelectedValues). Filtr bez opcji - pole wyłączone, podpis przygaszony z nim. -->
+                        <!-- Filters as labelled fields: category, system filters, "Paczka".
+                             Row = left label (label role, secondary colour) and multiple-selection dropdown
+                             in the default theme filling the remaining width. Label column shared
+                             across rows (SharedSizeGroup), width from longest label; 12 between
+                             label and field, 8 between rows. Nothing selected = no filtering
+                             ("Wszystkie" placeholder); selection held by value text
+                             (SelectedValues). Filter without options - disabled field, label dims with it. -->
                         <ItemsControl ItemsSource="{Binding Filters}" Grid.IsSharedSizeScope="True">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -213,18 +213,18 @@
 
                     <Border Grid.Row="1" BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="0,0,0,1" />
 
-                    <!-- Jedna warstwa przewijania: ScrollViewer nad ItemsControl (bez własnego przewijania).
-                         Strefa paska należy do wiersza (motyw ListRow), a tło wiersza sięga pod pasek. -->
+                    <!-- One scrolling layer: ScrollViewer around ItemsControl (no scrolling of its own).
+                         Scrollbar zone belongs to the row (ListRow theme), row background extends under the bar. -->
                     <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel Margin="0,0,0,24">
-                            <!-- Pusty stan: żadna paczka nie ma wpisów tego typu. Ścieżki katalogu paczek
-                                 zakładka nie zna, więc podpowiedź mówi o nim ogólnie. -->
+                            <!-- Empty state: no pack has entries of this type. Tab does not know the pack-directory
+                                 path, so the hint refers to it generically. -->
                             <dc:EmptyState IsVisible="{Binding HasNoEntries}"
                                            Margin="{DynamicResource DungeonPaddingLg}"
                                            Message="{Binding EmptyText}"
                                            Hint="Paczki treści leżą w katalogu paczek aplikacji." />
 
-                            <!-- Pusty stan: nic nie pasuje (wzór: galeria, Kompozycje). -->
+                            <!-- Empty state: nothing matches (pattern: gallery, "Kompozycje"). -->
                             <StackPanel IsVisible="{Binding HasNoMatches}"
                                         Margin="{DynamicResource DungeonPaddingLg}"
                                         Spacing="{DynamicResource DungeonSpacingSm}">
@@ -238,7 +238,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="ct:ContentSectionViewModel">
                                         <StackPanel>
-                                            <!-- Nagłówek zwykłej paczki: nazwa i liczba wpisów sekcji. -->
+                                            <!-- Regular pack heading: name and section entry count. -->
                                             <StackPanel Orientation="Horizontal"
                                                         Spacing="{DynamicResource DungeonSpacingXs}"
                                                         Margin="{StaticResource ContentSectionHeaderMargin}"
@@ -249,7 +249,7 @@
                                                            Text="{Binding Count, StringFormat={}{0}}" />
                                             </StackPanel>
 
-                                            <!-- Nagłówek odrzuconej paczki: kolor treści niewczytanej i ostrzeżenie. -->
+                                            <!-- Rejected pack heading: unloaded-content colour and warning. -->
                                             <StackPanel Orientation="Horizontal"
                                                         Spacing="{DynamicResource DungeonSpacingXs}"
                                                         Margin="{StaticResource ContentSectionHeaderMargin}"
@@ -276,8 +276,8 @@
                 </Grid>
             </Border>
 
-            <!-- ===== Obszar szczegółu: jedyna warstwa przewijania po tej stronie. Klocek 560 stoi przy
-                 liście (wyrównany do lewej); szerszy ekran daje pusty pas z prawej. ===== -->
+            <!-- ===== Detail area: the only scrolling layer on this side. 560-wide block beside
+                 the list (left-aligned); wider screens leave an empty strip on the right. ===== -->
             <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
                 <Border Margin="{StaticResource ContentDetailMargin}"
                         Padding="{DynamicResource DungeonScrollBarZone}"
@@ -287,10 +287,10 @@
                         <TextBlock Classes="body muted"
                                    IsVisible="{Binding ShowSelectionPrompt}"
                                    Text="Wybierz wpis z listy." />
-                        <!-- Rama szczegółu należy do hosta, nie do klocka: tło, linia
-                             i narożnik karty ramy (surface-card, jak karta w galerii Kompozycje),
-                             wcięcie 24 ze wszystkich stron. Szerokość z klocka 560 + 2 x 24 (+ linia),
-                             wysokość z treści; stoi też przy rzeczy zepsutej. -->
+                        <!-- Detail frame belongs to the host, not the block: background, line
+                             and shell-card corner (surface-card, like the card in gallery "Kompozycje"),
+                             padding 24 on all sides. Width from block 560 + 2 x 24 (+ line),
+                             height from content; also shown for broken items. -->
                         <Border Classes="surface-card"
                                 Padding="{DynamicResource DungeonPaddingXxl}"
                                 HorizontalAlignment="Left"

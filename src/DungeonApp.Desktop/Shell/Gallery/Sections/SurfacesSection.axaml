@@ -16,7 +16,7 @@
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
         <TextBlock Classes="display-md" Text="Powierzchnie i linie" />
 
-        <!-- DRABINA KOLORÓW =================================================== -->
+        <!-- COLOUR LADDER ===================================================== -->
         <TextBlock Classes="overline-sm muted" Text="DRABINA KOLORÓW" />
         <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
             <sections:ColorSample Title="Background" Swatch="{DynamicResource DungeonBackgroundBrush}"
@@ -66,13 +66,13 @@
                                   Meaning="okno biurka: krawędź aktywnego okna" />
         </StackPanel>
 
-        <!-- KOLORY TEKSTU ===================================================== -->
+        <!-- TEXT COLOURS ====================================================== -->
         <TextBlock Classes="overline-sm muted" Text="KOLORY TEKSTU" />
         <TextBlock Classes="caption muted"
                    Text="kontrast WCAG liczony z bieżących zasobów; wymóg co najmniej 4,5 - poniżej liczba w kolorze niebezpieczeństwa" />
         <sections:TextContrastTable />
 
-        <!-- POWIERZCHNIE ====================================================== -->
+        <!-- SURFACES ========================================================== -->
         <TextBlock Classes="overline-sm muted" Text="POWIERZCHNIE NA TLE ZAPLECZA" />
         <Border Background="{DynamicResource DungeonBackstageBrush}">
             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
@@ -140,7 +140,7 @@
             </StackPanel>
         </Border>
 
-        <!-- LINIE ============================================================= -->
+        <!-- LINES ============================================================= -->
         <TextBlock Classes="overline-sm muted" Text="LINIE" />
         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingXxl}">
             <StackPanel Width="280" Spacing="{DynamicResource DungeonSpacingSm}">

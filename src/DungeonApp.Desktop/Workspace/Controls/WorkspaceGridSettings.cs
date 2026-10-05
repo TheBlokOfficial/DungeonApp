@@ -44,16 +44,16 @@ public static class WorkspaceGridSettings
     public const double PanelGap = PreciseSnapStep;
 
     /// <summary>
-    /// Minimalny rozmiar okna narzędzia biurka, przy którym jego zawartość nie ściska się sama w
-    /// sobie.
+    /// Minimum size of a desk-tool window that keeps its content from collapsing in on
+    /// itself.
     /// </summary>
     public const double ToolPanelMinWidth = CellSize * 8;
 
     public const double ToolPanelMinHeight = CellSize * 6;
 
     /// <summary>
-    /// Maksymalny rozmiar okna narzędzia biurka, wyrażony w widocznych komórkach siatki, żeby okno
-    /// pozostawało wyrównane do blatu zamiast rozrastać się w pustą powierzchnię.
+    /// Maximum size of a desk-tool window, expressed in visible grid cells so that the window
+    /// stays aligned with the desk rather than expanding into empty space.
     /// </summary>
     public const double ToolPanelMaxWidth = CellSize * 12;
 

@@ -76,7 +76,7 @@
                     <TextBlock Text="Parowanie." />
                 </Expander>
                 <Expander Header="Akcje legendarne" IsEnabled="False" IsExpanded="True">
-                    <!-- Przycisk i pole w wyłączonej sekcji przygasają raz - jak wyłączone same pod nią. -->
+                    <!-- The button and field in a disabled section dim once, like the individually disabled ones below it. -->
                     <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                         <TextBlock Text="Wykrycie. Ruch ogonem." TextWrapping="Wrap" />
                         <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">

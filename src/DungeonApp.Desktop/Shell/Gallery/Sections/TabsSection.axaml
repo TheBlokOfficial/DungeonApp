@@ -37,7 +37,7 @@
                         <TextBlock Text="Treść zakładki Potwory." />
                     </TabItem>
                     <TabItem Header="Czary">
-                        <!-- Przycisk i pole w wyłączonej zakładce przygasają raz - jak wyłączone same obok. -->
+                        <!-- The button and field in a disabled tab dim once, like the individually disabled ones beside them. -->
                         <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
                             <TextBlock Text="Treść zakładki Czary." />
                             <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">

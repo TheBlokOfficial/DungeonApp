@@ -6,9 +6,9 @@ namespace DungeonApp.Desktop.Workspace.Panels;
 /// <summary>
 /// Which panels one open campaign's desk offers, and the only place to ask for one by id.
 /// <para>
-/// Powstaje dla jednej kampanii, bo blat oferuje okna należące do jej bieżącej sesji. Żaden
-/// identyfikator panelu nie jest tutaj wypisany: wszystkie przychodzą z pasa narzędzi wybranego
-/// systemu, a powłoka nie wnosi dziś własnego panelu.
+/// Created for one campaign because its desk offers windows belonging to the current session.
+/// No panel ids are listed here: they all come from the selected system's tool strip,
+/// and the shell currently contributes no panels of its own.
 /// </para>
 /// </summary>
 public sealed class PanelCatalog
@@ -29,8 +29,8 @@ public sealed class PanelCatalog
     public static PanelCatalog For(IReadOnlyList<WorkspacePanelDescriptor> tools) => new([.. tools]);
 
     /// <summary>
-    /// Zwraca null dla identyfikatora, którego ta kampania nie oferuje. Odtworzenie zapisu pomija
-    /// taki wpis, aby stary układ nie blokował otwarcia kampanii.
+    /// Returns null for an id this campaign does not offer. Restoring a saved layout skips
+    /// such entries so that an old layout cannot prevent the campaign from opening.
     /// </summary>
     public WorkspacePanelDescriptor? Find(string id) =>
         All.FirstOrDefault(descriptor => descriptor.Id == id);
