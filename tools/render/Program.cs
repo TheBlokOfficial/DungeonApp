@@ -71,6 +71,7 @@ internal static class Program
 
         RenderCards(window, shell, "Stworzenia", "creature");
         RenderCards(window, shell, "Przedmioty", "gear");
+        RenderCards(window, shell, "Stany", "condition");
         RenderGallery(window, shell);
 
         Console.WriteLine("Done.");
@@ -80,7 +81,9 @@ internal static class Program
     /// <summary>
     /// A packs directory with one pack the tool builds itself, in a throwaway location, for the cards neither the bundled pack
     /// nor the fixtures have: a commoner's statblock, to see the card of a creature with the plainest
-    /// values. Written fresh on every run so no earlier file lingers.
+    /// values, and a condition with no icon whose rules come in named parts, to see the empty icon
+    /// place in its row and a list of levels on its card. Written fresh on every run so no earlier
+    /// file lingers.
     /// </summary>
     private static string WriteToolPack()
     {
@@ -129,6 +132,25 @@ internal static class Program
               }
             }
             """, utf8);
+        File.WriteAllText(Path.Combine(pack, "entries", "wyczerpany.json"), """
+            {
+              "id": "wyczerpany",
+              "name": "Wyczerpany",
+              "template": "dnd5e:condition",
+              "templateVersion": 1,
+              "values": {
+                "summary": "Sześć poziomów, każdy dokłada swoje; szósty to śmierć.",
+                "rules": {
+                  "intro": "Wyczerpanie mierzy się w sześciu poziomach. Skutki się kumulują.",
+                  "entries": [
+                    { "name": "Poziom 1", "text": "**Utrudnienie** w testach cech." },
+                    { "name": "Poziom 2", "text": "Szybkość zmniejszona o połowę." },
+                    { "name": "Poziom 6", "text": "Śmierć." }
+                  ]
+                }
+              }
+            }
+            """, utf8);
         return root;
     }
 
@@ -139,7 +161,10 @@ internal static class Program
         return [new Dnd5eSystem(layoutStore, [SystemDirectories.BundledPacks(AppContext.BaseDirectory, system), .. _extraPacks])];
     }
 
-    /// <summary>Selects every row of a content tab and saves its detail block - header and card.</summary>
+    /// <summary>
+    /// Selects every row of a content tab and saves its detail block - header and card - then the
+    /// whole tab, list included, with its first row selected.
+    /// </summary>
     private static void RenderCards(Window window, AppShellViewModel shell, string tabTitle, string prefix)
     {
         shell.Sidebar!.SystemTabItems.Single(item => item.Label == tabTitle).SelectCommand.Execute(null);
@@ -162,6 +187,8 @@ internal static class Program
         }
 
         SetSize(window, WindowWidth, WindowHeight);
+        tabModel.Sections.SelectMany(section => section.Rows).FirstOrDefault()?.SelectCommand.Execute(null);
+        SaveCrop(window, tabView, UniqueName($"tab_{prefix}"));
     }
 
     /// <summary>

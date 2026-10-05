@@ -2,6 +2,8 @@
 #   creature_<name>.png - every creature card, header included: the bundled SRD pack and the test
 #                         fixture packs (tests\Fixtures\Packs)
 #   gear_<name>.png     - every gear card: the bundled SRD pack and the test fixture packs
+#   condition_<name>.png - every condition card: the bundled SRD pack
+#   tab_<type>.png      - each content tab whole, list included, its first row selected
 #   gallery_<section>.png - every section of the controls gallery
 # Usage (from anywhere): powershell -File tools\render\render.ps1
 # Build output goes to tools\render\artifacts\ (UseArtifactsOutput, for the referenced projects too),
