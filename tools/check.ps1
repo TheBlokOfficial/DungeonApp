@@ -11,6 +11,7 @@
 #
 # MSB3021/MSB3027 on the app's bin\ means the author's running app or Rider's XAML preview holds the
 # file; the script then builds and tests the test projects alone, which do not depend on the app.
+# MSB3026 is the retry warning MSBuild prints before giving up with those two, so it counts as well.
 param(
     [string]$Filter,
     [string[]]$Tests,
@@ -53,7 +54,7 @@ function Invoke-Build([string]$target) {
 }
 
 $build = Invoke-Build $solution
-$locked = $build.Lines.Count -gt 0 -and -not ($build.Lines | Where-Object { $_ -notmatch 'MSB30(21|27)' })
+$locked = $build.Lines.Count -gt 0 -and -not ($build.Lines | Where-Object { $_ -notmatch 'MSB30(21|26|27)' })
 if ($locked) {
     Write-Output 'Build: the app''s bin\ is locked (running app or XAML preview); building the test projects alone.'
     $build = [pscustomobject]@{ Ok = $true; Lines = @() }
