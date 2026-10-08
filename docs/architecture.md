@@ -67,9 +67,7 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 | `App` | które systemy są wkompilowane | — |
 
 - Systemy ładuje się statycznie, referencją projektu. Systemy się nawzajem nie referencują.
-- Granic pilnują testy (`tests/DungeonApp.Architecture.Tests`): Core nie referencuje Avalonii; Core
-  i Desktop nie referencują `Content.*`; skan słownictwa nie pozwala, żeby w Core i Desktop padła
-  nazwa typu z systemu (także w komentarzach i galerii kontrolek).
+- Granic pilnują testy w `tests/DungeonApp.Architecture.Tests`; reguły: `CLAUDE.md`, „Struktura”.
 - System mówi ramie (`Desktop/Systems/IGameSystem`): kim jest, jakie ma zakładki kategorii System
   (fabryka bez argumentu — zakładka nie widzi kampanii) i kategorii Kampania (fabryka dostaje
   `CampaignTabContext`), jakie modele stanu zapisuje jego kampania i jakie kroki startowe zgłasza.
