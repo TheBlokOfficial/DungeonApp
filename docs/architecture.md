@@ -216,8 +216,15 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
 - **Biurko** (`Desktop/Workspace`): pozycja kampanii w ramie, z pływającymi oknami narzędzi. Buduje je
   rama (`ActiveSystemSession`, raz na otwartą kampanię); system podaje tylko narzędzia
   (`IGameSystem.CreateDeskTools`). Układ zapisuje się per kampania. Nieudany zapis zmiany rama
-  pokazuje powiadomieniem, niezależnie od narzędzia, które zmieniało. Jedyne narzędzie to testowy „Świat kampanii” (lista entity
-  z PW); zastępuje go katalog świata (`docs/spec/katalog.md`).
+  pokazuje powiadomieniem, niezależnie od narzędzia, które zmieniało. Jedyne narzędzie to testowy
+  „Świat kampanii” (lista entity z PW); zastępuje go katalog świata (`docs/spec/katalog.md`).
+- **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
+  (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Ciemniejsze
+  tło, mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad oknami, wspólne
+  z przyszłym hotbarem.
+- **Maksymalizacja okna:** tylko okno bez górnej granicy rozmiaru (inne nie mają przycisku). Okno
+  zmaksymalizowane wypełnia biurko bez obwódki, tytuł stoi pośrodku, przyciski nagłówka znikają;
+  przywraca dwuklik w tytuł albo Esc. Stan zmaksymalizowany nie trafia do zapisanego układu.
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta (domyślnego motywu Avalonii) pod
   spodem. Tokeny kolorów mają zapisane znaczenie; skale należące do systemu (rzadkość przedmiotu) mają
   własne kolory w systemie. Galeria pokazuje każdą kontrolkę motywu w każdym stanie.
