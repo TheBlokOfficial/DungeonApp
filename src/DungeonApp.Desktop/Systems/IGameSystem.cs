@@ -67,6 +67,13 @@ public interface IGameSystem
     IReadOnlyList<WorldEntityType> EntityTypes { get; }
 
     /// <summary>
+    /// The content the world catalog reads: loaded entries, their type catalog, badge colours and
+    /// row profiles. Asked for when a campaign's desk is built, after the startup steps have loaded
+    /// the entries.
+    /// </summary>
+    WorldCatalogSource GetWorldCatalogSource();
+
+    /// <summary>
     /// The short text at the right edge of an entity's tree row - for a being with combat values
     /// the current and maximum health ("7/7"); <see langword="null"/> when this entity has none.
     /// Only a resolved entity has values to read.

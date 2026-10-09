@@ -4,6 +4,7 @@
              xmlns:leaf="using:DungeonApp.Desktop.Workspace.Leaf"
              xmlns:surface="using:DungeonApp.Desktop.Workspace.Controls"
              xmlns:workspace="using:DungeonApp.Desktop.Workspace"
+             xmlns:world="using:DungeonApp.Desktop.Workspace.World"
              x:Class="DungeonApp.Desktop.Workspace.CampaignWorkspaceView"
              x:DataType="workspace:CampaignWorkspaceViewModel">
 
@@ -23,7 +24,12 @@
     </UserControl.Resources>
 
     <Grid>
-        <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}" />
+        <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}">
+            <!-- The catalog lies on the desk under every window, so a window passing over it hides it. -->
+            <surface:WorkspaceSurface.Underlay>
+                <world:WorldCatalogView Name="CatalogView" />
+            </surface:WorkspaceSurface.Underlay>
+        </surface:WorkspaceSurface>
 
         <!-- After the surface in document order, so the cards lie on top of the desk. A panel can
              never be lost under them: the clamp keeps every panel fully inside the surface. -->

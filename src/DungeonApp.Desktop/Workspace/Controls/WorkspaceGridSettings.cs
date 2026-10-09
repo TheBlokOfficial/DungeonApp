@@ -59,6 +59,16 @@ public static class WorkspaceGridSettings
 
     public const double ToolPanelMaxHeight = CellSize * 8;
 
+    /// <summary>Width range of the world catalog lying on the desk, in whole grid cells.</summary>
+    public const double CatalogDefaultWidth = CellSize * 9;
+
+    public const double CatalogMinWidth = CellSize * 6;
+
+    public const double CatalogMaxWidth = CellSize * 16;
+
+    /// <summary>Gap between the catalog's default place and the desk's top and right edges.</summary>
+    public const double CatalogEdgeInset = CellSize;
+
     /// <summary>
     /// Panels may touch the surface boundary. Clamping still prevents them from leaving it.
     /// </summary>

@@ -50,6 +50,62 @@ public sealed class WorkspaceLayoutStoreTests : IDisposable
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public async Task The_catalogs_place_width_collapse_and_expanded_folders_round_trip(bool useAsync)
+    {
+        var store = new WorkspaceLayoutStore(_directory);
+        var catalog = new WorldCatalogLayout(640, 96, 320, true, ["6f9619ff-8b86-d011-b42d-00c04fc964ff", "0e0f1c3a-0000-0000-0000-000000000001"]);
+        store.Save("catalog-workspace", new WorkspaceLayout(WorkspaceLayout.CurrentVersion, 1000, 700, [], catalog));
+
+        var actual = await LoadViaPath(store, "catalog-workspace", useAsync);
+
+        Assert.NotNull(actual.Catalog);
+        Assert.Equal(catalog.X, actual.Catalog.X);
+        Assert.Equal(catalog.Y, actual.Catalog.Y);
+        Assert.Equal(catalog.Width, actual.Catalog.Width);
+        Assert.True(actual.Catalog.IsRootCollapsed);
+        Assert.Equal(catalog.ExpandedFolders, actual.Catalog.ExpandedFolders);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task A_catalog_that_was_never_moved_keeps_no_place(bool useAsync)
+    {
+        var store = new WorkspaceLayoutStore(_directory);
+        store.Save("unmoved-workspace", new WorkspaceLayout(WorkspaceLayout.CurrentVersion, 1000, 700, [], new WorldCatalogLayout(null, null, 288, false, [])));
+
+        var actual = await LoadViaPath(store, "unmoved-workspace", useAsync);
+
+        Assert.Null(actual.Catalog!.X);
+        Assert.Null(actual.Catalog.Y);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task A_layout_file_from_before_the_catalog_loads_with_its_panels_and_no_catalog(bool useAsync)
+    {
+        WriteRawLayoutFile("older-workspace", """
+            {
+              "version": 1,
+              "surfaceWidth": 800,
+              "surfaceHeight": 600,
+              "panels": [
+                { "descriptorId": "dnd5e.instances", "instanceKey": "dnd5e.instances", "isOpen": true, "state": 0, "zOrder": 0, "x": 32, "y": 64, "width": 256, "height": 192 }
+              ]
+            }
+            """);
+        var store = new WorkspaceLayoutStore(_directory);
+
+        var actual = await LoadViaPath(store, "older-workspace", useAsync);
+
+        Assert.Single(actual.Panels);
+        Assert.Null(actual.Catalog);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public async Task Load_ReturnsEmpty_WhenFileDoesNotExist(bool useAsync)
     {
         var store = new WorkspaceLayoutStore(_directory);

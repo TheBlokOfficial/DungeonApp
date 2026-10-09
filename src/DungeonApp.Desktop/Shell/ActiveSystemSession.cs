@@ -105,7 +105,7 @@ public sealed class ActiveSystemSession(
         if (_desk is null)
         {
             var context = _campaignTabContext;
-            var desk = await CampaignDesk.CreateAsync(context, layoutStore, System.CreateDeskTools(context), closeCampaign);
+            var desk = await CampaignDesk.CreateAsync(context, layoutStore, System.CreateDeskTools(context), System, closeCampaign);
 
             // The campaign may have been closed while the layout was loading; this desk then belongs
             // to nobody.

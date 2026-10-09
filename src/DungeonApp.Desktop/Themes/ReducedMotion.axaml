@@ -20,6 +20,10 @@
                      Expander /template/ ToggleButton#ExpanderHeader /template/ controls|ForegroundIcon#PART_Chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
+    <!-- World catalog (Workspace/World/WorldCatalogView.axaml): the folder chevron turns without motion. -->
+    <Style Selector="controls|ForegroundIcon.world-chevron">
+        <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
     <!-- Flyout, dropdown and menu opening without motion (Themes/PopupOpenMotion.cs). -->
     <Style Selector="FlyoutPresenter, MenuFlyoutPresenter, ContextMenu, MenuItem /template/ Border#PART_SubmenuSurface">
         <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />

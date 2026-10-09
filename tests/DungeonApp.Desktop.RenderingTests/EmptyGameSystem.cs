@@ -30,6 +30,8 @@ internal sealed class EmptyGameSystem : IGameSystem
 
     public IReadOnlyList<DungeonApp.Desktop.Systems.WorldEntityType> EntityTypes { get; } = [];
 
+    public WorldCatalogSource GetWorldCatalogSource() => WorldCatalogSource.Empty;
+
     public string? RowHint(DungeonApp.Core.Entries.ResolvedEntity entity) => null;
 
     public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];

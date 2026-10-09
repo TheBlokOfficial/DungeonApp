@@ -5,10 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DungeonApp.Desktop.Entries;
+using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Workspace.Leaf;
 using DungeonApp.Desktop.Workspace.Panels;
+using DungeonApp.Desktop.Workspace.World;
 
 namespace DungeonApp.Desktop.Workspace;
 
@@ -20,10 +23,10 @@ namespace DungeonApp.Desktop.Workspace;
 /// here knows about pixels, pointers or <c>Canvas</c> - it works in logical workspace coordinates.
 /// </para>
 /// <para>
-/// Knows nothing of a campaign, a session or a system - see <see cref="CampaignDesk"/> for the one
-/// public entry point that builds one of these for the open campaign. That is what lets this
-/// type stay inside the library: it takes a bare <c>workspaceId</c> string, an
-/// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
+/// The windows know nothing of a campaign - see <see cref="CampaignDesk"/> for the one public entry
+/// point that builds one of these for the open campaign. It takes a bare <c>workspaceId</c> string,
+/// an already-loaded <see cref="WorkspaceLayout"/> and a tool list. The world catalog lying on the
+/// desk (<see cref="Catalog"/>) is the one part that reads the campaign, through the entries context.
 /// </para>
 /// </summary>
 public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisposable
@@ -43,7 +46,9 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         string workspaceId,
         WorkspaceLayout layout,
         IReadOnlyList<WorkspacePanelDescriptor> tools,
-        Func<Task> closeCampaign)
+        Func<Task> closeCampaign,
+        CampaignEntriesContext entries,
+        IGameSystem system)
     {
         Leaf = new DeskLeafViewModel(closeCampaign);
         _catalog = PanelCatalog.For(tools);
@@ -52,6 +57,9 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         // one campaign has no business following them into another.
         _session = new WorkspaceLayoutSession(store, workspaceId, CreateSnapshot);
 
+        Catalog = new WorldCatalogViewModel(entries, system, layout.Catalog);
+        Catalog.LayoutChanged += _session.MarkDirty;
+
         // Storage was already read by the caller (see CampaignDesk.CreateAsync). Construction is a
         // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
         Restore(layout);
@@ -59,6 +67,9 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
     /// <summary>The desk's command strip, above every window; its close is the frame's, handed in.</summary>
     public DeskLeafViewModel Leaf { get; }
+
+    /// <summary>The world catalog lying on the desk, under every window.</summary>
+    public WorldCatalogViewModel Catalog { get; }
 
     public ObservableCollection<WorkspacePanelViewModel> Panels { get; } = [];
 
@@ -69,6 +80,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     private void ResetLayout()
     {
         Restore(WorkspaceLayout.Empty);
+        Catalog.ResetPlacement();
         _session.MarkDirty();
     }
 
@@ -87,6 +99,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         // floor, and that has to take effect even when the desk itself did not change size.
         _metrics = WorkspaceMetricsResolver.Resolve();
 
+        Catalog.SetSurface(width, height, _metrics);
         FitPanels();
     }
 
@@ -173,6 +186,8 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
         _isDisposed = true;
         _session.Dispose();
+        Catalog.LayoutChanged -= _session.MarkDirty;
+        Catalog.Dispose();
 
         foreach (var panel in Panels)
         {
@@ -348,7 +363,8 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             WorkspaceLayout.CurrentVersion,
             _surfaceWidth,
             _surfaceHeight,
-            [.. Panels.Select(ToLayout)]);
+            [.. Panels.Select(ToLayout)],
+            Catalog.CreateLayout());
     }
 
     private static WorkspacePanelLayout ToLayout(WorkspacePanelViewModel panel) =>

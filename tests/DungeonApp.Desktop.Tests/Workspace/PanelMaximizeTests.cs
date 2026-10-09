@@ -86,7 +86,7 @@ public sealed class PanelMaximizeTests : IDisposable
             [new WorkspacePanelLayout("open", "open", true, PanelDisplayState.Maximized, 0, 40, 50, 300, 200)]);
         var store = new WorkspaceLayoutStore(_directory);
 
-        var desk = new CampaignWorkspaceViewModel(store, Guid.NewGuid().ToString(), layout, [Open], () => Task.CompletedTask);
+        var desk = TestDesk.Create(store, Guid.NewGuid().ToString(), [Open], layout);
 
         Assert.Equal(PanelDisplayState.Normal, desk.Panels.Single().State);
     }
@@ -113,6 +113,6 @@ public sealed class PanelMaximizeTests : IDisposable
     {
         var store = new WorkspaceLayoutStore(_directory);
         var workspaceId = Guid.NewGuid().ToString();
-        return (new CampaignWorkspaceViewModel(store, workspaceId, WorkspaceLayout.Empty, descriptors, () => Task.CompletedTask), store, workspaceId);
+        return (TestDesk.Create(store, workspaceId, descriptors), store, workspaceId);
     }
 }

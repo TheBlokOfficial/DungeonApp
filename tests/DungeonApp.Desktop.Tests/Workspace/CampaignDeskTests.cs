@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DungeonApp.Desktop.Workspace.Controls;
@@ -32,7 +33,7 @@ public sealed class CampaignDeskTests : IDisposable
         var store = new WorkspaceLayoutStore(_directory);
         var workspaceId = Guid.NewGuid().ToString();
 
-        var viewModel = new CampaignWorkspaceViewModel(store, workspaceId, WorkspaceLayout.Empty, tools: [], () => Task.CompletedTask);
+        var viewModel = NewViewModel(store, workspaceId, []);
         // The same order CampaignDesk's ITabContent.Dispose uses: flush whatever is pending, then
         // release the view model's own subscriptions.
         viewModel.FlushLayout();
@@ -55,7 +56,7 @@ public sealed class CampaignDeskTests : IDisposable
             new PanelConstraints(240, 160, 800, 600),
             () => new object());
 
-        var viewModel = new CampaignWorkspaceViewModel(store, workspaceId, WorkspaceLayout.Empty, [descriptor], () => Task.CompletedTask);
+        var viewModel = NewViewModel(store, workspaceId, [descriptor]);
         viewModel.CommitGesture(viewModel.Panels[0]);
 
         // The desk's debounce timer never fires on its own here - no dispatcher runs in a unit test -
@@ -65,6 +66,10 @@ public sealed class CampaignDeskTests : IDisposable
 
         Assert.True(File.Exists(LayoutPath(workspaceId)));
     }
+
+    private static CampaignWorkspaceViewModel NewViewModel(
+        WorkspaceLayoutStore store, string workspaceId, IReadOnlyList<WorkspacePanelDescriptor> tools) =>
+        TestDesk.Create(store, workspaceId, tools);
 
     public void Dispose()
     {

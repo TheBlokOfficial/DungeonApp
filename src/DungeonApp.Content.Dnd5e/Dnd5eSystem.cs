@@ -12,9 +12,6 @@ using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Entries.ContentTab;
-using DungeonApp.Desktop.Workspace.Controls;
-using DungeonApp.Desktop.Workspace;
-using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Content.Dnd5e;
@@ -41,10 +38,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// </summary>
 public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
-    // Internal, not private: EntityRowViewModel's hit-point editing needs the same id to decide
-    // whether a row is a creature, and branching on this id is allowed only inside this system -
-    // duplicating the literal there instead would let the two silently drift.
-    internal const string CreatureTypeId = "creature";
+    private const string CreatureTypeId = "creature";
     private const string GearTypeId = "gear";
     private const string ConditionTypeId = "condition";
 
@@ -404,50 +398,23 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// This system's tool belt for the frame's desk. Building the tool list is this system's own job,
-    /// from a <see cref="CampaignEntriesContext"/> it builds itself out of the campaign context plus
-    /// its own registry and type catalog. One window, "Świat kampanii", listing this campaign's entities and
-    /// offering this system's own resolved entries to bring in as new ones. Sized from the
-    /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
-    /// invented here. The window starts one cell from the left and two from the top, below the
-    /// corner the frame keeps for its own controls.
+    /// This system's tool belt for the frame's desk: empty. The world catalog the frame lays on the
+    /// desk covers what the desk had to offer, and the first windows of this system come with the
+    /// features that need them.
     /// </summary>
     public IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext campaign)
     {
         ArgumentNullException.ThrowIfNull(campaign);
 
-        var context = new CampaignEntriesContext(campaign, _loadPacksStep.Registry, this);
-        var minimum = WorkspaceMetrics.Fallback;
-        var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.ToolPanelMinWidth);
-        var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.ToolPanelMinHeight);
-
-        return
-        [
-            new WorkspacePanelDescriptor(
-                // The id keys this window in every saved desk layout, so it keeps its original wording.
-                "dnd5e.instances",
-                "Świat kampanii",
-                "DungeonIconUsers",
-                WorkspacePanelGroup.World,
-                new PanelPlacement(
-                    WorkspaceGridSettings.CellSize,
-                    2 * WorkspaceGridSettings.CellSize,
-                    minWidth,
-                    minHeight),
-                new PanelConstraints(
-                    minWidth,
-                    minHeight,
-                    WorkspaceGridSettings.ToolPanelMaxWidth,
-                    WorkspaceGridSettings.ToolPanelMaxHeight),
-                () => BuildToolView(context)),
-        ];
+        return [];
     }
 
-    private Control BuildToolView(CampaignEntriesContext context) =>
-        new CampaignEntitiesToolView
-        {
-            DataContext = new CampaignEntitiesToolViewModel(context, ContentSetId),
-        };
+    /// <summary>
+    /// What the world catalog reads: the loaded entries, this system as type catalog and badge colours,
+    /// and the profiles of its content tabs, which tell a result row its tags and badge.
+    /// </summary>
+    public WorldCatalogSource GetWorldCatalogSource() =>
+        new(_loadPacksStep.Registry, this, this, [.. ContentTabDefinitions.SelectMany(tab => tab.ContentTypes)]);
 
     /// <summary>
     /// A content type this system declares. <see cref="Validate"/> and <see cref="CreateCard"/> both

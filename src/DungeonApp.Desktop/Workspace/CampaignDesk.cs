@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Workspace.Panels;
@@ -11,7 +12,8 @@ namespace DungeonApp.Desktop.Workspace;
 
 /// <summary>
 /// The desk's one public entry point: the frame builds the open campaign's desk by handing this a
-/// campaign context, a layout store, the system's tool list and the way to close the campaign, and
+/// campaign context, a layout store, the system's tool list and the system itself (what the world
+/// catalog asks of it) and the way to close the campaign, and
 /// gets back a finished <see cref="ITabContent"/> that has already loaded its own saved layout.
 /// <para>
 /// Nothing upstream of this call reads or writes a layout file directly; this is the only place
@@ -24,12 +26,14 @@ public static class CampaignDesk
         CampaignTabContext campaign,
         WorkspaceLayoutStore layoutStore,
         IReadOnlyList<WorkspacePanelDescriptor> tools,
+        IGameSystem system,
         Func<Task> closeCampaign,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(campaign);
         ArgumentNullException.ThrowIfNull(layoutStore);
         ArgumentNullException.ThrowIfNull(tools);
+        ArgumentNullException.ThrowIfNull(system);
         ArgumentNullException.ThrowIfNull(closeCampaign);
 
         var workspaceId = campaign.CampaignId.ToString();
@@ -39,7 +43,9 @@ public static class CampaignDesk
         // off-thread regardless (see its doc comment) - this await only decides where the *rest of
         // this method* resumes, and that rest is UI-bound.
         var layout = await layoutStore.LoadAsync(workspaceId, cancellationToken);
-        var viewModel = new CampaignWorkspaceViewModel(layoutStore, workspaceId, layout, tools, closeCampaign);
+        var source = system.GetWorldCatalogSource();
+        var entries = new CampaignEntriesContext(campaign, source.Registry, source.Types);
+        var viewModel = new CampaignWorkspaceViewModel(layoutStore, workspaceId, layout, tools, closeCampaign, entries, system);
 
         return new CampaignWorkspaceTabContent(viewModel);
     }

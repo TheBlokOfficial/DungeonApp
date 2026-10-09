@@ -24,6 +24,11 @@ public partial class CampaignWorkspaceView : UserControl
     {
         InitializeComponent();
 
+        // The catalog is the surface's underlay, a property value rather than a logical child, so it
+        // does not inherit the data context and is handed its model here.
+        DataContextChanged += (_, _) =>
+            CatalogView.DataContext = (DataContext as CampaignWorkspaceViewModel)?.Catalog;
+
         Surface.SizeChanged += OnSurfaceSizeChanged;
         Surface.AddHandler(InputElement.PointerPressedEvent, OnSurfacePointerPressed, RoutingStrategies.Tunnel);
 
