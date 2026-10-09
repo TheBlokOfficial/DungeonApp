@@ -259,15 +259,16 @@ public static class PanelGeometry
     }
 
     /// <summary>
-    /// The placement a maximized panel occupies. The desired placement is left alone and therefore
+    /// The placement a maximized panel occupies: the whole surface, with no edge margin, because a
+    /// maximized panel draws no frame of its own. The desired placement is left alone and therefore
     /// doubles as the restore geometry, which is why no separate restore fields exist.
     /// </summary>
     public static PanelPlacement Maximize(double surfaceWidth, double surfaceHeight, WorkspaceMetrics metrics) =>
         new(
-            metrics.EdgeMargin,
-            metrics.EdgeMargin,
-            Math.Max(metrics.MinPanelWidth, surfaceWidth - (2 * metrics.EdgeMargin)),
-            Math.Max(metrics.MinPanelHeight, surfaceHeight - (2 * metrics.EdgeMargin)));
+            0,
+            0,
+            Math.Max(metrics.MinPanelWidth, surfaceWidth),
+            Math.Max(metrics.MinPanelHeight, surfaceHeight));
 
     private static double SnapMoveAxis(
         double value,

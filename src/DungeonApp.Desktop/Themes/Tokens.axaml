@@ -611,5 +611,5 @@
         <!-- TEXT STRINGS ============================================================= -->
         <x:String x:Key="DungeonStringMinimizeToolTip">Zminimalizuj</x:String>
         <x:String x:Key="DungeonStringMaximizeToolTip">Maksymalizuj</x:String>
-        <x:String x:Key="DungeonStringRestoreToolTip">Przywróć</x:String>
+        <x:String x:Key="DungeonStringMaximizedTitleToolTip">Dwuklik albo Esc — przywróć</x:String>
     </ResourceDictionary>

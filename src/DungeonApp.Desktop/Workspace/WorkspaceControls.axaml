@@ -95,25 +95,32 @@
                             <Border Name="PART_TitleBar"
                                     Background="{DynamicResource DungeonPanelWindowHeaderBrush}"
                                     Height="{DynamicResource DungeonPanelHeaderHeight}">
-                                <Grid ColumnDefinitions="Auto,*,Auto"
-                                      Margin="8,0,1,1"
-                                      ColumnSpacing="8">
-                                    <Image Width="{DynamicResource DungeonActionIconSize}"
-                                           Height="{DynamicResource DungeonActionIconSize}"
-                                           VerticalAlignment="Center"
-                                           Source="{TemplateBinding IconResourceKey, Converter={StaticResource DungeonIconResourceConverter}}" />
-                                    <TextBlock Grid.Column="1"
+                                <Grid ColumnDefinitions="*,Auto"
+                                      Margin="8,0,1,1">
+                                    <!-- Icon and title travel together: left in a normal window, centred when maximized. -->
+                                    <DockPanel Name="PART_TitleGroup" HorizontalAlignment="Left">
+                                        <Image DockPanel.Dock="Left"
+                                               Margin="0,0,8,0"
+                                               Width="{DynamicResource DungeonActionIconSize}"
+                                               Height="{DynamicResource DungeonActionIconSize}"
                                                VerticalAlignment="Center"
-                                               FontSize="{DynamicResource DungeonPanelTitleFontSize}"
-                                               FontWeight="Medium"
-                                               Foreground="{DynamicResource DungeonTextPrimaryBrush}"
-                                               TextTrimming="CharacterEllipsis"
-                                               ToolTip.Tip="{TemplateBinding Title}"
-                                               Text="{TemplateBinding Title}" />
+                                               Source="{TemplateBinding IconResourceKey, Converter={StaticResource DungeonIconResourceConverter}}" />
+                                        <TextBlock Name="PART_Title"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="{DynamicResource DungeonPanelTitleFontSize}"
+                                                   FontWeight="Medium"
+                                                   Foreground="{DynamicResource DungeonTextPrimaryBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{TemplateBinding Title}"
+                                                   Text="{TemplateBinding Title}" />
+                                    </DockPanel>
 
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" IsHitTestVisible="False">
-                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
-                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
+                                    <!-- Reserves the room of the header buttons that are present. -->
+                                    <StackPanel Name="PART_ButtonSpacer" Grid.Column="1" Orientation="Horizontal" IsHitTestVisible="False">
+                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}"
+                                                IsVisible="{TemplateBinding ShowMinimizeButton}" />
+                                        <Border Width="{DynamicResource DungeonPanelHeaderActionSize}"
+                                                IsVisible="{TemplateBinding ShowMaximizeButton}" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
@@ -149,7 +156,7 @@
                                 Width="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Height="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Theme="{StaticResource DungeonPanelHeaderActionTheme}"
-                                IsVisible="{TemplateBinding CanMinimize}"
+                                IsVisible="{TemplateBinding ShowMinimizeButton}"
                                 Command="{TemplateBinding MinimizeCommand}"
                                 ToolTip.Tip="{DynamicResource DungeonStringMinimizeToolTip}">
                             <Image Width="{DynamicResource DungeonActionIconSize}"
@@ -160,18 +167,12 @@
                                 Width="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Height="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Theme="{StaticResource DungeonPanelHeaderActionTheme}"
+                                IsVisible="{TemplateBinding ShowMaximizeButton}"
                                 Command="{TemplateBinding ToggleMaximizeCommand}"
                                 ToolTip.Tip="{DynamicResource DungeonStringMaximizeToolTip}">
-                            <Grid>
-                                <Image Name="PART_MaximizeIcon"
-                                       Width="{DynamicResource DungeonActionIconSize}"
-                                       Height="{DynamicResource DungeonActionIconSize}"
-                                       Source="{StaticResource DungeonIconWindowMaximize}" />
-                                <Image Name="PART_RestoreIcon"
-                                       Width="{DynamicResource DungeonActionIconSize}"
-                                       Height="{DynamicResource DungeonActionIconSize}"
-                                       Source="{StaticResource DungeonIconWindowRestore}" />
-                            </Grid>
+                            <Image Width="{DynamicResource DungeonActionIconSize}"
+                                   Height="{DynamicResource DungeonActionIconSize}"
+                                   Source="{StaticResource DungeonIconWindowMaximize}" />
                         </Button>
                     </StackPanel>
 
@@ -227,18 +228,17 @@
             <Setter Property="IsHitTestVisible" Value="False" />
         </Style>
 
-        <!-- Header button icon states -->
-        <Style Selector="^ /template/ Image#PART_RestoreIcon">
-            <Setter Property="IsVisible" Value="False" />
+        <!-- A maximized window is the desk's surface: no frame of its own, no header buttons (the
+             way back is a double-click on the title or Esc), the title centred. -->
+        <Style Selector="^:maximized">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0" />
         </Style>
-        <Style Selector="^:maximized /template/ Image#PART_MaximizeIcon">
-            <Setter Property="IsVisible" Value="False" />
+        <Style Selector="^:maximized /template/ DockPanel#PART_TitleGroup">
+            <Setter Property="HorizontalAlignment" Value="Center" />
         </Style>
-        <Style Selector="^:maximized /template/ Image#PART_RestoreIcon">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
-        <Style Selector="^:maximized /template/ Button#PART_MaximizeButton">
-            <Setter Property="ToolTip.Tip" Value="{DynamicResource DungeonStringRestoreToolTip}" />
+        <Style Selector="^:maximized /template/ TextBlock#PART_Title">
+            <Setter Property="ToolTip.Tip" Value="{DynamicResource DungeonStringMaximizedTitleToolTip}" />
         </Style>
 
         <!-- Combined selector blocking pointer input during window manipulation -->
