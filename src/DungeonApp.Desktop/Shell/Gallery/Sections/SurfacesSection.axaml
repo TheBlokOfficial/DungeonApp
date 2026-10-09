@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:leaf="using:DungeonApp.Desktop.Workspace.Leaf"
              xmlns:sections="using:DungeonApp.Desktop.Shell.Gallery.Sections"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.SurfacesSection">
     <!-- The surface and line colors of Themes/Tokens.axaml with their values and meanings, every text
@@ -138,6 +139,22 @@
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
+        </Border>
+
+        <!-- FRAME OVERLAY ===================================================== -->
+        <TextBlock Classes="overline-sm muted" Text="LISTEK NAD OKNEM BIURKA" />
+        <Border Background="{DynamicResource DungeonDeskBrush}" Width="520" Height="150" ClipToBounds="True"
+                HorizontalAlignment="Left">
+            <Grid>
+                <Border Margin="60,30,0,0" Width="300" Height="110"
+                        HorizontalAlignment="Left" VerticalAlignment="Top"
+                        Background="{DynamicResource DungeonPanelWindowBackgroundBrush}"
+                        BorderBrush="{DynamicResource DungeonPanelWindowBorderBrush}"
+                        BorderThickness="1" CornerRadius="{DynamicResource DungeonCornerRadius}">
+                    <TextBlock Classes="label" Margin="12,40,0,0" Text="Okno biurka" />
+                </Border>
+                <leaf:DeskLeafView x:Name="LeafSample" />
+            </Grid>
         </Border>
 
         <!-- LINES ============================================================= -->

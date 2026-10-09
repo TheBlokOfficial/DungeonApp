@@ -127,8 +127,15 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
     public void ToggleMaximize(WorkspacePanelViewModel panel)
     {
+        // A panel with a size cap cannot fill the desk, so it has nothing to maximize into.
+        if (!panel.CanMaximize || panel.State == PanelDisplayState.Minimized)
+        {
+            return;
+        }
+
         // The desired placement is left alone in both directions, which is exactly why it doubles as
-        // the restore geometry and no separate restore fields exist.
+        // the restore geometry and no separate restore fields exist. Maximized is a session-only
+        // state: it is neither marked dirty here nor written by the snapshot.
         panel.State = panel.State == PanelDisplayState.Maximized
             ? PanelDisplayState.Normal
             : PanelDisplayState.Maximized;
@@ -222,10 +229,11 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
                     new PanelPlacement(entry.X, entry.Y, entry.Width, entry.Height))
                 {
                     // A module stored as closed becomes minimized, because every known module
-                    // remains part of the workspace for its lifetime.
+                    // remains part of the workspace for its lifetime. A stored maximized state
+                    // (older files) opens as normal: maximizing is never remembered.
                     State = !entry.IsOpen || entry.State == PanelDisplayState.Minimized
                         ? PanelDisplayState.Minimized
-                        : entry.State
+                        : PanelDisplayState.Normal
                 };
 
                 Panels.Add(panel);
@@ -348,7 +356,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             panel.InstanceKey,
             // The schema's open flag. The desk never closes a module, so it is always written true.
             true,
-            panel.State,
+            panel.State == PanelDisplayState.Maximized ? PanelDisplayState.Normal : panel.State,
             panel.ZOrder,
             panel.Desired.X,
             panel.Desired.Y,

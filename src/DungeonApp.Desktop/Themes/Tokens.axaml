@@ -296,6 +296,14 @@
              It must stay Transparent rather than null, because null is not hit-testable. -->
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
+        <!-- FrameOverlay: a frame element laid over the desk windows (the leaf, later the hotbar) -
+        background, corner radius and shadow. Darker than the window background (#1B1917) and the
+        desk (#151412), with a deeper shadow and a larger radius than a window, so it reads as
+        sitting above every window. -->
+        <SolidColorBrush x:Key="DungeonFrameOverlayBackgroundBrush" Color="#0E0D0C" />
+        <CornerRadius x:Key="DungeonFrameOverlayCornerRadius">14</CornerRadius>
+        <BoxShadows x:Key="DungeonFrameOverlayShadow">0 6 18 0 #B3000000</BoxShadows>
+
         <!-- TYPOGRAPHY ========================================================= -->
         <FontFamily x:Key="DungeonUiFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
         <FontFamily x:Key="DungeonDisplayFont">avares://DungeonApp.Desktop/Assets/Fonts/CormorantGaramond#Cormorant Garamond</FontFamily>
@@ -611,5 +619,9 @@
         <!-- TEXT STRINGS ============================================================= -->
         <x:String x:Key="DungeonStringMinimizeToolTip">Zminimalizuj</x:String>
         <x:String x:Key="DungeonStringMaximizeToolTip">Maksymalizuj</x:String>
-        <x:String x:Key="DungeonStringRestoreToolTip">Przywróć</x:String>
+        <x:String x:Key="DungeonStringMaximizedTitleToolTip">Dwuklik albo Esc — przywróć</x:String>
+        <x:String x:Key="DungeonStringCloseCampaignToolTip">Zamknij kampanię</x:String>
+        <x:String x:Key="DungeonStringUndoToolTip">Cofnij (Ctrl+Z)</x:String>
+        <x:String x:Key="DungeonStringRedoToolTip">Ponów (Ctrl+Y)</x:String>
+        <x:String x:Key="DungeonStringCommandsToolTip">Polecenia (Ctrl+K)</x:String>
     </ResourceDictionary>

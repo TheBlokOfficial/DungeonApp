@@ -70,6 +70,10 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
 
     public double MaxHeight => Descriptor.Constraints.EffectiveMaxHeight;
 
+    public bool CanMaximize =>
+        double.IsPositiveInfinity(Descriptor.Constraints.MaxWidth)
+        && double.IsPositiveInfinity(Descriptor.Constraints.MaxHeight);
+
     [ObservableProperty]
     public partial double X { get; set; }
 

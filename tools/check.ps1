@@ -6,6 +6,7 @@
 #   powershell -File tools\check.ps1                            # build + all tests
 #   powershell -File tools\check.ps1 -Filter Vocabulary         # tests whose full name contains the text
 #   powershell -File tools\check.ps1 -Tests Core,Architecture   # only these test projects
+#   powershell -File tools\check.ps1 -Tests Desktop.RenderingTests
 #   powershell -File tools\check.ps1 -NoTest                    # build only
 # -Filter also takes a full dotnet test expression ("FullyQualifiedName~X|Category=Y").
 #
@@ -34,7 +35,7 @@ if (-not $dotnet) {
 $env:DOTNET_CLI_UI_LANGUAGE = 'en'
 $env:DOTNET_NOLOGO = '1'
 
-$testProjects = Get-ChildItem (Join-Path $root 'tests') -Filter '*.Tests.csproj' -Recurse |
+$testProjects = Get-ChildItem (Join-Path $root 'tests') -Filter '*Tests.csproj' -Recurse |
     Where-Object { $_.FullName -notmatch '\\(bin|obj)\\' }
 if ($Tests) {
     $testProjects = $testProjects | Where-Object {
