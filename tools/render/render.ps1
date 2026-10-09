@@ -5,6 +5,11 @@
 #   condition_<name>.png - every condition card: the bundled SRD pack
 #   tab_<type>.png      - each content tab whole, list included, its first row selected
 #   gallery_<section>.png - every section of the controls gallery
+#   campaign_page.png, sidebar_campaign.png - a freshly opened campaign ("Kopalnia Phandelver", made in
+#                         a throwaway documents folder, never the author's): its page and the sidebar
+#   desk_empty.png, desk_window.png, desk_maximized.png - the campaign desk with no window, with the
+#                         world window, and with it maximized
+#   window_full.png     - the whole application window with the desk and the open window
 # Usage (from anywhere):
 #   powershell -File tools\render\render.ps1                       # everything
 #   powershell -File tools\render\render.ps1 -Only 'condition_*'   # only files matching the wildcard

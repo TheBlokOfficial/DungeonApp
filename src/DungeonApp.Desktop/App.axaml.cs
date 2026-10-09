@@ -44,6 +44,13 @@ public partial class App : Avalonia.Application
     internal bool FollowsSystemMotion { get; init; } = true;
 
     /// <summary>
+    /// The folder whose per-system subfolders hold the campaigns; the user's Documents when null.
+    /// Tools that boot the real application (the offscreen renderer) point it at a throwaway folder,
+    /// so they never read or write the GM's campaigns.
+    /// </summary>
+    public string? DocumentsPath { get; init; }
+
+    /// <summary>
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
     /// class - it never runs in the shipped app, which always goes through the constructor above,
     /// wired by DungeonApp.App/Program.cs's <c>AppBuilder.Configure(Func&lt;App&gt;)</c> call. An
@@ -77,7 +84,7 @@ public partial class App : Avalonia.Application
         // compiled-in system, in its own directory: a campaign belongs to the system
         // whose directory contains it. SystemDirectories derives this path generically from each
         // IGameSystem.Id, never from a specific system name.
-        var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var documentsPath = DocumentsPath ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
         // Deleting a campaign in the running app sends it to the system Recycle Bin rather than deleting permanently,
         // so an accidental click can be undone. JsonCampaignRepository knows nothing about the Bin - this
