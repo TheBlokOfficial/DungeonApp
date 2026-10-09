@@ -44,6 +44,7 @@
                     Classes.selected="{Binding IsSelected}"
                     Classes.expanded="{Binding IsExpanded}"
                     Classes.root="{Binding IsRoot}"
+                    Classes.drop="{Binding IsDropTarget}"
                     ToolTip.Tip="{Binding ToolTipText}">
                 <Border Padding="{DynamicResource DungeonScrollBarZone}">
                     <Grid ColumnDefinitions="16,16,*,Auto,Auto"
@@ -86,11 +87,29 @@
                                    Margin="6,0,0,0"
                                    VerticalAlignment="Center"
                                    TextTrimming="CharacterEllipsis"
-                                   TextWrapping="NoWrap">
+                                   TextWrapping="NoWrap"
+                                   IsVisible="{Binding !IsEditing}">
                             <Run Text="{Binding Name}" />
                             <Run Text="{Binding NumberSuffix}"
                                  Foreground="{DynamicResource DungeonTextMutedBrush}" />
                         </TextBlock>
+
+                        <!-- Rename in place: the field fills the name's cell and starts one pixel left of
+                             the text (its border), so the letters stay where they were and no neighbour moves. -->
+                        <TextBox Grid.Column="2"
+                                 Classes="world-rename"
+                                 Classes.error="{Binding HasRenameError}"
+                                 Margin="5,0,0,0"
+                                 Padding="0"
+                                 MinWidth="0"
+                                 Height="NaN"
+                                 VerticalAlignment="Center"
+                                 FontSize="{DynamicResource DungeonHelperFontSize}"
+                                 Text="{Binding EditText, Mode=TwoWay}"
+                                 IsVisible="{Binding IsEditing}"
+                                 ToolTip.Tip="{Binding RenameError}"
+                                 ToolTip.IsOpen="{Binding HasRenameError}"
+                                 ToolTip.Placement="Bottom" />
 
                         <TextBlock Grid.Column="3"
                                    Classes="world-hint"
@@ -130,6 +149,14 @@
         </Style>
         <Style Selector="Border.world-row.selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <!-- The place a dragged selection would land in: the same fill a selected row has, so the target
+             reads as chosen while the pointer is over it. -->
+        <Style Selector="Border.world-row.drop">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <Style Selector="TextBox.world-rename.error /template/ Border#PART_BorderElement">
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonDangerBrush}" />
         </Style>
         <Style Selector="TextBlock.world-name, TextBlock.world-hint">
             <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />

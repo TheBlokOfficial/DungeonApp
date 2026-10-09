@@ -37,7 +37,7 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// Drives the catalog the way the GM does - clicks, Ctrl+N and the palette - on a system that names
 /// two kinds of entity (one with a row hint) and one that has none.
 /// </summary>
-public sealed class WorldCatalogViewBuildTests
+public sealed partial class WorldCatalogViewBuildTests
 {
     private static readonly ContentId PackId = ContentId.Create("pack");
 

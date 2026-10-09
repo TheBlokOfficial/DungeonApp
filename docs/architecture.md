@@ -140,6 +140,10 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   i `RowHint`. Kampania zapisana przed katalogami otwiera się bez plików nowych modeli; jej entity
   dostają № przy odczycie, w kolejności identyfikatorów (te same przy każdym otwarciu), licznik
   startuje za nimi, a trwale zapisują się przy pierwszym zapisie.
+  Obsługa katalogu na biurku działa na całym zaznaczeniu: menu pod prawym przyciskiem (pozycje zależą od
+  rodzaju zaznaczenia, wyłączone „Usuń” podaje powód z `...Problem`), zmiana nazwy w miejscu (F2), usunięcie
+  z potwierdzeniem, przeciąganie wierszy na katalog i „Przenieś do…” przez paletę. Przenoszony katalog
+  zabiera zawartość, więc zaznaczone razem z nim elementy nie jadą osobno.
 - Nakładka scala obiekty po kluczu: zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`,
   a późniejsza poprawka KP we wpisie dociera do entity.
 - Format kampanii inny niż bieżący (zbyt nowy albo zbyt stary) oznacza odmowę odczytu, a wpis paczki

@@ -91,6 +91,25 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     [ObservableProperty]
     public partial bool IsSelected { get; set; }
 
+    /// <summary>The name is being typed in place of its text.</summary>
+    [ObservableProperty]
+    public partial bool IsEditing { get; set; }
+
+    /// <summary>The text of the rename field.</summary>
+    [ObservableProperty]
+    public partial string EditText { get; set; } = string.Empty;
+
+    /// <summary>Why the typed name was refused, or null.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasRenameError))]
+    public partial string? RenameError { get; set; }
+
+    public bool HasRenameError => RenameError is { Length: > 0 };
+
+    /// <summary>A dragged selection would land in this row's folder if dropped now.</summary>
+    [ObservableProperty]
+    public partial bool IsDropTarget { get; set; }
+
     public bool HasHint => Hint is { Length: > 0 };
 
     /// <summary>The number as it follows the name on the row, dimmed by the view; empty for a folder.</summary>
