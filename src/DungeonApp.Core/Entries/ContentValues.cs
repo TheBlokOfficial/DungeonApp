@@ -22,7 +22,7 @@ namespace DungeonApp.Core.Entries;
 /// </para>
 /// <para>
 /// <see cref="Overlay"/>, <see cref="Difference"/> and <see cref="From{T}"/> are what a
-/// <see cref="Instances.CampaignInstance"/>'s sparse patch is built and read through, and they stand on that
+/// <see cref="Entities.CampaignEntity"/>'s sparse patch is built and read through, and they stand on that
 /// same argument. They move properties around, at any depth, by the names the envelope already
 /// carries; none of them writes down a name, asks what a name means, or reads a value. Merging two
 /// envelopes key-for-key is no more knowledge of an entry's shape than carrying one envelope
@@ -63,7 +63,7 @@ public sealed class ContentValues
     internal ContentValues(JsonElement raw) => _raw = raw.Clone();
 
     /// <summary>
-    /// An envelope with no properties: an instance that deviates from its entry in nothing.
+    /// An envelope with no properties: an entity that deviates from its entry in nothing.
     /// </summary>
     public static ContentValues Empty { get; } = CreateEmpty();
 
@@ -85,12 +85,12 @@ public sealed class ContentValues
     /// <summary>
     /// Returns a new envelope holding this one's properties with <paramref name="patch"/>'s laid
     /// over them: same-named properties replaced, new ones added. Neither side is modified - this
-    /// is how an instance is read without ever materializing the entry it points at.
+    /// is how an entity is read without ever materializing the entry it points at.
     /// <para>
     /// The merge is recursive and key-for-key: where both sides hold an object under the same name,
     /// the patch is merged into that object, so a patch that changes one nested value does not
     /// freeze its siblings and a later correction to a sibling in the entry still reaches the
-    /// instance. Everything else - arrays, text, numbers, null - is replaced whole; an array has no
+    /// entity. Everything else - arrays, text, numbers, null - is replaced whole; an array has no
     /// stable keys to merge by. A null in the patch is a value like any other, not a request to
     /// remove the key. This is the rule of the format, not a judgement about any property, so the
     /// engine can hold it without knowing what a name means.
@@ -274,7 +274,7 @@ public sealed class ContentValues
     }
 
     /// <summary>
-    /// Lets an envelope be embedded directly in a state record, such as <c>CampaignInstance</c>'s
+    /// Lets an envelope be embedded directly in a state record, such as <c>CampaignEntity</c>'s
     /// <c>Patch</c>, and (de)serialized by <c>System.Text.Json</c> without a hand-written DTO -
     /// exactly the "swap the serializer here" hook this type's own remarks describe, extended to
     /// cover a record that carries an envelope rather than only a system that opens one.

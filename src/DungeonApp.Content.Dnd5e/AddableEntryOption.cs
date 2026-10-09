@@ -4,7 +4,7 @@ namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
 /// One entry the campaign tool's "add" picker offers: resolved, and belonging to this system
-/// (<see cref="Dnd5eSystem.Id"/>) - the only two things <see cref="CampaignInstancesToolViewModel"/>
+/// (<see cref="Dnd5eSystem.Id"/>) - the only two things <see cref="CampaignEntitiesToolViewModel"/>
 /// checks before listing an entry as something the GM can bring into the world.
 /// <para>
 /// <see cref="ToString"/> is what the picker's default item display reads, since the view carries no

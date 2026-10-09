@@ -7,7 +7,7 @@ namespace DungeonApp.Core.Tests.Entries.ContentTabs;
 
 /// <summary>
 /// One test per list rule, on a fake pair of content types ("widget"/"gadget") so this project
-/// never names a real one - the same discipline <c>InstanceResolverTests</c> and
+/// never names a real one - the same discipline <c>EntityResolverTests</c> and
 /// <c>ContentPackLoaderTests</c> follow.
 /// </summary>
 public sealed class ContentListModelTests

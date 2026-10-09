@@ -38,7 +38,7 @@ public sealed class CampaignEntriesContext
 
         _context = context;
         Registry = registry;
-        Resolver = new InstanceResolver(registry, types);
+        Resolver = new EntityResolver(registry, types);
     }
 
     /// <summary>The campaign's whole state, read-only, as of the last change this context has heard about.</summary>
@@ -46,7 +46,7 @@ public sealed class CampaignEntriesContext
 
     public ContentRegistry Registry { get; }
 
-    public InstanceResolver Resolver { get; }
+    public EntityResolver Resolver { get; }
 
     /// <summary>The one door any change a tool makes goes through - delegates to <see cref="CampaignTabContext.ChangeAsync"/> so a tool never reaches the repository directly and never forgets to save what it changed.</summary>
     public Task<CampaignChangeResult> ChangeAsync(CampaignChange change) => _context.ChangeAsync(change);

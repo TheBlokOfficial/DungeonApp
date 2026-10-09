@@ -21,7 +21,7 @@ public sealed record CombatAspect
 
     /// <summary>
     /// Current hit points for one specimen. An entry only ever declares the maximum in
-    /// <see cref="Hp"/>; this is filled in by an instance's patch, so it stays null until something
+    /// <see cref="Hp"/>; this is filled in by an entity's patch, so it stays null until something
     /// happens to a particular goblin.
     /// </summary>
     public int? CurrentHp { get; init; }

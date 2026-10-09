@@ -34,7 +34,7 @@ Jedna nazwa na pojęcie. Słowa spoza tej tabeli znaczą to, co w zwykłej polsz
 | aspekt | nazwana grupa pól jednego konsumenta we wpisie i w entity (walka, przedmiot, ładunki) | paczka pól |
 | konsument | narzędzie, przełom, filtr, sortowanie albo wartość liczona, które czyta pole | — |
 | pole ze strukturą | pole typowane (liczba, kość, wybór z listy), które czyta konsument | — |
-| entity | rzecz świata w kampanii: łącze do wpisu plus nakładka; w kodzie `CampaignInstance` | instancja, egzemplarz, rzecz świata |
+| entity | rzecz świata w kampanii: łącze do wpisu plus nakładka; w kodzie `CampaignEntity` | instancja, egzemplarz, rzecz świata |
 | istota | entity z aspektem walki (stworzenie, postać gracza) | — |
 | nakładka | rzadka łatka entity: same odchylenia od wpisu | łatka, patch |
 | wiedza | typ bez entity, wskazywany identyfikatorem (zaklęcie, stan, zdolność) | — |
@@ -123,7 +123,7 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 - Zapis jest natychmiastowy i atomowy (`AtomicWrite`): pliki modeli najpierw, manifest zatwierdza
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
   wzorcowej kampanii.
-- **Entity** (`CampaignInstance`) to łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka łatka
+- **Entity** (`CampaignEntity`) to łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka łatka
   z samymi odchyleniami (np. aktualne PW, nazwa własna). Rozwiązuje się ją od nowa przy każdym
   odczycie, więc poprawka wpisu w paczce dociera do istniejących kampanii.
 - Nakładka scala obiekty po kluczu: zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`,

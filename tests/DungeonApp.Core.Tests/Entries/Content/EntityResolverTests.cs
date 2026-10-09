@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using DungeonApp.Core.Entries;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.Tests.Entries.Fakes;
 
 namespace DungeonApp.Core.Tests.Entries.Content;
 
-public sealed class InstanceResolverTests
+public sealed class EntityResolverTests
 {
     private static readonly ContentId PackId = ContentId.Create("bestiary");
     private static readonly ContentId EntryId = ContentId.Create("goblin");
@@ -36,10 +36,10 @@ public sealed class InstanceResolverTests
     private static ContentRegistry MakeRegistry(Pack pack, params RegisteredEntry[] entries) =>
         new([pack], entries, [], []);
 
-    private static CampaignInstance MakeInstance(ContentValues patch, EntryAddress? source = null) =>
+    private static CampaignEntity MakeEntity(ContentValues patch, EntryAddress? source = null) =>
         new()
         {
-            Id = InstanceId.New(),
+            Id = EntityId.New(),
             Source = source ?? Address,
             Label = "Goblin 2",
             Patch = patch,
@@ -50,7 +50,7 @@ public sealed class InstanceResolverTests
     // ---------------------------------------------------------------------
 
     [Fact]
-    public void A_resolved_instance_carries_the_patch_over_the_entry_and_leaves_untouched_properties_alone()
+    public void A_resolved_entity_carries_the_patch_over_the_entry_and_leaves_untouched_properties_alone()
     {
         var entryValues = Envelope("""{ "title": "A", "size": 7 }""");
         var entry = MakeEntry(entryValues);
@@ -58,8 +58,8 @@ public sealed class InstanceResolverTests
         var registry = MakeRegistry(MakePack(entry), registered);
         var catalog = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1));
 
-        var instance = MakeInstance(Envelope("""{ "size": 9 }"""));
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(Envelope("""{ "size": 9 }"""));
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
         Assert.Null(resolved.Unresolved);
         Assert.Same(registered, resolved.Source);
@@ -76,65 +76,65 @@ public sealed class InstanceResolverTests
         var registry = MakeRegistry(MakePack(entry), registered);
         var catalog = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1));
 
-        var instance = MakeInstance(ContentValues.Empty);
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(ContentValues.Empty);
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
         Assert.Equal(Snapshot(entryValues), Snapshot(resolved.Values!));
     }
 
     // ---------------------------------------------------------------------
-    // The four ways an instance fails to reach its content.
+    // The four ways an entity fails to reach its content.
     // ---------------------------------------------------------------------
 
     [Fact]
-    public void An_instance_pointing_at_an_uninstalled_pack_is_unresolved_as_missing_pack()
+    public void An_entity_pointing_at_an_uninstalled_pack_is_unresolved_as_missing_pack()
     {
         var registry = new ContentRegistry([], [], [], []);
         var catalog = FakeContentTypeCatalog.Empty();
 
-        var instance = MakeInstance(ContentValues.Empty);
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(ContentValues.Empty);
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
-        Assert.Equal(InstanceUnresolvedReason.MissingPack, resolved.Unresolved);
+        Assert.Equal(EntityUnresolvedReason.MissingPack, resolved.Unresolved);
         Assert.Null(resolved.Source);
         Assert.Null(resolved.Values);
     }
 
     [Fact]
-    public void An_instance_pointing_at_an_entry_the_installed_pack_does_not_have_is_unresolved_as_missing_entry()
+    public void An_entity_pointing_at_an_entry_the_installed_pack_does_not_have_is_unresolved_as_missing_entry()
     {
-        // The pack is installed - just not under the entry id this instance names.
+        // The pack is installed - just not under the entry id this entity names.
         var otherEntry = MakeEntry(Envelope("{}")) with { Id = ContentId.Create("orc") };
         var registered = RegisteredEntry.CreateResolved(
             new EntryAddress(PackId, otherEntry.Id), otherEntry, new ContentTypeDescriptor(Type, "Sample", 1));
         var registry = MakeRegistry(MakePack(otherEntry), registered);
         var catalog = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1));
 
-        var instance = MakeInstance(ContentValues.Empty);
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(ContentValues.Empty);
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
-        Assert.Equal(InstanceUnresolvedReason.MissingEntry, resolved.Unresolved);
+        Assert.Equal(EntityUnresolvedReason.MissingEntry, resolved.Unresolved);
         Assert.Null(resolved.Source);
     }
 
     [Fact]
-    public void An_instance_whose_entry_never_bound_to_a_content_type_is_unresolved_as_entry_unresolved()
+    public void An_entity_whose_entry_never_bound_to_a_content_type_is_unresolved_as_entry_unresolved()
     {
         var entry = MakeEntry(Envelope("""{ "title": "A" }"""));
         var registered = RegisteredEntry.CreateUnresolved(Address, entry, EntryUnresolvedReason.MissingSet);
         var registry = MakeRegistry(MakePack(entry), registered);
         var catalog = FakeContentTypeCatalog.Empty();
 
-        var instance = MakeInstance(ContentValues.Empty);
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(ContentValues.Empty);
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
-        Assert.Equal(InstanceUnresolvedReason.EntryUnresolved, resolved.Unresolved);
+        Assert.Equal(EntityUnresolvedReason.EntryUnresolved, resolved.Unresolved);
         Assert.Same(registered, resolved.Source);
         Assert.Null(resolved.Values);
     }
 
     [Fact]
-    public void An_instance_whose_merged_values_the_catalog_rejects_is_unresolved_as_values_rejected_with_the_catalogs_own_message()
+    public void An_entity_whose_merged_values_the_catalog_rejects_is_unresolved_as_values_rejected_with_the_catalogs_own_message()
     {
         var entry = MakeEntry(Envelope("""{ "title": "A" }"""));
         var registered = RegisteredEntry.CreateResolved(Address, entry, new ContentTypeDescriptor(Type, "Sample", 1));
@@ -143,10 +143,10 @@ public sealed class InstanceResolverTests
             [new ContentTypeDescriptor(Type, "Sample", 1)],
             new HashSet<ContentTypeReference> { Type });
 
-        var instance = MakeInstance(Envelope("""{ "note": "scarred" }"""));
-        var resolved = new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(Envelope("""{ "note": "scarred" }"""));
+        var resolved = new EntityResolver(registry, catalog).Resolve(entity);
 
-        Assert.Equal(InstanceUnresolvedReason.ValuesRejected, resolved.Unresolved);
+        Assert.Equal(EntityUnresolvedReason.ValuesRejected, resolved.Unresolved);
         Assert.Equal("rejected by test fake.", resolved.UnresolvedDetail);
         Assert.Same(registered, resolved.Source);
         Assert.Null(resolved.Values);
@@ -154,39 +154,39 @@ public sealed class InstanceResolverTests
 
     // ---------------------------------------------------------------------
     // The patch must come back untouched in every unresolved case - never trimmed, cleared, or
-    // otherwise "repaired" on the instance's way back out.
+    // otherwise "repaired" on the entity's way back out.
     // ---------------------------------------------------------------------
 
     [Fact]
-    public void The_instances_patch_survives_every_unresolved_outcome_unchanged()
+    public void The_entities_patch_survives_every_unresolved_outcome_unchanged()
     {
         var patch = Envelope("""{ "note": "scarred", "size": 9 }""");
         var patchSnapshot = Snapshot(patch);
 
-        var missingPackInstance = MakeInstance(patch);
-        var missingPackResult = new InstanceResolver(new ContentRegistry([], [], [], []), FakeContentTypeCatalog.Empty())
-            .Resolve(missingPackInstance);
-        Assert.Same(missingPackInstance, missingPackResult.Instance);
-        Assert.Equal(patchSnapshot, Snapshot(missingPackResult.Instance.Patch));
+        var missingPackEntity = MakeEntity(patch);
+        var missingPackResult = new EntityResolver(new ContentRegistry([], [], [], []), FakeContentTypeCatalog.Empty())
+            .Resolve(missingPackEntity);
+        Assert.Same(missingPackEntity, missingPackResult.Entity);
+        Assert.Equal(patchSnapshot, Snapshot(missingPackResult.Entity.Patch));
 
         var otherEntry = MakeEntry(Envelope("{}")) with { Id = ContentId.Create("orc") };
         var missingEntryRegistry = MakeRegistry(
             MakePack(otherEntry),
             RegisteredEntry.CreateResolved(
                 new EntryAddress(PackId, otherEntry.Id), otherEntry, new ContentTypeDescriptor(Type, "Sample", 1)));
-        var missingEntryInstance = MakeInstance(patch);
-        var missingEntryResult = new InstanceResolver(missingEntryRegistry, FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1)))
-            .Resolve(missingEntryInstance);
-        Assert.Equal(patchSnapshot, Snapshot(missingEntryResult.Instance.Patch));
+        var missingEntryEntity = MakeEntity(patch);
+        var missingEntryResult = new EntityResolver(missingEntryRegistry, FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1)))
+            .Resolve(missingEntryEntity);
+        Assert.Equal(patchSnapshot, Snapshot(missingEntryResult.Entity.Patch));
 
         var unresolvedEntry = MakeEntry(Envelope("""{ "title": "A" }"""));
         var entryUnresolvedRegistry = MakeRegistry(
             MakePack(unresolvedEntry),
             RegisteredEntry.CreateUnresolved(Address, unresolvedEntry, EntryUnresolvedReason.MissingSet));
-        var entryUnresolvedInstance = MakeInstance(patch);
-        var entryUnresolvedResult = new InstanceResolver(entryUnresolvedRegistry, FakeContentTypeCatalog.Empty())
-            .Resolve(entryUnresolvedInstance);
-        Assert.Equal(patchSnapshot, Snapshot(entryUnresolvedResult.Instance.Patch));
+        var entryUnresolvedEntity = MakeEntity(patch);
+        var entryUnresolvedResult = new EntityResolver(entryUnresolvedRegistry, FakeContentTypeCatalog.Empty())
+            .Resolve(entryUnresolvedEntity);
+        Assert.Equal(patchSnapshot, Snapshot(entryUnresolvedResult.Entity.Patch));
 
         var rejectingEntry = MakeEntry(Envelope("""{ "title": "A" }"""));
         var rejectingRegistry = MakeRegistry(
@@ -195,9 +195,9 @@ public sealed class InstanceResolverTests
         var rejectingCatalog = new FakeContentTypeCatalog(
             [new ContentTypeDescriptor(Type, "Sample", 1)],
             new HashSet<ContentTypeReference> { Type });
-        var valuesRejectedInstance = MakeInstance(patch);
-        var valuesRejectedResult = new InstanceResolver(rejectingRegistry, rejectingCatalog).Resolve(valuesRejectedInstance);
-        Assert.Equal(patchSnapshot, Snapshot(valuesRejectedResult.Instance.Patch));
+        var valuesRejectedEntity = MakeEntity(patch);
+        var valuesRejectedResult = new EntityResolver(rejectingRegistry, rejectingCatalog).Resolve(valuesRejectedEntity);
+        Assert.Equal(patchSnapshot, Snapshot(valuesRejectedResult.Entity.Patch));
     }
 
     // ---------------------------------------------------------------------
@@ -213,8 +213,8 @@ public sealed class InstanceResolverTests
         var registry = MakeRegistry(MakePack(entry), registered);
         var catalog = FakeContentTypeCatalog.Of(new ContentTypeDescriptor(Type, "Sample", 1));
 
-        var instance = MakeInstance(Envelope("""{ "size": 9 }"""));
-        new InstanceResolver(registry, catalog).Resolve(instance);
+        var entity = MakeEntity(Envelope("""{ "size": 9 }"""));
+        new EntityResolver(registry, catalog).Resolve(entity);
 
         var call = Assert.Single(catalog.ValidateCalls);
         Assert.Equal(Type, call.Reference);

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media;
 using DungeonApp.Core.Entries;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Systems;
@@ -41,7 +41,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// </summary>
 public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
 {
-    // Internal, not private: InstanceRowViewModel's hit-point editing needs the same id to decide
+    // Internal, not private: EntityRowViewModel's hit-point editing needs the same id to decide
     // whether a row is a creature, and branching on this id is allowed only inside this system -
     // duplicating the literal there instead would let the two silently drift.
     internal const string CreatureTypeId = "creature";
@@ -201,7 +201,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
 
-    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [InstancesModel.Declaration];
+    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [EntitiesModel.Declaration];
 
     public IReadOnlyList<IStartupStep> StartupSteps { get; }
 
@@ -379,7 +379,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// <summary>
     /// This system's tool belt for the frame's desk. Building the tool list is this system's own job,
     /// from a <see cref="CampaignEntriesContext"/> it builds itself out of the campaign context plus
-    /// its own registry and type catalog. One window, "Świat kampanii", listing this campaign's instances and
+    /// its own registry and type catalog. One window, "Świat kampanii", listing this campaign's entities and
     /// offering this system's own resolved entries to bring in as new ones. Sized from the
     /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
     /// invented here. The window starts one cell from the left and two from the top, below the
@@ -397,6 +397,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         return
         [
             new WorkspacePanelDescriptor(
+                // The id keys this window in every saved desk layout, so it keeps its original wording.
                 "dnd5e.instances",
                 "Świat kampanii",
                 "DungeonIconUsers",
@@ -416,9 +417,9 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     private Control BuildToolView(CampaignEntriesContext context) =>
-        new CampaignInstancesToolView
+        new CampaignEntitiesToolView
         {
-            DataContext = new CampaignInstancesToolViewModel(context, ContentSetId),
+            DataContext = new CampaignEntitiesToolViewModel(context, ContentSetId),
         };
 
     /// <summary>

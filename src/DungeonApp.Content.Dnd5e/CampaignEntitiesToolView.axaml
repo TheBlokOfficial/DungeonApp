@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dnd="using:DungeonApp.Content.Dnd5e"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
-             x:Class="DungeonApp.Content.Dnd5e.CampaignInstancesToolView"
-             x:DataType="dnd:CampaignInstancesToolViewModel">
+             x:Class="DungeonApp.Content.Dnd5e.CampaignEntitiesToolView"
+             x:DataType="dnd:CampaignEntitiesToolViewModel">
 
     <Grid Margin="{DynamicResource DungeonPaddingMd}"
           RowDefinitions="*,Auto"
@@ -16,10 +16,10 @@
 
             <!-- The list scrolls itself (its own ScrollViewer, one scroll bar) - no outer scroll area. -->
             <ListBox Grid.Row="1"
-                     IsVisible="{Binding HasInstances}"
-                     ItemsSource="{Binding Instances}">
+                     IsVisible="{Binding HasEntities}"
+                     ItemsSource="{Binding Entities}">
                     <ListBox.ItemTemplate>
-                        <DataTemplate x:DataType="dnd:InstanceRowViewModel">
+                        <DataTemplate x:DataType="dnd:EntityRowViewModel">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
                                 <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
                                     <TextBlock Foreground="{DynamicResource DungeonTextPrimaryBrush}"
@@ -65,7 +65,7 @@
                 </ListBox>
 
             <controls:EmptyState Grid.Row="1"
-                                 IsVisible="{Binding !HasInstances}"
+                                 IsVisible="{Binding !HasEntities}"
                                  Message="Ta kampania nie ma jeszcze żadnych instancji."
                                  Hint="Wybierz wpis poniżej i dodaj go do świata." />
         </Grid>

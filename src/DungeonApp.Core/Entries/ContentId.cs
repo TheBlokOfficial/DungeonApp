@@ -18,7 +18,7 @@ namespace DungeonApp.Core.Entries;
 /// first colon without ambiguity.
 /// </para>
 /// <para>
-/// <see cref="ContentIdJsonConverter"/> is what lets a state record such as <c>CampaignInstance</c>
+/// <see cref="ContentIdJsonConverter"/> is what lets a state record such as <c>CampaignEntity</c>
 /// carry a <see cref="ContentId"/> (inside an <c>EntryAddress</c>) and still round-trip as a plain
 /// JSON string - <c>"dnd5e"</c>, not <c>{"value":"dnd5e"}</c> - with no hand-written DTO standing in
 /// for it. It is the only validator that read ever gets: a value the charset rejects fails as a

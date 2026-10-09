@@ -2,7 +2,7 @@ namespace DungeonApp.Core.Entries;
 
 /// <summary>
 /// One piece of content from a content pack - the essence: a fixed set of values, never a specific
-/// in-campaign occurrence of them (that is an instance, <c>CampaignInstance</c>).
+/// in-campaign occurrence of them (that is an entity, <c>CampaignEntity</c>).
 /// <para>
 /// <see cref="TypeVersion"/> is the version of the content type this entry was written against,
 /// captured at file-write time rather than re-read from the system on every load - it is

@@ -1,14 +1,14 @@
 namespace DungeonApp.Core.Entries;
 
 /// <summary>
-/// Why resolving a <see cref="Instances.CampaignInstance"/> against the registry did not reach its content.
+/// Why resolving a <see cref="Entities.CampaignEntity"/> against the registry did not reach its content.
 /// A distinct concern from <see cref="EntryUnresolvedReason"/>: that one explains why an entry
-/// never bound to a content type in the first place; this one explains why an instance - which
+/// never bound to a content type in the first place; this one explains why an entity - which
 /// starts from an address, not from an entry already in hand - never reached one.
 /// </summary>
-public enum InstanceUnresolvedReason
+public enum EntityUnresolvedReason
 {
-    /// <summary>No installed pack answers to the id in the instance's <see cref="EntryAddress"/>.</summary>
+    /// <summary>No installed pack answers to the id in the entity's <see cref="EntryAddress"/>.</summary>
     MissingPack,
 
     /// <summary>The pack is installed, but declares no entry with the given id.</summary>
@@ -21,8 +21,8 @@ public enum InstanceUnresolvedReason
     EntryUnresolved,
 
     /// <summary>
-    /// The entry's values, with the instance's patch overlaid, were refused by the system -
-    /// see <see cref="ResolvedInstance.UnresolvedDetail"/> for its explanation.
+    /// The entry's values, with the entity's patch overlaid, were refused by the system -
+    /// see <see cref="ResolvedEntity.UnresolvedDetail"/> for its explanation.
     /// </summary>
     ValuesRejected
 }
