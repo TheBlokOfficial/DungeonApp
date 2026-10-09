@@ -23,9 +23,9 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
      Rozstrzygnąć przed etapem 8; zmienia „Zakładki według typu” w `docs/decisions.md`.
    - **Szkielet zakładki:** każda zakładka ma ten sam układ (filtry, lista, szczegół) — za generyczny,
      do przemyślenia.
-2. **Katalog świata** — specyfikacja i podział na wycinki: `docs/spec/katalog.md`. Drzewo katalogów
-   z entity na biurku, paleta dodawania, okno karty entity z polem zmiany PW, trybem edycji
-   i stanami. Zastępuje testowy „Świat kampanii”.
+2. **Katalog świata** — specyfikacja i podział na wycinki: `docs/spec/katalog.md`. Zbudowane: drzewo
+   katalogów z entity na biurku, paleta dodawania, podgląd z pinezką. Dalej karta entity: pole zmiany
+   PW, notatka, tryb edycji, entity bez wpisu, stany.
 3. **Kopie zapasowe kampanii**, rotujące — przed pierwszym prawdziwym użyciem, bo przy stole zapis
    biegnie na żywo po każdej zmianie.
 4. **Postacie w minimum** — leżą obok kampanii, w katalogu systemu na dysku, i mogą grać w wielu
@@ -91,8 +91,6 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 - **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz nie
   pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
   (kolejność „panele powłoki, potem narzędzia”).
-- **Nazwa entity w kodzie:** typy i pliki mówią `Instance` (`CampaignInstance`, `InstanceId`), a słownik
-  — entity; zmiana nazwy razem z katalogiem świata.
 - Punkt 4 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają strażnika w kodzie —
   pilnuje ich przegląd.
 - **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could not

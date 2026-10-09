@@ -128,8 +128,8 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 
 1. **Biurko w miejscu strony kampanii** — zbudowane (`docs/architecture.md`, „Biurko”, „Listek”,
    „Maksymalizacja okna”).
-2. **Katalog na biurku i paleta:** katalogi, dodawanie z liczbą sztuk, №, przenoszenie, zmiana nazwy,
-   usuwanie; podgląd z pinezką pokazuje kartę tylko do odczytu. „Świat kampanii” znika.
+2. **Katalog na biurku i paleta** — zbudowane (`docs/architecture.md`, „Paleta”, „Katalog świata”,
+   „Podgląd i przypięte karty”).
 3. **Wartości bieżące:** pasek PW, pole zmiany z ostatnią zmianą, notatka.
 4. **Tryb edycji i entity bez wpisu:** pola w miejscach wartości, znacznik różnicy, „Przywróć z
    wpisu”, „—” dla pustych.
