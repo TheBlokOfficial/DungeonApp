@@ -1,0 +1,93 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:leaf="using:DungeonApp.Desktop.Workspace.Leaf"
+             x:Class="DungeonApp.Desktop.Workspace.Leaf.DeskLeafView"
+             x:DataType="leaf:DeskLeafViewModel"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Top">
+    <!-- A quarter of a grid cell of margin keeps the strip off the desk's corner. The shadow is drawn
+         outside the border, so the margin is also what lets it show. -->
+    <UserControl.Resources>
+        <!-- Same look as the desk window's header action, but defined here: the view is also shown
+             outside the workspace (gallery), where the workspace resources are not merged in. -->
+        <ControlTheme x:Key="LeafActionTheme" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover">
+                <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
+            </Style>
+        </ControlTheme>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <Style Selector="Button.leaf-action">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="ToolTip.ShowOnDisabled" Value="True" />
+        </Style>
+        <Style Selector="Button.leaf-action:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+        <Style Selector="Button.leaf-action > Image">
+            <Setter Property="Width" Value="{DynamicResource DungeonActionIconSize}" />
+            <Setter Property="Height" Value="{DynamicResource DungeonActionIconSize}" />
+        </Style>
+        <Style Selector="Border.leaf-divider">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Background" Value="{DynamicResource DungeonBorderBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4,0" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Margin="8,8,16,16"
+            Padding="4"
+            Background="{DynamicResource DungeonFrameOverlayBackgroundBrush}"
+            BorderBrush="{DynamicResource DungeonPanelWindowBorderBrush}"
+            BorderThickness="1"
+            CornerRadius="{DynamicResource DungeonFrameOverlayCornerRadius}"
+            BoxShadow="{DynamicResource DungeonFrameOverlayShadow}">
+        <StackPanel Orientation="Horizontal">
+            <Button Name="CloseCampaignButton"
+                    Classes="leaf-action" Theme="{StaticResource LeafActionTheme}"
+                    Command="{Binding CloseCampaignCommand}"
+                    ToolTip.Tip="{DynamicResource DungeonStringCloseCampaignToolTip}">
+                <Image Source="{StaticResource DungeonIconBackToShelf}" />
+            </Button>
+            <Border Classes="leaf-divider" />
+            <Button Name="UndoButton"
+                    Classes="leaf-action" Theme="{StaticResource LeafActionTheme}"
+                    IsEnabled="False"
+                    ToolTip.Tip="{DynamicResource DungeonStringUndoToolTip}">
+                <Image Source="{StaticResource DungeonIconUndo}" />
+            </Button>
+            <Button Name="RedoButton"
+                    Classes="leaf-action" Theme="{StaticResource LeafActionTheme}"
+                    IsEnabled="False"
+                    ToolTip.Tip="{DynamicResource DungeonStringRedoToolTip}">
+                <Image Source="{StaticResource DungeonIconRedo}" />
+            </Button>
+            <Border Classes="leaf-divider" />
+            <Button Name="CommandsButton"
+                    Classes="leaf-action" Theme="{StaticResource LeafActionTheme}"
+                    IsEnabled="False"
+                    ToolTip.Tip="{DynamicResource DungeonStringCommandsToolTip}">
+                <Image Source="{StaticResource DungeonIconTerminal}" />
+            </Button>
+        </StackPanel>
+    </Border>
+</UserControl>
