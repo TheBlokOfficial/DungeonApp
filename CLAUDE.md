@@ -155,7 +155,7 @@ i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
 | `CLAUDE.md` | granica automatyzacji, sposób pracy, pułapki | ok. 150 linii |
 | `docs/architecture.md` | słownik; jak aplikacja jest zbudowana i dokąd zmierza | ok. 400 linii |
 | `docs/decisions.md` | rozstrzygnięcia z powodem, zwłaszcza odrzucone kierunki | wpis ok. 8 linii |
-| `docs/roadmap.md` | co dalej: to, czego nie zbudowano | ok. 150 linii |
+| `docs/roadmap.md` | lista zadań ze stanem: etapy, wycinki, decyzje przed startem, odłożone | ok. 250 linii |
 | `docs/spec/` | uzgodniona koncepcja etapu przed budową | — |
 | `docs/archive/` | nieobowiązujące; tylko przez odsyłacz z decisions.md albo roadmapy | — |
 
@@ -164,8 +164,10 @@ w tych plikach, nie w pamięci asystenta. Długość jest wskazówką, nie grani
 do przeglądu — usuń powtórzenia, historię i treść, która należy do innego dokumentu. Nie skracaj
 kosztem jasności, powodu ani informacji; dokument dłuższy i czytelny jest lepszy niż ścisły.
 - Stan, nie historia: bez dat, słów „dziś”, „na razie”, „dawny”, „stary”, „wcześniej” i bez tego,
-  kto co powiedział lub przyjął. Rola autora w procesie (decyduje, ogląda) to nie historia.
-- Rzecz ma jedno miejsce: mechanizm w architekturze, powód w rozstrzygnięciach, plan w roadmapie;
+  kto co powiedział lub przyjął. Rola autora w procesie (decyduje, ogląda) i znacznik `[x]` w roadmapie
+  to nie historia.
+- Rzecz ma jedno miejsce: mechanizm w architekturze, powód w rozstrzygnięciach, plan i stan pracy
+  w roadmapie;
   gdzie indziej tylko odsyłacz. Zmieniając regułę, szukaj jej słów we wszystkich dokumentach.
 - Pojęcie ma jedną nazwę ze słownika; nowy termin wchodzi razem z wpisem w słowniku.
 - „X nie ma” podaje powód albo odsyła do rozstrzygnięcia. Punkt to jedna myśl, do ok. 60 słów.

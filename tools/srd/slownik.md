@@ -259,6 +259,10 @@ Zasięgi dystansowe parą: 20/60 → 6/18, 25/100 → 7,5/30, 30/120 → 9/36, 8
 150/600 → 45/180. 1 mila = 1,5 km. Funty: 1 lb = 0,5 kg (`item.weight` w kg: 3 lb → 1,5; 1/2 lb → 0,25).
 Monety: sm, ss, se, sz, sp (miedź, srebro, elektrum, złoto, platyna).
 
+Rzadkość przedmiotu (skala aplikacji: `docs/decisions.md`, „Rzadkość według skali gier”): niemagiczne
+i pospolite → Pospolity, niezwykłe → Niepospolity, rzadkie → Rzadki, bardzo rzadkie → Epicki,
+legendarne i artefakty → Legendarny.
+
 ## Pola wpisu stworzenia
 
 Szablon: `{"id", "name", "template": "dnd5e:creature", "templateVersion": 1, "values": {…}}`; wzór

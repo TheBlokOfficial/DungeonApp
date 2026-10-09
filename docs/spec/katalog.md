@@ -106,7 +106,7 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
   cech i proza w tym samym układzie i z tymi samymi danymi co w zakładce treści. Podgląd nie dopisuje
   do karty ścieżki katalogów, № ani wpisu źródłowego i nie zmienia jej wyglądu; karta nie ma żywych
   kontrolek. Ścieżka katalogów i № stoją w pasku bieżącym.
-- *Do zmiany w kodzie (wycinek 3a):* podgląd podmienia dziś ścieżkę karty na ścieżkę katalogów
+- *Do zmiany w kodzie (wycinek 2.3b):* podgląd podmienia ścieżkę karty na ścieżkę katalogów
   i dopisuje pod nazwą „№ 5 · Goblin” (`EntityCardBuilder`); karta wraca do postaci z biblioteki.
 
 ## Pasek bieżący
@@ -157,7 +157,7 @@ Nazwa robocza; przy budowie wchodzi do słownika w `docs/architecture.md`.
 ## Edycja w pasku
 
 - **Wszystko w pasku edytuje się w miejscu, od razu, bez trybu edycji.** Karta zmienia się tylko
-  w trybie edycji (wycinek 4). Rozstrzygnięcie „Tryb edycji karty istoty” odrzuciło „wszystko
+  w trybie edycji (wycinek 2.4). Rozstrzygnięcie „Tryb edycji karty istoty” odrzuciło „wszystko
   edytowalne od razu” z powodu przypadkowych zmian przy stole; w pasku ten powód rozwiązuje oznaczenie
   niezatwierdzonej zmiany i „Odrzuć”, więc odrzucenie zostaje tylko dla karty.
 - **Liczba:** klik w wartość („8”) zamienia ją w pole w tym samym miejscu i rozmiarze. Wpisana liczba
@@ -243,8 +243,8 @@ Każda zmiana świata ma zamiar przed i ślad po.
   dotyczy tylko liczb. W drzewie akcja zaznacza i odsłania to, czego dotknęła; powiadomienie
   („Przeniesiono 3 do: Jaskinia goblinów”) tylko wtedy, gdy skutku nie widać.
 - Ceremonia zmniejsza ryzyko pomyłki, ale jej nie cofa: od tego „Odrzuć” i odłożone Cofnij.
-- **Do poprawy w drzewie** (wycinek 3b):
-  - zmiana nazwy w miejscu zatwierdza się dziś po kliknięciu obok — ma zatwierdzać tylko Enter;
+- **Do poprawy w drzewie** (wycinek 2.3c):
+  - zmiana nazwy w miejscu zatwierdza się po kliknięciu obok — ma zatwierdzać tylko Enter;
     notatka jest wyjątkiem (Enter dodaje w niej linię, a utrata dłuższej notatki boli bardziej);
   - próg przeciągnięcia 4 px (`WorldCatalogView`, `DragThreshold`) podnieść do ok. 8 px, żeby drgnięcie
     przy kliknięciu nie przenosiło wiersza;
@@ -258,7 +258,7 @@ Każda zmiana świata ma zamiar przed i ślad po.
 
 - Pasek składa się z **rodziny kontrolek w dwóch formach** (tekst do czytania i pole), projektowanej
   raz: liczba edytowalna w miejscu, tekst wieloliniowy, wiersz stanu, wiersz efektu, narzędzie obrażeń
-  i leczenia. Te same kontrolki zamieniają wartości karty w pola w trybie edycji (wycinek 4).
+  i leczenia. Te same kontrolki zamieniają wartości karty w pola w trybie edycji (wycinek 2.4).
 - Forma do czytania wygląda jak tekst karty; pole zajmuje dokładnie to samo miejsce. Edytowalność
   komunikuje cała strefa: inne tło paska znaczy „tu się edytuje”, na karcie nic się nie edytuje.
 - Warianty do porównania na jednym arkuszu:
@@ -301,41 +301,29 @@ Każda zmiana świata ma zamiar przed i ślad po.
 
 ## Wycinki
 
-1. **Biurko w miejscu strony kampanii** — zbudowane (`docs/architecture.md`, „Biurko”, „Listek”,
-   „Maksymalizacja okna”).
-2. **Katalog na biurku i paleta** — zbudowane (`docs/architecture.md`, „Paleta”, „Katalog świata”,
-   „Podgląd i przypięte karty”).
-3. **Pasek bieżący**, poprzedzony arkuszem rodziny kontrolek (sekcja „Projekt kontrolek”):
-   - **3a. Wartości:** karta wraca do postaci z biblioteki; pasek z tożsamością (ścieżka katalogów,
-     nazwa, №), PW (edycja w miejscu, narzędzie obrażeń i leczenia), KP, Szybkość, zwarte cechy jako
-     baza + modyfikatory; notatka.
-   - **3b. Zatwierdzanie:** punkt odniesienia, niebieskie oznaczenie, „było…”, Zatwierdź i Odrzuć;
-     poprawki ceremonii w drzewie.
-   - **3c. Stany:** sekcja, dodawanie z palety, usuwanie, stany domyślne wpisu.
-   - **3d. Efekty:** sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy, rozpisanie.
-4. **Tryb edycji karty i entity bez wpisu:** pola w miejscach wartości karty (te same kontrolki co
-   w pasku), znacznik różnicy, „Przywróć z wpisu”, „—” dla pustych.
+Podział, numery i stan wycinków: `docs/roadmap.md`, etap E2. Numery w tej specyfikacji (2.3b, 2.4)
+to numery stamtąd.
 
 ## Otwarte pytania
 
 Rozstrzygnąć przed budową wycinka, którego dotyczą.
 
-1. **Efekt na PW** (3d): zmienia tylko maksimum, a bieżące MG poprawia sam (propozycja; po zdjęciu
+1. **Efekt na PW** (2.3e): zmienia tylko maksimum, a bieżące MG poprawia sam (propozycja; po zdjęciu
    efektu bieżące ponad nowym maksimum widać, nic nie blokuje), czy jak Pomoc z podręcznika — także
    bieżące?
-2. **Rodzaje modyfikatorów** (3d): tylko dodawanie i odejmowanie (propozycja; podwojenie szybkości to
+2. **Rodzaje modyfikatorów** (2.3e): tylko dodawanie i odejmowanie (propozycja; podwojenie szybkości to
    „+9”), „ustaw na” (Zbroja maga) później?
-3. **Dodawanie efektu** (3d): jedną linią w palecie — „KP +2 Tarcza wiary” i Enter (propozycja, przy
+3. **Dodawanie efektu** (2.3e): jedną linią w palecie — „KP +2 Tarcza wiary” i Enter (propozycja, przy
    stole szybciej) — czy formularzem?
-4. **Podział i kolejność:** arkusz kontrolek, potem 3a–3d jak wyżej?
-5. **Co jest przyklejone** (3a): propozycja — tożsamość, PW, wartości z bazą i stany; notatka pod
+4. **Podział i kolejność:** arkusz kontrolek (2.3a), potem 2.3b–2.3e jak w roadmapie?
+5. **Co jest przyklejone** (2.3b): propozycja — tożsamość, PW, wartości z bazą i stany; notatka pod
    spodem, przewijana z kartą. Gdzie efekty?
-6. **Karta: wpis czy entity** (3a, 4): karta ma być statyczna jak w bibliotece. Czy pokazuje czysty
+6. **Karta: wpis czy entity** (2.3b, 2.4): karta ma być statyczna jak w bibliotece. Czy pokazuje czysty
    wpis, czy wartości entity po nałożeniu łatki (odchylenia z trybu edycji: podkręcone KP, PW maks.)?
    Jeśli czysty wpis — odchylenia widać tylko w pasku jako bazę, a tryb edycji trzeba umieścić od
    nowa. Co pokazuje podgląd entity bez wpisu: pustą kartę typu czy sam pasek?
 7. **Nazwa elementu:** „pasek bieżący” jest robocza.
-8. **„Następna tura”** (etap 5): zatwierdza tylko istotę kończącą turę czy wszystkie?
+8. **„Następna tura”** (etap E5): zatwierdza tylko istotę kończącą turę czy wszystkie?
 
 ## Poza etapem 2
 
@@ -343,7 +331,7 @@ Rozstrzygnąć przed budową wycinka, którego dotyczą.
   (etap 5; okno zmaksymalizowane zakrywa katalog, więc przeciąganie do kolejki rozstrzyga ten etap),
   postacie (4), entity w entity (9), podróż jako przeniesienie katalogu drużyny (11).
 - **Hotbar** (pomysł na później) — element ramy nad oknami pośrodku dolnej krawędzi biurka, jak listek. Trzyma
-  zminimalizowane okna (zamiast dzisiejszych surowych kwadratów w lewym dolnym rogu) i sloty na
+  zminimalizowane okna (zamiast surowych kwadratów w lewym dolnym rogu) i sloty na
   miniatury: widżety, które wystawia okno, żeby jego najważniejsza wartość była widoczna bez całego
   okna (data i godzina świata z okna zegara). Naturalny moment: zegar świata (etap 11), pierwsze okno
   z widżetem. Licznik czasu sesji z mockupu wymaga zgody na wyjątek od „bez timerów”.
