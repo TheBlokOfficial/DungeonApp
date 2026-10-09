@@ -12,7 +12,10 @@ using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Entries.ContentTab;
 using DungeonApp.Desktop.Entries.Controls;
+using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Shell.Sidebars;
+using DungeonApp.Desktop.Workspace;
 using DungeonApp.Desktop.Shell.Gallery;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
@@ -72,7 +75,16 @@ internal static class Program
         Directory.CreateDirectory(_outDir);
 
         var lifetime = new ClassicDesktopStyleApplicationLifetime { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-        AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()))
+        // The campaigns the shell reads and writes live here, never in the GM's Documents.
+        var documents = Path.Combine(Path.GetTempPath(), "DungeonAppRender", "documents");
+        if (Directory.Exists(documents))
+        {
+            Directory.Delete(documents, recursive: true);
+        }
+
+        Directory.CreateDirectory(documents);
+
+        AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { DocumentsPath = documents })
             .UseSkia()
             .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false })
             .WithInterFont()
@@ -97,6 +109,11 @@ internal static class Program
         if (MayMatch("gallery_"))
         {
             RenderGallery(window, shell);
+        }
+
+        if (MayMatch("desk_") || MayMatch("campaign_") || MayMatch("sidebar_") || MayMatch("window_"))
+        {
+            RenderDesk(window, shell);
         }
 
         Console.WriteLine(_written.Count == 0 ? "Nothing matched the pattern." : $"Done: {_written.Count} file(s).");
@@ -277,6 +294,87 @@ internal static class Program
         }
 
         SetSize(window, WindowWidth, WindowHeight);
+    }
+
+    /// <summary>
+    /// Creates a campaign on the shelf, opens it through its row, brings two goblins into the world
+    /// tool, and saves the campaign page, the sidebar, and the desk empty, with the world window, and
+    /// with it maximized.
+    /// </summary>
+    private static void RenderDesk(Window window, AppShellViewModel shell)
+    {
+        SetSize(window, WindowWidth, WindowHeight);
+        shell.Sidebar!.CampaignPositionItem.SelectCommand.Execute(null);
+        Settle();
+
+        var library = (CampaignLibraryViewModel)shell.CurrentWorkspaceContent!;
+        library.NewCampaignName = "Kopalnia Phandelver";
+        Await(library.CreateCommand.ExecuteAsync(null), "campaign creation");
+        Pump(() => library.Campaigns.Count > 0, "shelf");
+        Await(library.Campaigns.Single().OpenCommand.ExecuteAsync(null), "campaign opening");
+        Pump(() => shell.CurrentWorkspaceContent is CampaignPageViewModel, "campaign page");
+        Settle();
+
+        if (Wants("campaign_page"))
+        {
+            SaveCrop(window, window.GetVisualDescendants().OfType<ContentControl>()
+                .First(control => ReferenceEquals(control.Content, shell.CurrentWorkspaceContent)), UniqueName("campaign_page"));
+        }
+
+        if (Wants("sidebar_campaign"))
+        {
+            SaveCrop(window, window.GetVisualDescendants().OfType<GlobalSidebarView>().First(), UniqueName("sidebar_campaign"));
+        }
+
+        shell.Sidebar.CampaignTabItems.Single(item => item.Label == "Biurko").SelectCommand.Execute(null);
+        Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: CampaignWorkspaceViewModel }, "desk");
+        Settle();
+
+        var deskView = (Control)shell.CurrentWorkspaceContent!;
+        var desk = (CampaignWorkspaceViewModel)deskView.DataContext!;
+        var panel = desk.Panels.Single(candidate => candidate.Title == "Świat kampanii");
+
+        // Added through the tool's own model, as the GM would pick them in its list.
+        var tool = (CampaignInstancesToolViewModel)((Control)panel.Body).DataContext!;
+        for (var count = 0; count < 3; count++)
+        {
+            tool.SelectedToAdd = tool.AddableEntries.First(option => option.Name.Contains("Goblin", StringComparison.OrdinalIgnoreCase));
+            Await(tool.AddCommand.ExecuteAsync(null), "adding a goblin");
+        }
+
+        Settle();
+
+        if (Wants("desk_empty"))
+        {
+            panel.MinimizeCommand.Execute(null);
+            SaveCrop(window, deskView, UniqueName("desk_empty"));
+        }
+
+        panel.ActivateCommand.Execute(null);
+        Settle();
+        if (Wants("desk_window"))
+        {
+            SaveCrop(window, deskView, UniqueName("desk_window"));
+        }
+
+        panel.ToggleMaximizeCommand.Execute(null);
+        Settle();
+        if (Wants("desk_maximized"))
+        {
+            SaveCrop(window, deskView, UniqueName("desk_maximized"));
+        }
+
+        if (Wants("window_full"))
+        {
+            SaveCrop(window, window, UniqueName("window_full"));
+        }
+    }
+
+    /// <summary>Runs the dispatcher until <paramref name="task"/> finishes, then surfaces its failure if any.</summary>
+    private static void Await(Task task, string what)
+    {
+        Pump(() => task.IsCompleted, what);
+        task.GetAwaiter().GetResult();
     }
 
     /// <summary>Enlarges the window until no visible scroll viewer under <paramref name="root"/> scrolls vertically.</summary>
