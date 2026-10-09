@@ -54,6 +54,7 @@
                     <Grid>
                         <workspace:WorkspaceGridBackground GridLineBrush="{StaticResource DungeonWorkspaceGridLineBrush}"
                                                     IsHitTestVisible="False" />
+                        <ContentPresenter Content="{TemplateBinding Underlay}" />
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
                     </Grid>

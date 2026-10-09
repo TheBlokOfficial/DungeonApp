@@ -465,6 +465,10 @@
         <!-- List row (ListBoxItem): denser than a control (36) - many items stacked
              vertically, each row carrying one line of 13 px text. -->
         <x:Double x:Key="DungeonListRowHeight">32</x:Double>
+        <!-- World catalog row (tree on the desk): lower than a list row (24 versus 32), because the
+             tree is dense and its text is helper size (12). Each level of depth indents by 16 (the
+             chevron's width), so a folder's name and its entities' names stand on the same line. -->
+        <x:Double x:Key="DungeonWorldRowHeight">24</x:Double>
         <!-- ListRowIconSize - an entry's own icon before its name in a list row: about as tall as the
              row's line of 13 px text (20), so it reads as part of the line, not as a picture. -->
         <x:Double x:Key="DungeonListRowIconSize">18</x:Double>

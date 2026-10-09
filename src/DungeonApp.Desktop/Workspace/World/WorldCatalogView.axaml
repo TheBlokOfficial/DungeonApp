@@ -1,0 +1,181 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             xmlns:world="using:DungeonApp.Desktop.Workspace.World"
+             x:Class="DungeonApp.Desktop.Workspace.World.WorldCatalogView"
+             x:DataType="world:WorldCatalogViewModel"
+             Focusable="True"
+             HorizontalAlignment="Left"
+             VerticalAlignment="Stretch"
+             Margin="{Binding Margin}"
+             Width="{Binding Width}">
+
+    <!-- The catalog lies on the desk: the desk's own colour, no frame and no shadow, so the grid lines
+         do not cut through the letters. It reaches from its top edge to the desk's bottom; the
+         one scrolling layer is the ScrollViewer. -->
+    <UserControl.Resources>
+        <dc:ResourceKeyToImageConverter x:Key="IconByKey" />
+
+        <ControlTheme x:Key="WorldRowButtonTheme" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Arrow" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Style Selector="^:pointerover">
+                <Setter Property="Background" Value="{DynamicResource DungeonHoverOverlayBrush}" />
+            </Style>
+        </ControlTheme>
+
+        <DataTemplate x:Key="WorldRowTemplate" x:DataType="world:WorldRowViewModel">
+            <Border Classes="world-row"
+                    Classes.selected="{Binding IsSelected}"
+                    Classes.expanded="{Binding IsExpanded}"
+                    Classes.root="{Binding IsRoot}"
+                    ToolTip.Tip="{Binding ToolTipText}">
+                <Border Padding="{DynamicResource DungeonScrollBarZone}">
+                    <Grid ColumnDefinitions="16,16,*,Auto,Auto"
+                          Margin="{Binding Indent}">
+                        <!-- Chevron: turns instead of swapping, so the fold reads as one movement. -->
+                        <Button Grid.Column="0"
+                                Theme="{StaticResource WorldRowButtonTheme}"
+                                Tag="toggle"
+                                Width="16" Height="16"
+                                IsVisible="{Binding IsFolderLike}">
+                            <dc:ForegroundIcon Classes="world-chevron"
+                                               Width="14" Height="14"
+                                               Source="{DynamicResource DungeonIconChevronDown}"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        </Button>
+
+                        <!-- Folder icon, the entity's type icon, or the warning of an entity whose
+                             entry is gone; the place stays when a type has no icon. -->
+                        <dc:ForegroundIcon Grid.Column="1"
+                                           Width="14" Height="14"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding IsFolderLike}"
+                                           Source="{DynamicResource DungeonIconFolder}"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        <dc:ForegroundIcon Grid.Column="1"
+                                           Width="14" Height="14"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding ShowsTypeIcon}"
+                                           Source="{Binding IconKey, Converter={StaticResource IconByKey}}"
+                                           Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        <dc:ForegroundIcon Grid.Column="1"
+                                           Width="14" Height="14"
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding IsUnresolved}"
+                                           Source="{DynamicResource DungeonIconWarningTriangle}"
+                                           Foreground="{DynamicResource DungeonDangerTextBrush}" />
+
+                        <TextBlock Grid.Column="2"
+                                   Classes="world-name"
+                                   Margin="6,0,0,0"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   TextWrapping="NoWrap">
+                            <Run Text="{Binding Name}" />
+                            <Run Text="{Binding NumberSuffix}"
+                                 Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="3"
+                                   Classes="world-hint"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding Hint}"
+                                   IsVisible="{Binding HasHint}"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}" />
+
+                        <Button Grid.Column="4"
+                                Classes="world-add"
+                                Theme="{StaticResource WorldRowButtonTheme}"
+                                Tag="add"
+                                Width="20" Height="20"
+                                Margin="4,0,0,0"
+                                IsVisible="{Binding IsFolderLike}"
+                                ToolTip.Tip="Dodaj do tego katalogu (Ctrl+N)">
+                            <dc:ForegroundIcon Width="14" Height="14"
+                                               Source="{DynamicResource DungeonIconPlus}"
+                                               Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                        </Button>
+                    </Grid>
+                </Border>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="Border.world-row">
+            <!-- Transparent, not null: only a painted background takes the pointer. -->
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Height" Value="{DynamicResource DungeonWorldRowHeight}" />
+            <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+        </Style>
+        <Style Selector="Border.world-row:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
+        </Style>
+        <Style Selector="Border.world-row.selected">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+        </Style>
+        <Style Selector="TextBlock.world-name, TextBlock.world-hint">
+            <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+            <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.world-hint">
+            <Setter Property="FontFeatures" Value="tnum" />
+        </Style>
+        <Style Selector="Border.world-row.root TextBlock.world-name">
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="dc|ForegroundIcon.world-chevron">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.world-row.expanded dc|ForegroundIcon.world-chevron">
+            <Setter Property="RenderTransform" Value="rotate(0deg)" />
+        </Style>
+        <!-- The plus shows only under the pointer. Hidden by opacity, not by visibility, so the row
+             keeps its layout; a pointer that is not over the row cannot press it. -->
+        <Style Selector="Border.world-row Button.world-add">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+        <Style Selector="Border.world-row:pointerover Button.world-add">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Rows}"
+                          ItemTemplate="{StaticResource WorldRowTemplate}" />
+        </ScrollViewer>
+
+        <!-- The right edge: a thin strip that takes the pointer, to widen or narrow the catalog. -->
+        <Border Name="ResizeGrip"
+                Width="5"
+                HorizontalAlignment="Right"
+                Background="Transparent"
+                Cursor="SizeWestEast" />
+    </Grid>
+</UserControl>

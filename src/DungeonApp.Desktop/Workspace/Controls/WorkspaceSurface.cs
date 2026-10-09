@@ -21,7 +21,20 @@ namespace DungeonApp.Desktop.Workspace.Controls;
 /// </summary>
 public class WorkspaceSurface : ItemsControl
 {
+    /// <summary>
+    /// What lies on the desk itself, above the grid lines and below every window (the world catalog).
+    /// Not a panel: it has no chrome, no stacking and never covers a window.
+    /// </summary>
+    public static readonly StyledProperty<Control?> UnderlayProperty =
+        AvaloniaProperty.Register<WorkspaceSurface, Control?>(nameof(Underlay));
+
     private readonly Dictionary<Control, List<IDisposable>> _containerBindings = [];
+
+    public Control? Underlay
+    {
+        get => GetValue(UnderlayProperty);
+        set => SetValue(UnderlayProperty, value);
+    }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {

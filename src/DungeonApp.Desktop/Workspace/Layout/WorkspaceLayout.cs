@@ -20,19 +20,36 @@ public sealed record WorkspacePanelLayout(
     double Height);
 
 /// <summary>
+/// The world catalog lying on the desk. <see cref="X"/> and <see cref="Y"/> are the desired position of
+/// its top-left corner, null while the GM has not moved it (the default is the desk's top-right
+/// corner, which depends on the desk's size). <see cref="ExpandedFolders"/> holds folder ids as text.
+/// </summary>
+public sealed record WorldCatalogLayout(
+    double? X,
+    double? Y,
+    double Width,
+    bool IsRootCollapsed,
+    IReadOnlyList<string> ExpandedFolders);
+
+/// <summary>
 /// A whole desk arrangement. <see cref="WorkspacePanelLayout.IsOpen"/> remains in schema v1 only to
-/// migrate older closed modules to the minimized state.
+/// migrate older closed modules to the minimized state. A file without a <see cref="Catalog"/> (null)
+/// restores the catalog's defaults.
 /// </summary>
 public sealed record WorkspaceLayout(
     int Version,
     double SurfaceWidth,
     double SurfaceHeight,
-    IReadOnlyList<WorkspacePanelLayout> Panels)
+    IReadOnlyList<WorkspacePanelLayout> Panels,
+    WorldCatalogLayout? Catalog = null)
 {
     public const int CurrentVersion = 1;
 
     /// <summary>Upper bound on remembered entries, so a long-lived file cannot grow without limit.</summary>
     public const int MaxPanels = 64;
+
+    /// <summary>Upper bound on remembered expanded folders, for the same reason.</summary>
+    public const int MaxExpandedFolders = 512;
 
     /// <summary>Returned for a missing, unreadable or future-versioned file. Means "use the defaults".</summary>
     public static WorkspaceLayout Empty { get; } = new(CurrentVersion, 0, 0, []);

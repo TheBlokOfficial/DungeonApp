@@ -114,7 +114,10 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
                     panel.X,
                     panel.Y,
                     panel.Width,
-                    panel.Height))]);
+                    panel.Height))],
+            layout.Catalog is { } catalog
+                ? new CatalogDocument(catalog.X, catalog.Y, catalog.Width, catalog.IsRootCollapsed, [.. catalog.ExpandedFolders.Take(WorkspaceLayout.MaxExpandedFolders)])
+                : null);
 
         using var atomic = new AtomicWrite();
         atomic.Stage(destinationPath, stream => JsonSerializer.Serialize(stream, document, _serializerOptions));
@@ -153,8 +156,20 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
                 panel.Height))
             .ToList();
 
-        return new WorkspaceLayout(document.Version, document.SurfaceWidth, document.SurfaceHeight, panels);
+        // An older file has no catalog section; a hand-edited one may carry nonsense widths or ids.
+        var catalog = document.Catalog is { } stored
+            ? new WorldCatalogLayout(
+                IsFinite(stored.X) ? stored.X : null,
+                IsFinite(stored.Y) ? stored.Y : null,
+                double.IsFinite(stored.Width) ? stored.Width : 0,
+                stored.IsRootCollapsed,
+                [.. (stored.ExpandedFolders ?? []).Where(id => !string.IsNullOrWhiteSpace(id)).Take(WorkspaceLayout.MaxExpandedFolders)])
+            : null;
+
+        return new WorkspaceLayout(document.Version, document.SurfaceWidth, document.SurfaceHeight, panels, catalog);
     }
+
+    private static bool IsFinite(double? value) => value is { } number && double.IsFinite(number);
 
     /// <summary>
     /// A workspace identifier becomes a file name. Today it is a constant, but it becomes a campaign
@@ -170,7 +185,15 @@ public sealed class WorkspaceLayoutStore(string directoryPath)
         int Version,
         double SurfaceWidth,
         double SurfaceHeight,
-        IReadOnlyList<PanelDocument>? Panels);
+        IReadOnlyList<PanelDocument>? Panels,
+        CatalogDocument? Catalog = null);
+
+    private sealed record CatalogDocument(
+        double? X,
+        double? Y,
+        double Width,
+        bool IsRootCollapsed,
+        IReadOnlyList<string>? ExpandedFolders);
 
     private sealed record PanelDocument(
         string DescriptorId,

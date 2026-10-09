@@ -193,6 +193,14 @@
     <DrawingImage x:Key="DungeonIconChevronDown" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M5,9 L12,16 L19,9" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
+    <!-- Folder outline with a tab at the top left: a world catalog's icon in the tree. -->
+    <DrawingImage x:Key="DungeonIconFolder" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M20,20 A2,2 0 0 0 22,18 L22,8 A2,2 0 0 0 20,6 L12.1,6 A2,2 0 0 1 10.4,5.1 L9.6,3.9 A2,2 0 0 0 7.9,3 L4,3 A2,2 0 0 0 2,5 L2,18 A2,2 0 0 0 4,20 Z" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
+    <!-- Plus: adding to the catalog under the pointer. -->
+    <DrawingImage x:Key="DungeonIconPlus" Viewbox="0,0,24,24">
+        <GeometryDrawing Geometry="M12,5 L12,19 M5,12 L19,12" Pen="{StaticResource DungeonIconPen}" />
+    </DrawingImage>
     <!-- Lucide "skull" (Assets/Icons/Lucide/skull.svg), its relative path commands written out as
          absolute ones like every icon here: the nose, the cranium with the jaw, two eye sockets. -->
     <DrawingImage x:Key="DungeonIconSkull" Viewbox="0,0,24,24">
