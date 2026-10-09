@@ -225,6 +225,12 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
 - **Maksymalizacja okna:** tylko okno bez górnej granicy rozmiaru (inne nie mają przycisku). Okno
   zmaksymalizowane wypełnia biurko bez obwódki, tytuł stoi pośrodku, przyciski nagłówka znikają;
   przywraca dwuklik w tytuł albo Esc. Stan zmaksymalizowany nie trafia do zapisanego układu.
+- **Paleta** (`Desktop/Controls/Palette.cs`, motyw `Themes/Controls/Palette.axaml`): okienko u góry
+  pośrodku okna, w `WindowOverlay`, bez wiedzy o systemie. Woła się `Palette.ShowAsync(origin,
+  PaletteOptions)` — wywołujący podaje tekst celu, funkcję wyszukiwania (paleta pokazuje tylko jej wynik)
+  i akcję wyboru `(PaletteItem, ilość)`; zadanie kończy się przy zamknięciu, druga paleta zamyka
+  pierwszą. Z okienka wysuwanego (menu kontekstowe) nakładkę znajduje przez okno główne. Liczbę sztuk
+  („4 gob”) czyta `PaletteQuery.Parse`, gdy wywołujący na to pozwala; Ctrl+Enter zostawia paletę otwartą.
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta (domyślnego motywu Avalonii) pod
   spodem. Tokeny kolorów mają zapisane znaczenie; skale należące do systemu (rzadkość przedmiotu) mają
   własne kolory w systemie. Galeria pokazuje każdą kontrolkę motywu w każdym stanie.
