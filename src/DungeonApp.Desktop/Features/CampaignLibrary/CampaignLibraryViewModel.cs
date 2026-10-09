@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.Systems;
+using DungeonApp.Core.World;
 using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 
@@ -193,7 +194,7 @@ public sealed partial class CampaignLibraryViewModel : ObservableObject
 
         try
         {
-            await _createCampaign.ExecuteAsync(NewCampaignName, system.Id, system.StateModels);
+            await _createCampaign.ExecuteAsync(NewCampaignName, system.Id, WorldModels.Combine(system.StateModels));
 
             NewCampaignName = string.Empty;
         }

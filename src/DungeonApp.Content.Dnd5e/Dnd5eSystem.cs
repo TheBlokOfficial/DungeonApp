@@ -48,6 +48,10 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     private const string GearTypeId = "gear";
     private const string ConditionTypeId = "condition";
 
+    // One key per type for both its library tab and its row in the world tree.
+    private const string CreatureIcon = "DungeonIconSkull";
+    private const string GearIcon = "DungeonIconBackpack";
+
     /// <summary>The JSON name of <see cref="Creature.Image"/> and <see cref="Gear.Image"/>.</summary>
     private const string ImagePropertyName = "image";
 
@@ -165,11 +169,17 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
         (string Id, string IconResourceKey, ContentTabDefinition Definition)[] contentTabs =
         [
-            ("dnd5e.creatures", "DungeonIconSkull", BuildCreatureContentTab(creature.Descriptor.Reference)),
-            ("dnd5e.gear", "DungeonIconBackpack", BuildGearContentTab(gear.Descriptor.Reference)),
+            ("dnd5e.creatures", CreatureIcon, BuildCreatureContentTab(creature.Descriptor.Reference)),
+            ("dnd5e.gear", GearIcon, BuildGearContentTab(gear.Descriptor.Reference)),
             ("dnd5e.conditions", "DungeonIconZap", BuildConditionContentTab(condition.Descriptor.Reference)),
         ];
         ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
+        // A creature and a piece of gear stand in the world; a condition is knowledge and has no entity.
+        EntityTypes =
+        [
+            new WorldEntityType(creature.Descriptor.Reference, CreatureIcon),
+            new WorldEntityType(gear.Descriptor.Reference, GearIcon),
+        ];
         SystemTabs =
         [
             .. contentTabs.Select(tab => new SystemTabDeclaration(
@@ -201,7 +211,24 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     /// </summary>
     public IReadOnlyList<ContentTabDefinition> ContentTabDefinitions { get; }
 
-    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [EntitiesModel.Declaration];
+    public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
+
+    public IReadOnlyList<WorldEntityType> EntityTypes { get; }
+
+    /// <summary>"7/7" for a resolved creature - current hit points (the maximum when none is recorded) over the maximum; nothing for gear or an unresolved entity.</summary>
+    public string? RowHint(ResolvedEntity entity)
+    {
+        ArgumentNullException.ThrowIfNull(entity);
+
+        if (entity.Values is not { } values || entity.Source?.Entry.Type.Type.Value != CreatureTypeId)
+        {
+            return null;
+        }
+
+        var combat = values.Read<Creature>().Combat;
+
+        return $"{combat.CurrentHp ?? combat.Hp}/{combat.Hp}";
+    }
 
     public IReadOnlyList<IStartupStep> StartupSteps { get; }
 

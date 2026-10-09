@@ -102,7 +102,7 @@ public sealed partial class CampaignEntitiesToolViewModel : ObservableObject, ID
             return;
         }
 
-        var result = await _context.ChangeAsync(CampaignEntityChanges.Add(option.Address, label: null));
+        var result = await _context.ChangeAsync(CampaignEntityChanges.Add(_context.Snapshot, option.Address, label: null));
         Message = result.Message;
 
         // Cleared whether or not the write went through: the entity either exists now, or the

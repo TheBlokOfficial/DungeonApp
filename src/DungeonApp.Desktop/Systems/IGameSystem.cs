@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DungeonApp.Core.Entries;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Startup;
@@ -51,11 +52,26 @@ public interface IGameSystem
     IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext context);
 
     /// <summary>
-    /// The state models this system's campaigns keep: the system declares them, the frame saves
-    /// them. Read once, when a campaign is opened or created, and handed to the repository so it
-    /// knows which files to write and read; the frame never names any of these models itself.
+    /// The state models this system's campaigns keep on top of the frame's own (entities, world
+    /// folders and the № counter - <see cref="DungeonApp.Core.World.WorldModels"/>). Read once, when a
+    /// campaign is opened or created, and combined with the frame's models into the list handed to
+    /// the repository; the frame never names any of these models itself.
     /// </summary>
     IReadOnlyList<StateModelDeclaration> StateModels { get; }
+
+    /// <summary>
+    /// The content types whose entries can become entities in the world tree, each with its icon.
+    /// A type that is not listed (knowledge such as a condition) has no entities; the tree asks
+    /// nothing else about what a type is.
+    /// </summary>
+    IReadOnlyList<WorldEntityType> EntityTypes { get; }
+
+    /// <summary>
+    /// The short text at the right edge of an entity's tree row - for a being with combat values
+    /// the current and maximum health ("7/7"); <see langword="null"/> when this entity has none.
+    /// Only a resolved entity has values to read.
+    /// </summary>
+    string? RowHint(ResolvedEntity entity);
 
     /// <summary>
     /// Startup work this system wants run behind the loading curtain - loading its own content packs,

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,16 +7,19 @@ using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.Persistence;
+using DungeonApp.Core.State;
+using DungeonApp.Core.World;
 using DungeonApp.Testing;
 
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
 /// Proof that the on-disk campaign format does not move by a single byte. The fixture under
-/// <c>Fixtures/CampaignFormat</c> was generated once, from a campaign with a declared system and
-/// two entities - one carrying a GM-given label and a non-empty patch, one plain - and is never
-/// regenerated or hand-edited; this test file itself may only ever change in its <c>using</c>
-/// directives as types move namespace, never in what it asserts.
+/// <c>Fixtures/CampaignFormat</c> was generated from a campaign with a declared system, two world
+/// folders and two entities - one in a folder with a GM-given label and a non-empty patch, one plain
+/// in the root - and a counter ahead of the highest number. It is regenerated only when the format
+/// changes on purpose (<c>Fixtures/LegacyCampaign</c> keeps the previous shape as a campaign that
+/// must still open), never hand-edited.
 /// <para>
 /// The fixture directory is read from, never written to: <see cref="ICampaignRepository.GetAsync"/>
 /// only reads, and the re-save goes to a fresh, empty temporary directory rather than back on top of
@@ -55,6 +59,12 @@ public sealed class CampaignFormatFixtureTests : IDisposable
     private static string FixtureLibrary => Path.Combine(
         RepositoryRoot.Path, "tests", "DungeonApp.Content.Dnd5e.Tests", "Fixtures", "CampaignFormat");
 
+    private static string LegacyLibrary => Path.Combine(
+        RepositoryRoot.Path, "tests", "DungeonApp.Content.Dnd5e.Tests", "Fixtures", "LegacyCampaign");
+
+    /// <summary>The models every campaign of this system keeps: the frame's own, and none of the system's.</summary>
+    private static IReadOnlyList<StateModelDeclaration> Declarations => WorldModels.Combine([]);
+
     [Fact]
     public async Task Loading_the_fixture_and_saving_it_fresh_reproduces_it_byte_for_byte()
     {
@@ -63,17 +73,43 @@ public sealed class CampaignFormatFixtureTests : IDisposable
         var source = new JsonCampaignRepository(
             systemId, FixtureLibrary, path => throw new InvalidOperationException("The fixture must never be deleted."));
 
-        var campaign = await source.GetAsync(new CampaignId(CampaignGuid), [EntitiesModel.Declaration])
+        var campaign = await source.GetAsync(new CampaignId(CampaignGuid), Declarations)
             ?? throw new InvalidOperationException("The campaign format fixture failed to load.");
 
         var destination = new JsonCampaignRepository(
             systemId, _destinationLibrary, path => Directory.Delete(path, recursive: true));
 
-        await destination.SaveAsync(campaign, [EntitiesModel.Declaration]);
+        await destination.SaveAsync(campaign, Declarations);
 
         AssertDirectoriesMatchByteForByte(
             Path.Combine(FixtureLibrary, CampaignGuid.ToString("D")),
             Path.Combine(_destinationLibrary, CampaignGuid.ToString("D")));
+    }
+
+    /// <summary>
+    /// A campaign saved before folders and numbers existed (<c>Fixtures/LegacyCampaign</c>, never
+    /// regenerated) still opens: it has no file for the new models, and its entities are numbered on
+    /// read in the order of their ids, the same at every opening.
+    /// </summary>
+    [Fact]
+    public async Task A_campaign_saved_before_folders_and_numbers_still_opens_with_stable_numbers()
+    {
+        var systemId = DungeonApp.Core.Systems.SystemId.Create(Dnd5eSystem.IdValue);
+        var repository = new JsonCampaignRepository(
+            systemId, LegacyLibrary, path => throw new InvalidOperationException("The fixture must never be deleted."));
+
+        for (var opening = 0; opening < 2; opening++)
+        {
+            var campaign = await repository.GetAsync(new CampaignId(CampaignGuid), Declarations)
+                ?? throw new InvalidOperationException("The legacy campaign fixture failed to load.");
+
+            var entities = campaign.Snapshot.Get(EntitiesModel.Declaration);
+            Assert.Equal(1, entities["27a5bad0-d2d5-4a08-9917-3306acd1832a"].Number);
+            Assert.Equal(2, entities["f2f659c8-208a-4a0a-b62e-5768fb336401"].Number);
+            Assert.All(entities.Values, entity => Assert.Null(entity.FolderId));
+            Assert.Empty(campaign.Snapshot.Get(WorldModels.Folders));
+            Assert.Equal(2, WorldNumbering.LastNumber(campaign.Snapshot));
+        }
     }
 
     private static void AssertDirectoriesMatchByteForByte(string expectedRoot, string actualRoot)

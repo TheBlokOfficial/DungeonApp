@@ -8,6 +8,7 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
+using DungeonApp.Core.World;
 using DungeonApp.Desktop.Systems;
 
 namespace DungeonApp.Desktop.Features.CampaignLibrary;
@@ -190,7 +191,7 @@ public sealed class CampaignPreparationCache(
         // compiled system's own repository (see CampaignSummary's remarks) - so this lookup cannot miss.
         var system = systems.First(candidate => candidate.Id == summary.DirectorySystemId);
 
-        return (repository, system.StateModels);
+        return (repository, WorldModels.Combine(system.StateModels));
     }
 
     private async Task WarmBoundedAsync(

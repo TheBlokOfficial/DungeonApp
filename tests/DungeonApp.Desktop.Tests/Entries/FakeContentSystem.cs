@@ -44,6 +44,10 @@ internal sealed class FakeContentSystem(
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
+    public IReadOnlyList<DungeonApp.Desktop.Systems.WorldEntityType> EntityTypes { get; } = [];
+
+    public string? RowHint(DungeonApp.Core.Entries.ResolvedEntity entity) => null;
+
     public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];
 
     public bool HasSet(ContentId set) => set == ContentSetId;
