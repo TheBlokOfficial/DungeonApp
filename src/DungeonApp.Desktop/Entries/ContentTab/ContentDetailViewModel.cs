@@ -25,11 +25,21 @@ public abstract class ContentDetailViewModel
 /// segment left out when the entry has none) over the name, its tags, and the system's own finished
 /// card underneath - all drawn by the library's detail block except the card itself and the pieces
 /// the card lends the header (<see cref="IEntryCardHeader"/>).
+/// <para>
+/// The host supplies path, name, tags and an optional <paramref name="caption"/> line under the name
+/// (the world preview's "№ 5 · Goblin"); a card never computes them, so the same card stands for an
+/// entry in the library and for an entity on the desk.
+/// </para>
 /// </summary>
 public sealed class ValidContentDetailViewModel(
-    IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card)
+    IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card, string? caption = null)
     : ContentDetailViewModel(name)
 {
+    /// <summary>The line under the name; null - none, and it takes no room.</summary>
+    public string? Caption { get; } = caption;
+
+    public bool HasCaption => Caption is not null;
+
     /// <summary>The path's segments, the last one being the entry itself.</summary>
     public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
 

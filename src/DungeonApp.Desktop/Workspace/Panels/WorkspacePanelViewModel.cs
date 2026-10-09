@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -34,7 +35,7 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
         Descriptor = descriptor;
         InstanceKey = instanceKey;
         Desired = desired;
-        Body = descriptor.CreateContent();
+        Body = descriptor.CreateBody(instanceKey);
 
         X = desired.X;
         Y = desired.Y;
@@ -47,7 +48,20 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
         ActivateCommand = new RelayCommand(() => _host.Activate(this));
         MinimizeCommand = new RelayCommand(() => _host.Minimize(this));
         ToggleMaximizeCommand = new RelayCommand(() => _host.ToggleMaximize(this));
+        CloseCommand = new RelayCommand(() => _host.Close(this));
+        _closeAction = new PanelHeaderAction("DungeonIconClear", "Zamknij", CloseCommand);
+
+        if (Body is IPanelBody body)
+        {
+            body.PropertyChanged += (_, _) =>
+            {
+                OnPropertyChanged(nameof(Title));
+                OnPropertyChanged(nameof(HeaderActions));
+            };
+        }
     }
+
+    private readonly PanelHeaderAction _closeAction;
 
     public WorkspacePanelDescriptor Descriptor { get; }
 
@@ -58,7 +72,21 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
 
     public object Body { get; }
 
-    public string Title => Descriptor.Title;
+    public string Title => (Body as IPanelBody)?.Title ?? Descriptor.Title;
+
+    /// <summary>The body's header buttons, then the cross of a window that is dismissed rather than minimized.</summary>
+    public IReadOnlyList<PanelHeaderAction> HeaderActions
+    {
+        get
+        {
+            var own = (Body as IPanelBody)?.HeaderActions ?? [];
+
+            return Descriptor.ClosesPermanently ? [.. own, _closeAction] : own;
+        }
+    }
+
+    /// <summary>A window that closes permanently has no deck to be minimized to.</summary>
+    public bool CanMinimize => !Descriptor.ClosesPermanently;
 
     public string IconResourceKey => Descriptor.IconResourceKey;
 
@@ -98,6 +126,8 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
     public ICommand ActivateCommand { get; }
 
     public ICommand MinimizeCommand { get; }
+
+    public ICommand CloseCommand { get; }
 
     public ICommand ToggleMaximizeCommand { get; }
 

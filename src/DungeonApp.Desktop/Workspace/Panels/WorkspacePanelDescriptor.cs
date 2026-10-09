@@ -35,8 +35,24 @@ public sealed record WorkspacePanelDescriptor(
     Func<object> CreateContent)
 {
     /// <summary>
-    /// Singletons keep one instance keyed by <see cref="Id"/>. Multi-instance panels are already
-    /// representable in the saved layout through the instance key, but no UI opens a second one yet.
+    /// Singletons keep one instance keyed by <see cref="Id"/>. A multi-instance panel is told apart
+    /// by its instance key, which the saved layout keeps.
     /// </summary>
     public bool AllowsMultipleInstances { get; init; }
+
+    /// <summary>
+    /// A window the GM opens and dismisses (opened at runtime, a cross in its header that removes
+    /// it) instead of a tool that always lies on the desk and is only minimized. Such a window is
+    /// never offered by the deck and is restored only if it was open.
+    /// </summary>
+    public bool ClosesPermanently { get; init; }
+
+    /// <summary>Builds the body of the window with the given instance key; null - <see cref="CreateContent"/>.</summary>
+    public Func<string, object>? CreateInstance { get; init; }
+
+    /// <summary>Whether a saved window with the given instance key is still worth restoring; null - always.</summary>
+    public Func<string, bool>? CanRestore { get; init; }
+
+    /// <summary>The body of the window with the given instance key.</summary>
+    public object CreateBody(string instanceKey) => CreateInstance?.Invoke(instanceKey) ?? CreateContent();
 }

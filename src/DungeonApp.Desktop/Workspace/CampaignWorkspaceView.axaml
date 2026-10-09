@@ -23,6 +23,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="world:EntityCardViewModel">
+            <world:EntityCardView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
     <Grid>
         <surface:WorkspaceSurface Name="Surface" ItemsSource="{Binding Panels}">
             <!-- The catalog lies on the desk under every window, so a window passing over it hides it. -->

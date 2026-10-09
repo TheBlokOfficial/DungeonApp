@@ -15,6 +15,13 @@
     <DrawingImage x:Key="DungeonIconClear" Viewbox="0,0,24,24">
         <GeometryDrawing Geometry="M7,7 L17,17 M17,7 L7,17" Pen="{StaticResource DungeonIconPen}" />
     </DrawingImage>
+    <!-- Pin: a window header's button that sets the current card aside in a window of its own. -->
+    <DrawingImage x:Key="DungeonIconPin" Viewbox="0,0,24,24">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="M12,17 L12,22" Pen="{StaticResource DungeonIconPen}" />
+            <GeometryDrawing Geometry="M9,10.76 A2,2 0 0 1 7.89,12.55 L6.11,13.45 A2,2 0 0 0 5,15.24 L5,16 A1,1 0 0 0 6,17 L18,17 A1,1 0 0 0 19,16 L19,15.24 A2,2 0 0 0 17.89,13.45 L16.11,12.55 A2,2 0 0 1 15,10.76 L15,7 A1,1 0 0 1 16,6 A2,2 0 0 0 16,2 L8,2 A2,2 0 0 0 8,6 A1,1 0 0 1 9,7 Z" Pen="{StaticResource DungeonIconPen}" />
+        </DrawingGroup>
+    </DrawingImage>
     <DrawingImage x:Key="DungeonIconMenu" Viewbox="0,0,24,24">
         <DrawingGroup>
             <GeometryDrawing Geometry="M2,7 L22,7 M2,12 L22,12 M2,17 L22,17" Pen="{StaticResource DungeonIconPen}" />
