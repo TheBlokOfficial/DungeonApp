@@ -175,6 +175,36 @@ public sealed class WorldTests : IDisposable
     }
 
     [Fact]
+    public void A_folder_selected_with_its_descendant_or_its_entity_moves_them_only_through_it()
+    {
+        var snapshot = AddFolder(CampaignStateSnapshot.Empty, null, "A", out var a);
+        snapshot = AddFolder(snapshot, a, "B", out var b);
+        snapshot = AddFolder(snapshot, null, "T", out var t);
+        snapshot = AddEntities(snapshot, Goblin, null, 1, a, out var inA);
+
+        snapshot = snapshot.Apply(WorldChanges.Move(snapshot, [a, b], [inA[0]], t));
+
+        Assert.Equal(t, snapshot.Get(WorldModels.Folders)[a.ToString()].ParentId);
+        Assert.Equal(a, snapshot.Get(WorldModels.Folders)[b.ToString()].ParentId);
+        Assert.Equal(a, Entities(snapshot)[inA[0].ToString()].FolderId);
+    }
+
+    [Fact]
+    public void Folders_and_entities_are_deleted_together_but_only_empty_folders()
+    {
+        var snapshot = AddFolder(CampaignStateSnapshot.Empty, null, "A", out var a);
+        snapshot = AddFolder(snapshot, null, "B", out var b);
+        snapshot = AddEntities(snapshot, Goblin, null, 1, b, out var inB);
+
+        Assert.Throws<InvalidOperationException>(() => WorldChanges.Delete(snapshot, [a, b], []));
+
+        snapshot = snapshot.Apply(WorldChanges.Delete(snapshot, [a], [inB[0]]));
+
+        Assert.Equal([b.ToString()], snapshot.Get(WorldModels.Folders).Keys);
+        Assert.Empty(Entities(snapshot));
+    }
+
+    [Fact]
     public void Moving_nothing_or_into_a_missing_folder_is_refused()
     {
         Assert.NotNull(WorldChanges.MoveProblem(CampaignStateSnapshot.Empty, [], [], null));

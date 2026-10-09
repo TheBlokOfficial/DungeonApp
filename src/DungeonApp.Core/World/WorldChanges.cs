@@ -143,16 +143,74 @@ public static class WorldChanges
         var knownFolders = snapshot.Get(WorldModels.Folders);
         var knownEntities = snapshot.Get(EntitiesModel.Declaration);
 
+        var moved = folders.ToHashSet();
+
         foreach (var id in folders)
         {
             var folder = knownFolders.GetValueOrDefault(id.ToString()) ?? throw new ArgumentException($"No folder {id}.", nameof(folders));
-            change.Upsert(WorldModels.Folders, folder with { ParentId = target });
+
+            // A folder inside another moved folder travels with it; moving it on its own would take it out.
+            if (!HasMovedAncestor(knownFolders, folder.ParentId, moved))
+            {
+                change.Upsert(WorldModels.Folders, folder with { ParentId = target });
+            }
         }
 
         foreach (var id in entities)
         {
             var entity = knownEntities.GetValueOrDefault(id.ToString()) ?? throw new ArgumentException($"No entity {id}.", nameof(entities));
-            change.Upsert(EntitiesModel.Declaration, entity with { FolderId = target });
+
+            if (!HasMovedAncestor(knownFolders, entity.FolderId, moved))
+            {
+                change.Upsert(EntitiesModel.Declaration, entity with { FolderId = target });
+            }
+        }
+
+        return change;
+    }
+
+    // Walks up from the folder; a visited set keeps a damaged parent loop from spinning.
+    private static bool HasMovedAncestor(IReadOnlyDictionary<string, WorldFolder> known, FolderId? start, HashSet<FolderId> moved)
+    {
+        var visited = new HashSet<FolderId>();
+
+        for (var at = start; at is { } current && visited.Add(current); at = known.GetValueOrDefault(current.ToString())?.ParentId)
+        {
+            if (moved.Contains(current))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Removes the entities and the empty folders as one change. Throws when a folder is not empty
+    /// (<see cref="DeleteFolderProblem"/>).
+    /// </summary>
+    public static CampaignChange Delete(
+        CampaignStateSnapshot snapshot, IReadOnlyCollection<FolderId> folders, IReadOnlyCollection<EntityId> entities)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ArgumentNullException.ThrowIfNull(folders);
+        ArgumentNullException.ThrowIfNull(entities);
+
+        var change = new CampaignChange();
+
+        foreach (var id in folders)
+        {
+            if (DeleteFolderProblem(snapshot, id) is { } problem)
+            {
+                throw new InvalidOperationException(problem);
+            }
+
+            change.Delete(WorldModels.Folders, id.ToString());
+        }
+
+        foreach (var id in entities)
+        {
+            change.Delete(EntitiesModel.Declaration, id.ToString());
         }
 
         return change;
