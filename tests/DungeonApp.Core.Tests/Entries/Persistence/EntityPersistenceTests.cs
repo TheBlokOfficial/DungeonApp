@@ -43,7 +43,7 @@ public sealed class EntityPersistenceTests : IDisposable
 
     private static Campaign WithEntity(Campaign campaign, EntryAddress source, string? label, out CampaignEntity created)
     {
-        var change = CampaignEntityChanges.Add(source, label);
+        var change = CampaignEntityChanges.Add(campaign.Snapshot, source, label);
         var updated = campaign.WithSnapshot(campaign.Snapshot.Apply(change));
         created = updated.Snapshot.Get(EntitiesModel.Declaration).Values.Single();
         return updated;
@@ -159,7 +159,7 @@ public sealed class EntityPersistenceTests : IDisposable
     public async Task A_removed_entity_does_not_come_back_after_save_and_reopen()
     {
         var afterFirst = WithEntity(NewCampaign(), Goblin, "Krzywy", out var kept);
-        var afterBoth = afterFirst.WithSnapshot(afterFirst.Snapshot.Apply(CampaignEntityChanges.Add(Sword, "Zguba")));
+        var afterBoth = afterFirst.WithSnapshot(afterFirst.Snapshot.Apply(CampaignEntityChanges.Add(afterFirst.Snapshot, Sword, "Zguba")));
         var removed = afterBoth.Snapshot.Get(EntitiesModel.Declaration).Values.Single(i => i.Id != kept.Id);
         await _repository.SaveAsync(afterBoth, Declarations);
 
@@ -210,7 +210,7 @@ public sealed class EntityPersistenceTests : IDisposable
 
         // Re-save with a further change to the declared model, to prove the untouched file is not
         // merely a fluke of nothing having changed.
-        var afterAnotherAdd = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.Add(Sword, "Zguba")));
+        var afterAnotherAdd = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.Add(campaign.Snapshot, Sword, "Zguba")));
         await _repository.SaveAsync(afterAnotherAdd, Declarations);
 
         Assert.Equal(foreignBytes, File.ReadAllBytes(foreignPath));

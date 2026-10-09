@@ -1,6 +1,7 @@
 using System;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
+using DungeonApp.Core.World;
 
 namespace DungeonApp.Core.Campaigns;
 
@@ -71,7 +72,8 @@ public sealed class Campaign
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(snapshot);
 
-        return new Campaign(id, name, systemId, createdAt, snapshot);
+        // Numbers entities saved before № existed, in memory only (see WorldNumbering.Normalize).
+        return new Campaign(id, name, systemId, createdAt, WorldNumbering.Normalize(snapshot));
     }
 
     /// <summary>

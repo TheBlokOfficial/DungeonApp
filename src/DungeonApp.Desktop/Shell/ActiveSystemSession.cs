@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
+using DungeonApp.Core.World;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace;
 using DungeonApp.Desktop.Workspace.Layout;
@@ -57,7 +58,7 @@ public sealed class ActiveSystemSession(
 
         CloseCampaign();
 
-        _openCampaign = new CampaignSession(campaign, campaigns, System.StateModels);
+        _openCampaign = new CampaignSession(campaign, campaigns, WorldModels.Combine(System.StateModels));
         _openCampaign.SaveFailed += OnSaveFailed;
         _campaignTabContext = new CampaignTabContext(_openCampaign);
     }

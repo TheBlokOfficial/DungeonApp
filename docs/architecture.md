@@ -39,6 +39,8 @@ Jedna nazwa na pojęcie. Słowa spoza tej tabeli znaczą to, co w zwykłej polsz
 | nakładka | rzadka łatka entity: same odchylenia od wpisu | łatka, patch |
 | wiedza | typ bez entity, wskazywany identyfikatorem (zaklęcie, stan, zdolność) | — |
 | katalog świata | drzewo katalogów z entity w stanie kampanii (`docs/spec/katalog.md`) | — |
+| katalog | węzeł katalogu świata z nazwą i zawartością (katalogi, entity); w kodzie `WorldFolder` | folder |
+| № | numer entity: unikalny w kampanii, nadawany po kolei, nigdy zmieniany ani używany ponownie | ID, indeks |
 | biurko | pozycja kampanii w ramie z pływającymi oknami narzędzi | — |
 | narzędzie | okno na biurku wniesione przez system | panel |
 | księga | śledzone wartości i reguły ich zmiany: pole zmiany, rachunek, ostatnia zmiana | księgowość |
@@ -117,8 +119,10 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 
 - **Kampania to sesja, świat i zapis naraz.** Nie ma warstwy scen — podziału kampanii na sceny
   z własnym stanem i operacjami na zawartości (`docs/decisions.md`, „Odrzucone”).
-- Stan kampanii to niemutowalna migawka (`CampaignStateSnapshot`) złożona z modeli stanu, które
-  zadeklarował system (`StateModelDeclaration`). Zmiana to `CampaignChange` (upsert/delete rekordów),
+- Stan kampanii to niemutowalna migawka (`CampaignStateSnapshot`) złożona z modeli stanu
+  (`StateModelDeclaration`). Modele **ramy** — entity, katalogi (`world.folders`) i licznik № —
+  deklaruje `WorldModels`; modele **systemu** dochodzą z `IGameSystem.StateModels`. Listę kampanii
+  składa jedno miejsce, `WorldModels.Combine`, i z niego korzystają otwieranie, tworzenie i sesja. Zmiana to `CampaignChange` (upsert/delete rekordów),
   przechodząca przez jedne drzwi: `CampaignSession.ChangeAsync` → zapis → powiadomienie widoków.
 - Zapis jest natychmiastowy i atomowy (`AtomicWrite`): pliki modeli najpierw, manifest zatwierdza
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
@@ -126,6 +130,16 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 - **Entity** (`CampaignEntity`) to łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka łatka
   z samymi odchyleniami (np. aktualne PW, nazwa własna). Rozwiązuje się ją od nowa przy każdym
   odczycie, więc poprawka wpisu w paczce dociera do istniejących kampanii.
+- **Katalogi i №.** Katalog (`WorldFolder`: nazwa, katalog nadrzędny; katalogu głównego „Świat” nie ma
+  jako rekordu) i entity (`FolderId`, `Number`) tworzą drzewo, którego rama nie pyta o typ. Licznik № to
+  jeden rekord (`WorldCounter`) z ostatnim nadanym numerem: usunięcie entity go nie cofa. Zmiany
+  drzewa (dodanie N entity, przeniesienie, usunięcie, nazwy) to czyste fabryki w `WorldChanges`, jedna
+  akcja MG = jedna zmiana; odmowę (katalog w siebie, niepusty katalog) opisuje polski tekst z funkcji
+  `...Problem`. Widok czyta drzewo przez `WorldTree` (katalogi przed entity, nazwy porównywane
+  naturalnie). Co do typu entity, ikony i podpowiedzi wiersza pyta ramę o system `IGameSystem.EntityTypes`
+  i `RowHint`. Kampania zapisana przed katalogami otwiera się bez plików nowych modeli; jej entity
+  dostają № przy odczycie, w kolejności identyfikatorów (te same przy każdym otwarciu), licznik
+  startuje za nimi, a trwale zapisują się przy pierwszym zapisie.
 - Nakładka scala obiekty po kluczu: zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`,
   a późniejsza poprawka KP we wpisie dociera do entity.
 - Format kampanii inny niż bieżący (zbyt nowy albo zbyt stary) oznacza odmowę odczytu, a wpis paczki

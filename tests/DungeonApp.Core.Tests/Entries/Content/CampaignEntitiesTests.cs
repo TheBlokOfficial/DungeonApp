@@ -22,7 +22,7 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void Add_creates_an_entity_with_an_empty_patch_and_a_fresh_id()
     {
-        var snapshot = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, "Krzywy"));
+        var snapshot = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, "Krzywy"));
 
         var created = Single(snapshot);
         Assert.NotEqual(default, created.Id);
@@ -34,9 +34,8 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void Two_adds_of_the_same_entry_produce_two_different_entities()
     {
-        var snapshot = CampaignStateSnapshot.Empty
-            .Apply(CampaignEntityChanges.Add(Goblin, null))
-            .Apply(CampaignEntityChanges.Add(Goblin, null));
+        var first = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, null));
+        var snapshot = first.Apply(CampaignEntityChanges.Add(first, Goblin, null));
 
         var entities = snapshot.Get(EntitiesModel.Declaration);
         Assert.Equal(2, entities.Count);
@@ -45,7 +44,7 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void Remove_deletes_the_entity()
     {
-        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, null));
+        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, null));
         var created = Single(afterAdd);
 
         var snapshot = afterAdd.Apply(CampaignEntityChanges.Remove(created.Id));
@@ -56,7 +55,7 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void Removing_an_unknown_id_leaves_every_other_entity_untouched()
     {
-        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, "Krzywy"));
+        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, "Krzywy"));
 
         var snapshot = afterAdd.Apply(CampaignEntityChanges.Remove(EntityId.New()));
 
@@ -66,9 +65,9 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void A_change_touching_one_entity_leaves_the_other_untouched()
     {
-        var afterFirst = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, "Pierwszy"));
+        var afterFirst = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, "Pierwszy"));
         var firstEntity = Single(afterFirst);
-        var afterBoth = afterFirst.Apply(CampaignEntityChanges.Add(Sword, "Drugi"));
+        var afterBoth = afterFirst.Apply(CampaignEntityChanges.Add(afterFirst, Sword, "Drugi"));
         var secondEntity = afterBoth.Get(EntitiesModel.Declaration).Values.Single(i => i.Id != firstEntity.Id);
 
         // A change that only names the second entity must not disturb the first one at all - the
@@ -82,7 +81,7 @@ public sealed class CampaignEntitiesTests
     public void Relabel_changes_only_the_label()
     {
         var patch = ContentValues.From(new Dictionary<string, object> { ["hp"] = 3 });
-        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, "Krzywy"));
+        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, "Krzywy"));
         var afterPatch = afterAdd.Apply(CampaignEntityChanges.ReplacePatch(Single(afterAdd), patch));
 
         var relabelled = afterPatch.Apply(CampaignEntityChanges.Relabel(Single(afterPatch), "Zguba"));
@@ -95,7 +94,7 @@ public sealed class CampaignEntitiesTests
     [Fact]
     public void ReplacePatch_changes_only_the_patch()
     {
-        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Sword, "Zguba"));
+        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Sword, "Zguba"));
         var created = Single(afterAdd);
         var patch = ContentValues.From(new Dictionary<string, object> { ["quantity"] = 2 });
 
@@ -112,7 +111,7 @@ public sealed class CampaignEntitiesTests
     [InlineData("   ")]
     public void A_whitespace_only_label_becomes_null_on_add(string? label)
     {
-        var created = Single(CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, label)));
+        var created = Single(CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, label)));
 
         Assert.Null(created.Label);
     }
@@ -123,7 +122,7 @@ public sealed class CampaignEntitiesTests
     [InlineData("   ")]
     public void A_whitespace_only_label_becomes_null_on_relabel(string? label)
     {
-        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(Goblin, "Krzywy"));
+        var afterAdd = CampaignStateSnapshot.Empty.Apply(CampaignEntityChanges.Add(CampaignStateSnapshot.Empty, Goblin, "Krzywy"));
         var created = Single(afterAdd);
 
         var snapshot = afterAdd.Apply(CampaignEntityChanges.Relabel(created, label));

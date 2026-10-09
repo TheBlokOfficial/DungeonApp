@@ -28,6 +28,10 @@ internal sealed class EmptyGameSystem : IGameSystem
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 
+    public IReadOnlyList<DungeonApp.Desktop.Systems.WorldEntityType> EntityTypes { get; } = [];
+
+    public string? RowHint(DungeonApp.Core.Entries.ResolvedEntity entity) => null;
+
     public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];
 }
 

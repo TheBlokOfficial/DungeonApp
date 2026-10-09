@@ -1,4 +1,5 @@
 using DungeonApp.Core.State;
+using DungeonApp.Core.World;
 
 namespace DungeonApp.Core.Entries.Entities;
 
@@ -35,6 +36,16 @@ public sealed record CampaignEntity : IStateRecord
     public required EntryAddress Source { get; init; }
 
     public string? Label { get; init; }
+
+    /// <summary>The world folder this entity stands in; <see langword="null"/> is the root. Optional in the file so records saved before folders existed still load.</summary>
+    public FolderId? FolderId { get; init; }
+
+    /// <summary>
+    /// The entity's № - unique in the campaign, handed out in order when the entity is created and
+    /// never changed or reused. 0 only in a record saved before numbers existed;
+    /// <see cref="WorldNumbering"/> numbers those on read.
+    /// </summary>
+    public int Number { get; init; }
 
     public required ContentValues Patch { get; init; }
 

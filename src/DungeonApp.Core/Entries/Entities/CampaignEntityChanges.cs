@@ -1,5 +1,6 @@
 using System;
 using DungeonApp.Core.State;
+using DungeonApp.Core.World;
 
 namespace DungeonApp.Core.Entries.Entities;
 
@@ -17,19 +18,12 @@ namespace DungeonApp.Core.Entries.Entities;
 /// </summary>
 public static class CampaignEntityChanges
 {
-    /// <summary>Brings an entry into the campaign as a new entity: a fresh <see cref="EntityId"/>, a patch of <see cref="ContentValues.Empty"/>, and the given label, normalized.</summary>
-    public static CampaignChange Add(EntryAddress source, string? label)
-    {
-        var entity = new CampaignEntity
-        {
-            Id = EntityId.New(),
-            Source = source,
-            Label = NormalizeLabel(label),
-            Patch = ContentValues.Empty,
-        };
-
-        return new CampaignChange().Upsert(EntitiesModel.Declaration, entity);
-    }
+    /// <summary>
+    /// Brings an entry into the campaign's root folder as one new entity with the next №. Several at
+    /// once, or into a folder: <see cref="WorldChanges.AddEntities"/>.
+    /// </summary>
+    public static CampaignChange Add(CampaignStateSnapshot snapshot, EntryAddress source, string? label) =>
+        WorldChanges.AddEntities(snapshot, source, label, count: 1, folder: null).Change;
 
     /// <summary>Removes the entity named <paramref name="id"/> from the campaign.</summary>
     public static CampaignChange Remove(EntityId id) =>
@@ -57,6 +51,6 @@ public static class CampaignEntityChanges
     /// it collapses to <see langword="null"/> rather than being stored as a blank string a view would
     /// have to special-case.
     /// </summary>
-    private static string? NormalizeLabel(string? label) =>
+    internal static string? NormalizeLabel(string? label) =>
         string.IsNullOrWhiteSpace(label) ? null : label;
 }

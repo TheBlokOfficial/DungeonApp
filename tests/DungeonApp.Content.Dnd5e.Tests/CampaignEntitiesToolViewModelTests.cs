@@ -355,6 +355,6 @@ public sealed class CampaignEntitiesToolViewModelTests
 
         /// <summary>Brings an entry into the campaign the same way the view model's own "add" does - through the one door any change goes through - so a fixture's setup exercises exactly the path production code uses.</summary>
         public async Task AddEntityAsync(EntryAddress address, string? label) =>
-            await Context.ChangeAsync(CampaignEntityChanges.Add(address, label));
+            await Context.ChangeAsync(CampaignEntityChanges.Add(Context.Snapshot, address, label));
     }
 }

@@ -9,8 +9,6 @@
         "entry": "goblin"
       },
       "label": "Krzywy",
-      "folderId": "22222222-2222-2222-2222-222222222222",
-      "number": 1,
       "patch": {
         "hp": 3,
         "tags": [
@@ -26,8 +24,6 @@
         "entry": "iron-sword"
       },
       "label": null,
-      "folderId": null,
-      "number": 3,
       "patch": {}
     }
   ]

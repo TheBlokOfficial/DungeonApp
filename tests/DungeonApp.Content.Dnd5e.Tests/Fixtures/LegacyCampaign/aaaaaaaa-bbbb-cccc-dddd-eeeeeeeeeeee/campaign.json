@@ -9,14 +9,6 @@
     {
       "id": "entries.instances",
       "generation": 1
-    },
-    {
-      "id": "world.folders",
-      "generation": 1
-    },
-    {
-      "id": "world.counter",
-      "generation": 1
     }
   ]
 }
