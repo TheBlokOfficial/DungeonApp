@@ -64,6 +64,8 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 - **Git:** każdy commit przechodzi `tools/check.ps1`; gałąź → scalenie do `master` („Scalenie: …”) →
   `git push` (CI musi być zielone) → usunięcie worktree i gałęzi. Główny katalog stoi zawsze na
   `master`; każdy agent pracuje we własnej gałęzi i worktree. Commity po polsku, małe i logiczne.
+- **Rozmowa jak na komunikatorze:** odpowiedź ma 2–3 zdania i nie powtarza tego, co padło wcześniej.
+  Dłuższa forma tylko tam, gdzie jest potrzebna: plan wycinka, decyzje do podjęcia, raport na koniec.
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
   sprawdzenia w aplikacji (gdzie kliknąć, na co patrzeć). Bez nazw klas, chyba że autor zapyta.
 
