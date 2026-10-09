@@ -24,8 +24,10 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    - **Szkielet zakładki:** każda zakładka ma ten sam układ (filtry, lista, szczegół) — za generyczny,
      do przemyślenia.
 2. **Katalog świata** — specyfikacja i podział na wycinki: `docs/spec/katalog.md`. Zbudowane: drzewo
-   katalogów z entity na biurku, paleta dodawania, podgląd z pinezką. Dalej karta entity: pole zmiany
-   PW, notatka, tryb edycji, entity bez wpisu, stany.
+   katalogów z entity na biurku, paleta dodawania, podgląd z pinezką. Dalej pasek bieżący nad
+   statyczną kartą (PW, wartości z bazą, notatka, zatwierdzanie zmian, stany, efekty), poprzedzony
+   arkuszem rodziny kontrolek dwóch form; potem tryb edycji karty i entity bez wpisu. Przed budową
+   otwarte pytania w specyfikacji.
 3. **Kopie zapasowe kampanii**, rotujące — przed pierwszym prawdziwym użyciem, bo przy stole zapis
    biegnie na żywo po każdej zmianie.
 4. **Postacie w minimum** — leżą obok kampanii, w katalogu systemu na dysku, i mogą grać w wielu
@@ -33,7 +35,8 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
    postać rośnie o kolejne aspekty. Wejście postaci do kampanii tworzy jej entity. Identyfikator
    `paczka:id` staje się `źródło:id`: wpis w paczce albo postać.
 5. **Inicjatywa i walka** — okno: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa MG.
-   - Zwarty widok istoty (PW z polem zmiany, lista „Stany i efekty”); karta zostaje do czytania.
+   - Zwarty widok istoty to pasek bieżący z etapu 2 (`docs/spec/katalog.md`); karta zostaje do
+     czytania.
    - Przełom „Następna tura” z okienkiem przełomu, znaczniki zmian w turze.
    - Kalkulator kości jako osobne okno biurka.
    - Rozstrzygnąć wyjątek od reguły 3 granicy (rzut istoty zostaje u MG): czy narzędzie rzuca
@@ -131,6 +134,9 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   MG chce użyć podkręconej entity albo entity bez wpisu w innej przygodzie.
 - **„Zmień wpis źródłowy”** entity (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PW i stany
   zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
+- **Skrót z drzewa do edycji PW** — `-`, `+` albo `=` przy zaznaczonej entity przenosi kursor do
+  narzędzia obrażeń i leczenia w podglądzie — sięganie po mysz między drzewem a podglądem zaczyna
+  spowalniać walkę.
 - **Edycja kilku zaznaczonych entity naraz** — MG zmienia to samo pole po kolei na kilku.
 - **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
   zdolność spoza drzewek klas; do tego czasu wybory w klasie są węzłami.

@@ -110,8 +110,9 @@ i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
   i powiadomienie). Błąd złapany i niepokazany MG zapisuj przez `AppLog.Error`; pusty `catch` bez wpisu
   ukrywa awarię przed autorem. Mechanizm: `docs/architecture.md`, „Błędy”.
 - Wygląd składaj z kontrolek i tokenów motywu (`Themes/`, podgląd w zakładce „Galeria”). Nowa kontrolka
-  motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Kolor ma jedno znaczenie, zapisane przy
-  tokenie; widok sięga po kolor ze względu na znaczenie, nie barwę.
+  motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Znaczenie ma token, nie barwa: każdy token
+  koloru ma jedno znaczenie zapisane przy nim, a dwa tokeny o podobnej barwie mogą znaczyć co innego
+  (czerwień błędu i czerwień paska PW). Widok sięga po token ze względu na znaczenie, nie barwę.
 - Kontrolka w dwóch formach (tekst do czytania i pole w trybie edycji) zajmuje w obu dokładnie to samo
   miejsce: przełączenie formy nie przesuwa żadnej kontrolki, sekcji ani okna. Każda taka kontrolka ma
   test bez ekranu, który mierzy obie formy.
