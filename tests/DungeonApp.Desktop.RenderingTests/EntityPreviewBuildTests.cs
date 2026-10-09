@@ -189,7 +189,7 @@ public sealed class EntityPreviewBuildTests
         fixture.Settle();
 
         var broken = Assert.IsType<BrokenContentDetailViewModel>(((EntityCardViewModel)preview.Body).Detail);
-        Assert.Equal("№ 1", broken.Overline);
+        Assert.Equal("№ 1 · bez wpisu", broken.Overline);
         Assert.Equal("Duch", broken.Name);
         Assert.Contains("nie zawiera już wpisu", broken.Reason);
         Assert.NotNull(FindView(fixture, preview));

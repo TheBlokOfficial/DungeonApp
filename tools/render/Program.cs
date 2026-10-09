@@ -396,6 +396,51 @@ internal static class Program
             Settle();
         }
 
+        if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty"))
+        {
+            // Wide enough for the preview and a pinned card side by side, left of the catalog.
+            SetSize(window, 1900, WindowHeight);
+            Settle();
+            var preview = desk.OpenPreview();
+            catalog.Click(catalog.Rows.First(row => row.IsEntity && row.IsUnresolved), ctrl: false, shift: false);
+            Settle();
+            if (Wants("desk_preview_broken"))
+            {
+                SaveCrop(window, deskView, UniqueName("desk_preview_broken"));
+            }
+
+            var potion = Row("Mikstura leczenia");
+            var pinned = desk.PinEntity(potion.EntityId!.Value)!;
+            catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+            pinned.X = preview.X + preview.Width + 16;
+            pinned.Y = preview.Y;
+            Settle();
+            if (Wants("desk_preview"))
+            {
+                SaveCrop(window, deskView, UniqueName("desk_preview"));
+            }
+
+            desk.Close(pinned);
+
+            // The preview is empty once the entity it showed is gone.
+            // The temporary entity sits alone in the last folder, so its removal leaves the selection on a folder.
+            Await(catalog.CreateFolderAsync(null, "Tymczasowy"), "temporary folder");
+            var temporary = catalog.SelectedFolders.Single();
+            Await(catalog.AddEntitiesAsync(Srd("wilk"), 1, temporary, "Do usunięcia"), "temporary entity");
+            Await(catalog.DeleteSelectionAsync(), "temporary entity removal");
+            Settle();
+            if (Wants("desk_preview_empty"))
+            {
+                SaveCrop(window, deskView, UniqueName("desk_preview_empty"));
+            }
+
+            Await(catalog.DeleteSelectionAsync(), "temporary folder removal");
+
+            desk.Close(preview);
+            SetSize(window, WindowWidth, WindowHeight);
+            Settle();
+        }
+
         if (Wants("window_full"))
         {
             SaveCrop(window, window, UniqueName("window_full"));

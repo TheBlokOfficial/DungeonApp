@@ -41,10 +41,10 @@ public sealed class EntityCardBuilder(WorldCatalogSource source)
         }
 
         return new BrokenContentDetailViewModel(
-            $"№ {number}",
+            $"№ {number} · bez wpisu",
             node.Name,
             Describe(resolved),
-            path: null);
+            path: string.Join(" › ", [WorldCatalogViewModel.RootName, .. tree.EntityPath(id)]));
     }
 
     private static string Describe(ResolvedEntity resolved) => resolved.Unresolved switch
