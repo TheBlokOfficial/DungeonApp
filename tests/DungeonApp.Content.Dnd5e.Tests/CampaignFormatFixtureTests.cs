@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Campaigns;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Testing;
 
@@ -13,7 +13,7 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// <summary>
 /// Proof that the on-disk campaign format does not move by a single byte. The fixture under
 /// <c>Fixtures/CampaignFormat</c> was generated once, from a campaign with a declared system and
-/// two instances - one carrying a GM-given label and a non-empty patch, one plain - and is never
+/// two entities - one carrying a GM-given label and a non-empty patch, one plain - and is never
 /// regenerated or hand-edited; this test file itself may only ever change in its <c>using</c>
 /// directives as types move namespace, never in what it asserts.
 /// <para>
@@ -63,13 +63,13 @@ public sealed class CampaignFormatFixtureTests : IDisposable
         var source = new JsonCampaignRepository(
             systemId, FixtureLibrary, path => throw new InvalidOperationException("The fixture must never be deleted."));
 
-        var campaign = await source.GetAsync(new CampaignId(CampaignGuid), [InstancesModel.Declaration])
+        var campaign = await source.GetAsync(new CampaignId(CampaignGuid), [EntitiesModel.Declaration])
             ?? throw new InvalidOperationException("The campaign format fixture failed to load.");
 
         var destination = new JsonCampaignRepository(
             systemId, _destinationLibrary, path => Directory.Delete(path, recursive: true));
 
-        await destination.SaveAsync(campaign, [InstancesModel.Declaration]);
+        await destination.SaveAsync(campaign, [EntitiesModel.Declaration]);
 
         AssertDirectoriesMatchByteForByte(
             Path.Combine(FixtureLibrary, CampaignGuid.ToString("D")),

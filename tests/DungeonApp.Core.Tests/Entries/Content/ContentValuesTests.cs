@@ -36,7 +36,7 @@ public sealed class ContentValuesTests
             .ToArray();
 
     // ---------------------------------------------------------------------
-    // Overlay - how an instance is read without the entry ever being copied.
+    // Overlay - how an entity is read without the entry ever being copied.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -57,7 +57,7 @@ public sealed class ContentValuesTests
     [Fact]
     public void Overlay_admits_a_property_the_entry_never_had()
     {
-        // An instance may deviate in a property the entry left out entirely, so a patch key with no
+        // An entity may deviate in a property the entry left out entirely, so a patch key with no
         // counterpart in the entry has to survive the merge rather than be dropped as unknown.
         var merged = Envelope("""{ "title": "A" }""").Overlay(Envelope("""{ "note": "scarred" }"""));
 
@@ -76,7 +76,7 @@ public sealed class ContentValuesTests
     [Fact]
     public void Overlay_with_an_empty_patch_is_the_entry_itself()
     {
-        // The common case by far: most instances deviate in nothing, and reading one must give back
+        // The common case by far: most entities deviate in nothing, and reading one must give back
         // exactly what the pack ships.
         var entry = Envelope("""{ "title": "A", "size": 7 }""");
 
@@ -103,7 +103,7 @@ public sealed class ContentValuesTests
     [Fact]
     public void Overlay_replaces_an_array_whole()
     {
-        // An array has no keys to merge by, so the patch's array is the instance's array.
+        // An array has no keys to merge by, so the patch's array is the entity's array.
         var merged = Envelope("""{ "tags": [1, 2, 3] }""").Overlay(Envelope("""{ "tags": [9] }"""));
 
         Assert.Equal("[9]", Raw(merged, "tags"));
@@ -131,8 +131,8 @@ public sealed class ContentValuesTests
     [Fact]
     public void Overlay_modifies_neither_side()
     {
-        // The entry is shared by every instance pointing at it, so a merge that wrote into either
-        // operand would leak one instance's deviation into all the others.
+        // The entry is shared by every entity pointing at it, so a merge that wrote into either
+        // operand would leak one entity's deviation into all the others.
         var entry = Envelope("""{ "title": "A", "size": 7 }""");
         var patch = Envelope("""{ "size": 9, "note": "scarred" }""");
         var before = (Entry: Snapshot(entry), Patch: Snapshot(patch));
@@ -144,7 +144,7 @@ public sealed class ContentValuesTests
     }
 
     // ---------------------------------------------------------------------
-    // Difference - how an edited instance is saved without materializing the entry.
+    // Difference - how an edited entity is saved without materializing the entry.
     // ---------------------------------------------------------------------
 
     [Fact]
@@ -159,7 +159,7 @@ public sealed class ContentValuesTests
     public void Difference_leaves_out_a_property_that_still_matches_the_entry()
     {
         // The patch has to stay sparse: a key copied here that merely repeats the entry would pin
-        // the instance to today's value and defeat the reason instances link instead of copy.
+        // the entity to today's value and defeat the reason entities link instead of copy.
         var patch = ContentValues.Difference(
             Envelope("""{ "title": "A", "size": 7 }"""),
             Envelope("""{ "title": "A", "size": 9 }"""));
@@ -244,7 +244,7 @@ public sealed class ContentValuesTests
     public void Difference_ignores_a_property_the_candidate_dropped()
     {
         // A patch is an overlay and cannot say "remove this key". Giving it one would let an
-        // instance reshape its entry rather than deviate from it.
+        // entity reshape its entry rather than deviate from it.
         var patch = ContentValues.Difference(Envelope("""{ "title": "A", "size": 7 }"""), Envelope("""{ "title": "A" }"""));
 
         Assert.True(patch.IsEmpty);

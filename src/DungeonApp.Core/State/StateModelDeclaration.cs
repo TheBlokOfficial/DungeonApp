@@ -44,7 +44,7 @@ public abstract class StateModelDeclaration
 }
 
 /// <summary>
-/// The declaration a system actually writes - <c>new StateModelDeclaration&lt;CampaignInstance&gt;
+/// The declaration a system actually writes - <c>new StateModelDeclaration&lt;CampaignEntity&gt;
 /// ("entries.instances", 1)</c> - typed by the record it stores, so
 /// <see cref="CampaignChange.Upsert{TRecord}"/> and <see cref="CampaignStateSnapshot.Get{TRecord}"/>
 /// return that same type back rather than a bare <see cref="IStateRecord"/> the caller would have

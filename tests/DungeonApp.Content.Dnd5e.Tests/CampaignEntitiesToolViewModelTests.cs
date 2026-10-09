@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Entries;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Entries;
@@ -16,57 +16,57 @@ using DungeonApp.Testing;
 namespace DungeonApp.Content.Dnd5e.Tests;
 
 /// <summary>
-/// The first consumer of the <c>entries.instances</c> state model and <c>InstanceResolver</c>
+/// The first consumer of the <c>entries.instances</c> state model and <c>EntityResolver</c>
 /// anywhere in the application. Every fixture builds its <see cref="ContentRegistry"/> by hand
 /// rather than through <see cref="ContentPackLoader"/> - unlike <c>Dnd5eSystemTests</c>, this suite
 /// is about the view model's own logic (which rows appear, which entries are offered, what a write
 /// does), not about deserialization, so a hand-built registry keeps each test to exactly the
 /// entries it needs.
 /// </summary>
-public sealed class CampaignInstancesToolViewModelTests
+public sealed class CampaignEntitiesToolViewModelTests
 {
     private static readonly Dnd5eSystem Dnd5e = new(
         [Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-packs-{Guid.NewGuid():N}")]);
 
     [Fact]
-    public async Task The_instance_list_reflects_every_instance_the_campaign_holds()
+    public async Task The_entity_list_reflects_every_entity_the_campaign_holds()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), "Fiolka Toma");
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), "Fiolka Toma");
 
         var viewModel = fixture.CreateViewModel();
 
-        var row = Assert.Single(viewModel.Instances);
+        var row = Assert.Single(viewModel.Entities);
         Assert.Equal("Fiolka Toma", row.DisplayName);
         Assert.False(row.HasMessage);
     }
 
     [Fact]
-    public async Task An_unnamed_instance_falls_back_to_the_entry_it_points_at()
+    public async Task An_unnamed_entity_falls_back_to_the_entry_it_points_at()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
 
         var viewModel = fixture.CreateViewModel();
 
-        Assert.Equal("Mikstura leczenia", Assert.Single(viewModel.Instances).DisplayName);
+        Assert.Equal("Mikstura leczenia", Assert.Single(viewModel.Entities).DisplayName);
     }
 
     [Fact]
-    public async Task An_instance_pointing_at_a_missing_pack_stays_on_the_list_and_is_marked()
+    public async Task An_entity_pointing_at_a_missing_pack_stays_on_the_list_and_is_marked()
     {
         var fixture = new Fixture();
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("ghost-pack"), ContentId.Create("ghost-entry")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("ghost-pack"), ContentId.Create("ghost-entry")), label: null);
 
         var viewModel = fixture.CreateViewModel();
 
-        var row = Assert.Single(viewModel.Instances);
+        var row = Assert.Single(viewModel.Entities);
         Assert.True(row.HasMessage);
         Assert.Contains("ghost-pack", row.Message);
     }
 
     [Fact]
-    public async Task Adding_a_selected_entry_creates_an_instance_and_saves_through_the_session()
+    public async Task Adding_a_selected_entry_creates_an_entity_and_saves_through_the_session()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
         var viewModel = fixture.CreateViewModel();
@@ -76,8 +76,8 @@ public sealed class CampaignInstancesToolViewModelTests
         await viewModel.AddCommand.ExecuteAsync(null);
 
         Assert.Equal(1, fixture.Repository.SaveCount);
-        var instance = Assert.Single(fixture.Instances());
-        Assert.Equal(option.Address, instance.Source);
+        var entity = Assert.Single(fixture.Entities());
+        Assert.Equal(option.Address, entity.Source);
         Assert.Null(viewModel.Message);
 
         // Cleared afterwards, so the same entry cannot be added twice by a second press on a
@@ -129,15 +129,15 @@ public sealed class CampaignInstancesToolViewModelTests
     public async Task Saving_current_hit_points_writes_a_sparse_patch_carrying_only_the_changed_field()
     {
         var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
 
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
+        var row = Assert.Single(fixture.CreateViewModel().Entities);
         Assert.True(row.CanEditHitPoints);
 
         row.CurrentHp = 3;
         await row.SaveHitPointsCommand.ExecuteAsync(null);
 
-        var patch = Assert.Single(fixture.Instances()).Patch;
+        var patch = Assert.Single(fixture.Entities()).Patch;
         Assert.False(patch.IsEmpty);
 
         // The patch names only the value that changed - the rest of the aspect stays with the entry.
@@ -151,14 +151,14 @@ public sealed class CampaignInstancesToolViewModelTests
     {
         var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
-        await fixture.AddInstanceAsync(address, label: null);
+        await fixture.AddEntityAsync(address, label: null);
 
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
+        var row = Assert.Single(fixture.CreateViewModel().Entities);
         row.CurrentHp = 3;
         await row.SaveHitPointsCommand.ExecuteAsync(null);
 
-        var instance = Assert.Single(fixture.Instances());
-        var resolved = fixture.Context.Resolver.Resolve(instance);
+        var entity = Assert.Single(fixture.Entities());
+        var resolved = fixture.Context.Resolver.Resolve(entity);
         var combat = resolved.Values!.Read<Creature>().Combat!;
 
         Assert.Equal(3, combat.CurrentHp);
@@ -170,43 +170,43 @@ public sealed class CampaignInstancesToolViewModelTests
     {
         var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
         var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
-        await fixture.AddInstanceAsync(address, label: null);
+        await fixture.AddEntityAsync(address, label: null);
 
-        var firstRow = Assert.Single(fixture.CreateViewModel().Instances);
+        var firstRow = Assert.Single(fixture.CreateViewModel().Entities);
         firstRow.CurrentHp = 3;
         await firstRow.SaveHitPointsCommand.ExecuteAsync(null);
 
-        var instanceId = Assert.Single(fixture.Instances()).Id;
-        Assert.False(fixture.Find(instanceId)!.Patch.IsEmpty);
+        var entityId = Assert.Single(fixture.Entities()).Id;
+        Assert.False(fixture.Find(entityId)!.Patch.IsEmpty);
 
         // The entry never declares a current hp of its own, so clearing the customization back to
         // "nothing" is what "equal to the entry" means here.
-        var secondRow = Assert.Single(fixture.CreateViewModel().Instances);
+        var secondRow = Assert.Single(fixture.CreateViewModel().Entities);
         Assert.Equal(3, secondRow.CurrentHp);
         secondRow.CurrentHp = null;
         await secondRow.SaveHitPointsCommand.ExecuteAsync(null);
 
-        Assert.True(fixture.Find(instanceId)!.Patch.IsEmpty);
+        Assert.True(fixture.Find(entityId)!.Patch.IsEmpty);
     }
 
     [Fact]
-    public async Task A_later_change_to_the_entrys_armor_class_reaches_an_instance_whose_hit_points_were_saved()
+    public async Task A_later_change_to_the_entrys_armor_class_reaches_an_entity_whose_hit_points_were_saved()
     {
         var address = new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin"));
         var original = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7, ac: 15));
-        await original.AddInstanceAsync(address, label: null);
+        await original.AddEntityAsync(address, label: null);
 
-        var row = Assert.Single(original.CreateViewModel().Instances);
+        var row = Assert.Single(original.CreateViewModel().Entities);
         row.CurrentHp = 3;
         await row.SaveHitPointsCommand.ExecuteAsync(null);
-        var patch = Assert.Single(original.Instances()).Patch;
+        var patch = Assert.Single(original.Entities()).Patch;
 
         // The same campaign after the pack was corrected: the entry now ships another armor class.
         var corrected = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7, ac: 12));
-        await corrected.AddInstanceAsync(address, label: null);
-        await corrected.Context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(Assert.Single(corrected.Instances()), patch));
+        await corrected.AddEntityAsync(address, label: null);
+        await corrected.Context.ChangeAsync(CampaignEntityChanges.ReplacePatch(Assert.Single(corrected.Entities()), patch));
 
-        var resolved = corrected.Context.Resolver.Resolve(Assert.Single(corrected.Instances()));
+        var resolved = corrected.Context.Resolver.Resolve(Assert.Single(corrected.Entities()));
         var combat = resolved.Values!.Read<Creature>().Combat!;
 
         Assert.Equal(12, combat.Ac);
@@ -214,24 +214,24 @@ public sealed class CampaignInstancesToolViewModelTests
     }
 
     [Fact]
-    public async Task A_gear_instance_row_cannot_edit_hit_points()
+    public async Task A_gear_entity_row_cannot_edit_hit_points()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
 
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
+        var row = Assert.Single(fixture.CreateViewModel().Entities);
 
         Assert.False(row.CanEditHitPoints);
         Assert.False(row.SaveHitPointsCommand.CanExecute(null));
     }
 
     [Fact]
-    public async Task An_unresolved_instance_row_cannot_edit_hit_points_and_stays_on_the_list()
+    public async Task An_unresolved_entity_row_cannot_edit_hit_points_and_stays_on_the_list()
     {
         var fixture = new Fixture();
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("ghost-pack"), ContentId.Create("ghost-entry")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("ghost-pack"), ContentId.Create("ghost-entry")), label: null);
 
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
+        var row = Assert.Single(fixture.CreateViewModel().Entities);
 
         Assert.True(row.HasMessage);
         Assert.False(row.CanEditHitPoints);
@@ -239,28 +239,28 @@ public sealed class CampaignInstancesToolViewModelTests
     }
 
     [Fact]
-    public async Task Removing_an_instance_takes_it_off_the_list_and_saves_through_the_session()
+    public async Task Removing_an_entity_takes_it_off_the_list_and_saves_through_the_session()
     {
         var fixture = new Fixture(ResolvedGear("pack", "potion", "Mikstura leczenia"));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
 
         var viewModel = fixture.CreateViewModel();
-        var row = Assert.Single(viewModel.Instances);
+        var row = Assert.Single(viewModel.Entities);
 
         await row.RemoveCommand.ExecuteAsync(null);
 
         Assert.Equal(2, fixture.Repository.SaveCount);
-        Assert.Empty(viewModel.Instances);
-        Assert.Empty(fixture.Instances());
+        Assert.Empty(viewModel.Entities);
+        Assert.Empty(fixture.Entities());
     }
 
     [Fact]
     public async Task A_rows_commands_are_inactive_after_dispose()
     {
         var fixture = new Fixture(ResolvedCreature("pack", "goblin", "Goblin", hp: 7));
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("goblin")), label: null);
 
-        var row = Assert.Single(fixture.CreateViewModel().Instances);
+        var row = Assert.Single(fixture.CreateViewModel().Entities);
         Assert.True(row.SaveHitPointsCommand.CanExecute(null));
         Assert.True(row.RemoveCommand.CanExecute(null));
 
@@ -271,16 +271,16 @@ public sealed class CampaignInstancesToolViewModelTests
     }
 
     [Fact]
-    public async Task Dispose_unsubscribes_so_a_later_instance_change_no_longer_refreshes_the_list()
+    public async Task Dispose_unsubscribes_so_a_later_entity_change_no_longer_refreshes_the_list()
     {
         var fixture = new Fixture();
         var viewModel = fixture.CreateViewModel();
-        Assert.Empty(viewModel.Instances);
+        Assert.Empty(viewModel.Entities);
 
         viewModel.Dispose();
-        await fixture.AddInstanceAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
+        await fixture.AddEntityAsync(new EntryAddress(ContentId.Create("pack"), ContentId.Create("potion")), label: null);
 
-        Assert.Empty(viewModel.Instances);
+        Assert.Empty(viewModel.Entities);
     }
 
     private static RegisteredEntry ResolvedGear(string packId, string entryId, string name)
@@ -332,7 +332,7 @@ public sealed class CampaignInstancesToolViewModelTests
             Repository = new InMemoryCampaignRepository();
 
             var campaign = Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);
-            var session = new CampaignSession(campaign, Repository, [InstancesModel.Declaration]);
+            var session = new CampaignSession(campaign, Repository, [EntitiesModel.Declaration]);
             var tabContext = new CampaignTabContext(session);
 
             Context = new CampaignEntriesContext(tabContext, Registry, Dnd5e);
@@ -344,17 +344,17 @@ public sealed class CampaignInstancesToolViewModelTests
 
         public CampaignEntriesContext Context { get; }
 
-        public CampaignInstancesToolViewModel CreateViewModel() => new(Context, Dnd5e.ContentSetId);
+        public CampaignEntitiesToolViewModel CreateViewModel() => new(Context, Dnd5e.ContentSetId);
 
-        /// <summary>Every instance the campaign holds right now, read from the context's own snapshot.</summary>
-        public IReadOnlyCollection<CampaignInstance> Instances() =>
-            Context.Snapshot.Get(InstancesModel.Declaration).Values.ToArray();
+        /// <summary>Every entity the campaign holds right now, read from the context's own snapshot.</summary>
+        public IReadOnlyCollection<CampaignEntity> Entities() =>
+            Context.Snapshot.Get(EntitiesModel.Declaration).Values.ToArray();
 
-        public CampaignInstance? Find(InstanceId id) =>
-            Context.Snapshot.Get(InstancesModel.Declaration).GetValueOrDefault(id.ToString());
+        public CampaignEntity? Find(EntityId id) =>
+            Context.Snapshot.Get(EntitiesModel.Declaration).GetValueOrDefault(id.ToString());
 
         /// <summary>Brings an entry into the campaign the same way the view model's own "add" does - through the one door any change goes through - so a fixture's setup exercises exactly the path production code uses.</summary>
-        public async Task AddInstanceAsync(EntryAddress address, string? label) =>
-            await Context.ChangeAsync(CampaignInstanceChanges.Add(address, label));
+        public async Task AddEntityAsync(EntryAddress address, string? label) =>
+            await Context.ChangeAsync(CampaignEntityChanges.Add(address, label));
     }
 }

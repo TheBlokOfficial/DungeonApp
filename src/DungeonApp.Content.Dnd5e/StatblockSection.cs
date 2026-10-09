@@ -30,7 +30,7 @@ public sealed record StatblockSection : IJsonOnDeserialized
 
     /// <summary>
     /// Required even when empty (<c>"entries": []</c> under an introduction alone): a key the reader
-    /// filled in by itself would be written back out when an instance's patch is diffed against its
+    /// filled in by itself would be written back out when an entity's patch is diffed against its
     /// entry, and would show up in the patch as a deviation nobody made.
     /// </summary>
     public required IReadOnlyList<StatblockEntry> Entries { get; init; }

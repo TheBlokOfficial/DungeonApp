@@ -9,7 +9,7 @@ namespace DungeonApp.Core.State;
 public interface IStateRecord
 {
     /// <summary>This record's identity within its model - stable across every edit that keeps it
-    /// the same thing, the way <c>CampaignInstance</c>'s own <c>InstanceId</c> never changes across
+    /// the same thing, the way <c>CampaignEntity</c>'s own <c>EntityId</c> never changes across
     /// a relabel or a patch replacement.</summary>
     string Id { get; }
 }

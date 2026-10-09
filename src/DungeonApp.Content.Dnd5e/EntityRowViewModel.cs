@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Entries;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Entries;
@@ -9,8 +9,8 @@ using DungeonApp.Desktop.Entries;
 namespace DungeonApp.Content.Dnd5e;
 
 /// <summary>
-/// One row of the campaign's instance list: the name to show and, when the instance did not resolve,
-/// the Polish sentence explaining what is wrong. An unresolved instance is never left off this list -
+/// One row of the campaign's entity list: the name to show and, when the entity did not resolve,
+/// the Polish sentence explaining what is wrong. An unresolved entity is never left off this list -
 /// it gets a row and a message instead, mirroring how a content tab marks a broken entry rather
 /// than hiding it.
 /// <para>
@@ -19,26 +19,26 @@ namespace DungeonApp.Content.Dnd5e;
 /// write is always something a caller can await instead of one that runs unobserved.
 /// </para>
 /// </summary>
-public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
+public sealed partial class EntityRowViewModel : ObservableObject, IDisposable
 {
     private readonly CampaignEntriesContext _context;
-    private readonly CampaignInstance _instance;
-    private readonly ResolvedInstance _resolved;
+    private readonly CampaignEntity _entity;
+    private readonly ResolvedEntity _resolved;
 
     private bool _isDisposed;
 
-    public InstanceRowViewModel(
+    public EntityRowViewModel(
         CampaignEntriesContext context,
         string displayName,
         string? message,
-        ResolvedInstance resolved,
+        ResolvedEntity resolved,
         ContentId ownerSet)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(resolved);
 
         _context = context;
-        _instance = resolved.Instance;
+        _entity = resolved.Entity;
         _resolved = resolved;
 
         DisplayName = displayName;
@@ -64,7 +64,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 
     public bool HasMessage => Message is not null;
 
-    /// <summary>True only for a resolved instance of this set's creature type.</summary>
+    /// <summary>True only for a resolved entity of this set's creature type.</summary>
     public bool CanEditHitPoints { get; }
 
     /// <summary>The entry's own maximum, shown next to the editable field - never itself editable here.</summary>
@@ -72,7 +72,7 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
 
     /// <summary>
     /// The field the numeric input is bound to. A plain store, the same way
-    /// <see cref="CampaignInstancesToolViewModel.SelectedToAdd"/> is: typing here saves nothing by
+    /// <see cref="CampaignEntitiesToolViewModel.SelectedToAdd"/> is: typing here saves nothing by
     /// itself, only <see cref="SaveHitPointsCommand"/> does.
     /// </summary>
     [ObservableProperty]
@@ -95,20 +95,20 @@ public sealed partial class InstanceRowViewModel : ObservableObject, IDisposable
     {
         // Diffed against the entry's own values, never the merged ones - differencing against the
         // merged record would compare it to itself and always produce an empty patch, dropping
-        // whatever the instance already deviated on.
+        // whatever the entity already deviated on.
         var entryValues = _resolved.Source!.Entry.Values;
         var creature = _resolved.Values!.Read<Creature>();
         var candidate = ContentValues.From(creature with { Combat = creature.Combat with { CurrentHp = CurrentHp } });
         var patch = ContentValues.Difference(baseline: entryValues, candidate: candidate);
 
-        await _context.ChangeAsync(CampaignInstanceChanges.ReplacePatch(_instance, patch));
+        await _context.ChangeAsync(CampaignEntityChanges.ReplacePatch(_entity, patch));
     }
 
     private bool CanSaveHitPoints() => CanEditHitPoints && !_isDisposed;
 
     [RelayCommand(CanExecute = nameof(CanRemove))]
     private async Task RemoveAsync() =>
-        await _context.ChangeAsync(CampaignInstanceChanges.Remove(_instance.Id));
+        await _context.ChangeAsync(CampaignEntityChanges.Remove(_entity.Id));
 
     private bool CanRemove() => !_isDisposed;
 }

@@ -1,55 +1,55 @@
 using System;
 using DungeonApp.Core.State;
 
-namespace DungeonApp.Core.Entries.Instances;
+namespace DungeonApp.Core.Entries.Entities;
 
 /// <summary>
-/// Builds the <see cref="CampaignChange"/> for each thing a GM does to an instance - adding,
+/// Builds the <see cref="CampaignChange"/> for each thing a GM does to an entity - adding,
 /// removing, relabelling, replacing its patch. Pure helpers: no state, no event, nothing that
 /// touches a campaign. A caller applies the returned change through the campaign's single change
 /// entry point (<c>CampaignSession.ChangeAsync</c>), which is what actually looks anything up,
 /// mutates anything, or saves anything.
 /// <para>
-/// <see cref="Relabel"/> and <see cref="ReplacePatch"/> take the instance's <em>current</em> value
+/// <see cref="Relabel"/> and <see cref="ReplacePatch"/> take the entity's <em>current</em> value
 /// rather than looking it up by id, because there is no live collection to ask - the caller
 /// already has it, read a moment earlier from a <see cref="CampaignStateSnapshot"/>.
 /// </para>
 /// </summary>
-public static class CampaignInstanceChanges
+public static class CampaignEntityChanges
 {
-    /// <summary>Brings an entry into the campaign as a new instance: a fresh <see cref="InstanceId"/>, a patch of <see cref="ContentValues.Empty"/>, and the given label, normalized.</summary>
+    /// <summary>Brings an entry into the campaign as a new entity: a fresh <see cref="EntityId"/>, a patch of <see cref="ContentValues.Empty"/>, and the given label, normalized.</summary>
     public static CampaignChange Add(EntryAddress source, string? label)
     {
-        var instance = new CampaignInstance
+        var entity = new CampaignEntity
         {
-            Id = InstanceId.New(),
+            Id = EntityId.New(),
             Source = source,
             Label = NormalizeLabel(label),
             Patch = ContentValues.Empty,
         };
 
-        return new CampaignChange().Upsert(InstancesModel.Declaration, instance);
+        return new CampaignChange().Upsert(EntitiesModel.Declaration, entity);
     }
 
-    /// <summary>Removes the instance named <paramref name="id"/> from the campaign.</summary>
-    public static CampaignChange Remove(InstanceId id) =>
-        new CampaignChange().Delete(InstancesModel.Declaration, id.ToString());
+    /// <summary>Removes the entity named <paramref name="id"/> from the campaign.</summary>
+    public static CampaignChange Remove(EntityId id) =>
+        new CampaignChange().Delete(EntitiesModel.Declaration, id.ToString());
 
     /// <summary>Changes only <paramref name="current"/>'s GM-given name, leaving its patch untouched.</summary>
-    public static CampaignChange Relabel(CampaignInstance current, string? label)
+    public static CampaignChange Relabel(CampaignEntity current, string? label)
     {
         ArgumentNullException.ThrowIfNull(current);
 
-        return new CampaignChange().Upsert(InstancesModel.Declaration, current with { Label = NormalizeLabel(label) });
+        return new CampaignChange().Upsert(EntitiesModel.Declaration, current with { Label = NormalizeLabel(label) });
     }
 
     /// <summary>Replaces only <paramref name="current"/>'s patch over its entry, leaving its label untouched.</summary>
-    public static CampaignChange ReplacePatch(CampaignInstance current, ContentValues patch)
+    public static CampaignChange ReplacePatch(CampaignEntity current, ContentValues patch)
     {
         ArgumentNullException.ThrowIfNull(current);
         ArgumentNullException.ThrowIfNull(patch);
 
-        return new CampaignChange().Upsert(InstancesModel.Declaration, current with { Patch = patch });
+        return new CampaignChange().Upsert(EntitiesModel.Declaration, current with { Patch = patch });
     }
 
     /// <summary>

@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Entries;
-using DungeonApp.Core.Entries.Instances;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Tests.Entries.Fakes;
@@ -15,24 +15,24 @@ using DungeonApp.Testing;
 namespace DungeonApp.Core.Tests.Entries.Persistence;
 
 /// <summary>
-/// Instances as the concrete example of a state model - the same round trip any future model gets
+/// Entities as the concrete example of a state model - the same round trip any future model gets
 /// for free from <see cref="JsonCampaignRepository"/>'s generic per-model file. Kept apart from
 /// <see cref="DungeonApp.Core.Tests.Persistence.JsonCampaignRepositoryTests"/>, which is about the manifest and the format version
 /// rather than about any one model's own records.
 /// </summary>
-public sealed class InstancePersistenceTests : IDisposable
+public sealed class EntityPersistenceTests : IDisposable
 {
     private static readonly DateTimeOffset Moment = new(2026, 8, 27, 18, 30, 0, TimeSpan.Zero);
     private static readonly EntryAddress Goblin = new(ContentId.Create("bestiary"), ContentId.Create("goblin"));
     private static readonly EntryAddress Sword = new(ContentId.Create("gear"), ContentId.Create("iron-sword"));
-    private static readonly IReadOnlyList<StateModelDeclaration> Declarations = [InstancesModel.Declaration];
+    private static readonly IReadOnlyList<StateModelDeclaration> Declarations = [EntitiesModel.Declaration];
 
     private readonly TemporaryLibrary _library = new();
     private readonly JsonCampaignRepository _repository;
 
     // Permanent delete on purpose: a test must never be able to reach the real Recycle Bin - see
     // JsonCampaignRepository.DeleteAsync's doc comment.
-    public InstancePersistenceTests() =>
+    public EntityPersistenceTests() =>
         _repository = new JsonCampaignRepository(
             DungeonApp.Core.Systems.SystemId.Create("test-system"), _library.Path, path => Directory.Delete(path, recursive: true));
 
@@ -41,16 +41,16 @@ public sealed class InstancePersistenceTests : IDisposable
     private static Campaign NewCampaign() =>
         Campaign.Create(CampaignName.Create("Kroniki Doliny"), new FixedTimeProvider(Moment));
 
-    private static Campaign WithInstance(Campaign campaign, EntryAddress source, string? label, out CampaignInstance created)
+    private static Campaign WithEntity(Campaign campaign, EntryAddress source, string? label, out CampaignEntity created)
     {
-        var change = CampaignInstanceChanges.Add(source, label);
+        var change = CampaignEntityChanges.Add(source, label);
         var updated = campaign.WithSnapshot(campaign.Snapshot.Apply(change));
-        created = updated.Snapshot.Get(InstancesModel.Declaration).Values.Single();
+        created = updated.Snapshot.Get(EntitiesModel.Declaration).Values.Single();
         return updated;
     }
 
     private string ModelPath(Campaign campaign) =>
-        Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "state", $"{InstancesModel.Declaration.ModelId}.json");
+        Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "state", $"{EntitiesModel.Declaration.ModelId}.json");
 
     /// <summary>A record shaped the way a system's own patch record would be, used only to read a
     /// patch back through the same envelope API a system uses - <see cref="ContentValues.Read{T}"/>
@@ -58,14 +58,14 @@ public sealed class InstancePersistenceTests : IDisposable
     private sealed record SamplePatch(int? Hp, string? Name, bool? Cursed, double? Multiplier, string[]? Tags);
 
     [Fact]
-    public async Task Reads_back_an_instance_with_the_same_id_address_and_label()
+    public async Task Reads_back_an_entity_with_the_same_id_address_and_label()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, "Krzywy", out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, "Krzywy", out var created);
 
         await _repository.SaveAsync(campaign, Declarations);
         var reopened = await _repository.GetAsync(campaign.Id, Declarations);
 
-        var found = reopened!.Snapshot.Get(InstancesModel.Declaration)[created.Id.ToString()];
+        var found = reopened!.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()];
         Assert.Equal(created.Id, found.Id);
         Assert.Equal(Goblin, found.Source);
         Assert.Equal("Krzywy", found.Label);
@@ -77,14 +77,14 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_non_empty_patch_round_trips_value_for_value()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, "Krzywy", out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, "Krzywy", out var created);
         var patch = ContentValues.From(new SamplePatch(Hp: 3, Name: "Zguba", Cursed: true, Multiplier: 1.5, Tags: ["elite", "boss"]));
-        campaign = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignInstanceChanges.ReplacePatch(created, patch)));
+        campaign = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.ReplacePatch(created, patch)));
 
         await _repository.SaveAsync(campaign, Declarations);
         var reopened = await _repository.GetAsync(campaign.Id, Declarations);
 
-        var restored = reopened!.Snapshot.Get(InstancesModel.Declaration)[created.Id.ToString()].Patch.Read<SamplePatch>();
+        var restored = reopened!.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()].Patch.Read<SamplePatch>();
         Assert.Equal(3, restored.Hp);
         Assert.Equal("Zguba", restored.Name);
         Assert.Equal(true, restored.Cursed);
@@ -95,13 +95,13 @@ public sealed class InstancePersistenceTests : IDisposable
     /// <summary>
     /// The state file is meant to be human-readable, not an object graph of wrapper types: an id is
     /// a plain string, and an entry address is a pair of plain strings, never <c>{"value":"…"}</c>.
-    /// <see cref="ContentIdJsonConverter"/> and <see cref="InstanceIdJsonConverter"/> are what make
+    /// <see cref="ContentIdJsonConverter"/> and <see cref="EntityIdJsonConverter"/> are what make
     /// that true without a hand-written DTO standing in for either value type.
     /// </summary>
     [Fact]
     public async Task Writes_ids_and_the_entry_address_as_flat_strings_and_round_trips()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, "Krzywy", out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, "Krzywy", out var created);
 
         await _repository.SaveAsync(campaign, Declarations);
 
@@ -118,18 +118,18 @@ public sealed class InstancePersistenceTests : IDisposable
         Assert.Equal("goblin", source.GetProperty("entry").GetString());
 
         var reopened = await _repository.GetAsync(campaign.Id, Declarations);
-        var found = reopened!.Snapshot.Get(InstancesModel.Declaration)[created.Id.ToString()];
+        var found = reopened!.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()];
 
         Assert.Equal(created.Id, found.Id);
         Assert.Equal(Goblin, found.Source);
         Assert.Equal("Krzywy", found.Label);
     }
 
-    /// <summary>An instance id that fails to parse as a GUID is exactly as invalid as a pack id whose charset is wrong - the same named failure, not a raw exception.</summary>
+    /// <summary>An entity id that fails to parse as a GUID is exactly as invalid as a pack id whose charset is wrong - the same named failure, not a raw exception.</summary>
     [Fact]
-    public async Task A_record_with_an_unparsable_instance_id_throws_Invalid()
+    public async Task A_record_with_an_unparsable_entity_id_throws_Invalid()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out var created);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -142,36 +142,36 @@ public sealed class InstancePersistenceTests : IDisposable
     }
 
     [Fact]
-    public async Task An_instance_without_a_label_comes_back_null()
+    public async Task An_entity_without_a_label_comes_back_null()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out var created);
 
         await _repository.SaveAsync(campaign, Declarations);
         var reopened = await _repository.GetAsync(campaign.Id, Declarations);
 
-        Assert.Null(reopened!.Snapshot.Get(InstancesModel.Declaration)[created.Id.ToString()].Label);
+        Assert.Null(reopened!.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()].Label);
     }
 
-    /// <summary>The one this whole model turns on: a deleted instance must never resurrect because the
+    /// <summary>The one this whole model turns on: a deleted entity must never resurrect because the
     /// model file merely survived on disk. The whole model file is rewritten on every save, so a
     /// removed record simply is not in it any more.</summary>
     [Fact]
-    public async Task A_removed_instance_does_not_come_back_after_save_and_reopen()
+    public async Task A_removed_entity_does_not_come_back_after_save_and_reopen()
     {
-        var afterFirst = WithInstance(NewCampaign(), Goblin, "Krzywy", out var kept);
-        var afterBoth = afterFirst.WithSnapshot(afterFirst.Snapshot.Apply(CampaignInstanceChanges.Add(Sword, "Zguba")));
-        var removed = afterBoth.Snapshot.Get(InstancesModel.Declaration).Values.Single(i => i.Id != kept.Id);
+        var afterFirst = WithEntity(NewCampaign(), Goblin, "Krzywy", out var kept);
+        var afterBoth = afterFirst.WithSnapshot(afterFirst.Snapshot.Apply(CampaignEntityChanges.Add(Sword, "Zguba")));
+        var removed = afterBoth.Snapshot.Get(EntitiesModel.Declaration).Values.Single(i => i.Id != kept.Id);
         await _repository.SaveAsync(afterBoth, Declarations);
 
-        var afterRemoval = afterBoth.WithSnapshot(afterBoth.Snapshot.Apply(CampaignInstanceChanges.Remove(removed.Id)));
+        var afterRemoval = afterBoth.WithSnapshot(afterBoth.Snapshot.Apply(CampaignEntityChanges.Remove(removed.Id)));
         await _repository.SaveAsync(afterRemoval, Declarations);
 
         var reopened = await _repository.GetAsync(afterBoth.Id, Declarations);
-        var instances = reopened!.Snapshot.Get(InstancesModel.Declaration);
+        var entities = reopened!.Snapshot.Get(EntitiesModel.Declaration);
 
-        Assert.True(instances.ContainsKey(kept.Id.ToString()));
-        Assert.False(instances.ContainsKey(removed.Id.ToString()));
-        Assert.Single(instances);
+        Assert.True(entities.ContainsKey(kept.Id.ToString()));
+        Assert.False(entities.ContainsKey(removed.Id.ToString()));
+        Assert.Single(entities);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_state_file_for_an_undeclared_model_is_left_untouched_by_a_save()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, "Krzywy", out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, "Krzywy", out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         var stateDirectory = Path.Combine(_library.CampaignDirectory(campaign.Id.Value), "state");
@@ -210,7 +210,7 @@ public sealed class InstancePersistenceTests : IDisposable
 
         // Re-save with a further change to the declared model, to prove the untouched file is not
         // merely a fluke of nothing having changed.
-        var afterAnotherAdd = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignInstanceChanges.Add(Sword, "Zguba")));
+        var afterAnotherAdd = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.Add(Sword, "Zguba")));
         await _repository.SaveAsync(afterAnotherAdd, Declarations);
 
         Assert.Equal(foreignBytes, File.ReadAllBytes(foreignPath));
@@ -224,13 +224,13 @@ public sealed class InstancePersistenceTests : IDisposable
 
         var reopened = await _repository.GetAsync(campaign.Id, Declarations);
 
-        Assert.Empty(reopened!.Snapshot.Get(InstancesModel.Declaration));
+        Assert.Empty(reopened!.Snapshot.Get(EntitiesModel.Declaration));
     }
 
     [Fact]
     public async Task A_model_listed_in_the_manifest_but_missing_its_state_file_throws()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         File.Delete(ModelPath(campaign));
@@ -244,7 +244,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_model_file_at_a_generation_other_than_the_manifest_throws()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -259,7 +259,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_model_file_at_a_version_the_declaration_does_not_declare_throws()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -274,7 +274,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_model_file_with_invalid_json_throws()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         File.WriteAllText(ModelPath(campaign), "{ this is not json");
@@ -294,7 +294,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_record_naming_an_unusable_pack_id_throws_Invalid()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -313,7 +313,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_record_missing_its_required_patch_throws_Invalid()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out var created);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out var created);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -332,7 +332,7 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task A_record_whose_patch_is_not_an_object_throws_Invalid()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
         await _repository.SaveAsync(campaign, Declarations);
 
         var path = ModelPath(campaign);
@@ -347,14 +347,14 @@ public sealed class InstancePersistenceTests : IDisposable
     [Fact]
     public async Task Manifest_lists_the_model_with_its_id_and_generation()
     {
-        var campaign = WithInstance(NewCampaign(), Goblin, null, out _);
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
 
         await _repository.SaveAsync(campaign, Declarations);
 
         var manifestPath = _library.DocumentPath(campaign.Id.Value);
         var manifest = JsonDocument.Parse(File.ReadAllText(manifestPath)).RootElement;
         var entry = Assert.Single(manifest.GetProperty("models").EnumerateArray());
-        Assert.Equal(InstancesModel.Declaration.ModelId, entry.GetProperty("id").GetString());
+        Assert.Equal(EntitiesModel.Declaration.ModelId, entry.GetProperty("id").GetString());
         Assert.Equal(1, entry.GetProperty("generation").GetInt64());
     }
 }
