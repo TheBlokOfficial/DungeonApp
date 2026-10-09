@@ -9,7 +9,11 @@ using Avalonia.Headless;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DungeonApp.Content.Dnd5e;
+using DungeonApp.Core.Entries;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Workspace.Controls;
+using DungeonApp.Desktop.Workspace.Panels;
+using DungeonApp.Desktop.Workspace.World;
 using DungeonApp.Desktop.Entries.ContentTab;
 using DungeonApp.Desktop.Entries.Controls;
 using DungeonApp.Desktop.Features.CampaignLibrary;
@@ -297,9 +301,9 @@ internal static class Program
     }
 
     /// <summary>
-    /// Creates a campaign on the shelf, opens it through its row, brings two goblins into the world
-    /// tool, and saves the sidebar on the shelf and with the campaign open, and the desk empty, with
-    /// the world window, and with it maximized.
+    /// Creates a campaign on the shelf, opens it through its row, fills the world catalog from the
+    /// bundled pack, and saves the sidebar on the shelf and with the campaign open, and the desk empty,
+    /// with the catalog expanded, with a window over it and collapsed.
     /// </summary>
     private static void RenderDesk(Window window, AppShellViewModel shell)
     {
@@ -327,29 +331,69 @@ internal static class Program
 
         var deskView = (Control)shell.CurrentWorkspaceContent!;
         var desk = (CampaignWorkspaceViewModel)deskView.DataContext!;
-        var panel = desk.Panels.Single(candidate => candidate.Title == "Świat kampanii");
-
-        // Added through the tool's own model, as the GM would pick them in its list.
-        var tool = (CampaignInstancesToolViewModel)((Control)panel.Body).DataContext!;
-        for (var count = 0; count < 3; count++)
-        {
-            tool.SelectedToAdd = tool.AddableEntries.First(option => option.Name.Contains("Goblin", StringComparison.OrdinalIgnoreCase));
-            Await(tool.AddCommand.ExecuteAsync(null), "adding a goblin");
-        }
-
-        Settle();
+        var catalog = desk.Catalog;
 
         if (Wants("desk_empty"))
         {
-            panel.MinimizeCommand.Execute(null);
             SaveCrop(window, deskView, UniqueName("desk_empty"));
         }
 
-        panel.ActivateCommand.Execute(null);
+        // Folders Karczma and Kopalnia > Jaskinia goblinów > Skarbiec, entities from the bundled pack.
+        EntryAddress Srd(string entry) => new(ContentId.Create("dnd5e-srd"), ContentId.Create(entry));
+        Await(catalog.CreateFolderAsync(null, "Karczma"), "tavern folder");
+        var tavern = catalog.SelectedFolders.Single();
+        Await(catalog.CreateFolderAsync(null, "Kopalnia"), "mine folder");
+        var mine = catalog.SelectedFolders.Single();
+        Await(catalog.CreateFolderAsync(mine, "Jaskinia goblinów"), "cave folder");
+        var cave = catalog.SelectedFolders.Single();
+        Await(catalog.CreateFolderAsync(cave, "Skarbiec"), "vault folder");
+        var vault = catalog.SelectedFolders.Single();
+        Await(catalog.AddEntitiesAsync(Srd("szkielet"), 1, cave, "Goblin 10"), "goblin 10");
+        Await(catalog.AddEntitiesAsync(Srd("szkielet"), 1, cave, "Goblin 2"), "goblin 2");
+        Await(catalog.AddEntitiesAsync(Srd("wilk"), 1, cave), "wolf");
+        Await(catalog.AddEntitiesAsync(Srd("lina-konopna"), 1, vault), "rope");
+        Await(catalog.AddEntitiesAsync(Srd("mikstura-leczenia"), 1, vault), "potion");
+        Await(catalog.AddEntitiesAsync(Srd("rycerz"), 1, tavern, "Kapitan Varga"), "knight");
+        Await(catalog.AddEntitiesAsync(Srd("nie-ma-takiego-wpisu"), 1, tavern), "missing entry");
         Settle();
-        if (Wants("desk_window"))
+
+        WorldRowViewModel Row(string name) => catalog.Rows.First(row => row.Name == name);
+        catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+        catalog.Click(Row("Wilk"), ctrl: true, shift: false);
+        catalog.Click(Row("Kapitan Varga"), ctrl: true, shift: false);
+        Settle();
+
+        if (Wants("desk_catalog"))
         {
-            SaveCrop(window, deskView, UniqueName("desk_window"));
+            SaveCrop(window, deskView, UniqueName("desk_catalog"));
+        }
+
+        if (Wants("desk_catalog_window"))
+        {
+            var descriptor = new WorkspacePanelDescriptor(
+                "render-window",
+                "Okno",
+                "DungeonIconSkull",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(catalog.X - 260, catalog.Y + 80, 420, 300),
+                new PanelConstraints(200, 120, 2000, 2000),
+                () => new TextBlock { Text = "Okno nad katalogiem" });
+            var panel = new WorkspacePanelViewModel(desk, descriptor, descriptor.Id, descriptor.DefaultPlacement);
+            desk.Panels.Add(panel);
+            panel.ActivateCommand.Execute(null);
+            Settle();
+            SaveCrop(window, deskView, UniqueName("desk_catalog_window"));
+            desk.Panels.Remove(panel);
+            Settle();
+        }
+
+        if (Wants("desk_catalog_collapsed"))
+        {
+            catalog.SetExpanded(catalog.Rows[0], false);
+            Settle();
+            SaveCrop(window, deskView, UniqueName("desk_catalog_collapsed"));
+            catalog.SetExpanded(catalog.Rows[0], true);
+            Settle();
         }
 
         if (Wants("window_full"))

@@ -230,8 +230,15 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
 - **Biurko** (`Desktop/Workspace`): pozycja kampanii w ramie, z pływającymi oknami narzędzi. Buduje je
   rama (`ActiveSystemSession`, raz na otwartą kampanię); system podaje tylko narzędzia
   (`IGameSystem.CreateDeskTools`). Układ zapisuje się per kampania. Nieudany zapis zmiany rama
-  pokazuje powiadomieniem, niezależnie od narzędzia, które zmieniało. Jedyne narzędzie to testowy
-  „Świat kampanii” (lista entity z PW); zastępuje go katalog świata (`docs/spec/katalog.md`).
+  pokazuje powiadomieniem, niezależnie od narzędzia, które zmieniało.
+- **Katalog świata** (`Workspace/World`, spec: `docs/spec/katalog.md`): drzewo katalogów i entity
+  w prawym górnym rogu biurka, warstwa pod oknami (okno nachodzi na katalog). Pozycja, szerokość,
+  zwinięcie korzenia i rozwinięte katalogi zapisują się w pliku układu biurka (`WorldCatalogLayout`),
+  nie w kampanii; rozwinięcia znikłych katalogów są zapominane przy zapisie. Rama bierze wpisy
+  z `IGameSystem.GetWorldCatalogSource()` (`WorldCatalogSource`: rejestr paczek, typy, profile),
+  ikony typów z `IGameSystem.EntityTypes`, a dopisek przy wierszu (np. PW) z `IGameSystem.RowHint`.
+  Kliknięcie zaznacza (Ctrl, Shift), dwuklik albo Enter na entity zgłasza zdarzenie
+  `OpenEntityRequested`; ostatnio klikniętą entity podaje `LastClickedEntity` (podgląd idzie za nią).
 - **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
   (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Ciemniejsze
   tło, mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad oknami, wspólne
