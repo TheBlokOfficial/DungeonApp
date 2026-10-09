@@ -15,6 +15,7 @@ using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Layout;
 
 namespace DungeonApp.Desktop;
 
@@ -49,6 +50,13 @@ public partial class App : Avalonia.Application
     /// so they never read or write the GM's campaigns.
     /// </summary>
     public string? DocumentsPath { get; init; }
+
+    /// <summary>
+    /// Where the desks' layouts are kept. The composition root owns the paths and hands the store
+    /// in; the default is a throwaway folder for tools and tests that never mean to keep a layout.
+    /// </summary>
+    public WorkspaceLayoutStore LayoutStore { get; init; } =
+        new(Path.Combine(Path.GetTempPath(), "DungeonAppLayouts"));
 
     /// <summary>
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
@@ -99,9 +107,7 @@ public partial class App : Avalonia.Application
 
         // Cache shared by first-campaign warmup after system selection and later opening of
         // a real campaign - same instance so warmup is not repeated
-        // on first opening. Knows nothing about desk layout storage - only the system exposes
-        // that in its own constructor (DungeonApp.App/Program.cs), because the shell does not build
-        // the desk. Declarations used to read a particular campaign are not fixed here -
+        // on first opening. Declarations used to read a particular campaign are not fixed here -
         // each campaign carries its own system in the manifest, so the cache matches it to one
         // of `_systems` on every read.
         _preparations = new CampaignPreparationCache(_repositoriesBySystem, _systems);
@@ -122,9 +128,8 @@ public partial class App : Avalonia.Application
         // curtain, before the selection screen becomes interactive - otherwise system selection
         // would freeze the window: first each compiled-in system prepares its own content (packs,
         // cards - its own startup steps, whose work the shell does not know), then the shelf, data for each
-        // shelf campaign, shell chrome (selection screen, shelf, sidebar in both states, campaign
-        // page), and finally each compiled-in system's tabs (its content tabs,
-        // desk with tools).
+        // shelf campaign, shell chrome (selection screen, shelf, sidebar in both states), and
+        // finally each compiled-in system's tabs (its content tabs) and the desk with its tools.
         var shelfStep = new LoadCampaignShelfStep(_campaignLibrary);
         var dataStep = new WarmCampaignDataStep(_preparations, shelfStep);
 
@@ -133,8 +138,8 @@ public partial class App : Avalonia.Application
             .. _systems.SelectMany(system => system.StartupSteps),
             shelfStep,
             dataStep,
-            new WarmFrameChromeStep(_systems, _campaignLibrary, _preparations, dataStep),
-            new WarmSystemTabsStep(_systems, _repositoriesBySystem, _preparations, dataStep)
+            new WarmFrameChromeStep(_systems, _campaignLibrary),
+            new WarmSystemTabsStep(_systems, _repositoriesBySystem, _preparations, dataStep, LayoutStore)
         ];
     }
 
@@ -158,6 +163,7 @@ public partial class App : Avalonia.Application
                 _repositoriesBySystem!,
                 _campaignLibrary!,
                 _preparations!,
+                LayoutStore,
                 _startupSteps!);
 
             desktop.MainWindow = new MainWindow
@@ -166,7 +172,7 @@ public partial class App : Avalonia.Application
             };
 
             // The last reliable moment to release whatever the active system's tabs are still
-            // holding. Exit does not run on a hard kill, so this is where a desk tab's pending
+            // holding. Exit does not run on a hard kill, so this is where the desk's pending
             // layout write is flushed.
             desktop.ShutdownRequested += (_, _) => _shell?.FlushPendingState();
             desktop.MainWindow.Closing += (_, _) => _shell?.FlushPendingState();

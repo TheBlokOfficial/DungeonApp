@@ -84,7 +84,8 @@ internal static class Program
 
         Directory.CreateDirectory(documents);
 
-        AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { DocumentsPath = documents })
+        var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), "DungeonAppRender"));
+        AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { DocumentsPath = documents, LayoutStore = layoutStore })
             .UseSkia()
             .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false })
             .WithInterFont()
@@ -111,7 +112,7 @@ internal static class Program
             RenderGallery(window, shell);
         }
 
-        if (MayMatch("desk_") || MayMatch("campaign_") || MayMatch("sidebar_") || MayMatch("window_"))
+        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_"))
         {
             RenderDesk(window, shell);
         }
@@ -209,9 +210,8 @@ internal static class Program
 
     private static IReadOnlyList<IGameSystem> BuildSystems()
     {
-        var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), "DungeonAppRender"));
         var system = SystemId.Create(Dnd5eSystem.IdValue);
-        return [new Dnd5eSystem(layoutStore, [SystemDirectories.BundledPacks(AppContext.BaseDirectory, system), .. _extraPacks])];
+        return [new Dnd5eSystem([SystemDirectories.BundledPacks(AppContext.BaseDirectory, system), .. _extraPacks])];
     }
 
     /// <summary>
@@ -298,8 +298,8 @@ internal static class Program
 
     /// <summary>
     /// Creates a campaign on the shelf, opens it through its row, brings two goblins into the world
-    /// tool, and saves the campaign page, the sidebar, and the desk empty, with the world window, and
-    /// with it maximized.
+    /// tool, and saves the sidebar on the shelf and with the campaign open, and the desk empty, with
+    /// the world window, and with it maximized.
     /// </summary>
     private static void RenderDesk(Window window, AppShellViewModel shell)
     {
@@ -307,28 +307,23 @@ internal static class Program
         shell.Sidebar!.CampaignPositionItem.SelectCommand.Execute(null);
         Settle();
 
+        if (Wants("sidebar_shelf"))
+        {
+            SaveCrop(window, window.GetVisualDescendants().OfType<GlobalSidebarView>().First(), UniqueName("sidebar_shelf"));
+        }
+
         var library = (CampaignLibraryViewModel)shell.CurrentWorkspaceContent!;
         library.NewCampaignName = "Kopalnia Phandelver";
         Await(library.CreateCommand.ExecuteAsync(null), "campaign creation");
         Pump(() => library.Campaigns.Count > 0, "shelf");
         Await(library.Campaigns.Single().OpenCommand.ExecuteAsync(null), "campaign opening");
-        Pump(() => shell.CurrentWorkspaceContent is CampaignPageViewModel, "campaign page");
+        Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: CampaignWorkspaceViewModel }, "desk");
         Settle();
-
-        if (Wants("campaign_page"))
-        {
-            SaveCrop(window, window.GetVisualDescendants().OfType<ContentControl>()
-                .First(control => ReferenceEquals(control.Content, shell.CurrentWorkspaceContent)), UniqueName("campaign_page"));
-        }
 
         if (Wants("sidebar_campaign"))
         {
             SaveCrop(window, window.GetVisualDescendants().OfType<GlobalSidebarView>().First(), UniqueName("sidebar_campaign"));
         }
-
-        shell.Sidebar.CampaignTabItems.Single(item => item.Label == "Biurko").SelectCommand.Execute(null);
-        Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: CampaignWorkspaceViewModel }, "desk");
-        Settle();
 
         var deskView = (Control)shell.CurrentWorkspaceContent!;
         var desk = (CampaignWorkspaceViewModel)deskView.DataContext!;

@@ -24,7 +24,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// is. Declares three content types - <c>creature</c> ("Stworzenie", version 1), <c>gear</c>
 /// ("Przedmiot", version 1) and <c>condition</c> ("Stan", version 1) - builds their cards, and
 /// declares this system's tabs: "Stworzenia", "Przedmioty" and "Stany" in the System category,
-/// "Biurko" in the Campaign category.
+/// and the tools it puts on the campaign desk.
 /// <para>
 /// Every content type is one row of a table, looked up by its reference in <see cref="TryGet"/>,
 /// <see cref="TryValidate"/> and <see cref="CreateCard"/>. Knowing what each type is belongs here and
@@ -124,22 +124,17 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     private static readonly IComparer<string> PolishAlphabeticalOrder =
         StringComparer.Create(new System.Globalization.CultureInfo("pl-PL"), ignoreCase: true);
 
-    private readonly WorkspaceLayoutStore _layoutStore;
     private readonly IReadOnlyDictionary<ContentTypeReference, ContentTypeRegistration> _contentTypes;
     private readonly LoadContentPacksStep _loadPacksStep;
 
-    /// <param name="layoutStore">Where the desk's layout is kept.</param>
     /// <param name="packsPaths">
     /// Every directory this system's packs are read from - the GM's own and the ones shipped with the
     /// program - as the composition root computed them. Read as one scan into one registry; the order
     /// and the origin of each path carry no meaning here.
     /// </param>
-    public Dnd5eSystem(WorkspaceLayoutStore layoutStore, IReadOnlyList<string> packsPaths)
+    public Dnd5eSystem(IReadOnlyList<string> packsPaths)
     {
-        ArgumentNullException.ThrowIfNull(layoutStore);
         ArgumentNullException.ThrowIfNull(packsPaths);
-
-        _layoutStore = layoutStore;
 
         Id = SystemId.Create(IdValue);
         ContentSetId = ContentId.Create(IdValue);
@@ -180,7 +175,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             .. contentTabs.Select(tab => new SystemTabDeclaration(
                 tab.Id, tab.Definition.Title, tab.IconResourceKey, () => CreateContentTab(tab.Definition))),
         ];
-        CampaignTabs = [new CampaignTabDeclaration("dnd5e.desk", "Biurko", "DungeonIconDockBottom", CreateDeskTabAsync)];
+        CampaignTabs = [];
     }
 
     public SystemId Id { get; }
@@ -382,27 +377,19 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// The "Biurko" Campaign-category tab: the shared desk (<see cref="CampaignDesk"/>), stocked with
-    /// this system's own tool belt and nothing else. Building the tool list is this system's own job,
-    /// from a <see cref="CampaignEntriesContext"/> it builds itself out of the tab context plus its
-    /// own registry and type catalog.
-    /// </summary>
-    private async Task<ITabContent> CreateDeskTabAsync(CampaignTabContext context)
-    {
-        var toolContext = new CampaignEntriesContext(context, _loadPacksStep.Registry, this);
-        var tools = BuildTools(toolContext);
-
-        return await CampaignDesk.CreateAsync(context, _layoutStore, tools);
-    }
-
-    /// <summary>
-    /// This system's tool belt: one window, "Świat kampanii", listing this campaign's instances and
+    /// This system's tool belt for the frame's desk. Building the tool list is this system's own job,
+    /// from a <see cref="CampaignEntriesContext"/> it builds itself out of the campaign context plus
+    /// its own registry and type catalog. One window, "Świat kampanii", listing this campaign's instances and
     /// offering this system's own resolved entries to bring in as new ones. Sized from the
     /// shell's shared desk-tool-window tokens (<see cref="WorkspaceGridSettings"/>) - no numbers
-    /// invented here.
+    /// invented here. The window starts one cell from the left and two from the top, below the
+    /// corner the frame keeps for its own controls.
     /// </summary>
-    private IReadOnlyList<WorkspacePanelDescriptor> BuildTools(CampaignEntriesContext context)
+    public IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext campaign)
     {
+        ArgumentNullException.ThrowIfNull(campaign);
+
+        var context = new CampaignEntriesContext(campaign, _loadPacksStep.Registry, this);
         var minimum = WorkspaceMetrics.Fallback;
         var minWidth = Math.Max(minimum.MinPanelWidth, WorkspaceGridSettings.ToolPanelMinWidth);
         var minHeight = Math.Max(minimum.MinPanelHeight, WorkspaceGridSettings.ToolPanelMinHeight);
@@ -416,7 +403,7 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
                 WorkspacePanelGroup.World,
                 new PanelPlacement(
                     WorkspaceGridSettings.CellSize,
-                    WorkspaceGridSettings.CellSize,
+                    2 * WorkspaceGridSettings.CellSize,
                     minWidth,
                     minHeight),
                 new PanelConstraints(

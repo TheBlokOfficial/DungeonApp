@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Systems;
+using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Testing;
 
 namespace DungeonApp.Desktop.RenderingTests;
@@ -64,7 +66,9 @@ public sealed class StartupFailureTests
         var campaignLibrary = new CampaignLibraryViewModel(
             repositoriesBySystem, new CreateCampaign(repositoriesBySystem, TimeProvider.System), preparations, systems, _ => Task.CompletedTask);
 
-        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, [step]);
+        var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-startup-tests-{Guid.NewGuid():N}"));
+
+        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, layoutStore, [step]);
     }
 
     private sealed class FailingStep(Exception failure) : IStartupStep

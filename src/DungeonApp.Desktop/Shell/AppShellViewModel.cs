@@ -18,6 +18,7 @@ using DungeonApp.Desktop.Shell.StatusBar;
 using DungeonApp.Desktop.Shell.SystemSelection;
 using DungeonApp.Desktop.Shell.TopBar;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Layout;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DungeonApp.Desktop.Shell;
@@ -40,8 +41,9 @@ public sealed partial class AppShellViewModel : ObservableObject
     private readonly GalleryViewModel _gallery = new();
     private readonly SettingsViewModel _settings = new();
 
+    private readonly WorkspaceLayoutStore _layoutStore;
+
     private ActiveSystemSession? _session;
-    private CampaignPageViewModel? _campaignPage;
 
     // Survives "Zmień system" and every later choice: the frame owns collapse, not any one system's
     // sidebar instance. In memory only - never written to disk.
@@ -52,8 +54,10 @@ public sealed partial class AppShellViewModel : ObservableObject
         IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
         CampaignLibraryViewModel campaignLibrary,
         CampaignPreparationCache preparations,
+        WorkspaceLayoutStore layoutStore,
         IStartupStep[] startupSteps)
     {
+        _layoutStore = layoutStore;
         _repositoriesBySystem = repositoriesBySystem;
         _campaignLibrary = campaignLibrary;
         _preparations = preparations;
@@ -94,6 +98,12 @@ public sealed partial class AppShellViewModel : ObservableObject
     [ObservableProperty]
     public partial string StartupMessage { get; private set; } = "Wczytywanie paczek treści…";
 
+    /// <summary>
+    /// Raised when a change of the open campaign did not reach the disk, whichever tool made it. The
+    /// view shows it; nothing is written in response.
+    /// </summary>
+    public event Action<string>? SaveFailed;
+
     public int TotalSteps => _startupSteps.Length;
 
     [ObservableProperty]
@@ -105,8 +115,7 @@ public sealed partial class AppShellViewModel : ObservableObject
     /// <summary>
     /// Runs the whole startup sequence behind the curtain: content packs, the campaign shelf, and
     /// every visual warmup the GM's first minute could otherwise pay for on click (every compiled
-    /// system's tabs, cards and desk, the sidebar in both collapse states, the shelf and the
-    /// campaign page). Nothing here is bounded by how long it takes - a slower, fully warmed
+    /// system's tabs, cards and desk, the sidebar in both collapse states and the shelf). Nothing here is bounded by how long it takes - a slower, fully warmed
     /// curtain is the point, not a cost to shave.
     /// </summary>
     public async Task RunStartupAsync(StartupUiContext ui)
@@ -167,10 +176,10 @@ public sealed partial class AppShellViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Releases every tab this session ever built. Called from the application's shutdown hooks:
-    /// exiting the program is a release point. A desk tab's own release flushes whatever
-    /// arrangement is still pending (the desk's own <c>CampaignDesk</c> entry point), so this needs
-    /// no separate layout-flush step of its own.
+    /// Releases the desk and every tab this session ever built. Called from the application's
+    /// shutdown hooks: exiting the program is a release point. Releasing the desk flushes whatever
+    /// arrangement is still pending (the <c>CampaignDesk</c> entry point), so this needs no separate
+    /// layout-flush step of its own.
     /// </summary>
     public void FlushPendingState() => _session?.ReleaseAll();
 
@@ -186,10 +195,10 @@ public sealed partial class AppShellViewModel : ObservableObject
         var campaign = await _preparations.TakeAsync(summary);
 
         _session.OpenCampaign(campaign);
-        _campaignPage = new CampaignPageViewModel(campaign, CloseCampaignAsync);
+        var desk = await _session.GetOrCreateDeskAsync(CloseCampaignAsync);
 
-        Sidebar!.SetCampaignOpen(true, campaign.Name.Value);
-        CurrentWorkspaceContent = _campaignPage;
+        Sidebar!.SetCampaignOpen(true);
+        CurrentWorkspaceContent = desk.Content;
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
         TopBar.CampaignName = campaign.Name.Value;
@@ -198,9 +207,8 @@ public sealed partial class AppShellViewModel : ObservableObject
     private async Task CloseCampaignAsync()
     {
         _session?.CloseCampaign();
-        _campaignPage = null;
 
-        Sidebar!.SetCampaignOpen(false, campaignName: null);
+        Sidebar!.SetCampaignOpen(false);
         CurrentWorkspaceContent = _campaignLibrary;
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = "Gotowe";
@@ -213,7 +221,7 @@ public sealed partial class AppShellViewModel : ObservableObject
 
     /// <summary>
     /// Applies the GM's choice of system. Everything expensive - every compiled system's tabs, cards
-    /// and desk, the shelf, the campaign page, the sidebar chrome in both collapse states - already
+    /// and desk, the shelf, the sidebar chrome in both collapse states - already
     /// ran once behind the startup curtain (<see cref="RunStartupAsync"/>); nothing here builds a
     /// type warmup has not already shown once. What is left is cheap and depends only on which
     /// system was picked: the session that will lazily build this system's *real*, cached tab
@@ -226,7 +234,8 @@ public sealed partial class AppShellViewModel : ObservableObject
     /// </summary>
     private async Task ChooseSystemAsync(IGameSystem system)
     {
-        _session = new ActiveSystemSession(system, _repositoriesBySystem[system.Id]);
+        _session = new ActiveSystemSession(system, _repositoriesBySystem[system.Id], _layoutStore);
+        _session.SaveFailed += warning => SaveFailed?.Invoke(warning);
 
         var sidebar = new GlobalSidebarViewModel(
             system.SystemTabs,
@@ -260,7 +269,6 @@ public sealed partial class AppShellViewModel : ObservableObject
     {
         _session?.ReleaseAll();
         _session = null;
-        _campaignPage = null;
 
         if (Sidebar is { } outgoing)
         {
@@ -287,10 +295,11 @@ public sealed partial class AppShellViewModel : ObservableObject
         }
     }
 
-    private Task ShowCampaignPositionAsync()
+    private async Task ShowCampaignPositionAsync()
     {
-        CurrentWorkspaceContent = _session is { IsCampaignOpen: true } ? _campaignPage! : _campaignLibrary;
-        return Task.CompletedTask;
+        CurrentWorkspaceContent = _session is { IsCampaignOpen: true } session
+            ? (await session.GetOrCreateDeskAsync(CloseCampaignAsync)).Content
+            : _campaignLibrary;
     }
 
     /// <summary>"Galeria kontrolek": a frame-owned position, available with or without an open campaign - see <see cref="GalleryViewModel"/>'s own remarks.</summary>

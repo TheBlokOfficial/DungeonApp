@@ -5,7 +5,7 @@ namespace DungeonApp.Desktop.Shell.Sidebars;
 
 /// <summary>
 /// One row on the global sidebar - a fixed id and command, plus a label and icon that a caller can
-/// still update afterwards. Two rows need that: the campaign position (shelf vs. campaign page swap
+/// still update afterwards. Two rows need that: the campaign position (shelf vs. desk swap
 /// both, so its icon is derived state) and a Campaign-category tab (its icon becomes the lock glyph
 /// while no campaign is open).
 /// </summary>

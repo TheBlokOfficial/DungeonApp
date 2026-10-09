@@ -8,7 +8,7 @@ namespace DungeonApp.Desktop.Entries;
 
 /// <summary>
 /// The narrow window a system's own desk tool gets onto the open campaign - built by the system's
-/// own Campaign-category tab factory (the desk tab, today the only consumer) from a
+/// own desk-tools method (today the only consumer) from a
 /// <see cref="CampaignTabContext"/> plus the system's own registry and <see cref="IContentTypeCatalog"/>.
 /// <para>
 /// Deliberately not <see cref="CampaignTabContext"/> itself: that context carries neither a registry

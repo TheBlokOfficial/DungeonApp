@@ -59,7 +59,7 @@ class Program
     // its constructor - the alternative, a static/mutable holder some other code populates before
     // Avalonia touches the app, is exactly the hidden global state this list must not live in.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()))
+        => AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { LayoutStore = BuildLayoutStore() })
             .UsePlatformDetect()
 #if DEBUG
             .WithDeveloperTools()
@@ -71,17 +71,11 @@ class Program
     // never discovered at runtime, because loading one from a plugin directory would buy nothing
     // here.
     //
-    // Also the one place that computes the desk layout store's path and the content packs' path and
-    // hands both to the system in its constructor, so that DungeonApp.Desktop's own composition
-    // root (App.axaml.cs) knows neither path, nor either type, at all.
+    // Also the one place that computes the content packs' path and hands it to the system in its
+    // constructor, so that DungeonApp.Desktop's own composition root (App.axaml.cs) knows neither
+    // that path nor the system's types at all.
     private static IReadOnlyList<IGameSystem> BuildSystems()
     {
-        var appDataDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "DungeonApp");
-
-        var layoutStore = new WorkspaceLayoutStore(appDataDirectory);
-
         // Content packs are user documents just like campaigns, stored alongside them rather than
         // under application data. A pack belongs to the system whose directory contains it:
         // SystemDirectories computes the shared campaign and pack layout from the id this system
@@ -98,6 +92,12 @@ class Program
             SystemDirectories.BundledPacks(AppContext.BaseDirectory, dnd5e),
         ];
 
-        return [new Dnd5eSystem(layoutStore, packsPaths)];
+        return [new Dnd5eSystem(packsPaths)];
     }
+
+    // The desks' layouts are application data, not a document: they follow the screen, not the
+    // campaign folder.
+    private static WorkspaceLayoutStore BuildLayoutStore() => new(Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "DungeonApp"));
 }

@@ -494,13 +494,7 @@ public sealed class Dnd5eSystemTests
     private static Task<ContentRegistry> LoadFixturesAsync() =>
         new ContentPackLoader(RepositoryRoot.PackFixtures, NewSystem()).LoadAsync(CancellationToken.None);
 
-    /// <summary>
-    /// None of these tests ever open a campaign, so nothing here writes to the layout store - a
-    /// fresh temp directory per call is enough, the same isolation pattern
-    /// <c>WorkspaceLayoutStoreTests</c> uses for the real thing.
-    /// </summary>
     private static Dnd5eSystem NewSystem() => new(
-        new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-{Guid.NewGuid():N}")),
         [Path.Combine(Path.GetTempPath(), $"dnd5e-system-tests-packs-{Guid.NewGuid():N}")]);
 
     private const string PackJson = """

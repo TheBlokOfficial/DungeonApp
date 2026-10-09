@@ -18,7 +18,7 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// starting a duplicate one.
 /// <para>
 /// Caches only the <see cref="Campaign"/> itself - the desk layout belongs to the desk (its own
-/// <c>CampaignDesk</c> entry point), which loads it when a desk tab is actually built.
+/// <c>CampaignDesk</c> entry point), which loads it when the desk is actually built.
 /// </para>
 /// <para>
 /// Every method here is keyed by a <see cref="CampaignSummary"/>, not a bare <see cref="CampaignId"/>:

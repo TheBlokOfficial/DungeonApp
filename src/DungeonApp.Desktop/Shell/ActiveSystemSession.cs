@@ -5,36 +5,46 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Persistence;
 using DungeonApp.Core.State;
 using DungeonApp.Desktop.Systems;
+using DungeonApp.Desktop.Workspace;
+using DungeonApp.Desktop.Workspace.Layout;
 
 namespace DungeonApp.Desktop.Shell;
 
 /// <summary>
-/// Owns one chosen system's tab lifecycle: its System-category tabs, its Campaign-category tabs, and
-/// the currently open campaign, if any. Free of Avalonia's dispatcher and the startup-warmup
+/// Owns one chosen system's tab lifecycle: its System-category tabs, its Campaign-category tabs, the
+/// desk of the open campaign, and the currently open campaign, if any. Free of Avalonia's dispatcher and the startup-warmup
 /// machinery on purpose - <see cref="AppShellViewModel"/> needs both of those to drive the screen,
 /// but the navigation contract with a system itself (the tab lifecycle, testable on a substituted
 /// system) does not, which is what makes this type unit-testable without a running application,
 /// the same way <see cref="CampaignSession"/> is.
 /// <para>
 /// A tab's content is built at most once and cached here until it is released - by
-/// <see cref="CloseCampaign"/> (Campaign-category tabs only), or by <see cref="ReleaseAll"/>, which
-/// covers every other release point: returning to system selection and exiting the program. Warmup
-/// never touches this cache at all - it builds and releases its own throwaway content against a
-/// throwaway <see cref="CampaignTabContext"/>, so it can never leave anything here for a later real
-/// open to find already built.
+/// <see cref="CloseCampaign"/> (the desk and Campaign-category tabs only), or by
+/// <see cref="ReleaseAll"/>, which covers every other release point: returning to system selection
+/// and exiting the program. Warmup never shares an instance with the real one - it builds and
+/// releases its own throwaway session, so it can never leave anything here for a later real open to
+/// find already built.
 /// </para>
 /// </summary>
-public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository campaigns)
+public sealed class ActiveSystemSession(
+    IGameSystem system, ICampaignRepository campaigns, WorkspaceLayoutStore layoutStore)
 {
     private readonly Dictionary<string, ITabContent> _systemTabContents = [];
     private readonly Dictionary<string, ITabContent> _campaignTabContents = [];
 
     private CampaignSession? _openCampaign;
     private CampaignTabContext? _campaignTabContext;
+    private ITabContent? _desk;
 
     public IGameSystem System { get; } = system;
 
     public bool IsCampaignOpen => _openCampaign is not null;
+
+    /// <summary>
+    /// Raised when a change of the open campaign could not be saved, whichever tool made it - see
+    /// <see cref="CampaignSession.SaveFailed"/>. Carries the text for the GM; changes nothing.
+    /// </summary>
+    public event Action<string>? SaveFailed;
 
     /// <summary>
     /// Opens <paramref name="campaign"/>, closing whatever was open before it. The campaign is
@@ -48,12 +58,17 @@ public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository 
         CloseCampaign();
 
         _openCampaign = new CampaignSession(campaign, campaigns, System.StateModels);
+        _openCampaign.SaveFailed += OnSaveFailed;
         _campaignTabContext = new CampaignTabContext(_openCampaign);
     }
 
-    /// <summary>Releases every Campaign-category tab built for the open campaign and closes it.</summary>
+    /// <summary>Releases the desk and every Campaign-category tab built for the open campaign and closes it.</summary>
     public void CloseCampaign()
     {
+        // The desk first: releasing it saves the layout still pending.
+        _desk?.Dispose();
+        _desk = null;
+
         foreach (var content in _campaignTabContents.Values)
         {
             content.Dispose();
@@ -61,8 +76,48 @@ public sealed class ActiveSystemSession(IGameSystem system, ICampaignRepository 
 
         _campaignTabContents.Clear();
 
+        if (_openCampaign is not null)
+        {
+            _openCampaign.SaveFailed -= OnSaveFailed;
+        }
+
         _openCampaign = null;
         _campaignTabContext = null;
+    }
+
+    private void OnSaveFailed(string warning) => SaveFailed?.Invoke(warning);
+
+    /// <summary>
+    /// The open campaign's desk - the campaign position - stocked with this system's tools. Built on
+    /// first call and the same instance on every later one, for as long as the same campaign stays
+    /// open. <paramref name="closeCampaign"/> is what the desk offers for closing the campaign.
+    /// </summary>
+    public async Task<ITabContent> GetOrCreateDeskAsync(Func<Task> closeCampaign)
+    {
+        ArgumentNullException.ThrowIfNull(closeCampaign);
+
+        if (_campaignTabContext is null)
+        {
+            throw new InvalidOperationException("No campaign is open.");
+        }
+
+        if (_desk is null)
+        {
+            var context = _campaignTabContext;
+            var desk = await CampaignDesk.CreateAsync(context, layoutStore, System.CreateDeskTools(context), closeCampaign);
+
+            // The campaign may have been closed while the layout was loading; this desk then belongs
+            // to nobody.
+            if (!ReferenceEquals(_campaignTabContext, context))
+            {
+                desk.Dispose();
+                throw new InvalidOperationException("The campaign was closed while its desk was being built.");
+            }
+
+            _desk = desk;
+        }
+
+        return _desk;
     }
 
     /// <summary>The one door any change goes through, while a campaign is open.</summary>

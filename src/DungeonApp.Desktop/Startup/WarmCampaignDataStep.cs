@@ -7,9 +7,8 @@ namespace DungeonApp.Desktop.Startup;
 
 /// <summary>
 /// Warms every shelf campaign's data (repository read) - background work without touching
-/// UI. Remembers the first shelf campaign for visual warmup of the campaign page, desk and
-/// each system's campaign tabs (<see cref="WarmFrameChromeStep"/>,
-/// <see cref="WarmSystemTabsStep"/>) - visually only the first campaign, never the whole shelf.
+/// UI. Remembers the first shelf campaign for visual warmup of the desk and
+/// each system's campaign tabs (<see cref="WarmSystemTabsStep"/>) - visually only the first campaign, never the whole shelf.
 /// </summary>
 public sealed class WarmCampaignDataStep(
     CampaignPreparationCache preparations,

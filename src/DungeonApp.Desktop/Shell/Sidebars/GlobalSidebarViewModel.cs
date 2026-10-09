@@ -9,8 +9,9 @@ using DungeonApp.Desktop.Systems;
 namespace DungeonApp.Desktop.Shell.Sidebars;
 
 /// <summary>
-/// The sidebar shown once a system is chosen: three categories - Kampania (the campaign position,
-/// plus the chosen system's Campaign-category tabs), System (the chosen system's System-category
+/// The sidebar shown once a system is chosen: three categories - Kampania (the campaign position -
+/// the shelf, or the desk once a campaign is open - plus the chosen system's Campaign-category
+/// tabs, which stand under the desk), System (the chosen system's System-category
 /// tabs, shown on screen as "Biblioteka") and Aplikacja (shown on screen as "System" - "Galeria
 /// kontrolek" and "Ustawienia", frame-owned positions). The category names are this class's own row
 /// grouping - and, for the middle and last one, deliberately not what the screen shows for them;
@@ -27,9 +28,10 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
 {
     private const string LockedIconResourceKey = "DungeonIconLock";
     private const string ShelfIconResourceKey = "DungeonIconBookOpen";
-    private const string CampaignPageIconResourceKey = "DungeonIconCampaignRecord";
-    // The campaign position's label while no campaign is open.
+    private const string DeskIconResourceKey = "DungeonIconDockBottom";
+    // The campaign position's label while no campaign is open, and while one is.
     private const string ShelfLabel = "Kampanie";
+    private const string DeskLabel = "Biurko";
 
     private readonly List<NavigationItemViewModel> _selectableItems = [];
     private readonly List<NavigationItemViewModel> _allItems = [];
@@ -125,7 +127,7 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
         Select(CampaignPositionItem);
     }
 
-    /// <summary>The Kampania category's own row - the shelf when no campaign is open, the campaign page once one is.</summary>
+    /// <summary>The Kampania category's own row - the shelf when no campaign is open, the desk once one is.</summary>
     public NavigationItemViewModel CampaignPositionItem { get; }
 
     /// <summary>The Kampania category's tab rows, one per <see cref="Systems.IGameSystem.CampaignTabs"/> entry, in declared order.</summary>
@@ -196,13 +198,13 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
 
     /// <summary>
     /// Called by the shell on every campaign open and close. Swaps the campaign position's label and
-    /// icon between the shelf and the campaign page, and locks or unlocks every Campaign-category
+    /// icon between the shelf and the desk, and locks or unlocks every Campaign-category
     /// tab - each one's icon becomes the lock glyph while locked, its own declared icon while not.
     /// </summary>
-    public void SetCampaignOpen(bool isOpen, string? campaignName)
+    public void SetCampaignOpen(bool isOpen)
     {
-        CampaignPositionItem.Label = isOpen ? campaignName ?? ShelfLabel : ShelfLabel;
-        CampaignPositionItem.IconResourceKey = isOpen ? CampaignPageIconResourceKey : ShelfIconResourceKey;
+        CampaignPositionItem.Label = isOpen ? DeskLabel : ShelfLabel;
+        CampaignPositionItem.IconResourceKey = isOpen ? DeskIconResourceKey : ShelfIconResourceKey;
 
         foreach (var (item, unlockedIconResourceKey) in _campaignTabItems)
         {

@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
+using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
+using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Testing;
@@ -130,9 +132,8 @@ public sealed class ActiveSystemSessionTests
     }
 
     /// <summary>
-    /// Mimics <c>AppShellViewModel.WarmFirstCampaignAsync</c>: warmup builds and disposes its own
-    /// content against a throwaway session, entirely outside <see cref="ActiveSystemSession"/>'s
-    /// cache. A later real open of the same campaign must still build fresh content - warmup
+    /// Mimics a warmup that builds and disposes its own content against a throwaway session,
+    /// outside <see cref="ActiveSystemSession"/>'s cache. A later real open of the same campaign must still build fresh content - warmup
     /// releases what it built, so its instance never leaks into the real one.
     /// </summary>
     [Fact]
@@ -154,7 +155,7 @@ public sealed class ActiveSystemSessionTests
         warmedUp.Dispose();
 
         var system = new FakeGameSystem(FakeSystemId, [], campaignTabs: [declaration]);
-        var session = new ActiveSystemSession(system, repository);
+        var session = new ActiveSystemSession(system, repository, NewLayoutStore());
         session.OpenCampaign(campaign);
         var real = await session.GetOrCreateCampaignTabAsync(declaration);
 
@@ -163,12 +164,79 @@ public sealed class ActiveSystemSessionTests
         Assert.False(((FakeTabContent)real).IsDisposed);
     }
 
+    [Fact]
+    public async Task A_failed_save_raises_the_save_failure_notification_whichever_tool_changed_the_campaign()
+    {
+        var system = new FakeGameSystem(FakeSystemId);
+        var session = new ActiveSystemSession(system, new FailingSaveRepository(), NewLayoutStore());
+        session.OpenCampaign(NewCampaign());
+        var warnings = new System.Collections.Generic.List<string>();
+        session.SaveFailed += warnings.Add;
+
+        var result = await session.ChangeAsync(new CampaignChange());
+
+        Assert.NotNull(result.SaveWarning);
+        Assert.Equal([result.SaveWarning], warnings);
+    }
+
+    [Fact]
+    public async Task A_saved_change_does_not_raise_the_save_failure_notification()
+    {
+        var session = BuildSession();
+        session.OpenCampaign(NewCampaign());
+        var raised = false;
+        session.SaveFailed += _ => raised = true;
+
+        await session.ChangeAsync(new CampaignChange());
+
+        Assert.False(raised);
+    }
+
+    [Fact]
+    public async Task A_closed_campaign_no_longer_raises_the_save_failure_notification()
+    {
+        var session = new ActiveSystemSession(
+            new FakeGameSystem(FakeSystemId), new FailingSaveRepository(), NewLayoutStore());
+        session.OpenCampaign(NewCampaign());
+        var raised = false;
+        session.SaveFailed += _ => raised = true;
+
+        session.CloseCampaign();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => session.ChangeAsync(new CampaignChange()));
+        Assert.False(raised);
+    }
+
     private static ActiveSystemSession BuildSession(
         System.Collections.Generic.IReadOnlyList<SystemTabDeclaration>? systemTabs = null,
         System.Collections.Generic.IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null)
     {
         var system = new FakeGameSystem(FakeSystemId, systemTabs: systemTabs, campaignTabs: campaignTabs);
-        return new ActiveSystemSession(system, new InMemoryCampaignRepository());
+        return new ActiveSystemSession(system, new InMemoryCampaignRepository(), NewLayoutStore());
+    }
+
+    private static WorkspaceLayoutStore NewLayoutStore() =>
+        new(System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"DungeonApp-session-tests-{Guid.NewGuid():N}"));
+
+    private sealed class FailingSaveRepository : ICampaignRepository
+    {
+        public Task SaveAsync(
+            Campaign campaign,
+            System.Collections.Generic.IReadOnlyList<DungeonApp.Core.State.StateModelDeclaration> declarations,
+            System.Threading.CancellationToken cancellationToken = default) =>
+            throw new System.IO.IOException("Simulated disk failure.");
+
+        public Task<Campaign?> GetAsync(
+            CampaignId id,
+            System.Collections.Generic.IReadOnlyList<DungeonApp.Core.State.StateModelDeclaration> declarations,
+            System.Threading.CancellationToken cancellationToken = default) => Task.FromResult<Campaign?>(null);
+
+        public Task DeleteAsync(CampaignId id, System.Threading.CancellationToken cancellationToken = default) =>
+            Task.CompletedTask;
+
+        public Task<System.Collections.Generic.IReadOnlyList<CampaignSummary>> ListAsync(
+            System.Threading.CancellationToken cancellationToken = default) =>
+            Task.FromResult<System.Collections.Generic.IReadOnlyList<CampaignSummary>>([]);
     }
 
     private static Campaign NewCampaign() => Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System);

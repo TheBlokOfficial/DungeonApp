@@ -10,12 +10,12 @@ using DungeonApp.Desktop.Workspace.Panels;
 namespace DungeonApp.Desktop.Workspace;
 
 /// <summary>
-/// The desk's one public entry point: a system builds its desk tab by handing this exactly a
-/// campaign context, a layout store and its own tool list, and gets back a finished
-/// <see cref="ITabContent"/> that has already loaded its own saved layout.
+/// The desk's one public entry point: the frame builds the open campaign's desk by handing this a
+/// campaign context, a layout store, the system's tool list and the way to close the campaign, and
+/// gets back a finished <see cref="ITabContent"/> that has already loaded its own saved layout.
 /// <para>
-/// Nothing upstream of this call - a system's tab factory, the shell that invokes it - reads or
-/// writes a layout file directly; this is the only place that does.
+/// Nothing upstream of this call reads or writes a layout file directly; this is the only place
+/// that does.
 /// </para>
 /// </summary>
 public static class CampaignDesk
@@ -24,11 +24,13 @@ public static class CampaignDesk
         CampaignTabContext campaign,
         WorkspaceLayoutStore layoutStore,
         IReadOnlyList<WorkspacePanelDescriptor> tools,
+        Func<Task> closeCampaign,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(campaign);
         ArgumentNullException.ThrowIfNull(layoutStore);
         ArgumentNullException.ThrowIfNull(tools);
+        ArgumentNullException.ThrowIfNull(closeCampaign);
 
         var workspaceId = campaign.CampaignId.ToString();
 
@@ -37,7 +39,7 @@ public static class CampaignDesk
         // off-thread regardless (see its doc comment) - this await only decides where the *rest of
         // this method* resumes, and that rest is UI-bound.
         var layout = await layoutStore.LoadAsync(workspaceId, cancellationToken);
-        var viewModel = new CampaignWorkspaceViewModel(layoutStore, workspaceId, layout, tools);
+        var viewModel = new CampaignWorkspaceViewModel(layoutStore, workspaceId, layout, tools, closeCampaign);
 
         return new CampaignWorkspaceTabContent(viewModel);
     }

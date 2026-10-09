@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DungeonApp.Core.Campaigns;
@@ -8,6 +9,7 @@ using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Testing;
 
 namespace DungeonApp.Desktop.Tests;
@@ -97,6 +99,7 @@ public sealed class AppShellViewModelTests
             repositoriesBySystem,
             campaignLibrary,
             preparations,
+            new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-shell-tests-{Guid.NewGuid():N}")),
             startupSteps: []);
     }
 }

@@ -4,6 +4,7 @@ using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.RenderingTests;
 
@@ -22,6 +23,8 @@ internal sealed class EmptyGameSystem : IGameSystem
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; } = [];
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; } = [];
+
+    public IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext context) => [];
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 

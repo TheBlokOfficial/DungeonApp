@@ -90,13 +90,28 @@ public sealed class CampaignSessionTests
         var session = new CampaignSession(NewCampaign(), repository, [Model]);
         var notified = false;
         session.Changed += _ => notified = true;
+        var warnings = new List<string>();
+        session.SaveFailed += warnings.Add;
 
         var result = await session.ChangeAsync(AddChange("a"));
 
         Assert.False(result.WasDenied);
         Assert.NotNull(result.SaveWarning);
         Assert.True(notified);
+        Assert.Equal([result.SaveWarning], warnings);
         Assert.Contains("a", session.Campaign.Snapshot.Get(Model).Keys);
+    }
+
+    [Fact]
+    public async Task A_saved_change_does_not_raise_the_save_failure_notification()
+    {
+        var session = new CampaignSession(NewCampaign(), new RecordingRepository(), [Model]);
+        var raised = false;
+        session.SaveFailed += _ => raised = true;
+
+        await session.ChangeAsync(AddChange("a"));
+
+        Assert.False(raised);
     }
 
     /// <summary>

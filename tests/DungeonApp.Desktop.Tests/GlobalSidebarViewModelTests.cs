@@ -9,7 +9,7 @@ namespace DungeonApp.Desktop.Tests;
 /// The campaign position: the one Kampania-category row that belongs to the frame itself, not to
 /// the chosen system. Asserts the row exists straight out of construction, so the shelf always has
 /// a position on the sidebar once a system is chosen, and its three state transitions: selected by
-/// default, relabelled on open, and back to the shelf (still selected) on close.
+/// default, turned into the desk on open, and back to the shelf (still selected) on close.
 /// </summary>
 public sealed class GlobalSidebarViewModelTests
 {
@@ -24,26 +24,32 @@ public sealed class GlobalSidebarViewModelTests
     }
 
     [Fact]
-    public void Opening_a_campaign_relabels_the_campaign_position_to_the_campaigns_own_name()
+    public void Opening_a_campaign_turns_the_campaign_position_into_the_desk()
     {
         var sidebar = BuildSidebar();
+        var shelfIcon = sidebar.CampaignPositionItem.IconResourceKey;
 
-        sidebar.SetCampaignOpen(true, "Klątwa Strahda");
+        sidebar.SetCampaignOpen(true);
 
-        Assert.Equal("Klątwa Strahda", sidebar.CampaignPositionItem.Label);
+        Assert.Equal("Biurko", sidebar.CampaignPositionItem.Label);
+        Assert.Equal("DungeonIconDockBottom", sidebar.CampaignPositionItem.IconResourceKey);
+        Assert.NotEqual(shelfIcon, sidebar.CampaignPositionItem.IconResourceKey);
+        Assert.Single(sidebar.CampaignItems);
     }
 
     [Fact]
     public void Closing_the_campaign_restores_the_shelf_label_and_keeps_the_position_selected()
     {
         var sidebar = BuildSidebar();
-        sidebar.SetCampaignOpen(true, "Klątwa Strahda");
+        var shelfIcon = sidebar.CampaignPositionItem.IconResourceKey;
+        sidebar.SetCampaignOpen(true);
         sidebar.ActivateCampaignPosition();
 
-        sidebar.SetCampaignOpen(false, campaignName: null);
+        sidebar.SetCampaignOpen(false);
         sidebar.ActivateCampaignPosition();
 
         Assert.Equal("Kampanie", sidebar.CampaignPositionItem.Label);
+        Assert.Equal(shelfIcon, sidebar.CampaignPositionItem.IconResourceKey);
         Assert.True(sidebar.CampaignPositionItem.IsActive);
     }
 
