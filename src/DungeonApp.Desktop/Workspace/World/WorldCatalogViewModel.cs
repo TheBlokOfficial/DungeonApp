@@ -414,8 +414,16 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
         LayoutChanged?.Invoke();
     }
 
-    /// <summary>Ctrl+Shift+N: a folder "Nowy katalog" where Ctrl+N would add.</summary>
-    public Task CreateFolderInTargetAsync() => CreateFolderAsync(ResolveAddTarget().Folder, NewFolderName);
+    /// <summary>Ctrl+Shift+N: a folder "Nowy katalog" where Ctrl+N would add, its name open for typing.</summary>
+    public async Task CreateFolderInTargetAsync()
+    {
+        await CreateFolderAsync(ResolveAddTarget().Folder, NewFolderName);
+
+        if (PrimaryRow is { FolderId: not null } created)
+        {
+            BeginRename(created);
+        }
+    }
 
     // ---- Reading the tree ----
 
