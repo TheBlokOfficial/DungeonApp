@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.FeedbackSection">
     <!-- The frame's ProgressBar theme, ConfirmationDialog and NotificationToast, live: determinate
          progress at 0, part and full, indeterminate, disabled (both), a custom fill colour; buttons
@@ -35,6 +36,21 @@
             <Button Content="Akcja główna" Click="OnConfirmMainClick" />
             <Button Content="Akcja niszcząca" Click="OnConfirmDestructiveClick" />
             <TextBlock x:Name="ConfirmationAnswer"
+                       Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+                       VerticalAlignment="Center"
+                       Classes="secondary"
+                       Text="—" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="PALETA" />
+        <!-- Static look of the palette (not opened over the window) with sample rows, and a button opening the real one. -->
+        <Border Height="300" Width="640" HorizontalAlignment="Left" ClipToBounds="True"
+                BorderBrush="{DynamicResource DungeonBorderBrush}" BorderThickness="1">
+            <controls:Palette x:Name="StaticPalette" />
+        </Border>
+        <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+            <Button Content="Otwórz paletę" Click="OnPaletteClick" />
+            <TextBlock x:Name="PaletteAnswer"
                        Margin="{DynamicResource DungeonPaddingMdHorizontal}"
                        VerticalAlignment="Center"
                        Classes="secondary"

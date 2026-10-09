@@ -1,0 +1,119 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:conv="using:DungeonApp.Desktop.Entries.Converters">
+
+    <!--
+        Palette (controls:Palette) - invocation and behaviour in Controls/Palette.cs.
+        The control fills the window layer with a transparent background (it catches a click outside the card,
+        which closes it; no scrim). Card at the top centre, flyout surface like the confirmation dialog
+        (DungeonBackstageCardBrush, 1 px InputBorder, DungeonFlyoutShadow, DungeonFlyoutCornerRadius), maximum width
+        DungeonPaletteMaxWidth, DungeonPaddingXxl from the window edges, DungeonPaddingLg padding.
+        Top to bottom, DungeonSpacingSm apart: target line (caption, muted), search field (IconField.search),
+        optional hint (caption, muted), result list (library rows: ListRow with selection stripe, icon, name,
+        muted tags, badge - plain muted text or WordTag in the badge colour) in one ScrollViewer of at most
+        DungeonPaletteListMaxHeight; with no results a muted "Brak wyników". Rows do not take focus - it stays
+        in the field. Opening: fade and slide down by DungeonPopupOpenOffset (OverlayAppearMotion); closing is
+        immediate; system animations disabled - immediate opening.
+    -->
+    <ControlTheme x:Key="{x:Type controls:Palette}" TargetType="controls:Palette">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="{TemplateBinding Background}">
+                    <Border Name="PART_Card"
+                            MaxWidth="{DynamicResource DungeonPaletteMaxWidth}"
+                            Margin="{DynamicResource DungeonPaddingXxl}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Padding="{DynamicResource DungeonPaddingLg}"
+                            Background="{DynamicResource DungeonBackstageCardBrush}"
+                            BorderBrush="{DynamicResource DungeonInputBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
+                            BoxShadow="{DynamicResource DungeonFlyoutShadow}">
+                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                            <TextBlock Classes="caption muted"
+                                       Text="{TemplateBinding TargetText}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <controls:IconField Classes="search">
+                                <TextBox Name="PART_Search" PlaceholderText="{TemplateBinding Placeholder}" />
+                            </controls:IconField>
+                            <TextBlock Classes="caption muted"
+                                       Text="{TemplateBinding Hint}"
+                                       IsVisible="{TemplateBinding Hint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                       TextWrapping="Wrap" />
+                            <ScrollViewer MaxHeight="{DynamicResource DungeonPaletteListMaxHeight}"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <ItemsControl Name="PART_Rows" Grid.IsSharedSizeScope="True">
+                                        <ItemsControl.Styles>
+                                            <Style Selector="controls|ListRow:selected TextBlock.row-name">
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                            </Style>
+                                        </ItemsControl.Styles>
+                                        <ItemsControl.DataTemplates>
+                                            <DataTemplate DataType="controls:PaletteRowModel">
+                                                <controls:ListRow ShowsSelectionStripe="True"
+                                                                  IsSelected="{Binding IsSelected}"
+                                                                  Focusable="False">
+                                                    <Grid ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="Auto" SharedSizeGroup="PaletteBadge" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    Spacing="{DynamicResource DungeonSpacingSm}">
+                                                            <controls:ForegroundIcon Width="{DynamicResource DungeonListRowIconSize}"
+                                                                                     Height="{DynamicResource DungeonListRowIconSize}"
+                                                                                     VerticalAlignment="Center"
+                                                                                     Source="{Binding Icon}"
+                                                                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                                                            <TextBlock Classes="body row-name"
+                                                                       Text="{Binding DisplayName}"
+                                                                       VerticalAlignment="Center"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Classes="caption muted"
+                                                                   Text="{Binding Tags}"
+                                                                   VerticalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="2" Classes="mono muted"
+                                                                   Text="{Binding BadgeText}"
+                                                                   IsVisible="{Binding HasPlainBadge}"
+                                                                   VerticalAlignment="Center" />
+                                                        <controls:WordTag Grid.Column="2" Classes="custom"
+                                                                          IsVisible="{Binding HasColoredBadge}"
+                                                                          Content="{Binding BadgeText}"
+                                                                          Background="{Binding BadgeBrush, Converter={x:Static conv:DimBrushConverter.Instance}}"
+                                                                          Foreground="{Binding BadgeBrush}" />
+                                                    </Grid>
+                                                </controls:ListRow>
+                                            </DataTemplate>
+                                        </ItemsControl.DataTemplates>
+                                    </ItemsControl>
+                                    <TextBlock Name="PART_Empty"
+                                               Classes="body muted"
+                                               Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+                                               Text="Brak wyników" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

@@ -37,6 +37,7 @@
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Slider.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ProgressBar.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ConfirmationDialog.axaml" />
+        <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Palette.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/NotificationToast.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/FlyoutPresenter.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ToolTip.axaml" />

@@ -433,6 +433,9 @@
         <!-- Confirmation dialog: maximum card width (narrower in a small window, with
              DungeonSpacingXxl from window edges). -->
         <x:Double x:Key="DungeonConfirmationDialogMaxWidth">400</x:Double>
+        <!-- Palette: maximum card width and maximum height of its result list (longer lists scroll). -->
+        <x:Double x:Key="DungeonPaletteMaxWidth">520</x:Double>
+        <x:Double x:Key="DungeonPaletteListMaxHeight">320</x:Double>
         <!-- Notification toast: fixed width - longer content wraps rather than expanding the toast. -->
         <x:Double x:Key="DungeonNotificationWidth">340</x:Double>
 
