@@ -71,7 +71,7 @@ public sealed class ActiveSystemSessionDeskTests
 
         var viewModel = Assert.IsType<DungeonApp.Desktop.Workspace.CampaignWorkspaceViewModel>(
             Assert.IsAssignableFrom<Avalonia.Controls.Control>(desk.Content).DataContext);
-        await viewModel.CloseCampaign();
+        await viewModel.Leaf.CloseCampaignCommand.ExecuteAsync(null);
 
         Assert.True(closed);
     }

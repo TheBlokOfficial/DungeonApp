@@ -352,13 +352,6 @@ internal static class Program
             SaveCrop(window, deskView, UniqueName("desk_window"));
         }
 
-        panel.ToggleMaximizeCommand.Execute(null);
-        Settle();
-        if (Wants("desk_maximized"))
-        {
-            SaveCrop(window, deskView, UniqueName("desk_maximized"));
-        }
-
         if (Wants("window_full"))
         {
             SaveCrop(window, window, UniqueName("window_full"));

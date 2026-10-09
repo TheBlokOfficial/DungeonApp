@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:deck="using:DungeonApp.Desktop.Workspace.Deck"
+             xmlns:leaf="using:DungeonApp.Desktop.Workspace.Leaf"
              xmlns:surface="using:DungeonApp.Desktop.Workspace.Controls"
              xmlns:workspace="using:DungeonApp.Desktop.Workspace"
              x:Class="DungeonApp.Desktop.Workspace.CampaignWorkspaceView"
@@ -28,5 +29,9 @@
              never be lost under them: the clamp keeps every panel fully inside the surface. -->
         <deck:PanelDeckView HorizontalAlignment="Left"
                             VerticalAlignment="Bottom" />
+
+        <!-- Last, so it lies above every window: the strip belongs to the frame, not the desk's
+             stacking, and windows may pass under it. -->
+        <leaf:DeskLeafView DataContext="{Binding Leaf}" />
     </Grid>
 </UserControl>

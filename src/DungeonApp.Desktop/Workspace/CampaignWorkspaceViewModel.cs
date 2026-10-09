@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Layout;
+using DungeonApp.Desktop.Workspace.Leaf;
 using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Workspace;
@@ -44,7 +45,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         IReadOnlyList<WorkspacePanelDescriptor> tools,
         Func<Task> closeCampaign)
     {
-        CloseCampaign = closeCampaign;
+        Leaf = new DeskLeafViewModel(closeCampaign);
         _catalog = PanelCatalog.For(tools);
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
@@ -56,8 +57,8 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         Restore(layout);
     }
 
-    /// <summary>Closes the campaign this desk belongs to; the frame's, handed in so a control on the desk can offer it.</summary>
-    public Func<Task> CloseCampaign { get; }
+    /// <summary>The desk's command strip, above every window; its close is the frame's, handed in.</summary>
+    public DeskLeafViewModel Leaf { get; }
 
     public ObservableCollection<WorkspacePanelViewModel> Panels { get; } = [];
 
