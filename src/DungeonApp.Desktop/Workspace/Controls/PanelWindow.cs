@@ -62,6 +62,18 @@ public class PanelWindow : ContentControl
     public static readonly StyledProperty<bool> CanMinimizeProperty =
         AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanMinimize), defaultValue: true);
 
+    /// <summary>Absent, not disabled: a panel with a size cap shows no maximize button at all.</summary>
+    public static readonly StyledProperty<bool> CanMaximizeProperty =
+        AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanMaximize), defaultValue: true);
+
+    // Derived from CanMinimize / CanMaximize / PanelState. They are properties rather than styles on
+    // :maximized because the template binds them, and a template binding outranks a style setter.
+    public static readonly StyledProperty<bool> ShowMinimizeButtonProperty =
+        AvaloniaProperty.Register<PanelWindow, bool>(nameof(ShowMinimizeButton), defaultValue: true);
+
+    public static readonly StyledProperty<bool> ShowMaximizeButtonProperty =
+        AvaloniaProperty.Register<PanelWindow, bool>(nameof(ShowMaximizeButton), defaultValue: true);
+
     public static readonly StyledProperty<ICommand?> ActivateCommandProperty =
         AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(ActivateCommand));
 
@@ -105,6 +117,10 @@ public class PanelWindow : ContentControl
         // Button or TextBox was actually clicked. A bubbling handler would miss those entirely,
         // because they mark the event handled before it reaches us.
         AddHandler(PointerPressedEvent, OnPreviewPointerPressed, RoutingStrategies.Tunnel);
+
+        // Focusable so Esc reaches the window even when nothing inside it holds the focus (after a
+        // double-click on the title, which is not a focus target itself).
+        Focusable = true;
     }
 
     public event EventHandler<RoutedEventArgs>? GestureCompleted
@@ -149,6 +165,24 @@ public class PanelWindow : ContentControl
         set => SetValue(CanMinimizeProperty, value);
     }
 
+    public bool CanMaximize
+    {
+        get => GetValue(CanMaximizeProperty);
+        set => SetValue(CanMaximizeProperty, value);
+    }
+
+    public bool ShowMinimizeButton
+    {
+        get => GetValue(ShowMinimizeButtonProperty);
+        private set => SetValue(ShowMinimizeButtonProperty, value);
+    }
+
+    public bool ShowMaximizeButton
+    {
+        get => GetValue(ShowMaximizeButtonProperty);
+        private set => SetValue(ShowMaximizeButtonProperty, value);
+    }
+
     public ICommand? ActivateCommand
     {
         get => GetValue(ActivateCommandProperty);
@@ -187,6 +221,15 @@ public class PanelWindow : ContentControl
     {
         base.OnPropertyChanged(change);
 
+        if (change.Property == CanMinimizeProperty
+            || change.Property == CanMaximizeProperty
+            || change.Property == PanelStateProperty)
+        {
+            var maximized = PanelState == PanelDisplayState.Maximized;
+            ShowMinimizeButton = CanMinimize && !maximized;
+            ShowMaximizeButton = CanMaximize && !maximized;
+        }
+
         if (change.Property == IsActiveProperty)
         {
             PseudoClasses.Set(":active", IsActive);
@@ -196,6 +239,33 @@ public class PanelWindow : ContentControl
             CompleteSnapAnimation();
             PseudoClasses.Set(":minimized", PanelState == PanelDisplayState.Minimized);
             PseudoClasses.Set(":maximized", PanelState == PanelDisplayState.Maximized);
+
+            if (PanelState == PanelDisplayState.Maximized && !IsKeyboardFocusWithin)
+            {
+                Focus();
+            }
+        }
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        // Bubbling: a text box or any content that used Esc has already marked it handled.
+        if (e.Handled || e.Key != Key.Escape || PanelState != PanelDisplayState.Maximized)
+        {
+            return;
+        }
+
+        ToggleMaximize();
+        e.Handled = true;
+    }
+
+    private void ToggleMaximize()
+    {
+        if (ToggleMaximizeCommand?.CanExecute(null) == true)
+        {
+            ToggleMaximizeCommand.Execute(null);
         }
     }
 
@@ -315,9 +385,9 @@ public class PanelWindow : ContentControl
 
         if (isTitleBar && e.ClickCount == 2)
         {
-            if (ToggleMaximizeCommand?.CanExecute(null) == true)
+            if (CanMaximize || PanelState == PanelDisplayState.Maximized)
             {
-                ToggleMaximizeCommand.Execute(null);
+                ToggleMaximize();
             }
 
             e.Handled = true;

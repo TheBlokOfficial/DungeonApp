@@ -619,7 +619,7 @@
         <!-- TEXT STRINGS ============================================================= -->
         <x:String x:Key="DungeonStringMinimizeToolTip">Zminimalizuj</x:String>
         <x:String x:Key="DungeonStringMaximizeToolTip">Maksymalizuj</x:String>
-        <x:String x:Key="DungeonStringRestoreToolTip">Przywróć</x:String>
+        <x:String x:Key="DungeonStringMaximizedTitleToolTip">Dwuklik albo Esc — przywróć</x:String>
         <x:String x:Key="DungeonStringCloseCampaignToolTip">Zamknij kampanię</x:String>
         <x:String x:Key="DungeonStringUndoToolTip">Cofnij (Ctrl+Z)</x:String>
         <x:String x:Key="DungeonStringRedoToolTip">Ponów (Ctrl+Y)</x:String>

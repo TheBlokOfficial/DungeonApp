@@ -39,6 +39,9 @@ public interface IWorkspacePanel : INotifyPropertyChanged
 
     double MaxHeight { get; }
 
+    /// <summary>True when the panel has no upper size bound in either axis, so it can fill the desk.</summary>
+    bool CanMaximize { get; }
+
     int ZOrder { get; }
 
     bool IsActive { get; }
