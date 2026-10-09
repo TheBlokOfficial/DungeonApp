@@ -14,18 +14,16 @@ mechaniki to lore, nie entity. Katalog zastępuje testowe narzędzie „Świat k
   nazwa stoi na pasku górnym, data na półce. Zamknięcie wraca do półki; inną kampanię otwiera się
   stamtąd. Zakładki kampanii spoza biurka (np. przyszła „Fabuła i lore”) stoją pod nim.
 - **Biurko ma trzy poziomy głębi**, żeby elementy nie konkurowały hierarchią:
-  - *wmurowane* (listek, później hotbar) — wpuszczone w blat, nie lewitujące: krawędzie na liniach
-    siatki, ostre rogi, tło ciemniejsze od biurka z wewnętrznym cieniem zamiast cienia rzucanego
-    (własny token wnęki). Okna na nie nie wchodzą — przeciągane zatrzymuje się na ich krawędzi,
-    zmaksymalizowane wypełnia biurko między nimi;
   - *leżące* (katalog) — płasko na blacie, w kolorze biurka;
-  - *uniesione* (okna) — nad katalogiem, z cieniem.
-- **Listek** — element wmurowany w lewym górnym rogu biurka: „Zamknij kampanię”, bierny wskaźnik
-  zapisu (w spoczynku „zapisano”, przy błędzie zapisu czerwony, wyjaśnienie pod wskaźnikiem)
-  i „Polecenia” z ikoną terminala — zaślepka, wyłączona z podpowiedzią „Polecenia (Ctrl+K)”, dopóki
-  paleta nie dostanie poleceń. Przycisku „Zapisz” nie ma — kampania zapisuje się po każdej zmianie.
-  Z pierwszym ustawieniem kampanii (kopie zapasowe, waluta, warianty) dochodzi tu okno „Ustawienia
-  kampanii”.
+  - *uniesione* (okna) — nad katalogiem, z cieniem; poruszają się po całym biurku;
+  - *rama nad oknami* (listek, później hotbar) — najwyżej: tło ciemniejsze niż okno, mocniejszy cień,
+    większe zaokrąglenie. Okna mogą wjechać pod nie.
+- **Listek** — poziomy pasek w lewym górnym rogu biurka, z lekkim marginesem, w sekcjach
+  oddzielonych liniami: „Zamknij kampanię” | Cofnij, Ponów | „Polecenia” z ikoną terminala. Cofnij,
+  Ponów i Polecenia to wyłączone zaślepki z podpowiedzią, dopóki nie powstaną. Wskaźnika zapisu
+  i przycisku „Zapisz” nie ma — kampania zapisuje się po każdej zmianie, nieudany zapis pokazuje
+  powiadomienie. Z pierwszym ustawieniem kampanii (kopie zapasowe, waluta, warianty) dochodzi tu okno
+  „Ustawienia kampanii”.
 - **Katalog leży na biurku**, nie jest oknem, zakładką ani przyklejonym pasem. To katalog główny
   „Świat” położony na siatce, zawsze pod oknami. Domyślnie stoi w prawym górnym rogu; przesuwa się go,
   ciągnąc za wiersz główny, i przyciąga do siatki jak okna. Pozycja, szerokość i rozwinięte katalogi
@@ -128,9 +126,8 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 
 ## Wycinki
 
-1. **Biurko w miejscu strony kampanii:** jeden wiersz KAMPANIA (półka albo biurko), wmurowany listek
-   (zamknięcie, wskaźnik zapisu, zaślepka poleceń), okna zatrzymują się na jego krawędzi. Render
-   biurka w `tools/render`, którego dziś nie ma.
+1. **Biurko w miejscu strony kampanii** — zbudowane (`docs/architecture.md`, „Biurko”, „Listek”,
+   „Maksymalizacja okna”).
 2. **Katalog na biurku i paleta:** katalogi, dodawanie z liczbą sztuk, №, przenoszenie, zmiana nazwy,
    usuwanie; podgląd z pinezką pokazuje kartę tylko do odczytu. „Świat kampanii” znika.
 3. **Wartości bieżące:** pasek PW, pole zmiany z ostatnią zmianą, notatka.
@@ -143,7 +140,7 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 - PW tymczasowe, liczniki i tyknięcia stanów, kolejka i „Do walki” z menu albo przeciągnięciem
   (etap 5; okno zmaksymalizowane zakrywa katalog, więc przeciąganie do kolejki rozstrzyga ten etap),
   postacie (4), entity w entity (9), podróż jako przeniesienie katalogu drużyny (11).
-- **Hotbar** (pomysł na później) — element wmurowany pośrodku dolnej krawędzi biurka. Trzyma
+- **Hotbar** (pomysł na później) — element ramy nad oknami pośrodku dolnej krawędzi biurka, jak listek. Trzyma
   zminimalizowane okna (zamiast dzisiejszych surowych kwadratów w lewym dolnym rogu) i sloty na
   miniatury: widżety, które wystawia okno, żeby jego najważniejsza wartość była widoczna bez całego
   okna (data i godzina świata z okna zegara). Naturalny moment: zegar świata (etap 11), pierwsze okno

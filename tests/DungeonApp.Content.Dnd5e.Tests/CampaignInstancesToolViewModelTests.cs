@@ -25,10 +25,7 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// </summary>
 public sealed class CampaignInstancesToolViewModelTests
 {
-    // Never opens a real desk tab, so nothing here writes to the store - same isolation pattern as
-    // Dnd5eSystemTests.NewSystem.
     private static readonly Dnd5eSystem Dnd5e = new(
-        new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-{Guid.NewGuid():N}")),
         [Path.Combine(Path.GetTempPath(), $"dnd5e-tool-tests-packs-{Guid.NewGuid():N}")]);
 
     [Fact]

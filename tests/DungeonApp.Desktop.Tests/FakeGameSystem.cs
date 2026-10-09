@@ -3,6 +3,7 @@ using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Tests;
 
@@ -28,6 +29,8 @@ internal sealed class FakeGameSystem(
     public IReadOnlyList<SystemTabDeclaration> SystemTabs { get; } = systemTabs ?? [];
 
     public IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; } = campaignTabs ?? [];
+
+    public IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext context) => [];
 
     public IReadOnlyList<StateModelDeclaration> StateModels { get; } = [];
 

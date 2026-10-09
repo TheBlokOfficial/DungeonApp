@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Layout;
+using DungeonApp.Desktop.Workspace.Leaf;
 using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Workspace;
@@ -19,7 +21,7 @@ namespace DungeonApp.Desktop.Workspace;
 /// </para>
 /// <para>
 /// Knows nothing of a campaign, a session or a system - see <see cref="CampaignDesk"/> for the one
-/// public entry point that builds one of these for a system's own desk tab. That is what lets this
+/// public entry point that builds one of these for the open campaign. That is what lets this
 /// type stay inside the library: it takes a bare <c>workspaceId</c> string, an
 /// already-loaded <see cref="WorkspaceLayout"/> and a tool list, never a campaign object itself.
 /// </para>
@@ -40,8 +42,10 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         WorkspaceLayoutStore store,
         string workspaceId,
         WorkspaceLayout layout,
-        IReadOnlyList<WorkspacePanelDescriptor> tools)
+        IReadOnlyList<WorkspacePanelDescriptor> tools,
+        Func<Task> closeCampaign)
     {
+        Leaf = new DeskLeafViewModel(closeCampaign);
         _catalog = PanelCatalog.For(tools);
 
         // Keyed by the campaign, so each one keeps its own desk: the arrangement a GM settles on for
@@ -52,6 +56,9 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
         Restore(layout);
     }
+
+    /// <summary>The desk's command strip, above every window; its close is the frame's, handed in.</summary>
+    public DeskLeafViewModel Leaf { get; }
 
     public ObservableCollection<WorkspacePanelViewModel> Panels { get; } = [];
 

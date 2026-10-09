@@ -23,9 +23,7 @@ public sealed class BundledPacksTests
     [Fact]
     public async Task The_srd_pack_is_copied_where_the_program_reads_bundled_packs_and_loads_cleanly()
     {
-        var system = new Dnd5eSystem(
-            new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-bundled-tests-{Guid.NewGuid():N}")),
-            [BundledPacksPath]);
+        var system = new Dnd5eSystem([BundledPacksPath]);
 
         var registry = await new ContentPackLoader(BundledPacksPath, system).LoadAsync();
 

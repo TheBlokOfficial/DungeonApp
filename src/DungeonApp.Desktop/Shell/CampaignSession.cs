@@ -37,6 +37,13 @@ public sealed class CampaignSession(
     /// </summary>
     public event Action<CampaignStateSnapshot>? Changed;
 
+    /// <summary>
+    /// Raised after <see cref="Changed"/> when a change stood in memory but did not reach the disk,
+    /// carrying <see cref="CampaignChangeResult.SaveWarning"/>. Lets the frame tell the GM whichever
+    /// tool made the change; it only notifies and never writes.
+    /// </summary>
+    public event Action<string>? SaveFailed;
+
     public Campaign Campaign { get; private set; } = campaign;
 
     /// <summary>
@@ -117,6 +124,11 @@ public sealed class CampaignSession(
         finally
         {
             _notifying = false;
+        }
+
+        if (result.SaveWarning is { } warning)
+        {
+            SaveFailed?.Invoke(warning);
         }
 
         if (failures is [var only])

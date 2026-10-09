@@ -39,7 +39,7 @@ Jedna nazwa na pojęcie. Słowa spoza tej tabeli znaczą to, co w zwykłej polsz
 | nakładka | rzadka łatka entity: same odchylenia od wpisu | łatka, patch |
 | wiedza | typ bez entity, wskazywany identyfikatorem (zaklęcie, stan, zdolność) | — |
 | katalog świata | drzewo katalogów z entity w stanie kampanii (`docs/spec/katalog.md`) | — |
-| biurko | zakładka kampanii z pływającymi oknami narzędzi | — |
+| biurko | pozycja kampanii w ramie z pływającymi oknami narzędzi | — |
 | narzędzie | okno na biurku wniesione przez system | panel |
 | księga | śledzone wartości i reguły ich zmiany: pole zmiany, rachunek, ostatnia zmiana | księgowość |
 | pole zmiany | pole przyjmujące `-12`, `+5`, `=30` przy śledzonej wartości | — |
@@ -156,9 +156,10 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   test.
 - **Modele widoków:** CommunityToolkit.Mvvm — `[ObservableProperty]` na właściwościach częściowych
   i `[RelayCommand]`. Komenda nie sprawdza `CanExecute` w `Execute`; robi to przycisk.
-- **Nawigacja:** ekran wyboru systemu, potem pasek boczny z trzema kategoriami: **Kampania** (półka
-  kampanii — lista kampanii do otwarcia — a po otwarciu kampanii jej zakładki), **System** (zakładki
-  treści), **Aplikacja** (Galeria, Ustawienia). Zakładki wypełnia skompilowany system, nigdy paczka.
+- **Nawigacja:** ekran wyboru systemu, potem pasek boczny z trzema kategoriami: **Kampania** (jedna
+  pozycja ramy: półka kampanii, a po otwarciu kampanii jej biurko; zakładki kampanii spoza biurka,
+  jeśli system je deklaruje, stoją pod nim), **System** (zakładki treści), **Aplikacja** (Galeria,
+  Ustawienia). Zakładki wypełnia skompilowany system, nigdy paczka.
 - **Okno czy zakładka:** to, na co MG patrzy obok innych rzeczy, jest oknem na biurku; to, w czym
   przebywa, jest zakładką.
 
@@ -212,9 +213,18 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
 
 ### Biurko, motyw, interakcja
 
-- **Biurko** (`Desktop/Workspace`): zakładka kampanii z pływającymi oknami narzędzi wnoszonych przez
-  system. Układ zapisuje się per kampania. Jedyne narzędzie to testowy „Świat kampanii” (lista entity
-  z PW); zastępuje go katalog świata (`docs/spec/katalog.md`).
+- **Biurko** (`Desktop/Workspace`): pozycja kampanii w ramie, z pływającymi oknami narzędzi. Buduje je
+  rama (`ActiveSystemSession`, raz na otwartą kampanię); system podaje tylko narzędzia
+  (`IGameSystem.CreateDeskTools`). Układ zapisuje się per kampania. Nieudany zapis zmiany rama
+  pokazuje powiadomieniem, niezależnie od narzędzia, które zmieniało. Jedyne narzędzie to testowy
+  „Świat kampanii” (lista entity z PW); zastępuje go katalog świata (`docs/spec/katalog.md`).
+- **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
+  (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Ciemniejsze
+  tło, mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad oknami, wspólne
+  z przyszłym hotbarem.
+- **Maksymalizacja okna:** tylko okno bez górnej granicy rozmiaru (inne nie mają przycisku). Okno
+  zmaksymalizowane wypełnia biurko bez obwódki, tytuł stoi pośrodku, przyciski nagłówka znikają;
+  przywraca dwuklik w tytuł albo Esc. Stan zmaksymalizowany nie trafia do zapisanego układu.
 - **Motyw** (`Desktop/Themes`) jest kompletny i własny, bez Fluenta (domyślnego motywu Avalonii) pod
   spodem. Tokeny kolorów mają zapisane znaczenie; skale należące do systemu (rzadkość przedmiotu) mają
   własne kolory w systemie. Galeria pokazuje każdą kontrolkę motywu w każdym stanie.

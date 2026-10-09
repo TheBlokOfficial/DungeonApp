@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Systems;
 
@@ -9,7 +10,8 @@ namespace DungeonApp.Desktop.Systems;
 /// One compiled system, as the composition root sees it. Deliberately narrow: the frame is told
 /// only who a system is (<see cref="Id"/>, <see cref="DisplayName"/>), what tabs it puts on the
 /// sidebar once chosen - <see cref="SystemTabs"/> in the System category,
-/// <see cref="CampaignTabs"/> in the Campaign category - what state models its campaigns keep
+/// <see cref="CampaignTabs"/> in the Campaign category under the desk - what tools it puts on the
+/// desk (<see cref="CreateDeskTools"/>), what state models its campaigns keep
 /// (<see cref="StateModels"/>), and what startup work it wants run (<see cref="StartupSteps"/>). It
 /// is not, for the frame, a catalog of content types or a way to draw a card - that knowledge stays
 /// entirely on the concrete system class, used only by the library and by the system's own tab
@@ -40,6 +42,13 @@ public interface IGameSystem
     /// <see cref="CampaignTabContext"/> built for that one campaign.
     /// </summary>
     IReadOnlyList<CampaignTabDeclaration> CampaignTabs { get; }
+
+    /// <summary>
+    /// The tools this system puts on the desk of the open campaign. The desk itself is the frame's
+    /// campaign position; the system only stocks it. Called once for every campaign the GM opens,
+    /// with a <see cref="CampaignTabContext"/> built for that one campaign.
+    /// </summary>
+    IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext context);
 
     /// <summary>
     /// The state models this system's campaigns keep: the system declares them, the frame saves

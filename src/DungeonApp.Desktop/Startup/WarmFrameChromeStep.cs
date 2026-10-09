@@ -18,22 +18,20 @@ namespace DungeonApp.Desktop.Startup;
 /// any: system selection, shelf, sidebar in both collapse states (for every
 /// compiled-in system - its tab declarations determine the sidebar shape), top bar and empty
 /// "Ustawienia" tab (neither depends on sidebar collapse, so each warms
-/// once), plus the campaign page if the shelf contains a campaign. Individual system
-/// content is warmed separately by <see cref="WarmSystemTabsStep"/> (tabs, including the desk) and the systems'
+/// once). Individual system
+/// content is warmed separately by <see cref="WarmSystemTabsStep"/> (tabs and the desk) and the systems'
 /// own startup steps (entry cards);
 /// this step never builds anything through a temporary campaign session.
 /// <para>
 /// Every warmed control is disposable - bound to a real model where
-/// one exists (shelf), or a temporary model discarded after warmup (selection screen, sidebar,
-/// campaign page) - never placed in a cache later read by
+/// one exists (shelf), or a temporary model discarded after warmup (selection screen, sidebar)
+/// - never placed in a cache later read by
 /// <c>AppShellViewModel</c>.
 /// </para>
 /// </summary>
 public sealed class WarmFrameChromeStep(
     IReadOnlyList<IGameSystem> systems,
-    CampaignLibraryViewModel campaignLibrary,
-    CampaignPreparationCache preparations,
-    WarmCampaignDataStep dataStep) : IStartupStep
+    CampaignLibraryViewModel campaignLibrary) : IStartupStep
 {
     public string Describe() => "Rozgrzewanie interfejsu…";
 
@@ -62,13 +60,6 @@ public sealed class WarmFrameChromeStep(
             cancellationToken);
 
         await WarmAsync(ui, new SettingsView { DataContext = new SettingsViewModel() }, cancellationToken);
-
-        if (dataStep.WarmupCampaignSummary is { } summary &&
-            await preparations.PeekAsync(summary, cancellationToken) is { } campaign)
-        {
-            var pageViewModel = new CampaignPageViewModel(campaign, closeCampaign: () => Task.CompletedTask);
-            await WarmAsync(ui, new CampaignPageView { DataContext = pageViewModel }, cancellationToken);
-        }
     }
 
     private static Task WarmSidebarAsync(

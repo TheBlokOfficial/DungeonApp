@@ -13,7 +13,6 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 public sealed class ContentTabsTests
 {
     private static readonly Dnd5eSystem Dnd5e = new(
-        new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"dnd5e-content-tabs-tests-{Guid.NewGuid():N}")),
         [Path.Combine(Path.GetTempPath(), $"dnd5e-content-tabs-tests-packs-{Guid.NewGuid():N}")]);
 
     private static IContentTypeProfile CreatureProfile() =>

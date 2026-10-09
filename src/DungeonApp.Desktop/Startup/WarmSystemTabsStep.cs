@@ -10,6 +10,7 @@ using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Workspace.Layout;
 
 namespace DungeonApp.Desktop.Startup;
 
@@ -17,8 +18,8 @@ namespace DungeonApp.Desktop.Startup;
 /// Warms every tab of every compiled-in system so choosing a system does not build them on
 /// the UI thread at click time. For each system: its System-category
 /// tabs (shell does not know what each builds - only that each is a parameterless declaration, so cannot
-/// access a campaign), and its Campaign-category tabs using the first shelf campaign, if
-/// one exists.
+/// access a campaign), and, using the first shelf campaign if one exists, the desk stocked with the
+/// system's tools and its Campaign-category tabs.
 /// <para>
 /// Card warmup and content-pack loading do not belong here - each system loads its own
 /// packs and owns its registry, so these are its own startup steps
@@ -26,17 +27,17 @@ namespace DungeonApp.Desktop.Startup;
 /// knowing the content.
 /// </para>
 /// <para>
-/// Each content instance is disposable, built through a temporary context - never through
-/// <see cref="ActiveSystemSession"/>, which builds its own real instance on first display
-/// after system selection. Nothing built here remains in any cache
-/// later read during system selection.
+/// Each content instance is disposable, built through a throwaway <see cref="ActiveSystemSession"/>
+/// that is released afterwards - the real one builds its own instance after system selection.
+/// Nothing built here remains in any cache later read during system selection.
 /// </para>
 /// </summary>
 public sealed class WarmSystemTabsStep(
     IReadOnlyList<IGameSystem> systems,
     IReadOnlyDictionary<SystemId, ICampaignRepository> repositoriesBySystem,
     CampaignPreparationCache preparations,
-    WarmCampaignDataStep dataStep) : IStartupStep
+    WarmCampaignDataStep dataStep,
+    WorkspaceLayoutStore layoutStore) : IStartupStep
 {
     public string Describe() => "Rozgrzewanie zakładek systemów…";
 
@@ -92,27 +93,40 @@ public sealed class WarmSystemTabsStep(
         Campaign campaign,
         CancellationToken cancellationToken)
     {
-        var warmupSession = new CampaignSession(campaign, repositoriesBySystem[system.Id], system.StateModels);
-        var warmupContext = new CampaignTabContext(warmupSession);
+        var session = new ActiveSystemSession(system, repositoriesBySystem[system.Id], layoutStore);
 
-        foreach (var declaration in system.CampaignTabs)
+        try
         {
-            ITabContent? tab = null;
+            session.OpenCampaign(campaign);
 
             try
             {
-                tab = await declaration.CreateContentAsync(warmupContext);
-                await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, tab.Content, cancellationToken);
+                var desk = await session.GetOrCreateDeskAsync(() => Task.CompletedTask);
+                await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, desk.Content, cancellationToken);
             }
             catch (Exception ex)
             {
-                // Warmup is an optimization - a real chance to build still exists on first click.
-                AppLog.Error($"Rozgrzewka zakładki {declaration.Id} nie powiodła się.", ex);
+                // Warmup is an optimization - a real chance to build still exists on opening.
+                AppLog.Error("Rozgrzewka biurka nie powiodła się.", ex);
             }
-            finally
+
+            foreach (var declaration in system.CampaignTabs)
             {
-                tab?.Dispose();
+                try
+                {
+                    var tab = await session.GetOrCreateCampaignTabAsync(declaration);
+                    await VisualWarmupHost.AttachAndWaitAsync(ui.WarmupHost, tab.Content, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    // Warmup is an optimization - a real chance to build still exists on first click.
+                    AppLog.Error($"Rozgrzewka zakładki {declaration.Id} nie powiodła się.", ex);
+                }
             }
+        }
+        finally
+        {
+            session.ReleaseAll();
         }
     }
 }
