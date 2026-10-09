@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:panels="using:DungeonApp.Desktop.Workspace.Panels"
                     xmlns:workspace="using:DungeonApp.Desktop.Workspace.Controls">
 
     <!-- Converters and brushes used only by the workspace and floating-window themes below. -->
@@ -118,6 +119,18 @@
 
                                     <!-- Reserves the room of the header buttons that are present. -->
                                     <StackPanel Name="PART_ButtonSpacer" Grid.Column="1" Orientation="Horizontal" IsHitTestVisible="False">
+                                        <ItemsControl ItemsSource="{TemplateBinding HeaderActions}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="panels:PanelHeaderAction">
+                                                    <Border Width="{DynamicResource DungeonPanelHeaderActionSize}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
                                         <Border Width="{DynamicResource DungeonPanelHeaderActionSize}"
                                                 IsVisible="{TemplateBinding ShowMinimizeButton}" />
                                         <Border Width="{DynamicResource DungeonPanelHeaderActionSize}"
@@ -153,6 +166,26 @@
                     <StackPanel HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
+                        <ItemsControl ItemsSource="{TemplateBinding HeaderActions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="panels:PanelHeaderAction">
+                                    <Button Width="{DynamicResource DungeonPanelHeaderActionSize}"
+                                            Height="{DynamicResource DungeonPanelHeaderActionSize}"
+                                            Theme="{StaticResource DungeonPanelHeaderActionTheme}"
+                                            Command="{Binding Command}"
+                                            ToolTip.Tip="{Binding ToolTip}">
+                                        <Image Width="{DynamicResource DungeonActionIconSize}"
+                                               Height="{DynamicResource DungeonActionIconSize}"
+                                               Source="{Binding IconResourceKey, Converter={StaticResource DungeonIconResourceConverter}}" />
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         <Button Name="PART_MinimizeButton"
                                 Width="{DynamicResource DungeonPanelHeaderActionSize}"
                                 Height="{DynamicResource DungeonPanelHeaderActionSize}"

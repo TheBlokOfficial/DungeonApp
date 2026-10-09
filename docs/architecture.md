@@ -243,6 +243,24 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   ikony typów z `IGameSystem.EntityTypes`, a dopisek przy wierszu (np. PW) z `IGameSystem.RowHint`.
   Kliknięcie zaznacza (Ctrl, Shift), dwuklik albo Enter na entity zgłasza zdarzenie
   `OpenEntityRequested`; ostatnio klikniętą entity podaje `LastClickedEntity` (podgląd idzie za nią).
+- **Okna biurka w trakcie działania:** `CampaignWorkspaceViewModel.Open(deskryptor, klucz)` otwiera okno
+  albo wyciąga istniejące (singleton ignoruje klucz; okno wielu egzemplarzy odróżnia klucz), `Close`
+  usuwa okno na stałe — z biurka i z zapisanego układu, bez talii minimalizacji. Deskryptor z
+  `ClosesPermanently` nie ma przycisku minimalizacji, tylko krzyżyk; `CreateInstance` buduje treść dla klucza,
+  `CanRestore` odrzuca zapisane okno, którego klucz nic już nie znaczy. Treść okna (`IPanelBody`) podaje
+  własny tytuł i **przyciski nagłówka** (`PanelHeaderAction`: ikona, podpowiedź, polecenie), które okno
+  rysuje przed swoimi.
+- **Podgląd i przypięte karty** (okna ramy, deskryptory w `CampaignWorkspaceViewModel`, nie w systemie):
+  podgląd jest jeden, otwiera go dwuklik albo Enter na entity (`OpenEntityRequested`) i idzie za
+  `LastClickedEntity`. Pinezka w jego nagłówku odkłada kartę do okna o kluczu = id entity (jedno okno na
+  entity); usunięcie entity zamyka okno, a podgląd zostaje pusty; zapisany układ nie przywraca okna
+  nieistniejącej entity. Treść (`EntityCardViewModel`) czyta `WorldCatalogViewModel.Tree` i odświeża się
+  po `TreeChanged`, gdy zmieni się entity, jej nazwa albo ścieżka.
+- **Kontrakt nagłówka karty:** ścieżkę, nazwę, tagi i linię pod nazwą podaje rama w
+  `ValidContentDetailViewModel` (`Breadcrumbs`, `Name`, `Caption`), system rysuje tylko kartę i
+  elementy nagłówka (`IEntryCardHeader`). Ta sama karta stoi więc w bibliotece (dane wpisu) i na biurku
+  (`EntityCardBuilder`: wpis z wartościami entity po nałożeniu łatki; linia „№ 5 · Goblin”;
+  entity bez wpisu — `BrokenContentDetailViewModel` z powodem).
 - **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
   (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Ciemniejsze
   tło, mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad oknami, wspólne

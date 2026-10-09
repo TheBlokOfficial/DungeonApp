@@ -10,6 +10,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Workspace.Controls;
 
@@ -52,6 +53,10 @@ public class PanelWindow : ContentControl
 
     public static readonly StyledProperty<PanelDisplayState> PanelStateProperty =
         AvaloniaProperty.Register<PanelWindow, PanelDisplayState>(nameof(PanelState));
+
+    /// <summary>Buttons the window's body or descriptor asks for, drawn in the header before the minimize button.</summary>
+    public static readonly StyledProperty<IReadOnlyList<PanelHeaderAction>?> HeaderActionsProperty =
+        AvaloniaProperty.Register<PanelWindow, IReadOnlyList<PanelHeaderAction>?>(nameof(HeaderActions));
 
     public static readonly StyledProperty<bool> IsActiveProperty =
         AvaloniaProperty.Register<PanelWindow, bool>(nameof(IsActive));
@@ -133,6 +138,12 @@ public class PanelWindow : ContentControl
     {
         get => GetValue(TitleProperty);
         set => SetValue(TitleProperty, value);
+    }
+
+    public IReadOnlyList<PanelHeaderAction>? HeaderActions
+    {
+        get => GetValue(HeaderActionsProperty);
+        set => SetValue(HeaderActionsProperty, value);
     }
 
     public string? IconResourceKey

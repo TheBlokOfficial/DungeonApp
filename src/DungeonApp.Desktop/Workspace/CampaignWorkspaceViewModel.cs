@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DungeonApp.Core.Entries;
 using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Controls;
@@ -31,8 +32,19 @@ namespace DungeonApp.Desktop.Workspace;
 /// </summary>
 public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisposable
 {
+    /// <summary>The preview window: one on the desk, follows the catalog's last clicked entity.</summary>
+    public const string PreviewDescriptorId = "frame.world-preview";
+
+    /// <summary>A window with one entity's card, kept open by the GM; its instance key is the entity's id.</summary>
+    public const string PinnedDescriptorId = "frame.world-pinned";
+
+    // 560 wide card, its margin and the scrollbar zone.
+    private static readonly PanelConstraints CardConstraints = new(640, 280, double.PositiveInfinity, double.PositiveInfinity);
+
     private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
+    private readonly WorkspacePanelDescriptor _previewDescriptor;
+    private readonly WorkspacePanelDescriptor _pinnedDescriptor;
 
     private WorkspaceMetrics _metrics = WorkspaceMetrics.Fallback;
     private double _surfaceWidth;
@@ -59,6 +71,36 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
         Catalog = new WorldCatalogViewModel(entries, system, layout.Catalog);
         Catalog.LayoutChanged += _session.MarkDirty;
+
+        var cards = new EntityCardBuilder(system.GetWorldCatalogSource());
+        _previewDescriptor = new WorkspacePanelDescriptor(
+            PreviewDescriptorId,
+            "Podgląd",
+            "DungeonIconBookOpen",
+            WorkspacePanelGroup.World,
+            new PanelPlacement(64, 72, 660, 640),
+            CardConstraints,
+            () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, entity => PinEntity(entity)))
+        {
+            ClosesPermanently = true,
+        };
+        _pinnedDescriptor = new WorkspacePanelDescriptor(
+            PinnedDescriptorId,
+            "Karta",
+            "DungeonIconBookOpen",
+            WorkspacePanelGroup.World,
+            new PanelPlacement(96, 96, 660, 640),
+            CardConstraints,
+            () => throw new InvalidOperationException("A pinned window is built for an entity."))
+        {
+            AllowsMultipleInstances = true,
+            ClosesPermanently = true,
+            CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, pin: null),
+            CanRestore = key => ParseEntity(key) is { } id && Catalog.Tree.Entity(id) is not null,
+        };
+
+        Catalog.OpenEntityRequested += OnOpenEntityRequested;
+        Catalog.TreeChanged += ClosePinnedOfRemovedEntities;
 
         // Storage was already read by the caller (see CampaignDesk.CreateAsync). Construction is a
         // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
@@ -118,6 +160,107 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
         BringToFront(panel);
         _session.MarkDirty();
+    }
+
+    /// <summary>
+    /// Opens a window of <paramref name="descriptor"/> or, if the desk already has it, brings it to
+    /// the front. A multi-instance descriptor is told apart by <paramref name="instanceKey"/>; a
+    /// singleton ignores the key. The window is part of the saved layout from now on.
+    /// </summary>
+    public WorkspacePanelViewModel Open(WorkspacePanelDescriptor descriptor, string instanceKey)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+
+        if (Find(descriptor, instanceKey) is { } existing)
+        {
+            Activate(existing);
+            return existing;
+        }
+
+        var panel = new WorkspacePanelViewModel(this, descriptor, instanceKey, NextPlacement(descriptor));
+
+        panel.ZOrder = Panels.Count;
+        Panels.Add(panel);
+        Fit(panel);
+        Activate(panel);
+
+        return panel;
+    }
+
+    /// <summary>The open window of <paramref name="descriptor"/> with this key, null when the desk has none.</summary>
+    public WorkspacePanelViewModel? Find(WorkspacePanelDescriptor descriptor, string instanceKey) =>
+        Panels.FirstOrDefault(panel => panel.Descriptor.Id == descriptor.Id
+            && (!descriptor.AllowsMultipleInstances || panel.InstanceKey == instanceKey));
+
+    /// <summary>
+    /// Removes a window for good: it leaves the desk and the saved layout, and is not offered by the
+    /// deck. A tool that always lies on the desk is minimized instead (<see cref="Minimize"/>).
+    /// </summary>
+    public void Close(WorkspacePanelViewModel panel)
+    {
+        if (!Panels.Remove(panel))
+        {
+            return;
+        }
+
+        MinimizedPanels.Remove(panel);
+
+        if (panel.Body is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+
+        var order = 0;
+        foreach (var other in Panels.OrderBy(other => other.ZOrder).ToList())
+        {
+            other.ZOrder = order++;
+        }
+
+        ActivateTopmost();
+        _session.MarkDirty();
+    }
+
+    /// <summary>Opens the preview, or brings it to the front.</summary>
+    public WorkspacePanelViewModel OpenPreview() => Open(_previewDescriptor, PreviewDescriptorId);
+
+    /// <summary>
+    /// Sets an entity's card aside in a window of its own (the preview keeps following the catalog);
+    /// an entity that already has one gets that window brought to the front. Null - the entity does not exist.
+    /// </summary>
+    public WorkspacePanelViewModel? PinEntity(EntityId entity) =>
+        Catalog.Tree.Entity(entity) is null ? null : Open(_pinnedDescriptor, entity.Value.ToString());
+
+    private static EntityId? ParseEntity(string key) =>
+        Guid.TryParse(key, out var value) ? new EntityId(value) : null;
+
+    private void OnOpenEntityRequested(EntityId entity) => OpenPreview();
+
+    private void ClosePinnedOfRemovedEntities()
+    {
+        foreach (var panel in Panels.Where(panel => panel.Descriptor.Id == PinnedDescriptorId).ToList())
+        {
+            if (ParseEntity(panel.InstanceKey) is not { } id || Catalog.Tree.Entity(id) is null)
+            {
+                Close(panel);
+            }
+        }
+    }
+
+    // A new window opens beside the preview when there is one (a pinned card goes to its right),
+    // each further one a step lower and to the right so none hides another completely.
+    private PanelPlacement NextPlacement(WorkspacePanelDescriptor descriptor)
+    {
+        var placement = descriptor.DefaultPlacement;
+
+        if (Panels.FirstOrDefault(panel => panel.Descriptor.Id == PreviewDescriptorId) is { } preview
+            && descriptor.Id == PinnedDescriptorId)
+        {
+            placement = placement with { X = preview.Desired.Right + 16, Y = preview.Desired.Y };
+        }
+
+        var same = Panels.Count(panel => panel.Descriptor.Id == descriptor.Id);
+
+        return placement with { X = placement.X + 28 * same, Y = placement.Y + 28 * same };
     }
 
     public void Minimize(WorkspacePanelViewModel panel)
@@ -187,6 +330,8 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         _isDisposed = true;
         _session.Dispose();
         Catalog.LayoutChanged -= _session.MarkDirty;
+        Catalog.OpenEntityRequested -= OnOpenEntityRequested;
+        Catalog.TreeChanged -= ClosePinnedOfRemovedEntities;
         Catalog.Dispose();
 
         foreach (var panel in Panels)
@@ -228,7 +373,13 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             foreach (var entry in layout.Panels.OrderBy(entry => entry.ZOrder))
             {
                 // A layout naming a panel this build no longer has is skipped, never an error.
-                if (_catalog.Find(entry.DescriptorId) is not { } descriptor)
+                if (FindDescriptor(entry.DescriptorId) is not { } descriptor)
+                {
+                    continue;
+                }
+
+                // A pinned card of an entity the campaign no longer has does not come back.
+                if (descriptor.CanRestore is { } canRestore && !canRestore(entry.InstanceKey))
                 {
                     continue;
                 }
@@ -247,7 +398,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
                     // A module stored as closed becomes minimized, because every known module
                     // remains part of the workspace for its lifetime. A stored maximized state
                     // (older files) opens as normal: maximizing is never remembered.
-                    State = !entry.IsOpen || entry.State == PanelDisplayState.Minimized
+                    State = !descriptor.ClosesPermanently && (!entry.IsOpen || entry.State == PanelDisplayState.Minimized)
                         ? PanelDisplayState.Minimized
                         : PanelDisplayState.Normal
                 };
@@ -279,6 +430,12 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         ActivateTopmost();
         FitPanels();
     }
+
+    // The tools the system put on the desk, then the frame's own windows (preview, pinned cards),
+    // which the deck never offers and which exist only once opened.
+    private WorkspacePanelDescriptor? FindDescriptor(string id) =>
+        _catalog.Find(id)
+        ?? (id == PreviewDescriptorId ? _previewDescriptor : id == PinnedDescriptorId ? _pinnedDescriptor : null);
 
     private void FitPanels()
     {

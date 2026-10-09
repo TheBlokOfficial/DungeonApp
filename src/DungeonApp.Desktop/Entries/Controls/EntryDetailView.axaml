@@ -69,11 +69,19 @@
                                   Classes.with-title-end="{Binding HasHeaderTitleEnd}">
                                 <!-- The title wraps, or - when the card keeps it to one line - ends
                                      in an ellipsis and opens whole in place under the pointer. -->
-                                <dc:RevealingTextBlock x:Name="Title"
-                                                       Classes="display-xl title"
-                                                       Classes.one-line="{Binding IsTitleOnOneLine}"
-                                                       Text="{Binding Name}"
-                                                       Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                                <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
+                                    <dc:RevealingTextBlock x:Name="Title"
+                                                           Classes="display-xl title"
+                                                           Classes.one-line="{Binding IsTitleOnOneLine}"
+                                                           Text="{Binding Name}"
+                                                           Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
+                                    <!-- The host's line under the name (an entity's "№ 5 · Goblin");
+                                         absent in the library, where it takes no room. -->
+                                    <SelectableTextBlock Classes="caption"
+                                                         IsVisible="{Binding HasCaption}"
+                                                         Text="{Binding Caption}"
+                                                         Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                                </StackPanel>
                                 <!-- The title's end, centred on the title's first line: an empty,
                                      zero-wide line of the title's own style gives the cell exactly one
                                      line's height, however many lines the title wraps to. It spans the

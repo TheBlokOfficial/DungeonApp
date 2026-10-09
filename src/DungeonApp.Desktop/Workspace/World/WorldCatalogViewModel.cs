@@ -122,6 +122,12 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
     /// <summary>Raised when the GM opens an entity (double click or Enter on its row).</summary>
     public event Action<EntityId>? OpenEntityRequested;
 
+    /// <summary>The tree as of the last change notification - what a window showing an entity reads its card from.</summary>
+    public WorldTree Tree => _tree;
+
+    /// <summary>Raised after the tree was read again, so windows showing an entity can follow a rename or a removal.</summary>
+    public event Action? TreeChanged;
+
     /// <summary>Raised when something the desk layout stores changed (place, width, expansion).</summary>
     public event Action? LayoutChanged;
 
@@ -514,6 +520,7 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
 
         SyncRows(built);
         ApplySelection();
+        TreeChanged?.Invoke();
     }
 
     private WorldRowViewModel BuildRoot()
