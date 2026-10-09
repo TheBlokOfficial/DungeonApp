@@ -45,7 +45,8 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
   wyniki i scala. Drobne, lokalne zmiany robi sam; fakt z kodu, którego nie zmienia, zbiera agentem
   Explore. Autorowi pokazuje wynik, który sam by przyjął.
 - **Wykonawca** (agent `wykonawca` z `.claude/agents/`: Sonnet, w tle, worktree z HEAD architekta)
-  dostaje zamkniętą część pracy. Zlecenie z adresami: cel, nazwa gałęzi, pliki i miejsca w nich, znane
+  dostaje zamkniętą część pracy — jedną kontrolkę albo jedno zachowanie, nie cały ekran (większe
+  zlecenie dochodzi do limitu kroków). Zlecenie z adresami: cel, nazwa gałęzi, pliki i miejsca w nich, znane
   fakty (wzór, tokeny, pułapki), kryteria z nazwami renderów, czego nie robić, punkt zatrzymania;
   przed zleceniem commit. Opus (`model: "opus"`) tylko do zadania bez gotowego projektu albo szukania
   nieznanej przyczyny; pracę mechaniczną według reguły bierze agent `porzadki` (Opus). Niezależne
@@ -53,7 +54,9 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 - **Kolejna runda:** pracę wykonawcy przyjętą na renderach scalasz; drobne poprawki robisz sam
   w worktree wykonawcy (ścieżki bezwzględne i `git -C`, bez `cd` — sesja przeniosłaby się do worktree),
   dłuższą listę dostaje nowy wykonawca ze ścieżkami i hashami. Wykonawcy z dużym kontekstem nie
-  wznawiaj — każdy jego krok wysyła cały dotychczasowy kontekst.
+  wznawiaj — każdy jego krok wysyła cały dotychczasowy kontekst. Nowy wykonawca dostaje własny
+  worktree z HEAD architekta i nie pisze w cudzym: niedokończoną pracę poprzednika (commit w jego
+  worktree) architekt najpierw scala do `master` albo do HEAD, z którego wystartuje następca.
 - **Uwagi autora** po obejrzeniu poprawiasz od razu, gdy to błąd; szlif (działa, ale mogłoby wyglądać
   lepiej) idzie jednym zdaniem do „Szlif” w `docs/roadmap.md`.
 - **Dokumenty przy pracy:** roadmapę i rozstrzygnięcia aktualizujesz raz na wycinek, przy scaleniu,

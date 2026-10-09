@@ -23,8 +23,10 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
 - **Architekt z wykonawcami.** Krok agenta wysyła cały jego kontekst, więc koszt to liczba kroków
   razy rozmiar kontekstu. Architekt trzyma rozmowę i czyta tylko kod potrzebny do zlecenia; wykonawca
   zaczyna od świeżego kontekstu i dostaje zlecenie z adresami (pliki i miejsca w nich). Opis procesu:
-  `CLAUDE.md`; pomiar: `tools/usage.py`. *Wyzwalacz:* wykonawcy regularnie dochodzą do limitu kroków
-  albo wycinek potrzebuje więcej niż dwóch wykonawców.
+  `CLAUDE.md`; pomiar: `tools/usage.py`. Zlecenie to jedna kontrolka albo jedno zachowanie: wycinek
+  z kilkoma takimi zleceniami kosztuje mniej niż jeden wykonawca z rosnącym kontekstem, który
+  dochodzi do limitu kroków. *Wyzwalacz:* wykonawcy mimo małych zleceń regularnie dochodzą do limitu
+  kroków.
 - **Model wykonawców: Sonnet do zleceń z adresami, Opus do porządków i zadań otwartych.** Odczyt
   kontekstu (połowa kosztu) kosztuje w obu tyle samo, więc model zmienia koszt kroku o ok. 30 %,
   a liczba kroków i poprawek zmienia go kilkukrotnie. Na porządkach Opus potrzebuje mniej kroków
