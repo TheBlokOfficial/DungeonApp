@@ -165,18 +165,19 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   Wartości z bazą — efektem; część stała się nie zmienia. Zmianę, która nie jest liczbą (dodatkowa
   odporność, drugi atak bossa), MG zapisuje w notatce — kierunek na razie, nie ostateczny.
 - **Bieżące PW:** klik w liczbę zamienia ją w pole zmiany w tym samym miejscu i rozmiarze. Pole
-  przyjmuje `-5`, `+3`, `=10`; liczba bez znaku nie przechodzi (rozstrzygnięcie „Pole zmiany liczby”).
-  Przed Enter zapowiada wynik („−5 → 3”); Enter zatwierdza, Esc porzuca. Klik w liczbę odróżnia
+  przyjmuje `-5`, `+3`, `=10` i samą liczbę jak `=` (rozstrzygnięcie „Pole zmiany liczby”). Przed
+  Enter zapowiada wynik pod liczbą („8 → 3”); Enter zatwierdza, Esc porzuca. Klik w liczbę odróżnia
   bieżące PW od wartości z bazą, które na klik nie reagują. Rachunek należy do systemu:
   - `-` odejmuje (od etapu 5 najpierw PW tymczasowe) i schodzi najniżej do 0; zapowiedź pokazuje
     nadmiar („5 poniżej zera”);
   - `+` dodaje najwyżej do maksimum; zapowiedź pokazuje nadwyżkę („7 ponad maksimum”);
-  - `=` ustawia dowolną wartość, także ponad maksimum (widać, nie blokuje).
+  - `=` i sama liczba ustawiają dowolną wartość, także ponad maksimum (widać, nie blokuje).
 - **Notatka MG:** wieloliniowa, Enter dodaje linię. Zapis przy wyjściu z pola, przy zmianie entity
   w podglądzie i przy zamknięciu okna — nie przy każdym klawiszu ani z opóźnieniem. Musi wyglądać na
   edytowalną; pusta pokazuje przygaszony tekst zastępczy. Notatkę ma każda entity, także z zepsutym
   wpisem.
-- **Stany i efekty:** przycisk usunięcia przy wierszu, dodawanie na końcu sekcji przez paletę.
+- **Stany i efekty:** usunięcie kliknięciem w ramkę ikony wiersza, dodawanie na końcu sekcji przez
+  paletę.
 
 ## Zatwierdzanie zmian
 
@@ -250,11 +251,12 @@ goblinów”) tylko wtedy, gdy skutku nie widać. Usunięcie ma okno potwierdzen
 - Forma do czytania wygląda jak tekst karty; pole zajmuje dokładnie to samo miejsce. Tła strefy
   edycji nie ma, więc to kontrolka musi powiedzieć, że da się ją kliknąć.
 - Wygląd formy do kliknięcia: rozstrzygnięcie „Wartość do zmiany wygląda jak tekst”. Pusta notatka
-  pokazuje tekst zastępczy. Zapowiedź wyniku i błąd wpisu stoją w linii dopisku pod liczbą.
+  pokazuje tekst zastępczy. Zapowiedź wyniku stoi w linii dopisku pod liczbą.
 - Wiersz stanu i efektu: kwadrat z ostrymi rogami i ikoną na wysokość 2–3 linii, obok tytuł, pod nim
-  szary tekst (modyfikatory albo tury). Kleks: plama z owalnych kształtów, bez rozprysków.
-- Stany, które każda kontrolka ma zaprojektowane: spoczynek, pod wskaźnikiem, edycja; błędny wpis
-  („abc” w polu zmiany — Enter nic nie robi, pole to pokazuje); zapowiedź wyniku przed Enter; kleks;
+  szary tekst (modyfikatory albo tury). Pod wskaźnikiem kwadrat robi się czerwony, ikona zmienia się
+  w czerwony kosz, a klik usuwa. Kleks: plama z owalnych kształtów, bez rozprysków.
+- Stany, które każda kontrolka ma zaprojektowane: spoczynek, pod wskaźnikiem, edycja; zapowiedź wyniku
+  przed Enter; wpis dłuższy niż liczba; kleks;
   powyżej i poniżej bazy, także z kleksem i na zielonym albo czerwonym tle modyfikatora; brak wartości
   („—”); PW ponad maksimum; notatka pusta, w jednej i w kilku liniach (rośnie w dół); fokus klawiatury
   (przy stole przechodzi się Tabem, więc tu fokus dostaje wygląd mimo „Szlifu” w roadmapie).

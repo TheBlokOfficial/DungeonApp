@@ -49,8 +49,7 @@ Specyfikacja: `docs/spec/katalog.md`.
     decisions.md, „Wartość do zmiany wygląda jak tekst”.
   - [ ] 2.3b Część żywa: ścieżka kategorii zamiast katalogów, bez linii „№” pod nazwą, tytuł okna
     z nazwą i №; bloki w kolejności PW, KP, Szybkość, nad nimi pasek PW przez całą kolumnę, bieżące
-    PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka; długa zapowiedź
-    („−14 → 0, 5 poniżej zera”) wychodzi poza kolumnę bloku → spec, „Podgląd i karta”, „Część żywa”,
+    PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
     „Wartości z bazą”, „Edycja w części żywej”.
   - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki;
     poprawki w drzewie (zmiana nazwy, próg przeciągnięcia, przewinięcie po przeniesieniu) → spec,
