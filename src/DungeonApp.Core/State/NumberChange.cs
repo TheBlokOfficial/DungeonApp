@@ -12,10 +12,10 @@ public enum NumberChangeKind
 }
 
 /// <summary>
-/// One entry in a tracked value's change field: "-12", "+5" or "=30". A bare number is refused,
-/// because "12" typed as damage would set the value to 12 instead of taking 12 away. Only the field
-/// belongs to the frame; what the change does to the value (floors, ceilings, which pool goes first)
-/// is the system's arithmetic.
+/// One entry in a tracked value's change field: "-12" takes away, "+5" adds, "30" or "=30" sets.
+/// A bare number sets, because the field shows the current number and typing over it reads as
+/// writing the new one. Only the field belongs to the frame; what the change does to the value
+/// (floors, ceilings, which pool goes first) is the system's arithmetic.
 /// </summary>
 public readonly record struct NumberChange(NumberChangeKind Kind, int Amount)
 {
@@ -26,7 +26,8 @@ public readonly record struct NumberChange(NumberChangeKind Kind, int Amount)
     /// <summary>
     /// Reads a change from the field's text. Surrounding spaces and a space after the sign are allowed.
     /// "-" and "+" take a non-negative amount; "=" takes any whole number, so a value can be set below
-    /// zero - a state against the rules shows instead of being blocked.
+    /// zero - a state against the rules shows instead of being blocked. Empty text or a lone sign is
+    /// no change.
     /// </summary>
     public static bool TryParse(string? text, out NumberChange change)
     {
@@ -38,6 +39,7 @@ public readonly record struct NumberChange(NumberChangeKind Kind, int Amount)
         }
 
         NumberChangeKind kind;
+        var signLength = 1;
         switch (trimmed[0])
         {
             case '-' or TypographicMinus:
@@ -50,12 +52,14 @@ public readonly record struct NumberChange(NumberChangeKind Kind, int Amount)
                 kind = NumberChangeKind.Set;
                 break;
             default:
-                return false;
+                kind = NumberChangeKind.Set;
+                signLength = 0;
+                break;
         }
 
-        var rest = trimmed[1..].TrimStart();
+        var rest = trimmed[signLength..].TrimStart();
         var negative = false;
-        if (kind == NumberChangeKind.Set && rest.Length > 0 && rest[0] is '-' or TypographicMinus)
+        if (signLength == 1 && kind == NumberChangeKind.Set && rest.Length > 0 && rest[0] is '-' or TypographicMinus)
         {
             negative = true;
             rest = rest[1..].TrimStart();

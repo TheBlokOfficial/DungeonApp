@@ -100,8 +100,9 @@ public sealed class GallerySectionsBuildTests
     {
         var window = Show(new LivePartSection());
 
-        var notes = window.GetVisualDescendants().OfType<NoteField>().ToList();
-        Assert.Equal(4, notes.Count);
+        // The tracked values' numbers are editable texts too, inside the tiles' templates.
+        var notes = window.GetVisualDescendants().OfType<EditableText>().Where(text => text.TemplatedParent is null).ToList();
+        Assert.Equal(5, notes.Count);
         Assert.All(notes, note => Assert.NotNull(note.GetVisualDescendants().OfType<Avalonia.Controls.Presenters.TextPresenter>().SingleOrDefault()));
 
         window.Close();

@@ -346,8 +346,8 @@
         <CornerRadius x:Key="DungeonCardCornerRadius">6</CornerRadius>
         <CornerRadius x:Key="DungeonControlCornerRadius">5</CornerRadius>
         <CornerRadius x:Key="DungeonNavigationCornerRadius">4</CornerRadius>
-        <!-- Editable text frame: text that reads as card text and turns into a field in place (the
-             live part's note). The hover background and the editing outline stand this far outside
+        <!-- Editable text frame (controls:EditableText): text that reads as card text and turns into
+             a field in place (the GM's note, a tracked value's number). The hover background and the editing outline stand this far outside
              the text - a negative margin reaching out of the control's bounds - so the text keeps
              its place and nothing around it moves when the form changes. The radius rounds that
              frame into a soft oval. -->
@@ -577,15 +577,15 @@
              still there, so it is dimmed less than a disabled control (DungeonDisabledOpacity means
              "cannot be used"). -->
         <x:Double x:Key="DungeonRemovedRowOpacity">0.55</x:Double>
-        <!-- Editable value (controls:TrackedValueTile): EditableOutset - how the hover oval and the
-             field's outline sit against the text's line box, as a margin: past it at the sides
-             (negative), so turning text into a field moves nothing, and slightly inside it at the top,
-             where the line box has room above the digits. EditableCornerRadius - their rounding, half
-             their height, so the oval behind one digit is round and behind more is a pill.
-             TrackedValueMaximumGap - space between the current number and the smaller "/ 13". -->
-        <Thickness x:Key="DungeonEditableOutset">-8,2,-8,0</Thickness>
-        <CornerRadius x:Key="DungeonEditableCornerRadius">16</CornerRadius>
-        <x:Double x:Key="DungeonTrackedValueMaximumGap">6</x:Double>
+        <!-- Tracked value (controls:TrackedValueTile): space between the current number and the
+             smaller "/ 13" - wider than the editable text's frame reaches out at the side
+             (DungeonEditableTextFrameOutset), so the field's outline never covers "/ 13". -->
+        <x:Double x:Key="DungeonTrackedValueMaximumGap">12</x:Double>
+        <!-- Tracked value's number: the editable text frame (DungeonEditableTextFrameOutset) reaches
+             out at the sides as in a note, but sits inside the large number's line box at the top and
+             bottom, which has room above and below the digits - so the frame stays off the label
+             above and the note below. -->
+        <Thickness x:Key="DungeonTrackedValueFrameOutset">-8,4,-8,2</Thickness>
         <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
         <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>
