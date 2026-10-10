@@ -229,6 +229,26 @@ public sealed class EditableTextTests
     }
 
     [AvaloniaFact]
+    public void The_note_line_shows_the_systems_result_not_the_typed_change()
+    {
+        var sample = ShowTile();
+        sample.Tile.Preview = change => $"9 → {9 + change.Amount}";
+
+        Click(sample.Window, sample.Field);
+        sample.Window.KeyTextInput("+5");
+        Run();
+        Assert.Equal("9 → 14", sample.Tile.Message);
+
+        // Without the system's arithmetic the line keeps the note instead of echoing the field.
+        sample.Tile.Preview = null;
+        sample.Window.KeyTextInput("1");
+        Run();
+        Assert.Null(sample.Tile.Message);
+
+        sample.Window.Close();
+    }
+
+    [AvaloniaFact]
     public void The_number_refuses_letters_and_a_second_sign()
     {
         var sample = ShowTile();

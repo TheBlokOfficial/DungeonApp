@@ -23,7 +23,7 @@
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel>
+                <StackPanel Spacing="{DynamicResource DungeonStatTileLineGap}">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonStatTileIconSize}"
                                                  Height="{DynamicResource DungeonStatTileIconSize}"
@@ -63,8 +63,7 @@
                                                        Foreground="{TemplateBinding Foreground}"
                                                        TextWrapping="NoWrap"
                                                        AcceptsReturn="False"
-                                                       SelectAllOnEntry="True"
-                                                       FrameOutset="{DynamicResource DungeonTrackedValueFrameOutset}" />
+                                                       SelectAllOnEntry="True" />
                             </controls:ChangeBlot>
                         </Panel>
                         <TextBlock Name="PART_Maximum"

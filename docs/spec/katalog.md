@@ -169,8 +169,8 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   Enter zapowiada wynik pod liczbą („8 → 3”); Enter zatwierdza, Esc porzuca. Klik w liczbę odróżnia
   bieżące PW od wartości z bazą, które na klik nie reagują. Rachunek należy do systemu:
   - `-` odejmuje (od etapu 5 najpierw PW tymczasowe) i schodzi najniżej do 0; zapowiedź pokazuje
-    nadmiar („5 poniżej zera”);
-  - `+` dodaje najwyżej do maksimum; zapowiedź pokazuje nadwyżkę („7 ponad maksimum”);
+    nadmiar samą liczbą („3 → 0 · 5”);
+  - `+` dodaje najwyżej do maksimum;
   - `=` i sama liczba ustawiają dowolną wartość, także ponad maksimum (widać, nie blokuje).
 - **Notatka MG:** wieloliniowa, Enter dodaje linię. Zapis przy wyjściu z pola, przy zmianie entity
   w podglądzie i przy zamknięciu okna — nie przy każdym klawiszu ani z opóźnieniem. Musi wyglądać na

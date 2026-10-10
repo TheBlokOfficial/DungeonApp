@@ -134,7 +134,7 @@ public sealed class TrackedValueTile : TemplatedControl
 
     /// <summary>
     /// The system's text for what a change will do ("9 → 4"), shown in the note line before Enter.
-    /// Without it the line shows the change itself.
+    /// Without it the note line keeps the note: repeating the typed change would only echo the field.
     /// </summary>
     public Func<NumberChange, string>? Preview
     {
@@ -338,7 +338,7 @@ public sealed class TrackedValueTile : TemplatedControl
     {
         var text = _field?.Text ?? "";
         SetMessage(text != _textOnEntry && NumberChange.TryParse(text, out var change)
-            ? Preview?.Invoke(change) ?? change.ToString()
+            ? Preview?.Invoke(change)
             : null);
     }
 

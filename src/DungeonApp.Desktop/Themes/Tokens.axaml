@@ -566,6 +566,11 @@
         <!-- Header value (controls:StatTile): caption icon 12 px - smaller than an action
              icon (16), because it sits in an 11 px caption. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>
+        <!-- Header value lines (label, value, note) in controls:StatTile and controls:TrackedValueTile:
+             4 apart, enough for the editable number's frame (DungeonEditableTextFrameOutset, 3 above
+             and below) to stay off the label and the note. Both tiles use it, so values of one row
+             keep one baseline. -->
+        <x:Double x:Key="DungeonStatTileLineGap">4</x:Double>
         <!-- Tracked value gauge (controls:TrackGauge): 10 px thick - a bar, not a hairline, so a few
              points of difference show. -->
         <x:Double x:Key="DungeonTrackGaugeThickness">10</x:Double>
@@ -580,14 +585,7 @@
         <!-- Tracked value (controls:TrackedValueTile): space between the current number and the
              smaller "/ 13" - wider than the editable text's frame reaches out at the side
              (DungeonEditableTextFrameOutset), so the field's outline never covers "/ 13". -->
-        <x:Double x:Key="DungeonTrackedValueMaximumGap">12</x:Double>
-        <!-- Tracked value's number: the editable text frame (DungeonEditableTextFrameOutset) reaches
-             out at the sides as in a note, but at the top and bottom it follows the large number's
-             line box exactly - that box already has room above and below the digits, and the caret
-             and the selection fill it, so the frame holds them without reaching the label above or
-             the note below. -->
-        <Thickness x:Key="DungeonTrackedValueFrameOutset">-8,0,-8,0</Thickness>
-        <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
+        <x:Double x:Key="DungeonTrackedValueMaximumGap">12</x:Double>        <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
         <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>
         <!-- Flyout and dropdown: surface radius (6, like a card) and inner

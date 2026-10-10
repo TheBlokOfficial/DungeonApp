@@ -5,13 +5,13 @@
     <!--
         Editable text (controls:EditableText): text that reads as part of the card and is edited in
         place - the GM's note, the current number of a tracked value. Its uses differ only in font and
-        settings (wrapping, select-all on entry, how far the frame stands out); the look is one.
+        settings (wrapping, select-all on entry); the look is one.
         One text presenter serves both forms, with no padding, scrolling or minimum height (none of the
         TextBox theme's field rules apply), so the text stands in exactly the same spot at rest and
         while editing. The control is as wide as its text (left-aligned, never narrower than MinWidth,
         set per use), so the frame covers the text, not the room beside it. The frame (PART_Frame)
-        reaches out of the control's bounds by FrameOutset (DungeonEditableTextFrameOutset unless the
-        use sets its own); its states change only
+        reaches out of the control's bounds by DungeonEditableTextFrameOutset, so the caret and the
+        selection keep a margin inside it; its states change only
         colours, never size.
           resting  - plain text, no background or border; while empty the placeholder (if the use
                      sets one) shows in the text's own font, in InputPlaceholder, so it reads as a hint;
@@ -33,9 +33,7 @@
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonEditableTextFrameCornerRadius}" />
-        <Setter Property="FrameOutset" Value="{DynamicResource DungeonEditableTextFrameOutset}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonEditableTextFrameCornerRadius}" />        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
@@ -58,7 +56,7 @@
             <ControlTemplate>
                 <Panel>
                     <Border Name="PART_Frame"
-                            Margin="{TemplateBinding FrameOutset}"
+                            Margin="{DynamicResource DungeonEditableTextFrameOutset}"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"

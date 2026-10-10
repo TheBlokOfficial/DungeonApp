@@ -23,7 +23,7 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel>
+                <StackPanel Spacing="{DynamicResource DungeonStatTileLineGap}">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="{DynamicResource DungeonSpacingXs}">
                         <controls:ForegroundIcon Width="{DynamicResource DungeonStatTileIconSize}"
                                                  Height="{DynamicResource DungeonStatTileIconSize}"
