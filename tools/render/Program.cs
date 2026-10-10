@@ -332,7 +332,7 @@ internal static class Program
 
         if (Wants($"{stem}_rows_hover"))
         {
-            HoverOver(window, section.FindControl<Control>("ConditionRow")!);
+            HoverOver(window, section.FindControl<Control>("ConditionRow")!.GetVisualDescendants().OfType<Button>().First());
             SaveScaled(rows, UniqueName($"{stem}_rows_hover"));
             Rest(window);
         }
