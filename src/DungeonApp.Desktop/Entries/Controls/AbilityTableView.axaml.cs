@@ -57,7 +57,11 @@ public partial class AbilityTableView : UserControl
             Grid.SetColumn(label, index);
             Labels.Children.Add(label);
 
-            Cells.Children.Add(Cell(0, index, row.Score));
+            var score = Cell(0, index, row.Score);
+            var scoreText = (SelectableTextBlock)score.Content!;
+            scoreText.Classes.Set("above-base", row.ScoreDeviation == BaseDeviation.Above);
+            scoreText.Classes.Set("below-base", row.ScoreDeviation == BaseDeviation.Below);
+            Cells.Children.Add(score);
 
             var modifier = Cell(1, index, row.Modifier);
             modifier.Classes.Set("positive", row.ModifierTone == ValueTone.Positive);
