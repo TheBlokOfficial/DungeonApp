@@ -169,7 +169,7 @@ public sealed class EditableTextTests
     ];
 
     [AvaloniaFact]
-    public void Opening_the_number_and_typing_moves_nothing()
+    public void Opening_the_number_moves_nothing()
     {
         var sample = ShowTile();
         var atRest = TileLayout(sample);
@@ -180,21 +180,11 @@ public sealed class EditableTextTests
         Assert.Equal("9", sample.Field.SelectedText);
         Assert.Equal(atRest, TileLayout(sample));
 
-        // "-5" is wider than "9": the typed text spills over as an overlay, everything else stays.
-        sample.Window.KeyTextInput("-5");
-        Run();
-        Assert.Contains(TrackedValueTile.PreviewClass, sample.Tile.Classes);
-        var typing = TileLayout(sample);
-        typing.RemoveAt(2);
-        var rest = atRest.ToList();
-        rest.RemoveAt(2);
-        Assert.Equal(rest, typing);
-
         sample.Window.Close();
     }
 
     [AvaloniaFact]
-    public void A_long_entry_spills_over_the_maximum_without_moving_it()
+    public void A_longer_entry_widens_the_field_and_pushes_the_maximum_until_the_field_is_left()
     {
         var sample = ShowTile();
         var atRest = TileLayout(sample);
@@ -203,36 +193,36 @@ public sealed class EditableTextTests
         sample.Window.KeyTextInput("-120");
         Run();
 
+        // The text stays inside the field, so the caret and the selection stay inside its outline.
         Assert.Equal("-120", sample.Field.Text);
-        Assert.True(sample.Field.IsOverflowing);
+        var presenter = sample.Field.GetVisualDescendants().OfType<TextPresenter>().Single();
+        Assert.Equal(presenter.Bounds.Width, sample.Field.Bounds.Width, 1);
+        Assert.True(InWindow(sample.Window, sample.Field).Width > atRest[1].Width);
+        Assert.True(InWindow(sample.Window, sample.Maximum).X > atRest[3].X);
         Assert.Equal(atRest[0], InWindow(sample.Window, sample.Tile));
-        Assert.Equal(atRest[1], InWindow(sample.Window, sample.Field));
-        Assert.Equal(atRest[3], InWindow(sample.Window, sample.Maximum));
         Assert.Equal(atRest[4], InWindow(sample.Window, sample.Neighbour));
 
         // Leaving the field (the shell's Escape and click-outside do the same) drops the entry.
         sample.Window.FocusManager!.Focus(null);
         Run();
-        Assert.False(sample.Field.IsOverflowing);
         Assert.Equal(atRest, TileLayout(sample));
 
         sample.Window.Close();
     }
 
     [AvaloniaFact]
-    public void The_number_is_as_wide_as_three_digits_or_its_text()
+    public void The_number_is_as_wide_as_one_digit_or_its_text()
     {
         var sample = ShowTile();
 
-        var three = sample.Field.MinWidth;
-        var digits = sample.Tile.GetVisualDescendants().OfType<TextBlock>().First(part => part.Name == "PART_Digits");
-        Assert.True(three > 0, $"digits {digits.DesiredSize} {digits.Bounds} {digits.FontSize} field {sample.Field.Bounds}");
-        Assert.Equal(three, sample.Field.Bounds.Width, 1);
+        var one = sample.Field.MinWidth;
+        Assert.True(one > 0);
+        Assert.Equal(one, sample.Field.Bounds.Width, 1);
 
         sample.Tile.Value = "12345";
         Run();
         var presenter = sample.Field.GetVisualDescendants().OfType<TextPresenter>().Single();
-        Assert.True(sample.Field.Bounds.Width > three);
+        Assert.True(sample.Field.Bounds.Width > one);
         Assert.Equal(presenter.DesiredSize.Width, sample.Field.Bounds.Width, 1);
 
         sample.Window.Close();

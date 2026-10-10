@@ -9,8 +9,9 @@
           value line - the current number, an editable text (controls:EditableText, its own look) in
             the stat-value-lg font, at least one digit wide, one line; beside it a smaller muted
             "/ 13" (stat-value) on the same baseline (the control aligns them); the blot
-            (controls:ChangeBlot) behind the number while it is uncommitted. While typing, an entry
-            longer than the number's room spills over "/ 13", which hides meanwhile - nothing moves;
+            (controls:ChangeBlot) behind the number while it is uncommitted. Switching forms moves
+            nothing; while typing, an entry longer than the number widens the field and pushes
+            "/ 13" right, so the caret and the selection stay inside the outline;
           note line - muted caption, always reserved; while the field holds a change it shows the
             preview (regular text) on one line over the note's place, cut with an ellipsis.
         Enter confirms, Escape or a click elsewhere drops the entry (Themes/EditFocusRelease.cs and
@@ -63,8 +64,7 @@
                                                        TextWrapping="NoWrap"
                                                        AcceptsReturn="False"
                                                        SelectAllOnEntry="True"
-                                                       FrameOutset="{DynamicResource DungeonTrackedValueFrameOutset}"
-                                                       SpillsOverWhileEditing="True" />
+                                                       FrameOutset="{DynamicResource DungeonTrackedValueFrameOutset}" />
                             </controls:ChangeBlot>
                         </Panel>
                         <TextBlock Name="PART_Maximum"
@@ -95,10 +95,6 @@
                 </StackPanel>
             </ControlTemplate>
         </Setter>
-
-        <Style Selector="^:overflowing /template/ TextBlock#PART_Maximum">
-            <Setter Property="Opacity" Value="0" />
-        </Style>
 
         <!-- The note keeps its room while the preview stands over it. -->
         <Style Selector="^:preview /template/ Panel#PART_NoteHost">

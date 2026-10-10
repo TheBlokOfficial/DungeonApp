@@ -1,7 +1,6 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Metadata;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -22,32 +21,20 @@ namespace DungeonApp.Desktop.Controls;
 /// text saves it on <see cref="Committed"/>, raised when the field loses focus (a click elsewhere, Tab,
 /// Escape), so the text is never saved per keystroke.
 /// </remarks>
-[PseudoClasses(OverflowingClass)]
 public sealed class EditableText : TextBox
 {
-    public const string OverflowingClass = ":overflowing";
-
     public static readonly StyledProperty<bool> SelectAllOnEntryProperty =
         AvaloniaProperty.Register<EditableText, bool>(nameof(SelectAllOnEntry));
 
     public static readonly StyledProperty<Thickness> FrameOutsetProperty =
         AvaloniaProperty.Register<EditableText, Thickness>(nameof(FrameOutset));
 
-    public static readonly StyledProperty<bool> SpillsOverWhileEditingProperty =
-        AvaloniaProperty.Register<EditableText, bool>(nameof(SpillsOverWhileEditing));
-
     public static readonly StyledProperty<Func<string, bool>?> TextFilterProperty =
         AvaloniaProperty.Register<EditableText, Func<string, bool>?>(nameof(TextFilter));
-
-    public static readonly DirectProperty<EditableText, bool> IsOverflowingProperty =
-        AvaloniaProperty.RegisterDirect<EditableText, bool>(nameof(IsOverflowing), text => text.IsOverflowing);
 
     public static readonly RoutedEvent<EditableTextCommittedEventArgs> CommittedEvent =
         RoutedEvent.Register<EditableText, EditableTextCommittedEventArgs>(nameof(Committed), RoutingStrategies.Bubble);
 
-    private double? _widthOnEntry;
-    private double _naturalWidth;
-    private bool _isOverflowing;
     private bool _entering;
     private string _lastAllowedText = "";
 
@@ -80,17 +67,6 @@ public sealed class EditableText : TextBox
     }
 
     /// <summary>
-    /// While the field has focus the control keeps the width it had on entry, and text typed past it
-    /// is drawn over whatever stands to the right instead of pushing it: nothing beside the field
-    /// moves while the GM types. Off, the control grows with its text.
-    /// </summary>
-    public bool SpillsOverWhileEditing
-    {
-        get => GetValue(SpillsOverWhileEditingProperty);
-        set => SetValue(SpillsOverWhileEditingProperty, value);
-    }
-
-    /// <summary>
     /// Text the field may hold while the GM types; a key or a paste that would make anything else is
     /// refused, so the field never shows an entry it cannot take. Text set from code is not filtered.
     /// </summary>
@@ -98,19 +74,6 @@ public sealed class EditableText : TextBox
     {
         get => GetValue(TextFilterProperty);
         set => SetValue(TextFilterProperty, value);
-    }
-
-    /// <summary>The text spills past the width kept on entry (<see cref="SpillsOverWhileEditing"/>).</summary>
-    public bool IsOverflowing
-    {
-        get => _isOverflowing;
-        private set
-        {
-            if (SetAndRaise(IsOverflowingProperty, ref _isOverflowing, value))
-            {
-                PseudoClasses.Set(OverflowingClass, value);
-            }
-        }
     }
 
     protected override Type StyleKeyOverride => typeof(EditableText);
@@ -177,54 +140,18 @@ public sealed class EditableText : TextBox
         }
     }
 
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        var natural = base.MeasureOverride(availableSize);
-        _naturalWidth = natural.Width;
-        if (_widthOnEntry is not { } kept)
-        {
-            return natural;
-        }
-
-        IsOverflowing = natural.Width > kept;
-        return natural.WithWidth(kept);
-    }
-
-    // The control's own bounds stay at the width kept on entry; only its template is laid out wider,
-    // so the overflow is drawn (and takes clicks) without the layout around it noticing.
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        base.ArrangeOverride(_widthOnEntry is not null && _naturalWidth > finalSize.Width
-            ? finalSize.WithWidth(_naturalWidth)
-            : finalSize);
-        return finalSize;
-    }
-
     private void OnFocusChanged(bool focused)
     {
         _entering = focused;
         if (focused)
         {
             _lastAllowedText = Text ?? "";
-            if (SpillsOverWhileEditing)
-            {
-                _widthOnEntry = Bounds.Width;
-                InvalidateMeasure();
-            }
-
             if (SelectAllOnEntry)
             {
                 SelectAll();
             }
 
             return;
-        }
-
-        if (_widthOnEntry is not null)
-        {
-            _widthOnEntry = null;
-            IsOverflowing = false;
-            InvalidateMeasure();
         }
 
         RaiseEvent(new EditableTextCommittedEventArgs(CommittedEvent, Text ?? string.Empty));

@@ -30,19 +30,19 @@ public sealed class NumberChangeEventArgs(RoutedEvent routedEvent, NumberChange 
 /// <see cref="Preview"/> and sets the new value.
 /// </summary>
 /// <remarks>
-/// The number's room is the wider of the number and three digits; an entry longer than that spills
-/// over "/ 13" (<see cref="EditableText.SpillsOverWhileEditing"/>), so switching forms and typing move
-/// nothing. The look belongs to the control theme (Themes/Controls/TrackedValueTile.axaml).
+/// The number's room is the wider of the number and one digit, so switching forms moves nothing; an
+/// entry longer than the number widens the field and pushes "/ 13" right while the GM types, so the
+/// caret and the selection never leave the outline. The look belongs to the control theme
+/// (Themes/Controls/TrackedValueTile.axaml).
 /// </remarks>
 [TemplatePart(DigitsPart, typeof(TextBlock))]
 [TemplatePart(MaximumPart, typeof(TextBlock))]
 [TemplatePart(FieldPart, typeof(EditableText))]
-[PseudoClasses(EditingClass, PreviewClass, OverflowingClass)]
+[PseudoClasses(EditingClass, PreviewClass)]
 public sealed class TrackedValueTile : TemplatedControl
 {
     public const string EditingClass = ":editing";
     public const string PreviewClass = ":preview";
-    public const string OverflowingClass = ":overflowing";
 
     private const string DigitsPart = "PART_Digits";
     private const string MaximumPart = "PART_Maximum";
@@ -192,7 +192,6 @@ public sealed class TrackedValueTile : TemplatedControl
             _field.GotFocus -= OnFieldGotFocus;
             _field.LostFocus -= OnFieldLostFocus;
             _field.TextChanged -= OnFieldTextChanged;
-            _field.PropertyChanged -= OnFieldPropertyChanged;
             _field.RemoveHandler(KeyDownEvent, OnFieldKeyDown);
         }
 
@@ -209,7 +208,6 @@ public sealed class TrackedValueTile : TemplatedControl
             _field.GotFocus += OnFieldGotFocus;
             _field.LostFocus += OnFieldLostFocus;
             _field.TextChanged += OnFieldTextChanged;
-            _field.PropertyChanged += OnFieldPropertyChanged;
             _field.AddHandler(KeyDownEvent, OnFieldKeyDown, RoutingStrategies.Tunnel);
         }
 
@@ -234,7 +232,7 @@ public sealed class TrackedValueTile : TemplatedControl
         AlignMaximumToValueBaseline();
         var size = base.MeasureOverride(availableSize);
 
-        // Three digits in the number's own font, known once the hidden sample is measured; setting the
+        // One digit in the number's own font, known once the hidden sample is measured; setting the
         // minimum asks for one more measure pass.
         if (_digits is not null && _field is not null && !_digits.DesiredSize.Width.Equals(_field.MinWidth))
         {
@@ -276,14 +274,6 @@ public sealed class TrackedValueTile : TemplatedControl
         if (_editing && _field is not null && !(e.Source is Visual source && (source == _field || _field.IsVisualAncestorOf(source))))
         {
             Leave();
-        }
-    }
-
-    private void OnFieldPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.Property == EditableText.IsOverflowingProperty)
-        {
-            PseudoClasses.Set(OverflowingClass, e.GetNewValue<bool>());
         }
     }
 

@@ -80,7 +80,8 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   obramowania, tylko tak szerokie jak tekst (z minimalną szerokością), i kursor tekstowy; po kliknięciu
   pole z obwódką w tym samym miejscu. Pole liczby zaznacza całość, bo wpis zastępuje wartość; notatka
   stawia kursor w miejscu kliknięcia, bo jedna litera skasowałaby notatkę. Przełączenie formy niczego
-  nie przesuwa; wpis dłuższy niż liczba wychodzi nakładką nad „/ 13”. Odrzucone: stały ślad
+  nie przesuwa; wpis dłuższy niż liczba poszerza pole i na czas pisania odsuwa „/ 13” w prawo, więc
+  kursor i zaznaczenie zostają w ramce (nakładka nad „/ 13” je gubiła). Odrzucone: stały ślad
   (podkreślenie, tło) i stała ramka, bo karta wyglądałaby jak formularz.
 - **Karta entity zmienia się w miejscu.** Nad kreską część żywa: wartości entity w miejscach
   wartości wpisu (PW z paskiem, KP, Szybkość, cechy) oraz stany, efekty i notatka; pod kreską część
