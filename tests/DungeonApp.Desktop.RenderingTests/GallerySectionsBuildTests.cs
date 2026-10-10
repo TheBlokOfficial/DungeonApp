@@ -67,15 +67,30 @@ public sealed class GallerySectionsBuildTests
         Assert.Equal(6, window.GetVisualDescendants().OfType<TrackGauge>().Count());
 
         var tiles = window.GetVisualDescendants().OfType<StatTile>().ToList();
-        Assert.Equal(BaseDeviation.Above, tiles[0].Deviation);
-        Assert.Equal(ValueColor(tiles[0]), ResourceColor("DungeonAboveBaseBrush"));
-        Assert.Equal(ValueColor(tiles[1]), ResourceColor("DungeonBelowBaseBrush"));
-        Assert.Equal(ValueColor(tiles[2]), ResourceColor("DungeonTextPrimaryBrush"));
+        var above = tiles.Single(tile => tile.Value == "19");
+        Assert.Equal(BaseDeviation.Above, above.Deviation);
+        Assert.Equal(ValueColor(above), ResourceColor("DungeonAboveBaseBrush"));
+        Assert.Equal(ValueColor(tiles.Single(tile => tile.Value == "6 m")), ResourceColor("DungeonBelowBaseBrush"));
+        Assert.Equal(ValueColor(tiles.Single(tile => tile.Value == "52")), ResourceColor("DungeonTextPrimaryBrush"));
 
         var tables = window.GetVisualDescendants().OfType<AbilityTableView>().ToList();
         Assert.Equal(2, tables.Count);
         var lowered = tables[0].GetVisualDescendants().OfType<SelectableTextBlock>().Single(t => t.Text == "12");
         Assert.Equal(ResourceColor("DungeonBelowBaseBrush"), ((ISolidColorBrush)lowered.Foreground!).Color);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void The_live_part_section_builds_every_tracked_value()
+    {
+        var window = Show(new LivePartSection());
+
+        var tiles = window.GetVisualDescendants().OfType<TrackedValueTile>().ToList();
+        Assert.Equal(7, tiles.Count);
+        Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
+        Assert.Contains(tiles, tile => tile.Preview is not null);
+        Assert.Contains(window.GetVisualDescendants().OfType<ChangeBlot>(), blot => blot.IsShown);
 
         window.Close();
     }
