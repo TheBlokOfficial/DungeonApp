@@ -118,17 +118,16 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 
 Nazwy „część żywa” i „część stała” wchodzą przy budowie do słownika w `docs/architecture.md`.
 
-- **Układ stworzenia:** w kolumnie obok obrazu nazwa, tagi i PW na całą szerokość kolumny. KP
-  i Szybkość stoją w rzędzie tabel cech, na prawo od INT/MDR/CHA: podpis na wysokości skrótów cech,
-  wartość na wysokości wartości cech, dopisek („strzępy zbroi”) na wysokości modyfikatorów. Pod
-  tabelami sekcje Stany, Efekty i Notatka, potem kreska.
-- **PW:** podpis z ikoną serca „PW”, duża bieżąca liczba, obok mniejsze, przygaszone „/ 13” na
-  wspólnej linii bazowej; pod nimi gruby, kwadratowy pasek od 0 do maksimum. Pasek tylko pokazuje
-  stosunek bieżących do maksimum — nie da się go przeciągać. Wypełnienie czerwone, z własnym tokenem
-  (czerwień PW, nie błędu). PW ponad maksimum są widoczne (nadwyżka innym odcieniem, granica maksimum
-  widoczna) i nie wyglądają jak błąd. Pod paskiem dopisek wpisu („2k8+4”).
-- Kolumna obok obrazu mieści nazwę, tagi i blok PW w wysokości portretu (200 px); dłuższa nazwa
-  podnosi nagłówek jak w bibliotece.
+- **Układ stworzenia:** jak w bibliotece — w kolumnie obok obrazu nazwa, tagi i jeden rząd bloków
+  wartości, dnem równo z dolną krawędzią obrazu. Kolejność bloków: PW, KP, Szybkość (także
+  w bibliotece, bo to jedna karta). Nad blokami, przez całą szerokość kolumny, pasek PW. Pod tabelami
+  cech sekcje Stany, Efekty i Notatka, potem kreska.
+- **Pasek PW:** gruby, kwadratowy, od 0 do maksimum. Tylko pokazuje stosunek bieżących do maksimum —
+  nie da się go przeciągać. Wypełnienie czerwone, z własnym tokenem (czerwień PW, nie błędu). PW
+  ponad maksimum są widoczne (nadwyżka innym odcieniem, granica maksimum widoczna) i nie wyglądają
+  jak błąd. W bibliotece paska nie ma — wpis nie ma bieżących PW.
+- **Blok PW:** podpis z ikoną serca „PW”, duża biała bieżąca liczba, obok mniejsze, szare „/ 13” na
+  wspólnej linii bazowej; dopisek wpisu („2k8+4”) jak w bibliotece.
 - „Zatwierdź” i „Odrzuć” stoją po prawej, na wysokości ścieżki kategorii (sekcja „Zatwierdzanie
   zmian”).
 - Entity bez walki (przedmiot): nagłówek jak w bibliotece, pod nim Stany, Efekty i Notatka.

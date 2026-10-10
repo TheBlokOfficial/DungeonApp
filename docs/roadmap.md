@@ -48,8 +48,8 @@ Specyfikacja: `docs/spec/katalog.md`.
     stanu i efektu, kleks, kolory względem bazy; projektant, iteracje z renderem 2×, warianty A/B/C,
     wybór wariantu → spec, „Projekt kontrolek”.
   - [ ] 2.3b Część żywa: ścieżka kategorii zamiast katalogów, bez linii „№” pod nazwą, tytuł okna
-    z nazwą i №; PW na całą kolumnę obok obrazu (pasek, pole zmiany po kliknięciu), KP i Szybkość obok
-    tabel cech; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
+    z nazwą i №; bloki w kolejności PW, KP, Szybkość, nad nimi pasek PW przez całą kolumnę, bieżące
+    PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
     „Wartości z bazą”, „Edycja w części żywej”.
   - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki;
     poprawki w drzewie (zmiana nazwy, próg przeciągnięcia, przewinięcie po przeniesieniu) → spec,
