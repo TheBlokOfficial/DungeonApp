@@ -346,6 +346,13 @@
         <CornerRadius x:Key="DungeonCardCornerRadius">6</CornerRadius>
         <CornerRadius x:Key="DungeonControlCornerRadius">5</CornerRadius>
         <CornerRadius x:Key="DungeonNavigationCornerRadius">4</CornerRadius>
+        <!-- Editable text frame: text that reads as card text and turns into a field in place (the
+             live part's note). The hover background and the editing outline stand this far outside
+             the text - a negative margin reaching out of the control's bounds - so the text keeps
+             its place and nothing around it moves when the form changes. The radius rounds that
+             frame into a soft oval. -->
+        <Thickness x:Key="DungeonEditableTextFrameOutset">-8,-3,-8,-3</Thickness>
+        <CornerRadius x:Key="DungeonEditableTextFrameCornerRadius">6</CornerRadius>
         <!-- Compatibility alias for campaign controls not yet split into card/control variants. -->
         <CornerRadius x:Key="DungeonCornerRadius">5</CornerRadius>
 

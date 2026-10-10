@@ -1,0 +1,124 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        GM's note (controls:NoteField): multi-line text that reads as the card's prose and is edited
+        in place. One text presenter serves both forms, with no padding, scrolling or minimum height
+        (none of the TextBox theme's field rules apply), so the text stands in exactly the same spot
+        at rest and while editing. The frame around it (PART_Frame) reaches out of the control's
+        bounds by DungeonEditableTextFrameOutset; its states change only colours, never size.
+          resting  - plain text, no background or border; an empty note shows the placeholder
+                     (InputPlaceholder) in the text's own font, so it reads as a hint, not content;
+          hover    - EditableHover background, no border, text cursor - the sign that it takes a click;
+          editing  - (:focus, also reached with Tab) EditableFocusBorder outline, no background; the
+                     caret lands where the click was - the text is never selected as a whole, because
+                     a typed letter would replace the whole note. The placeholder fades out (opacity,
+                     so the control's height does not change);
+          disabled - DungeonDisabledOpacity, no hover, arrow cursor.
+        Text style matches TextBlock.body (Typography.axaml): UI font 13, line height 20.15, wrapped.
+        The control grows downwards with its lines only. Clicking outside or Escape ends editing -
+        Themes/EditFocusRelease.cs.
+    -->
+    <ControlTheme x:Key="{x:Type controls:NoteField}" TargetType="controls:NoteField">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="CornerRadius" Value="{DynamicResource DungeonEditableTextFrameCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource DungeonTextSelectionBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
+        <Setter Property="PlaceholderText" Value="Notatka MG — kliknij, żeby pisać" />
+        <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="LineHeight" Value="20.15" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="AcceptsTab" Value="False" />
+        <Setter Property="Cursor" Value="IBeam" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="Transitions" Value="{x:Null}" />
+        <Setter Property="ContextFlyout" Value="{StaticResource DungeonTextBoxContextFlyout}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border Name="PART_Frame"
+                            Margin="{DynamicResource DungeonEditableTextFrameOutset}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
+                    <Panel Name="PART_ContentInset" Background="Transparent">
+                        <TextBlock Name="PART_Placeholder"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   FontStyle="{TemplateBinding FontStyle}"
+                                   LineHeight="{TemplateBinding LineHeight}"
+                                   Foreground="{TemplateBinding PlaceholderForeground}"
+                                   Text="{TemplateBinding PlaceholderText}"
+                                   TextWrapping="{TemplateBinding TextWrapping}"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Top">
+                            <TextBlock.IsVisible>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding ElementName="PART_TextPresenter" Path="PreeditText" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Text" Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+                                </MultiBinding>
+                            </TextBlock.IsVisible>
+                        </TextBlock>
+                        <TextPresenter Name="PART_TextPresenter"
+                                       Text="{TemplateBinding Text, Mode=TwoWay}"
+                                       CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                       CaretIndex="{TemplateBinding CaretIndex}"
+                                       SelectionStart="{TemplateBinding SelectionStart}"
+                                       SelectionEnd="{TemplateBinding SelectionEnd}"
+                                       TextAlignment="{TemplateBinding TextAlignment}"
+                                       TextWrapping="{TemplateBinding TextWrapping}"
+                                       LineHeight="{TemplateBinding LineHeight}"
+                                       LetterSpacing="{TemplateBinding LetterSpacing}"
+                                       SelectionBrush="{TemplateBinding SelectionBrush}"
+                                       SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                       CaretBrush="{TemplateBinding CaretBrush}"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Top" />
+                    </Panel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DungeonEditableHoverBrush}" />
+        </Style>
+        <!-- After hover, so editing wins over the pointer: an outline, no background. -->
+        <Style Selector="^:focus">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonEditableFocusBorderBrush}" />
+        </Style>
+        <Style Selector="^:focus /template/ TextBlock#PART_Placeholder">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Cursor" Value="Arrow" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <!-- The faded note's text is smoothed in greyscale (NoteField.cs): opacity draws it into a
+             transparent layer, where subpixel text breaks apart. -->
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
