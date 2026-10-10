@@ -21,6 +21,7 @@ using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Workspace;
 using DungeonApp.Desktop.Shell.Gallery;
+using DungeonApp.Desktop.Shell.Gallery.Sections;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
 using SkiaSharp;
@@ -291,7 +292,11 @@ internal static class Program
         foreach (var section in list.Children)
         {
             var stem = $"gallery_{Slug(section.GetType().Name.Replace("Section", "", StringComparison.Ordinal))}";
-            if (Wants(stem))
+            if (section is LivePartSection livePart)
+            {
+                RenderLivePart(window, livePart, stem);
+            }
+            else if (Wants(stem))
             {
                 SaveCrop(window, section, UniqueName(stem));
             }
@@ -299,6 +304,66 @@ internal static class Program
 
         SetSize(window, WindowWidth, WindowHeight);
     }
+
+    /// <summary>
+    /// The live part's controls at twice their size: the whole section at rest, then each state that
+    /// only the pointer or the keyboard reaches (hover, editing, a typed change), posed with real input
+    /// on the control and saved as a crop of that control's sample. Every pose is undone before the
+    /// next one, so the poses do not leak into each other.
+    /// </summary>
+    private static void RenderLivePart(Window window, LivePartSection section, string stem)
+    {
+        if (Wants(stem))
+        {
+            SaveScaled(section, UniqueName(stem));
+        }
+
+        // One block per control: find its sample in the section by name, pose it with HoverOver,
+        // ClickOn, TypeText and PressKey, save it with SaveScaled under "{stem}_<control>_<state>",
+        // then Rest(window) to undo the pose.
+    }
+
+    /// <summary>Moves the pointer to the middle of <paramref name="control"/>.</summary>
+    private static void HoverOver(Window window, Control control)
+    {
+        window.MouseMove(Middle(window, control));
+        Settle();
+    }
+
+    /// <summary>Presses and releases the left button in the middle of <paramref name="control"/>.</summary>
+    private static void ClickOn(Window window, Control control)
+    {
+        var point = Middle(window, control);
+        window.MouseMove(point);
+        window.MouseDown(point, Avalonia.Input.MouseButton.Left);
+        window.MouseUp(point, Avalonia.Input.MouseButton.Left);
+        Settle();
+    }
+
+    private static void TypeText(Window window, string text)
+    {
+        window.KeyTextInput(text);
+        Settle();
+    }
+
+    private static void PressKey(Window window, Avalonia.Input.Key key)
+    {
+        window.KeyPress(key, Avalonia.Input.RawInputModifiers.None, Avalonia.Input.PhysicalKey.None, null);
+        window.KeyRelease(key, Avalonia.Input.RawInputModifiers.None, Avalonia.Input.PhysicalKey.None, null);
+        Settle();
+    }
+
+    /// <summary>Takes the pointer off every control and the focus off every field.</summary>
+    private static void Rest(Window window)
+    {
+        window.MouseMove(new Point(-1, -1));
+        window.FocusManager?.Focus(null);
+        Settle();
+    }
+
+    private static Point Middle(Window window, Control control) =>
+        control.TranslatePoint(new Point(control.Bounds.Width / 2, control.Bounds.Height / 2), window)
+        ?? throw new InvalidOperationException($"{control.Name ?? control.GetType().Name} is not in the window.");
 
     /// <summary>
     /// Creates a campaign on the shelf, opens it through its row, fills the world catalog from the
@@ -508,6 +573,40 @@ internal static class Program
         }
 
         Console.WriteLine($"Saved {name} ({right - left}x{bottom - top})");
+    }
+
+    /// <summary>
+    /// Renders <paramref name="control"/> alone at twice its size - vector, not an enlarged bitmap - so
+    /// a design's details can be judged. The control is drawn over the gallery's backstage colour,
+    /// because on its own it has no background.
+    /// </summary>
+    private static void SaveScaled(Control control, string name)
+    {
+        Settle();
+        var size = control.Bounds.Size;
+        using var rendered = new Avalonia.Media.Imaging.RenderTargetBitmap(
+            new PixelSize((int)Math.Ceiling(size.Width * 2), (int)Math.Ceiling(size.Height * 2)), new Vector(192, 192));
+        rendered.Render(control);
+
+        using var stream = new MemoryStream();
+        rendered.Save(stream);
+        stream.Position = 0;
+        using var foreground = SKBitmap.Decode(stream);
+
+        var backstage = control.TryFindResource("DungeonBackstageColor", out var resource) && resource is Avalonia.Media.Color color
+            ? new SKColor(color.R, color.G, color.B, color.A)
+            : SKColors.Black;
+        using var surface = SKSurface.Create(new SKImageInfo(foreground.Width, foreground.Height));
+        surface.Canvas.Clear(backstage);
+        surface.Canvas.DrawBitmap(foreground, 0, 0);
+        using var image = surface.Snapshot();
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using (var file = File.Create(Path.Combine(_outDir, name)))
+        {
+            data.SaveTo(file);
+        }
+
+        Console.WriteLine($"Saved {name} ({foreground.Width}x{foreground.Height})");
     }
 
     /// <summary>Runs the dispatcher and render ticks for a while, so asynchronous work and transitions finish.</summary>

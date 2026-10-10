@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.LivePartSection">
+    <!-- The controls the live part of an entity's card is built from, each in every state it is
+         designed for. Two of them have two forms - text to read and a field in the same place - and
+         take a click; the rest only show. Sample values in LivePartSection.axaml.cs. The render tool
+         saves this section at twice its size and poses the pointer and keyboard states
+         (tools/render/Program.cs, RenderLivePart). Nothing here restyles a control. -->
+    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <TextBlock Classes="display-md" Text="Część żywa" />
+        <TextBlock Classes="caption muted" Text="Bieżąca wartość i notatka reagują na mysz i klawiaturę; reszta tylko pokazuje." />
+
+        <!-- Tracked value: the current number with its change field, and the blot -->
+
+        <!-- Note -->
+
+        <!-- Gauge and values against their base -->
+
+        <!-- Rows of conditions and effects -->
+    </StackPanel>
+</UserControl>

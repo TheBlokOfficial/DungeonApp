@@ -120,6 +120,30 @@
              and 10:1. Cell background only - not text or lines. -->
         <Color x:Key="DungeonPositiveSubtleColor">#3D2FBF5B</Color>
         <Color x:Key="DungeonNegativeSubtleColor">#3DEE3B3B</Color>
+        <!-- LIVE PART: what the GM changes on an entity's card at the table. -->
+        <!-- EditableHover: a value that reads as text and becomes a field on a click, under the
+             pointer - a light oval behind it, one colour, no border. At rest the value is plain text, so
+             this is the first sign that it takes a click - hence lighter than HoverOverlay. -->
+        <Color x:Key="DungeonEditableHoverColor">#1FFFFFFF</Color>
+        <!-- EditableFocusBorder: the same value turned into a field - the outline around it while it
+             is being edited, and the keyboard focus that reaches it with Tab. -->
+        <Color x:Key="DungeonEditableFocusBorderColor">#8A8983</Color>
+        <!-- Uncommitted: the blot behind a value that differs from the entity's last commit -
+             decoration, not a state colour; never the digits' colour or a cell's background. -->
+        <Color x:Key="DungeonUncommittedColor">#664A7FC1</Color>
+        <!-- Tracked value gauge: TrackFill - what is left of a tracked value (hit points): its own
+             red, not Danger, because a wounded foe is the story at the table, not a fault.
+             TrackOver - the part above the maximum, a lighter shade of the same red, more of it
+             rather than a warning. TrackRoom - the empty rest up to the maximum. -->
+        <Color x:Key="DungeonTrackFillColor">#B23A32</Color>
+        <Color x:Key="DungeonTrackOverColor">#E07A6E</Color>
+        <Color x:Key="DungeonTrackRoomColor">#14FFFFFF</Color>
+        <!-- Against the base: the digits of a value with a base (one the system lists, such as a
+             speed or the maximum of a tracked value) when its effects put it above (AboveBase, green) or below (BelowBase,
+             red) the entry's value. Text only - the modifier cell keeps its PositiveSubtle /
+             NegativeSubtle background, which speaks of the modifier's sign, not of the base. -->
+        <Color x:Key="DungeonAboveBaseColor">#6FD48A</Color>
+        <Color x:Key="DungeonBelowBaseColor">#EE7A6A</Color>
 
         <!-- BRUSHES ============================================================= -->
         <SolidColorBrush x:Key="DungeonBackgroundBrush" Color="{DynamicResource DungeonBackgroundColor}" />
@@ -171,6 +195,14 @@
         <SolidColorBrush x:Key="DungeonAccentOnDimBrush" Color="{DynamicResource DungeonAccentOnDimColor}" />
         <SolidColorBrush x:Key="DungeonDangerOnDimBrush" Color="{DynamicResource DungeonDangerOnDimColor}" />
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
+        <SolidColorBrush x:Key="DungeonEditableHoverBrush" Color="{DynamicResource DungeonEditableHoverColor}" />
+        <SolidColorBrush x:Key="DungeonEditableFocusBorderBrush" Color="{DynamicResource DungeonEditableFocusBorderColor}" />
+        <SolidColorBrush x:Key="DungeonUncommittedBrush" Color="{DynamicResource DungeonUncommittedColor}" />
+        <SolidColorBrush x:Key="DungeonTrackFillBrush" Color="{DynamicResource DungeonTrackFillColor}" />
+        <SolidColorBrush x:Key="DungeonTrackOverBrush" Color="{DynamicResource DungeonTrackOverColor}" />
+        <SolidColorBrush x:Key="DungeonTrackRoomBrush" Color="{DynamicResource DungeonTrackRoomColor}" />
+        <SolidColorBrush x:Key="DungeonAboveBaseBrush" Color="{DynamicResource DungeonAboveBaseColor}" />
+        <SolidColorBrush x:Key="DungeonBelowBaseBrush" Color="{DynamicResource DungeonBelowBaseColor}" />
 
         <!-- HOVER HALOS ================================================ -->
         <!-- 3 px band outside the border, no offset or blur, matching the control radius

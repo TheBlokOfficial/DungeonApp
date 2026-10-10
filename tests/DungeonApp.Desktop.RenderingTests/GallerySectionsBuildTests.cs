@@ -49,6 +49,16 @@ public sealed class GallerySectionsBuildTests
     }
 
     [AvaloniaFact]
+    public void The_live_part_section_builds()
+    {
+        var window = Show(new LivePartSection());
+
+        Assert.NotEmpty(window.GetVisualDescendants().OfType<TextBlock>());
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
     public void The_tables_and_compositions_sections_build_the_ability_tables()
     {
         var window = Show(new StackPanel { Children = { new TablesSection(), new CompositionsSection() } });
