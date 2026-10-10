@@ -187,8 +187,7 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   różna od niego jest niezatwierdzona i ma **kleks**: niebieski, dekoracyjny rozprysk (SVG) za
   wartością. Kleks nie zmienia tła ani koloru cyfr, więc nie gryzie się z kolorem względem bazy ani
   z tłem modyfikatora. Dodany stan albo efekt ma kleks przy wierszu, usunięty zostaje przygaszony do
-  zatwierdzenia; zmieniona notatka ma kleks przy podpisie. Kształt (farba czy atrament) i kontrast
-  cyfr na kleksie — do projektu.
+  zatwierdzenia; zmieniona notatka ma kleks przy podpisie. Kształt kleksa: „Projekt kontrolek”.
 - Kleks mówi, że wartość się zmieniła, nie — z czego. Wartości sprzed zmiany („było 13”) ani
   rozpisania przy liczbie nie ma: pomyłkę („−70” zamiast „−7”) widać po pasku PW, a cofa ją „Odrzuć”.
 - „Zatwierdź” robi z obecnego stanu entity nowy punkt odniesienia. „Odrzuć” przywraca punkt
@@ -228,7 +227,7 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
 - Cele: wartości z bazą, które podaje system (KP, Szybkość, cechy, PW maks.). Sumowanie zwykłe;
   wyjątki podręcznika (efekty o tej samej nazwie się nie kumulują, Zbroja maga ustawia KP) rozstrzyga
   MG liczbą albo zdjęciem efektu.
-- Sekcja z nagłówkiem „Efekty”, wiersz na efekt; wygląd — do projektu.
+- Sekcja z nagłówkiem „Efekty”, wiersz na efekt jak wiersz stanu („Projekt kontrolek”).
 
 ## Poprawki w drzewie
 
@@ -250,20 +249,17 @@ goblinów”) tylko wtedy, gdy skutku nie widać. Usunięcie ma okno potwierdzen
   czytania i pole w tym samym miejscu) mają bieżące PW i notatka.
 - Forma do czytania wygląda jak tekst karty; pole zajmuje dokładnie to samo miejsce. Tła strefy
   edycji nie ma, więc to kontrolka musi powiedzieć, że da się ją kliknąć.
-- Warianty do porównania na jednym arkuszu:
-  - **A** — w spoczynku czysty tekst; pod wskaźnikiem delikatne tło, ramka i kursor tekstowy.
-    Najczyściej, ale trudniej odkryć za pierwszym razem. Propozycja.
-  - **B** — stały, cichy ślad (przerywane podkreślenie albo słabe tło), pod wskaźnikiem pełna ramka.
-  - **C** — stała ramka; wygląda jak formularz, tylko dla porównania.
-
-  Pusta notatka zawsze pokazuje tekst zastępczy, w każdym wariancie.
+- Wygląd formy do kliknięcia: rozstrzygnięcie „Wartość do zmiany wygląda jak tekst”. Pusta notatka
+  pokazuje tekst zastępczy. Zapowiedź wyniku i błąd wpisu stoją w linii dopisku pod liczbą.
+- Wiersz stanu i efektu: kwadrat z ostrymi rogami i ikoną na wysokość 2–3 linii, obok tytuł, pod nim
+  szary tekst (modyfikatory albo tury). Kleks: plama z owalnych kształtów, bez rozprysków.
 - Stany, które każda kontrolka ma zaprojektowane: spoczynek, pod wskaźnikiem, edycja; błędny wpis
   („abc” w polu zmiany — Enter nic nie robi, pole to pokazuje); zapowiedź wyniku przed Enter; kleks;
   powyżej i poniżej bazy, także z kleksem i na zielonym albo czerwonym tle modyfikatora; brak wartości
   („—”); PW ponad maksimum; notatka pusta, w jednej i w kilku liniach (rośnie w dół); fokus klawiatury
   (przy stole przechodzi się Tabem, więc tu fokus dostaje wygląd mimo „Szlifu” w roadmapie).
-- **Kolejność pracy:** arkusz rodziny w Galerii — projektant (Opus), iteracje z oglądaniem renderu,
-  render 2× — potem wybór wariantu, dopiero potem kompozycja części żywej z tych kontrolek. Zlecenie
+- **Kolejność pracy:** arkusz rodziny w Galerii (sekcja „Część żywa”, render 2×), dopiero potem
+  kompozycja części żywej z tych kontrolek. Zlecenie
   projektu podaje model interakcji i kontrolki, nie listę widżetów do ustawienia.
 - Render części żywej: kadr samego okna podglądu w skali 2×, bez katalogu i innych okien.
 - **Makieta paska** (gałąź `projekt-pasek-biezacy`) to przykład z odrzuconego układu z paskiem nad

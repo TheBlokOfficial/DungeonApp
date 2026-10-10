@@ -73,6 +73,12 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
 - **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5` i `=30`; liczba bez znaku nie
   przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PW na 12. Zmianę oznacza kleks (niżej).
   Rachunek z podręcznika (PW tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
+- **Wartość do zmiany wygląda jak tekst.** Bieżąca wartość i notatka w spoczynku są czystym tekstem
+  karty. Pod wskaźnikiem pojawia się jasny owal bez obramowania i kursor tekstowy, a po kliknięciu
+  pole z obwódką w tym samym miejscu. Pole liczby zaznacza całość, bo wpis zastępuje wartość. Notatka
+  stawia kursor w miejscu kliknięcia, bo jedna litera skasowałaby notatkę. Przełączenie formy niczego
+  nie przesuwa. Odrzucone: stały ślad (podkreślenie, tło) i stała ramka, bo karta wyglądałaby jak
+  formularz.
 - **Karta entity zmienia się w miejscu.** Nad kreską część żywa: wartości entity w miejscach
   wartości wpisu (PW z paskiem, KP, Szybkość, cechy) oraz stany, efekty i notatka; pod kreską część
   stała — treść wpisu jak w bibliotece. Jedna liczba stoi w jednym miejscu, a karta nie rośnie.
