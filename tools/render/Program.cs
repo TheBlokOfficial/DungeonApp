@@ -321,6 +321,48 @@ internal static class Program
         // One block per control: find its sample in the section by name, pose it with HoverOver,
         // ClickOn, TypeText and PressKey, save it with SaveScaled under "{stem}_<control>_<state>",
         // then Rest(window) to undo the pose.
+        RenderLiveValue(window, section, $"{stem}_value");
+    }
+
+    /// <summary>
+    /// The working tracked value in its pointer and keyboard states, saved as its row (the value and
+    /// its neighbours), so a shift between text and field shows against the neighbours.
+    /// </summary>
+    private static void RenderLiveValue(Window window, LivePartSection section, string stem)
+    {
+        var tile = section.FindControl<DungeonApp.Desktop.Controls.TrackedValueTile>("LiveValue")
+                   ?? throw new InvalidOperationException("The live part has no LiveValue sample.");
+        var row = section.FindControl<Control>("LiveValueRow")
+                  ?? throw new InvalidOperationException("The live part has no LiveValueRow.");
+        var number = tile.GetVisualDescendants().OfType<TextBlock>().First(text => text.Name == "PART_Value");
+
+        void Save(string state)
+        {
+            if (Wants($"{stem}_{state}"))
+            {
+                SaveScaled(row, UniqueName($"{stem}_{state}"));
+            }
+        }
+
+        HoverOver(window, number);
+        Save("hover");
+        Rest(window);
+
+        ClickOn(window, number);
+        Save("edit");        TypeText(window, "-5");
+        Save("typed");
+        Rest(window);
+
+        ClickOn(window, number);
+        TypeText(window, "abc");
+        PressKey(window, Avalonia.Input.Key.Enter);
+        Save("error");
+        Rest(window);
+
+        tile.GetVisualDescendants().OfType<TextBox>().First().Focus(Avalonia.Input.NavigationMethod.Tab);
+        Settle();
+        Save("focus");
+        Rest(window);
     }
 
     /// <summary>Moves the pointer to the middle of <paramref name="control"/>.</summary>

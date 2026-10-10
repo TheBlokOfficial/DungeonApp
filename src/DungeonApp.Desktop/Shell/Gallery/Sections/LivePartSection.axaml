@@ -12,6 +12,39 @@
         <TextBlock Classes="caption muted" Text="Bieżąca wartość i notatka reagują na mysz i klawiaturę; reszta tylko pokazuje." />
 
         <!-- Tracked value: the current number with its change field, and the blot -->
+        <TextBlock Classes="overline-sm muted" Text="BIEŻĄCA WARTOŚĆ: KLIK ALBO TAB OTWIERA POLE ZMIANY (-5, +3, =10), ENTER PRZYJMUJE, ESC PORZUCA" />
+        <!-- The rows of tracked values are inset: the hover oval, the field's outline and the blot
+             reach past the tiles, and the render crops this row by its bounds. -->
+        <Border x:Name="LiveValueRow" HorizontalAlignment="Left" Padding="{DynamicResource DungeonPaddingMdHorizontalSmVertical}">
+            <Grid Width="394" ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+                <controls:TrackedValueTile x:Name="LiveValue" Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                           Value="9" Maximum="13" Note="2k8+4" />
+                <controls:StatTile x:Name="LiveValueNeighbour" Grid.Column="1" Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="15" Note="skórznia, tarcza" />
+                <controls:StatTile Grid.Column="2" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="9 m" />
+            </Grid>
+        </Border>
+
+        <TextBlock Classes="overline-sm muted" Text="BIEŻĄCA WARTOŚĆ: KLEKS, PONAD MAKSIMUM Z KLEKSEM, BRAK WARTOŚCI" />
+        <Grid Width="394" HorizontalAlignment="Left" Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+              ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <controls:TrackedValueTile Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="4" Maximum="13" Note="2k8+4" IsUncommitted="True" />
+            <controls:TrackedValueTile Grid.Column="1" Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="20" Maximum="13" Note="2k8+4" IsUncommitted="True" />
+            <controls:TrackedValueTile Grid.Column="2" Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="—" Maximum="13" />
+        </Grid>
+
+        <TextBlock Classes="overline-sm muted" Text="BIEŻĄCA WARTOŚĆ: TRZY CYFRY Z KLEKSEM, PONAD MAKSIMUM BEZ KLEKSU, WYŁĄCZONA" />
+        <Grid Width="394" HorizontalAlignment="Left" Margin="{DynamicResource DungeonPaddingMdHorizontal}"
+              ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <controls:TrackedValueTile Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="108" Maximum="135" Note="18k12+18" IsUncommitted="True" />
+            <controls:TrackedValueTile Grid.Column="1" Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="20" Maximum="13" Note="2k8+4" />
+            <controls:TrackedValueTile Grid.Column="2" Label="PW" Icon="{DynamicResource DungeonIconHeart}"
+                                       Value="7" Maximum="13" Note="2k8+4" IsEnabled="False" />
+        </Grid>
 
         <!-- Note -->
 

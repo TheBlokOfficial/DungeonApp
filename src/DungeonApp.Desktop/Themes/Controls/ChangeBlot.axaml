@@ -1,0 +1,15 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Uncommitted change (controls:ChangeBlot): a blot of overlapping ovals behind the value that
+        differs from the entity's last commit. Translucent Uncommitted blue, drawn once (overlaps do not
+        darken); no specks, so it reads as a mark, not as dirt. Behind the content, never under its
+        layout: the content keeps its colour and place, and the blot reaches past its box.
+        No states; disabled dims with the content it decorates.
+    -->
+    <ControlTheme x:Key="{x:Type controls:ChangeBlot}" TargetType="controls:ChangeBlot">
+        <Setter Property="Fill" Value="{DynamicResource DungeonUncommittedBrush}" />
+    </ControlTheme>
+</ResourceDictionary>

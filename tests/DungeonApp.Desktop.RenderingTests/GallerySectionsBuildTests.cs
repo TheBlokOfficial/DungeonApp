@@ -59,6 +59,20 @@ public sealed class GallerySectionsBuildTests
     }
 
     [AvaloniaFact]
+    public void The_live_part_section_builds_every_tracked_value()
+    {
+        var window = Show(new LivePartSection());
+
+        var tiles = window.GetVisualDescendants().OfType<TrackedValueTile>().ToList();
+        Assert.Equal(7, tiles.Count);
+        Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
+        Assert.Contains(tiles, tile => tile.Preview is not null);
+        Assert.Contains(window.GetVisualDescendants().OfType<ChangeBlot>(), blot => blot.IsShown);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
     public void The_tables_and_compositions_sections_build_the_ability_tables()
     {
         var window = Show(new StackPanel { Children = { new TablesSection(), new CompositionsSection() } });
