@@ -340,8 +340,9 @@ internal static class Program
         // Note: the crop is the whole group of samples, which leaves room for the frame the note
         // draws outside its bounds.
         var notes = section.FindControl<Border>("NoteSamples")!;
-        var noteLines = section.FindControl<DungeonApp.Desktop.Controls.NoteField>("NoteLines")!;
-        var noteEmpty = section.FindControl<DungeonApp.Desktop.Controls.NoteField>("NoteEmpty")!;
+        var noteLines = section.FindControl<DungeonApp.Desktop.Controls.EditableText>("NoteLines")!;
+        var noteEmpty = section.FindControl<DungeonApp.Desktop.Controls.EditableText>("NoteEmpty")!;
+        var noteShort = section.FindControl<DungeonApp.Desktop.Controls.EditableText>("NoteShort")!;
         var original = noteLines.Text;
         if (Wants($"{stem}_note_hover"))
         {
@@ -374,6 +375,13 @@ internal static class Program
             SaveScaled(notes, UniqueName($"{stem}_note_empty_hover"));
             Rest(window);
         }
+
+        if (Wants($"{stem}_note_short_hover"))
+        {
+            HoverOver(window, noteShort);
+            SaveScaled(notes, UniqueName($"{stem}_note_short_hover"));
+            Rest(window);
+        }
     }
 
     /// <summary>
@@ -386,7 +394,7 @@ internal static class Program
                    ?? throw new InvalidOperationException("The live part has no LiveValue sample.");
         var row = section.FindControl<Control>("LiveValueRow")
                   ?? throw new InvalidOperationException("The live part has no LiveValueRow.");
-        var number = tile.GetVisualDescendants().OfType<TextBlock>().First(text => text.Name == "PART_Value");
+        var number = tile.GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.EditableText>().First();
 
         void Save(string state)
         {
@@ -407,12 +415,16 @@ internal static class Program
         Rest(window);
 
         ClickOn(window, number);
-        TypeText(window, "abc");
-        PressKey(window, Avalonia.Input.Key.Enter);
-        Save("error");
+        TypeText(window, "12");
+        Save("set");
         Rest(window);
 
-        tile.GetVisualDescendants().OfType<TextBox>().First().Focus(Avalonia.Input.NavigationMethod.Tab);
+        ClickOn(window, number);
+        TypeText(window, "-120");
+        Save("long");
+        Rest(window);
+
+        number.Focus(Avalonia.Input.NavigationMethod.Tab);
         Settle();
         Save("focus");
         Rest(window);

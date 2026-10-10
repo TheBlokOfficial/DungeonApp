@@ -12,7 +12,9 @@ public sealed class NumberChangeTests
     [InlineData("=-4", NumberChangeKind.Set, -4)]
     [InlineData("  - 7 ", NumberChangeKind.Subtract, 7)]
     [InlineData("-0", NumberChangeKind.Subtract, 0)]
-    public void Reads_a_signed_change(string text, NumberChangeKind kind, int amount)
+    [InlineData("12", NumberChangeKind.Set, 12)]
+    [InlineData(" 0 ", NumberChangeKind.Set, 0)]
+    public void Reads_a_change(string text, NumberChangeKind kind, int amount)
     {
         Assert.True(NumberChange.TryParse(text, out var change));
         Assert.Equal(new NumberChange(kind, amount), change);
@@ -22,8 +24,8 @@ public sealed class NumberChangeTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("12")]
     [InlineData("abc")]
+    [InlineData("1-2")]
     [InlineData("-")]
     [InlineData("+")]
     [InlineData("=")]
@@ -32,7 +34,7 @@ public sealed class NumberChangeTests
     [InlineData("-5a")]
     [InlineData("-2,5")]
     [InlineData("-99999999999")]
-    public void Refuses_anything_but_a_sign_and_a_whole_number(string? text)
+    public void Refuses_anything_but_an_optional_sign_and_a_whole_number(string? text)
     {
         Assert.False(NumberChange.TryParse(text, out _));
     }

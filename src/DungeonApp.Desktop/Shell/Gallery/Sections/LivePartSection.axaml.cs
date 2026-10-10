@@ -38,6 +38,7 @@ public partial class LivePartSection : UserControl
 
     private void FillNoteSamples()
     {
+        NoteShort.Text = "Boi się psów.";
         NoteOneLine.Text = "Przekupiony przez gildię złodziei.";
         NoteLines.Text = "Ukradł klucz do skarbca — trzyma go w lewej sakwie.\nUcieknie, gdy zostanie sam.";
         NoteDisabled.Text = "Nie wie, że drużyna go śledzi.";
@@ -67,11 +68,11 @@ public partial class LivePartSection : UserControl
     private string Preview(NumberChange change)
     {
         var (result, beyond) = Apply(_current, change);
-        var shown = $"{change} → {result}";
+        var shown = $"{_current} → {result}";
         return change.Kind switch
         {
-            NumberChangeKind.Subtract when beyond > 0 => $"{shown}, {beyond} poniżej zera",
-            NumberChangeKind.Add when beyond > 0 => $"{shown}, {beyond} ponad maksimum",
+            NumberChangeKind.Subtract when beyond > 0 => $"{shown} · {beyond} poniżej zera",
+            NumberChangeKind.Add when beyond > 0 => $"{shown} · {beyond} ponad maksimum",
             _ => shown,
         };
     }

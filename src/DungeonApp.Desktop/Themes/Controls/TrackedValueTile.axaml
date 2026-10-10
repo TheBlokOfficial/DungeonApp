@@ -6,69 +6,19 @@
         Tracked value (controls:TrackedValueTile): the current hit points and the like - a StatTile
         column whose number takes a change. Top to bottom, left-aligned like StatTile:
           label - DungeonStatTileIconSize icon and caption, muted;
-          value line - the current number in stat-value-lg, regular text, and beside it a smaller
-            muted "/ 13" (stat-value) on the same baseline (the control aligns them); the blot
-            (controls:ChangeBlot) behind the number while it is uncommitted;
-          note line - muted caption, always reserved; while the field is open it shows the preview
-            (regular text) or the error (DangerText) instead, on one line over the note's place.
-        States, all drawn outside the text (DungeonEditableOutset) so nothing moves between them:
-          rest      - plain text, no frame or background;
-          hover     - only over the current number: a light oval (EditableHover) behind it, no
-                      border, I-beam cursor;
-          editing   - (:editing - the field has focus, from a click or Tab; one look for both) the
-                      field over the whole value line, text exactly where the number stood (same
-                      font, no padding), all of it selected; the number and "/ 13" hide, their room
-                      stays; an outline (EditableFocusBorder) around the whole line;
-          invalid   - (:invalid) outline and note line in DangerText; Enter does nothing;
-          disabled  - DungeonDisabledOpacity unless an ancestor already dims it; no pointer response.
+          value line - the current number, an editable text (controls:EditableText, its own look) in
+            the stat-value-lg font, at least three digits wide, one line; beside it a smaller muted
+            "/ 13" (stat-value) on the same baseline (the control aligns them); the blot
+            (controls:ChangeBlot) behind the number while it is uncommitted. While typing, an entry
+            longer than the number's room spills over "/ 13", which hides meanwhile - nothing moves;
+          note line - muted caption, always reserved; while the field holds a change it shows the
+            preview (regular text) on one line over the note's place, cut with an ellipsis.
         Enter confirms, Escape or a click elsewhere drops the entry (Themes/EditFocusRelease.cs and
         the control). No transitions.
     -->
-
-    <!-- The change field's text box: nothing but the text, in the font of the number it replaces
-         (bound to it by the tile's template), no padding, border or background - the tile draws the
-         outline outside it. -->
-    <ControlTheme x:Key="DungeonChangeFieldTextBox" TargetType="TextBox">
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <Setter Property="CaretBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <Setter Property="SelectionBrush" Value="{DynamicResource DungeonTextSelectionBrush}" />
-        <Setter Property="SelectionForegroundBrush" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <Setter Property="TextWrapping" Value="NoWrap" />
-        <Setter Property="AcceptsReturn" Value="False" />
-        <Setter Property="Cursor" Value="IBeam" />
-        <Setter Property="FocusAdorner" Value="{x:Null}" />
-        <Setter Property="ContextFlyout" Value="{StaticResource DungeonTextBoxContextFlyout}" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Panel Background="{TemplateBinding Background}">
-                    <TextPresenter Name="PART_TextPresenter"
-                                   Text="{TemplateBinding Text, Mode=TwoWay}"
-                                   CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
-                                   CaretIndex="{TemplateBinding CaretIndex}"
-                                   SelectionStart="{TemplateBinding SelectionStart}"
-                                   SelectionEnd="{TemplateBinding SelectionEnd}"
-                                   TextAlignment="{TemplateBinding TextAlignment}"
-                                   TextWrapping="{TemplateBinding TextWrapping}"
-                                   LineHeight="{TemplateBinding LineHeight}"
-                                   LetterSpacing="{TemplateBinding LetterSpacing}"
-                                   SelectionBrush="{TemplateBinding SelectionBrush}"
-                                   SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
-                                   CaretBrush="{TemplateBinding CaretBrush}"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Top" />
-                </Panel>
-            </ControlTemplate>
-        </Setter>
-    </ControlTheme>
-
     <ControlTheme x:Key="{x:Type controls:TrackedValueTile}" TargetType="controls:TrackedValueTile">
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <!-- The oval, the outline and the blot are drawn past the tile's edges. -->
+        <!-- The frame, the overflow and the blot are drawn past the tile's edges. -->
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -89,42 +39,37 @@
                                              TextWrapping="Wrap" />
                     </Grid>
 
-                    <Panel Name="PART_ValueLine">
-                        <Border Name="PART_FieldFrame"
-                                Margin="{DynamicResource DungeonEditableOutset}"
-                                CornerRadius="{DynamicResource DungeonEditableCornerRadius}"
-                                BorderThickness="1"
-                                BorderBrush="Transparent"
-                                IsHitTestVisible="False" />
-                        <StackPanel Name="PART_ValueRow"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Left"
-                                    Spacing="{DynamicResource DungeonTrackedValueMaximumGap}">
-                            <Panel Name="PART_ValueHit" Background="Transparent" Cursor="IBeam" VerticalAlignment="Top">
-                                <Border Name="PART_HoverOval"
-                                        Margin="{DynamicResource DungeonEditableOutset}"
-                                        CornerRadius="{DynamicResource DungeonEditableCornerRadius}"
-                                        IsHitTestVisible="False" />
-                                <controls:ChangeBlot IsShown="{TemplateBinding IsUncommitted}">
-                                    <TextBlock Name="PART_Value"
-                                               Classes="stat-value-lg"
-                                               Text="{TemplateBinding Value}"
-                                               Foreground="{TemplateBinding Foreground}" />
-                                </controls:ChangeBlot>
-                            </Panel>
-                            <TextBlock Name="PART_Maximum"
-                                       Classes="stat-value"
-                                       VerticalAlignment="Top"
-                                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
-                        </StackPanel>
-                        <TextBox Name="PART_Field"
-                                 Theme="{StaticResource DungeonChangeFieldTextBox}"
-                                 FontFamily="{Binding #PART_Value.FontFamily}"
-                                 FontSize="{Binding #PART_Value.FontSize}"
-                                 FontWeight="{Binding #PART_Value.FontWeight}"
-                                 Opacity="0"
-                                 IsHitTestVisible="False" />
-                    </Panel>
+                    <StackPanel Name="PART_ValueRow"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                Spacing="{DynamicResource DungeonTrackedValueMaximumGap}">
+                        <Panel VerticalAlignment="Top">
+                            <!-- PART_Digits only carries the number's font (the stat-value-lg class
+                                 styles text blocks, not text boxes) and the width of three digits, the
+                                 number's least room; it is never seen. -->
+                            <TextBlock Name="PART_Digits" Classes="stat-value-lg" Text="000"
+                                       Opacity="0" IsHitTestVisible="False"
+                                       HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <controls:ChangeBlot IsShown="{TemplateBinding IsUncommitted}"
+                                                 HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <controls:EditableText Name="PART_Field"
+                                                       FontFamily="{Binding #PART_Digits.FontFamily}"
+                                                       FontSize="{Binding #PART_Digits.FontSize}"
+                                                       FontWeight="{Binding #PART_Digits.FontWeight}"
+                                                       FontFeatures="{Binding #PART_Digits.FontFeatures}"
+                                                       LineHeight="{Binding #PART_Digits.LineHeight}"
+                                                       Foreground="{TemplateBinding Foreground}"
+                                                       TextWrapping="NoWrap"
+                                                       AcceptsReturn="False"
+                                                       SelectAllOnEntry="True"
+                                                       SpillsOverWhileEditing="True" />
+                            </controls:ChangeBlot>
+                        </Panel>
+                        <TextBlock Name="PART_Maximum"
+                                   Classes="stat-value"
+                                   VerticalAlignment="Top"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                    </StackPanel>
 
                     <Panel>
                         <TextBlock Classes="caption" Text=" " Width="0" IsHitTestVisible="False" />
@@ -141,6 +86,7 @@
                                    Text="{TemplateBinding Message}"
                                    Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                    TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
                                    VerticalAlignment="Top"
                                    IsVisible="False" />
                     </Panel>
@@ -148,38 +94,18 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Panel#PART_ValueHit:pointerover > Border#PART_HoverOval">
-            <Setter Property="Background" Value="{DynamicResource DungeonEditableHoverBrush}" />
-        </Style>
-
-        <Style Selector="^:editing /template/ StackPanel#PART_ValueRow">
+        <Style Selector="^:overflowing /template/ TextBlock#PART_Maximum">
             <Setter Property="Opacity" Value="0" />
         </Style>
-        <Style Selector="^:editing /template/ TextBox#PART_Field">
-            <Setter Property="Opacity" Value="1" />
-            <Setter Property="IsHitTestVisible" Value="True" />
-        </Style>
-        <Style Selector="^:editing /template/ Border#PART_FieldFrame">
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonEditableFocusBorderBrush}" />
-        </Style>
 
-        <!-- The note keeps its room while the preview or the error stands over it. -->
-        <Style Selector="^:preview /template/ Panel#PART_NoteHost, ^:invalid /template/ Panel#PART_NoteHost">
+        <!-- The note keeps its room while the preview stands over it. -->
+        <Style Selector="^:preview /template/ Panel#PART_NoteHost">
             <Setter Property="Opacity" Value="0" />
         </Style>
-        <Style Selector="^:preview /template/ TextBlock#PART_Message, ^:invalid /template/ TextBlock#PART_Message">
+        <Style Selector="^:preview /template/ TextBlock#PART_Message">
             <Setter Property="IsVisible" Value="True" />
         </Style>
-        <Style Selector="^:invalid /template/ TextBlock#PART_Message">
-            <Setter Property="Foreground" Value="{DynamicResource DungeonDangerTextBrush}" />
-        </Style>
-        <Style Selector="^:invalid /template/ Border#PART_FieldFrame">
-            <Setter Property="BorderBrush" Value="{DynamicResource DungeonDangerTextBrush}" />
-        </Style>
 
-        <Style Selector="^:disabled /template/ Panel#PART_ValueHit">
-            <Setter Property="Cursor" Value="Arrow" />
-        </Style>
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
         </Style>
