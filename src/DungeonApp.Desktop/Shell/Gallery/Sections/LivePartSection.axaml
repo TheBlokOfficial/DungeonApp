@@ -31,7 +31,7 @@
         <Grid Width="394" HorizontalAlignment="Left"
               ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
             <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="19" Note="zbroja płytowa" Deviation="Above" />
-            <controls:StatTile Grid.Column="1" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="6 m" Note="bazowa 9 m" Deviation="Below" />
+            <controls:StatTile Grid.Column="1" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="6 m" Note="wspinaczka 6 m" Deviation="Below" />
             <controls:StatTile Grid.Column="2" Label="PW maks." Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
         </Grid>
 
@@ -43,5 +43,36 @@
         </Grid>
 
         <!-- Rows of conditions and effects -->
+        <StackPanel Name="MarkerRows" Width="560" HorizontalAlignment="Left" Spacing="{DynamicResource DungeonSpacingSm}">
+            <controls:SectionHeading Text="Stany" />
+            <controls:FramedIconRow Name="ConditionRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Zatruty"
+                                    Detail="3 rundy · KON ST 13 kończy" />
+            <controls:FramedIconRow Name="ConditionBareRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Powalony" />
+            <controls:FramedIconRow Name="ConditionRemovedRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Oślepiony"
+                                    Detail="1 runda"
+                                    IsRemoved="True" />
+            <Button Classes="subtle" HorizontalAlignment="Left" Content="Dodaj stan" />
+
+            <controls:SectionHeading Text="Efekty" Margin="0,12,0,0" />
+            <controls:FramedIconRow Name="EffectRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Tarcza wiary"
+                                    Detail="KP +2" />
+            <controls:FramedIconRow Name="EffectTwoRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Przyspieszenie"
+                                    Detail="KP +2 · Szybkość +9 m" />
+            <controls:FramedIconRow Name="EffectLongRow"
+                                    Icon="{StaticResource DungeonIconInfo}"
+                                    Title="Błogosławieństwo opiekuna starożytnego lasu, które trwa dłużej niż jedna rozmowa przy ognisku"
+                                    Detail="ZRĘ +2 · MDR +1" />
+            <Button Classes="subtle" HorizontalAlignment="Left" Content="Dodaj efekt" />
+        </StackPanel>
     </StackPanel>
 </UserControl>

@@ -55,6 +55,7 @@
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Table.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/StatTile.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/TrackGauge.axaml" />
+        <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/FramedIconRow.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/SectionHeading.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

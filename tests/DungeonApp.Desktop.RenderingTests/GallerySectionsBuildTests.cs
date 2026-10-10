@@ -80,6 +80,29 @@ public sealed class GallerySectionsBuildTests
         window.Close();
     }
 
+    [AvaloniaFact]
+    public void The_live_part_marker_rows_keep_one_height_with_and_without_a_detail_or_removal()
+    {
+        var section = new LivePartSection();
+        var window = Show(section);
+
+        var rows = section.GetVisualDescendants().OfType<FramedIconRow>().ToList();
+        Assert.Equal(6, rows.Count);
+        Assert.All(rows, row =>
+        {
+            Assert.NotEmpty(row.GetVisualChildren());
+            Assert.NotNull(row.Icon);
+        });
+
+        var plain = section.FindControl<FramedIconRow>("ConditionRow")!;
+        var bare = section.FindControl<FramedIconRow>("ConditionBareRow")!;
+        var removed = section.FindControl<FramedIconRow>("ConditionRemovedRow")!;
+        Assert.Equal(plain.Bounds.Height, bare.Bounds.Height);
+        Assert.Equal(plain.Bounds.Height, removed.Bounds.Height);
+
+        window.Close();
+    }
+
     private static Avalonia.Media.Color ValueColor(StatTile tile) =>
         ((ISolidColorBrush)tile.GetVisualDescendants().OfType<SelectableTextBlock>()
             .Single(t => t.Name == "PART_Value").Foreground!).Color;
