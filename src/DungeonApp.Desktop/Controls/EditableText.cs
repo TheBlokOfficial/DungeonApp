@@ -30,6 +30,9 @@ public sealed class EditableText : TextBox
     public static readonly StyledProperty<bool> SelectAllOnEntryProperty =
         AvaloniaProperty.Register<EditableText, bool>(nameof(SelectAllOnEntry));
 
+    public static readonly StyledProperty<Thickness> FrameOutsetProperty =
+        AvaloniaProperty.Register<EditableText, Thickness>(nameof(FrameOutset));
+
     public static readonly StyledProperty<bool> SpillsOverWhileEditingProperty =
         AvaloniaProperty.Register<EditableText, bool>(nameof(SpillsOverWhileEditing));
 
@@ -63,6 +66,17 @@ public sealed class EditableText : TextBox
     {
         get => GetValue(SelectAllOnEntryProperty);
         set => SetValue(SelectAllOnEntryProperty, value);
+    }
+
+    /// <summary>
+    /// How far the hover background and the editing outline stand around the text, as a margin
+    /// (negative reaches out of the control's bounds). Set per use, because a large number's line box
+    /// has room above and below its digits that a note's line has not.
+    /// </summary>
+    public Thickness FrameOutset
+    {
+        get => GetValue(FrameOutsetProperty);
+        set => SetValue(FrameOutsetProperty, value);
     }
 
     /// <summary>

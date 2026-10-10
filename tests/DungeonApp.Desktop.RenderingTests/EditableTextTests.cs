@@ -180,10 +180,15 @@ public sealed class EditableTextTests
         Assert.Equal("9", sample.Field.SelectedText);
         Assert.Equal(atRest, TileLayout(sample));
 
+        // "-5" is wider than "9": the typed text spills over as an overlay, everything else stays.
         sample.Window.KeyTextInput("-5");
         Run();
         Assert.Contains(TrackedValueTile.PreviewClass, sample.Tile.Classes);
-        Assert.Equal(atRest, TileLayout(sample));
+        var typing = TileLayout(sample);
+        typing.RemoveAt(2);
+        var rest = atRest.ToList();
+        rest.RemoveAt(2);
+        Assert.Equal(rest, typing);
 
         sample.Window.Close();
     }

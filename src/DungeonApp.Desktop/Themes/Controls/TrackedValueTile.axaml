@@ -7,7 +7,7 @@
         column whose number takes a change. Top to bottom, left-aligned like StatTile:
           label - DungeonStatTileIconSize icon and caption, muted;
           value line - the current number, an editable text (controls:EditableText, its own look) in
-            the stat-value-lg font, at least three digits wide, one line; beside it a smaller muted
+            the stat-value-lg font, at least one digit wide, one line; beside it a smaller muted
             "/ 13" (stat-value) on the same baseline (the control aligns them); the blot
             (controls:ChangeBlot) behind the number while it is uncommitted. While typing, an entry
             longer than the number's room spills over "/ 13", which hides meanwhile - nothing moves;
@@ -45,9 +45,10 @@
                                 Spacing="{DynamicResource DungeonTrackedValueMaximumGap}">
                         <Panel VerticalAlignment="Top">
                             <!-- PART_Digits only carries the number's font (the stat-value-lg class
-                                 styles text blocks, not text boxes) and the width of three digits, the
-                                 number's least room; it is never seen. -->
-                            <TextBlock Name="PART_Digits" Classes="stat-value-lg" Text="000"
+                                 styles text blocks, not text boxes) and the width of one digit, the
+                                 number's least room, so "/ 13" stands right after the number; it is
+                                 never seen. -->
+                            <TextBlock Name="PART_Digits" Classes="stat-value-lg" Text="0"
                                        Opacity="0" IsHitTestVisible="False"
                                        HorizontalAlignment="Left" VerticalAlignment="Top" />
                             <controls:ChangeBlot IsShown="{TemplateBinding IsUncommitted}"
@@ -62,6 +63,7 @@
                                                        TextWrapping="NoWrap"
                                                        AcceptsReturn="False"
                                                        SelectAllOnEntry="True"
+                                                       FrameOutset="{DynamicResource DungeonTrackedValueFrameOutset}"
                                                        SpillsOverWhileEditing="True" />
                             </controls:ChangeBlot>
                         </Panel>

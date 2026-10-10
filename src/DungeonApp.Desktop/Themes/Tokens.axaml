@@ -581,6 +581,11 @@
              smaller "/ 13" - wider than the editable text's frame reaches out at the side
              (DungeonEditableTextFrameOutset), so the field's outline never covers "/ 13". -->
         <x:Double x:Key="DungeonTrackedValueMaximumGap">12</x:Double>
+        <!-- Tracked value's number: the editable text frame (DungeonEditableTextFrameOutset) reaches
+             out at the sides as in a note, but sits inside the large number's line box at the top and
+             bottom, which has room above and below the digits - so the frame stays off the label
+             above and the note below. -->
+        <Thickness x:Key="DungeonTrackedValueFrameOutset">-8,4,-8,2</Thickness>
         <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
         <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>
