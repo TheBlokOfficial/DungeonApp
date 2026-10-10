@@ -8,10 +8,10 @@ namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
 /// A row of a marker on a card (a condition, an effect): a framed square with an icon, the title,
-/// a muted line under it (modifiers; turns and a note) and a remove button at the end. The muted line
-/// is optional and the row keeps its height without it. A removed row stays where it is, dimmed and
-/// without the button, so nothing moves until the change is settled. The look belongs to the frame's
-/// control theme (Themes/Controls/FramedIconRow.axaml).
+/// a muted line under it (modifiers; turns and a note). The frame is the remove action: under the
+/// pointer it shows a red trash. The muted line is optional and the row keeps its height without it.
+/// A removed row stays where it is, dimmed and inert, so nothing moves until the change is settled.
+/// The look belongs to the frame's control theme (Themes/Controls/FramedIconRow.axaml).
 /// </summary>
 public sealed class FramedIconRow : TemplatedControl
 {
@@ -56,7 +56,7 @@ public sealed class FramedIconRow : TemplatedControl
         set => SetValue(DetailProperty, value);
     }
 
-    /// <summary>A removed row that is not settled yet: dimmed, its button hidden.</summary>
+    /// <summary>A removed row that is not settled yet: dimmed, its frame inert.</summary>
     public bool IsRemoved
     {
         get => GetValue(IsRemovedProperty);
