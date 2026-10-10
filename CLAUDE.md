@@ -26,12 +26,13 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
    w tle nie zmienia stanu kampanii (timer interfejsu — animacja, odłożony zapis układu okien — wolno);
    zegar, rundę i turę przesuwa MG. Cele wskazuje MG (może kilka naraz), nigdy reguła („w obszarze”,
    „najbliższy”). Zdarzenia powiadamiają widoki, nigdy nie zapisują.
-5. **Świat zmienia MG bez ograniczeń.** Każdą wartość istoty, także ze strukturą, MG zmienia na jej
-   karcie; różnica od wpisu jest oznaczona i da się ją przywrócić. Entity działa też bez wpisu
-   z paczki. Stan niezgodny z zasadami (PW ponad maksimum, ujemne złoto) widać, nie blokuje.
-6. **Liczba ma pochodzenie tam, gdzie stoi.** Przy wartości widać ostatnią zmianę („30, było 42”),
-   rzut w kalkulatorze ma rozpisanie, w walce zmiana od początku tury ma znacznik. Dziennika świata
-   nie ma — te trzy miejsca pokrywają jego potrzeby (`docs/decisions.md`).
+5. **Świat zmienia MG bez ograniczeń.** Bieżące PW, stany, efekty i notatkę MG zmienia na karcie
+   istoty; wartość z bazą (KP, Szybkość, cechy, PW maks.) — efektem, który widać kolorem i wierszem,
+   a jego zdjęcie przywraca wpis. Entity działa dalej, gdy jej wpis zniknie z paczki. Stan niezgodny
+   z zasadami (PW ponad maksimum, ujemne złoto) widać, nie blokuje.
+6. **Liczba ma pochodzenie tam, gdzie stoi.** Zmieniona, niezatwierdzona wartość ma kleks, a odchylenie
+   od bazy — kolor i wiersz efektu; rzut w kalkulatorze ma rozpisanie; w walce kleks znaczy zmianę od
+   początku tury. Dziennika świata nie ma — te miejsca pokrywają jego potrzeby (`docs/decisions.md`).
 
 ## Jak pracujemy
 
@@ -113,7 +114,7 @@ i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
   motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Znaczenie ma token, nie barwa: każdy token
   koloru ma jedno znaczenie zapisane przy nim, a dwa tokeny o podobnej barwie mogą znaczyć co innego
   (czerwień błędu i czerwień paska PW). Widok sięga po token ze względu na znaczenie, nie barwę.
-- Kontrolka w dwóch formach (tekst do czytania i pole w trybie edycji) zajmuje w obu dokładnie to samo
+- Kontrolka w dwóch formach (tekst do czytania i pole edycji) zajmuje w obu dokładnie to samo
   miejsce: przełączenie formy nie przesuwa żadnej kontrolki, sekcji ani okna. Każda taka kontrolka ma
   test bez ekranu, który mierzy obie formy.
 - Testy: zmiana zachowania logiki → test; nowy lub przepisany widok → test budujący go w oknie bez

@@ -62,29 +62,38 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   zabiera wtedy jedną turę, a rzut „kończy stan na końcu tury” wypada w tej samej chwili. Podręcznik
   liczy czas od tury źródła; różnica to najwyżej ułamek rundy, a licznik MG poprawia w miejscu.
   Nazwy jak w polskim podręczniku: runda to obieg wszystkich, tura — działanie jednej istoty.
-- **Stany i efekty — jedna lista na istocie.** Pozycja to stan z paczki (ikona, nazwa, skrót,
+- **Stany i efekty — dwie listy na istocie.** Stan to pozycja z paczki (ikona, nazwa, skrót,
   odnośnik) albo stan własny MG (nazwa, ikona domyślna), z opcjonalnym licznikiem rund, notatką MG
   („KON ST 13 kończy”) i tyknięciem na początek lub koniec tury („Płonie: 1k6 ognia, 3 rundy”,
   „Regeneracja 10, chyba że ogień”). Stany domyślne wpisu entity dziedziczy, dopóki MG ich nie zmieni.
   Tyknięcie to jedyne miejsce z wyzwalaczem i czasem — dopuszczalne, bo pisze je MG, nie wpis,
-  momenty są dwa, a każde przechodzi przez okienko przełomu.
+  momenty są dwa, a każde przechodzi przez okienko przełomu. Stan nie zmienia liczb. **Efekt** to
+  nazwa wpisana przez MG i modyfikatory wartości z bazą („Tarcza wiary: KP +2”); nie pochodzi z wpisu,
+  nie ma licznika i wisi, dopóki MG go nie zdejmie.
 - **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5` i `=30`; liczba bez znaku nie
-  przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PW na 12. Przy wartości zostaje ostatnia
-  zmiana („30, było 42, −12”) do następnej zmiany tej wartości. Rachunek z podręcznika (PW
-  tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
-- **Znaczniki zmian w turze.** „Następna tura” zapamiętuje stan sprzed przełomu; wszystko, co
-  zmieniło się od tej chwili — ręcznie albo przełomem — ma tło znacznika, rzecz zdjęta jest
-  wyszarzona do końca tury. Kolor ma własny token („zmieniło się w tej turze”), nie zielony (sukces)
-  ani czerwony (obrażenia). Zapamiętany stan zapisuje się ze stanem walki. Poza walką tur nie ma.
+  przechodzi, bo „12” wpisane jako obrażenia ustawiłoby PW na 12. Zmianę oznacza kleks (niżej).
+  Rachunek z podręcznika (PW tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
+- **Karta entity zmienia się w miejscu.** Nad kreską część żywa: wartości entity w miejscach
+  wartości wpisu (PW z paskiem, KP, Szybkość, cechy) oraz stany, efekty i notatka; pod kreską część
+  stała — treść wpisu jak w bibliotece. Jedna liczba stoi w jednym miejscu, a karta nie rośnie.
+  Przy stole MG zmienia bieżące PW, stany, efekty i notatkę; KP, Szybkość, cechy i PW maks. to baza
+  z wpisu plus efekty. Odrzucone: pasek nad niezmienioną kartą (te same wartości dwa razy, często
+  z różnymi liczbami, i wysokość zabrana małemu oknu) oraz tryb edycji karty (pola zamiast wartości;
+  trwałą zmianę liczby niesie efekt, resztę notatka).
+- **Niezatwierdzona zmiana ma kleks.** Zmiana działa i zapisuje się od razu; kampania pamięta dla
+  entity punkt odniesienia z ostatniego „Zatwierdź”, a wartość różna od niego ma za sobą niebieski
+  kleks. Kleks nie zmienia tła ani koloru cyfr, które mówią o znaku i o bazie. „Odrzuć” wraca do
+  punktu odniesienia. Wartości sprzed zmiany ani rozpisania przy liczbie nie ma. Kleks i „Odrzuć”
+  zastępują zakaz zmiany jednym kliknięciem: pomyłkę widać i da się ją cofnąć.
+- **Znaczniki zmian w turze.** „Następna tura” zatwierdza tak jak przycisk, więc w walce kleks znaczy
+  zmianę od początku tury — ręczną albo z przełomu; rzecz zdjęta jest wyszarzona do końca tury.
 - **Kalkulator kości zamiast rzutu z karty.** Okno ramy, niezależne od systemu: wyrażenie („k20+4”,
   „2k20 wyższy + 4”, „4× k20+2”), wynik z rozpisaniem, kilka ostatnich rzutów na czas sesji. Premię
   MG przepisuje z karty — przycisk rzutu na karcie wymagałby struktury ataków.
-- **Tryb edycji karty istoty.** Jeden przełącznik zamienia wartości karty w pola (ramka, ciemniejsze
-  tło) w tych samych miejscach i wymiarach. Bieżące PW mają pole zmiany zawsze. Wartość różna od
-  wpisu ma znacznik i „Przywróć z wpisu”. Odrzucone: ołówek przy każdym polu (szum na karcie, dwa
-  kliknięcia na zmianę) i wszystko edytowalne od razu (formularz, przypadkowe zmiany przy stole).
-- **Entity bez wpisu.** Improwizowany karczmarz to imię, notatka i — jeśli trzeba — PW i KP wpisane
-  ręcznie. To stan kampanii, nie treść, więc nie jest wpisem lokalnym kampanii.
+- **Entity zawsze powstaje z wpisu.** Stworzenie ma zawsze co najmniej PW, KP, Szybkość i cechy,
+  więc improwizowany karczmarz startuje z wpisu („Pospolity człowiek”): MG zmienia mu nazwę, dodaje
+  efekty i notatkę. Entity bez wpisu zostaje tylko wtedy, gdy wpis zniknął z paczki; działa dalej
+  z tym, co trzyma nakładka (nazwa, bieżące PW, stany, efekty, notatka).
 - **Konsument nadaje polu strukturę.** Trzy poziomy: proza (czyta MG), pole nazwane z tekstem
   (miejsce na zaprojektowanej karcie, wyszukiwanie: „Szybkość 9 m”, „Odporności: ogień”) i pole
   typowane — liczba, kość, wybór z listy — które czyta konsument. Pole wchodzi poziom wyżej
@@ -138,8 +147,7 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   ściągawki opisów. Gracz przepisuje zmiany z tego, co mówi MG, a przy rozjeździe wygrywa aplikacja.
   Drobny rozjazd w trakcie sesji (zużyte miejsca, strzały) MG wpisuje, gdy się o nim dowie.
 - **Postać ma pełną kartę jak potwór.** Wartości liczone (modyfikatory, biegłość z poziomu, rzuty
-  obronne, umiejętności, pasywna Percepcja, ST zaklęć) mają rozpisanie, a MG je nadpisuje w trybie
-  edycji ze znacznikiem.
+  obronne, umiejętności, pasywna Percepcja, ST zaklęć) mają rozpisanie, a MG zmienia je efektami.
 - **Klasa i węzeł drzewka są wpisami w paczce.** Kształt i wygląd drzewka jest kodem systemu; węzeł
   zna klasę, poziom i węzły poprzedzające. Węzeł ma więc identyfikator (ściągawka drukuje go jak
   zaklęcie), wartości zostają płaskie, a własną klasę dopisuje się bez programisty. Odblokowanie
@@ -179,7 +187,7 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   gałęzie (inteligentny miecz, przemiana druida, NPC wskrzeszony jako zombie), a zmiana gałęzi to nowy
   obiekt bez tożsamości; miesza też etykietę z budową. Patrz aspekty wyżej.
 - **Dziennik świata** (wszystkie zmiany w jednym długim logu) — jego potrzeby pokrywają okienko
-  przełomu, znaczniki w turze, ostatnia zmiana przy wartości i historia kalkulatora.
+  przełomu, kleks przy zmienionej wartości i historia kalkulatora.
 - **Blok wartości bez dopisku dosuwany do dna obrazka** — rząd dopisku zostaje zarezerwowany zawsze,
   choć samotny blok bez dopisku (Kolczuga: KP) zdaje się wisieć; dosunięcie przesuwałoby bloki przy
   przełączaniu wpisów, co razi bardziej niż pusty rząd.

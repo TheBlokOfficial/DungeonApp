@@ -43,7 +43,7 @@ Jedna nazwa na pojęcie. Słowa spoza tej tabeli znaczą to, co w zwykłej polsz
 | № | numer entity: unikalny w kampanii, nadawany po kolei, nigdy zmieniany ani używany ponownie | ID, indeks |
 | biurko | pozycja kampanii w ramie z pływającymi oknami narzędzi | — |
 | narzędzie | okno na biurku wniesione przez system | panel |
-| księga | śledzone wartości i reguły ich zmiany: pole zmiany, rachunek, ostatnia zmiana | księgowość |
+| księga | śledzone wartości i reguły ich zmiany: pole zmiany, rachunek, oznaczenie zmiany | księgowość |
 | pole zmiany | pole przyjmujące `-12`, `+5`, `=30` przy śledzonej wartości | — |
 | przełom | akcja MG zmieniająca wiele wartości naraz według jawnej reguły; lista w `decisions.md` | — |
 | okienko przełomu | boczna lista zmian przełomu z polami do odznaczenia | — |
@@ -291,7 +291,7 @@ Każde z poniższych powstaje dopiero razem z pierwszym konsumentem; kolejność
 
 - **Granica automatyzacji na przykładzie.** Atak liczy MG: rzuca kośćmi albo kalkulatorem („17 = 13
   na k20 + 4”), porównuje z KP z karty i wpisuje celowi `-12`. Pole zmiany odejmuje najpierw PW
-  tymczasowe i zostawia przy wartości „30, było 42”. „Następna tura” kończy turę goblina (jego
+  tymczasowe, a zmieniona wartość dostaje kleks do zatwierdzenia. „Następna tura” kończy turę goblina (jego
   Ogłuszenie schodzi z 1 na 0 i znika) i zaczyna turę trolla (przypomnienie o regeneracji); okienko
   przełomu wymienia obie zmiany, a odznaczenie przywraca Ogłuszenie. „Sprzedaj” przy mieczu bierze
   cenę z wartości wpisu (sprzedaż za połowę), MG ją zmienia, a zatwierdzenie przenosi miecz i złoto.
@@ -309,7 +309,7 @@ Każde z poniższych powstaje dopiero razem z pierwszym konsumentem; kolejność
   składaniu kampanii; żaden kontekst zakładki ani okna ich nie niesie.
 - **Autorstwo treści w aplikacji:** najpierw „skopiuj i zmień” do własnej paczki MG, potem tworzenie
   od zera — formularz projektowany per typ, zapisujący ten sam plik wpisu.
-- **Podział księgi między ramę i system:** pole zmiany, tryb edycji karty, kalkulator kości, okienko
-  przełomu i znaczniki zmian w turze należą do ramy i nie znają systemu. Reguły rachunku (PW
+- **Podział księgi między ramę i system:** pole zmiany, punkt odniesienia z kleksem, efekty z sumą,
+  kalkulator kości i okienko przełomu należą do ramy i nie znają systemu. Reguły rachunku (PW
   tymczasowe schodzą pierwsze) i treść przełomów (co tyka na końcu tury, co odnawia odpoczynek) są
   kodem systemu.

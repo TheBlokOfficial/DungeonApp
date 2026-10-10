@@ -41,25 +41,22 @@ Specyfikacja: `docs/spec/katalog.md`.
 - [x] 2.1 Biurko w miejscu strony kampanii → architecture.md, „Biurko”, „Listek”, „Maksymalizacja okna”.
 - [x] 2.2 Katalog na biurku i paleta: drzewo katalogów z entity, paleta dodawania, podgląd z pinezką →
   architecture.md, „Paleta”, „Katalog świata”, „Podgląd i przypięte karty”.
-- [ ] 2.3 Pasek bieżący nad statyczną kartą → spec, od „Podgląd i karta” do „Projekt kontrolek”.
-  - [ ] 2.3a Arkusz rodziny kontrolek dwóch form w Galerii: projektant, iteracje z renderem 2×, warianty
-    A/B/C, wybór wariantu → spec, „Projekt kontrolek”.
-  - [ ] 2.3b Wartości: karta wraca do postaci z biblioteki; pasek z tożsamością (ścieżka katalogów,
-    nazwa, №), PW (edycja w miejscu, narzędzie obrażeń i leczenia), KP, Szybkość, zwarte cechy jako
-    baza + modyfikatory; notatka → spec, „Pasek bieżący”, „Wartości z bazą”, „Edycja w pasku”.
-  - [ ] 2.3c Zatwierdzanie: punkt odniesienia, niebieskie oznaczenie, „było…”, Zatwierdź i Odrzuć;
-    poprawki ceremonii w drzewie (zmiana nazwy, próg przeciągnięcia, przewinięcie po przeniesieniu);
-    reguła ceremonii trafia do decisions.md → spec, „Zatwierdzanie zmian”, „Ceremonia zmiany”.
+- [ ] 2.3 Karta entity zmienia się w miejscu: część żywa nad kreską, część stała jak w bibliotece →
+  spec, od „Podgląd i karta” do „Projekt kontrolek”; decisions.md, „Karta entity zmienia się
+  w miejscu”.
+  - [ ] 2.3a Arkusz rodziny kontrolek w Galerii: pasek PW, bieżące PW z polem zmiany, notatka, wiersz
+    stanu i efektu, kleks, kolory względem bazy; projektant, iteracje z renderem 2×, warianty A/B/C,
+    wybór wariantu → spec, „Projekt kontrolek”.
+  - [ ] 2.3b Część żywa: ścieżka kategorii zamiast katalogów, bez linii „№” pod nazwą, tytuł okna
+    z nazwą i №; PW na całą kolumnę obok obrazu (pasek, pole zmiany po kliknięciu), KP i Szybkość obok
+    tabel cech; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
+    „Wartości z bazą”, „Edycja w części żywej”.
+  - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki;
+    poprawki w drzewie (zmiana nazwy, próg przeciągnięcia, przewinięcie po przeniesieniu) → spec,
+    „Zatwierdzanie zmian”, „Poprawki w drzewie”.
   - [ ] 2.3d Stany: sekcja, dodawanie z palety, usuwanie, stany domyślne wpisu → spec, „Stany”.
-  - [ ] 2.3e Efekty: sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy, rozpisanie → spec,
-    „Efekty”.
-  - ❓ Przed 2.3b: co jest przyklejone, karta — wpis czy entity, nazwa elementu; przed 2.3e: efekt na
-    PW, rodzaje modyfikatorów, dodawanie efektu; całość: podział i kolejność → spec, „Otwarte
-    pytania” 1–7.
-  - Przy scaleniu wycinków 2.3: zmiany rozstrzygnięć „Tryb edycji karty istoty”, „Pole zmiany liczby”
-    i „Stany i efekty — jedna lista” (spec, sekcje „Edycja w pasku”, „Zatwierdzanie zmian”, „Efekty”).
-- [ ] 2.4 Tryb edycji karty i entity bez wpisu: pola w miejscach wartości karty (te same kontrolki co
-  w pasku), znacznik różnicy, „Przywróć z wpisu”, „—” dla pustych. ❓ spec, „Otwarte pytania” 6.
+  - [ ] 2.3e Efekty: sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy → spec, „Efekty”.
+  - ❓ Przed 2.3e: efekt na PW, rodzaje modyfikatorów, dodawanie efektu → spec, „Otwarte pytania” 1–3.
 
 ### [ ] E3 · Kopie zapasowe kampanii
 
@@ -78,10 +75,10 @@ Specyfikacja: `docs/spec/katalog.md`.
 ### [ ] E5 · Inicjatywa i walka
 
 - [ ] Okno inicjatywy: MG wskazuje uczestników i układa kolejkę; rundę i turę przesuwa MG.
-- [ ] Zwarty widok istoty to pasek bieżący z 2.3; karta zostaje do czytania.
+- [ ] Zwarty widok istoty to część żywa karty z 2.3, bez części stałej.
 - [ ] Przełom „Następna tura” z okienkiem przełomu i znacznikami zmian w turze — ten sam mechanizm
   co zatwierdzanie z 2.3c → decisions.md, „Znaczniki zmian w turze”.
-- [ ] PW tymczasowe, liczniki i tyknięcia stanów → decisions.md, „Stany i efekty — jedna lista”,
+- [ ] PW tymczasowe, liczniki i tyknięcia stanów → decisions.md, „Stany i efekty — dwie listy”,
   „Liczniki stanów tykają na końcu tury”.
 - [ ] „Do walki” z menu albo przeciągnięciem; okno zmaksymalizowane zakrywa katalog, więc
   przeciąganie do kolejki trzeba rozwiązać w tym etapie.
@@ -90,7 +87,7 @@ Specyfikacja: `docs/spec/katalog.md`.
 - ❓ Wyjątek od reguły 3 granicy (rzut istoty zostaje u MG): czy narzędzie rzuca stworzeniom
   inicjatywę (k20 + mod. ZRĘ z aspektu walki, z rozpisaniem, do poprawienia).
 - ❓ „Następna tura” zatwierdza tylko istotę kończącą turę czy wszystkie → spec katalogu, „Otwarte
-  pytania” 8.
+  pytania” 4.
 
 **Punkt kontrolny „Pierwsza walka”:** jedna prawdziwa walka poprowadzona w całości z aplikacji.
 Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pełna postać.
@@ -190,7 +187,8 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
   jak ikony stanów; ta sama zamiast zastępczej w pustym polu obrazka, spoza listy — domyślna.
 - [ ] Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
   gradient po prawej stronie biblioteki kampanii.
-- [ ] Widoczny wygląd fokusu klawiatury (kontrolki paska bieżącego dostają go w 2.3a).
+- [ ] Widoczny wygląd fokusu klawiatury (kontrolki części żywej dostają go w 2.3a).
+- [ ] Klik w tytuł okna podglądu rozwija katalogi do entity i zaznacza ją w drzewie.
 
 ## Po stronie autora
 
@@ -206,14 +204,13 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 Każda pozycja: co, potem — po myślniku — wyzwalacz, który ją uruchamia.
 
 - ⏸ **„Zapisz jako nowy wpis”** z karty entity do własnej paczki MG; entity wskazuje potem nowy wpis —
-  MG chce użyć podkręconej entity albo entity bez wpisu w innej przygodzie.
+  MG chce użyć entity z efektami i notatką w innej przygodzie.
 - ⏸ **„Zmień wpis źródłowy”** entity (goblin okazuje się hobgoblinem; nazwa, notatka, bieżące PW
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
-- ⏸ **Skrót z drzewa do edycji PW** — `-`, `+` albo `=` przy zaznaczonej entity przenosi kursor do
-  narzędzia obrażeń i leczenia w podglądzie — sięganie po mysz między drzewem a podglądem zaczyna
-  spowalniać walkę.
+- ⏸ **Skrót z drzewa do edycji PW** — `-`, `+` albo `=` przy zaznaczonej entity otwiera pole zmiany
+  bieżących PW w podglądzie — sięganie po mysz między drzewem a podglądem zaczyna spowalniać walkę.
 - ⏸ **Cofnij / Ponów na listku** — pomyłka przy stole (zły cel, „-70” zamiast „-7”) zaczyna boleć
-  mimo „Odrzuć” w pasku → spec katalogu, „Poza etapem 2”.
+  mimo „Odrzuć” na karcie → spec katalogu, „Poza etapem 2”.
 - ⏸ **Hotbar** — zegar świata (E11), pierwsze okno z widżetem → spec katalogu, „Poza etapem 2”.
 - ⏸ **Edycja kilku zaznaczonych entity naraz** — MG zmienia to samo pole po kolei na kilku.
 - ⏸ **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
