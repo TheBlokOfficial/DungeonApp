@@ -1,12 +1,21 @@
+using DungeonApp.Desktop.Controls;
+
 namespace DungeonApp.Desktop.Entries.Controls;
 
 /// <summary>
 /// One row an <see cref="AbilityTableView"/> shows: a label, a score and the score's own already
 /// formatted modifier ("+2", "−1") - plain strings the card view supplies, exactly like
 /// <see cref="TraitRow"/>. <see cref="ModifierTone"/> says which way the modifier counts; the card's
-/// system decides that, the table only tints the cell for it.
+/// system decides that, the table only tints the cell for it. <see cref="ScoreDeviation"/> colours the
+/// score's digits when effects moved it off its base; the modifier cell keeps its tint, which speaks
+/// of the modifier's sign.
 /// </summary>
-public sealed record AbilityRow(string Label, string Score, string Modifier, ValueTone ModifierTone = ValueTone.Neutral);
+public sealed record AbilityRow(
+    string Label,
+    string Score,
+    string Modifier,
+    ValueTone ModifierTone = ValueTone.Neutral,
+    BaseDeviation ScoreDeviation = BaseDeviation.None);
 
 /// <summary>
 /// Which way a number counts, for a cell that tints by it: adds (<see cref="Positive"/>), takes away

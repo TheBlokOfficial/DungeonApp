@@ -1,6 +1,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
@@ -57,6 +58,34 @@ public sealed class GallerySectionsBuildTests
 
         window.Close();
     }
+
+    [AvaloniaFact]
+    public void The_live_part_section_builds_gauges_and_values_against_their_base()
+    {
+        var window = Show(new LivePartSection());
+
+        Assert.Equal(6, window.GetVisualDescendants().OfType<TrackGauge>().Count());
+
+        var tiles = window.GetVisualDescendants().OfType<StatTile>().ToList();
+        Assert.Equal(BaseDeviation.Above, tiles[0].Deviation);
+        Assert.Equal(ValueColor(tiles[0]), ResourceColor("DungeonAboveBaseBrush"));
+        Assert.Equal(ValueColor(tiles[1]), ResourceColor("DungeonBelowBaseBrush"));
+        Assert.Equal(ValueColor(tiles[2]), ResourceColor("DungeonTextPrimaryBrush"));
+
+        var tables = window.GetVisualDescendants().OfType<AbilityTableView>().ToList();
+        Assert.Equal(2, tables.Count);
+        var lowered = tables[0].GetVisualDescendants().OfType<SelectableTextBlock>().Single(t => t.Text == "12");
+        Assert.Equal(ResourceColor("DungeonBelowBaseBrush"), ((ISolidColorBrush)lowered.Foreground!).Color);
+
+        window.Close();
+    }
+
+    private static Avalonia.Media.Color ValueColor(StatTile tile) =>
+        ((ISolidColorBrush)tile.GetVisualDescendants().OfType<SelectableTextBlock>()
+            .Single(t => t.Name == "PART_Value").Foreground!).Color;
+
+    private static Avalonia.Media.Color ResourceColor(string key) =>
+        ((ISolidColorBrush)Avalonia.Application.Current!.FindResource(key)!).Color;
 
     [AvaloniaFact]
     public void The_tables_and_compositions_sections_build_the_ability_tables()

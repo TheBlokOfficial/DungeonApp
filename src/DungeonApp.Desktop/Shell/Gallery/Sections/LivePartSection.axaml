@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:entries="using:DungeonApp.Desktop.Entries.Controls"
              x:Class="DungeonApp.Desktop.Shell.Gallery.Sections.LivePartSection">
     <!-- The controls the live part of an entity's card is built from, each in every state it is
          designed for. Two of them have two forms - text to read and a field in the same place - and
@@ -16,6 +17,30 @@
         <!-- Note -->
 
         <!-- Gauge and values against their base -->
+        <TextBlock Classes="overline-sm muted" Text="PASEK WARTOŚCI (394): 9/13, 13/13, 1/13, 0/13, 20/13 (NADWYŻKA ZA KRESKĄ MAKSIMUM), 0/0" />
+        <StackPanel Width="394" HorizontalAlignment="Left" Spacing="{DynamicResource DungeonSpacingSm}">
+            <controls:TrackGauge Value="9" Maximum="13" />
+            <controls:TrackGauge Value="13" Maximum="13" />
+            <controls:TrackGauge Value="1" Maximum="13" />
+            <controls:TrackGauge Value="0" Maximum="13" />
+            <controls:TrackGauge Value="20" Maximum="13" />
+            <controls:TrackGauge Value="0" Maximum="0" />
+        </StackPanel>
+
+        <TextBlock Classes="overline-sm muted" Text="WARTOŚĆ WZGLĘDEM BAZY: POWYŻEJ (ZIELONA), PONIŻEJ (CZERWONA), RÓWNA" />
+        <Grid Width="394" HorizontalAlignment="Left"
+              ColumnDefinitions="*,*,*" ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <controls:StatTile Label="KP" Icon="{DynamicResource DungeonIconShield}" Value="19" Note="zbroja płytowa" Deviation="Above" />
+            <controls:StatTile Grid.Column="1" Label="Szybkość" Icon="{DynamicResource DungeonIconFootprints}" Value="6 m" Note="bazowa 9 m" Deviation="Below" />
+            <controls:StatTile Grid.Column="2" Label="PW maks." Icon="{DynamicResource DungeonIconHeart}" Value="52" Note="8k8+16" />
+        </Grid>
+
+        <TextBlock Classes="overline-sm muted" Text="TABELA CECH: ZRĘ PONIŻEJ BAZY, MODYFIKATOR DALEJ NA ZIELONYM; CHA POWYŻEJ" />
+        <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto,Auto"
+              ColumnSpacing="{DynamicResource DungeonDetailColumnGap}">
+            <entries:AbilityTableView x:Name="BaseLeftTable" />
+            <entries:AbilityTableView x:Name="BaseRightTable" Grid.Column="1" />
+        </Grid>
 
         <!-- Rows of conditions and effects -->
     </StackPanel>

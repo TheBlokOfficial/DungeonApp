@@ -13,7 +13,9 @@
             " " in the same style), so values in one row have equal height
             and bottom alignment, with or without a note.
         Each text wraps within its column.
-        No states: no pointer response or focus; text is selectable (SelectableTextBlock).
+        States: :above-base / :below-base (Deviation) colour only the value (DungeonAboveBaseBrush,
+        DungeonBelowBaseBrush); label and note stay muted. No pointer response or focus; text is
+        selectable (SelectableTextBlock).
         Disabled - DungeonDisabledOpacity unless an ancestor already dims it.
     -->
     <ControlTheme x:Key="{x:Type controls:StatTile}" TargetType="controls:StatTile">
@@ -54,6 +56,13 @@
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^:above-base">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAboveBaseBrush}" />
+        </Style>
+        <Style Selector="^:below-base">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonBelowBaseBrush}" />
+        </Style>
 
         <Style Selector="^:disabled:not(:disabled :disabled)">
             <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />

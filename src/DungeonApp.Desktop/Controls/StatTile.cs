@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 
@@ -25,6 +26,27 @@ public sealed class StatTile : TemplatedControl
 
     public static readonly StyledProperty<string?> NoteProperty =
         AvaloniaProperty.Register<StatTile, string?>(nameof(Note));
+
+    /// <summary>Where the value stands against its base; sets the :above-base / :below-base state.</summary>
+    public static readonly StyledProperty<BaseDeviation> DeviationProperty =
+        AvaloniaProperty.Register<StatTile, BaseDeviation>(nameof(Deviation));
+
+    public BaseDeviation Deviation
+    {
+        get => GetValue(DeviationProperty);
+        set => SetValue(DeviationProperty, value);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == DeviationProperty)
+        {
+            PseudoClasses.Set(":above-base", Deviation == BaseDeviation.Above);
+            PseudoClasses.Set(":below-base", Deviation == BaseDeviation.Below);
+        }
+    }
 
     public DrawingImage? Icon
     {

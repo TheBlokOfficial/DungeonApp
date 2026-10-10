@@ -26,6 +26,12 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
+        <Style Selector="SelectableTextBlock.above-base">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonAboveBaseBrush}" />
+        </Style>
+        <Style Selector="SelectableTextBlock.below-base">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonBelowBaseBrush}" />
+        </Style>
         <Style Selector="dc|TableCell.positive">
             <Setter Property="Background" Value="{DynamicResource DungeonPositiveSubtleBrush}" />
         </Style>

@@ -559,6 +559,9 @@
         <!-- Header value (controls:StatTile): caption icon 12 px - smaller than an action
              icon (16), because it sits in an 11 px caption. -->
         <x:Double x:Key="DungeonStatTileIconSize">12</x:Double>
+        <!-- Tracked value gauge (controls:TrackGauge): 10 px thick - a bar, not a hairline, so a few
+             points of difference show. -->
+        <x:Double x:Key="DungeonTrackGaugeThickness">10</x:Double>
         <!-- Section heading (controls:SectionHeading): accent bar 3 x 18. -->
         <x:Double x:Key="DungeonSectionHeadingBarWidth">3</x:Double>
         <x:Double x:Key="DungeonSectionHeadingBarHeight">18</x:Double>

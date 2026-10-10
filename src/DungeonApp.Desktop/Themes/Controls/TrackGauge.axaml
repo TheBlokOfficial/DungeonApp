@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Gauge of a tracked value (controls:TrackGauge): a flat bar, square corners like the card's
+        blocks, DungeonTrackGaugeThickness tall, width from the host. Left to right: TrackFill (what
+        is left), TrackRoom (the rest up to the maximum). Above the maximum the scale runs to the
+        value, a 2 px gap marks the maximum and TrackOver fills the surplus. No states: nothing to
+        click, no focus, the pointer passes through.
+    -->
+    <ControlTheme x:Key="{x:Type controls:TrackGauge}" TargetType="controls:TrackGauge">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Height" Value="{DynamicResource DungeonTrackGaugeThickness}" />
+        <Setter Property="RoomBrush" Value="{DynamicResource DungeonTrackRoomBrush}" />
+        <Setter Property="FillBrush" Value="{DynamicResource DungeonTrackFillBrush}" />
+        <Setter Property="OverBrush" Value="{DynamicResource DungeonTrackOverBrush}" />
+    </ControlTheme>
+</ResourceDictionary>
