@@ -68,7 +68,9 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 - **Rozmowa, nie raport:** odpowiedź mówi to, co nowe — bez powtarzania wcześniejszych wiadomości
   i bez formy raportu tam, gdzie wystarczy zwykła odpowiedź. Jeśli warto coś dodać, opisać, ocenić
   albo zapytać, pisz bez wahania. Pełna forma tam, gdzie jest potrzebna: plan wycinka, decyzje do
-  podjęcia, raport na koniec.
+  podjęcia, raport na koniec. Przy kilku wykonawcach naraz powrót jednego nie jest powodem do
+  wiadomości: architekt przegląda i scala po cichu, a autorowi pisze raz, gdy skończą wszyscy
+  (wyjątek: błąd albo decyzja, która nie może czekać).
 - **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
   sprawdzenia w aplikacji (gdzie kliknąć, na co patrzeć). Bez nazw klas, chyba że autor zapyta.
 
