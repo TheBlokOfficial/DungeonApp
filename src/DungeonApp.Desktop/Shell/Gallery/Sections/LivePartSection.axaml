@@ -15,6 +15,29 @@
         <!-- Tracked value: the current number with its change field, and the blot -->
 
         <!-- Note -->
+        <TextBlock Classes="overline-sm muted" Text="NOTATKA (560): PUSTA, JEDNA LINIA, KILKA LINII, WYŁĄCZONA" />
+        <!-- The padding leaves room for the frame that the note draws outside its own bounds. -->
+        <Border x:Name="NoteSamples" HorizontalAlignment="Left" Padding="{DynamicResource DungeonPaddingSm}">
+            <StackPanel Width="560" Spacing="{DynamicResource DungeonSpacingXxl}">
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                    <controls:SectionHeading Text="Notatka" />
+                    <controls:NoteField x:Name="NoteEmpty" />
+                </StackPanel>
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                    <controls:SectionHeading Text="Notatka" />
+                    <controls:NoteField x:Name="NoteOneLine" />
+                </StackPanel>
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                    <controls:SectionHeading Text="Notatka" />
+                    <controls:NoteField x:Name="NoteLines" />
+                    <TextBlock x:Name="NoteCommitted" Classes="caption muted" Text="Wyjście z pola zatwierdza notatkę." />
+                </StackPanel>
+                <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                    <controls:SectionHeading Text="Notatka" />
+                    <controls:NoteField x:Name="NoteDisabled" IsEnabled="False" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
 
         <!-- Gauge and values against their base -->
         <TextBlock Classes="overline-sm muted" Text="PASEK WARTOŚCI (394): 9/13, 13/13, 1/13, 0/13, 20/13 (NADWYŻKA ZA KRESKĄ MAKSIMUM), 0/0" />

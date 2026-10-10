@@ -24,6 +24,7 @@
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/RowAction.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/TextBox.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/IconField.axaml" />
+        <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/NoteField.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/NumericUpDown.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ScrollViewer.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ListBox.axaml" />

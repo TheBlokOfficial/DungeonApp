@@ -334,6 +334,44 @@ internal static class Program
             SaveScaled(rows, UniqueName($"{stem}_rows_hover"));
             Rest(window);
         }
+
+        // Note: the crop is the whole group of samples, which leaves room for the frame the note
+        // draws outside its bounds.
+        var notes = section.FindControl<Border>("NoteSamples")!;
+        var noteLines = section.FindControl<DungeonApp.Desktop.Controls.NoteField>("NoteLines")!;
+        var noteEmpty = section.FindControl<DungeonApp.Desktop.Controls.NoteField>("NoteEmpty")!;
+        var original = noteLines.Text;
+        if (Wants($"{stem}_note_hover"))
+        {
+            HoverOver(window, noteLines);
+            SaveScaled(notes, UniqueName($"{stem}_note_hover"));
+            Rest(window);
+        }
+
+        if (Wants($"{stem}_note_edit"))
+        {
+            ClickOn(window, noteLines);
+            SaveScaled(notes, UniqueName($"{stem}_note_edit"));
+            Rest(window);
+        }
+
+        if (Wants($"{stem}_note_typed"))
+        {
+            ClickOn(window, noteLines);
+            noteLines.CaretIndex = noteLines.Text?.Length ?? 0;
+            PressKey(window, Avalonia.Input.Key.Enter);
+            TypeText(window, "Zna hasło do bramy.");
+            SaveScaled(notes, UniqueName($"{stem}_note_typed"));
+            noteLines.Text = original;
+            Rest(window);
+        }
+
+        if (Wants($"{stem}_note_empty_hover"))
+        {
+            HoverOver(window, noteEmpty);
+            SaveScaled(notes, UniqueName($"{stem}_note_empty_hover"));
+            Rest(window);
+        }
     }
 
     /// <summary>Moves the pointer to the middle of <paramref name="control"/>.</summary>

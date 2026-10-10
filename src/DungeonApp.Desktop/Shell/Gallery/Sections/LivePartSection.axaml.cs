@@ -10,7 +10,18 @@ public partial class LivePartSection : UserControl
     public LivePartSection()
     {
         InitializeComponent();
+        FillNoteSamples();
         FillBaseSamples();
+    }
+
+    private void FillNoteSamples()
+    {
+        NoteOneLine.Text = "Przekupiony przez gildię złodziei.";
+        NoteLines.Text = "Ukradł klucz do skarbca — trzyma go w lewej sakwie.\nUcieknie, gdy zostanie sam.";
+        NoteDisabled.Text = "Nie wie, że drużyna go śledzi.";
+
+        // The working sample shows what its keeper would receive on leaving the field.
+        NoteLines.Committed += (_, e) => NoteCommitted.Text = $"Zatwierdzono notatkę, znaków: {e.Text.Length}.";
     }
 
     // Written out, not computed: the frame has no arithmetic of any system. The lowered score keeps

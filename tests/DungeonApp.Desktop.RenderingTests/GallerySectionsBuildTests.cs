@@ -81,6 +81,18 @@ public sealed class GallerySectionsBuildTests
     }
 
     [AvaloniaFact]
+    public void The_live_part_section_builds_the_note_samples()
+    {
+        var window = Show(new LivePartSection());
+
+        var notes = window.GetVisualDescendants().OfType<NoteField>().ToList();
+        Assert.Equal(4, notes.Count);
+        Assert.All(notes, note => Assert.NotNull(note.GetVisualDescendants().OfType<Avalonia.Controls.Presenters.TextPresenter>().SingleOrDefault()));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
     public void The_live_part_marker_rows_keep_one_height_with_and_without_a_detail_or_removal()
     {
         var section = new LivePartSection();
