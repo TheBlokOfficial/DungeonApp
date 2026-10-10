@@ -122,6 +122,9 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   wartości, dnem równo z dolną krawędzią obrazu. Kolejność bloków: PW, KP, Szybkość (także
   w bibliotece, bo to jedna karta). Nad blokami, przez całą szerokość kolumny, pasek PW. Pod tabelami
   cech sekcje Stany, Efekty i Notatka, potem kreska.
+- Bloki zostają w obecnych miejscach, a treść każdego (podpis, wartość, dopisek) jest wyrównana do
+  lewej krawędzi jego obszaru, nie wyśrodkowana. Dłuższa wartość („13 / 13” zamiast „13”) rośnie
+  wtedy w prawo we własnym obszarze i nie wchodzi na sąsiedni blok.
 - **Pasek PW:** gruby, kwadratowy, od 0 do maksimum. Tylko pokazuje stosunek bieżących do maksimum —
   nie da się go przeciągać. Wypełnienie czerwone, z własnym tokenem (czerwień PW, nie błędu). PW
   ponad maksimum są widoczne (nadwyżka innym odcieniem, granica maksimum widoczna) i nie wyglądają
