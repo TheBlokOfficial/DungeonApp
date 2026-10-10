@@ -321,6 +321,19 @@ internal static class Program
         // One block per control: find its sample in the section by name, pose it with HoverOver,
         // ClickOn, TypeText and PressKey, save it with SaveScaled under "{stem}_<control>_<state>",
         // then Rest(window) to undo the pose.
+        var rows = section.FindControl<StackPanel>("MarkerRows")!;
+        if (Wants($"{stem}_rows"))
+        {
+            Rest(window);
+            SaveScaled(rows, UniqueName($"{stem}_rows"));
+        }
+
+        if (Wants($"{stem}_rows_hover"))
+        {
+            HoverOver(window, section.FindControl<Control>("ConditionRow")!);
+            SaveScaled(rows, UniqueName($"{stem}_rows_hover"));
+            Rest(window);
+        }
     }
 
     /// <summary>Moves the pointer to the middle of <paramref name="control"/>.</summary>

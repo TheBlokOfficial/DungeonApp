@@ -59,6 +59,29 @@ public sealed class GallerySectionsBuildTests
     }
 
     [AvaloniaFact]
+    public void The_live_part_marker_rows_keep_one_height_with_and_without_a_detail_or_removal()
+    {
+        var section = new LivePartSection();
+        var window = Show(section);
+
+        var rows = section.GetVisualDescendants().OfType<FramedIconRow>().ToList();
+        Assert.Equal(6, rows.Count);
+        Assert.All(rows, row =>
+        {
+            Assert.NotEmpty(row.GetVisualChildren());
+            Assert.NotNull(row.Icon);
+        });
+
+        var plain = section.FindControl<FramedIconRow>("ConditionRow")!;
+        var bare = section.FindControl<FramedIconRow>("ConditionBareRow")!;
+        var removed = section.FindControl<FramedIconRow>("ConditionRemovedRow")!;
+        Assert.Equal(plain.Bounds.Height, bare.Bounds.Height);
+        Assert.Equal(plain.Bounds.Height, removed.Bounds.Height);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
     public void The_tables_and_compositions_sections_build_the_ability_tables()
     {
         var window = Show(new StackPanel { Children = { new TablesSection(), new CompositionsSection() } });

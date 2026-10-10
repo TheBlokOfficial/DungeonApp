@@ -1,0 +1,84 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:DungeonApp.Desktop.Controls">
+
+    <!--
+        Marker row (controls:FramedIconRow): a condition or an effect on an entity card. From the left:
+          frame  - DungeonFramedIconSize square, square corners, DungeonFramedIconBorderThickness
+                   border in BorderStrong (like the window frame); the icon inside is muted;
+                   a row without an icon shows the empty frame;
+          text   - title in body-strong, under it an optional muted caption (modifiers, turns and
+                   a note). The text block is centred against the frame, so a row without the caption
+                   is exactly as tall as one with it; a long title is trimmed with an ellipsis;
+          remove - DungeonRowAction trash at the end, 32 square (explicit Height: the row action
+                   stretches by default). Its place is always reserved; it shows while the pointer is
+                   over the row and keeps its glyph in the text colours of the row action.
+        Removed (:removed) - the frame is dimmed to DungeonRemovedRowOpacity and all text turns muted
+        (opacity on the text itself renders it torn), the button is hidden and inert, but keeps its
+        place. No animation.
+    -->
+    <ControlTheme x:Key="{x:Type controls:FramedIconRow}" TargetType="controls:FramedIconRow">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}" Background="Transparent">
+                    <Border Name="PART_Frame"
+                            Width="{DynamicResource DungeonFramedIconSize}"
+                            Height="{DynamicResource DungeonFramedIconSize}"
+                            BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+                            BorderThickness="{DynamicResource DungeonFramedIconBorderThickness}">
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 Source="{TemplateBinding Icon}"
+                                                 Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                                 IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Classes="body-strong"
+                                   Text="{TemplateBinding Title}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock Classes="caption"
+                                   Text="{TemplateBinding Detail}"
+                                   Foreground="{DynamicResource DungeonTextMutedBrush}"
+                                   TextTrimming="CharacterEllipsis"
+                                   IsVisible="{TemplateBinding Detail, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    </StackPanel>
+                    <Button Name="PART_Remove"
+                            Grid.Column="2"
+                            Theme="{StaticResource DungeonRowAction}"
+                            Width="{DynamicResource DungeonListRowHeight}"
+                            Height="{DynamicResource DungeonListRowHeight}"
+                            Margin="0"
+                            VerticalAlignment="Center"
+                            Opacity="0"
+                            Command="{TemplateBinding RemoveCommand}">
+                        <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                                 Height="{DynamicResource DungeonActionIconSize}"
+                                                 Source="{StaticResource DungeonIconTrash}" />
+                    </Button>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Button#PART_Remove">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+        <Style Selector="^:removed /template/ Border#PART_Frame">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonRemovedRowOpacity}" />
+        </Style>
+        <Style Selector="^:removed /template/ TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+        </Style>
+        <Style Selector="^:removed /template/ Button#PART_Remove">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="^:disabled:not(:disabled :disabled)">
+            <Setter Property="Opacity" Value="{DynamicResource DungeonDisabledOpacity}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>
