@@ -58,7 +58,7 @@ public sealed class StartupFailureTests
         }
     }
 
-    private static AppShellViewModel BuildShell(IStartupStep step)
+    internal static AppShellViewModel BuildShell(params IStartupStep[] steps)
     {
         IReadOnlyList<IGameSystem> systems = [new EmptyGameSystem()];
         ICampaignRepository repository = new InMemoryCampaignRepository();
@@ -69,7 +69,7 @@ public sealed class StartupFailureTests
 
         var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-startup-tests-{Guid.NewGuid():N}"));
 
-        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, layoutStore, new GalleryContent(), [step]);
+        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, layoutStore, new GalleryContent(), steps);
     }
 
     private sealed class FailingStep(Exception failure) : IStartupStep

@@ -13,8 +13,11 @@
         at both ends of track and fill (like the slider track), track
         clips fill to its outline.
         Track Background (DungeonBorderBrush), fill Foreground - accent by default; the view
-        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor. The fill width animates (300 ms, ease in-out; entry in
-        ReducedMotion.axaml) instead of jumping.
+        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor. The fill width animates
+        (DungeonProgressFillDuration, ease in-out; entry in ReducedMotion.axaml) instead of jumping.
+        PART_Indicator starts at Width 0, not unset: the first width ProgressBar assigns would
+        otherwise transition from NaN, every interpolated value is NaN (no fill drawn), and each
+        later change restarts from that NaN - the fill stays invisible through a run of quick changes.
         States - no others:
           determinate   - fill from the left, width according to Value in Minimum..Maximum;
           indeterminate - segment of 40 % of the track in Foreground moves in a loop
@@ -44,6 +47,7 @@
                         ClipToBounds="True">
                     <Panel>
                         <Border Name="PART_Indicator"
+                                Width="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Stretch"
                                 Background="{TemplateBinding Foreground}"
@@ -52,7 +56,7 @@
                             <Border.Transitions>
                                 <Transitions>
                                     <DoubleTransition Property="Width"
-                                                      Duration="0:0:0.3"
+                                                      Duration="{StaticResource DungeonProgressFillDuration}"
                                                       Easing="CubicEaseInOut" />
                                 </Transitions>
                             </Border.Transitions>

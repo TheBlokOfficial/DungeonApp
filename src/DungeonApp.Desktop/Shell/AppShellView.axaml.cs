@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Startup;
+using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -28,8 +30,13 @@ public partial class AppShellView : UserControl
         // spend startup time on the registered sequence of data and visual warmup steps. The runner
         // owns its own failure handling - a step going wrong degrades to lazy loading, it never
         // blocks entry.
-        await viewModel.RunStartupAsync(new StartupUiContext(WarmupHost));
+        await viewModel.RunStartupAsync(new StartupUiContext(WarmupHost) { ProgressSettleTime = ProgressSettleTime() });
     }
+
+    private TimeSpan ProgressSettleTime() =>
+        !SystemMotion.IsReduced && this.TryFindResource("DungeonProgressFillDuration", out var value) && value is TimeSpan duration
+            ? duration
+            : TimeSpan.Zero;
 
     /// <summary>
     /// One notification for any number of failed saves: while the same warning still hangs in the
