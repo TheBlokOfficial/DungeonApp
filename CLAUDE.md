@@ -42,6 +42,9 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
   następny wycinek to nowa sesja. Najpierw 5–10 linii planu: co autor zobaczy, co się zmieni w kodzie.
   Wygląd ekranu uzgadniasz z autorem na piśmie i na renderze obecnego stanu, zanim powstanie kod;
   szczegóły kontrolek wybierasz sam.
+- **Specyfikacja wielu drobnych poprawek** (szlif) to lista zadań ze stanem `[ ]`/`[x]` w pliku
+  specyfikacji, odhaczana przy scaleniu. Gdy kontekst architekta przekracza ok. 150k, architekt
+  zapisuje stan w liście, wypycha i kończy; następna sesja wznawia od pierwszej nieodhaczonej pozycji.
 - **Architekt** (główna sesja) rozmawia z autorem, czyta kod potrzebny do decyzji i zlecenia, przegląda
   wyniki i scala. Drobne, lokalne zmiany robi sam; fakt z kodu, którego nie zmienia, zbiera agentem
   Explore. Autorowi pokazuje wynik, który sam by przyjął.
