@@ -37,5 +37,7 @@
     <!-- Window-overlay appearance (palette, confirmation dialog, notification toast: Controls/OverlayAppearMotion.cs)
          is an animation started in code, not a theme transition, so no style removes it here; the code itself
          checks SystemMotion.IsReduced and opens immediately. -->
+    <!-- Foldable sections (Expander, card sections: Controls/SectionReveal.cs) likewise unroll in code and
+         check SystemMotion.IsReduced themselves - content shows and hides at once. -->
 
 </Styles>
