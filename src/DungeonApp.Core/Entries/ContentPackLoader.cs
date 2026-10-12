@@ -88,7 +88,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
                 // blame - that root is reported as a single rejection naming packsPath, rather than
                 // silently contributing nothing (which would look identical to "no packs installed")
                 // or letting the exception reach the caller and crash the app it is starting up for.
-                rejected.Add(new RejectedPack(packsPath, $"could not be scanned: {ex.Message}"));
+                rejected.Add(new RejectedPack(packsPath, $"Nie udało się przejrzeć katalogu paczek: {ex.Message}"));
             }
         }
 
@@ -125,7 +125,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
         {
             foreach (var (location, pack, _) in packs.Where(entry => collidingIds.Contains(entry.Pack.Id)))
             {
-                rejected.Add(new RejectedPack(location, $"id '{pack.Id}' is used by more than one installed pack."));
+                rejected.Add(new RejectedPack(location, $"Identyfikator '{pack.Id}' nosi więcej niż jedna zainstalowana paczka."));
             }
 
             // A pack rejected here was read fully - manifest and entries alike - before the collision
@@ -182,7 +182,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
 
             if (!File.Exists(packPath))
             {
-                throw new PackRejectedException($"'{PackFileName}' is missing.");
+                throw new PackRejectedException($"Brakuje pliku '{PackFileName}'.");
             }
 
             PackFileDto packDto;
@@ -197,28 +197,28 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
                 // rejected pack has no per-row title anywhere in a content tab to carry "pack.json"
                 // instead (unlike a rejected entry, whose row title is its own Location), so the
                 // manifest's reason has to name the file itself.
-                throw new PackRejectedException($"'{PackFileName}' {ex.Message}");
+                throw new PackRejectedException($"{PackFileName}: {ex.Message}");
             }
 
             if (packDto.FormatVersion is null || packDto.FormatVersion != CurrentFormatVersion)
             {
-                throw new PackRejectedException($"'{PackFileName}' declares unknown formatVersion '{packDto.FormatVersion}'.");
+                throw new PackRejectedException($"{PackFileName}: nieznana wersja formatu (formatVersion) '{packDto.FormatVersion}'.");
             }
 
             if (!ContentId.TryCreate(packDto.Id, out var packId))
             {
-                throw new PackRejectedException($"'{PackFileName}' has an invalid id '{packDto.Id}'.");
+                throw new PackRejectedException($"{PackFileName}: niepoprawny identyfikator paczki '{packDto.Id}'.");
             }
 
             if (string.IsNullOrWhiteSpace(packDto.Name))
             {
-                throw new PackRejectedException($"'{PackFileName}' is missing a name.");
+                throw new PackRejectedException($"{PackFileName}: brakuje nazwy paczki (name).");
             }
 
             if (packDto.Version?.Major is not { } major || major < 0
                 || packDto.Version.Minor is not { } minor || minor < 0)
             {
-                throw new PackRejectedException($"'{PackFileName}' has an invalid version.");
+                throw new PackRejectedException($"{PackFileName}: niepoprawna wersja paczki (version).");
             }
 
             var version = new PackVersion(major, minor);
@@ -237,7 +237,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             // directory enumeration below failing outright, or any other IO surprise. The BCL's own
             // exception messages already name the offending path, so no extra bookkeeping is needed to
             // satisfy "the reason names the file or directory".
-            return new LoadCandidateResult(null, [], new RejectedPack(directory, $"could not be read: {ex.Message}"));
+            return new LoadCandidateResult(null, [], new RejectedPack(directory, $"Nie udało się odczytać paczki: {ex.Message}"));
         }
     }
 
@@ -285,7 +285,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
 
         if (files.Length > MaxItemsPerPack)
         {
-            throw new PackRejectedException($"pack '{packId}' declares more than {MaxItemsPerPack} entries.");
+            throw new PackRejectedException($"Paczka '{packId}' zawiera więcej niż {MaxItemsPerPack} wpisów.");
         }
 
         var outcomes = new List<EntryFileOutcome>();
@@ -333,7 +333,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
                     declaringFiles.Where(label => label != outcome.Label).Select(label => $"'{label}'"));
 
                 rejectedEntries.Add(new RejectedEntry(packId, outcome.Label,
-                    $"pack '{packId}' declares entry id '{outcome.Entry.Id}' in more than one file - also declared in {otherFiles}."));
+                    $"Identyfikator wpisu '{outcome.Entry.Id}' w paczce '{packId}' występuje też w: {otherFiles}."));
             }
             else
             {
@@ -351,22 +351,22 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
     {
         if (!ContentId.TryCreate(dto.Id, out var id))
         {
-            throw new PackRejectedException($"has an invalid id '{dto.Id}'.");
+            throw new PackRejectedException($"Niepoprawny identyfikator wpisu '{dto.Id}'.");
         }
 
         if (string.IsNullOrWhiteSpace(dto.Name))
         {
-            throw new PackRejectedException("is missing a name.");
+            throw new PackRejectedException("Brakuje nazwy wpisu (name).");
         }
 
         if (!ContentTypeReference.TryParse(dto.Template, out var typeReference))
         {
-            throw new PackRejectedException($"has an invalid template reference '{dto.Template}'.");
+            throw new PackRejectedException($"Niepoprawne odwołanie do typu treści (template) '{dto.Template}'.");
         }
 
         if (dto.TemplateVersion is not { } typeVersion)
         {
-            throw new PackRejectedException("is missing templateVersion.");
+            throw new PackRejectedException("Brakuje wersji typu treści (templateVersion).");
         }
 
         var valuesElement = dto.Values.ValueKind == JsonValueKind.Undefined ? EmptyValues : dto.Values;
@@ -444,7 +444,7 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             // rather than crash the whole scan (see the class-level remarks).
             if (new FileInfo(path).Length > MaxFileBytes)
             {
-                throw new PackRejectedException($"exceeds the {MaxFileBytes}-byte size limit.");
+                throw new PackRejectedException($"Plik jest większy niż limit {MaxFileBytes} bajtów.");
             }
 
             text = await File.ReadAllTextAsync(path, cancellationToken);
@@ -454,17 +454,17 @@ public sealed class ContentPackLoader(IReadOnlyList<string> packsPaths, IContent
             // UnauthorizedAccessException does not derive from IOException, so it needs its own arm
             // here - a directory or file this process cannot read is exactly as "rejected, not fatal"
             // as a missing or malformed one.
-            throw new PackRejectedException($"could not be read: {ex.Message}");
+            throw new PackRejectedException($"Nie udało się odczytać pliku: {ex.Message}");
         }
 
         try
         {
             return JsonSerializer.Deserialize<TDto>(text, _options)
-                ?? throw new PackRejectedException("is empty.");
+                ?? throw new PackRejectedException("Plik jest pusty.");
         }
         catch (JsonException ex)
         {
-            throw new PackRejectedException($"is not valid: {ex.Message}");
+            throw new PackRejectedException(ContentFailureText.Describe(ex));
         }
     }
 

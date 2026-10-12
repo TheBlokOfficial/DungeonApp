@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Core.World;
 
@@ -26,7 +27,7 @@ public sealed class FolderIdJsonConverter : JsonConverter<FolderId>
 
         return Guid.TryParse(candidate, out var value)
             ? new FolderId(value)
-            : throw new JsonException($"Invalid folder id: '{candidate}'.");
+            : throw new ContentRuleException($"Niepoprawny identyfikator katalogu: '{candidate}'.");
     }
 
     public override void Write(Utf8JsonWriter writer, FolderId value, JsonSerializerOptions options) =>

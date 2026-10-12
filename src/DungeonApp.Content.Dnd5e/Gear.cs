@@ -1,5 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -94,17 +94,17 @@ public sealed record Gear : IJsonOnDeserialized
     {
         if (AttunementBy is not null && !Attunement)
         {
-            throw new JsonException("\"attunementBy\" needs \"attunement\": true.");
+            throw new ContentRuleException("Pole „attunementBy” wymaga „attunement”: true.");
         }
 
         if (DamageType is not null && Damage is null)
         {
-            throw new JsonException("\"damageType\" needs \"damage\".");
+            throw new ContentRuleException("Pole „damageType” wymaga pola „damage”.");
         }
 
         if (ArmorClassNote is not null && ArmorClass is null)
         {
-            throw new JsonException("\"armorClassNote\" needs \"armorClass\".");
+            throw new ContentRuleException("Pole „armorClassNote” wymaga pola „armorClass”.");
         }
     }
 }

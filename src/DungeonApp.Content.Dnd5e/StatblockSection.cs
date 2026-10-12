@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -39,12 +39,12 @@ public sealed record StatblockSection : IJsonOnDeserialized
     {
         if (Entries is null)
         {
-            throw new JsonException("A section's \"entries\" must be a list, not null.");
+            throw new ContentRuleException("Pole „entries” sekcji musi być listą, nie null.");
         }
 
         if (string.IsNullOrWhiteSpace(Intro) && Entries.Count == 0)
         {
-            throw new JsonException("A section needs an \"intro\" or at least one entry in \"entries\".");
+            throw new ContentRuleException("Sekcja wymaga pola „intro” albo co najmniej jednej pozycji w „entries”.");
         }
     }
 }
@@ -73,12 +73,12 @@ public sealed record StatblockEntry : IJsonOnDeserialized
         // a nameless entry, so the shape check finishes the job here.
         if (string.IsNullOrWhiteSpace(Name))
         {
-            throw new JsonException("Every entry of a section needs a non-empty \"name\".");
+            throw new ContentRuleException("Każda pozycja sekcji wymaga niepustego pola „name”.");
         }
 
         if (string.IsNullOrWhiteSpace(Text))
         {
-            throw new JsonException($"Entry \"{Name}\" needs a non-empty \"text\".");
+            throw new ContentRuleException($"Pozycja „{Name}” wymaga niepustego pola „text”.");
         }
     }
 }

@@ -78,7 +78,7 @@ public sealed class ContentIdJsonConverter : JsonConverter<ContentId>
 
         return ContentId.TryCreate(candidate, out var id)
             ? id
-            : throw new JsonException($"Invalid content id: '{candidate}'.");
+            : throw new ContentRuleException($"Niepoprawny identyfikator treści: '{candidate}'.");
     }
 
     public override void Write(Utf8JsonWriter writer, ContentId value, JsonSerializerOptions options) =>

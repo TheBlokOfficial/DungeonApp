@@ -1,5 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -120,7 +120,7 @@ public sealed record Creature : IJsonOnDeserialized
     {
         if (Actions?.Entries.Count == 0)
         {
-            throw new JsonException("\"actions\" needs at least one entry.");
+            throw new ContentRuleException("Pole „actions” wymaga co najmniej jednej pozycji.");
         }
     }
 }

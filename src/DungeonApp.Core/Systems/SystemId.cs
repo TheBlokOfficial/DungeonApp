@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Core.Systems;
 
@@ -76,7 +77,7 @@ public sealed class SystemIdJsonConverter : JsonConverter<SystemId>
 
         return SystemId.TryCreate(candidate, out var id)
             ? id
-            : throw new JsonException($"Invalid system id: '{candidate}'.");
+            : throw new ContentRuleException($"Niepoprawny identyfikator systemu: '{candidate}'.");
     }
 
     public override void Write(Utf8JsonWriter writer, SystemId value, JsonSerializerOptions options) =>
