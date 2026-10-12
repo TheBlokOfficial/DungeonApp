@@ -13,7 +13,8 @@
         at both ends of track and fill (like the slider track), track
         clips fill to its outline.
         Track Background (DungeonBorderBrush), fill Foreground - accent by default; the view
-        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor, no transitions.
+        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor. The fill width animates (300 ms, ease in-out; entry in
+        ReducedMotion.axaml) instead of jumping.
         States - no others:
           determinate   - fill from the left, width according to Value in Minimum..Maximum;
           indeterminate - segment of 40 % of the track in Foreground moves in a loop
@@ -47,7 +48,15 @@
                                 VerticalAlignment="Stretch"
                                 Background="{TemplateBinding Foreground}"
                                 CornerRadius="{TemplateBinding CornerRadius}"
-                                IsVisible="{TemplateBinding IsIndeterminate, Converter={x:Static BoolConverters.Not}}" />
+                                IsVisible="{TemplateBinding IsIndeterminate, Converter={x:Static BoolConverters.Not}}">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Width"
+                                                      Duration="0:0:0.3"
+                                                      Easing="CubicEaseInOut" />
+                                </Transitions>
+                            </Border.Transitions>
+                        </Border>
                         <controls:ProgressSweep Name="PART_Sweep"
                                                 Fill="{TemplateBinding Foreground}"
                                                 CalmFill="{DynamicResource DungeonAccentDimBrush}"
