@@ -10,6 +10,7 @@ using DungeonApp.Core.Campaigns;
 using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Shell.Gallery;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
@@ -68,7 +69,7 @@ public sealed class StartupFailureTests
 
         var layoutStore = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-startup-tests-{Guid.NewGuid():N}"));
 
-        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, layoutStore, [step]);
+        return new AppShellViewModel(systems, repositoriesBySystem, campaignLibrary, preparations, layoutStore, new GalleryContent(), [step]);
     }
 
     private sealed class FailingStep(Exception failure) : IStartupStep

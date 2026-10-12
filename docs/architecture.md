@@ -164,6 +164,10 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 - **Start:** kurtyna startowa zasłania okno, dopóki biegną kroki startowe systemów (wczytanie
   paczek, rozgrzewka kart), a potem ramy (półka kampanii, rozgrzewka ekranów). Rozgrzewka buduje
   każdą kartę i ekran raz za kurtyną, żeby pierwsze kliknięcie nie budowało ich na wątku interfejsu.
+  Rozgrzany egzemplarz zwykle idzie do wyrzucenia — zostają rozgrzane pamięci podręczne stylów
+  i szablonów. Wyjątkiem jest Galeria kontrolek: tysiące kontrolek kosztują pół sekundy przy każdym
+  zbudowaniu, więc rama trzyma rozgrzany egzemplarz przez całe życie aplikacji w ukrytej warstwie
+  obszaru roboczego, a otwarcie Galerii tylko ją odsłania.
   Awaria kroku nigdy nie zatrzymuje startu — kończy się ostrzeżeniem na pasku stanu i wpisem w logu.
 - **Błędy:** wyjątek na wątku interfejsu — z komendy, kliknięcia, timera interfejsu czy układu
   (komenda asynchroniczna oddaje swój błąd na ten wątek) — łapie jeden handler

@@ -14,6 +14,7 @@ using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
 using DungeonApp.Desktop.Shell;
+using DungeonApp.Desktop.Shell.Gallery;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Workspace.Layout;
 
@@ -30,6 +31,9 @@ public partial class App : Avalonia.Application
     private CampaignPreparationCache? _preparations;
     private CampaignLibraryViewModel? _campaignLibrary;
     private IStartupStep[]? _startupSteps;
+
+    // Shared by the startup step that warms the gallery and the shell that shows that same instance.
+    private readonly GalleryContent _gallery = new();
     private AppShellViewModel? _shell;
 
     public App(IReadOnlyList<IGameSystem> systems)
@@ -142,7 +146,7 @@ public partial class App : Avalonia.Application
             .. _systems.SelectMany(system => system.StartupSteps),
             shelfStep,
             dataStep,
-            new WarmFrameChromeStep(_systems, _campaignLibrary),
+            new WarmFrameChromeStep(_systems, _campaignLibrary, _gallery),
             new WarmSystemTabsStep(_systems, _repositoriesBySystem, _preparations, dataStep, LayoutStore)
         ];
     }
@@ -166,6 +170,7 @@ public partial class App : Avalonia.Application
                 _campaignLibrary!,
                 _preparations!,
                 LayoutStore,
+                _gallery,
                 _startupSteps!);
 
             desktop.MainWindow = new MainWindow(WindowPlacementStore)

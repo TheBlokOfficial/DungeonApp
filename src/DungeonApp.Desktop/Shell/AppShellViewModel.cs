@@ -39,7 +39,6 @@ public sealed partial class AppShellViewModel : ObservableObject
     private readonly CampaignPreparationCache _preparations;
     private readonly IStartupStep[] _startupSteps;
 
-    private readonly GalleryViewModel _gallery = new();
     private readonly SettingsViewModel _settings = new();
 
     private readonly WorkspaceLayoutStore _layoutStore;
@@ -56,9 +55,11 @@ public sealed partial class AppShellViewModel : ObservableObject
         CampaignLibraryViewModel campaignLibrary,
         CampaignPreparationCache preparations,
         WorkspaceLayoutStore layoutStore,
+        GalleryContent gallery,
         IStartupStep[] startupSteps)
     {
         _layoutStore = layoutStore;
+        Gallery = gallery;
         _systems = systems;
         _repositoriesBySystem = repositoriesBySystem;
         _campaignLibrary = campaignLibrary;
@@ -113,6 +114,23 @@ public sealed partial class AppShellViewModel : ObservableObject
 
     [ObservableProperty]
     public partial object CurrentWorkspaceContent { get; private set; }
+
+    /// <summary>The gallery's one view, kept in its own workspace layer for the app's whole life.</summary>
+    public GalleryContent Gallery { get; }
+
+    /// <summary>
+    /// The gallery layer covers the workspace instead of replacing <see cref="CurrentWorkspaceContent"/>:
+    /// swapping a view this large in and out of the tree restyles all of it on every opening.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsGalleryShown { get; private set; }
+
+    /// <summary>Every workspace destination but the gallery goes through here, which also hides the gallery.</summary>
+    private void ShowInWorkspace(object content)
+    {
+        CurrentWorkspaceContent = content;
+        IsGalleryShown = false;
+    }
 
     /// <summary>
     /// Runs the whole startup sequence behind the curtain: content packs, the campaign shelf, and
@@ -207,7 +225,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         var desk = await _session.GetOrCreateDeskAsync(CloseCampaignAsync);
 
         Sidebar!.SetCampaignOpen(true, campaign.Name.Value);
-        CurrentWorkspaceContent = desk.Content;
+        ShowInWorkspace(desk.Content);
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
         TopBar.CampaignName = campaign.Name.Value;
@@ -218,7 +236,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         _session?.CloseCampaign();
 
         Sidebar!.SetCampaignOpen(false);
-        CurrentWorkspaceContent = _campaignLibrary;
+        ShowInWorkspace(_campaignLibrary);
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = "Gotowe";
         TopBar.CampaignName = null;
@@ -259,7 +277,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         sidebar.PropertyChanged += OnSidebarPropertyChanged;
 
         Sidebar = sidebar;
-        CurrentWorkspaceContent = _campaignLibrary;
+        ShowInWorkspace(_campaignLibrary);
         IsSystemChosen = true;
         TopBar.ActiveSystemName = system.DisplayName;
         TopBar.CampaignName = null;
@@ -286,7 +304,7 @@ public sealed partial class AppShellViewModel : ObservableObject
 
         Sidebar = null;
         IsSystemChosen = false;
-        CurrentWorkspaceContent = _campaignLibrary;
+        ShowInWorkspace(_campaignLibrary);
         StatusBar.Message = "Gotowe";
         TopBar.ActiveSystemName = string.Empty;
         TopBar.CampaignName = null;
@@ -306,22 +324,23 @@ public sealed partial class AppShellViewModel : ObservableObject
 
     private async Task ShowCampaignPositionAsync()
     {
-        CurrentWorkspaceContent = _session is { IsCampaignOpen: true } session
+        ShowInWorkspace(_session is { IsCampaignOpen: true } session
             ? (await session.GetOrCreateDeskAsync(CloseCampaignAsync)).Content
-            : _campaignLibrary;
+            : _campaignLibrary);
     }
 
     /// <summary>"Galeria kontrolek": a frame-owned position, available with or without an open campaign - see <see cref="GalleryViewModel"/>'s own remarks.</summary>
     private Task ShowGalleryAsync()
     {
-        CurrentWorkspaceContent = _gallery;
+        Gallery.EnsureView();
+        IsGalleryShown = true;
         return Task.CompletedTask;
     }
 
     /// <summary>"Ustawienia": a frame-owned position, available with or without an open campaign. Shows the empty tab - see <see cref="SettingsViewModel"/>'s own remarks.</summary>
     private Task ShowSettingsAsync()
     {
-        CurrentWorkspaceContent = _settings;
+        ShowInWorkspace(_settings);
         return Task.CompletedTask;
     }
 
@@ -329,7 +348,7 @@ public sealed partial class AppShellViewModel : ObservableObject
     {
         try
         {
-            CurrentWorkspaceContent = _session!.GetOrCreateSystemTab(declaration).Content;
+            ShowInWorkspace(_session!.GetOrCreateSystemTab(declaration).Content);
         }
         catch (Exception ex)
         {
@@ -343,7 +362,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         try
         {
             var content = await _session!.GetOrCreateCampaignTabAsync(declaration);
-            CurrentWorkspaceContent = content.Content;
+            ShowInWorkspace(content.Content);
         }
         catch (Exception ex)
         {
