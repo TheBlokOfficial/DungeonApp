@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="using:DungeonApp.Desktop.Controls"
+                    xmlns:themes="using:DungeonApp.Desktop.Themes"
                     xmlns:panels="using:DungeonApp.Desktop.Workspace.Panels"
                     xmlns:workspace="using:DungeonApp.Desktop.Workspace.Controls">
 
@@ -114,7 +115,7 @@
                                                    FontWeight="Medium"
                                                    Foreground="{DynamicResource DungeonTextPrimaryBrush}"
                                                    TextTrimming="CharacterEllipsis"
-                                                   ToolTip.Tip="{TemplateBinding Title}"
+                                                   themes:TrimmedLabelToolTip.IsEnabled="True"
                                                    Text="{TemplateBinding Title}" />
                                     </DockPanel>
 

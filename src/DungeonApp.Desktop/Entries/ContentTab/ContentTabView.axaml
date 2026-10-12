@@ -4,6 +4,7 @@
              xmlns:conv="using:DungeonApp.Desktop.Entries.Converters"
              xmlns:ctl="using:DungeonApp.Desktop.Entries.Controls"
              xmlns:dc="using:DungeonApp.Desktop.Controls"
+             xmlns:themes="using:DungeonApp.Desktop.Themes"
              x:Class="DungeonApp.Desktop.Entries.ContentTab.ContentTabView"
              x:DataType="ct:ContentTabViewModel">
 
@@ -32,8 +33,7 @@
         <DataTemplate x:Key="ContentRowTemplate" x:DataType="ct:ContentRowViewModel">
             <dc:ListRow ShowsSelectionStripe="True"
                         IsSelected="{Binding IsSelected}"
-                        Command="{Binding SelectCommand}"
-                        ToolTip.Tip="{Binding Name}">
+                        Command="{Binding SelectCommand}">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="{DynamicResource DungeonSpacingSm}">
                     <!-- The entry's own one-colour icon before the name, muted like the row's metadata,
                          when the tab's types show one; the place stays when an entry has none, so the
@@ -50,12 +50,14 @@
                         <TextBlock Grid.Column="1" Classes="body row-name"
                                    Text="{Binding Name}"
                                    IsVisible="{Binding !IsBroken}"
+                                   themes:TrimmedLabelToolTip.IsEnabled="True"
                                    VerticalAlignment="Center"
                                    TextTrimming="CharacterEllipsis"
                                    Foreground="{DynamicResource DungeonTextRegularBrush}" />
                         <TextBlock Grid.Column="1" Classes="body row-name"
                                    Text="{Binding Name}"
                                    IsVisible="{Binding IsBroken}"
+                                   themes:TrimmedLabelToolTip.IsEnabled="True"
                                    VerticalAlignment="Center"
                                    TextTrimming="CharacterEllipsis"
                                    Foreground="{DynamicResource DungeonDangerTextBrush}" />

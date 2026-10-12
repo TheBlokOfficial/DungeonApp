@@ -59,12 +59,10 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     public partial int Depth { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ToolTipText))]
     public partial string Name { get; set; } = string.Empty;
 
     /// <summary>"№ 5" for an entity, null for a folder.</summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(ToolTipText))]
     public partial string? NumberText { get; set; }
 
     /// <summary>Resource key of the entity's type icon; null for a folder or a type the system does not list.</summary>
@@ -104,8 +102,6 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     [ObservableProperty]
     public partial bool IsDropTarget { get; set; }
 
-    /// <summary>The whole row's name for the tooltip, which a trimmed row cannot show.</summary>
-    public string ToolTipText => NumberText is { Length: > 0 } number ? $"{Name} ({number})" : Name;
 
     /// <summary>Left margin that shows the row's depth in the tree.</summary>
     public Thickness Indent => new(Depth * IndentPerLevel, 0, 0, 0);
