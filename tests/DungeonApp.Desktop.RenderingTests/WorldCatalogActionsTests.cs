@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
 using Avalonia.VisualTree;
@@ -133,12 +135,97 @@ public sealed partial class WorldCatalogViewBuildTests
         Assert.True(field.IsVisible);
         Assert.False(nameText.IsVisible);
 
-        var fieldBounds = new Rect(field.TranslatePoint(default, fixture.CatalogView)!.Value, field.Bounds.Size);
-        Assert.Equal(textBounds.Right, fieldBounds.Right, 0.5);
-        Assert.Equal(textBounds.Left - 5, fieldBounds.Left, 0.5);
+        // The field starts at the name's cell; its text starts where the name's letters were.
+        Rect BoundsOf(Visual visual) => new(visual.TranslatePoint(default, fixture.CatalogView)!.Value, visual.Bounds.Size);
+        var fieldBounds = BoundsOf(field);
+        var presenter = BoundsOf(field.GetVisualDescendants().OfType<TextPresenter>().Single());
+        Assert.Equal(textBounds.Left - 6, fieldBounds.Left, 0.5);
+        Assert.Equal(textBounds.Left, presenter.Left, 0.5);
+        Assert.Equal(textBounds.Center.Y, presenter.Center.Y, 1.0);
         Assert.Equal(textBounds.Center.Y, fieldBounds.Center.Y, 1.0);
         Assert.True(fieldBounds.Height <= border.Bounds.Height);
+
+        // As wide as the text, at least 80 px, at most the cell before the number.
+        Assert.Equal(80, fieldBounds.Width, 0.5);
+        row.EditText = "Jaskinia pod Górą Ognistą, gdzie śpi smok i jego skarb";
+        fixture.Window.UpdateLayout();
+        Assert.Equal(textBounds.Right, BoundsOf(field).Right, 0.5);
+        Assert.Equal(before, Layout());
+        row.EditText = "Jaskinia pod Górą";
+        fixture.Window.UpdateLayout();
+        Assert.True(BoundsOf(field).Width > 80 && BoundsOf(field).Right < textBounds.Right - 1);
     }
+
+    [AvaloniaFact]
+    public async Task F2_opens_the_field_with_focus_so_typing_replaces_the_name()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.CreateFolderAsync(null, "Jaskinia");
+        fixture.Settle();
+        fixture.Press(Row(catalog, "Jaskinia"), RawInputModifiers.None);
+
+        fixture.Key(Key.F2);
+
+        var field = RenameField(fixture, "Jaskinia");
+        Assert.True(field.IsFocused, $"Focus: {TopLevel.GetTopLevel(fixture.Window)!.FocusManager!.GetFocusedElement()}");
+        fixture.Type("Lochy");
+        Assert.Equal("Lochy", Row(catalog, "Jaskinia").EditText);
+    }
+
+    [AvaloniaFact]
+    public async Task Focus_coming_back_to_the_catalog_during_a_rename_goes_on_to_the_field()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.CreateFolderAsync(null, "Jaskinia");
+        fixture.Settle();
+        var row = Row(catalog, "Jaskinia");
+        catalog.BeginRename(row);
+        fixture.Settle();
+        var field = RenameField(fixture, "Jaskinia");
+        Assert.True(field.IsFocused);
+
+        // What a closing context menu or the window's reactivation does: focus goes back to the catalog.
+        fixture.CatalogView.Focus();
+
+        Assert.True(field.IsFocused);
+        fixture.Type("Lochy");
+        Assert.Equal("Lochy", row.EditText);
+    }
+
+    [AvaloniaFact]
+    public async Task The_menu_item_opens_the_field_with_focus_so_typing_replaces_the_name()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.CreateFolderAsync(null, "Jaskinia");
+        fixture.Settle();
+        var row = Row(catalog, "Jaskinia");
+        var border = fixture.RowBorders().Single(candidate => candidate.DataContext == row);
+        var point = border.TranslatePoint(new Point(60, border.Bounds.Height / 2), fixture.Window)!.Value;
+        fixture.Window.MouseDown(point, MouseButton.Right);
+        fixture.Window.MouseUp(point, MouseButton.Right);
+        fixture.Settle();
+        Assert.True(fixture.CatalogView.Menu.IsOpen);
+
+        var item = fixture.CatalogView.Menu.Items.OfType<MenuItem>().Single(candidate => (string?)candidate.Header == "Zmień nazwę");
+        var popup = TopLevel.GetTopLevel(item)!;
+        var itemPoint = item.TranslatePoint(new Point(10, item.Bounds.Height / 2), popup)!.Value;
+        popup.MouseDown(itemPoint, MouseButton.Left);
+        popup.MouseUp(itemPoint, MouseButton.Left);
+        fixture.Settle();
+
+        Assert.False(fixture.CatalogView.Menu.IsOpen);
+        var field = RenameField(fixture, "Jaskinia");
+        Assert.True(field.IsFocused, $"Focus: {TopLevel.GetTopLevel(fixture.Window)!.FocusManager!.GetFocusedElement()}");
+        fixture.Type("Lochy");
+        Assert.Equal("Lochy", row.EditText);
+    }
+
+    private static TextBox RenameField(Fixture fixture, string name) =>
+        fixture.RowBorders().Single(border => border.DataContext == Row(fixture.Catalog, name))
+            .GetVisualDescendants().OfType<TextBox>().Single();
 
     [AvaloniaFact]
     public async Task Enter_saves_the_typed_name_and_Escape_drops_it()

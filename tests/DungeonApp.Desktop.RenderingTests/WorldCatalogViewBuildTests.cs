@@ -257,6 +257,43 @@ public sealed partial class WorldCatalogViewBuildTests
     }
 
     [AvaloniaFact]
+    public async Task The_catalog_opens_with_the_root_selected_also_from_a_saved_layout()
+    {
+        using var fixture = new Fixture();
+        Assert.Equal([fixture.Catalog.Rows[0]], fixture.Catalog.SelectedRows);
+        Assert.True(fixture.Catalog.Rows[0].IsRoot);
+        Assert.Null(fixture.Catalog.LastClickedEntity);
+
+        await fixture.Catalog.CreateFolderAsync(null, "Jaskinia");
+        foreach (var collapsed in new[] { false, true })
+        {
+            var layout = new WorldCatalogLayout(400, 80, 288, collapsed, []);
+            var restored = new WorldCatalogViewModel(fixture.Entries, fixture.World, layout);
+
+            Assert.Equal([restored.Rows[0]], restored.SelectedRows);
+            Assert.True(restored.PrimaryRow!.IsRoot);
+            Assert.Null(restored.LastClickedEntity);
+            Assert.Empty(restored.SelectedFolders);
+        }
+    }
+
+    [AvaloniaFact]
+    public async Task A_press_on_the_desk_off_the_catalog_keeps_the_selection()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.CreateFolderAsync(null, "Jaskinia");
+        fixture.Settle();
+        catalog.Click(Row(catalog, "Jaskinia"), ctrl: false, shift: false);
+
+        fixture.Window.MouseDown(new Point(100, 400), MouseButton.Left);
+        fixture.Window.MouseUp(new Point(100, 400), MouseButton.Left);
+        fixture.Settle();
+
+        Assert.Equal([Row(catalog, "Jaskinia")], catalog.SelectedRows);
+    }
+
+    [AvaloniaFact]
     public void A_folder_that_no_longer_exists_is_forgotten_when_the_layout_is_saved()
     {
         using var fixture = new Fixture();
