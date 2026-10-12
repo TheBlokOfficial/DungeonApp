@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -57,7 +58,8 @@ public sealed partial class DeskWindowMotionTests
         var ghost = Assert.Single(ghosts.Children);
         Assert.False(ghost.IsHitTestVisible);
         Assert.False(ghosts.IsHitTestVisible);
-        Assert.DoesNotContain(ghost, surface.GetVisualsAt(centre));
+        // Asked the way the pointer asks: input hit testing, which honours IsHitTestVisible.
+        Assert.False(surface.InputHitTest(centre) is Visual hit && hit.GetSelfAndVisualAncestors().Contains(ghost));
 
         // The timers that fade the ghost and remove it do not tick in a window without a screen;
         // only the application shows that part.

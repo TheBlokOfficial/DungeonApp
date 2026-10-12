@@ -51,10 +51,9 @@ Specyfikacja: `docs/spec/katalog.md`.
     z nazwą i №; bloki w kolejności PW, KP, Szybkość, nad nimi pasek PW przez całą kolumnę, bieżące
     PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
     „Wartości z bazą”, „Edycja w części żywej”.
-  - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki;
-    poprawka w drzewie: przewinięcie po przeniesieniu (zmiana nazwy i próg przeciągnięcia zrobione
-    w szlifowaniu) → spec,
-    „Zatwierdzanie zmian”, „Poprawki w drzewie”.
+  - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki → spec,
+    „Zatwierdzanie zmian” (poprawki w drzewie zrobione w szlifowaniu → architecture.md, „Katalog
+    świata”).
   - [ ] 2.3d Stany: sekcja, dodawanie z palety, usuwanie, stany domyślne wpisu → spec, „Stany”.
   - [ ] 2.3e Efekty: sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy → spec, „Efekty”.
   - ❓ Przed 2.3e: efekt na PW, rodzaje modyfikatorów, dodawanie efektu → spec, „Otwarte pytania” 1–3.
