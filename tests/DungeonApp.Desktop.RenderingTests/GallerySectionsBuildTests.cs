@@ -1,5 +1,7 @@
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -45,6 +47,39 @@ public sealed class GallerySectionsBuildTests
         var tiles = window.GetVisualDescendants().OfType<StatTile>().ToList();
         Assert.Equal(6, tiles.Count);
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_click_on_a_section_heading_folds_its_content_and_the_next_one_unfolds_it()
+    {
+        var section = new ProseSectionView
+        {
+            Title = "Akcje",
+            Intro = "Intro",
+            Items = [new ProseItem("Cios", null, "Opis.")],
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+        };
+        var window = Show(section);
+        var heading = section.GetVisualDescendants().OfType<SectionHeading>().Single();
+        var intro = section.FindControl<SelectableTextBlock>("IntroText")!;
+        Assert.True(intro.IsEffectivelyVisible);
+
+        var point = heading.TranslatePoint(new Avalonia.Point(heading.Bounds.Width / 2, heading.Bounds.Height / 2), window)!.Value;
+        window.MouseDown(point, Avalonia.Input.MouseButton.Left);
+        window.MouseUp(point, Avalonia.Input.MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+        Assert.False(heading.IsExpanded);
+        Assert.False(intro.IsEffectivelyVisible);
+        Assert.True(heading.IsEffectivelyVisible);
+
+        window.MouseDown(point, Avalonia.Input.MouseButton.Left);
+        window.MouseUp(point, Avalonia.Input.MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(heading.IsExpanded);
+        Assert.True(intro.IsEffectivelyVisible);
 
         window.Close();
     }
