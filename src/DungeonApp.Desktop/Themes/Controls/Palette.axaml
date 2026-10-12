@@ -73,23 +73,29 @@
                                                             <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="Auto" SharedSizeGroup="PaletteBadge" />
                                                         </Grid.ColumnDefinitions>
-                                                        <StackPanel Orientation="Horizontal"
-                                                                    Spacing="{DynamicResource DungeonSpacingSm}">
-                                                            <controls:ForegroundIcon Width="{DynamicResource DungeonListRowIconSize}"
-                                                                                     Height="{DynamicResource DungeonListRowIconSize}"
-                                                                                     VerticalAlignment="Center"
-                                                                                     Source="{Binding Icon}"
-                                                                                     Foreground="{DynamicResource DungeonTextMutedBrush}" />
-                                                            <TextBlock Classes="body row-name"
-                                                                       Text="{Binding DisplayName}"
+                                                        <!-- Name first (priority), tags at the right edge; the panel
+                                                             keeps them from overlapping and trims the tags first. -->
+                                                        <controls:NameTagsPanel Grid.ColumnSpan="2"
+                                                                                Spacing="{DynamicResource DungeonSpacingSm}">
+                                                            <Grid ColumnDefinitions="Auto,*"
+                                                                  ColumnSpacing="{DynamicResource DungeonSpacingSm}">
+                                                                <controls:ForegroundIcon Width="{DynamicResource DungeonListRowIconSize}"
+                                                                                         Height="{DynamicResource DungeonListRowIconSize}"
+                                                                                         VerticalAlignment="Center"
+                                                                                         Source="{Binding Icon}"
+                                                                                         Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                                                                <TextBlock Grid.Column="1" Classes="body row-name"
+                                                                           Text="{Binding DisplayName}"
+                                                                           VerticalAlignment="Center"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           Foreground="{DynamicResource DungeonTextRegularBrush}" />
+                                                            </Grid>
+                                                            <TextBlock Classes="caption muted"
+                                                                       Text="{Binding Tags}"
                                                                        VerticalAlignment="Center"
-                                                                       TextTrimming="CharacterEllipsis"
-                                                                       Foreground="{DynamicResource DungeonTextRegularBrush}" />
-                                                        </StackPanel>
-                                                        <TextBlock Grid.Column="1" Classes="caption muted"
-                                                                   Text="{Binding Tags}"
-                                                                   VerticalAlignment="Center"
-                                                                   TextTrimming="CharacterEllipsis" />
+                                                                       TextAlignment="Right"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                        </controls:NameTagsPanel>
                                                         <TextBlock Grid.Column="2" Classes="mono muted"
                                                                    Text="{Binding BadgeText}"
                                                                    IsVisible="{Binding HasPlainBadge}"

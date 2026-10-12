@@ -22,6 +22,7 @@ public partial class FeedbackSection : UserControl
         new("guard", "DungeonIconBookOpen", "Strażnik", "humanoid, straż", "1/8"),
         new("guardian", "DungeonIconBookOpen", "Strażnik bramy", "konstrukt", "3"),
         new("key", "DungeonIconBookOpen", "Klucz", "drobiazg"),
+        new("guild", "DungeonIconBookOpen", "Strażnik bramy zewnętrznej", "humanoid, straż, konstrukt, nieumarły, smok, olbrzym, bestia, roślina", "5"),
     ];
 
     private static PaletteOptions CreateSamplePalette(Action<PaletteItem> chosen) => new()
