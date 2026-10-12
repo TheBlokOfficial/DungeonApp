@@ -1,5 +1,48 @@
 {
   "worktree": {
     "baseRef": "head"
+  },
+  "permissions": {
+    "deny": [
+      "Artifact",
+      "ArtifactComments",
+      "ArtifactData",
+      "DesignSync",
+      "mcp__1a59c906-04da-521d-bda7-7f71b9f9e01c",
+      "mcp__Claude_Browser",
+      "mcp__claude-in-chrome",
+      "mcp__visualize",
+      "mcp__6f616b42-0ed8-571e-823f-ee4aca6b7ce9",
+      "mcp__scheduled-tasks",
+      "CronCreate",
+      "CronDelete",
+      "CronList",
+      "ScheduleWakeup",
+      "RemoteTrigger",
+      "mcp__mcp-registry",
+      "SearchPlugins",
+      "SuggestPluginInstall",
+      "SuggestSkills",
+      "ListPlugins",
+      "SearchSkills",
+      "ListSkills",
+      "NotebookEdit",
+      "EnterWorktree",
+      "ExitWorktree",
+      "mcp__ccd_pr",
+      "mcp__ccd_sidebar",
+      "mcp__ccd_window",
+      "mcp__ccd_session_mgmt",
+      "mcp__ccd_directory",
+      "mcp__ccd_connectors",
+      "mcp__ccd_session__move_to_cloud",
+      "mcp__ccd_session__spawn_task",
+      "mcp__ccd_session__dismiss_task",
+      "mcp__ccd_session__read_widget_context",
+      "Agent(general-purpose)",
+      "Agent(claude)",
+      "Agent(Plan)",
+      "Agent(statusline-setup)"
+    ]
   }
 }
