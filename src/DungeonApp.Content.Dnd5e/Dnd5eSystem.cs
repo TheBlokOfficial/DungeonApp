@@ -168,11 +168,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
             ("dnd5e.conditions", "DungeonIconZap", BuildConditionContentTab(condition.Descriptor.Reference)),
         ];
         ContentTabDefinitions = [.. contentTabs.Select(tab => tab.Definition)];
-        // A creature and a piece of gear stand in the world; a condition is knowledge and has no entity.
+        // Only creatures are added to the world tree; an item belongs in a container (equipment, chest),
+        // yet an item entity already saved in a campaign still has to resolve. A condition is knowledge
+        // and has no entity.
         EntityTypes =
         [
             new WorldEntityType(creature.Descriptor.Reference, CreatureIcon),
-            new WorldEntityType(gear.Descriptor.Reference, GearIcon),
+            new WorldEntityType(gear.Descriptor.Reference, GearIcon, CanBeAdded: false),
         ];
         SystemTabs =
         [

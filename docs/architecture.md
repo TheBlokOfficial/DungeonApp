@@ -254,7 +254,11 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   zwinięcie korzenia i rozwinięte katalogi zapisują się w pliku układu biurka (`WorldCatalogLayout`),
   nie w kampanii; rozwinięcia znikłych katalogów są zapominane przy zapisie. Rama bierze wpisy
   z `IGameSystem.GetWorldCatalogSource()` (`WorldCatalogSource`: rejestr paczek, typy, profile),
-  a ikony typów z `IGameSystem.EntityTypes`; wiersz entity pokazuje ikonę, nazwę i №.
+  a typy entity z `IGameSystem.EntityTypes`; wiersz entity pokazuje ikonę, nazwę i №. Ikona to ta sama
+  ikona rodzaju co w wierszu zakładki treści (`IContentPresentation.RowIcon`), a gdy system jej nie
+  daje — ikona typu z `EntityTypes`. Do drzewa dodaje się tylko typy z `WorldEntityType.CanBeAdded`
+  (w D&D stworzenia; przedmioty mają trafiać do kontenerów, nie do drzewa): paleta dodawania nie
+  podpowiada reszty, ale zapisane entity takiego typu zostają i działają.
   Kliknięcie zaznacza (Ctrl, Shift), dwuklik albo Enter na entity zgłasza zdarzenie
   `OpenEntityRequested`; ostatnio klikniętą entity podaje `LastClickedEntity` (podgląd idzie za nią).
   **Przeciąganie wierszy** (gest w `WorldCatalogView`, reguły w modelu widoku) rusza po 8 px i niesie

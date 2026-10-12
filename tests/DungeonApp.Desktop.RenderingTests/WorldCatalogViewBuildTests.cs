@@ -69,6 +69,12 @@ public sealed partial class WorldCatalogViewBuildTests
         Assert.Equal("DungeonIconBackpack", Row(catalog, "Lina").IconKey);
         Assert.True(Row(catalog, "gone").IsUnresolved);
 
+        // A kind icon from the presentation wins; a type without one keeps its own icon, and an entity
+        // of a type that cannot be added any more is still in the tree.
+        Assert.Same(WorldTestSystem.BeingKindIcon, goblin.Icon);
+        Assert.NotSame(WorldTestSystem.BeingKindIcon, Row(catalog, "Lina").Icon);
+        Assert.Null(Row(catalog, "gone").Icon);
+
         // Every row got a container: the template builds.
         Assert.Equal(catalog.Rows.Count, fixture.RowBorders().Count());
     }
@@ -171,7 +177,7 @@ public sealed partial class WorldCatalogViewBuildTests
     }
 
     [AvaloniaFact]
-    public void The_palette_lists_only_entries_of_listed_types_with_tags_and_a_badge()
+    public void The_palette_lists_only_entries_of_addable_types_with_kind_icon_tags_and_a_badge()
     {
         using var fixture = new Fixture();
         var catalog = fixture.Catalog;
@@ -179,9 +185,11 @@ public sealed partial class WorldCatalogViewBuildTests
 
         var all = options.Search(string.Empty);
 
-        Assert.Equal(["Goblin", "Lina", "Sowiedźmin"], all.Select(item => item.Name));
+        Assert.Equal(["Goblin", "Sowiedźmin"], all.Select(item => item.Name));
+        Assert.Empty(options.Search("Lina"));
         var goblin = all.First(item => item.Name == "Goblin");
         Assert.Equal("DungeonIconSkull", goblin.IconKey);
+        Assert.Same(WorldTestSystem.BeingKindIcon, goblin.Icon);
         Assert.Equal("goblinoid, mały", goblin.Tags);
         Assert.Equal("1/4", goblin.Badge);
         Assert.NotNull(goblin.BadgeBrush);
@@ -352,8 +360,10 @@ public sealed partial class WorldCatalogViewBuildTests
         public IReadOnlyList<WorldEntityType> EntityTypes { get; } =
         [
             new WorldEntityType(Being, "DungeonIconSkull"),
-            new WorldEntityType(Thing, "DungeonIconBackpack"),
+            new WorldEntityType(Thing, "DungeonIconBackpack", CanBeAdded: false),
         ];
+
+        public static DrawingImage BeingKindIcon { get; } = new();
 
         public IReadOnlyList<WorkspacePanelDescriptor> CreateDeskTools(CampaignTabContext context) => [];
 
@@ -384,6 +394,9 @@ public sealed partial class WorldCatalogViewBuildTests
         public Control CreateCard(Entry entry, EntryPicture picture) => new TextBlock { Text = entry.Name };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
+
+        public Func<Entry, DrawingImage>? RowIcon(ContentTypeReference type) =>
+            type == Being ? _ => BeingKindIcon : null;
 
         private static RegisteredEntry Make(string id, string name, ContentTypeReference type, Sample sample)
         {

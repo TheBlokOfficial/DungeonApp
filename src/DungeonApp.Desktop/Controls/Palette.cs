@@ -327,7 +327,7 @@ public sealed class Palette : TemplatedControl
         rows.Clear();
         foreach (var item in results)
         {
-            rows.Add(new PaletteRowModel(item, quantity, ResolveIcon(item.IconKey)));
+            rows.Add(new PaletteRowModel(item, quantity, item.Icon ?? ResolveIcon(item.IconKey)));
         }
 
         SelectIndex(rows.Count > 0 ? 0 : -1);
