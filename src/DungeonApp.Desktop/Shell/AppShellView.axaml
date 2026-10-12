@@ -74,11 +74,7 @@
 
                     <Border Background="{DynamicResource DungeonBackstageBrush}"
                             BoxShadow="inset 0 0 8 0 #24000000">
-                        <TransitioningContentControl Content="{Binding CurrentWorkspaceContent}">
-                            <TransitioningContentControl.PageTransition>
-                                <CrossFade Duration="0:0:0.14" />
-                            </TransitioningContentControl.PageTransition>
-                        </TransitioningContentControl>
+                        <ContentControl Content="{Binding CurrentWorkspaceContent}" />
                     </Border>
                 </DockPanel>
             </DockPanel>
