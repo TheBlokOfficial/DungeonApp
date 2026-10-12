@@ -718,23 +718,21 @@ internal static partial class Program
         if (Wants("szklo") || glassVariants.Any(variant => Wants(variant.Stem)))
         {
             SetSize(window, 1920, 1080);
-            var windows = new List<WorkspacePanelViewModel>();
-            for (var index = 0; index < 3; index++)
-            {
-                var descriptor = new WorkspacePanelDescriptor(
-                    $"render-glass-window-{index}",
-                    $"Okno pod paletą {index + 1}",
-                    "DungeonIconSkull",
-                    WorkspacePanelGroup.Session,
-                    new PanelPlacement(catalog.X - 900 + index * 300, 60 + index * 140, 460, 320),
-                    new PanelConstraints(200, 120, 2000, 2000),
-                    () => new TextBlock { Text = "Okno pod paletą: tekst, który ma się rozmyć", TextWrapping = Avalonia.Media.TextWrapping.Wrap });
-                var panel = new WorkspacePanelViewModel(desk, descriptor, descriptor.Id, descriptor.DefaultPlacement);
-                desk.Panels.Add(panel);
-                panel.ActivateCommand.Execute(null);
-                windows.Add(panel);
-            }
-
+            // A creature preview and a pinned item card together cover the whole palette rectangle
+            // (about 700-1220 x 25-465) and stick out on every side, so the glass is judged over real, dense content.
+            var preview = desk.OpenPreview();
+            catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+            var pinned = desk.PinEntity(Row("Mikstura leczenia").EntityId!.Value)!;
+            catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+            // Desk coordinates start right of the sidebar (224 px), so these are 560 and 1030 on screen.
+            preview.X = 336;
+            preview.Y = 10;
+            preview.Width = 480;
+            preview.Height = 520;
+            pinned.X = 806;
+            pinned.Y = 10;
+            pinned.Width = 340;
+            pinned.Height = 520;
             Settle();
             var catalogView = deskView.GetVisualDescendants().OfType<WorldCatalogView>().First();
             catalogView.ShowAddPalette(catalog.ResolveAddTarget());
@@ -762,10 +760,8 @@ internal static partial class Program
             }
 
             PressKey(window, Avalonia.Input.Key.Escape);
-            foreach (var panel in windows)
-            {
-                desk.Panels.Remove(panel);
-            }
+            desk.Close(pinned);
+            desk.Close(preview);
 
             SetSize(window, WindowWidth, WindowHeight);
             Settle();
