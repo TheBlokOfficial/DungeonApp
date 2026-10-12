@@ -31,8 +31,6 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
   sesje, reszta, gdy przygoda jej potrzebuje → decisions.md, „Paczka SRD rośnie na żądanie”,
   „Słownictwo z polskiego podręcznika”. Słownictwo, znaczniki `[[id|tekst]]`, metry, rzadkość i spis
   stworzeń: `tools/srd/`.
-- ❓ Szkielet zakładki: każda zakładka ma ten sam układ (filtry, lista, szczegół) — za generyczny, do
-  przemyślenia.
 
 ### [~] E2 · Katalog świata
 
@@ -125,7 +123,9 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 - [ ] Okno handlu.
 - [ ] SRD: ekwipunek podstawowy, przedmioty magiczne pospolite do rzadkich.
 - ❓ Skala wartości przed wyceną SRD: małe, czytelne liczby z miejscem w dół i w górę.
-- ❓ Ekwipunek: entity w entity w drzewie świata czy slot — lista pozycji wewnątrz istoty.
+- [ ] Przedmioty leżą w kontenerach (ekwipunek istoty, skrzynia), nie luzem w drzewie świata →
+  decisions.md, „Przedmiot nie leży luzem w drzewie świata”.
+- ❓ Kontener: entity w entity w drzewie świata czy slot — lista pozycji wewnątrz istoty.
 - ❓ Stworzenie na sprzedaż (koń u handlarza): skąd wartość, z której liczy się cena.
 - Notatki do ustalenia: okno handlu jak w cRPG — towar kupca z cenami (z wartości wpisu przez kurs
   waluty kampanii, sprzedaż za połowę), MG może zmienić cenę, „Kup” i „Sprzedaj” przenoszą przedmiot
@@ -163,47 +163,30 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 
 ## Porządki w kodzie i dokumentach
 
-- [ ] **Komentarze nieaktualne w treści:** `CampaignRowViewModel` (powód niedostępności, którego wiersz
-  nie pokazuje), `AppShellView.axaml` (host rozgrzewki „także po wyborze systemu”), `PanelCatalog`
-  (kolejność „panele powłoki, potem narzędzia”).
-- [ ] **Strażnik granicy:** punkt 4 granicy (zdarzenia nie zapisują) i zakaz logiki per wpis nie mają
-  strażnika w kodzie; pilnuje ich przegląd.
-- [ ] **Powody odrzucenia wpisu paczki** są surowym angielskim tekstem parsera („The JSON value could
-  not be converted to …”) — potrzebne polskie zdanie, które nazywa pole.
+- [x] Nieaktualne komentarze; polskie powody odrzucenia paczki i wpisu, które nazywają pole → spec
+  `docs/spec/szlif-poprawki.md`, „Porządki”.
 
 ## Szlif — po kamieniu milowym
 
 Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego.
 
-- [ ] Pełna nazwa przedmiotu po najechaniu znika przy zjechaniu na dopisaną część i po kliknięciu
-  w tytuł — okienko musiałoby przyjmować wskaźnik i samo być tekstem do zaznaczenia.
-- [ ] Tagi w nagłówku karty przy wielu wartościach zawijają się w drugą linię i wypychają nagłówek
-  ponad obrazek (dlatego Miecz worpalny nie ma podtypu „żołnierska, do walki wręcz”).
-- [ ] Tabela cech: modyfikator zero „+0” jak w podręczniku — do zmiany na „0”, gdyby zaczęło razić.
-- [ ] Opis przedmiotu bez kreski i nagłówka „Opis”, z inicjałem pergaminu jak zasady na karcie stanu.
-- [ ] Akapity w prozie: po twardym Enter nowa linia trochę niżej, jak w edytorze tekstu (także obok
-  inicjału pergaminu).
-- [ ] Suwak: uchwyt w spoczynku trochę za ciemny. Pomysł: pod myszą obwódka zamiast rozjaśnienia.
-- [ ] Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
-- [ ] Ikony kategorii na liście treści (przedmioty: broń, zbroja…; stworzenia: typ), małe i przygaszone
-  jak ikony stanów; ta sama zamiast zastępczej w pustym polu obrazka, spoza listy — domyślna.
+- [x] Drobne poprawki: pełny tytuł pod wskaźnikiem, tagi w jednej linii, karta stanu z sekcją „Opis”,
+  odstęp po twardej linii, menu, ikony stanów i kategorii (lista, karta, katalog świata), fokus
+  klawiatury, lista chipa, klik w tytuł podglądu → spec `docs/spec/szlif-poprawki.md`;
+  architecture.md, „Zakładka treści i karty”, „Katalog świata”.
 - [x] Szlifowanie startu, ramy, katalogu świata, okien, listka, palety i kart → spec
   `docs/spec/szlifowanie.md`; architecture.md, „Rozmiar okna i maksymalizacja”, „Podgląd i przypięte
   karty”; decisions.md, „Tooltip tylko tam, gdzie czegoś nie widać”, „Szkło palety…”, „Sekcja zwija
   się…”.
 - [ ] Szkło palety słabo widać nad ciemnym interfejsem — krycie zabarwienia
-  (`DungeonPaletteGlassTintBrush`) do dobrania na oko.
-- [ ] Widoczny wygląd fokusu klawiatury (kontrolki części żywej dostają go w 2.3a).
-- [ ] Klik w tytuł okna podglądu rozwija katalogi do entity i zaznacza ją w drzewie.
+  (`DungeonPaletteGlassTintBrush`) wybiera autor z renderów `render.ps1 -Only 'szklo*'`.
 
 ## Po stronie autora
 
-- [ ] Kampanie przenieść do `Dokumenty\DungeonApp\dnd5e\campaigns\` (katalogów `Packs` i `Campaigns`
-  aplikacja nie czyta) i dopisać stworzeniom pole `group`.
-- [ ] Wpisy we własnych paczkach bez obiektów `combat` i `item` pokazują się jako odrzucone —
-  przepisać albo usunąć. Stworzenie: `"template": "dnd5e:creature"`, KP, PW i cechy w obiekcie
-  `combat`, proza w sekcjach. Przedmiot: waga i wartość w obiekcie `item`, ładunki w `charges` (`max`,
-  `recharge`). Wzór: wpisy paczki `dnd5e-srd`.
+- [ ] Kampanie przenieść z `Dokumenty\DungeonApp\Campaigns\` do `Dokumenty\DungeonApp\dnd5e\campaigns\`
+  (katalogów `Packs` i `Campaigns` aplikacja nie czyta; `Packs\dnd5e` to kopia `dnd5e\packs\dnd5e`
+  sprzed przepisania wpisów).
+- [x] Wpisy własnej paczki `dnd5e` (hobgoblin, eliksir leczenia) w obecnym formacie, z polem `group`.
 
 ## Odłożone, z wyzwalaczem
 
@@ -233,5 +216,7 @@ Każda pozycja: co, potem — po myślniku — wyzwalacz, który ją uruchamia.
   nadpisanie) — kopiowanie katalogów paczek w Eksploratorze zaczyna przeszkadzać.
 - ⏸ **Wczytanie paczek od nowa** — przycisk w zakładce treści i F5; wybór zostaje, jeśli wpis o tym id
   nadal istnieje — restart po każdej poprawce paczki zaczyna przeszkadzać przy przygotowaniu sesji.
+- ⏸ **Suwak: jaśniejszy uchwyt w spoczynku**, pod myszą obwódka zamiast rozjaśnienia — pierwszy ekran,
+  który używa suwaka (dziś tylko Galeria).
 - ⏸ **Pomiar startu** — pierwsze zauważalne zacięcie przy starcie; wtedy najpierw liczby, potem
   poprawka.

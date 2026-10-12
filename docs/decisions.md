@@ -124,9 +124,14 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
 - **Entity nie zmienia typu.** Przemiana to pozycja „Stanów i efektów” (mimik „w przebraniu:
   skrzynia”) albo druga entity obok (figurka cudownej mocy ożywa w stworzenie, a sama zostaje
   przedmiotem). Podmiana statystyk (postać zwierzęcia druida, polimorfia) czeka na pełną postać.
-- **Drzewo świata nie pyta o typ.** Każda entity może leżeć w każdym katalogu; jeśli etap 9 dopuści
-  entity w entity, też bez reguły typu (chowaniec w kieszeni, chochlik w butelce). Sumy (waga plecaka,
-  handel) czytają tylko pola przedmiotu, więc stworzenie w plecaku nic nie waży — ocenę zostawia się MG.
+- **Drzewo świata nie pyta o typ istoty.** Każda istota może leżeć w każdym katalogu; jeśli etap 9
+  dopuści entity w entity, też bez reguły typu (chowaniec w kieszeni, chochlik w butelce). Sumy (waga
+  plecaka, handel) czytają tylko pola przedmiotu, więc stworzenie w plecaku nic nie waży — ocenę
+  zostawia się MG.
+- **Przedmiot nie leży luzem w drzewie świata.** Paleta dodaje do drzewa tylko istoty; przedmiot
+  znajdzie miejsce w kontenerze (ekwipunek istoty, skrzynia) w etapie 9. Drzewo z linami i miksturami
+  między goblinami przestaje być mapą tego, kto gdzie jest. Typ treści deklaruje, czy może być
+  dodany do świata; entity przedmiotów z zapisanych kampanii zostają i działają.
 - **Zakładki według typu, nie aspektu.** Jeden typ to jedna zakładka, w kolejności podręcznika
   (Stworzenia, Przedmioty, Stany, Postacie, Pochodzenia, Klasy, Zaklęcia); MG szuka mimika wśród
   stworzeń, nie wśród „rzeczy, które walczą”. Aspekt bywa filtrem w zakładce („z walką”,
