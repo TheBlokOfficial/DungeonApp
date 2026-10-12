@@ -300,9 +300,43 @@ internal static class Program
             {
                 SaveCrop(window, section, UniqueName(stem));
             }
+
+            if (section is MenusSection menus)
+            {
+                RenderOpenMenu(window, menus, stem);
+            }
         }
 
         SetSize(window, WindowWidth, WindowHeight);
+    }
+
+    /// <summary>
+    /// The icon button's menu opened with two submenu levels, saved as the whole window (the menus
+    /// are popups, outside the section's bounds): shortcuts and submenu arrows against the right edge
+    /// and the gap between a menu and its submenu.
+    /// </summary>
+    private static void RenderOpenMenu(Window window, MenusSection section, string stem)
+    {
+        var name = $"{stem}_open";
+        if (!Wants(name))
+        {
+            return;
+        }
+
+        ClickOn(window, section.GetVisualDescendants().OfType<Button>().First());
+        Control Item(string header) => window.GetVisualDescendants().OfType<MenuItem>()
+            .First(item => item.IsEffectivelyVisible && item.Header as string == header);
+        ClickOn(window, Item("Widok"));
+        ClickOn(window, Item("Sortuj według"));
+        // Crop to the menus and their submenus: the box around every visible item of the open levels.
+        var items = window.GetVisualDescendants().OfType<MenuItem>().Where(item => item.IsEffectivelyVisible).ToList();
+        var boxes = items.Select(item => new Rect(item.TranslatePoint(new Point(0, 0), window)!.Value, item.Bounds.Size)).ToList();
+        var left = boxes.Min(box => box.Left) - 24;
+        var top = boxes.Min(box => box.Top) - 24;
+        var crop = new Rect(left, top, boxes.Max(box => box.Right) + 24 - left, boxes.Max(box => box.Bottom) + 24 - top);
+        SaveCrop(window, window, UniqueName(name), crop);
+        PressKey(window, Avalonia.Input.Key.Escape);
+        Rest(window);
     }
 
     /// <summary>
@@ -712,11 +746,16 @@ internal static class Program
         Settle();
     }
 
-    private static void SaveCrop(Window window, Control control, string name)
+    /// <param name="window">The window whose frame is cut.</param>
+    /// <param name="control">The control whose bounds are saved.</param>
+    /// <param name="name">The file name.</param>
+    /// <param name="area">Window-coordinate rectangle to save instead of the control's bounds.</param>
+    private static void SaveCrop(Window window, Control control, string name, Rect? area = null)
     {
         Settle();
-        var origin = control.TranslatePoint(new Point(0, 0), window)
+        var origin = area?.TopLeft ?? control.TranslatePoint(new Point(0, 0), window)
             ?? throw new InvalidOperationException($"{name}: the control is not in the window.");
+        var size = area?.Size ?? control.Bounds.Size;
 
         var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No frame was rendered.");
         using var stream = new MemoryStream();
@@ -726,8 +765,8 @@ internal static class Program
 
         var left = Math.Max(0, (int)origin.X);
         var top = Math.Max(0, (int)origin.Y);
-        var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + control.Bounds.Width));
-        var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + control.Bounds.Height));
+        var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + size.Width));
+        var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + size.Height));
         using var subset = new SKBitmap();
         bitmap.ExtractSubset(subset, new SKRectI(left, top, right, bottom));
         using var image = SKImage.FromBitmap(subset);

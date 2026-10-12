@@ -677,7 +677,9 @@
         <Thickness x:Key="DungeonMenuGestureMargin">24,0,0,0</Thickness>
         <!-- Gap from icon column to label and label to submenu arrow (DungeonSpacingSm). -->
         <Thickness x:Key="DungeonMenuIconMargin">0,0,8,0</Thickness>
-        <Thickness x:Key="DungeonMenuChevronMargin">8,0,0,0</Thickness>
+        <!-- The chevron glyph is drawn 4 px short of its 16 px box on the right; the negative right margin
+             moves the drawn arrow onto the same edge as the shortcut text. -->
+        <Thickness x:Key="DungeonMenuChevronMargin">8,0,-4,0</Thickness>
         <!-- Menu separator: gap 4 above and below the line. -->
         <Thickness x:Key="DungeonMenuSeparatorMargin">0,4</Thickness>
         <!-- Breadcrumbs (controls:Breadcrumbs): inter-segment arrow 8 px - smaller than an action
