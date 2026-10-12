@@ -15,8 +15,11 @@ internal static class SystemMotion
 {
     private const uint SpiGetClientAreaAnimation = 0x1042;
 
-    /// <summary>Windows animations are disabled (determined once in <see cref="Apply"/>).</summary>
-    public static bool IsReduced { get; private set; }
+    /// <summary>
+    /// Windows animations are disabled (determined once in <see cref="Apply"/>). Settable inside the
+    /// assembly and its tests, so headless tests can check code-based motion's still path.
+    /// </summary>
+    public static bool IsReduced { get; internal set; }
 
     public static void Apply(Avalonia.Application application)
     {

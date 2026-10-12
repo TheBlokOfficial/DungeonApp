@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Startup;
-using DungeonApp.Desktop.Themes;
 
 namespace DungeonApp.Desktop.Shell;
 
@@ -30,13 +31,38 @@ public partial class AppShellView : UserControl
         // spend startup time on the registered sequence of data and visual warmup steps. The runner
         // owns its own failure handling - a step going wrong degrades to lazy loading, it never
         // blocks entry.
-        await viewModel.RunStartupAsync(new StartupUiContext(WarmupHost) { ProgressSettleTime = ProgressSettleTime() });
+        var curtainFill = CurtainProgressFill();
+        await viewModel.RunStartupAsync(new StartupUiContext(WarmupHost)
+        {
+            WaitForFrameAsync = WaitForFrameAsync,
+            WaitForProgressSettledAsync = () => curtainFill?.WhenSettledAsync() ?? Task.CompletedTask,
+            ProgressSettleLimit = curtainFill?.SettleLimit ?? TimeSpan.Zero,
+        });
     }
 
-    private TimeSpan ProgressSettleTime() =>
-        !SystemMotion.IsReduced && this.TryFindResource("DungeonProgressFillDuration", out var value) && value is TimeSpan duration
-            ? duration
-            : TimeSpan.Zero;
+    /// <summary>
+    /// Without a frame between steps the next step can take the UI thread before the bar has drawn
+    /// its new target even once. Bounded, because a minimized window draws no frames.
+    /// </summary>
+    private Task WaitForFrameAsync()
+    {
+        if (TopLevel.GetTopLevel(this) is not { } topLevel)
+        {
+            return Task.CompletedTask;
+        }
+
+        var drawn = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        topLevel.RequestAnimationFrame(_ => drawn.TrySetResult());
+        return Task.WhenAny(drawn.Task, Task.Delay(FrameWaitLimit));
+    }
+
+    private static readonly TimeSpan FrameWaitLimit = TimeSpan.FromMilliseconds(100);
+
+    /// <summary>The startup curtain is the window's (MainWindow.axaml), so its bar is found by name there.</summary>
+    private ProgressFill? CurtainProgressFill() =>
+        TopLevel.GetTopLevel(this) is { } topLevel && NameScope.GetNameScope(topLevel) is { } names
+            ? names.Find<ProgressBar>("StartupProgress")?.GetVisualDescendants().OfType<ProgressFill>().FirstOrDefault()
+            : null;
 
     /// <summary>
     /// One notification for any number of failed saves: while the same warning still hangs in the

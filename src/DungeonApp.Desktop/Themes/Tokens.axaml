@@ -233,11 +233,13 @@
              - continuous loop with easing in and out; not a state transition, so the
              MotionDuration limit does not apply. System animations disabled: no motion. -->
         <x:TimeSpan x:Key="DungeonProgressSweepDuration">0:0:1.6</x:TimeSpan>
-        <!-- ProgressFill: a determinate ProgressBar's fill sliding to a new value (CubicEaseInOut) -
-             over MotionDuration on purpose: the startup curtain's bar moves a whole step at a time and
-             a quicker slide reads as a jump. The curtain lifts only after this much time past its
-             last step (Shell/AppShellView.axaml.cs). System animations disabled: no motion, no wait. -->
-        <x:TimeSpan x:Key="DungeonProgressFillDuration">0:0:0.3</x:TimeSpan>
+        <!-- ProgressFillHalfLife: how fast a determinate ProgressBar's fill glides towards its value
+             (Controls/ProgressFill.cs) - every this much time it covers half of the remaining way, so
+             each new value reads as an ease-out and quick changes never stall it. About 0.3 s to cover
+             most of one startup step: a quicker glide reads as a jump. The startup curtain waits for
+             the fill to reach full, at most ProgressFill.SettleHalfLives half-lives. System
+             animations disabled: no motion, no wait. -->
+        <x:TimeSpan x:Key="DungeonProgressFillHalfLife">0:0:0.08</x:TimeSpan>
         <!-- NotificationOpenOffset: distance a notification toast slides from the window's right edge
              (over DungeonPopupOpenDuration) - more than a popup, because a toast appears by itself, not under
              the cursor, and motion should draw the eye to the window corner. -->

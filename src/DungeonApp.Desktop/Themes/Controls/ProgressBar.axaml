@@ -4,8 +4,7 @@
 
     <!--
         Progress indicator (ProgressBar), horizontal only. Template based on Fluent ProgressBar.xaml
-        (Avalonia 12.0.5, MIT): track and PART_Indicator (ProgressBar itself sets width from
-        the value); no percentage text (ShowProgressText - the view displays the value),
+        (Avalonia 12.0.5, MIT): track and fill; no percentage text (ShowProgressText - the view displays the value),
         vertical template or style-based indeterminate animations (handled by
         controls:ProgressSweep - code-based motion stopped when system animations are disabled).
         Orientation="Vertical" receives the same horizontal template.
@@ -13,11 +12,11 @@
         at both ends of track and fill (like the slider track), track
         clips fill to its outline.
         Track Background (DungeonBorderBrush), fill Foreground - accent by default; the view
-        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor. The fill width animates
-        (DungeonProgressFillDuration, ease in-out; entry in ReducedMotion.axaml) instead of jumping.
-        PART_Indicator starts at Width 0, not unset: the first width ProgressBar assigns would
-        otherwise transition from NaN, every interpolated value is NaN (no fill drawn), and each
-        later change restarts from that NaN - the fill stays invisible through a run of quick changes.
+        can supply another colour (e.g. a "PW" bar). No focus, arrow cursor. The fill is
+        controls:ProgressFill, not the required PART_Indicator (kept hidden): ProgressBar sizes that
+        part itself, and a width transition restarted on every quick change stalls in its slow start.
+        ProgressFill glides towards each new value (DungeonProgressFillHalfLife) and stands on it
+        at once with system animations disabled - checked in code, so no ReducedMotion.axaml entry.
         States - no others:
           determinate   - fill from the left, width according to Value in Minimum..Maximum;
           indeterminate - segment of 40 % of the track in Foreground moves in a loop
@@ -46,21 +45,13 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         ClipToBounds="True">
                     <Panel>
-                        <Border Name="PART_Indicator"
-                                Width="0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Stretch"
-                                Background="{TemplateBinding Foreground}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                IsVisible="{TemplateBinding IsIndeterminate, Converter={x:Static BoolConverters.Not}}">
-                            <Border.Transitions>
-                                <Transitions>
-                                    <DoubleTransition Property="Width"
-                                                      Duration="{StaticResource DungeonProgressFillDuration}"
-                                                      Easing="CubicEaseInOut" />
-                                </Transitions>
-                            </Border.Transitions>
-                        </Border>
+                        <!-- Required by ProgressBar, which sizes it to the value; never drawn. -->
+                        <Border Name="PART_Indicator" IsVisible="False" />
+                        <controls:ProgressFill Name="PART_Fill"
+                                               Percentage="{TemplateBinding Percentage}"
+                                               Fill="{TemplateBinding Foreground}"
+                                               CornerRadius="{TemplateBinding CornerRadius}"
+                                               IsVisible="{TemplateBinding IsIndeterminate, Converter={x:Static BoolConverters.Not}}" />
                         <controls:ProgressSweep Name="PART_Sweep"
                                                 Fill="{TemplateBinding Foreground}"
                                                 CalmFill="{DynamicResource DungeonAccentDimBrush}"
