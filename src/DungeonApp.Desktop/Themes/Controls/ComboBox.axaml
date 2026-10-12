@@ -21,7 +21,7 @@
           open     - same as hover, even without the pointer over the field (no accent, like a field being edited);
                      downward chevron (closed - right), animated rotation;
           disabled - DungeonDisabledOpacity.
-        No focus appearance (empty FocusAdorner); no opening animation - only the chevron moves.
+        Keyboard focus: the shared ring (FocusRing.axaml); no opening animation - only the chevron moves.
         Expanded list: flyout surface (same FlyoutPresenter theme - background,
         border, padding, shadow, DungeonFlyoutMaxHeight maximum height, internal scrolling),
         at least as wide as the field, below and left-aligned with it (above when there is no space
@@ -50,7 +50,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="MaxDropDownHeight" Value="{DynamicResource DungeonFlyoutMaxHeight}" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />

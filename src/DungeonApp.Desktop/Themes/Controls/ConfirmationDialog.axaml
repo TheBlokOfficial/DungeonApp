@@ -27,6 +27,7 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="Focusable" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
+        <!-- No ring: the dialog is a full-window layer holding focus for Escape and Enter; its buttons show focus. -->
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle" />

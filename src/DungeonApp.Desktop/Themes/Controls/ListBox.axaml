@@ -8,7 +8,8 @@
         (PART_ScrollViewer - scrollbar from the shell ScrollViewer theme), item presenter
         (PART_ItemsPresenter) and row content presenter (PART_ContentPresenter).
         List uses its underlying surface: transparent background, no border or
-        internal padding. No separate states; no focus appearance (empty FocusAdorner).
+        internal padding. No separate states; no focus ring on the list itself (keyboard focus sits on a row and the
+        row shows it).
         Row: minimum height DungeonListRowHeight - a single text line or icon does not change
         it by a pixel; only rows with several controls in their template are taller (e.g.
         campaign world). Horizontal padding DungeonSpacingMd, increased on the right by the scrollbar
@@ -25,7 +26,7 @@
           pressed           - looks hovered (unselected);
           disabled          - DungeonDisabledOpacity like any disabled control, transparent
                                background, no pointer response.
-        Row focus has no appearance (empty FocusAdorner).
+        Row keyboard focus: the shared ring (FocusRing.axaml).
     -->
     <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
         <Setter Property="Background" Value="Transparent" />
@@ -87,7 +88,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerRow}" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
             <ControlTemplate>

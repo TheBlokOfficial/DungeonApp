@@ -305,9 +305,123 @@ internal static partial class Program
             {
                 SaveCrop(window, section, UniqueName(stem));
             }
+
+            if (section is MenusSection menus)
+            {
+                RenderOpenMenu(window, menus, stem);
+            }
+        }
+
+        if (Wants("gallery_focus"))
+        {
+            RenderFocusRing(window, gallery);
         }
 
         SetSize(window, WindowWidth, WindowHeight);
+    }
+
+    /// <summary>
+    /// One sheet with the first visible sample of each kind of control that takes keyboard focus, each
+    /// focused the way Tab does it, cropped with room for the ring. The ring is an adorner, drawn in the
+    /// window, so the crops come from the window's frame, not from the control.
+    /// </summary>
+    private static void RenderFocusRing(Window window, Control gallery)
+    {
+        Control? First<T>(Func<T, bool>? where = null) where T : Control => gallery.GetVisualDescendants().OfType<T>()
+            .FirstOrDefault(control => control.IsEffectivelyVisible && control.IsEnabled && control.Bounds.Width > 0 && (where?.Invoke(control) ?? true));
+
+        Control?[] samples =
+        [
+            First<Button>(button => !button.Classes.Contains("icon") && !button.Classes.Contains("subtle")),
+            First<Button>(button => button.Classes.Contains("icon")),
+            First<CheckBox>(),
+            First<RadioButton>(),
+            First<Avalonia.Controls.Primitives.ToggleButton>(button => button.GetType() == typeof(Avalonia.Controls.Primitives.ToggleButton)),
+            First<ToggleSwitch>(),
+            First<ComboBox>(),
+            First<DungeonApp.Desktop.Controls.DropDownPicker>(),
+            First<ListBoxItem>(),
+            First<Avalonia.Controls.Primitives.TabStripItem>(),
+            First<Slider>(),
+            First<DungeonApp.Desktop.Controls.ListRow>(),
+            First<DungeonApp.Desktop.Controls.FramedIconRow>()?.GetVisualDescendants().OfType<Button>().FirstOrDefault(),
+        ];
+
+        // A window of ordinary size, each sample scrolled into it: a frame of the whole tall gallery is not
+        // drawn in full far down the page.
+        SetSize(window, WindowWidth, WindowHeight);
+        var crops = new List<SKBitmap>();
+        foreach (var sample in samples.OfType<Control>())
+        {
+            sample.BringIntoView();
+            Settle();
+            sample.Focus(Avalonia.Input.NavigationMethod.Tab);
+            Settle();
+            var origin = sample.TranslatePoint(new Point(0, 0), window)!.Value;
+            var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No frame was rendered.");
+            using var stream = new MemoryStream();
+            frame.Save(stream);
+            stream.Position = 0;
+            using var bitmap = SKBitmap.Decode(stream);
+            var left = Math.Max(0, (int)origin.X - 12);
+            var top = Math.Max(0, (int)origin.Y - 12);
+            var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + Math.Min(sample.Bounds.Width, 360) + 12));
+            var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + sample.Bounds.Height + 12));
+            var crop = new SKBitmap();
+            bitmap.ExtractSubset(crop, new SKRectI(left, top, right, bottom));
+            crops.Add(crop);
+            Rest(window);
+        }
+
+        var width = crops.Max(crop => crop.Width);
+        using var surface = SKSurface.Create(new SKImageInfo(width, crops.Sum(crop => crop.Height) + 4 * crops.Count));
+        surface.Canvas.Clear(new SKColor(0x15, 0x14, 0x12));
+        var y = 0;
+        foreach (var crop in crops)
+        {
+            surface.Canvas.DrawBitmap(crop, 0, y);
+            y += crop.Height + 4;
+            crop.Dispose();
+        }
+
+        using var image = surface.Snapshot();
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        var name = UniqueName("gallery_focus");
+        using (var file = File.Create(Path.Combine(_outDir, name)))
+        {
+            data.SaveTo(file);
+        }
+
+        Console.WriteLine($"Saved {name} ({image.Width}x{image.Height}, {samples.Count(sample => sample is not null)} controls)");
+    }
+
+    /// <summary>
+    /// The icon button's menu opened with two submenu levels, saved as the whole window (the menus
+    /// are popups, outside the section's bounds): shortcuts and submenu arrows against the right edge
+    /// and the gap between a menu and its submenu.
+    /// </summary>
+    private static void RenderOpenMenu(Window window, MenusSection section, string stem)
+    {
+        var name = $"{stem}_open";
+        if (!Wants(name))
+        {
+            return;
+        }
+
+        ClickOn(window, section.GetVisualDescendants().OfType<Button>().First());
+        Control Item(string header) => window.GetVisualDescendants().OfType<MenuItem>()
+            .First(item => item.IsEffectivelyVisible && item.Header as string == header);
+        ClickOn(window, Item("Widok"));
+        ClickOn(window, Item("Sortuj według"));
+        // Crop to the menus and their submenus: the box around every visible item of the open levels.
+        var items = window.GetVisualDescendants().OfType<MenuItem>().Where(item => item.IsEffectivelyVisible).ToList();
+        var boxes = items.Select(item => new Rect(item.TranslatePoint(new Point(0, 0), window)!.Value, item.Bounds.Size)).ToList();
+        var left = boxes.Min(box => box.Left) - 24;
+        var top = boxes.Min(box => box.Top) - 24;
+        var crop = new Rect(left, top, boxes.Max(box => box.Right) + 24 - left, boxes.Max(box => box.Bottom) + 24 - top);
+        SaveCrop(window, window, UniqueName(name), crop);
+        PressKey(window, Avalonia.Input.Key.Escape);
+        Rest(window);
     }
 
     /// <summary>
@@ -717,11 +831,16 @@ internal static partial class Program
         Settle();
     }
 
-    private static void SaveCrop(Window window, Control control, string name)
+    /// <param name="window">The window whose frame is cut.</param>
+    /// <param name="control">The control whose bounds are saved.</param>
+    /// <param name="name">The file name.</param>
+    /// <param name="area">Window-coordinate rectangle to save instead of the control's bounds.</param>
+    private static void SaveCrop(Window window, Control control, string name, Rect? area = null)
     {
         Settle();
-        var origin = control.TranslatePoint(new Point(0, 0), window)
+        var origin = area?.TopLeft ?? control.TranslatePoint(new Point(0, 0), window)
             ?? throw new InvalidOperationException($"{name}: the control is not in the window.");
+        var size = area?.Size ?? control.Bounds.Size;
 
         var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No frame was rendered.");
         using var stream = new MemoryStream();
@@ -731,8 +850,8 @@ internal static partial class Program
 
         var left = Math.Max(0, (int)origin.X);
         var top = Math.Max(0, (int)origin.Y);
-        var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + control.Bounds.Width));
-        var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + control.Bounds.Height));
+        var right = Math.Min(bitmap.Width, (int)Math.Ceiling(origin.X + size.Width));
+        var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + size.Height));
         using var subset = new SKBitmap();
         bitmap.ExtractSubset(subset, new SKRectI(left, top, right, bottom));
         using var image = SKImage.FromBitmap(subset);

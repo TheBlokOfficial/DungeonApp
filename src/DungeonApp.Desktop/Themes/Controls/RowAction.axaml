@@ -19,7 +19,7 @@
           hover    - DangerText glyph (semantic colour: action deletes), no background; pressed matches
                      hover. Action belongs to the row: the row beneath it stays highlighted;
           disabled - DungeonDisabledOpacity.
-        No animation. No focus appearance, arrow cursor.
+        No animation. Keyboard focus: the shared ring (FocusRing.axaml), arrow cursor.
         Resting glyph contrast (TextMuted #8A8983, icon - 3:1 threshold): 4.8:1 on a card (resting
         ListBoxItem), 4.7:1 on a row (BackstageRow), 4.3:1 on a hovered row
         (BackstageRowHover), 3.8:1 on a selected row (AccentDim on a card, #382E1F).
@@ -37,7 +37,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{x:Null}" />
+        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerRow}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ClipToBounds" Value="False" />

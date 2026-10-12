@@ -18,8 +18,9 @@
         Border is always 1 px, so state changes do not shift layout. Placeholder
         (InputPlaceholder) is unchanged in every state. A field with leading icon (pencil, magnifier)
         and clear button is a separate shell control - controls:IconField (IconField.axaml): icon
-        and button are outside the text box. Keyboard focus has no separate
-        appearance (empty FocusAdorner). Clicking outside or Escape removes field focus - shell,
+        and button are outside the text box. Keyboard focus has no ring (empty
+        FocusAdorner): the editing border and the caret are its appearance, and a field inside another frame (IconField,
+        NumericUpDown) would carry its ring in the wrong place. Clicking outside or Escape removes field focus - shell,
         Themes/EditFocusRelease.cs.
         Single-line field has DungeonControlHeight; long text scrolls inside,
         without expanding the field. Text and placeholder vertically centred with equal padding;
