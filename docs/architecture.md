@@ -74,7 +74,7 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   (fabryka bez argumentu — zakładka nie widzi kampanii) i kategorii Kampania (fabryka dostaje
   `CampaignTabContext`), jakie modele stanu zapisuje jego kampania i jakie kroki startowe zgłasza.
 - Rama zachowuje jedyną drogę zmiany stanu. System przejmuje wygląd i zawartość, nigdy zapisu.
-- Wkompilowany jest jeden system (`Dnd5e`); ekran wyboru systemu i tak się pokazuje.
+- Wkompilowany jest jeden system (`Dnd5e`); przy jednym systemie ekran wyboru się nie pokazuje (start wybiera go za kurtyną), przy dwóch i więcej tak.
 
 ## Treść: paczki, wpisy, typy treści
 
