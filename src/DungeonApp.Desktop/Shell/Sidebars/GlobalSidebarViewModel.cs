@@ -170,7 +170,6 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
                 }
 
                 OnPropertyChanged(nameof(SidebarWidth));
-                OnPropertyChanged(nameof(SidebarToggleToolTip));
                 OnPropertyChanged(nameof(CollapsibleTextOpacity));
                 OnPropertyChanged(nameof(CollapsibleTextOffset));
                 OnPropertyChanged(nameof(HeadingHeight));
@@ -179,8 +178,6 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
     }
 
     public double SidebarWidth => IsCollapsed ? 64 : 224;
-
-    public string SidebarToggleToolTip => IsCollapsed ? "Rozwiń panel boczny" : "Zwiń panel boczny";
 
     public double CollapsibleTextOpacity => IsCollapsed ? 0 : 1;
 

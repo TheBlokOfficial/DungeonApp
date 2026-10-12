@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dc="using:DungeonApp.Desktop.Controls"
+             xmlns:themes="using:DungeonApp.Desktop.Themes"
              xmlns:world="using:DungeonApp.Desktop.Workspace.World"
              x:Class="DungeonApp.Desktop.Workspace.World.WorldCatalogView"
              x:DataType="world:WorldCatalogViewModel"
@@ -41,8 +42,7 @@
                     Classes.selected="{Binding IsSelected}"
                     Classes.expanded="{Binding IsExpanded}"
                     Classes.root="{Binding IsRoot}"
-                    Classes.drop="{Binding IsDropTarget}"
-                    ToolTip.Tip="{Binding ToolTipText}">
+                    Classes.drop="{Binding IsDropTarget}">
                 <Border Padding="{DynamicResource DungeonScrollBarZone}">
                     <Grid ColumnDefinitions="16,16,*,Auto"
                           Margin="{Binding Indent}">
@@ -84,9 +84,9 @@
                                    VerticalAlignment="Center"
                                    TextTrimming="CharacterEllipsis"
                                    TextWrapping="NoWrap"
-                                   IsVisible="{Binding !IsEditing}">
-                            <Run Text="{Binding Name}" />
-                        </TextBlock>
+                                   themes:TrimmedLabelToolTip.IsEnabled="True"
+                                   Text="{Binding Name}"
+                                   IsVisible="{Binding !IsEditing}" />
 
                         <!-- Rename in place: the field fills the name's cell and starts left of the text by its
                              border and padding (1 + 4 px past a 1 px margin), so the letters stay where they were

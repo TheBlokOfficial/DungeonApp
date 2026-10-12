@@ -8,6 +8,12 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
     </Style>
 
+    <!-- Every tooltip waits the full ShowDelay, also right after another one closed: the library's
+         default shows the next one at once. A negative value turns that shortcut off. -->
+    <Style Selector=":is(Control)">
+        <Setter Property="ToolTip.BetweenShowDelay" Value="-1" />
+    </Style>
+
     <Style Selector="TextBlock.workspace-title">
         <Setter Property="FontFamily" Value="{DynamicResource DungeonDisplayFont}" />
         <Setter Property="FontSize" Value="{DynamicResource DungeonWorkspaceTitleFontSize}" />
