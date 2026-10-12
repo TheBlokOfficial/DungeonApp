@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using DungeonApp.Desktop.Diagnostics;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Features.CampaignLibrary;
+using DungeonApp.Desktop.Shell.Gallery;
 using DungeonApp.Desktop.Shell.Settings;
 using DungeonApp.Desktop.Shell.Sidebars;
 using DungeonApp.Desktop.Shell.SystemSelection;
@@ -16,8 +17,8 @@ namespace DungeonApp.Desktop.Startup;
 /// <summary>
 /// Warms the shell - everything the GM sees regardless of the chosen system and before choosing
 /// any: system selection, shelf, sidebar in both collapse states (for every
-/// compiled-in system - its tab declarations determine the sidebar shape), top bar and empty
-/// "Ustawienia" tab (neither depends on sidebar collapse, so each warms
+/// compiled-in system - its tab declarations determine the sidebar shape), top bar, empty
+/// "Ustawienia" tab and the controls gallery (none depends on sidebar collapse, so each warms
 /// once). Individual system
 /// content is warmed separately by <see cref="WarmSystemTabsStep"/> (tabs and the desk) and the systems'
 /// own startup steps (entry cards);
@@ -60,6 +61,10 @@ public sealed class WarmFrameChromeStep(
             cancellationToken);
 
         await WarmAsync(ui, new SettingsView { DataContext = new SettingsViewModel() }, cancellationToken);
+
+        // Heavy to build (every control in every state) and independent of the chosen system, so the
+        // first opening of the "Galeria" tab would otherwise stutter.
+        await WarmAsync(ui, new GalleryView { DataContext = new GalleryViewModel() }, cancellationToken);
     }
 
     private static Task WarmSidebarAsync(
