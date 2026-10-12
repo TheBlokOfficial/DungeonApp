@@ -181,9 +181,7 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 
 ## Po stronie autora
 
-- [x] Kampanie w `Dokumenty\DungeonApp\dnd5e\campaigns\`.
-- [ ] Usunąć puste `Dokumenty\DungeonApp\Campaigns\` i `Packs\` (kopia własnej paczki sprzed
-  przepisania wpisów); aplikacja ich nie czyta.
+- [x] Kampanie w `Dokumenty\DungeonApp\dnd5e\campaigns\`; stare `Campaigns\` i `Packs\` usunięte.
 - [x] Wpisy własnej paczki `dnd5e` (hobgoblin, eliksir leczenia) w obecnym formacie, z polem `group`.
 
 ## Odłożone, z wyzwalaczem
