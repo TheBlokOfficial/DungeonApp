@@ -171,15 +171,13 @@ Uwagi autora poprawiają księgę, przełom i karty, zanim powstanie na nich pe�
 Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego.
 
 - [x] Drobne poprawki: pełny tytuł pod wskaźnikiem, tagi w jednej linii, karta stanu z sekcją „Opis”,
-  odstęp po twardej linii, menu, ikony stanów i kategorii (lista, karta, katalog świata), fokus
-  klawiatury, lista chipa, klik w tytuł podglądu → spec `docs/spec/szlif-poprawki.md`;
+  odstęp po twardej linii, menu, ikony stanów i kategorii (lista, karta, katalog świata), szkło
+  palety, lista chipa, klik w tytuł podglądu → spec `docs/spec/szlif-poprawki.md`;
   architecture.md, „Zakładka treści i karty”, „Katalog świata”.
 - [x] Szlifowanie startu, ramy, katalogu świata, okien, listka, palety i kart → spec
   `docs/spec/szlifowanie.md`; architecture.md, „Rozmiar okna i maksymalizacja”, „Podgląd i przypięte
   karty”; decisions.md, „Tooltip tylko tam, gdzie czegoś nie widać”, „Szkło palety…”, „Sekcja zwija
   się…”.
-- [ ] Szkło palety słabo widać nad ciemnym interfejsem — krycie zabarwienia
-  (`DungeonPaletteGlassTintBrush`) wybiera autor z renderów `render.ps1 -Only 'szklo*'`.
 
 ## Po stronie autora
 
@@ -216,6 +214,9 @@ Każda pozycja: co, potem — po myślniku — wyzwalacz, który ją uruchamia.
   nadpisanie) — kopiowanie katalogów paczek w Eksploratorze zaczyna przeszkadzać.
 - ⏸ **Wczytanie paczek od nowa** — przycisk w zakładce treści i F5; wybór zostaje, jeśli wpis o tym id
   nadal istnieje — restart po każdej poprawce paczki zaczyna przeszkadzać przy przygotowaniu sesji.
+- ⏸ **Widoczny fokus klawiatury** — jedna obwódka na wszystkich kontrolkach dała dziwne obwódki
+  i miejsca, więc została wycofana; wraca z projektem na renderze, gdy MG zacznie prowadzić stół
+  klawiaturą (Tab w części żywej karty, E5).
 - ⏸ **Suwak: jaśniejszy uchwyt w spoczynku**, pod myszą obwódka zamiast rozjaśnienia — pierwszy ekran,
   który używa suwaka (dziś tylko Galeria).
 - ⏸ **Pomiar startu** — pierwsze zauważalne zacięcie przy starcie; wtedy najpierw liczby, potem

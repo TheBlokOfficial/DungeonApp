@@ -27,7 +27,7 @@
                              pressed and open stay unchanged;
           disabled         - DungeonDisabledOpacity, resting appearance; with a selection, loses accent (SurfaceActive
                              background, Border border, TextRegular text).
-        Keyboard focus: the shared ring from DropDownPicker (FocusRing.axaml), arrow cursor.
+        No visible focus indicator, arrow cursor.
     -->
     <ControlTheme x:Key="DungeonChipPicker"
                   TargetType="controls:DropDownPicker"

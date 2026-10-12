@@ -25,7 +25,7 @@
           selected  - AccentDim background, also on hover (style follows hover), visible stripe;
           pressed   - no separate appearance: hovered (unselected) or selected appearance;
           disabled  - DungeonDisabledOpacity, transparent background, no pointer response.
-        Keyboard focus: the shared ring (FocusRing.axaml), arrow cursor, no animation or movement
+        No focus appearance (empty FocusAdorner), arrow cursor, no animation or movement
         when pressed.
     -->
     <ControlTheme x:Key="{x:Type controls:ListRow}" TargetType="controls:ListRow">
@@ -44,8 +44,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerRow}" />
-        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">

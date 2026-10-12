@@ -25,7 +25,7 @@
         resting until the pointer leaves (.hover-suppressed, Themes/OpenerHoverRest.cs;
         same in ComboBox and DropDownPicker). Nothing dims or shrinks the content
         (RenderTransform and Transitions cleared).
-        Keyboard focus: the shared ring (FocusRing.axaml). Arrow cursor for every variant,
+        No separate focus appearance (empty FocusAdorner). Arrow cursor for every variant,
         including links - hover indicates clickability.
         Variants:
           (none)   - regular: SurfaceHeader background, Border border, TextPrimary text;
@@ -66,7 +66,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <!-- Avalonia buttons clip to their bounds by default, cutting the hover halo

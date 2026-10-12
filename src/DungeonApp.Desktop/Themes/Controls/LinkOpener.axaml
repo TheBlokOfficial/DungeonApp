@@ -14,7 +14,7 @@
         towards the popup when open (down or up - .opens-up from Themes/PopupOpenMotion.cs),
         animated rotation (DungeonMotionDuration, easing out; disabled by ReducedMotion.axaml - the
         dropdown arrow rule covers every Button with PART_DropDownGlyph). Single-line text, trimmed
-        with an ellipsis and tooltip when too long. Keyboard focus: the shared ring from Button (FocusRing.axaml), arrow cursor.
+        with an ellipsis and tooltip when too long. No visible focus indicator, arrow cursor.
     -->
     <ControlTheme x:Key="DungeonLinkOpener" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Template">

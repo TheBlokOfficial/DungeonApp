@@ -33,11 +33,10 @@ nieodhaczonej pozycji.
 
 - [x] Lista rozwijana chipa jest szeroka jak najszerszy element całej listy, nie tylko wyrenderowany —
   nie zmienia szerokości przy przewijaniu.
-- [x] Widoczny fokus klawiatury: jedna obwódka (token `DungeonFocusRing*`) we wszystkich kontrolkach,
-  które przyjmują fokus.
+- ~~Widoczny fokus klawiatury~~ — wycofany po obejrzeniu w aplikacji; odłożony w roadmapie.
 - [x] Menu: skrót i strzałka podmenu kończą się na jednej krawędzi, podmenu nie nachodzi na menu.
-- [ ] Szkło palety: krycie zabarwienia wybrane przez autora z renderów całego okna 1920×1080
-  (`render.ps1 -Only 'szklo*'`: 55, 70 — obecne, 80, 90 %).
+- [x] Szkło palety: krycie zabarwienia 80 %, wybrane z renderów całego okna 1920×1080
+  (`render.ps1 -Only 'szklo*'`).
 
 ## Porządki
 

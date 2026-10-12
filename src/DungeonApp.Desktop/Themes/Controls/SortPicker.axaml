@@ -13,7 +13,7 @@
         one line (VerticalAlignment Center). Button tooltip - direction ("Kierunek: A–Z").
         Field menu - shell-themed menu below the link. Disabled button (CanReverse=False) -
         DungeonDisabledOpacity; disabled whole control - DungeonDisabledOpacity once, on the control.
-        No ring on the control itself: the link and the direction button inside take the focus. Arrow cursor.
+        No focus appearance, arrow cursor.
     -->
     <ControlTheme x:Key="{x:Type controls:SortPicker}" TargetType="controls:SortPicker">
         <Setter Property="HorizontalAlignment" Value="Left" />

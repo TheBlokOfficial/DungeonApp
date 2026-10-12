@@ -15,8 +15,8 @@
         Single selection; no selection allowed (no segment highlighted).
         Segment: DungeonSegmentCornerRadius, horizontal padding 12, text centred
         on both axes, single line with ellipsis (trimmed - full text in tooltip), UI font
-        13. Width reserves bold text (controls:BoldTextReserve). Arrow cursor, keyboard
-        focus: the shared ring on the segment (FocusRing.axaml), no transitions - no sliding indicator, colour changes immediately.
+        13. Width reserves bold text (controls:BoldTextReserve). Arrow cursor, no focus
+        appearance or transitions - no sliding indicator, colour changes immediately.
         Segment states (same rule as tabs):
           resting   - no background, TextRegular text;
           hover     - SurfaceHover background, TextPrimary text; pressed - same as hover;
@@ -42,8 +42,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerRow}" />
-        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="Template">
@@ -101,7 +100,6 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextRegularBrush}" />
         <Setter Property="SelectionMode" Value="Single" />
         <Setter Property="Cursor" Value="Arrow" />
-        <!-- No ring on the container: focus sits on a segment and the segment shows it. -->
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ItemContainerTheme" Value="{StaticResource DungeonSegment}" />

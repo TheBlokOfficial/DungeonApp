@@ -11,7 +11,6 @@
         list; ControlThemesBuildTests fails for a file in Themes/Controls that is not on it.
     -->
     <ResourceDictionary.MergedDictionaries>
-        <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/FocusRing.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Menus.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Window.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/PopupHosts.axaml" />

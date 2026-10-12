@@ -41,8 +41,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="Focusable" Value="True" />
-        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
-        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="PlaceholderForeground" Value="{DynamicResource DungeonInputPlaceholderBrush}" />
         <Setter Property="GlyphForeground" Value="{DynamicResource DungeonTextMutedBrush}" />
         <Setter Property="GlyphSpacing" Value="{DynamicResource DungeonSpacingMd}" />

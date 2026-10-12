@@ -42,8 +42,7 @@
           open submenu (:open) - same as hover while the submenu is open;
           disabled  - DungeonDisabledOpacity, no highlight;
           .danger   - DangerText label and icon, neutral highlight; disabled loses red.
-        No focus ring (empty FocusAdorner): keyboard selection (:selected) is the same highlight as hover,
-        so the highlighted item is the focused one; arrow cursor.
+        No separate focus appearance (empty FocusAdorner); arrow cursor.
     -->
     <ControlTheme x:Key="{x:Type MenuFlyoutPresenter}" TargetType="MenuFlyoutPresenter">
         <Setter Property="Background" Value="{DynamicResource DungeonInputBackgroundBrush}" />

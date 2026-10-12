@@ -29,7 +29,7 @@
           disabled      - DungeonDisabledOpacity on everything, no pointer response; on
                           loses accent: neutral track, right-hand knob in regular
                           text colour.
-        Keyboard focus: the shared ring (FocusRing.axaml).
+        No separate focus appearance (empty FocusAdorner).
     -->
     <ControlTheme x:Key="{x:Type ToggleSwitch}" TargetType="ToggleSwitch">
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -46,8 +46,7 @@
         <Setter Property="FontSize" Value="{DynamicResource DungeonBaseFontSize}" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
-        <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
-        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <!-- Knob moves (knob slot Canvas.Left), DungeonMotionDuration with easing out. -->
         <Setter Property="KnobTransitions">

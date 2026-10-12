@@ -322,7 +322,7 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
     systemu;
   - zmiana stanu nie zmienia wymiarów kontrolki, także zmiana formy z tekstu na pole edycji;
   - tekst klikany ma co najmniej 12 pt, kontrast tekstu co najmniej 4,5:1;
-  - fokus klawiatury nie ma widocznego wyglądu (roadmapa, „Szlif”).
+  - fokus klawiatury nie ma widocznego wyglądu (roadmapa, „Odłożone, z wyzwalaczem”).
 
 ## Kierunek (niezbudowane)
 
