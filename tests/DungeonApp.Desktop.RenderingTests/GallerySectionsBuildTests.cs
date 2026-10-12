@@ -68,11 +68,17 @@ public sealed class GallerySectionsBuildTests
         Assert.True(intro.IsEffectivelyVisible);
 
         var point = heading.TranslatePoint(new Avalonia.Point(heading.Bounds.Width / 2, heading.Bounds.Height / 2), window)!.Value;
+        var body = section.FindControl<SectionReveal>("Body")!;
+        var openHeight = body.Bounds.Height;
+        Assert.True(openHeight > 0);
+
         window.MouseDown(point, Avalonia.Input.MouseButton.Left);
         window.MouseUp(point, Avalonia.Input.MouseButton.Left);
         Dispatcher.UIThread.RunJobs();
         Assert.False(heading.IsExpanded);
+        Assert.True(SectionRevealTests.Settle(body));
         Assert.False(intro.IsEffectivelyVisible);
+        Assert.Equal(0, body.Bounds.Height);
         Assert.True(heading.IsEffectivelyVisible);
 
         window.MouseDown(point, Avalonia.Input.MouseButton.Left);
@@ -80,6 +86,8 @@ public sealed class GallerySectionsBuildTests
         Dispatcher.UIThread.RunJobs();
         Assert.True(heading.IsExpanded);
         Assert.True(intro.IsEffectivelyVisible);
+        Assert.True(SectionRevealTests.Settle(body));
+        Assert.Equal(openHeight, body.Bounds.Height);
 
         window.Close();
     }

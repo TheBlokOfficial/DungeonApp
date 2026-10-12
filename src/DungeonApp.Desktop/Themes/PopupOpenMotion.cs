@@ -104,8 +104,7 @@ internal static class PopupOpenMotion
         control.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
 
     /// <summary>
-    /// Appearance motion shared by popups and expanded section content (Themes/ExpanderContentMotion.cs):
-    /// fades in and moves from <paramref name="fromY"/> to its position over
+    /// Appearance motion of popups: fades in and moves from <paramref name="fromY"/> to its position over
     /// DungeonPopupOpenDuration, easing out. Blocks nothing - content is clickable from the first
     /// frame, motion only catches up with state.
     /// </summary>

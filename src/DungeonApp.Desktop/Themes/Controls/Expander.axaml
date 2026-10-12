@@ -19,9 +19,9 @@
           hover     - SurfaceHover background; pressed - same as hover;
           expanded  - no separate appearance, only the arrow changes;
           disabled  - entire section (header and content) DungeonDisabledOpacity once, no pointer response.
-        Content: DungeonExpanderContentPadding (aligned with the header label). On expansion,
-        appears like a popup - fading in, sliding from above (Themes/ExpanderContentMotion.cs);
-        height is not animated, collapse is immediate, no ContentTransition.
+        Content: DungeonExpanderContentPadding (aligned with the header label). Unrolls and rolls
+        up with its height, fading in and out (controls:SectionReveal, the same motion as a card
+        section); no ContentTransition.
     -->
     <ControlTheme x:Key="DungeonExpanderHeader" TargetType="ToggleButton">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -127,19 +127,21 @@
                                   Content="{TemplateBinding Header}"
                                   ContentTemplate="{TemplateBinding HeaderTemplate}"
                                   IsChecked="{TemplateBinding IsExpanded, Mode=TwoWay}" />
-                    <Border Name="ExpanderContent"
-                            IsVisible="{TemplateBinding IsExpanded}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}">
-                        <ContentPresenter Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          Foreground="{TemplateBinding Foreground}"
-                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Border>
+                    <controls:SectionReveal Name="PART_Reveal"
+                                            IsOpen="{TemplateBinding IsExpanded}">
+                        <Border Name="ExpanderContent"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Foreground="{TemplateBinding Foreground}"
+                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </controls:SectionReveal>
                 </DockPanel>
             </ControlTemplate>
         </Setter>

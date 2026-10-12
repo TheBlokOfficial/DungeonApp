@@ -160,8 +160,6 @@ public partial class App : Avalonia.Application
             Themes.OpenerHoverRest.Register();
             Themes.PopupOpenMotion.Register();
             Themes.PopupOpenLayout.Register();
-            Themes.ExpanderContentMotion.Register();
-
             _shell = new AppShellViewModel(
                 _systems,
                 _repositoriesBySystem!,

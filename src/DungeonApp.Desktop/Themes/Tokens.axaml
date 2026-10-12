@@ -242,6 +242,14 @@
              under the cursor, and its entry should read as a deliberate surface arriving. Over
              MotionDuration on purpose; closing without motion. -->
         <x:TimeSpan x:Key="DungeonPaletteOpenDuration">0:0:0.18</x:TimeSpan>
+        <!-- SectionReveal: a foldable section (Expander, card section) unrolling or rolling up its content
+             (Controls/SectionReveal.cs) - its height grows or shrinks while the content fades. Short: content
+             up to 60 px; Long: content from 600 px; in proportion between, so a long text does not move
+             faster than a short one. Over MotionDuration on purpose: what stands below the section moves
+             with it, and a quicker slide of a long text reads as a jump. Opening eases out, closing eases
+             in and out. -->
+        <x:TimeSpan x:Key="DungeonSectionRevealShortDuration">0:0:0.18</x:TimeSpan>
+        <x:TimeSpan x:Key="DungeonSectionRevealLongDuration">0:0:0.32</x:TimeSpan>
         <x:Double x:Key="DungeonPaletteOpenOffset">14</x:Double>
         <!-- NotificationDismissDelay: time before a notification toast dismisses itself - theme constant for
              the variant, not an invocation parameter. Information 5 s (one sentence to read),
