@@ -104,6 +104,7 @@ public partial class WorldCatalogView : UserControl
         if (ViewModel is { } viewModel)
         {
             viewModel.RenameStarted += OnRenameStarted;
+            viewModel.RevealRequested += ScrollToSelection;
         }
     }
 
@@ -129,6 +130,7 @@ public partial class WorldCatalogView : UserControl
         if (ViewModel is { } viewModel)
         {
             viewModel.RenameStarted -= OnRenameStarted;
+            viewModel.RevealRequested -= ScrollToSelection;
         }
     }
 

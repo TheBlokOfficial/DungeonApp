@@ -18,7 +18,7 @@ namespace DungeonApp.Desktop.Workspace.World;
 /// entity, has a pin) or a pinned window (one entity for good). Read-only. Rebuilds the card when
 /// the entity's name, path or values change and empties when the entity is gone.
 /// </summary>
-public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposable
+public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTitleTarget, IDisposable
 {
     /// <summary>What the preview says while it has nothing to show.</summary>
     public const string EmptyText = "Kliknij pozycję w katalogu Świat";
@@ -109,6 +109,15 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
             return Entity is { } id && _catalog.Tree.Entity(id) is { } node
                 ? $"{node.Name} · № {node.Entity.Number.ToString(CultureInfo.InvariantCulture)}"
                 : null;
+        }
+    }
+
+    /// <summary>A click on the window's title shows the entity in the catalog's tree.</summary>
+    public void TitleClicked()
+    {
+        if (Entity is { } id)
+        {
+            _catalog.Reveal(id);
         }
     }
 

@@ -73,4 +73,7 @@ public interface IWorkspacePanel : INotifyPropertyChanged
     ICommand MinimizeCommand { get; }
 
     ICommand ToggleMaximizeCommand { get; }
+
+    /// <summary>Run when the title is clicked without dragging the window.</summary>
+    ICommand TitleClickCommand { get; }
 }

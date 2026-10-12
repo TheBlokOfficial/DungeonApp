@@ -10,6 +10,12 @@ namespace DungeonApp.Desktop.Workspace.Panels;
 /// </summary>
 public sealed record PanelHeaderAction(string IconResourceKey, string ToolTip, ICommand Command);
 
+/// <summary>A window body that reacts to a click on its window's title (a press and release without a drag).</summary>
+public interface IPanelTitleTarget
+{
+    void TitleClicked();
+}
+
 /// <summary>
 /// What a window body may tell its window beyond the content itself: a title of its own (one
 /// descriptor, many windows, each named after what it shows) and header buttons. Both are read

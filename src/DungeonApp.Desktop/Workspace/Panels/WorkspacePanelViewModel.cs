@@ -48,6 +48,7 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
         ActivateCommand = new RelayCommand(() => _host.Activate(this));
         MinimizeCommand = new RelayCommand(() => _host.Minimize(this));
         ToggleMaximizeCommand = new RelayCommand(() => _host.ToggleMaximize(this));
+        TitleClickCommand = new RelayCommand(() => (Body as IPanelTitleTarget)?.TitleClicked());
         CloseCommand = new RelayCommand(() => _host.Close(this));
         _closeAction = new PanelHeaderAction("DungeonIconClear", "Zamknij", CloseCommand);
 
@@ -154,6 +155,8 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
     public ICommand ActivateCommand { get; }
 
     public ICommand MinimizeCommand { get; }
+
+    public ICommand TitleClickCommand { get; }
 
     public ICommand CloseCommand { get; }
 

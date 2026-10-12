@@ -188,5 +188,7 @@ public sealed partial class DeskWindowMotionTests
         public ICommand MinimizeCommand { get; } = new RelayCommand(() => { });
 
         public ICommand ToggleMaximizeCommand { get; } = new RelayCommand(() => { });
+
+        public ICommand TitleClickCommand { get; } = new RelayCommand(() => { });
     }
 }
