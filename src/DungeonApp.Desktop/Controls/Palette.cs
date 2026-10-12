@@ -130,6 +130,8 @@ public sealed class Palette : TemplatedControl
         palette.SetBackdrop(TryCaptureBackdrop(overlay));
         current = palette;
         overlay.Children.Add(palette);
+        palette.ApplyTemplate();
+        palette.Appear();
         return palette.closed.Task;
     }
 
@@ -258,6 +260,12 @@ public sealed class Palette : TemplatedControl
         }
 
         search?.Focus(NavigationMethod.Tab);
+    }
+
+    // Started as the palette joins the overlay, not on Loaded: by then a frame in the final pose has been
+    // drawn, and the motion would start with a jump up.
+    private void Appear()
+    {
         var offset = this.TryFindResource("DungeonPaletteOpenOffset", out var o) && o is double value ? value : 14d;
         OverlayAppearMotion.Run(this, card ?? this, 0d, -offset, "DungeonPaletteOpenDuration");
         HoldBackdropStill();

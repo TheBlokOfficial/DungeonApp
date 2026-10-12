@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
@@ -29,14 +30,34 @@ internal static class OverlayAppearMotion
             : TimeSpan.FromMilliseconds(120);
 
         // Avalonia 12's transform animator animates TranslateTransform, not TransformOperations.
-        if (sliding.RenderTransform is not TranslateTransform)
+        if (sliding.RenderTransform is not TranslateTransform slide)
         {
-            sliding.RenderTransform = new TranslateTransform();
+            slide = new TranslateTransform();
+            sliding.RenderTransform = slide;
         }
 
-        _ = Animate(duration, Visual.OpacityProperty, 0d, 1d).RunAsync(fading);
-        _ = Animate(duration, TranslateTransform.XProperty, fromX, 0d).RunAsync(sliding);
-        _ = Animate(duration, TranslateTransform.YProperty, fromY, 0d).RunAsync(sliding);
+        // The start pose is set before the first animation tick: a frame drawn in the final pose before
+        // the motion begins reads as the element jumping back to its start.
+        fading.Opacity = 0d;
+        slide.X = fromX;
+        slide.Y = fromY;
+
+        var tasks = new[]
+        {
+            Animate(duration, Visual.OpacityProperty, 0d, 1d).RunAsync(fading),
+            Animate(duration, TranslateTransform.XProperty, fromX, 0d).RunAsync(sliding),
+            Animate(duration, TranslateTransform.YProperty, fromY, 0d).RunAsync(sliding),
+        };
+
+        _ = SettleAsync(tasks, fading, slide);
+    }
+
+    private static async Task SettleAsync(Task[] tasks, Control fading, TranslateTransform slide)
+    {
+        await Task.WhenAll(tasks);
+        fading.ClearValue(Visual.OpacityProperty);
+        slide.X = 0d;
+        slide.Y = 0d;
     }
 
     private static Animation Animate(TimeSpan duration, AvaloniaProperty property, double from, double to)
@@ -45,7 +66,7 @@ internal static class OverlayAppearMotion
         {
             Duration = duration,
             Easing = new CubicEaseOut(),
-            FillMode = FillMode.None,
+            FillMode = FillMode.Forward,
             Children =
             {
                 new KeyFrame { Cue = new Cue(0d), Setters = { new Setter(property, from) } },

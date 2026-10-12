@@ -55,6 +55,7 @@ public sealed class NotificationToast : TemplatedControl
 
     private Action? action;
     private Button? closeButton;
+    private bool appeared;
     private Button? actionButton;
     private IDisposable? pendingDismiss;
 
@@ -129,6 +130,15 @@ public sealed class NotificationToast : TemplatedControl
         {
             actionButton.Click += OnActionClick;
         }
+
+        // Here rather than on Loaded: the template is applied before the first frame is drawn, so the
+        // motion starts from its own start pose instead of jumping back from the final one.
+        if (!appeared)
+        {
+            appeared = true;
+            var offset = this.TryFindResource("DungeonNotificationOpenOffset", out var o) && o is double value ? value : 12d;
+            OverlayAppearMotion.Run(this, this, offset, 0d);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -143,8 +153,6 @@ public sealed class NotificationToast : TemplatedControl
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        var offset = this.TryFindResource("DungeonNotificationOpenOffset", out var o) && o is double value ? value : 12d;
-        OverlayAppearMotion.Run(this, this, offset, 0d);
         StartDismissCountdown();
     }
 

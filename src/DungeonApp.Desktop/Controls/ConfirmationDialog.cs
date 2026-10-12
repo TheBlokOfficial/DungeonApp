@@ -44,6 +44,7 @@ public sealed class ConfirmationDialog : TemplatedControl
     private Button? cancelButton;
     private Button? confirmButton;
     private Control? card;
+    private bool appeared;
     private IInputElement? returnFocusTo;
     private WindowOverlay? host;
 
@@ -127,6 +128,15 @@ public sealed class ConfirmationDialog : TemplatedControl
         }
 
         UpdateActionVariant();
+
+        // Here rather than on Loaded: the template is applied before the first frame is drawn, so the
+        // motion starts from its own start pose instead of jumping back from the final one.
+        if (!appeared)
+        {
+            appeared = true;
+            var offset = this.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
+            OverlayAppearMotion.Run(this, card ?? this, 0d, offset);
+        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -142,9 +152,6 @@ public sealed class ConfirmationDialog : TemplatedControl
     {
         base.OnLoaded(e);
         cancelButton?.Focus(NavigationMethod.Tab);
-
-        var offset = this.TryFindResource("DungeonPopupOpenOffset", out var o) && o is double value ? value : 4d;
-        OverlayAppearMotion.Run(this, card ?? this, 0d, offset);
     }
 
     // Scrim consumes the click - neither closes the dialog nor passes it through.
