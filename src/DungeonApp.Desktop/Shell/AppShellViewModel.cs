@@ -199,6 +199,9 @@ public sealed partial class AppShellViewModel : ObservableObject
                 await ChooseSystemAsync(_systems[0]);
             }
 
+            // After the bar's slide, not during it: the gallery's layout holds the UI thread long
+            // enough to freeze the slide midway, while a full bar may stand still.
+            await progressSettled;
             await LayOutGalleryAsync();
         }
         finally

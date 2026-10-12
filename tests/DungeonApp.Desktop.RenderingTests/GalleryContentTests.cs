@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
@@ -55,9 +56,12 @@ public sealed class GalleryContentTests
         var window = new Window { Width = 1280, Height = 800, Content = new AppShellView { DataContext = shell } };
         window.Show();
 
-        for (var pass = 0; pass < 1000 && !shell.IsReady; pass++)
+        // The curtain waits for the progress bar's slide in real time, so the loop is bounded by time.
+        var deadline = DateTime.UtcNow.AddSeconds(10);
+        while (!shell.IsReady && DateTime.UtcNow < deadline)
         {
             Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(5);
         }
 
         Assert.True(shell.IsReady);
