@@ -559,6 +559,30 @@ internal static class Program
             Settle();
         }
 
+        if (Wants("desk_palette"))
+        {
+            // A window half under the palette, so the glass has both a window and the bare desk behind it.
+            var descriptor = new WorkspacePanelDescriptor(
+                "render-palette-window",
+                "Okno pod paletą",
+                "DungeonIconSkull",
+                WorkspacePanelGroup.Session,
+                new PanelPlacement(WindowWidth / 2 - 420, 20, 460, 320),
+                new PanelConstraints(200, 120, 2000, 2000),
+                () => new TextBlock { Text = "Okno pod paletą: tekst, który ma się rozmyć", TextWrapping = Avalonia.Media.TextWrapping.Wrap });
+            var panel = new WorkspacePanelViewModel(desk, descriptor, descriptor.Id, descriptor.DefaultPlacement);
+            desk.Panels.Add(panel);
+            panel.ActivateCommand.Execute(null);
+            Settle();
+            var catalogView = deskView.GetVisualDescendants().OfType<WorldCatalogView>().First();
+            catalogView.ShowAddPalette(catalog.ResolveAddTarget());
+            Settle();
+            SaveCrop(window, window, UniqueName("desk_palette"));
+            PressKey(window, Avalonia.Input.Key.Escape);
+            desk.Panels.Remove(panel);
+            Settle();
+        }
+
         if (Wants("desk_catalog_collapsed"))
         {
             catalog.SetExpanded(catalog.Rows[0], false);

@@ -8,7 +8,9 @@ using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using DungeonApp.Desktop.Controls;
+using DungeonApp.Desktop.Diagnostics;
 
 namespace DungeonApp.Desktop.RenderingTests;
 
@@ -91,6 +93,57 @@ public sealed class PaletteTests
         fixture.Press(Key.Escape);
         Assert.True(second.IsCompleted);
         Assert.Empty(fixture.Overlay.Children.OfType<Palette>());
+    }
+
+    [AvaloniaFact]
+    public void The_card_shows_a_snapshot_of_the_window_as_glass_and_releases_it_on_closing()
+    {
+        using var fixture = new Fixture();
+        fixture.Open([], allowKeepOpen: false);
+
+        var palette = fixture.Palette;
+        var backdrop = palette.GetVisualDescendants().OfType<GlassBackdrop>().Single();
+        Assert.NotNull(palette.Backdrop);
+        Assert.Same(palette.Backdrop, backdrop.Source);
+        Assert.Contains(Palette.GlassPseudoClass, palette.Classes);
+        Assert.True(backdrop.IsVisible);
+        Assert.NotNull(backdrop.Effect);
+
+        fixture.Press(Key.Escape);
+        Assert.Null(palette.Backdrop);
+        Assert.Null(backdrop.Source);
+    }
+
+    [AvaloniaFact]
+    public void A_failed_snapshot_leaves_the_plain_card_and_a_log_entry()
+    {
+        using var fixture = new Fixture();
+        var errors = new List<string>();
+        var previousCapture = Palette.BackdropCapture;
+        var previousSink = AppLog.Use((level, message, _) =>
+        {
+            if (level == LogLevel.Error)
+            {
+                errors.Add(message);
+            }
+        });
+        Palette.BackdropCapture = _ => throw new InvalidOperationException("brak platformy");
+        try
+        {
+            fixture.Open([], allowKeepOpen: false);
+        }
+        finally
+        {
+            Palette.BackdropCapture = previousCapture;
+            AppLog.Use(previousSink);
+        }
+
+        var palette = fixture.Palette;
+        Assert.Null(palette.Backdrop);
+        Assert.DoesNotContain(Palette.GlassPseudoClass, palette.Classes);
+        Assert.False(palette.GetVisualDescendants().OfType<GlassBackdrop>().Single().IsVisible);
+        Assert.Equal(3, palette.Rows.Count);
+        Assert.Single(errors);
     }
 
     [AvaloniaFact]
