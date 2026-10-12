@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -44,6 +45,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
     private readonly WorkspacePanelDescriptor _previewDescriptor;
+    private bool _previewPinnedAway;
     private readonly WorkspacePanelDescriptor _pinnedDescriptor;
 
     private WorkspaceMetrics _metrics = WorkspaceMetrics.Fallback;
@@ -101,6 +103,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
 
         Catalog.OpenEntityRequested += OnOpenEntityRequested;
         Catalog.TreeChanged += ClosePinnedOfRemovedEntities;
+        Catalog.PropertyChanged += OnCatalogPropertyChanged;
 
         // Storage was already read by the caller (see CampaignDesk.CreateAsync). Construction is a
         // pure, bounded UI-model operation, so mounting this view cannot consume its own transition.
@@ -248,6 +251,20 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         }
 
         ChangeRole(panel, _pinnedDescriptor, key);
+        _previewPinnedAway = true;
+    }
+
+    // A preview closed by the user stays closed on a plain click; one turned into a pinned card is
+    // replaced on the next click, because pinning did not mean "no more preview".
+    private void OnCatalogPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(WorldCatalogViewModel.LastClickedEntity)
+            && _previewPinnedAway
+            && Catalog.LastClickedEntity is not null)
+        {
+            _previewPinnedAway = false;
+            OpenPreview();
+        }
     }
 
     // The pin on a pinned card: the card becomes the preview and follows the selection again; the
@@ -264,6 +281,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             Close(preview);
         }
 
+        _previewPinnedAway = false;
         ChangeRole(panel, _previewDescriptor, PreviewDescriptorId);
     }
 
@@ -408,6 +426,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         _session.Dispose();
         Catalog.LayoutChanged -= _session.MarkDirty;
         Catalog.OpenEntityRequested -= OnOpenEntityRequested;
+        Catalog.PropertyChanged -= OnCatalogPropertyChanged;
         Catalog.TreeChanged -= ClosePinnedOfRemovedEntities;
         Catalog.Dispose();
 

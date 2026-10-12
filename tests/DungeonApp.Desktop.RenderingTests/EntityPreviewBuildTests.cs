@@ -121,11 +121,10 @@ public sealed class EntityPreviewBuildTests
         Assert.Equal("Odepnij kartę", unpin.ToolTip);
         Assert.NotNull(FindView(fixture, pinned));
 
-        // The pinned card stays on its entity; the next open makes a new preview, a step aside.
+        // The pinned card stays on its entity; the next plain click makes a new preview, a step aside.
         catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
-        Assert.Equal("Szef", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)pinned.Body).Detail).Name);
-        catalog.Activate(Row(catalog, "Lina"));
         fixture.Settle();
+        Assert.Equal("Szef", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)pinned.Body).Detail).Name);
         var second = fixture.Desk.Panels.Single(panel => panel.Descriptor.Id == CampaignWorkspaceViewModel.PreviewDescriptorId);
         Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)second.Body).Detail).Name);
         Assert.Equal(placement.X + WorkspaceGridSettings.DefaultSnapStep, second.Desired.X);

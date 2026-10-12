@@ -254,8 +254,8 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   podgląd jest jeden, otwiera go dwuklik albo Enter na entity (`OpenEntityRequested`) i idzie za
   `LastClickedEntity`. Pinezka w jego nagłówku nie tworzy okna: to samo okno staje się przypiętą kartą
   (deskryptor `frame.world-pinned`, klucz = id entity, to samo miejsce i rozmiar), przestaje iść za
-  zaznaczeniem, a ikona zmienia się na przypiętą z podpowiedzią „Odepnij kartę”. Następne otwarcie
-  entity z katalogu otwiera nowy podgląd w jego domyślnym miejscu, a gdy je zajmuje okno — o krok siatki
+  zaznaczeniem, a ikona zmienia się na przypiętą z podpowiedzią „Odepnij kartę”. Następne kliknięcie
+  entity w katalogu otwiera nowy podgląd (podgląd zamknięty krzyżykiem wraca dopiero po dwukliku) w jego domyślnym miejscu, a gdy je zajmuje okno — o krok siatki
   w prawo i w dół (rama przycina do biurka). Pinezka przypiętej karty zamienia ją z powrotem w podgląd
   (od razu z bieżącym zaznaczeniem) i zamyka dotychczasowy podgląd: podgląd jest najwyżej jeden. Rola
   okna to deskryptor i klucz, więc zapis układu ją niesie; usunięcie entity zamyka jej przypiętą kartę,
