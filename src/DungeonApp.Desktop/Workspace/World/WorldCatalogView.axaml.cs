@@ -127,25 +127,13 @@ public partial class WorldCatalogView : UserControl
 
     // ---- Pointer ----
 
-    // A press outside the open rename field drops the rename; a left press on the desk, off every window
-    // and off the catalog, deselects. The press goes on to whatever it landed on.
+    // A press outside the open rename field drops the rename; the press goes on to whatever it landed on.
+    // The selection stays: a press off the catalog (the desk, a window) is not a choice made in the tree.
     private void OnWindowPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (ViewModel is not { } viewModel || e.Source is not Visual source)
-        {
-            return;
-        }
-
-        if (!IsInsideField(source))
+        if (ViewModel is { } viewModel && e.Source is Visual source && !IsInsideField(source))
         {
             viewModel.CancelRenames();
-        }
-
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed
-            && !source.GetSelfAndVisualAncestors().Any(visual => ReferenceEquals(visual, this) || visual is PanelWindow)
-            && source.FindAncestorOfType<WorkspaceSurface>(includeSelf: true) is not null)
-        {
-            viewModel.ClearSelection();
         }
     }
 

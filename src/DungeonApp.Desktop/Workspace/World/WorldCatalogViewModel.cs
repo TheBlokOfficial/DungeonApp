@@ -82,6 +82,9 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
         _context.Changed += OnChanged;
         Refresh();
         Fit();
+
+        // The catalog opens with the root selected, so the keys and the menu have a subject from the start.
+        Click(Rows[0], ctrl: false, shift: false);
     }
 
     /// <summary>The visible rows in display order: the root, then, while it is expanded, its folders and entities.</summary>
