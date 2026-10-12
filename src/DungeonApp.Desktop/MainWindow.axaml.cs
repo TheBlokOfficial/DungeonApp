@@ -8,6 +8,7 @@ public partial class MainWindow : Window
 {
     private readonly WindowPlacementStore? _placementStore;
     private Size _normalSize;
+    private Size _previousNormalSize;
 
     public MainWindow()
     {
@@ -29,7 +30,7 @@ public partial class MainWindow : Window
             }
         }
 
-        _normalSize = new Size(Width, Height);
+        _normalSize = _previousNormalSize = new Size(Width, Height);
         Closing += (_, _) => placementStore.Save(new WindowPlacement(
             WindowState == WindowState.Maximized, _normalSize.Width, _normalSize.Height));
     }
@@ -41,7 +42,21 @@ public partial class MainWindow : Window
         base.OnSizeChanged(e);
         if (_placementStore is not null && WindowState == WindowState.Normal && e.NewSize.Width > 0 && e.NewSize.Height > 0)
         {
+            _previousNormalSize = _normalSize;
             _normalSize = e.NewSize;
+        }
+    }
+
+    // The platform may report the maximized size while the state still reads Normal; that size is
+    // then the one just recorded, so the one before it is the real normal size.
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == WindowStateProperty
+            && change.GetNewValue<WindowState>() == WindowState.Maximized
+            && _normalSize == ClientSize)
+        {
+            _normalSize = _previousNormalSize;
         }
     }
 }
