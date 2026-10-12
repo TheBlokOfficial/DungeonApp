@@ -68,8 +68,9 @@ mechaniki to lore, nie entity. Katalog zastępuje testowe narzędzie „Świat k
 - „+” w wierszu głównym i w wierszu katalogu pod wskaźnikiem otwiera paletę dodawania do tego
   katalogu. Ctrl+N dodaje do zaznaczonego katalogu, do katalogu zaznaczonej entity, a bez zaznaczenia
   — do głównego.
-- Zmiana nazwy w miejscu: pole w tym samym miejscu i rozmiarze co tekst. Zatwierdza tylko Enter; Esc
-  i kliknięcie obok porzucają wpis (sekcja „Poprawki w drzewie”).
+- Zmiana nazwy w miejscu: pole w tym samym miejscu i rozmiarze co tekst. Enter i kliknięcie obok
+  zatwierdzają, jak w Eksploratorze Windows; Esc porzuca wpis, a nazwa odrzucona (pusta nazwa katalogu)
+  przy kliknięciu obok wraca do poprzedniej.
 - Przeciąganie: wiersz główny przesuwa katalog po biurku; każdy inny wiersz przenosi zaznaczenie do
   katalogu, na który się je upuści. Katalog przenosi się z zawartością i nie wejdzie do własnego
   potomka. „Przenieś do…” otwiera paletę z listą katalogów. Po przeniesieniu katalog docelowy jest
@@ -234,7 +235,7 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
 
 Drzewo nie ma kleksów ani „Odrzuć”, więc pomyłkę ma tam powstrzymać sama obsługa (wycinek 2.3c):
 
-- zmiana nazwy w miejscu zatwierdza się po kliknięciu obok — ma zatwierdzać tylko Enter;
+- zmiana nazwy w miejscu: Enter i kliknięcie obok zatwierdzają (jak w Eksploratorze), Esc porzuca;
 - próg przeciągnięcia 4 px (`WorldCatalogView`, `DragThreshold`) podnieść do ok. 8 px, żeby drgnięcie
   przy kliknięciu nie przenosiło wiersza;
 - po przeniesieniu przewinąć drzewo do przeniesionych wierszy (katalog już się rozwija, wiersze

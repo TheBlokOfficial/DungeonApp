@@ -181,17 +181,19 @@ public sealed partial class WorldCatalogViewModel
         row.RenameError = null;
     }
 
-    /// <summary>Drops every open rename (a click outside the field); returns whether one was open.</summary>
-    public bool CancelRenames()
+    /// <summary>
+    /// Saves every open rename (a click outside the field, as in a file explorer). A name the row refuses
+    /// is dropped instead: the click went elsewhere, so the field does not stay open asking for a fix.
+    /// </summary>
+    public async Task CommitRenamesAsync()
     {
-        var open = Rows.Where(row => row.IsEditing).ToList();
-
-        foreach (var row in open)
+        foreach (var row in Rows.Where(row => row.IsEditing).ToList())
         {
-            CancelRename(row);
+            if (!await CommitRenameAsync(row))
+            {
+                CancelRename(row);
+            }
         }
-
-        return open.Count > 0;
     }
 
     // ---- Delete ----

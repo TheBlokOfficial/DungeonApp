@@ -254,7 +254,7 @@ public sealed partial class WorldCatalogViewBuildTests
     }
 
     [AvaloniaFact]
-    public async Task A_click_outside_the_field_drops_the_typed_name()
+    public async Task A_click_outside_the_field_saves_the_typed_name_and_drops_a_refused_one()
     {
         using var fixture = new Fixture();
         var catalog = fixture.Catalog;
@@ -264,11 +264,21 @@ public sealed partial class WorldCatalogViewBuildTests
         catalog.BeginRename(row);
         row.EditText = "Lochy";
 
-        Assert.True(catalog.CancelRenames());
+        await catalog.CommitRenamesAsync();
+        fixture.Settle();
 
-        Assert.False(row.IsEditing);
-        Assert.Equal("Jaskinia", row.Name);
-        Assert.False(catalog.CancelRenames());
+        var renamed = Row(catalog, "Lochy");
+        Assert.False(renamed.IsEditing);
+
+        // An empty folder name is refused; a click elsewhere drops it instead of keeping the field open.
+        catalog.BeginRename(renamed);
+        renamed.EditText = "";
+
+        await catalog.CommitRenamesAsync();
+        fixture.Settle();
+
+        Assert.False(Row(catalog, "Lochy").IsEditing);
+        Assert.Null(Row(catalog, "Lochy").RenameError);
     }
 
     [AvaloniaFact]

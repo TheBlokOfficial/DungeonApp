@@ -145,13 +145,15 @@ public partial class WorldCatalogView : UserControl
 
     // ---- Pointer ----
 
-    // A press outside the open rename field drops the rename; the press goes on to whatever it landed on.
-    // The selection stays: a press off the catalog (the desk, a window) is not a choice made in the tree.
-    private void OnWindowPointerPressed(object? sender, PointerPressedEventArgs e)
+    // A press outside the open rename field saves the typed name, as in a file explorer (Escape drops it);
+    // the press goes on to whatever it landed on. The selection stays: a press off the catalog (the desk,
+    // a window) is not a choice made in the tree.
+    // Async void on purpose: a failed save reaches the UI thread's error handler instead of vanishing.
+    private async void OnWindowPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (ViewModel is { } viewModel && e.Source is Visual source && !IsInsideField(source))
         {
-            viewModel.CancelRenames();
+            await viewModel.CommitRenamesAsync();
         }
     }
 
