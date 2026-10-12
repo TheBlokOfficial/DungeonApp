@@ -50,7 +50,7 @@ public partial class GearCardView : UserControl, IEntryCardHeader
             VerticalAlignment = VerticalAlignment.Top,
             // Sharp, like every bordered block on a card.
             CornerRadius = default,
-            Icon = ThemeResource.Get<DrawingImage>("DungeonIconBackpack"),
+            Icon = KindIcons.ForGear(null),
         };
 
         // The pairs' values start on the title column's line, as on the creature card: the label
@@ -74,6 +74,8 @@ public partial class GearCardView : UserControl, IEntryCardHeader
 
     public void SetGear(Gear gear, EntryPicture picture)
     {
+        // With no picture, the frame shows what kind of item this is.
+        _picture.Icon = KindIcons.ForGear(gear.Category);
         picture.ShowIn(_picture);
 
         _metadata.Show(UnitScale.Weight.Format(gear.Item.Weight), $"wartość {PolishNumber.Format(gear.Item.Value)}");

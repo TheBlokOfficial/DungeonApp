@@ -44,14 +44,16 @@ public sealed partial class ContentRowViewModel : ObservableObject
 
     /// <summary>
     /// Whether the row keeps a place for a small picture before the name - in a tab whose content
-    /// types show their entries' pictures in rows (<see cref="IContentTypeProfile.ShowsPictureInRow"/>),
-    /// every row keeps it, with a picture or without, so the names stand in one column.
+    /// types show their entries' pictures in rows (<see cref="IContentTypeProfile.ShowsPictureInRow"/>)
+    /// or an icon of their kind (<see cref="IContentPresentation.RowIcon"/>), every row keeps it, with
+    /// a picture or without, so the names stand in one column.
     /// </summary>
     public bool HasPictureSlot { get; }
 
     /// <summary>
-    /// The entry's one-colour (vector) picture for that place; null - the place stays empty, also for
-    /// an entry whose picture is a raster image: a row has room for a shape, not for a photograph.
+    /// The entry's one-colour (vector) picture or the icon of its kind for that place; null - the
+    /// place stays empty, also for an entry whose picture is a raster image: a row has room for a
+    /// shape, not for a photograph.
     /// </summary>
     public DrawingImage? Picture { get; }
 

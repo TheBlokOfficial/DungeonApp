@@ -39,4 +39,12 @@ public interface IContentPresentation
     /// key at all - an unrecognised key never throws.
     /// </summary>
     IBrush? ResolveBadgeBrush(string colorKey);
+
+    /// <summary>
+    /// The small icon a content tab's row of <paramref name="type"/> shows before the name when the
+    /// type does not show the entry's own picture there (<see cref="IContentTypeProfile.ShowsPictureInRow"/>):
+    /// what kind of thing the entry is, chosen by the system from the entry's values. Null - the type's
+    /// rows have no icon. Asked once per type when a tab is built; the function once per entry.
+    /// </summary>
+    System.Func<Entry, DrawingImage>? RowIcon(ContentTypeReference type) => null;
 }

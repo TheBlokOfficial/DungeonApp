@@ -25,6 +25,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
     private readonly int _totalCount;
     private readonly bool _rowsShowPictures;
     private readonly Dictionary<EntryAddress, Avalonia.Media.DrawingImage?> _rowPictures = [];
+    private readonly Dictionary<ContentTypeReference, Func<Entry, Avalonia.Media.DrawingImage>> _rowIcons = [];
 
     private ContentListState _state = new();
     private bool _anyFilterNarrows;
@@ -44,7 +45,15 @@ public sealed partial class ContentTabViewModel : ObservableObject
         _registry = registry;
         _presentation = presentation;
         _profilesByType = tab.ContentTypes.ToDictionary(profile => profile.Type);
-        _rowsShowPictures = tab.ContentTypes.Any(profile => profile.ShowsPictureInRow);
+        foreach (var profile in tab.ContentTypes.Where(profile => !profile.ShowsPictureInRow))
+        {
+            if (presentation.RowIcon(profile.Type) is { } rowIcon)
+            {
+                _rowIcons[profile.Type] = rowIcon;
+            }
+        }
+
+        _rowsShowPictures = _rowIcons.Count > 0 || tab.ContentTypes.Any(profile => profile.ShowsPictureInRow);
         _packNames = registry.Packs.ToDictionary(pack => pack.Id, pack => pack.Name);
         _model = new ContentListModel(registry, tab, allKnownTypes);
         EmptyText = tab.EmptyText ?? "Żadna paczka nie ma jeszcze wpisów tego rodzaju.";
@@ -269,18 +278,28 @@ public sealed partial class ContentTabViewModel : ObservableObject
         var badge = profile.Badge(entry.Entry);
         var badgeText = badge.Text is { Length: > 0 } text ? text : null;
         var badgeBrush = badge.ColorKey is { } colorKey ? _presentation.ResolveBadgeBrush(colorKey) : null;
-        var picture = profile.ShowsPictureInRow ? RowPicture(entry) : null;
+        var picture = profile.ShowsPictureInRow || _rowIcons.ContainsKey(profile.Type) ? RowPicture(entry, profile) : null;
 
         return BuildRow(entry.Entry.Name, badgeText, badgeBrush, isBroken: false, new EntrySelectionKey(entry.Address), picture);
     }
 
     /// <summary>
-    /// An entry's picture for its row, read from its file once per tab: the rows are built anew on
+    /// An entry's picture for its row - its own picture, or the icon the system gives its kind
+    /// (<see cref="IContentPresentation.RowIcon"/>) - found once per tab: the rows are built anew on
     /// every search and filter, and the file is not read again each time.
     /// </summary>
-    private Avalonia.Media.DrawingImage? RowPicture(RegisteredEntry entry)
+    private Avalonia.Media.DrawingImage? RowPicture(RegisteredEntry entry, IContentTypeProfile profile)
     {
-        if (!_rowPictures.TryGetValue(entry.Address, out var picture))
+        if (_rowPictures.TryGetValue(entry.Address, out var picture))
+        {
+            return picture;
+        }
+
+        if (_rowIcons.TryGetValue(profile.Type, out var rowIcon))
+        {
+            picture = rowIcon(entry.Entry);
+        }
+        else
         {
             // A row shows only a one-colour shape; a raster picture is too small to read in a row
             // and is not drawn there (the card shows it), so it is released at once.
@@ -291,10 +310,9 @@ public sealed partial class ContentTabViewModel : ObservableObject
             {
                 (source as IDisposable)?.Dispose();
             }
-
-            _rowPictures[entry.Address] = picture;
         }
 
+        _rowPictures[entry.Address] = picture;
         return picture;
     }
 

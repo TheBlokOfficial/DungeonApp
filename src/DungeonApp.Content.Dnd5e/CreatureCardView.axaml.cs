@@ -47,7 +47,7 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
             VerticalAlignment = VerticalAlignment.Top,
             // Sharp, like the ability tables under it: one kind of corner on the card.
             CornerRadius = default,
-            Icon = ThemeResource.Get<DrawingImage>("DungeonIconSkull"),
+            Icon = KindIcons.ForCreature(null),
         };
 
         // The pairs' values start on the title column's line: the label column and the pair's own
@@ -67,6 +67,8 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
 
     public void SetCreature(Creature creature, EntryPicture picture)
     {
+        // With no portrait, the frame shows what kind of creature this is.
+        _portrait.Icon = KindIcons.ForCreature(creature.Type);
         picture.ShowIn(_portrait);
 
         var combat = creature.Combat;

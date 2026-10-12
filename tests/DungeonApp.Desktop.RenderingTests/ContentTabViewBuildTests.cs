@@ -24,12 +24,15 @@ public sealed class ContentTabViewBuildTests
 
     private sealed record Sample(string Tier);
 
-    private sealed class FakePresentation(bool blockFollowsTitle = false) : IContentPresentation
+    private sealed class FakePresentation(bool blockFollowsTitle = false, DrawingImage? rowIcon = null) : IContentPresentation
     {
         public Control CreateCard(Entry entry, EntryPicture picture) =>
             new HeaderLendingCard { Text = entry.Name, HeaderBlockFollowsTitle = blockFollowsTitle };
 
         public IBrush? ResolveBadgeBrush(string colorKey) => Brushes.Gray;
+
+        public System.Func<Entry, DrawingImage>? RowIcon(ContentTypeReference type) =>
+            rowIcon is null || type != SampleType ? null : _ => rowIcon;
     }
 
     /// <summary>A card that lends the detail header every piece, so the header's full layout builds.</summary>
@@ -300,6 +303,28 @@ public sealed class ContentTabViewBuildTests
         {
             System.IO.Directory.Delete(packs, recursive: true);
         }
+    }
+
+    /// <summary>
+    /// A type whose system gives its rows an icon of their kind: every resolved row shows it before
+    /// the name, and a broken row keeps the same place empty, so the names stand in one column.
+    /// </summary>
+    [AvaloniaFact]
+    public void A_tab_whose_system_gives_row_icons_puts_them_before_the_names()
+    {
+        var icon = SvgIcon.Parse("""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 0h512v512H0z"/></svg>""");
+        var profile = new ContentTypeProfile<Sample>(SampleType);
+        var viewModel = new ContentTabViewModel(
+            FullRegistry(), new ContentTabDefinition("Próbki", [profile]), [SampleType], new FakePresentation(rowIcon: icon));
+        var window = Show(viewModel);
+
+        var rows = viewModel.Sections.Where(section => !section.IsRejectedPack).SelectMany(section => section.Rows).ToList();
+        Assert.All(rows, row => Assert.True(row.HasPictureSlot));
+        Assert.Same(icon, rows.Single(row => row.Name == "Alfa").Picture);
+        Assert.Null(rows.Single(row => row.Name == "Duch").Picture);
+        Assert.Single(RowIcons(window).Select(shown => shown.Bounds.X).Distinct());
+
+        window.Close();
     }
 
     // A row name shows its tooltip only when it is drawn trimmed, at every display scale; nothing

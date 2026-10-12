@@ -4,6 +4,8 @@
 #   gear_<name>.png     - every gear card: the bundled SRD pack and the test fixture packs
 #   condition_<name>.png - every condition card: the bundled SRD pack
 #   tab_<type>.png      - each content tab whole, list included, its first row selected
+#   icons_sheet.png     - the system's icons side by side (conditions, creature types, item
+#                         categories) at row and card sizes, beside the shell's Lucide skull
 #   gallery_<section>.png - every section of the controls gallery
 #   sidebar_shelf.png, sidebar_campaign.png - the sidebar with no campaign open (the shelf) and with a
 #                         freshly opened one ("Kopalnia Phandelver", made in a throwaway documents
