@@ -149,11 +149,15 @@
         <Style Selector="Border.world-row.source">
             <Setter Property="Opacity" Value="0.4" />
         </Style>
-        <!-- The copy of the dragged row under the pointer. -->
+        <!-- The copy of the dragged row under the pointer: a surface lifted above the desk, so the rows it
+             passes over do not show through its letters, tinted like the selected row it copies. -->
         <Style Selector="Border.world-drag-ghost">
-            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
-            <Setter Property="Opacity" Value="0.85" />
+            <Setter Property="Background" Value="{DynamicResource DungeonSurfaceBrush}" />
+            <Setter Property="Opacity" Value="0.9" />
             <Setter Property="Height" Value="{DynamicResource DungeonWorldRowHeight}" />
+        </Style>
+        <Style Selector="Border.world-drag-ghost > Border">
+            <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
             <Setter Property="Padding" Value="6,0,8,0" />
         </Style>
         <Style Selector="TextBox.world-rename.error /template/ Border#PART_BorderElement">
@@ -222,6 +226,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 MaxWidth="240">
+          <Border>
             <StackPanel Orientation="Horizontal" Spacing="6">
                 <Panel Width="14" Height="14" VerticalAlignment="Center">
                     <dc:ForegroundIcon IsVisible="{Binding IsFolderLike}"
@@ -242,6 +247,7 @@
                            Classes="world-number"
                            VerticalAlignment="Center" />
             </StackPanel>
+          </Border>
         </Border>
     </Grid>
 </UserControl>
