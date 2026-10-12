@@ -28,9 +28,6 @@
     <Style Selector="controls|SectionHeading /template/ controls|ForegroundIcon#PART_Chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
-    <Style Selector="ProgressBar /template/ Border#PART_Indicator">
-        <Setter Property="Transitions" Value="{x:Null}" />
-    </Style>
     <!-- Flyout, dropdown and menu opening without motion (Themes/PopupOpenMotion.cs). -->
     <Style Selector="FlyoutPresenter, MenuFlyoutPresenter, ContextMenu, MenuItem /template/ Border#PART_SubmenuSurface">
         <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />
@@ -48,5 +45,7 @@
          checks SystemMotion.IsReduced and opens immediately. -->
     <!-- Foldable sections (Expander, card sections: Controls/SectionReveal.cs) likewise unroll in code and
          check SystemMotion.IsReduced themselves - content shows and hides at once. -->
+    <!-- A determinate progress bar's fill (Controls/ProgressFill.cs) glides in code and stands on its
+         value at once when SystemMotion.IsReduced. -->
 
 </Styles>

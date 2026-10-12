@@ -159,12 +159,12 @@ public sealed partial class AppShellViewModel : ObservableObject
 
                 CompletedSteps++;
 
-                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+                await ui.WaitForFrameAsync().ConfigureAwait(true);
             }
 
-            // The bar's slide to full plays while the system is chosen behind the curtain, so the
-            // wait costs at most one slide, never a slide on top of that work.
-            await CompleteStartupAsync(null, Task.Delay(ui.ProgressSettleTime));
+            // The bar's glide to full plays while the system is chosen behind the curtain, so the
+            // wait costs at most one glide, never a glide on top of that work.
+            await CompleteStartupAsync(null, Task.WhenAny(ui.WaitForProgressSettledAsync(), Task.Delay(ui.ProgressSettleLimit)));
         }
         catch (Exception ex) when (!IsReady)
         {

@@ -18,6 +18,6 @@ public sealed class ReducedMotionStylesTests
         var styles = (Styles)AvaloniaXamlLoader.Load(
             new Uri("avares://DungeonApp.Desktop/Themes/ReducedMotion.axaml"));
 
-        Assert.Equal(9, styles.Count);
+        Assert.Equal(8, styles.Count);
     }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 
 namespace DungeonApp.Desktop.Startup;
 
@@ -13,9 +15,21 @@ public sealed class StartupUiContext(ContentControl warmupHost)
     public ContentControl WarmupHost { get; } = warmupHost;
 
     /// <summary>
-    /// How long the curtain's progress bar takes to slide to a new value. After the last step the
-    /// curtain stays this long, so the GM sees the bar reach its end; zero when system animations
-    /// are disabled (the bar jumps, nothing to wait for).
+    /// Awaited after every step, before the next one takes the UI thread: the curtain's bar starts
+    /// gliding towards the new value in a drawn frame. Without a window, one pass of the dispatcher.
     /// </summary>
-    public TimeSpan ProgressSettleTime { get; init; } = TimeSpan.Zero;
+    public Func<Task> WaitForFrameAsync { get; init; } =
+        () => Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background).GetTask();
+
+    /// <summary>
+    /// Completes once the curtain's bar shows full, so the GM sees it reach its end before the
+    /// curtain lifts. At once when there is no bar or system animations are disabled.
+    /// </summary>
+    public Func<Task> WaitForProgressSettledAsync { get; init; } = () => Task.CompletedTask;
+
+    /// <summary>
+    /// The longest the curtain waits for <see cref="WaitForProgressSettledAsync"/>: a window that
+    /// draws no frames (minimized) never shows the bar full.
+    /// </summary>
+    public TimeSpan ProgressSettleLimit { get; init; } = TimeSpan.FromSeconds(1);
 }
