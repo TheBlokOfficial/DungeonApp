@@ -63,9 +63,26 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
 
     private readonly PanelHeaderAction _closeAction;
 
-    public WorkspacePanelDescriptor Descriptor { get; }
+    /// <summary>The window's role. It can change in place (see <see cref="ChangeRole"/>); the window itself stays.</summary>
+    public WorkspacePanelDescriptor Descriptor { get; private set; }
 
-    public string InstanceKey { get; }
+    public string InstanceKey { get; private set; }
+
+    /// <summary>
+    /// Gives the same window another role - another descriptor and key (a preview becoming a pinned card
+    /// and back). The body, the geometry, the stacking and the control on the surface stay, so nothing is
+    /// closed or opened; the descriptors involved must share the constraints, which the window is not
+    /// re-fitted for. The body turns itself to the new role, the saved layout takes the new role at once.
+    /// </summary>
+    public void ChangeRole(WorkspacePanelDescriptor descriptor, string instanceKey)
+    {
+        Descriptor = descriptor;
+        InstanceKey = instanceKey;
+        OnPropertyChanged(nameof(Descriptor));
+        OnPropertyChanged(nameof(InstanceKey));
+        OnPropertyChanged(nameof(Title));
+        OnPropertyChanged(nameof(HeaderActions));
+    }
 
     /// <summary>The placement the user last chose. Only a completed gesture writes this.</summary>
     public PanelPlacement Desired { get; private set; }

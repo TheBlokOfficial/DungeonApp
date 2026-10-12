@@ -108,11 +108,18 @@ public sealed class EntityPreviewBuildTests
         fixture.Settle();
 
         var placement = preview.Desired;
+        var body = preview.Body;
+        var container = Container(fixture, preview);
         preview.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPin").Command.Execute(null);
         fixture.Settle();
 
-        // The same window turns into the pinned card: same place, no second window, the unpin button.
+        // The same window turns into the pinned card: the same object and control (no ghost, no
+        // appearing), same place and body, no second window, the unpin button.
         var pinned = Assert.Single(fixture.Desk.Panels);
+        Assert.Same(preview, pinned);
+        Assert.Same(body, pinned.Body);
+        Assert.Same(container, Container(fixture, pinned));
+        Assert.Empty(Ghosts(fixture).Children);
         Assert.Equal(CampaignWorkspaceViewModel.PinnedDescriptorId, pinned.Descriptor.Id);
         Assert.Equal(placement, pinned.Desired);
         Assert.Equal("Szef · № 1", pinned.Title);
@@ -134,7 +141,11 @@ public sealed class EntityPreviewBuildTests
         unpin.Command.Execute(null);
         fixture.Settle();
         var back = Assert.Single(fixture.Desk.Panels);
+        Assert.Same(pinned, back);
+        Assert.Same(container, Container(fixture, back));
         Assert.Equal(CampaignWorkspaceViewModel.PreviewDescriptorId, back.Descriptor.Id);
+        Assert.Equal("Podgląd", back.Title);
+        Assert.Equal(CampaignWorkspaceViewModel.PreviewDescriptorId, back.InstanceKey);
         Assert.Equal(placement, back.Desired);
         Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)back.Body).Detail).Name);
         Assert.Empty(fixture.Desk.MinimizedPanels);
@@ -231,6 +242,12 @@ public sealed class EntityPreviewBuildTests
 
     private static WorldRowViewModel Row(WorldCatalogViewModel catalog, string name) =>
         catalog.Rows.Single(row => row.Name == name);
+
+    private static PanelWindow Container(Fixture fixture, WorkspacePanelViewModel panel) =>
+        fixture.View.GetVisualDescendants().OfType<PanelWindow>().Single(window => ReferenceEquals(window.DataContext, panel));
+
+    private static Canvas Ghosts(Fixture fixture) =>
+        fixture.View.GetVisualDescendants().OfType<Canvas>().Single(canvas => canvas.Name == "PART_Ghosts");
 
     private static EntityCardView? FindView(Fixture fixture, WorkspacePanelViewModel panel) =>
         fixture.View.GetVisualDescendants().OfType<EntityCardView>().SingleOrDefault(view => view.DataContext == panel.Body);
