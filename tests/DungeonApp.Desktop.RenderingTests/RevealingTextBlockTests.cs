@@ -17,8 +17,9 @@ namespace DungeonApp.Desktop.RenderingTests;
 /// <summary>
 /// The trimmed text that shows itself whole in place: built in a window, driven by the pointer. The
 /// full line opens only over trimmed text, exactly where the text stands, stays open while the
-/// pointer moves over the text (the overlay takes no pointer input, so nothing flickers) and closes
-/// when the pointer leaves or presses. It adds only what follows the cut, on the opaque card surface:
+/// pointer moves over the text or the part the line adds, and fades out only once the pointer has
+/// left both. A press and a selecting drag keep it open and select the line itself; the wheel closes
+/// it at once. It adds only what follows the cut, on the opaque card surface:
 /// the letters before the cut stay the trimmed text's own. Its look follows the text's, however the
 /// text got it. A name is cut at any letter, the ellipsis straight against it.
 /// </summary>
@@ -143,8 +144,6 @@ public sealed class RevealingTextBlockTests
         // The cut: after the letters kept, before the ellipsis - inside the text, not at its edges.
         var cut = surface.TranslatePoint(default, window)!.Value.X;
         Assert.InRange(cut, textLeft + 1, textLeft + bounds.Width - 1);
-        var clip = Assert.IsType<RectangleGeometry>(full.Clip).Rect;
-        Assert.Equal(cut, full.TranslatePoint(new Point(clip.X, 0), window)!.Value.X, precision: 6);
         Assert.Equal(bounds, text.Bounds);
 
         window.MouseMove(new Point(790, 290));
@@ -260,21 +259,88 @@ public sealed class RevealingTextBlockTests
         window.Close();
     }
 
+    // A point over what the full line adds: right of the trimmed text's box, on the line.
+    private static Point PastTheText(RevealingTextBlock text, Window window) =>
+        text.TranslatePoint(new Point(text.Bounds.Width + 30, text.Bounds.Height / 2), window)!.Value;
+
     [AvaloniaFact]
-    public void A_press_closes_the_full_line_so_selecting_works_on_the_text()
+    public void The_full_line_stays_open_while_the_pointer_is_over_the_part_it_adds()
+    {
+        var (window, text) = Show(width: 80);
+
+        window.MouseMove(Over(text, window));
+        Dispatcher.UIThread.RunJobs();
+        var full = FullLine(window)!;
+        Assert.True(full.Bounds.Width > text.Bounds.Width + 30);
+
+        // Off the text's box onto the line, and back: it stays, it does not fade.
+        window.MouseMove(PastTheText(text, window));
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(text.IsRevealed);
+        Assert.Same(full, window.InputHitTest(PastTheText(text, window)));
+
+        window.MouseMove(Over(text, window));
+        Dispatcher.UIThread.RunJobs();
+        window.MouseMove(PastTheText(text, window) + new Point(20, 0));
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(text.IsRevealed);
+        Assert.Same(full, FullLine(window));
+
+        // Off both: it fades out.
+        window.MouseMove(new Point(790, 290));
+        Dispatcher.UIThread.RunJobs();
+        Assert.False(text.IsRevealed);
+        Assert.True(WaitUntil(() => FullLine(window) is null));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_press_and_a_drag_select_the_full_line_and_leave_it_open()
     {
         var (window, text) = Show(width: 80);
         var over = Over(text, window);
 
         window.MouseMove(over);
         Dispatcher.UIThread.RunJobs();
-        Assert.True(text.IsRevealed);
+        var full = Assert.IsAssignableFrom<SelectableTextBlock>(FullLine(window));
 
+        // The press over the trimmed text's place lands on the full line.
+        Assert.Same(full, window.InputHitTest(over));
         window.MouseDown(over, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+        Assert.True(text.IsRevealed);
+        Assert.Same(full, FullLine(window));
+
+        window.MouseMove(PastTheText(text, window), RawInputModifiers.LeftMouseButton);
+        Dispatcher.UIThread.RunJobs();
+        window.MouseUp(PastTheText(text, window), MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.True(text.IsRevealed);
+        Assert.Same(full, FullLine(window));
+        // The selection runs from the letters both share into what only the full line has.
+        var start = Math.Min(full.SelectionStart, full.SelectionEnd);
+        var end = Math.Max(full.SelectionStart, full.SelectionEnd);
+        Assert.True(end > Shown(text).Length - 1);
+        Assert.Equal(LongText[start..end], full.SelectedText);
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void The_wheel_closes_the_full_line_at_once()
+    {
+        var (window, text) = Show(width: 80);
+
+        window.MouseMove(Over(text, window));
+        Dispatcher.UIThread.RunJobs();
+        Assert.NotNull(FullLine(window));
+
+        window.MouseWheel(PastTheText(text, window), new Vector(0, -1));
         Dispatcher.UIThread.RunJobs();
         Assert.False(text.IsRevealed);
         Assert.Null(FullLine(window));
-        window.MouseUp(over, MouseButton.Left);
 
         window.Close();
     }

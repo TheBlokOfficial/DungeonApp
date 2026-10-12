@@ -213,7 +213,9 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   Obrażenia i Ładunki — ta sama kontrolka co u stworzenia.
 - **Nazwa przedmiotu** stoi w jednej linii, ucięta wielokropkiem na dowolnej literze
   (`RevealingTextBlock`). Pod wskaźnikiem pełna nazwa pojawia się w tym samym miejscu na kryjącym tle
-  i zakrywa wagę i wartość; przenika tylko dopisana końcówka, początek nazwy się nie zmienia.
+  i zakrywa wagę i wartość; przenika tylko dopisana końcówka, początek nazwy się nie zmienia. Pełna
+  nazwa zostaje, dopóki wskaźnik jest nad nią albo nad uciętą; da się ją zaznaczyć w całości
+  i skopiować, a kliknięcie jej nie zamyka. Kółko myszy zamyka ją od razu.
 - **Karta przedmiotu — treść:** za separatorami (pierwszy w odstępie nagłówka od karty, jak u tabel
   cech stworzenia) pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
   „Opis” jak sekcje prozy stworzenia. Skala rzadkości i jej kolory: `docs/decisions.md`.
