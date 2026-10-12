@@ -25,6 +25,18 @@ public partial class WorldCatalogView : UserControl
     /// <summary>Distance the pointer must travel before a press on a row becomes a drag, not a click.</summary>
     private const double DragThreshold = 8;
 
+    /// <summary>How long a dragged selection rests on a collapsed folder before the folder opens.</summary>
+    private static readonly TimeSpan HoverExpandDelay = TimeSpan.FromMilliseconds(600);
+
+    /// <summary>Height of the band at the tree's top and bottom edge where a drag scrolls the tree.</summary>
+    private const double AutoScrollBand = 32;
+
+    /// <summary>Scroll per tick at the very edge; it falls off towards the inner side of the band.</summary>
+    private const double AutoScrollMaxStep = 14;
+
+    /// <summary>Where the copy of the dragged row sits relative to the pointer: below and to the right, off the target.</summary>
+    private static readonly Point GhostOffset = new(14, 10);
+
     private enum Gesture
     {
         None,
@@ -44,6 +56,11 @@ public partial class WorldCatalogView : UserControl
     private WorldRowViewModel? _dragRow;
     private WorldRowViewModel? _deferredClick;
     private WorldRowViewModel? _dropTarget;
+    private WorldRowViewModel? _hoverRow;
+    private IPointer? _dragPointer;
+    private Point _dragPoint;
+    private DispatcherTimer? _expandTimer;
+    private DispatcherTimer? _scrollTimer;
     private TopLevel? _topLevel;
     private WorldRowViewModel? _renameRow;
 
@@ -104,6 +121,7 @@ public partial class WorldCatalogView : UserControl
         base.OnDetachedFromVisualTree(e);
 
         CompleteSnap();
+        CancelRowDrag();
         StopWaitingForRenameField();
         _topLevel?.RemoveHandler(PointerPressedEvent, OnWindowPointerPressed);
         _topLevel = null;
@@ -202,6 +220,7 @@ public partial class WorldCatalogView : UserControl
             _gesture = Gesture.DragRows;
             _gestureStarted = false;
             _dragRow = row;
+            _dragPointer = e.Pointer;
             _pressPoint = e.GetPosition(this);
             e.Pointer.Capture(this);
         }
@@ -236,16 +255,18 @@ public partial class WorldCatalogView : UserControl
 
         if (_gesture == Gesture.DragRows)
         {
-            var travelled = e.GetPosition(this) - _pressPoint;
+            var point = e.GetPosition(this);
+            var travelled = point - _pressPoint;
 
             if (!_gestureStarted && travelled.X * travelled.X + travelled.Y * travelled.Y >= DragThreshold * DragThreshold)
             {
                 _gestureStarted = true;
+                BeginRowDrag(viewModel);
             }
 
             if (_gestureStarted)
             {
-                HoverDropTarget(viewModel, e.GetPosition(this));
+                UpdateRowDrag(viewModel, point);
             }
 
             return;
@@ -281,10 +302,16 @@ public partial class WorldCatalogView : UserControl
             return;
         }
 
+        // Everything the gesture knows is read before the capture is released: releasing it raises
+        // PointerCaptureLost at once, and that ends (cancels) a gesture still in progress.
         var delta = e.GetPosition(surface) - _pressPoint;
         var gesture = _gesture;
         var started = _gestureStarted;
+        var dragged = _dragRow;
+        var deferred = _deferredClick;
+        var target = gesture == Gesture.DragRows && started ? DropRowAt(viewModel, e.GetPosition(this)) : null;
         _gesture = Gesture.None;
+        EndRowDrag();
         e.Pointer.Capture(null);
 
         if (gesture == Gesture.Resize)
@@ -293,14 +320,10 @@ public partial class WorldCatalogView : UserControl
         }
         else if (gesture == Gesture.DragRows)
         {
-            var dragged = _dragRow;
-            var target = _dropTarget;
-            var deferred = _deferredClick;
-            ClearDrag();
-
             if (started && dragged is not null && target is not null)
             {
                 await viewModel.DropAsync(dragged, target);
+                ScrollToSelection();
             }
             else if (!started && deferred is not null)
             {
@@ -309,8 +332,8 @@ public partial class WorldCatalogView : UserControl
         }
         else if (started)
         {
-            var target = viewModel.SnapTargetOfMove(_startX + delta.X, _startY + delta.Y);
-            StartSnap(viewModel, viewModel.X, viewModel.Y, viewModel.Width, target.X, target.Y, viewModel.Width, isResize: false);
+            var place = viewModel.SnapTargetOfMove(_startX + delta.X, _startY + delta.Y);
+            StartSnap(viewModel, viewModel.X, viewModel.Y, viewModel.Width, place.X, place.Y, viewModel.Width, isResize: false);
         }
     }
 
@@ -408,45 +431,222 @@ public partial class WorldCatalogView : UserControl
         _snapClock.Reset();
     }
 
+    // A capture taken away mid-gesture (another window, the system) cancels it; nothing moves.
     private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
     {
         _gesture = Gesture.None;
-        ClearDrag();
+        EndRowDrag();
     }
 
-    private void HoverDropTarget(WorldCatalogViewModel viewModel, Point point)
-    {
-        var over = this.InputHitTest(point) is Visual hit ? RowOf(hit) : null;
-        var target = over is not null && _dragRow is not null && viewModel.CanDrop(_dragRow, over) ? over : null;
+    // ---- Dragging rows ----
 
-        if (ReferenceEquals(target, _dropTarget))
+    private void BeginRowDrag(WorldCatalogViewModel viewModel)
+    {
+        if (_dragRow is not { } dragged)
         {
             return;
         }
 
-        if (_dropTarget is not null)
+        viewModel.MarkDragSources(dragged);
+
+        var count = viewModel.DragCount(dragged);
+        DragGhost.DataContext = dragged;
+        DragGhostCount.Text = count > 1 ? $"+{count - 1}" : string.Empty;
+        DragGhostCount.IsVisible = count > 1;
+        DragGhost.IsVisible = true;
+
+        _scrollTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000d / 60d) };
+        _scrollTimer.Tick += OnAutoScrollTick;
+        _scrollTimer.Start();
+    }
+
+    private void UpdateRowDrag(WorldCatalogViewModel viewModel, Point point)
+    {
+        _dragPoint = point;
+        DragGhost.Margin = new Thickness(point.X + GhostOffset.X, point.Y + GhostOffset.Y, 0, 0);
+
+        var over = RowAt(point);
+        var target = DropRowAt(viewModel, point);
+
+        if (!ReferenceEquals(target, _dropTarget))
         {
-            _dropTarget.IsDropTarget = false;
+            if (_dropTarget is not null)
+            {
+                _dropTarget.IsDropTarget = false;
+            }
+
+            _dropTarget = target;
+
+            if (target is not null)
+            {
+                target.IsDropTarget = true;
+            }
         }
 
-        _dropTarget = target;
+        // No cursor of its own over a place that takes the drop; "not here" everywhere else.
+        Cursor = target is null ? new Cursor(StandardCursorType.No) : null;
 
-        if (target is not null)
+        if (!ReferenceEquals(over, _hoverRow))
         {
-            target.IsDropTarget = true;
+            _hoverRow = over;
+            StopExpandTimer();
+
+            if (over is { IsFolderLike: true, IsExpanded: false } && _dragRow is { } dragged && viewModel.CanDrop(dragged, over))
+            {
+                _expandTimer = new DispatcherTimer { Interval = HoverExpandDelay };
+                _expandTimer.Tick += OnExpandTick;
+                _expandTimer.Start();
+            }
         }
     }
 
-    private void ClearDrag()
+    /// <summary>The row under <paramref name="point"/> (this view's coordinates) inside the tree's viewport, or null.</summary>
+    private WorldRowViewModel? RowAt(Point point)
+    {
+        if (this.TranslatePoint(point, Tree) is not { } inTree || !new Rect(Tree.Bounds.Size).Contains(inTree))
+        {
+            return null;
+        }
+
+        return this.InputHitTest(point) is Visual hit ? RowOf(hit) : null;
+    }
+
+    /// <summary>The folder row a drop at <paramref name="point"/> would land in, or null when the place refuses it.</summary>
+    private WorldRowViewModel? DropRowAt(WorldCatalogViewModel viewModel, Point point) =>
+        RowAt(point) is { } over && _dragRow is { } dragged && viewModel.CanDrop(dragged, over) ? viewModel.DropRowOf(over) : null;
+
+    // Resting on a collapsed folder opens it, so a drag can go deeper without letting go.
+    private void OnExpandTick(object? sender, EventArgs e)
+    {
+        StopExpandTimer();
+
+        if (_gesture == Gesture.DragRows && ViewModel is { } viewModel && _dragRow is { } dragged
+            && _hoverRow is { IsFolderLike: true, IsExpanded: false } folder)
+        {
+            viewModel.SetExpanded(folder, true);
+            viewModel.MarkDragSources(dragged);
+            UpdateRowDrag(viewModel, _dragPoint);
+        }
+    }
+
+    // Near the tree's top or bottom edge the tree scrolls, faster the closer the pointer is to the edge.
+    private void OnAutoScrollTick(object? sender, EventArgs e)
+    {
+        if (_gesture != Gesture.DragRows || ViewModel is not { } viewModel || this.TranslatePoint(_dragPoint, Tree) is not { } inTree)
+        {
+            return;
+        }
+
+        var height = Tree.Bounds.Height;
+
+        if (inTree.X < 0 || inTree.X > Tree.Bounds.Width || height <= 2 * AutoScrollBand)
+        {
+            return;
+        }
+
+        var step = 0.0;
+
+        if (inTree.Y < AutoScrollBand)
+        {
+            step = -AutoScrollMaxStep * Math.Min(1, (AutoScrollBand - inTree.Y) / AutoScrollBand);
+        }
+        else if (inTree.Y > height - AutoScrollBand)
+        {
+            step = AutoScrollMaxStep * Math.Min(1, (inTree.Y - (height - AutoScrollBand)) / AutoScrollBand);
+        }
+
+        var maxOffset = Math.Max(0, Tree.Extent.Height - Tree.Viewport.Height);
+        var offset = Math.Clamp(Tree.Offset.Y + step, 0, maxOffset);
+
+        if (offset == Tree.Offset.Y)
+        {
+            return;
+        }
+
+        Tree.Offset = new Vector(Tree.Offset.X, offset);
+        Tree.UpdateLayout();
+        UpdateRowDrag(viewModel, _dragPoint);
+    }
+
+    /// <summary>Esc during a drag: nothing moves, the faded rows come back.</summary>
+    private void CancelRowDrag()
+    {
+        if (_gesture != Gesture.DragRows)
+        {
+            return;
+        }
+
+        _gesture = Gesture.None;
+        var pointer = _dragPointer;
+        EndRowDrag();
+        pointer?.Capture(null);
+    }
+
+    /// <summary>Clears every trace of a row drag: the target frame, the faded rows, the copy, the timers and the cursor.</summary>
+    private void EndRowDrag()
     {
         if (_dropTarget is not null)
         {
             _dropTarget.IsDropTarget = false;
         }
 
+        if (_dragRow is not null)
+        {
+            ViewModel?.ClearDragSources();
+        }
+
+        StopExpandTimer();
+
+        if (_scrollTimer is not null)
+        {
+            _scrollTimer.Stop();
+            _scrollTimer.Tick -= OnAutoScrollTick;
+            _scrollTimer = null;
+        }
+
+        DragGhost.IsVisible = false;
+        DragGhost.DataContext = null;
+        Cursor = null;
         _dropTarget = null;
+        _hoverRow = null;
         _dragRow = null;
+        _dragPointer = null;
         _deferredClick = null;
+    }
+
+    private void StopExpandTimer()
+    {
+        if (_expandTimer is null)
+        {
+            return;
+        }
+
+        _expandTimer.Stop();
+        _expandTimer.Tick -= OnExpandTick;
+        _expandTimer = null;
+    }
+
+    /// <summary>Scrolls the tree so the selected rows (the ones just moved) are in sight, the first of them at least.</summary>
+    private void ScrollToSelection()
+    {
+        UpdateLayout();
+
+        var selected = this.GetVisualDescendants().OfType<Border>()
+            .Where(border => border.Classes.Contains("world-row") && border.DataContext is WorldRowViewModel { IsSelected: true })
+            .ToList();
+
+        if (selected.Count == 0)
+        {
+            return;
+        }
+
+        var first = selected.MinBy(border => border.TranslatePoint(default, Tree)?.Y ?? 0)!;
+        var last = selected.MaxBy(border => border.TranslatePoint(default, Tree)?.Y ?? 0)!;
+        var lastBottom = last.TranslatePoint(new Point(0, last.Bounds.Height), first)?.Y ?? first.Bounds.Height;
+
+        // Never taller than the viewport, so the first moved row is the one that surely shows.
+        var height = Math.Min(Math.Max(lastBottom, first.Bounds.Height), Tree.Viewport.Height);
+        first.BringIntoView(new Rect(0, 0, first.Bounds.Width, height));
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
@@ -688,6 +888,19 @@ public partial class WorldCatalogView : UserControl
     {
         if (ViewModel is not { } viewModel || e.Source is TextBox)
         {
+            return;
+        }
+
+        if (_gesture == Gesture.DragRows)
+        {
+            // During a row drag the keys wait; Esc cancels it.
+            e.Handled = true;
+
+            if (e.Key == Key.Escape)
+            {
+                CancelRowDrag();
+            }
+
             return;
         }
 

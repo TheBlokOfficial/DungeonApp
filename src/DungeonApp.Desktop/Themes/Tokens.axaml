@@ -70,6 +70,10 @@
              quiet: full Accent beside dim fill would look like translucent gold
              on grey. Border only - not text or glyphs. -->
         <Color x:Key="DungeonAccentEdgeColor">#66B8843B</Color>
+        <!-- DropTarget: frame of the place a dragged item would land in if released now (the folder row
+             in the world catalog). Full Accent: a 1 px line has to read over the selected-row fill
+             (AccentDim) and the hover fill, which it never replaces. Line only - not a fill or text. -->
+        <Color x:Key="DungeonDropTargetColor">#B8843B</Color>
         <Color x:Key="DungeonOnAccentColor">#241A0C</Color>
         <!-- AccentTextHover: hovered accent text - inline link under the pointer.
              Same hue as Accent, 10 points lighter (HSL 35°, 51%, 58% versus 48%): colour alone
@@ -180,6 +184,7 @@
         <SolidColorBrush x:Key="DungeonAccentBrightBrush" Color="{DynamicResource DungeonAccentBrightColor}" />
         <SolidColorBrush x:Key="DungeonAccentDimBrush" Color="{DynamicResource DungeonAccentDimColor}" />
         <SolidColorBrush x:Key="DungeonAccentEdgeBrush" Color="{DynamicResource DungeonAccentEdgeColor}" />
+        <SolidColorBrush x:Key="DungeonDropTargetBrush" Color="{DynamicResource DungeonDropTargetColor}" />
         <SolidColorBrush x:Key="DungeonOnAccentBrush" Color="{DynamicResource DungeonOnAccentColor}" />
         <SolidColorBrush x:Key="DungeonAccentTextHoverBrush" Color="{DynamicResource DungeonAccentTextHoverColor}" />
         <SolidColorBrush x:Key="DungeonSuccessBrush" Color="{DynamicResource DungeonSuccessColor}" />

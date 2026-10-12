@@ -252,6 +252,14 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   a ikony typów z `IGameSystem.EntityTypes`; wiersz entity pokazuje ikonę, nazwę i №.
   Kliknięcie zaznacza (Ctrl, Shift), dwuklik albo Enter na entity zgłasza zdarzenie
   `OpenEntityRequested`; ostatnio klikniętą entity podaje `LastClickedEntity` (podgląd idzie za nią).
+  **Przeciąganie wierszy** (gest w `WorldCatalogView`, reguły w modelu widoku) rusza po 8 px i niesie
+  zaznaczenie, do którego należy złapany wiersz, inaczej sam ten wiersz. Niesione wiersze zostają
+  przygaszone (`IsDragSource`), pod kursorem jedzie kopia wiersza z licznikiem, a cel — katalog, a nad
+  entity jej katalog — ma ramkę (`IsDropTarget`, token `DungeonDropTargetBrush`); cel zakazany albo bez
+  zmiany miejsca (`CanDrop`) ramki nie ma i ma kursor „zakaz”. Zwinięty katalog pod kursorem rozwija się
+  po 0,6 s, a pas przy górnej i dolnej krawędzi przewija drzewo (timery interfejsu); Esc, utrata
+  przechwycenia albo puszczenie poza celem anulują, upuszczenie przenosi jedną zmianą i przewija drzewo
+  do przeniesionych.
 - **Okna biurka w trakcie działania:** `CampaignWorkspaceViewModel.Open(deskryptor, klucz)` otwiera okno
   albo wyciąga istniejące (singleton ignoruje klucz; okno wielu egzemplarzy odróżnia klucz), `Close`
   usuwa okno na stałe — z biurka i z zapisanego układu, bez talii minimalizacji. Deskryptor z

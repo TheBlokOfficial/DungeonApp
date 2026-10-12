@@ -287,7 +287,8 @@ public sealed partial class WorldCatalogViewModel
 
     /// <summary>
     /// Whether dragging <paramref name="dragged"/> onto <paramref name="over"/> would move something.
-    /// The selection travels when the dragged row is part of it, otherwise the dragged row alone.
+    /// The selection travels when the dragged row is part of it, otherwise the dragged row alone. A drop
+    /// that leaves everything where it is (onto its own folder or a sibling) is refused like a forbidden one.
     /// </summary>
     public bool CanDrop(WorldRowViewModel dragged, WorldRowViewModel over)
     {
@@ -300,8 +301,105 @@ public sealed partial class WorldCatalogViewModel
         }
 
         var (folders, entities) = DragSubjects(dragged);
+        var target = DropFolderOf(over);
 
-        return WorldChanges.MoveProblem(_context.Snapshot, folders, entities, DropFolderOf(over)) is null;
+        return WorldChanges.MoveProblem(_context.Snapshot, folders, entities, target) is null && !StaysInPlace(folders, entities, target);
+    }
+
+    /// <summary>
+    /// The folder row that a drop on <paramref name="over"/> lands in and that shows the target frame: the
+    /// folder (or the root) itself, or for an entity the row of the folder holding it.
+    /// </summary>
+    public WorldRowViewModel? DropRowOf(WorldRowViewModel over)
+    {
+        ArgumentNullException.ThrowIfNull(over);
+
+        if (over.IsFolderLike)
+        {
+            return over;
+        }
+
+        var folder = DropFolderOf(over);
+        return Rows.FirstOrDefault(row => row.IsFolderLike && row.FolderId == folder);
+    }
+
+    /// <summary>How many rows dragging <paramref name="dragged"/> carries: the selection it belongs to, else itself.</summary>
+    public int DragCount(WorldRowViewModel dragged)
+    {
+        ArgumentNullException.ThrowIfNull(dragged);
+
+        var (folders, entities) = DragSubjects(dragged);
+        return folders.Count + entities.Count;
+    }
+
+    /// <summary>Marks the rows that dragging <paramref name="dragged"/> carries, and everything shown inside a carried folder.</summary>
+    public void MarkDragSources(WorldRowViewModel dragged)
+    {
+        ArgumentNullException.ThrowIfNull(dragged);
+
+        var (folders, entities) = DragSubjects(dragged);
+        var carriedDepth = int.MaxValue;
+
+        foreach (var row in Rows)
+        {
+            if (row.Depth <= carriedDepth)
+            {
+                carriedDepth = int.MaxValue;
+            }
+
+            var carried = carriedDepth != int.MaxValue
+                || (row.FolderId is { } folder && folders.Contains(folder))
+                || (row.EntityId is { } entity && entities.Contains(entity));
+
+            if (carried && carriedDepth == int.MaxValue && row.IsFolderLike)
+            {
+                carriedDepth = row.Depth;
+            }
+
+            row.IsDragSource = carried;
+        }
+    }
+
+    /// <summary>Ends a drag's marks: no row is carried any more.</summary>
+    public void ClearDragSources()
+    {
+        foreach (var row in Rows)
+        {
+            row.IsDragSource = false;
+        }
+    }
+
+    // Folders inside another carried folder travel with it, so only the outermost ones are asked where they stand.
+    private bool StaysInPlace(List<FolderId> folders, List<EntityId> entities, FolderId? target)
+    {
+        var carried = folders.ToHashSet();
+
+        foreach (var folder in folders)
+        {
+            var parent = _tree.Folder(folder)?.ParentId;
+
+            if (parent != target && !HasCarriedAncestor(parent, carried))
+            {
+                return false;
+            }
+        }
+
+        return entities.All(entity => _tree.Entity(entity)?.Entity.FolderId is var folder && (folder == target || HasCarriedAncestor(folder, carried)));
+    }
+
+    private bool HasCarriedAncestor(FolderId? folder, HashSet<FolderId> carried)
+    {
+        var visited = new HashSet<FolderId>();
+
+        for (var at = folder; at is { } id && visited.Add(id); at = _tree.Folder(id)?.ParentId)
+        {
+            if (carried.Contains(id))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>Drops <paramref name="dragged"/> (and the selection it belongs to) on <paramref name="over"/>; nothing happens when it is refused.</summary>

@@ -466,10 +466,27 @@ public sealed partial class WorldCatalogViewBuildTests
             Settle();
         }
 
-        public void Press(WorldRowViewModel row, RawInputModifiers modifiers)
+        /// <summary>A point on <paramref name="row"/>'s name, in window coordinates.</summary>
+        public Point PointOf(WorldRowViewModel row)
         {
             var border = RowBorders().Single(candidate => candidate.DataContext == row);
-            var point = border.TranslatePoint(new Point(60, border.Bounds.Height / 2), Window)!.Value;
+            return border.TranslatePoint(new Point(60, border.Bounds.Height / 2), Window)!.Value;
+        }
+
+        /// <summary>Presses on <paramref name="row"/> and moves past the drag threshold to <paramref name="to"/>, holding the button.</summary>
+        public void BeginDrag(WorldRowViewModel row, Point to)
+        {
+            var from = PointOf(row);
+            Window.MouseDown(from, MouseButton.Left);
+            Settle();
+            Window.MouseMove(from + new Point(0, 4), RawInputModifiers.LeftMouseButton);
+            Window.MouseMove(to, RawInputModifiers.LeftMouseButton);
+            Settle();
+        }
+
+        public void Press(WorldRowViewModel row, RawInputModifiers modifiers)
+        {
+            var point = PointOf(row);
             Window.MouseDown(point, MouseButton.Left, modifiers);
             Window.MouseUp(point, MouseButton.Left, modifiers);
             Settle();
