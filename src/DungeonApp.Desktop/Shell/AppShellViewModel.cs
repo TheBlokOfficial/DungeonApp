@@ -195,11 +195,37 @@ public sealed partial class AppShellViewModel : ObservableObject
             {
                 await ChooseSystemAsync(_systems[0]);
             }
+
+            await LayOutGalleryAsync();
         }
         finally
         {
             IsReady = true;
         }
+    }
+
+    /// <summary>
+    /// Shows the gallery layer behind the curtain until one layout pass has run, then hides it again.
+    /// A hidden layer is never measured, and the gallery's first layout in the workspace - its
+    /// thousands of controls measured from scratch after the move from the warmup host - is what
+    /// would otherwise stall its first opening. Hidden afterwards, the layer keeps that layout and
+    /// costs nothing while the window resizes or the sidebar collapses; an opening at another width
+    /// re-lays it out at a fraction of the first cost. Only possible once the workspace itself is
+    /// shown, i.e. when startup chose the one installed system.
+    /// </summary>
+    private async Task LayOutGalleryAsync()
+    {
+        if (!IsSystemChosen || Gallery.View is null)
+        {
+            return;
+        }
+
+        var stopwatch = Stopwatch.StartNew();
+        IsGalleryShown = true;
+        // Layout and the compositor commit run at Render priority, ahead of this Background job.
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+        IsGalleryShown = false;
+        Debug.WriteLine($"[Startup] Układ Galerii: {stopwatch.ElapsedMilliseconds} ms");
     }
 
     /// <summary>
