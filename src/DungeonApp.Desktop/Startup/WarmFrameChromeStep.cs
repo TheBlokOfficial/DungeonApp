@@ -24,15 +24,17 @@ namespace DungeonApp.Desktop.Startup;
 /// own startup steps (entry cards);
 /// this step never builds anything through a temporary campaign session.
 /// <para>
-/// Every warmed control is disposable - bound to a real model where
+/// Every warmed control but the gallery is disposable - bound to a real model where
 /// one exists (shelf), or a temporary model discarded after warmup (selection screen, sidebar)
 /// - never placed in a cache later read by
-/// <c>AppShellViewModel</c>.
+/// <c>AppShellViewModel</c>. The gallery's warmed instance is the one the shell shows
+/// (<see cref="GalleryContent"/>).
 /// </para>
 /// </summary>
 public sealed class WarmFrameChromeStep(
     IReadOnlyList<IGameSystem> systems,
-    CampaignLibraryViewModel campaignLibrary) : IStartupStep
+    CampaignLibraryViewModel campaignLibrary,
+    GalleryContent gallery) : IStartupStep
 {
     public string Describe() => "Rozgrzewanie interfejsu…";
 
@@ -62,9 +64,12 @@ public sealed class WarmFrameChromeStep(
 
         await WarmAsync(ui, new SettingsView { DataContext = new SettingsViewModel() }, cancellationToken);
 
-        // Heavy to build (every control in every state) and independent of the chosen system, so the
-        // first opening of the "Galeria" tab would otherwise stutter.
-        await WarmAsync(ui, new GalleryView { DataContext = new GalleryViewModel() }, cancellationToken);
+        // Unlike everything above, the gallery's warmed instance is kept: its cost is mostly building
+        // its thousands of controls, not the caches a throwaway instance fills (see GalleryContent).
+        // Handed over only after the host let go of it - a control has one parent.
+        var galleryView = GalleryContent.Create();
+        await WarmAsync(ui, galleryView, cancellationToken);
+        gallery.Adopt(galleryView);
     }
 
     private static Task WarmSidebarAsync(

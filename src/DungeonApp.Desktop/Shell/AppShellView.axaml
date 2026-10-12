@@ -5,7 +5,6 @@
              xmlns:statusBar="using:DungeonApp.Desktop.Shell.StatusBar"
              xmlns:topBar="using:DungeonApp.Desktop.Shell.TopBar"
              xmlns:settings="using:DungeonApp.Desktop.Shell.Settings"
-             xmlns:gallery="using:DungeonApp.Desktop.Shell.Gallery"
              xmlns:selection="using:DungeonApp.Desktop.Shell.SystemSelection"
              xmlns:campaignLibrary="using:DungeonApp.Desktop.Features.CampaignLibrary"
              xmlns:animation="clr-namespace:Avalonia.Animation;assembly=Avalonia.Base"
@@ -19,9 +18,6 @@
         </DataTemplate>
         <DataTemplate DataType="campaignLibrary:CampaignLibraryViewModel">
             <campaignLibrary:CampaignLibraryView />
-        </DataTemplate>
-        <DataTemplate DataType="gallery:GalleryViewModel">
-            <gallery:GalleryView />
         </DataTemplate>
         <DataTemplate DataType="settings:SettingsViewModel">
             <settings:SettingsView />
@@ -74,7 +70,14 @@
 
                     <Border Background="{DynamicResource DungeonBackstageBrush}"
                             BoxShadow="inset 0 0 8 0 #24000000">
-                        <ContentControl Content="{Binding CurrentWorkspaceContent}" />
+                        <Panel>
+                            <ContentControl Content="{Binding CurrentWorkspaceContent}"
+                                            IsVisible="{Binding !IsGalleryShown}" />
+                            <!-- The gallery stays in the tree, hidden, from startup on: opening it
+                                 only shows this layer (AppShellViewModel.IsGalleryShown). -->
+                            <ContentControl Content="{Binding Gallery.View}"
+                                            IsVisible="{Binding IsGalleryShown}" />
+                        </Panel>
                     </Border>
                 </DockPanel>
             </DockPanel>
