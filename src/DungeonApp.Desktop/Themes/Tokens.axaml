@@ -610,6 +610,10 @@
              text wraps - tooltip never trims. -->
         <Thickness x:Key="DungeonToolTipPadding">8,4</Thickness>
         <x:Double x:Key="DungeonToolTipMaxWidth">320</x:Double>
+        <!-- Tooltip delay in milliseconds (ToolTip.ShowDelay, an int): how long the pointer rests on a
+             control before its tooltip opens - the same for the first one and every next one, so
+             sweeping the pointer across a list or a toolbar opens nothing. -->
+        <x:Int32 x:Key="DungeonToolTipShowDelay">700</x:Int32>
         <!-- Menu (MenuFlyout, ContextMenu and submenu): minimum width 160, maximum 320;
              width from the longest item, longer labels trim with an ellipsis. -->
         <x:Double x:Key="DungeonMenuMinWidth">160</x:Double>

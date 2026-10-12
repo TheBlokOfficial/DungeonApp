@@ -8,9 +8,13 @@
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
     </Style>
 
-    <!-- Every tooltip waits the full ShowDelay, also right after another one closed: the library's
-         default shows the next one at once. A negative value turns that shortcut off. -->
+    <!-- Every tooltip waits the full delay (DungeonToolTipShowDelay), also right after another one
+         closed: the library's default shows the next one at once (BetweenShowDelay), and a negative
+         value turns that shortcut off. The tooltip service reads both from the control that carries
+         the tip, so they are set on every control. A disabled control never shows its tooltip
+         (ToolTip.ShowOnDisabled stays false): nothing a view sets turns it on. -->
     <Style Selector=":is(Control)">
+        <Setter Property="ToolTip.ShowDelay" Value="{DynamicResource DungeonToolTipShowDelay}" />
         <Setter Property="ToolTip.BetweenShowDelay" Value="-1" />
     </Style>
 

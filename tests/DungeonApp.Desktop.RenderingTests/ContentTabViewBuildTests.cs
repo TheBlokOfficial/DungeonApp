@@ -301,4 +301,38 @@ public sealed class ContentTabViewBuildTests
             System.IO.Directory.Delete(packs, recursive: true);
         }
     }
+
+    // A row name shows its tooltip only when it is drawn trimmed, at every display scale; nothing
+    // above the name (row, list) carries a tip of its own.
+    [AvaloniaFact]
+    public void A_row_name_has_a_tooltip_only_when_trimmed()
+    {
+        var longName = string.Concat(Enumerable.Repeat("Bardzo długa nazwa ", 30)).Trim();
+        var pack = ContentId.Create("p");
+        var entries = new[] { MakeEntry("a", "Alfa"), MakeEntry("b", longName) };
+        var registry = new ContentRegistry(
+            [new Pack(pack, "Paczka", new PackVersion(1, 0), entries)],
+            entries.Select(entry => RegisteredEntry.CreateResolved(
+                new EntryAddress(pack, entry.Id), entry, new ContentTypeDescriptor(SampleType, "Sample", 1))).ToList(),
+            [],
+            []);
+        var window = Show(BuildViewModel(registry));
+
+        foreach (var scale in new[] { 1.0, 1.25, 1.5, 1.75, 2.0 })
+        {
+            Avalonia.Headless.HeadlessWindowExtensions.SetRenderScaling(window, scale);
+            Dispatcher.UIThread.RunJobs();
+
+            var names = window.GetVisualDescendants().OfType<TextBlock>()
+                .Where(text => text.IsEffectivelyVisible && text.Classes.Contains("row-name"))
+                .ToDictionary(text => text.Text!);
+            Assert.Null(ToolTip.GetTip(names["Alfa"]));
+            Assert.Equal(longName, ToolTip.GetTip(names[longName]));
+            Assert.All(
+                names["Alfa"].GetVisualAncestors().OfType<Control>(),
+                control => Assert.Null(ToolTip.GetTip(control)));
+        }
+
+        window.Close();
+    }
 }
