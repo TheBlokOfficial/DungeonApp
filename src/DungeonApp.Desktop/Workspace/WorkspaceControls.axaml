@@ -67,20 +67,24 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Image.desk-ghost">
-            <Setter Property="Opacity" Value="1" />
-            <Setter Property="RenderTransformOrigin" Value="50%,100%" />
-            <Setter Property="RenderTransform" Value="scale(1) translate(0px, 0px)" />
-            <Setter Property="Transitions">
-                <Transitions>
-                    <DoubleTransition Property="Opacity" Duration="0:0:0.16" Easing="CubicEaseOut" />
-                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="^ /template/ Image.desk-ghost.leaving">
+    </ControlTheme>
+
+    <!-- A picture of a just-closed window (WorkspaceSurface puts it in PART_Ghosts): fades out and
+         shrinks slightly around its middle, in the time a window takes to open. -->
+    <ControlTheme x:Key="DungeonDeskGhostTheme" TargetType="Image">
+        <Setter Property="Opacity" Value="1" />
+        <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+        <Setter Property="RenderTransform" Value="scale(1)" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
+            </Transitions>
+        </Setter>
+
+        <Style Selector="^.leaving">
             <Setter Property="Opacity" Value="0" />
-            <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
+            <Setter Property="RenderTransform" Value="scale(0.98)" />
         </Style>
     </ControlTheme>
 
