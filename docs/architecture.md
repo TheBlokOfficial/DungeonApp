@@ -266,7 +266,9 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   `ClosesPermanently` nie ma przycisku minimalizacji, tylko krzyżyk; `CreateInstance` buduje treść dla klucza,
   `CanRestore` odrzuca zapisane okno, którego klucz nic już nie znaczy. Treść okna (`IPanelBody`) podaje
   własny tytuł i **przyciski nagłówka** (`PanelHeaderAction`: ikona, podpowiedź, polecenie), które okno
-  rysuje przed swoimi.
+  rysuje przed swoimi. Kliknięcie w tytuł bez przeciągnięcia woła `IPanelTitleTarget`; karta entity
+  pokazuje wtedy entity w drzewie katalogu (`Reveal`: rozwija katalogi, zaznacza, przewija — stan widoku,
+  działa przy niewidocznym katalogu).
 - **Podgląd i przypięte karty** (okna ramy, deskryptory w `CampaignWorkspaceViewModel`, nie w systemie):
   podgląd jest jeden, otwiera go dwuklik albo Enter na entity (`OpenEntityRequested`) i idzie za
   `LastClickedEntity`. Pinezka w jego nagłówku nie tworzy okna: to samo okno staje się przypiętą kartą

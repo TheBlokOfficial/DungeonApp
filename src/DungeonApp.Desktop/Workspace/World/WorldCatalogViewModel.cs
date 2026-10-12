@@ -125,6 +125,9 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
     /// <summary>Raised when the GM opens an entity (double click or Enter on its row).</summary>
     public event Action<EntityId>? OpenEntityRequested;
 
+    /// <summary>Raised after <see cref="Reveal"/> changed the tree's state, so the view can scroll to the selected row.</summary>
+    public event Action? RevealRequested;
+
     /// <summary>The tree as of the last change notification - what a window showing an entity reads its card from.</summary>
     public WorldTree Tree => _tree;
 
@@ -332,6 +335,30 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
         }
 
         ToggleExpanded(row);
+    }
+
+    /// <summary>
+    /// Shows <paramref name="entity"/> in the tree: its folders are expanded, it is the only selected
+    /// row and the view is asked to scroll to it. Only view state changes, so it works with the
+    /// catalog window closed or minimized; an entity that is gone changes nothing.
+    /// </summary>
+    public void Reveal(EntityId entity)
+    {
+        if (_tree.Entity(entity) is not { } node)
+        {
+            return;
+        }
+
+        ExpandPath(node.Entity.FolderId);
+
+        var key = WorldRowKey.ForEntity(entity);
+        _selection.Clear();
+        _selection.Add(key);
+        _anchor = key;
+        LastClickedEntity = entity;
+        Refresh();
+        LayoutChanged?.Invoke();
+        RevealRequested?.Invoke();
     }
 
     public void ToggleExpanded(WorldRowViewModel row) => SetExpanded(row, !row.IsExpanded);

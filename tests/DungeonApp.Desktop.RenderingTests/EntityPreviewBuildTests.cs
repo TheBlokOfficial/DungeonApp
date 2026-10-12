@@ -222,6 +222,42 @@ public sealed class EntityPreviewBuildTests
     }
 
     [AvaloniaFact]
+    public async Task A_click_on_the_title_of_a_pinned_card_expands_its_folders_and_selects_the_entity()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.CreateFolderAsync(null, "Kopalnia");
+        var folder = catalog.SelectedFolders.Single();
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, folder, "Szef");
+        fixture.Settle();
+        var id = Row(catalog, "Szef").EntityId!.Value;
+        var pinned = fixture.Desk.PinEntity(id)!;
+
+        catalog.SetExpanded(Row(catalog, "Kopalnia"), false);
+        catalog.Click(catalog.Rows[0], ctrl: false, shift: false);
+        Assert.DoesNotContain(catalog.Rows, row => row.Name == "Szef");
+
+        pinned.TitleClickCommand.Execute(null);
+        fixture.Settle();
+
+        Assert.True(Row(catalog, "Kopalnia").IsExpanded);
+        Assert.Equal([id], catalog.SelectedEntities);
+        Assert.Equal(id, catalog.LastClickedEntity);
+        Assert.Equal([Row(catalog, "Szef")], catalog.SelectedRows);
+    }
+
+    [AvaloniaFact]
+    public void A_click_on_the_title_of_an_empty_preview_changes_nothing()
+    {
+        using var fixture = new Fixture();
+        var preview = fixture.Desk.OpenPreview();
+
+        preview.TitleClickCommand.Execute(null);
+
+        Assert.Empty(fixture.Desk.Catalog.SelectedEntities);
+    }
+
+    [AvaloniaFact]
     public async Task An_entity_whose_entry_is_gone_shows_the_reason_with_its_number_and_name()
     {
         using var fixture = new Fixture();

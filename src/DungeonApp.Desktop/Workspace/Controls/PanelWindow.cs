@@ -92,6 +92,13 @@ public class PanelWindow : ContentControl
     public static readonly StyledProperty<ICommand?> ToggleMaximizeCommandProperty =
         AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(ToggleMaximizeCommand));
 
+    /// <summary>Run when the title is pressed and released without dragging the window.</summary>
+    public static readonly StyledProperty<ICommand?> TitleClickCommandProperty =
+        AvaloniaProperty.Register<PanelWindow, ICommand?>(nameof(TitleClickCommand));
+
+    /// <summary>Pointer travel (device-independent pixels) up to which a press on the title is still a click.</summary>
+    private const double ClickTolerance = 3;
+
     private static readonly IReadOnlyDictionary<string, PanelEdge> ResizeParts =
         new Dictionary<string, PanelEdge>(StringComparer.Ordinal)
         {
@@ -136,6 +143,12 @@ public class PanelWindow : ContentControl
     {
         add => AddHandler(GestureCompletedEvent, value);
         remove => RemoveHandler(GestureCompletedEvent, value);
+    }
+
+    public ICommand? TitleClickCommand
+    {
+        get => GetValue(TitleClickCommandProperty);
+        set => SetValue(TitleClickCommandProperty, value);
     }
 
     public string? Title
@@ -390,7 +403,22 @@ public class PanelWindow : ContentControl
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
+
+        // A title press that never left the click tolerance is a click, not a drag. The first press of
+        // a double click reaches here too; only the second one maximizes (it does not start a gesture).
+        var isTitleClick = _gestureActive
+            && _edge == PanelEdge.None
+            && _canvas is { } canvas
+            && (e.GetPosition(canvas) - _grabOrigin) is { } travel
+            && Math.Abs(travel.X) <= ClickTolerance
+            && Math.Abs(travel.Y) <= ClickTolerance;
+
         EndGesture(e.Pointer, e.KeyModifiers.HasFlag(KeyModifiers.Control));
+
+        if (isTitleClick && TitleClickCommand?.CanExecute(null) == true)
+        {
+            TitleClickCommand.Execute(null);
+        }
     }
 
     protected override void OnPointerCaptureLost(PointerCaptureLostEventArgs e)
