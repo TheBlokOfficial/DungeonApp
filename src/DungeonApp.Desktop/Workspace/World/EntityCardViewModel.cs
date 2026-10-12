@@ -31,23 +31,20 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
     private bool _isDisposed;
 
     public EntityCardViewModel(
-        WorldCatalogViewModel catalog, EntityCardBuilder builder, EntityId? entity, bool followsSelection, Action<EntityId>? pin)
+        WorldCatalogViewModel catalog, EntityCardBuilder builder, EntityId? entity, bool followsSelection, Action<EntityCardViewModel>? togglePin)
     {
         _catalog = catalog;
         _builder = builder;
         _followsSelection = followsSelection;
         Entity = followsSelection ? catalog.LastClickedEntity : entity;
 
-        if (pin is not null)
+        // The one button flips the window's role: pin on a preview, unpin on a pinned card.
+        if (togglePin is not null)
         {
-            _pin = new RelayCommand(() =>
-            {
-                if (Entity is { } shown)
-                {
-                    pin(shown);
-                }
-            }, () => Entity is not null);
-            HeaderActions = [new PanelHeaderAction("DungeonIconPin", "Przypnij kartę w osobnym oknie", _pin)];
+            _pin = new RelayCommand(() => togglePin(this), () => !followsSelection || Entity is not null);
+            HeaderActions = followsSelection
+                ? [new PanelHeaderAction("DungeonIconPin", "Przypnij kartę", _pin)]
+                : [new PanelHeaderAction("DungeonIconPinned", "Odepnij kartę", _pin)];
         }
 
         Rebuild();

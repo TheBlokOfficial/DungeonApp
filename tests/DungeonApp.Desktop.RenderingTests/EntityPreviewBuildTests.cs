@@ -21,6 +21,7 @@ using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace;
+using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Layout;
 using DungeonApp.Desktop.Workspace.Panels;
 using DungeonApp.Desktop.Workspace.World;
@@ -106,33 +107,67 @@ public sealed class EntityPreviewBuildTests
         var preview = fixture.Desk.OpenPreview();
         fixture.Settle();
 
-        var pin = preview.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPin");
-        pin.Command.Execute(null);
+        var placement = preview.Desired;
+        preview.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPin").Command.Execute(null);
         fixture.Settle();
 
-        Assert.Equal(2, fixture.Desk.Panels.Count);
-        var pinned = fixture.Desk.Panels.Single(panel => panel.Descriptor.Id == CampaignWorkspaceViewModel.PinnedDescriptorId);
+        // The same window turns into the pinned card: same place, no second window, the unpin button.
+        var pinned = Assert.Single(fixture.Desk.Panels);
+        Assert.Equal(CampaignWorkspaceViewModel.PinnedDescriptorId, pinned.Descriptor.Id);
+        Assert.Equal(placement, pinned.Desired);
         Assert.Equal("Szef · № 1", pinned.Title);
         Assert.Equal(Row(catalog, "Szef").EntityId!.Value.Value.ToString(), pinned.InstanceKey);
+        var unpin = pinned.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPinned");
+        Assert.Equal("Odepnij kartę", unpin.ToolTip);
         Assert.NotNull(FindView(fixture, pinned));
 
+        // The pinned card stays on its entity; the next open makes a new preview, a step aside.
         catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
-        Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)preview.Body).Detail).Name);
         Assert.Equal("Szef", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)pinned.Body).Detail).Name);
+        catalog.Activate(Row(catalog, "Lina"));
+        fixture.Settle();
+        var second = fixture.Desk.Panels.Single(panel => panel.Descriptor.Id == CampaignWorkspaceViewModel.PreviewDescriptorId);
+        Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)second.Body).Detail).Name);
+        Assert.Equal(placement.X + WorkspaceGridSettings.DefaultSnapStep, second.Desired.X);
+        Assert.Equal(placement.Y + WorkspaceGridSettings.DefaultSnapStep, second.Desired.Y);
 
-        // Pinning the same entity again brings its window up instead of making another.
-        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
-        pin.Command.Execute(null);
-        Assert.Equal(2, fixture.Desk.Panels.Count);
-        Assert.True(pinned.IsActive);
-
-        // A second entity gets its own window, and the cross removes one for good.
-        catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
-        pin.Command.Execute(null);
-        Assert.Equal(3, fixture.Desk.Panels.Count);
-        pinned.CloseCommand.Execute(null);
-        Assert.Equal(2, fixture.Desk.Panels.Count);
+        // Unpinning turns the card back into the preview and closes the one there was.
+        unpin.Command.Execute(null);
+        fixture.Settle();
+        var back = Assert.Single(fixture.Desk.Panels);
+        Assert.Equal(CampaignWorkspaceViewModel.PreviewDescriptorId, back.Descriptor.Id);
+        Assert.Equal(placement, back.Desired);
+        Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)back.Body).Detail).Name);
         Assert.Empty(fixture.Desk.MinimizedPanels);
+
+        // Pinned and unpinned again, the preview shows the current selection.
+        back.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPin").Command.Execute(null);
+        fixture.Desk.Panels.Single().HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPinned").Command.Execute(null);
+        Assert.Equal("Lina", Assert.IsType<ValidContentDetailViewModel>(((EntityCardViewModel)fixture.Desk.Panels.Single().Body).Detail).Name);
+    }
+
+    [AvaloniaFact]
+    public async Task The_role_of_a_window_survives_a_saved_layout()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        await catalog.AddEntitiesAsync(Address("lina"), 1, null);
+        fixture.Settle();
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        fixture.Desk.OpenPreview().HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPin").Command.Execute(null);
+        catalog.Activate(Row(catalog, "Lina"));
+        fixture.Desk.FlushLayout();
+
+        using var restored = new CampaignWorkspaceViewModel(
+            fixture.Store, fixture.WorkspaceId, await fixture.Store.LoadAsync(fixture.WorkspaceId), [], () => Task.CompletedTask,
+            fixture.Entries, fixture.GameSystem);
+
+        var ids = restored.Panels.Select(panel => panel.Descriptor.Id).Order().ToList();
+        Assert.Equal([CampaignWorkspaceViewModel.PinnedDescriptorId, CampaignWorkspaceViewModel.PreviewDescriptorId], ids);
+        var pinned = restored.Panels.Single(panel => panel.Descriptor.Id == CampaignWorkspaceViewModel.PinnedDescriptorId);
+        Assert.Equal("Szef · № 1", pinned.Title);
+        Assert.Single(pinned.HeaderActions, action => action.IconResourceKey == "DungeonIconPinned");
     }
 
     [AvaloniaFact]
@@ -206,15 +241,17 @@ public sealed class EntityPreviewBuildTests
         public Fixture()
         {
             var system = new PreviewTestSystem();
+            GameSystem = system;
+            WorkspaceId = Guid.NewGuid().ToString();
             var session = new CampaignSession(
                 Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System),
                 new InMemoryCampaignRepository(),
                 WorldModels.Combine([]));
             var source = system.GetWorldCatalogSource();
             Entries = new CampaignEntriesContext(new CampaignTabContext(session), source.Registry, source.Types);
-            var store = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-preview-tests-{Guid.NewGuid():N}"));
+            Store = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-preview-tests-{Guid.NewGuid():N}"));
             Desk = new CampaignWorkspaceViewModel(
-                store, Guid.NewGuid().ToString(), WorkspaceLayout.Empty, [], () => Task.CompletedTask, Entries, system);
+                Store, WorkspaceId, WorkspaceLayout.Empty, [], () => Task.CompletedTask, Entries, system);
 
             View = new CampaignWorkspaceView { DataContext = Desk };
             Window = new Window { Width = 1400, Height = 900, Content = View };
@@ -223,6 +260,12 @@ public sealed class EntityPreviewBuildTests
         }
 
         public CampaignEntriesContext Entries { get; }
+
+        public IGameSystem GameSystem { get; }
+
+        public WorkspaceLayoutStore Store { get; }
+
+        public string WorkspaceId { get; }
 
         public CampaignWorkspaceViewModel Desk { get; }
 

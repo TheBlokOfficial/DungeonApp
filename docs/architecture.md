@@ -252,9 +252,14 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   rysuje przed swoimi.
 - **Podgląd i przypięte karty** (okna ramy, deskryptory w `CampaignWorkspaceViewModel`, nie w systemie):
   podgląd jest jeden, otwiera go dwuklik albo Enter na entity (`OpenEntityRequested`) i idzie za
-  `LastClickedEntity`. Pinezka w jego nagłówku odkłada kartę do okna o kluczu = id entity (jedno okno na
-  entity); usunięcie entity zamyka okno, a podgląd zostaje pusty; zapisany układ nie przywraca okna
-  nieistniejącej entity. Treść (`EntityCardViewModel`) czyta `WorldCatalogViewModel.Tree` i odświeża się
+  `LastClickedEntity`. Pinezka w jego nagłówku nie tworzy okna: to samo okno staje się przypiętą kartą
+  (deskryptor `frame.world-pinned`, klucz = id entity, to samo miejsce i rozmiar), przestaje iść za
+  zaznaczeniem, a ikona zmienia się na przypiętą z podpowiedzią „Odepnij kartę”. Następne otwarcie
+  entity z katalogu otwiera nowy podgląd w jego domyślnym miejscu, a gdy je zajmuje okno — o krok siatki
+  w prawo i w dół (rama przycina do biurka). Pinezka przypiętej karty zamienia ją z powrotem w podgląd
+  (od razu z bieżącym zaznaczeniem) i zamyka dotychczasowy podgląd: podgląd jest najwyżej jeden. Rola
+  okna to deskryptor i klucz, więc zapis układu ją niesie; usunięcie entity zamyka jej przypiętą kartę,
+  a podgląd zostaje pusty; zapisany układ nie przywraca okna nieistniejącej entity. Treść (`EntityCardViewModel`) czyta `WorldCatalogViewModel.Tree` i odświeża się
   po `TreeChanged`, gdy zmieni się entity, jej nazwa albo ścieżka.
 - **Kontrakt nagłówka karty:** ścieżkę, nazwę, tagi i linię pod nazwą podaje rama w
   `ValidContentDetailViewModel` (`Breadcrumbs`, `Name`, `Caption`), system rysuje tylko kartę i
