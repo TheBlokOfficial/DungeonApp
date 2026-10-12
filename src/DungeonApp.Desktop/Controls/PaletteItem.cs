@@ -8,7 +8,8 @@ namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
 /// One palette result. <see cref="Key"/> belongs to the caller (the palette never reads it);
-/// <see cref="IconKey"/> is a geometry-icon resource key; <see cref="BadgeBrush"/> colours the badge when set,
+/// <see cref="IconKey"/> is a geometry-icon resource key, replaced by <see cref="Icon"/> when the caller
+/// has a drawing of its own; <see cref="BadgeBrush"/> colours the badge when set,
 /// otherwise the badge is plain muted text.
 /// </summary>
 public sealed record PaletteItem(
@@ -17,7 +18,8 @@ public sealed record PaletteItem(
     string Name,
     string Tags = "",
     string? Badge = null,
-    IBrush? BadgeBrush = null);
+    IBrush? BadgeBrush = null,
+    DrawingImage? Icon = null);
 
 /// <summary>What a palette shows and does; see <see cref="Palette.ShowAsync"/>.</summary>
 public sealed class PaletteOptions

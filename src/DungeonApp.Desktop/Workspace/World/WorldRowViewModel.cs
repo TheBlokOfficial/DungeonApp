@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DungeonApp.Core.Entries;
 using DungeonApp.Core.World;
@@ -68,6 +69,13 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     /// <summary>Resource key of the entity's type icon; null for a folder or a type the system does not list.</summary>
     [ObservableProperty]
     public partial string? IconKey { get; set; }
+
+    /// <summary>
+    /// What the row draws before the name: the icon of the entry's kind (as in the content tab's row),
+    /// else the drawing behind <see cref="IconKey"/>; null for a folder or an unresolved entity.
+    /// </summary>
+    [ObservableProperty]
+    public partial DrawingImage? Icon { get; set; }
 
     /// <summary>An entity whose entry is gone or does not resolve: the row shows a warning instead of the type icon.</summary>
     [ObservableProperty]

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DungeonApp.Core.Entries;
 using DungeonApp.Core.World;
@@ -49,6 +50,7 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
     private readonly CampaignEntriesContext _context;
     private readonly IGameSystem _system;
     private readonly WorldCatalogSource _source;
+    private readonly Dictionary<ContentTypeReference, Func<Entry, DrawingImage>?> _rowIcons = [];
     private readonly Dictionary<WorldRowKey, WorldRowViewModel> _rows = [];
     private readonly HashSet<WorldRowKey> _selection = [];
     private readonly HashSet<FolderId> _expanded;
@@ -488,7 +490,7 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
 
     private IReadOnlyList<PaletteItem> SearchEntries(string query)
     {
-        var types = _system.EntityTypes.ToDictionary(type => type.Type);
+        var types = _system.EntityTypes.Where(type => type.CanBeAdded).ToDictionary(type => type.Type);
         var profiles = _source.Profiles.GroupBy(profile => profile.Type).ToDictionary(group => group.Key, group => group.First());
         var text = query.Trim();
 
@@ -510,7 +512,7 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
     {
         if (!profiles.TryGetValue(type.Type, out var profile))
         {
-            return new PaletteItem(entry.Address, type.IconResourceKey, entry.Entry.Name);
+            return new PaletteItem(entry.Address, type.IconResourceKey, entry.Entry.Name, Icon: KindIconOf(entry.Entry));
         }
 
         var badge = profile.Badge(entry.Entry);
@@ -522,7 +524,23 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
             entry.Entry.Name,
             string.Join(", ", profile.Tags(entry.Entry)),
             badge.Text is { Length: > 0 } text ? text : null,
-            brush);
+            brush,
+            KindIconOf(entry.Entry));
+    }
+
+    /// <summary>
+    /// The icon of the entry's kind - the one its content-tab row shows - or null when the system gives
+    /// the type none; callers then fall back to the type's own icon key.
+    /// </summary>
+    private DrawingImage? KindIconOf(Entry entry)
+    {
+        if (!_rowIcons.TryGetValue(entry.Type, out var rowIcon))
+        {
+            rowIcon = _source.Presentation.RowIcon(entry.Type);
+            _rowIcons[entry.Type] = rowIcon;
+        }
+
+        return rowIcon?.Invoke(entry);
     }
 
     private void ExpandPath(FolderId? folder)
@@ -614,6 +632,9 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
                     row.IsUnresolved = entityNode.Resolved.Unresolved is not null;
                     row.IconKey = entityNode.Resolved.Source?.Entry.Type is { } type
                         ? _system.EntityTypes.FirstOrDefault(candidate => candidate.Type == type)?.IconResourceKey
+                        : null;
+                    row.Icon = entityNode.Resolved.Source is { } source
+                        ? KindIconOf(source.Entry) ?? (row.IconKey is { } key ? new ResourceKeyToImageConverter().Convert(key, typeof(DrawingImage), null, CultureInfo.InvariantCulture) as DrawingImage : null)
                         : null;
                     into.Add(row);
                     break;

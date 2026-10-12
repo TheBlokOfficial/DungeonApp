@@ -17,7 +17,6 @@
          do not cut through the letters. It reaches from its top edge to the desk's bottom; the
          one scrolling layer is the ScrollViewer. -->
     <UserControl.Resources>
-        <dc:ResourceKeyToImageConverter x:Key="IconByKey" />
 
         <ControlTheme x:Key="WorldRowButtonTheme" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
@@ -76,7 +75,7 @@
                                            Width="14" Height="14"
                                            HorizontalAlignment="Center"
                                            IsVisible="{Binding ShowsTypeIcon}"
-                                           Source="{Binding IconKey, Converter={StaticResource IconByKey}}"
+                                           Source="{Binding Icon}"
                                            Foreground="{DynamicResource DungeonTextMutedBrush}" />
                         <dc:ForegroundIcon Grid.Column="1"
                                            Width="14" Height="14"
@@ -235,7 +234,7 @@
                                        Source="{DynamicResource DungeonIconFolder}"
                                        Foreground="{DynamicResource DungeonTextMutedBrush}" />
                     <dc:ForegroundIcon IsVisible="{Binding ShowsTypeIcon}"
-                                       Source="{Binding IconKey, Converter={StaticResource IconByKey}}"
+                                       Source="{Binding Icon}"
                                        Foreground="{DynamicResource DungeonTextMutedBrush}" />
                     <dc:ForegroundIcon IsVisible="{Binding IsUnresolved}"
                                        Source="{DynamicResource DungeonIconWarningTriangle}"
