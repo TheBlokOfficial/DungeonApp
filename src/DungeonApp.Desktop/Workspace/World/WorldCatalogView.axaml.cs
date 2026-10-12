@@ -538,7 +538,6 @@ public partial class WorldCatalogView : UserControl
         {
             // The reason takes the shortcut's place; an item never shows both.
             MenuItemTrailing.SetText(item, reason);
-            ToolTip.SetTip(item, reason);
         }
 
         // Async void on purpose: a failed save reaches the UI thread's error handler instead of vanishing.
