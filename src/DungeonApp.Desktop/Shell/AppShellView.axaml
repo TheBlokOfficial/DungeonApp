@@ -74,7 +74,8 @@
                             <ContentControl Content="{Binding CurrentWorkspaceContent}"
                                             IsVisible="{Binding !IsGalleryShown}" />
                             <!-- The gallery stays in the tree, hidden, from startup on: opening it
-                                 only shows this layer (AppShellViewModel.IsGalleryShown). -->
+                                 only shows this layer (AppShellViewModel.IsGalleryShown). Startup
+                                 shows it once behind the curtain, so it is already laid out here. -->
                             <ContentControl Content="{Binding Gallery.View}"
                                             IsVisible="{Binding IsGalleryShown}" />
                         </Panel>

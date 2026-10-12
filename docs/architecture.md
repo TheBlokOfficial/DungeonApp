@@ -167,7 +167,12 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   Rozgrzany egzemplarz zwykle idzie do wyrzucenia — zostają rozgrzane pamięci podręczne stylów
   i szablonów. Wyjątkiem jest Galeria kontrolek: tysiące kontrolek kosztują pół sekundy przy każdym
   zbudowaniu, więc rama trzyma rozgrzany egzemplarz przez całe życie aplikacji w ukrytej warstwie
-  obszaru roboczego, a otwarcie Galerii tylko ją odsłania.
+  obszaru roboczego, a otwarcie Galerii tylko ją odsłania. Ukryta warstwa się nie mierzy, a pierwszy
+  układ Galerii w obszarze roboczym kosztuje drugie tyle co rozgrzewka, więc na końcu startu, gdy
+  obszar roboczy jest już widoczny (jedyny system wybrany za kurtyną), rama odsłania Galerię na jeden
+  przebieg układu i rysowania pod kurtyną. Ukryta potem nie liczy się przy zmianie rozmiaru okna;
+  otwarcie w innej szerokości poprawia tylko układ. Z ekranem wyboru systemu na starcie ten krok
+  odpada i pierwsze otwarcie płaci za układ.
   Awaria kroku nigdy nie zatrzymuje startu — kończy się ostrzeżeniem na pasku stanu i wpisem w logu.
 - **Błędy:** wyjątek na wątku interfejsu — z komendy, kliknięcia, timera interfejsu czy układu
   (komenda asynchroniczna oddaje swój błąd na ten wątek) — łapie jeden handler

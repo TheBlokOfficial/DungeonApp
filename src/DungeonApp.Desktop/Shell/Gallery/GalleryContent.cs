@@ -8,7 +8,7 @@ namespace DungeonApp.Desktop.Shell.Gallery;
 /// with every style and template already cached, building and styling them takes a noticeable part
 /// of a second, which a warmed throwaway instance does not save. So startup warms this very instance
 /// and hands it over (<see cref="Adopt"/>), and the shell keeps it in its own hidden workspace layer -
-/// opening the gallery only makes that layer visible.
+/// opening the gallery only makes that layer visible, already laid out at the end of startup.
 /// </summary>
 public sealed partial class GalleryContent : ObservableObject
 {
