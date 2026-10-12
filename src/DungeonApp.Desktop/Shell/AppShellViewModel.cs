@@ -144,13 +144,15 @@ public sealed partial class AppShellViewModel : ObservableObject
                 await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
             }
 
-            await CompleteStartupAsync(null);
+            // The bar's slide to full plays while the system is chosen behind the curtain, so the
+            // wait costs at most one slide, never a slide on top of that work.
+            await CompleteStartupAsync(null, Task.Delay(ui.ProgressSettleTime));
         }
         catch (Exception ex) when (!IsReady)
         {
             AppLog.Error($"Krok startowy {currentStep?.GetType().Name} zawiódł; start dokończony bez reszty kroków.", ex);
             ui.WarmupHost.Content = null;
-            await CompleteStartupAsync(currentStep?.FailureWarning ?? DefaultStartupWarning);
+            await CompleteStartupAsync(currentStep?.FailureWarning ?? DefaultStartupWarning, Task.CompletedTask);
         }
         finally
         {
@@ -164,11 +166,12 @@ public sealed partial class AppShellViewModel : ObservableObject
     /// Lifts the curtain. With exactly one system installed there is nothing to choose, so the
     /// selection screen is never shown: the system is chosen here, behind the curtain, and the GM
     /// lands where a choice would have led. The curtain lifts even if that choice fails (the error
-    /// still reaches the thread's handler), so the selection screen stays as the way in.
+    /// still reaches the thread's handler), so the selection screen stays as the way in. The curtain
+    /// also waits for <paramref name="progressSettled"/>: the GM sees the bar reach its end before
+    /// the screen behind it appears.
     /// </summary>
-    private async Task CompleteStartupAsync(string? warning)
+    private async Task CompleteStartupAsync(string? warning, Task progressSettled)
     {
-        StartupMessage = string.Empty;
         StatusBar.Message = warning ?? "Gotowe";
 
         try
@@ -180,6 +183,8 @@ public sealed partial class AppShellViewModel : ObservableObject
         }
         finally
         {
+            await progressSettled;
+            StartupMessage = string.Empty;
             IsReady = true;
         }
     }
