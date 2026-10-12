@@ -122,7 +122,7 @@ internal static partial class Program
             RenderGallery(window, shell);
         }
 
-        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_"))
+        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_") || MayMatch("szklo"))
         {
             RenderDesk(window, shell);
         }
@@ -709,6 +709,61 @@ internal static partial class Program
             SaveCrop(window, window, UniqueName("desk_palette"));
             PressKey(window, Avalonia.Input.Key.Escape);
             desk.Panels.Remove(panel);
+            Settle();
+        }
+
+        // Full-size window with the palette over a desk that has windows under it, once per glass tint opacity.
+        // The tint is swapped in the window resources only for the length of each render.
+        (string Stem, byte Alpha)[] glassVariants = [("szklo-55", 0x8C), ("szklo-70", 0xB3), ("szklo-80", 0xCC), ("szklo-90", 0xE6)];
+        if (Wants("szklo") || glassVariants.Any(variant => Wants(variant.Stem)))
+        {
+            SetSize(window, 1920, 1080);
+            // A creature preview and a pinned item card together cover the whole palette rectangle
+            // (about 700-1220 x 25-465) and stick out on every side, so the glass is judged over real, dense content.
+            var preview = desk.OpenPreview();
+            catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+            var pinned = desk.PinEntity(Row("Mikstura leczenia").EntityId!.Value)!;
+            catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
+            // Desk coordinates start right of the sidebar (224 px), so these are 560 and 1030 on screen.
+            preview.X = 336;
+            preview.Y = 10;
+            preview.Width = 480;
+            preview.Height = 520;
+            pinned.X = 806;
+            pinned.Y = 10;
+            pinned.Width = 340;
+            pinned.Height = 520;
+            Settle();
+            var catalogView = deskView.GetVisualDescendants().OfType<WorldCatalogView>().First();
+            catalogView.ShowAddPalette(catalog.ResolveAddTarget());
+            Settle();
+            var hadTint = window.Resources.TryGetValue("DungeonPaletteGlassTintBrush", out var originalTint);
+            foreach (var (stem, alpha) in glassVariants)
+            {
+                if (!Wants("szklo") && !Wants(stem))
+                {
+                    continue;
+                }
+
+                window.Resources["DungeonPaletteGlassTintBrush"] = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromArgb(alpha, 0x1F, 0x1D, 0x1A));
+                Settle();
+                SaveCrop(window, window, UniqueName(stem));
+            }
+
+            if (hadTint)
+            {
+                window.Resources["DungeonPaletteGlassTintBrush"] = originalTint;
+            }
+            else
+            {
+                window.Resources.Remove("DungeonPaletteGlassTintBrush");
+            }
+
+            PressKey(window, Avalonia.Input.Key.Escape);
+            desk.Close(pinned);
+            desk.Close(preview);
+
+            SetSize(window, WindowWidth, WindowHeight);
             Settle();
         }
 
