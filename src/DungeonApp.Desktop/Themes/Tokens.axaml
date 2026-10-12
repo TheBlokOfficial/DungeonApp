@@ -286,11 +286,12 @@
             <GradientStop Offset="0" Color="#0FFFFFFF" />
             <GradientStop Offset="0.35" Color="#00FFFFFF" />
         </LinearGradientBrush>
-        <!-- PaletteGlassEdge: highlight on the palette glass edge - white at 22 % along the top edge, fading
-             down the sides; the bottom edge has none, as on glass lit from above. -->
+        <!-- PaletteGlassEdge: the palette glass card's own border, lit from above - white at 22 % along the
+             top edge, settling into the ordinary border colour halfway down the sides. It replaces the
+             card's border rather than lying inside it, so the top edge is one line, not two. -->
         <LinearGradientBrush x:Key="DungeonPaletteGlassEdgeBrush" StartPoint="50%,0%" EndPoint="50%,100%">
             <GradientStop Offset="0" Color="#38FFFFFF" />
-            <GradientStop Offset="0.5" Color="#00FFFFFF" />
+            <GradientStop Offset="0.5" Color="{DynamicResource DungeonBorderColor}" />
         </LinearGradientBrush>
 
         <!-- OPACITY ================================================= -->
