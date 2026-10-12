@@ -13,8 +13,11 @@
         optional hint (caption, muted), result list (library rows: ListRow with selection stripe, icon, name,
         muted tags, badge - plain muted text or WordTag in the badge colour) in one ScrollViewer of at most
         DungeonPaletteListMaxHeight; with no results a muted "Brak wyników". Rows do not take focus - it stays
-        in the field. Opening: fade and slide down by DungeonPopupOpenOffset (OverlayAppearMotion); closing is
-        immediate; system animations disabled - immediate opening.
+        in the field. Glass: with a snapshot of the window under the palette (:glass), the card shows it blurred
+        (GlassBackdrop, DungeonPaletteGlassBlurRadius) under the glass tint, a top sheen and an edge highlight;
+        without one the card is plain DungeonBackstageCardBrush. Opening: fade and slide down by
+        DungeonPaletteOpenOffset over DungeonPaletteOpenDuration (OverlayAppearMotion) - the card slides, the
+        blurred snapshot stays put under it; closing is immediate; system animations disabled - immediate opening.
     -->
     <ControlTheme x:Key="{x:Type controls:Palette}" TargetType="controls:Palette">
         <Setter Property="Background" Value="Transparent" />
@@ -36,13 +39,24 @@
                             Margin="{DynamicResource DungeonPaddingXxl}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Padding="{DynamicResource DungeonPaddingLg}"
                             Background="{DynamicResource DungeonBackstageCardBrush}"
                             BorderBrush="{DynamicResource DungeonInputBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
                             BoxShadow="{DynamicResource DungeonFlyoutShadow}">
-                        <StackPanel Spacing="{DynamicResource DungeonSpacingSm}">
+                        <!-- The clip sits inside the card, not on it: clipping the card would cut off its shadow. -->
+                        <Border CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}" ClipToBounds="True">
+                        <Panel>
+                        <controls:GlassBackdrop Name="PART_Backdrop"
+                                                IsVisible="False"
+                                                BlurRadius="{DynamicResource DungeonPaletteGlassBlurRadius}" />
+                        <Border Classes="glass-layer" Background="{DynamicResource DungeonPaletteGlassTintBrush}" />
+                        <Border Classes="glass-layer" Background="{DynamicResource DungeonPaletteGlassSheenBrush}" />
+                        <Border Classes="glass-layer"
+                                BorderThickness="1"
+                                CornerRadius="{DynamicResource DungeonFlyoutCornerRadius}"
+                                BorderBrush="{DynamicResource DungeonPaletteGlassEdgeBrush}" />
+                        <StackPanel Margin="{DynamicResource DungeonPaddingLg}" Spacing="{DynamicResource DungeonSpacingSm}">
                             <TextBlock Classes="caption muted"
                                        Text="{TemplateBinding TargetText}"
                                        TextTrimming="CharacterEllipsis" />
@@ -117,9 +131,21 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </StackPanel>
+                        </Panel>
+                        </Border>
                     </Border>
                 </Panel>
             </ControlTemplate>
         </Setter>
+        <Style Selector="^ /template/ Border.glass-layer">
+            <Setter Property="IsVisible" Value="False" />
+            <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+        <Style Selector="^:glass /template/ Border.glass-layer">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:glass /template/ controls|GlassBackdrop#PART_Backdrop">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

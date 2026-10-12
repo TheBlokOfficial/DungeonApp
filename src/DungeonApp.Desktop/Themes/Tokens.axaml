@@ -237,6 +237,12 @@
              (over DungeonPopupOpenDuration) - more than a popup, because a toast appears by itself, not under
              the cursor, and motion should draw the eye to the window corner. -->
         <x:Double x:Key="DungeonNotificationOpenOffset">12</x:Double>
+        <!-- PaletteOpen: palette appearance - fades in and slides down by Offset, easing out. Longer and
+             further than a popup (180 versus 120 ms, 14 versus 4 px): the palette is summoned with a key, not
+             under the cursor, and its entry should read as a deliberate surface arriving. Over
+             MotionDuration on purpose; closing without motion. -->
+        <x:TimeSpan x:Key="DungeonPaletteOpenDuration">0:0:0.18</x:TimeSpan>
+        <x:Double x:Key="DungeonPaletteOpenOffset">14</x:Double>
         <!-- NotificationDismissDelay: time before a notification toast dismisses itself - theme constant for
              the variant, not an invocation parameter. Information 5 s (one sentence to read),
              warning 8 s (longer, because it may need a response). Errors do not auto-dismiss. Pointer over a toast
@@ -255,6 +261,24 @@
              unavailable until the question is answered. Black at 55 % opacity: underlying content
              stays recognisable (shows what the question concerns), but clearly recedes. -->
         <SolidColorBrush x:Key="DungeonScrimBrush" Color="#8C000000" />
+
+        <!-- GLASS ========================================================== -->
+        <!-- PaletteGlassTint: palette glass over the blurred window - the card surface (BackstageCard #1F1D1A)
+             at 70 % opacity: the window colours show through, but primary text stays readable even over
+             the lightest elements under the palette. -->
+        <SolidColorBrush x:Key="DungeonPaletteGlassTintBrush" Color="#B31F1D1A" />
+        <!-- PaletteGlassSheen: light falling on the palette glass - white at 6 % at the top edge fading out
+             by a third of the card's height. -->
+        <LinearGradientBrush x:Key="DungeonPaletteGlassSheenBrush" StartPoint="50%,0%" EndPoint="50%,100%">
+            <GradientStop Offset="0" Color="#0FFFFFFF" />
+            <GradientStop Offset="0.35" Color="#00FFFFFF" />
+        </LinearGradientBrush>
+        <!-- PaletteGlassEdge: highlight on the palette glass edge - white at 22 % along the top edge, fading
+             down the sides; the bottom edge has none, as on glass lit from above. -->
+        <LinearGradientBrush x:Key="DungeonPaletteGlassEdgeBrush" StartPoint="50%,0%" EndPoint="50%,100%">
+            <GradientStop Offset="0" Color="#38FFFFFF" />
+            <GradientStop Offset="0.5" Color="#00FFFFFF" />
+        </LinearGradientBrush>
 
         <!-- OPACITY ================================================= -->
         <!-- The one disabled-state opacity this theme defines - shared by every ":disabled" style
@@ -475,6 +499,9 @@
         <!-- Palette: maximum card width and maximum height of its result list (longer lists scroll). -->
         <x:Double x:Key="DungeonPaletteMaxWidth">520</x:Double>
         <x:Double x:Key="DungeonPaletteListMaxHeight">320</x:Double>
+        <!-- Palette glass: blur radius of the window under the card - wide enough that text and icons
+             under it become colour, not shapes the eye tries to read. -->
+        <x:Double x:Key="DungeonPaletteGlassBlurRadius">32</x:Double>
         <!-- Notification toast: fixed width - longer content wraps rather than expanding the toast. -->
         <x:Double x:Key="DungeonNotificationWidth">340</x:Double>
 

@@ -17,14 +17,14 @@ namespace DungeonApp.Desktop.Controls;
 /// </summary>
 internal static class OverlayAppearMotion
 {
-    public static void Run(Control fading, Control sliding, double fromX, double fromY)
+    public static void Run(Control fading, Control sliding, double fromX, double fromY, string durationKey = "DungeonPopupOpenDuration")
     {
         if (Themes.SystemMotion.IsReduced)
         {
             return;
         }
 
-        var duration = fading.TryFindResource("DungeonPopupOpenDuration", out var d) && d is TimeSpan span
+        var duration = fading.TryFindResource(durationKey, out var d) && d is TimeSpan span
             ? span
             : TimeSpan.FromMilliseconds(120);
 
