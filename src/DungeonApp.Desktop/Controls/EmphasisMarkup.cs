@@ -95,6 +95,34 @@ public static class EmphasisMarkup
         }
     }
 
+    /// <summary>
+    /// Splits <paramref name="runs"/> at every hard line break (<c>\n</c>, <c>\r\n</c>) into lines of
+    /// runs, emphasis kept on both sides of a break; the text always has at least one (maybe empty) line.
+    /// </summary>
+    public static List<List<EmphasisRun>> SplitLines(IEnumerable<EmphasisRun> runs)
+    {
+        var lines = new List<List<EmphasisRun>> { new() };
+
+        foreach (var run in runs)
+        {
+            var parts = run.Text.Replace("\r\n", "\n", System.StringComparison.Ordinal).Split('\n');
+            for (var i = 0; i < parts.Length; i++)
+            {
+                if (i > 0)
+                {
+                    lines.Add([]);
+                }
+
+                if (parts[i].Length > 0)
+                {
+                    lines[^1].Add(run with { Text = parts[i] });
+                }
+            }
+        }
+
+        return lines;
+    }
+
     /// <summary>The inlines a text block shows for <paramref name="runs"/>: an emphasized run gets the <c>emphasis</c> class.</summary>
     public static InlineCollection ToInlines(IEnumerable<EmphasisRun> runs)
     {

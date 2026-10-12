@@ -8,6 +8,7 @@
     "rarity": "Legendarny",
     "magical": true,
     "category": "Broń",
+    "subtype": "dowolny miecz zadający obrażenia cięte",
     "attunement": true,
     "item": {
       "weight": 1.5,

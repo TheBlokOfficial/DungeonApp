@@ -1,20 +1,15 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="using:DungeonApp.Desktop.Entries.Controls"
-             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Content.Dnd5e.ConditionCardView">
 
     <!-- The condition card. The icon's square frame and the summary under the name are lent to the
-         detail header (ConditionCardView.axaml.cs); the card itself is the rules - its content, not a
-         section of it, so no section heading: right under the line that opens every part of a card
-         (no margin of its own, the rhythm of a .section separator), the rules' introduction opens with
-         a scroll as its initial (dc:InitialProse), and the named parts (the levels of a graded
-         condition) follow in the look of a prose section's items, DungeonSpacingMd apart. -->
-    <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+         detail header (ConditionCardView.axaml.cs); the card itself is the condition's rules as a
+         prose section "Opis", exactly as an item's description is (GearCardView.axaml): a line, then
+         the section, DungeonSpacingLg apart. The rules' introduction opens the section and the named
+         parts (the levels of a graded condition) follow as the section's items. -->
+    <StackPanel x:Name="RulesBlock" Spacing="{DynamicResource DungeonSpacingLg}">
         <Separator />
-        <StackPanel Spacing="{DynamicResource DungeonSpacingMd}">
-            <dc:InitialProse x:Name="RulesIntro" Icon="{DynamicResource DungeonIconScrollText}" />
-            <controls:ProseSectionView x:Name="RulesEntries" />
-        </StackPanel>
+        <controls:ProseSectionView x:Name="Rules" Title="Opis" />
     </StackPanel>
 </UserControl>

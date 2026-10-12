@@ -19,6 +19,11 @@ namespace DungeonApp.Desktop.Controls;
 /// height and the second starts where the second line ends, so the rhythm runs on unbroken. The cut is
 /// found again in every measure whose width or text differs from the last one - no timers.
 /// </para>
+/// <para>
+/// The part under the icon is a <see cref="ProseText"/>, so a hard line break there starts the next
+/// line a little lower, as in every prose of a card. The two lines beside the icon keep an even
+/// rhythm: they stand in a box exactly as tall as the icon.
+/// </para>
 /// <para>Selection stays within one block; selecting across the cut is not supported.</para>
 /// </summary>
 public sealed class InitialProse : Control
@@ -34,7 +39,7 @@ public sealed class InitialProse : Control
 
     private readonly ForegroundIcon _icon = new();
     private readonly SelectableTextBlock _lead = NewBlock();
-    private readonly SelectableTextBlock _rest = NewBlock();
+    private readonly ProseText _rest = new();
 
     private IReadOnlyList<EmphasisRun> _runs = [];
     private bool _runsChanged = true;
@@ -162,13 +167,13 @@ public sealed class InitialProse : Control
 
         if (tail.Count == 0)
         {
-            _rest.Inlines = null;
+            _rest.SetRuns([]);
             _rest.IsVisible = false;
             return;
         }
 
         _lead.Inlines = EmphasisMarkup.ToInlines(TrimEnd(Slice(_runs, 0, cut)));
-        _rest.Inlines = EmphasisMarkup.ToInlines(tail);
+        _rest.SetRuns(tail);
         _rest.IsVisible = true;
     }
 

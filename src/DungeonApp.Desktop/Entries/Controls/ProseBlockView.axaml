@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:content="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Entries.Controls.ProseBlockView"
              x:DataType="content:ProseBlockView">
 
@@ -9,6 +10,6 @@
          text is what the GM copies out. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingXs}">
         <SelectableTextBlock Classes="eyebrow" IsVisible="{Binding HasTitle}" Text="{Binding Title}" />
-        <SelectableTextBlock Classes="body" Text="{Binding Text}" TextWrapping="Wrap" />
+        <dc:ProseText TextClasses="body" UsesMarkup="False" Text="{Binding Text}" />
     </StackPanel>
 </UserControl>

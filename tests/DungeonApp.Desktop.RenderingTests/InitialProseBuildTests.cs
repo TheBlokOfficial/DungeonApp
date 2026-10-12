@@ -35,12 +35,13 @@ public sealed class InitialProseBuildTests
         return (window, prose);
     }
 
-    private static (ForegroundIcon Icon, SelectableTextBlock Lead, SelectableTextBlock Under) Parts(InitialProse prose)
+    private static (ForegroundIcon Icon, SelectableTextBlock Lead, ProseText Under) Parts(InitialProse prose)
     {
         var children = prose.GetVisualChildren().ToList();
-        var blocks = children.OfType<SelectableTextBlock>().ToList();
-        return (children.OfType<ForegroundIcon>().Single(), blocks[0], blocks[1]);
+        return (children.OfType<ForegroundIcon>().Single(), children.OfType<SelectableTextBlock>().Single(), children.OfType<ProseText>().Single());
     }
+
+    private static string Shown(ProseText under) => string.Join("\n", under.Blocks.Select(block => block.Inlines!.Text));
 
     [AvaloniaFact]
     public void A_long_text_keeps_two_lines_beside_the_icon_and_flows_on_under_it()
@@ -63,7 +64,7 @@ public sealed class InitialProseBuildTests
         Assert.Equal(prose.Bounds.Width, rest.Bounds.Width);
 
         // The cut drops only the whitespace at it: nothing is lost or doubled.
-        var shown = lead.Inlines!.Text + " " + rest.Inlines!.Text;
+        var shown = lead.Inlines!.Text + " " + Shown(rest);
         Assert.Equal(LongText.Replace("**", string.Empty, System.StringComparison.Ordinal), shown);
 
         window.Close();
@@ -93,7 +94,22 @@ public sealed class InitialProseBuildTests
         var (_, lead, rest) = Parts(prose);
 
         Assert.Equal("Pierwsza.\nDruga.", lead.Inlines!.Text);
-        Assert.Equal("Trzecia.", rest.Inlines!.Text);
+        Assert.Equal("Trzecia.", Shown(rest));
+
+        window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_hard_line_break_under_the_icon_starts_the_next_line_a_little_lower()
+    {
+        var (window, prose) = Show("Jeden.\nDwa.\nTrzecia.\nCzwarta.");
+        var (_, _, rest) = Parts(prose);
+
+        var blocks = rest.Blocks;
+        Assert.Equal(["Trzecia.", "Czwarta."], blocks.Select(block => block.Inlines!.Text));
+        var gap = blocks[1].Bounds.Y - blocks[0].Bounds.Bottom;
+        Assert.True(gap > 0);
+        Assert.True(gap < blocks[0].LineHeight / 2);
 
         window.Close();
     }
