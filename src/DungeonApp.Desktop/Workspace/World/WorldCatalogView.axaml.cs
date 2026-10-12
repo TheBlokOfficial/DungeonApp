@@ -485,9 +485,6 @@ public partial class WorldCatalogView : UserControl
             }
         }
 
-        // No cursor of its own over a place that takes the drop; "not here" everywhere else.
-        Cursor = target is null ? new Cursor(StandardCursorType.No) : null;
-
         if (!ReferenceEquals(over, _hoverRow))
         {
             _hoverRow = over;
@@ -608,7 +605,6 @@ public partial class WorldCatalogView : UserControl
 
         DragGhost.IsVisible = false;
         DragGhost.DataContext = null;
-        Cursor = null;
         _dropTarget = null;
         _hoverRow = null;
         _dragRow = null;

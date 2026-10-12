@@ -149,10 +149,15 @@ public sealed partial class WorldCatalogViewModel
                 return false;
             }
 
+            var changed = text.Trim() != row.Name;
+
+            // The row shows the new name before the field closes; otherwise the old name flashes until
+            // the saved change rebuilds the tree.
+            row.Name = text.Trim();
             row.IsEditing = false;
             row.RenameError = null;
 
-            if (text.Trim() != row.Name)
+            if (changed)
             {
                 await _context.ChangeAsync(WorldChanges.RenameFolder(_context.Snapshot, folder, text));
             }
@@ -160,13 +165,23 @@ public sealed partial class WorldCatalogViewModel
             return true;
         }
 
+        var relabel = row.EntityId is { } id && _tree.Entity(id) is { } node
+            && text != row.Name && !(string.IsNullOrWhiteSpace(text) && node.Entity.Label is null)
+            ? node.Entity
+            : null;
+
+        // As for a folder; an emptied label falls back to the entry's name, which the rebuild brings.
+        if (relabel is not null && !string.IsNullOrWhiteSpace(text))
+        {
+            row.Name = text;
+        }
+
         row.IsEditing = false;
         row.RenameError = null;
 
-        if (row.EntityId is { } id && _tree.Entity(id) is { } node
-            && text != row.Name && !(string.IsNullOrWhiteSpace(text) && node.Entity.Label is null))
+        if (relabel is not null)
         {
-            await _context.ChangeAsync(CampaignEntityChanges.Relabel(node.Entity, text));
+            await _context.ChangeAsync(CampaignEntityChanges.Relabel(relabel, text));
         }
 
         return true;

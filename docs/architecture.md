@@ -256,7 +256,7 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   zaznaczenie, do którego należy złapany wiersz, inaczej sam ten wiersz. Niesione wiersze zostają
   przygaszone (`IsDragSource`), pod kursorem jedzie kopia wiersza z licznikiem, a cel — katalog, a nad
   entity jej katalog — ma ramkę (`IsDropTarget`, token `DungeonDropTargetBrush`); cel zakazany albo bez
-  zmiany miejsca (`CanDrop`) ramki nie ma i ma kursor „zakaz”. Zwinięty katalog pod kursorem rozwija się
+  zmiany miejsca (`CanDrop`) ramki nie ma (kursor zostaje zwykły — ramka wystarcza). Zwinięty katalog pod kursorem rozwija się
   po 0,6 s, a pas przy górnej i dolnej krawędzi przewija drzewo (timery interfejsu); Esc, utrata
   przechwycenia albo puszczenie poza celem anulują, upuszczenie przenosi jedną zmianą i przewija drzewo
   do przeniesionych.
