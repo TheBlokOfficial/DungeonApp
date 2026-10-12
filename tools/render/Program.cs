@@ -602,6 +602,32 @@ internal static class Program
             Settle();
         }
 
+        if (Wants("desk_catalog_drag"))
+        {
+            // Mid-drag: the three selected rows faded in place, their copy with "+2" under the pointer,
+            // the frame on Skarbiec. Esc then puts everything back.
+            var catalogView = deskView.GetVisualDescendants().OfType<WorldCatalogView>().First();
+            Point RowPoint(string name)
+            {
+                var border = catalogView.GetVisualDescendants().OfType<Border>()
+                    .First(candidate => candidate.Classes.Contains("world-row") && candidate.DataContext == Row(name));
+                return border.TranslatePoint(new Point(70, border.Bounds.Height / 2), window)!.Value;
+            }
+
+            var from = RowPoint("Goblin 2");
+            var to = RowPoint("Skarbiec");
+            window.MouseMove(from);
+            window.MouseDown(from, Avalonia.Input.MouseButton.Left);
+            Settle();
+            window.MouseMove(from + new Point(0, 6), Avalonia.Input.RawInputModifiers.LeftMouseButton);
+            window.MouseMove(to, Avalonia.Input.RawInputModifiers.LeftMouseButton);
+            Settle();
+            SaveCrop(window, deskView, UniqueName("desk_catalog_drag"));
+            PressKey(window, Avalonia.Input.Key.Escape);
+            window.MouseUp(to, Avalonia.Input.MouseButton.Left);
+            Settle();
+        }
+
         if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty"))
         {
             // Wide enough for the preview and a pinned card side by side, left of the catalog.

@@ -102,6 +102,9 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     [ObservableProperty]
     public partial bool IsDropTarget { get; set; }
 
+    /// <summary>The row is carried by the drag in progress; it stays in place as a faded trace.</summary>
+    [ObservableProperty]
+    public partial bool IsDragSource { get; set; }
 
     /// <summary>Left margin that shows the row's depth in the tree.</summary>
     public Thickness Indent => new(Depth * IndentPerLevel, 0, 0, 0);

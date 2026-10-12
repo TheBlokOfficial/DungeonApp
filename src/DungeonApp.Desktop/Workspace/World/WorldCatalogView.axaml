@@ -42,8 +42,13 @@
                     Classes.selected="{Binding IsSelected}"
                     Classes.expanded="{Binding IsExpanded}"
                     Classes.root="{Binding IsRoot}"
-                    Classes.drop="{Binding IsDropTarget}">
+                    Classes.source="{Binding IsDragSource}">
                 <Border Padding="{DynamicResource DungeonScrollBarZone}">
+                  <Panel>
+                    <!-- The drop target's frame lies over the row and takes no room, so showing it moves nothing. -->
+                    <Border Classes="world-drop-frame"
+                            IsVisible="{Binding IsDropTarget}"
+                            IsHitTestVisible="False" />
                     <Grid ColumnDefinitions="16,16,*,Auto"
                           Margin="{Binding Indent}">
                         <!-- Chevron: turns instead of swapping, so the fold reads as one movement. -->
@@ -115,6 +120,7 @@
                                    VerticalAlignment="Center"
                                    Text="{Binding NumberText}" />
                     </Grid>
+                  </Panel>
                 </Border>
             </Border>
         </DataTemplate>
@@ -133,10 +139,22 @@
         <Style Selector="Border.world-row.selected">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
         </Style>
-        <!-- The place a dragged selection would land in: the same fill a selected row has, so the target
-             reads as chosen while the pointer is over it. -->
-        <Style Selector="Border.world-row.drop">
+        <!-- The folder a dragged selection would land in: a frame, not a fill, so it never reads as the
+             hover or the selection under it. -->
+        <Style Selector="Border.world-drop-frame">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DungeonDropTargetBrush}" />
+        </Style>
+        <!-- Rows carried by a drag stay where they were, faded, until the drop moves them. -->
+        <Style Selector="Border.world-row.source">
+            <Setter Property="Opacity" Value="0.4" />
+        </Style>
+        <!-- The copy of the dragged row under the pointer. -->
+        <Style Selector="Border.world-drag-ghost">
             <Setter Property="Background" Value="{DynamicResource DungeonAccentDimBrush}" />
+            <Setter Property="Opacity" Value="0.85" />
+            <Setter Property="Height" Value="{DynamicResource DungeonWorldRowHeight}" />
+            <Setter Property="Padding" Value="6,0,8,0" />
         </Style>
         <Style Selector="TextBox.world-rename.error /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonDangerBrush}" />
@@ -181,7 +199,8 @@
     </UserControl.Styles>
 
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Name="Tree"
+                      HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding Rows}"
                           ItemTemplate="{StaticResource WorldRowTemplate}" />
         </ScrollViewer>
@@ -192,5 +211,37 @@
                 HorizontalAlignment="Right"
                 Background="Transparent"
                 Cursor="SizeWestEast" />
+
+        <!-- The dragged row under the pointer: its icon and name, and "+2" when it carries more. It takes no
+             hits, so the row under the pointer is the one a drop lands on. Placed by the code-behind. -->
+        <Border Name="DragGhost"
+                Classes="world-drag-ghost"
+                x:DataType="world:WorldRowViewModel"
+                IsVisible="False"
+                IsHitTestVisible="False"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                MaxWidth="240">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Panel Width="14" Height="14" VerticalAlignment="Center">
+                    <dc:ForegroundIcon IsVisible="{Binding IsFolderLike}"
+                                       Source="{DynamicResource DungeonIconFolder}"
+                                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                    <dc:ForegroundIcon IsVisible="{Binding ShowsTypeIcon}"
+                                       Source="{Binding IconKey, Converter={StaticResource IconByKey}}"
+                                       Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                    <dc:ForegroundIcon IsVisible="{Binding IsUnresolved}"
+                                       Source="{DynamicResource DungeonIconWarningTriangle}"
+                                       Foreground="{DynamicResource DungeonDangerTextBrush}" />
+                </Panel>
+                <TextBlock Classes="world-name"
+                           VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
+                           Text="{Binding Name}" />
+                <TextBlock Name="DragGhostCount"
+                           Classes="world-number"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
