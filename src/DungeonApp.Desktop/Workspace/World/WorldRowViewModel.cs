@@ -64,14 +64,8 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
 
     /// <summary>"№ 5" for an entity, null for a folder.</summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(NumberSuffix))]
     [NotifyPropertyChangedFor(nameof(ToolTipText))]
     public partial string? NumberText { get; set; }
-
-    /// <summary>The system's short text at the row's right edge (health), null when it has none.</summary>
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HasHint))]
-    public partial string? Hint { get; set; }
 
     /// <summary>Resource key of the entity's type icon; null for a folder or a type the system does not list.</summary>
     [ObservableProperty]
@@ -109,11 +103,6 @@ public sealed partial class WorldRowViewModel(WorldRowKey key) : ObservableObjec
     /// <summary>A dragged selection would land in this row's folder if dropped now.</summary>
     [ObservableProperty]
     public partial bool IsDropTarget { get; set; }
-
-    public bool HasHint => Hint is { Length: > 0 };
-
-    /// <summary>The number as it follows the name on the row, dimmed by the view; empty for a folder.</summary>
-    public string NumberSuffix => NumberText is { Length: > 0 } number ? "  " + number : string.Empty;
 
     /// <summary>The whole row's name for the tooltip, which a trimmed row cannot show.</summary>
     public string ToolTipText => NumberText is { Length: > 0 } number ? $"{Name} ({number})" : Name;

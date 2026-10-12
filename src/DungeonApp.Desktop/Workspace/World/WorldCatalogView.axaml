@@ -19,7 +19,7 @@
         <ControlTheme x:Key="WorldRowButtonTheme" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+            <Setter Property="CornerRadius" Value="0" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -34,9 +34,6 @@
                     </Border>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:pointerover">
-                <Setter Property="Background" Value="{DynamicResource DungeonHoverOverlayBrush}" />
-            </Style>
         </ControlTheme>
 
         <DataTemplate x:Key="WorldRowTemplate" x:DataType="world:WorldRowViewModel">
@@ -47,7 +44,7 @@
                     Classes.drop="{Binding IsDropTarget}"
                     ToolTip.Tip="{Binding ToolTipText}">
                 <Border Padding="{DynamicResource DungeonScrollBarZone}">
-                    <Grid ColumnDefinitions="16,16,*,Auto,Auto"
+                    <Grid ColumnDefinitions="16,16,*,Auto"
                           Margin="{Binding Indent}">
                         <!-- Chevron: turns instead of swapping, so the fold reads as one movement. -->
                         <Button Grid.Column="0"
@@ -57,8 +54,7 @@
                                 IsVisible="{Binding IsFolderLike}">
                             <dc:ForegroundIcon Classes="world-chevron"
                                                Width="14" Height="14"
-                                               Source="{DynamicResource DungeonIconChevronDown}"
-                                               Foreground="{DynamicResource DungeonTextMutedBrush}" />
+                                               Source="{DynamicResource DungeonIconChevronDown}" />
                         </Button>
 
                         <!-- Folder icon, the entity's type icon, or the warning of an entity whose
@@ -90,8 +86,6 @@
                                    TextWrapping="NoWrap"
                                    IsVisible="{Binding !IsEditing}">
                             <Run Text="{Binding Name}" />
-                            <Run Text="{Binding NumberSuffix}"
-                                 Foreground="{DynamicResource DungeonTextMutedBrush}" />
                         </TextBlock>
 
                         <!-- Rename in place: the field fills the name's cell and starts one pixel left of
@@ -112,25 +106,10 @@
                                  ToolTip.Placement="Bottom" />
 
                         <TextBlock Grid.Column="3"
-                                   Classes="world-hint"
+                                   Classes="world-number"
                                    Margin="8,0,0,0"
                                    VerticalAlignment="Center"
-                                   Text="{Binding Hint}"
-                                   IsVisible="{Binding HasHint}"
-                                   Foreground="{DynamicResource DungeonTextMutedBrush}" />
-
-                        <Button Grid.Column="4"
-                                Classes="world-add"
-                                Theme="{StaticResource WorldRowButtonTheme}"
-                                Tag="add"
-                                Width="20" Height="20"
-                                Margin="4,0,0,0"
-                                IsVisible="{Binding IsFolderLike}"
-                                ToolTip.Tip="Dodaj do tego katalogu (Ctrl+N)">
-                            <dc:ForegroundIcon Width="14" Height="14"
-                                               Source="{DynamicResource DungeonIconPlus}"
-                                               Foreground="{DynamicResource DungeonTextMutedBrush}" />
-                        </Button>
+                                   Text="{Binding NumberText}" />
                     </Grid>
                 </Border>
             </Border>
@@ -142,7 +121,7 @@
             <!-- Transparent, not null: only a painted background takes the pointer. -->
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Height" Value="{DynamicResource DungeonWorldRowHeight}" />
-            <Setter Property="CornerRadius" Value="{DynamicResource DungeonListRowHighlightCornerRadius}" />
+            <Setter Property="CornerRadius" Value="0" />
         </Style>
         <Style Selector="Border.world-row:pointerover">
             <Setter Property="Background" Value="{DynamicResource DungeonBackstageRowHoverBrush}" />
@@ -158,13 +137,12 @@
         <Style Selector="TextBox.world-rename.error /template/ Border#PART_BorderElement">
             <Setter Property="BorderBrush" Value="{DynamicResource DungeonDangerBrush}" />
         </Style>
-        <Style Selector="TextBlock.world-name, TextBlock.world-hint">
+        <Style Selector="TextBlock.world-name, TextBlock.world-number">
             <Setter Property="FontFamily" Value="{DynamicResource DungeonUiFont}" />
             <Setter Property="FontSize" Value="{DynamicResource DungeonHelperFontSize}" />
-            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
-        <Style Selector="TextBlock.world-hint">
-            <Setter Property="FontFeatures" Value="tnum" />
+        <Style Selector="TextBlock.world-name">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         </Style>
         <Style Selector="Border.world-row.root TextBlock.world-name">
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -182,13 +160,19 @@
         <Style Selector="Border.world-row.expanded dc|ForegroundIcon.world-chevron">
             <Setter Property="RenderTransform" Value="rotate(0deg)" />
         </Style>
-        <!-- The plus shows only under the pointer. Hidden by opacity, not by visibility, so the row
-             keeps its layout; a pointer that is not over the row cannot press it. -->
-        <Style Selector="Border.world-row Button.world-add">
-            <Setter Property="Opacity" Value="0" />
+        <!-- The chevron has no background of its own; it brightens under the pointer. -->
+        <Style Selector="dc|ForegroundIcon.world-chevron">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
-        <Style Selector="Border.world-row:pointerover Button.world-add">
-            <Setter Property="Opacity" Value="1" />
+        <Style Selector="Button:pointerover dc|ForegroundIcon.world-chevron">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <!-- The number is one column for the whole tree: the right edge of the rows, digits aligned right. -->
+        <Style Selector="TextBlock.world-number">
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="FontFeatures" Value="tnum" />
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
         </Style>
     </UserControl.Styles>
 

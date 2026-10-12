@@ -65,9 +65,7 @@ public sealed partial class WorldCatalogViewBuildTests
 
         var goblin = Row(catalog, "Goblin 10");
         Assert.Equal("№ 1", goblin.NumberText);
-        Assert.Equal("7/7", goblin.Hint);
         Assert.Equal("DungeonIconSkull", goblin.IconKey);
-        Assert.Null(Row(catalog, "Lina").Hint);
         Assert.Equal("DungeonIconBackpack", Row(catalog, "Lina").IconKey);
         Assert.True(Row(catalog, "gone").IsUnresolved);
 
