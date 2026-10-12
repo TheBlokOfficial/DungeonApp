@@ -135,7 +135,7 @@ public sealed partial class WorldCatalogViewBuildTests
 
         var fieldBounds = new Rect(field.TranslatePoint(default, fixture.CatalogView)!.Value, field.Bounds.Size);
         Assert.Equal(textBounds.Right, fieldBounds.Right, 0.5);
-        Assert.Equal(textBounds.Left - 1, fieldBounds.Left, 0.5);
+        Assert.Equal(textBounds.Left - 5, fieldBounds.Left, 0.5);
         Assert.Equal(textBounds.Center.Y, fieldBounds.Center.Y, 1.0);
         Assert.True(fieldBounds.Height <= border.Bounds.Height);
     }
@@ -164,6 +164,40 @@ public sealed partial class WorldCatalogViewBuildTests
 
         Assert.False(Row(catalog, "Lochy").IsEditing);
         Assert.Equal([Row(catalog, "Lochy")], catalog.SelectedRows);
+    }
+
+    [AvaloniaFact]
+    public async Task A_click_outside_the_field_drops_the_typed_name()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.CreateFolderAsync(null, "Jaskinia");
+        fixture.Settle();
+        var row = Row(catalog, "Jaskinia");
+        catalog.BeginRename(row);
+        row.EditText = "Lochy";
+
+        Assert.True(catalog.CancelRenames());
+
+        Assert.False(row.IsEditing);
+        Assert.Equal("Jaskinia", row.Name);
+        Assert.False(catalog.CancelRenames());
+    }
+
+    [AvaloniaFact]
+    public async Task A_click_on_empty_space_clears_the_selection_and_the_preview_entity()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Goblin");
+        fixture.Settle();
+        Select(catalog, "Goblin");
+        Assert.NotNull(catalog.LastClickedEntity);
+
+        catalog.ClearSelection();
+
+        Assert.Empty(catalog.SelectedRows);
+        Assert.Null(catalog.LastClickedEntity);
     }
 
     [AvaloniaFact]

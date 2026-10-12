@@ -94,13 +94,15 @@
                                  Foreground="{DynamicResource DungeonTextMutedBrush}" />
                         </TextBlock>
 
-                        <!-- Rename in place: the field fills the name's cell and starts one pixel left of
-                             the text (its border), so the letters stay where they were and no neighbour moves. -->
+                        <!-- Rename in place: the field fills the name's cell and starts left of the text by its
+                             border and padding (1 + 4 px past a 1 px margin), so the letters stay where they were
+                             and no neighbour moves. Square corners; the text and caret are clipped inside the padding. -->
                         <TextBox Grid.Column="2"
                                  Classes="world-rename"
                                  Classes.error="{Binding HasRenameError}"
-                                 Margin="5,0,0,0"
-                                 Padding="0"
+                                 Margin="1,0,0,0"
+                                 Padding="4,0"
+                                 CornerRadius="0"
                                  MinWidth="0"
                                  Height="NaN"
                                  VerticalAlignment="Center"

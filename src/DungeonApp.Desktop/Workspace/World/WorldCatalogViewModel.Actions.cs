@@ -181,6 +181,19 @@ public sealed partial class WorldCatalogViewModel
         row.RenameError = null;
     }
 
+    /// <summary>Drops every open rename (a click outside the field); returns whether one was open.</summary>
+    public bool CancelRenames()
+    {
+        var open = Rows.Where(row => row.IsEditing).ToList();
+
+        foreach (var row in open)
+        {
+            CancelRename(row);
+        }
+
+        return open.Count > 0;
+    }
+
     // ---- Delete ----
 
     /// <summary>Why the selection cannot be deleted (a folder that is not empty), or null.</summary>
