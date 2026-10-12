@@ -582,7 +582,6 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
                     row.Depth = depth;
                     row.NumberText = $"№ {entityNode.Entity.Number.ToString(CultureInfo.CurrentCulture)}";
                     row.IsUnresolved = entityNode.Resolved.Unresolved is not null;
-                    row.Hint = row.IsUnresolved ? null : _system.RowHint(entityNode.Resolved);
                     row.IconKey = entityNode.Resolved.Source?.Entry.Type is { } type
                         ? _system.EntityTypes.FirstOrDefault(candidate => candidate.Type == type)?.IconResourceKey
                         : null;

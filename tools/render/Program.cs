@@ -492,7 +492,7 @@ internal static class Program
         library.NewCampaignName = "Kopalnia Phandelver";
         Await(library.CreateCommand.ExecuteAsync(null), "campaign creation");
         Pump(() => library.Campaigns.Count > 0, "shelf");
-        Await(library.Campaigns.Single().OpenCommand.ExecuteAsync(null), "campaign opening");
+        Await(library.Campaigns.First().OpenCommand.ExecuteAsync(null), "campaign opening");
         Pump(() => shell.CurrentWorkspaceContent is Control { DataContext: CampaignWorkspaceViewModel }, "desk");
         Settle();
 
