@@ -55,6 +55,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="RenderTransform" Value="none" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="MaxWidth" Value="{DynamicResource DungeonTabMaxWidth}" />

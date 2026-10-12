@@ -9,8 +9,9 @@
         An adorner cannot read the control's own CornerRadius, so there is one template per shape; the ring's
         radius is the control's radius plus the gap and the thickness:
           Control - buttons, fields, chips, tabs, toggles (DungeonControlCornerRadius family);
-          Row     - list rows, segments (DungeonListRowHighlightCornerRadius family);
-          Round   - round and pill-shaped controls.
+          Row     - list rows, segments (DungeonListRowHighlightCornerRadius family).
+        The library clips an adorner to the adorned control's own bounds when that control clips to bounds,
+        so every theme that takes a ring also sets ClipToBounds False, or the ring would be cut off entirely.
         A control theme takes one with <Setter Property="FocusAdorner" Value="{StaticResource ...}" />.
         Controls with no ring say why next to their FocusAdorner (menus: the highlight is the focus; a
         container: the item inside it shows focus; a field: the border and caret do).
@@ -27,13 +28,6 @@
                 BorderBrush="{DynamicResource DungeonFocusRingBrush}"
                 BorderThickness="{DynamicResource DungeonFocusRingThickness}"
                 CornerRadius="{DynamicResource DungeonFocusRingRowCornerRadius}"
-                IsHitTestVisible="False" />
-    </FocusAdornerTemplate>
-    <FocusAdornerTemplate x:Key="DungeonFocusAdornerRound">
-        <Border Margin="{DynamicResource DungeonFocusRingOffset}"
-                BorderBrush="{DynamicResource DungeonFocusRingBrush}"
-                BorderThickness="{DynamicResource DungeonFocusRingThickness}"
-                CornerRadius="{DynamicResource DungeonFocusRingRoundCornerRadius}"
                 IsHitTestVisible="False" />
     </FocusAdornerTemplate>
 </ResourceDictionary>

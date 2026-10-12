@@ -413,7 +413,6 @@
         <Thickness x:Key="DungeonFocusRingOffset">-4</Thickness>
         <CornerRadius x:Key="DungeonFocusRingControlCornerRadius">9</CornerRadius>
         <CornerRadius x:Key="DungeonFocusRingRowCornerRadius">7</CornerRadius>
-        <CornerRadius x:Key="DungeonFocusRingRoundCornerRadius">999</CornerRadius>
 
         <!-- SPACING AND RADII ============================================= -->
         <!--
