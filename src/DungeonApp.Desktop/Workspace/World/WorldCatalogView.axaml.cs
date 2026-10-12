@@ -471,10 +471,6 @@ public partial class WorldCatalogView : UserControl
         {
             viewModel.ToggleExpanded(row);
         }
-        else if (tag == "add")
-        {
-            ShowAddPalette(viewModel.AddTargetOf(row));
-        }
 
         e.Handled = true;
     }

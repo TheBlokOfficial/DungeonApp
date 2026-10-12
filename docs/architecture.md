@@ -136,8 +136,8 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   drzewa (dodanie N entity, przeniesienie, usunięcie, nazwy) to czyste fabryki w `WorldChanges`, jedna
   akcja MG = jedna zmiana; odmowę (katalog w siebie, niepusty katalog) opisuje polski tekst z funkcji
   `...Problem`. Widok czyta drzewo przez `WorldTree` (katalogi przed entity, nazwy porównywane
-  naturalnie). Co do typu entity, ikony i podpowiedzi wiersza pyta ramę o system `IGameSystem.EntityTypes`
-  i `RowHint`. Kampania zapisana przed katalogami otwiera się bez plików nowych modeli; jej entity
+  naturalnie). Co do typu entity i ikony pyta ramę o system `IGameSystem.EntityTypes`; wiersz entity
+  pokazuje nazwę i №. Kampania zapisana przed katalogami otwiera się bez plików nowych modeli; jej entity
   dostają № przy odczycie, w kolejności identyfikatorów (te same przy każdym otwarciu), licznik
   startuje za nimi, a trwale zapisują się przy pierwszym zapisie.
   Obsługa katalogu na biurku działa na całym zaznaczeniu: menu pod prawym przyciskiem (pozycje zależą od
@@ -240,7 +240,7 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   zwinięcie korzenia i rozwinięte katalogi zapisują się w pliku układu biurka (`WorldCatalogLayout`),
   nie w kampanii; rozwinięcia znikłych katalogów są zapominane przy zapisie. Rama bierze wpisy
   z `IGameSystem.GetWorldCatalogSource()` (`WorldCatalogSource`: rejestr paczek, typy, profile),
-  ikony typów z `IGameSystem.EntityTypes`, a dopisek przy wierszu (np. PW) z `IGameSystem.RowHint`.
+  a ikony typów z `IGameSystem.EntityTypes`; wiersz entity pokazuje ikonę, nazwę i №.
   Kliknięcie zaznacza (Ctrl, Shift), dwuklik albo Enter na entity zgłasza zdarzenie
   `OpenEntityRequested`; ostatnio klikniętą entity podaje `LastClickedEntity` (podgląd idzie za nią).
 - **Okna biurka w trakcie działania:** `CampaignWorkspaceViewModel.Open(deskryptor, klucz)` otwiera okno

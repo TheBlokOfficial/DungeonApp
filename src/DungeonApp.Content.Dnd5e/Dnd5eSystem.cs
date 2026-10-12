@@ -209,21 +209,6 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     public IReadOnlyList<WorldEntityType> EntityTypes { get; }
 
-    /// <summary>"7/7" for a resolved creature - current hit points (the maximum when none is recorded) over the maximum; nothing for gear or an unresolved entity.</summary>
-    public string? RowHint(ResolvedEntity entity)
-    {
-        ArgumentNullException.ThrowIfNull(entity);
-
-        if (entity.Values is not { } values || entity.Source?.Entry.Type.Type.Value != CreatureTypeId)
-        {
-            return null;
-        }
-
-        var combat = values.Read<Creature>().Combat;
-
-        return $"{combat.CurrentHp ?? combat.Hp}/{combat.Hp}";
-    }
-
     public IReadOnlyList<IStartupStep> StartupSteps { get; }
 
     public bool HasSet(ContentId set) => set == ContentSetId;
