@@ -31,7 +31,7 @@ public sealed class EntityIdJsonConverter : JsonConverter<EntityId>
 
         return Guid.TryParse(candidate, out var value)
             ? new EntityId(value)
-            : throw new JsonException($"Invalid entity id: '{candidate}'.");
+            : throw new ContentRuleException($"Niepoprawny identyfikator istoty: '{candidate}'.");
     }
 
     public override void Write(Utf8JsonWriter writer, EntityId value, JsonSerializerOptions options) =>

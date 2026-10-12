@@ -478,7 +478,7 @@ public sealed class Dnd5eSystemTests
         Assert.False(system.HasSet(foreign.Set));
         Assert.False(system.TryGet(foreign, out _));
         Assert.False(system.TryValidate(foreign, ContentValues.Empty, out var error));
-        Assert.Contains("does not own", error);
+        Assert.Contains("nie obsługuje", error);
     }
 
     [Fact]

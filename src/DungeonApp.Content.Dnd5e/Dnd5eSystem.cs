@@ -229,13 +229,13 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     {
         if (reference.Set != ContentSetId)
         {
-            error = $"'{ContentSetId}' does not own content type reference '{reference}'.";
+            error = $"System „{ContentSetId}” nie obsługuje typu treści „{reference}”.";
             return false;
         }
 
         if (!_contentTypes.TryGetValue(reference, out var type))
         {
-            error = $"'{ContentSetId}' declares no content type '{reference.Type}'.";
+            error = $"System „{ContentSetId}” nie zna typu treści „{reference.Type}”.";
             return false;
         }
 
@@ -243,11 +243,16 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
         {
             type.Validate(values);
         }
-        catch (Exception ex)
+        catch (System.Text.Json.JsonException ex)
         {
             // The deserializer is the validator: a missing required value, an unknown key, or a value of the wrong shape all surface as
-            // an exception here, and its message is the only explanation the GM ever sees
+            // an exception here, and its description is the only explanation the GM ever sees
             // (RegisteredEntry.UnresolvedDetail).
+            error = ContentFailureText.Describe(ex);
+            return false;
+        }
+        catch (Exception ex)
+        {
             error = ex.Message;
             return false;
         }

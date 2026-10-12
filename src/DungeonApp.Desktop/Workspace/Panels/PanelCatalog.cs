@@ -21,10 +21,7 @@ public sealed class PanelCatalog
     /// <paramref name="tools"/> is what the chosen system's tool list gave
     /// (<see cref="Systems.IGameSystem.CreateDeskTools"/>, passed on by <see cref="CampaignDesk.CreateAsync"/>)
     /// - the catalog's only source, since the shell itself contributes no panel of its
-    /// own. Kept as a dedicated step, rather than handing the list straight through, so that "shell
-    /// panels first, then system tools" stays the shape of this code even while the first list is
-    /// empty - the property that a system can only ever add to the desk, never displace what the
-    /// shell offers, still reads off the layout, not off a comment.
+    /// own. The list is copied so the catalog does not change when the caller's list does.
     /// </summary>
     public static PanelCatalog For(IReadOnlyList<WorkspacePanelDescriptor> tools) => new([.. tools]);
 

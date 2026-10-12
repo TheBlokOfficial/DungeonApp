@@ -293,8 +293,8 @@ public sealed class ContentValues
             // instead of succeeding now and throwing something unrelated much later.
             if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
-                throw new JsonException(
-                    $"A content envelope must be a JSON object, not {document.RootElement.ValueKind}.");
+                throw new ContentRuleException(
+                    $"Wartości wpisu muszą być obiektem JSON, a nie wartością typu {document.RootElement.ValueKind}.");
             }
 
             return new ContentValues(document.RootElement);

@@ -12,8 +12,9 @@ namespace DungeonApp.Desktop.Features.CampaignLibrary;
 /// <para>
 /// The <c>availability</c> argument is this row's whole verdict - computed once, by
 /// <see cref="CampaignPreparationCache.CheckAvailabilityAsync"/>, before the row is even built.
-/// A row whose <see cref="Availability"/> is not <see cref="CampaignAvailability.Available"/> shows a
-/// reason (<see cref="UnavailabilityReason"/>) and refuses to open - <see cref="OpenCommand"/>'s own
+/// A row whose <see cref="Availability"/> is not <see cref="CampaignAvailability.Available"/> refuses
+/// to open (it carries the reason as <see cref="UnavailabilityReason"/>, which the shelf view does not
+/// bind) - <see cref="OpenCommand"/>'s own
 /// <c>canExecute</c> is only half of that refusal; the operation itself refuses again, from
 /// <see cref="CampaignPreparationCache.TakeAsync"/>.
 /// </para>

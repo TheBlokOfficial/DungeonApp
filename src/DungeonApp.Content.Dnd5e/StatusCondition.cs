@@ -1,5 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -44,7 +44,7 @@ public sealed record StatusCondition : IJsonOnDeserialized
         // nothing under the name, so it is refused like a missing one.
         if (Summary is not null && string.IsNullOrWhiteSpace(Summary))
         {
-            throw new JsonException("\"summary\" must not be empty.");
+            throw new ContentRuleException("Pole „summary” nie może być puste.");
         }
     }
 }

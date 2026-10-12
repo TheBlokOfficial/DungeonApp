@@ -284,9 +284,29 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var rejected = Assert.Single(registry.RejectedEntries);
         Assert.Equal("entries/e.json", rejected.Location);
-        Assert.Contains("is not valid", rejected.Reason);
-        Assert.Contains("extra", rejected.Reason);
+        Assert.Contains("`extra`", rejected.Reason);
         Assert.DoesNotContain("e.json", rejected.Reason);
+    }
+
+    [Fact]
+    public async Task A_wrongly_typed_field_gives_a_reason_naming_the_field()
+    {
+        const string json = """
+            {
+              "id": "e1",
+              "name": "Entry One",
+              "template": "sys:thing",
+              "templateVersion": "one",
+              "values": { }
+            }
+            """;
+        _packs.WriteFile("cnt", "pack.json", PackJson("cnt"));
+        _packs.WriteFile("cnt", "entries/e.json", json);
+
+        var registry = await Loader().LoadAsync();
+
+        var rejected = Assert.Single(registry.RejectedEntries);
+        Assert.Equal("Pole `templateVersion`: wartość ma zły typ.", rejected.Reason);
     }
 
     [Theory]
@@ -334,7 +354,7 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         // The reason names the defect (the file is not valid JSON) and never repeats the file name
         // the row title (Location) already carries.
-        Assert.Contains("is not valid", rejected.Reason);
+        Assert.Equal("Plik nie jest poprawnym JSON-em (wiersz 1).", rejected.Reason);
         Assert.DoesNotContain("e.json", rejected.Reason);
     }
 
@@ -381,7 +401,7 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Empty(registry.Entries);
 
         var rejected = Assert.Single(registry.RejectedEntries);
-        Assert.Contains("size limit", rejected.Reason);
+        Assert.Contains("limit", rejected.Reason);
     }
 
     // ---------------------------------------------------------------------
@@ -475,7 +495,7 @@ public sealed class ContentPackLoaderTests : IDisposable
 
         var rejected = Assert.Single(registry.RejectedPacks);
         Assert.Contains("pack.json", rejected.Reason);
-        Assert.Contains("size limit", rejected.Reason);
+        Assert.Contains("limit", rejected.Reason);
     }
 
     [Fact]
@@ -538,7 +558,7 @@ public sealed class ContentPackLoaderTests : IDisposable
             var rejected = Assert.Single(registry.RejectedEntries);
             Assert.Equal("locked-cnt", rejected.Pack.Value);
             Assert.Equal("entries/e.json", rejected.Location);
-            Assert.Contains("could not be read", rejected.Reason);
+            Assert.Contains("Nie udało się odczytać", rejected.Reason);
 
             // Both packs load - this is the assertion that matters most: one unreadable file must
             // never stop even its own pack, let alone a healthy sibling, from loading normally.
@@ -621,7 +641,7 @@ public sealed class ContentPackLoaderTests : IDisposable
         Assert.Equal(
             new[] { _packs.PackDirectory("gm"), bundled.PackDirectory("shipped") }.Order(StringComparer.Ordinal),
             registry.RejectedPacks.Select(rejected => rejected.Location).Order(StringComparer.Ordinal));
-        Assert.All(registry.RejectedPacks, rejected => Assert.Equal("id 'dup' is used by more than one installed pack.", rejected.Reason));
+        Assert.All(registry.RejectedPacks, rejected => Assert.Equal("Identyfikator 'dup' nosi więcej niż jedna zainstalowana paczka.", rejected.Reason));
     }
 
     // The same directory named twice is one root, not a self-collision.
@@ -770,17 +790,17 @@ public sealed class ContentPackLoaderTests : IDisposable
         """;
 
     [Theory]
-    [InlineData("C:/obrazy/a.png", "image path 'C:/obrazy/a.png' must be relative to the pack.")]
-    [InlineData("C:a.png", "image path 'C:a.png' must be relative to the pack.")]
-    [InlineData("/obrazy/a.png", "image path '/obrazy/a.png' must be relative to the pack.")]
-    [InlineData("\\obrazy\\a.png", "image path '\\obrazy\\a.png' must be relative to the pack.")]
-    [InlineData("../a.png", "image path '../a.png' leads outside the pack.")]
-    [InlineData("obrazy/../../a.png", "image path 'obrazy/../../a.png' leads outside the pack.")]
-    [InlineData("obrazy\\..\\..\\a.png", "image path 'obrazy\\..\\..\\a.png' leads outside the pack.")]
-    [InlineData("obrazy/a.gif", "image path 'obrazy/a.gif' is not a PNG, JPEG, WebP or SVG file.")]
-    [InlineData("obrazy/a", "image path 'obrazy/a' is not a PNG, JPEG, WebP or SVG file.")]
-    [InlineData("", "image path is empty.")]
-    [InlineData("obrazy/..", "image path 'obrazy/..' does not name a file.")]
+    [InlineData("C:/obrazy/a.png", "Ścieżka obrazu 'C:/obrazy/a.png' musi być względna wobec paczki.")]
+    [InlineData("C:a.png", "Ścieżka obrazu 'C:a.png' musi być względna wobec paczki.")]
+    [InlineData("/obrazy/a.png", "Ścieżka obrazu '/obrazy/a.png' musi być względna wobec paczki.")]
+    [InlineData("\\obrazy\\a.png", "Ścieżka obrazu '\\obrazy\\a.png' musi być względna wobec paczki.")]
+    [InlineData("../a.png", "Ścieżka obrazu '../a.png' wychodzi poza paczkę.")]
+    [InlineData("obrazy/../../a.png", "Ścieżka obrazu 'obrazy/../../a.png' wychodzi poza paczkę.")]
+    [InlineData("obrazy\\..\\..\\a.png", "Ścieżka obrazu 'obrazy\\..\\..\\a.png' wychodzi poza paczkę.")]
+    [InlineData("obrazy/a.gif", "Ścieżka obrazu 'obrazy/a.gif' nie wskazuje pliku PNG, JPEG, WebP ani SVG.")]
+    [InlineData("obrazy/a", "Ścieżka obrazu 'obrazy/a' nie wskazuje pliku PNG, JPEG, WebP ani SVG.")]
+    [InlineData("", "Ścieżka obrazu jest pusta.")]
+    [InlineData("obrazy/..", "Ścieżka obrazu 'obrazy/..' nie wskazuje pliku.")]
     public async Task An_entry_whose_picture_path_is_absolute_leaves_the_pack_or_is_not_an_image_is_unresolved_with_the_reason(
         string picture, string reason)
     {

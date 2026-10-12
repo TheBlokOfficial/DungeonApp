@@ -83,8 +83,8 @@
                 </DockPanel>
             </DockPanel>
 
-            <!-- Invisible warmup host - used for system content and campaign-tab warmup with
-                 the first shelf campaign, so it lives outside both
+            <!-- Invisible warmup host - used to warm every system's tabs and, with the first shelf
+                 campaign, its desk and campaign tabs, so it lives outside both
                  branches above. -->
             <ContentControl Name="WarmupHost" ZIndex="99" IsHitTestVisible="False" />
         </Grid>

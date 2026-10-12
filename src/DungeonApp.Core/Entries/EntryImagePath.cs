@@ -32,7 +32,7 @@ public static class EntryImagePath
 
         if (string.IsNullOrWhiteSpace(path))
         {
-            error = "image path is empty.";
+            error = "Ścieżka obrazu jest pusta.";
             return false;
         }
 
@@ -40,7 +40,7 @@ public static class EntryImagePath
         // pack) and a rooted path both point outside the pack before any segment is read.
         if (Path.IsPathRooted(path) || path.Contains(':', StringComparison.Ordinal))
         {
-            error = $"image path '{path}' must be relative to the pack.";
+            error = $"Ścieżka obrazu '{path}' musi być względna wobec paczki.";
             return false;
         }
 
@@ -54,7 +54,7 @@ public static class EntryImagePath
 
                 if (depth < 0)
                 {
-                    error = $"image path '{path}' leads outside the pack.";
+                    error = $"Ścieżka obrazu '{path}' wychodzi poza paczkę.";
                     return false;
                 }
             }
@@ -66,7 +66,7 @@ public static class EntryImagePath
 
         if (depth == 0 || path.EndsWith('/') || path.EndsWith('\\'))
         {
-            error = $"image path '{path}' does not name a file.";
+            error = $"Ścieżka obrazu '{path}' nie wskazuje pliku.";
             return false;
         }
 
@@ -74,7 +74,7 @@ public static class EntryImagePath
 
         if (!Extensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
         {
-            error = $"image path '{path}' is not a PNG, JPEG, WebP or SVG file.";
+            error = $"Ścieżka obrazu '{path}' nie wskazuje pliku PNG, JPEG, WebP ani SVG.";
             return false;
         }
 

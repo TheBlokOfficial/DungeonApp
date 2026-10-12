@@ -1,5 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using DungeonApp.Core.Entries;
 
 namespace DungeonApp.Content.Dnd5e;
 
@@ -28,12 +28,12 @@ public sealed record ItemAspect : IJsonOnDeserialized
         // A negative worth or weight means nothing, so the entry is refused rather than drawn.
         if (Value < 0)
         {
-            throw new JsonException("\"value\" cannot be negative.");
+            throw new ContentRuleException("Pole „value” nie może być ujemne.");
         }
 
         if (Weight < 0)
         {
-            throw new JsonException("\"weight\" cannot be negative.");
+            throw new ContentRuleException("Pole „weight” nie może być ujemne.");
         }
     }
 }
