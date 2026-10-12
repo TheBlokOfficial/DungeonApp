@@ -22,6 +22,11 @@
     <None Include="Packs\**\*" Link="dnd5e\packs\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- The icons of creature types and item categories (KindIcons), read from the assembly itself. -->
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\*.svg" LogicalName="DungeonApp.Content.Dnd5e.Icons.%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\DungeonApp.Core\DungeonApp.Core.csproj" />
     <ProjectReference Include="..\DungeonApp.Desktop\DungeonApp.Desktop.csproj" />

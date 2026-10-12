@@ -274,6 +274,25 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     public IBrush? ResolveBadgeBrush(string colorKey) => RarityBrushes.GetValueOrDefault(colorKey);
 
     /// <summary>
+    /// A creature's row shows the icon of its type, an item's the icon of its category
+    /// (<see cref="KindIcons"/>); a condition shows its own icon instead (its profile's picture).
+    /// </summary>
+    public Func<Entry, DrawingImage>? RowIcon(ContentTypeReference type)
+    {
+        if (type == new ContentTypeReference(ContentSetId, ContentId.Create(CreatureTypeId)))
+        {
+            return entry => KindIcons.ForCreature(entry.Values.Read<Creature>().Type);
+        }
+
+        if (type == new ContentTypeReference(ContentSetId, ContentId.Create(GearTypeId)))
+        {
+            return entry => KindIcons.ForGear(entry.Values.Read<Gear>().Category);
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// A rarity tier's own color, for the item card's rarity pill - the same one the list's badge
     /// resolves to; null for a rarity this system does not know.
     /// </summary>

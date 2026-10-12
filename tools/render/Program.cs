@@ -35,7 +35,7 @@ namespace DungeonApp.Tools.Render;
 /// Nothing reads the GM's Documents: packs come from the build output, desk layouts go to a
 /// throwaway directory.
 /// </summary>
-internal static class Program
+internal static partial class Program
 {
     private const int WindowWidth = 1440;
     private const int WindowHeight = 900;
@@ -112,6 +112,11 @@ internal static class Program
         RenderCards(window, shell, "Stworzenia", "creature");
         RenderCards(window, shell, "Przedmioty", "gear");
         RenderCards(window, shell, "Stany", "condition");
+        if (MayMatch("icons_"))
+        {
+            RenderIconSheets();
+        }
+
         if (MayMatch("gallery_"))
         {
             RenderGallery(window, shell);
