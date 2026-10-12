@@ -29,7 +29,9 @@
                     </Border>
                 </ControlTemplate>
             </Setter>
-            <Style Selector="^:pointerover">
+            <!-- No focus ring: the strip clips to the desk's corner, so a ring outside the button would be cut
+                 off; keyboard focus shows as the hover fill. -->
+            <Style Selector="^:pointerover, ^:focus-visible">
                 <Setter Property="Background" Value="{DynamicResource DungeonSurfaceHoverBrush}" />
             </Style>
         </ControlTheme>

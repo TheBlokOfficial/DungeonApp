@@ -47,6 +47,7 @@
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Arrow" />
         <Setter Property="FocusAdorner" Value="{StaticResource DungeonFocusAdornerControl}" />
+        <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <!-- Knob moves (knob slot Canvas.Left), DungeonMotionDuration with easing out. -->
         <Setter Property="KnobTransitions">

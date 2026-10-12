@@ -332,8 +332,8 @@ internal static partial class Program
 
         Control?[] samples =
         [
-            First<Button>(button => !button.Classes.Contains("icon") && !button.Classes.Contains("subtle")),
-            First<Button>(button => button.Classes.Contains("icon")),
+            First<Button>(button => button.FocusAdorner != null && !button.Classes.Contains("icon") && !button.Classes.Contains("subtle")),
+            First<Button>(button => button.FocusAdorner != null && button.Classes.Contains("icon")),
             First<CheckBox>(),
             First<RadioButton>(),
             First<Avalonia.Controls.Primitives.ToggleButton>(button => button.GetType() == typeof(Avalonia.Controls.Primitives.ToggleButton)),
@@ -353,10 +353,24 @@ internal static partial class Program
         var crops = new List<SKBitmap>();
         foreach (var sample in samples.OfType<Control>())
         {
-            sample.BringIntoView();
+            if (sample.GetVisualAncestors().OfType<ScrollViewer>().LastOrDefault() is { } scroller)
+            {
+                var inScroller = sample.TranslatePoint(new Point(0, 0), scroller)!.Value;
+                scroller.Offset = new Vector(scroller.Offset.X, Math.Max(0, scroller.Offset.Y + inScroller.Y - 80));
+            }
+
             Settle();
-            sample.Focus(Avalonia.Input.NavigationMethod.Tab);
+            var focused = sample.Focus(Avalonia.Input.NavigationMethod.Tab);
             Settle();
+            if (!focused)
+            {
+                throw new InvalidOperationException($"{sample.GetType().Name} did not take focus.");
+            }
+
+            // The adorner is placed by the layer's arrange pass, which runs after the one that follows the focus.
+            window.UpdateLayout();
+            Settle();
+
             var origin = sample.TranslatePoint(new Point(0, 0), window)!.Value;
             var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No frame was rendered.");
             using var stream = new MemoryStream();
