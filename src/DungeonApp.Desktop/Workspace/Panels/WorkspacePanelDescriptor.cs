@@ -47,6 +47,14 @@ public sealed record WorkspacePanelDescriptor(
     /// </summary>
     public bool ClosesPermanently { get; init; }
 
+    /// <summary>
+    /// False - the content does not usefully fill a whole desk (an entry card), so the window has no
+    /// maximize button. A window with an upper size bound in either axis cannot be maximized either,
+    /// whatever this says. A window whose width has Min == Max is fixed in width: only its height is
+    /// changed by hand.
+    /// </summary>
+    public bool CanMaximize { get; init; } = true;
+
     /// <summary>Builds the body of the window with the given instance key; null - <see cref="CreateContent"/>.</summary>
     public Func<string, object>? CreateInstance { get; init; }
 

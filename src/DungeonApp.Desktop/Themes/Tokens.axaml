@@ -329,10 +329,10 @@
         <SolidColorBrush x:Key="DungeonPanelResizeGripBrush" Color="Transparent" />
 
         <!-- FrameOverlay: a frame element laid over the desk windows (the leaf, later the hotbar) -
-        background, corner radius and shadow. Darker than the window background (#1B1917) and the
-        desk (#151412), with a deeper shadow and a larger radius than a window, so it reads as
-        sitting above every window. -->
-        <SolidColorBrush x:Key="DungeonFrameOverlayBackgroundBrush" Color="#0E0D0C" />
+        background, corner radius and shadow. The background is the frame's and the windows' own
+        (it stands on the frame, not above it); the deeper shadow and the larger radius than a window
+        are what set it above the windows. -->
+        <SolidColorBrush x:Key="DungeonFrameOverlayBackgroundBrush" Color="{DynamicResource DungeonSurfaceColor}" />
         <CornerRadius x:Key="DungeonFrameOverlayCornerRadius">14</CornerRadius>
         <BoxShadows x:Key="DungeonFrameOverlayShadow">0 6 18 0 #B3000000</BoxShadows>
 

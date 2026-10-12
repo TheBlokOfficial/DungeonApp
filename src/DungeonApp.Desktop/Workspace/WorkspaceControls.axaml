@@ -16,15 +16,16 @@
         <Setter Property="Height" Value="{DynamicResource DungeonPanelHeaderActionSize}" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="{DynamicResource DungeonCornerRadius}" />
+        <!-- Square: the hover fills the button's whole cell. The outer end is rounded by the clip of
+             the strip the window puts the buttons in, which follows the window's own corner. -->
+        <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <Border Background="{TemplateBinding Background}">
                     <ContentPresenter Content="{TemplateBinding Content}"
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                       VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -162,7 +163,11 @@
                         <Border Name="PART_ResizeSE" Grid.Row="2" Grid.Column="2" Classes="grip-corner" Cursor="BottomRightCorner" />
                     </Grid>
 
-                    <!-- Header action buttons -->
+                    <!-- Header action buttons. The clip is the window's own shape, so the rightmost button's
+                         hover fills the rounded corner like paint poured into it; the frame line is drawn
+                         over the edge of the fill. -->
+                    <Border ClipToBounds="True"
+                            CornerRadius="{TemplateBinding CornerRadius}">
                     <StackPanel HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Orientation="Horizontal">
@@ -209,6 +214,7 @@
                                    Source="{StaticResource DungeonIconWindowMaximize}" />
                         </Button>
                     </StackPanel>
+                    </Border>
 
                     <!-- Frame and header border -->
                     <Border Height="{DynamicResource DungeonPanelHeaderHeight}"
@@ -256,6 +262,17 @@
             <Setter Property="Opacity" Value="0" />
             <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
             <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+
+        <!-- Fixed width: the sides and corners are not there (no grip, no horizontal cursor); the top
+             and bottom edges, which then run the full width, still change the height. -->
+        <Style Selector="^:fixed-width /template/ Border#PART_ResizeW,
+                       ^:fixed-width /template/ Border#PART_ResizeE,
+                       ^:fixed-width /template/ Border#PART_ResizeNW,
+                       ^:fixed-width /template/ Border#PART_ResizeNE,
+                       ^:fixed-width /template/ Border#PART_ResizeSW,
+                       ^:fixed-width /template/ Border#PART_ResizeSE">
+            <Setter Property="IsVisible" Value="False" />
         </Style>
 
         <Style Selector="^:maximized /template/ Grid#PART_ResizeGrid">

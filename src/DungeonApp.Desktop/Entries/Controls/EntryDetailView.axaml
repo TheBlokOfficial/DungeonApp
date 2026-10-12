@@ -5,7 +5,8 @@
              xmlns:dc="using:DungeonApp.Desktop.Controls"
              x:Class="DungeonApp.Desktop.Entries.Controls.EntryDetailView"
              x:DataType="ct:ContentDetailViewModel"
-             Width="560"
+             xmlns:ctl="using:DungeonApp.Desktop.Entries.Controls"
+             Width="{x:Static ctl:EntryDetailView.CardWidth}"
              HorizontalAlignment="Left">
 
     <!-- An entry's detail block: the entry's header with the system's card under it, 560 wide. No

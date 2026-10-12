@@ -47,7 +47,10 @@ public interface IWorkspacePanel : INotifyPropertyChanged
 
     double MaxHeight { get; }
 
-    /// <summary>True when the panel has no upper size bound in either axis, so it can fill the desk.</summary>
+    /// <summary>True when the width cannot be dragged (MinWidth equals MaxWidth); the height still can.</summary>
+    bool HasFixedWidth { get; }
+
+    /// <summary>True when the panel has no upper size bound in either axis and its content suits the whole desk.</summary>
     bool CanMaximize { get; }
 
     int ZOrder { get; }

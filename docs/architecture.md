@@ -262,11 +262,14 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   (`EntityCardBuilder`: wpis z wartościami entity po nałożeniu łatki; linia „№ 5 · Goblin”;
   entity bez wpisu — `BrokenContentDetailViewModel` z powodem).
 - **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
-  (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Ciemniejsze
-  tło, mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad oknami, wspólne
-  z przyszłym hotbarem.
-- **Maksymalizacja okna:** tylko okno bez górnej granicy rozmiaru (inne nie mają przycisku). Okno
-  zmaksymalizowane wypełnia biurko bez obwódki, tytuł stoi pośrodku, przyciski nagłówka znikają;
+  (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Tło ma
+  to samo co rama i okna; mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad
+  oknami, wspólne z przyszłym hotbarem.
+- **Rozmiar okna i maksymalizacja:** okno ma przycisk i polecenie maksymalizacji tylko wtedy, gdy jego
+  deskryptor tego nie wyłącza (`CanMaximize`) i nie ma górnej granicy rozmiaru — czyli gdy treść
+  sensownie wypełnia całe biurko. Okno z kartą wpisu (podgląd i przypięta karta) ma stałą szerokość
+  (szerokość karty plus ramka okna, Min = Max): uchwyty boków i rogów nie istnieją, zmienia się tylko
+  wysokość, a zapisana inna szerokość wczytuje się do stałej. Okno zmaksymalizowane wypełnia biurko bez obwódki, tytuł stoi pośrodku, przyciski nagłówka znikają;
   przywraca dwuklik w tytuł albo Esc. Stan zmaksymalizowany nie trafia do zapisanego układu.
 - **Paleta** (`Desktop/Controls/Palette.cs`, motyw `Themes/Controls/Palette.axaml`): okienko u góry
   pośrodku okna, w `WindowOverlay`, bez wiedzy o systemie. Woła się `Palette.ShowAsync(origin,
