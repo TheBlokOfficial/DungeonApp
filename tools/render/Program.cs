@@ -540,6 +540,16 @@ internal static class Program
             SaveCrop(window, deskView, UniqueName("desk_catalog"));
         }
 
+        if (Wants("desk_catalog_rename"))
+        {
+            var renamed = Row("Jaskinia goblinów");
+            catalog.BeginRename(renamed);
+            Settle();
+            SaveCrop(window, deskView, UniqueName("desk_catalog_rename"));
+            catalog.CancelRename(renamed);
+            Settle();
+        }
+
         if (Wants("desk_catalog_window"))
         {
             var descriptor = new WorkspacePanelDescriptor(

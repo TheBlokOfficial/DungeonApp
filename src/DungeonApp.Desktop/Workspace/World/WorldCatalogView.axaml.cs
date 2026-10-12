@@ -45,6 +45,7 @@ public partial class WorldCatalogView : UserControl
     private WorldRowViewModel? _deferredClick;
     private WorldRowViewModel? _dropTarget;
     private TopLevel? _topLevel;
+    private WorldRowViewModel? _renameRow;
 
     // The settle after a move or a resize: the catalog glides to the grid like a window does.
     private readonly Stopwatch _snapClock = new();
@@ -70,6 +71,7 @@ public partial class WorldCatalogView : UserControl
         AddHandler(KeyDownEvent, OnRenameKeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyDownEvent, OnKeyDown);
         AddHandler(ContextRequestedEvent, OnContextRequested, RoutingStrategies.Tunnel);
+        AddHandler(GotFocusEvent, OnGotFocus);
         ResizeGrip.PointerPressed += OnResizePressed;
     }
 
@@ -102,6 +104,7 @@ public partial class WorldCatalogView : UserControl
         base.OnDetachedFromVisualTree(e);
 
         CompleteSnap();
+        StopWaitingForRenameField();
         _topLevel?.RemoveHandler(PointerPressedEvent, OnWindowPointerPressed);
         _topLevel = null;
 
@@ -603,17 +606,67 @@ public partial class WorldCatalogView : UserControl
 
     // Background priority: a rename started from the context menu must take focus after the closing
     // menu hands focus back to the tree, or the field opens unfocused.
-    private void OnRenameStarted(WorldRowViewModel row) =>
-        Dispatcher.UIThread.Post(
-            () =>
+    // The field takes focus after the layout pass that shows it, not at some dispatcher priority: the field
+    // is hidden until the rename starts, so its template is applied only by that pass, and on Windows the
+    // pass can wait for the compositor while lower-priority jobs run. A text box focused before its
+    // template has no caret and takes no typing. A new folder's row may not even exist before the pass.
+    private void OnRenameStarted(WorldRowViewModel row)
+    {
+        _renameRow = row;
+        LayoutUpdated -= OnRenameLayoutUpdated;
+        LayoutUpdated += OnRenameLayoutUpdated;
+    }
+
+    private void OnRenameLayoutUpdated(object? sender, EventArgs e)
+    {
+        if (_renameRow is not { IsEditing: true } row)
+        {
+            StopWaitingForRenameField();
+            return;
+        }
+
+        if (ReadyRenameField(row) is { } box)
+        {
+            StopWaitingForRenameField();
+            box.Focus();
+            box.SelectAll();
+        }
+    }
+
+    private void StopWaitingForRenameField()
+    {
+        LayoutUpdated -= OnRenameLayoutUpdated;
+        _renameRow = null;
+    }
+
+    // While a rename is open, focus that comes back to the catalog itself (the closing context menu or the
+    // window regaining activation restores it there) goes on to the field, so typing never lands on the tree.
+    // Enter and Escape close the rename before they focus the catalog, so they pass.
+    private void OnGotFocus(object? sender, FocusChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.Source, this) || ViewModel?.Rows.FirstOrDefault(row => row.IsEditing) is not { } row)
+        {
+            return;
+        }
+
+        if (ReadyRenameField(row) is { } box)
+        {
+            box.Focus();
+
+            // Losing focus dropped the selection; an untouched name is selected again, so typing still replaces it.
+            if (row.EditText == row.Name)
             {
-                if (this.GetVisualDescendants().OfType<TextBox>().FirstOrDefault(box => ReferenceEquals(box.DataContext, row)) is { } box)
-                {
-                    box.Focus();
-                    box.SelectAll();
-                }
-            },
-            DispatcherPriority.Background);
+                box.SelectAll();
+            }
+        }
+    }
+
+    /// <summary>The rename field of <paramref name="row"/> once it is shown, templated and arranged; otherwise null.</summary>
+    private TextBox? ReadyRenameField(WorldRowViewModel row) =>
+        this.GetVisualDescendants().OfType<TextBox>().FirstOrDefault(box => ReferenceEquals(box.DataContext, row)) is
+            { IsEffectivelyVisible: true, IsArrangeValid: true } box && box.GetVisualChildren().Any()
+            ? box
+            : null;
 
     // Tunnelling, so Enter and Escape reach the catalog before the field's own handling of them.
     private async void OnRenameKeyDown(object? sender, KeyEventArgs e)

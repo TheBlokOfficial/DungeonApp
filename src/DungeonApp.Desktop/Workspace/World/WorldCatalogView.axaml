@@ -88,16 +88,18 @@
                                    Text="{Binding Name}"
                                    IsVisible="{Binding !IsEditing}" />
 
-                        <!-- Rename in place: the field fills the name's cell and starts left of the text by its
-                             border and padding (1 + 4 px past a 1 px margin), so the letters stay where they were
-                             and no neighbour moves. Square corners; the text and caret are clipped inside the padding. -->
+                        <!-- Rename in place: the field starts at the name's cell and its border and padding (1 + 5 px)
+                             equal the name's left margin, so the letters stay where they were and no neighbour moves.
+                             It is as wide as the typed text, at least 80 px and at most the cell, before the number;
+                             longer text scrolls inside. The vertical padding keeps the selection off the border
+                             within the row's height. -->
                         <TextBox Grid.Column="2"
                                  Classes="world-rename"
                                  Classes.error="{Binding HasRenameError}"
-                                 Margin="1,0,0,0"
-                                 Padding="4,0"
+                                 HorizontalAlignment="Left"
+                                 Padding="5,2"
                                  CornerRadius="0"
-                                 MinWidth="0"
+                                 MinWidth="80"
                                  Height="NaN"
                                  VerticalAlignment="Center"
                                  FontSize="{DynamicResource DungeonHelperFontSize}"
