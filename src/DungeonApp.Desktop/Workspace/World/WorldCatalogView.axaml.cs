@@ -140,7 +140,7 @@ public partial class WorldCatalogView : UserControl
 
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed
             && !source.GetSelfAndVisualAncestors().Any(visual => ReferenceEquals(visual, this) || visual is PanelWindow)
-            && source.FindAncestorOfType<WorkspaceSurface>() is not null)
+            && source.FindAncestorOfType<WorkspaceSurface>(includeSelf: true) is not null)
         {
             viewModel.ClearSelection();
         }
@@ -606,6 +606,8 @@ public partial class WorldCatalogView : UserControl
 
     // ---- Rename in place ----
 
+    // Background priority: a rename started from the context menu must take focus after the closing
+    // menu hands focus back to the tree, or the field opens unfocused.
     private void OnRenameStarted(WorldRowViewModel row) =>
         Dispatcher.UIThread.Post(
             () =>
@@ -616,7 +618,7 @@ public partial class WorldCatalogView : UserControl
                     box.SelectAll();
                 }
             },
-            DispatcherPriority.Loaded);
+            DispatcherPriority.Background);
 
     // Tunnelling, so Enter and Escape reach the catalog before the field's own handling of them.
     private async void OnRenameKeyDown(object? sender, KeyEventArgs e)
