@@ -5,31 +5,57 @@
     <!--
         Section heading (controls:SectionHeading): start of a card text section. One row, vertically
         centred: accent bar (Accent - section starts here; DungeonSectionHeadingBarWidth
-        x DungeonSectionHeadingBarHeight, square ends) and display-md title (decorative font 20,
-        SemiBold), regular text. No icon: title identifies the section, while an image at
-        every heading only adds noise. DungeonSpacingSm between parts. Bar sits
-        at the left edge - aligned with section content below the heading.
-        No states: does not collapse anything, respond to the pointer or accept focus; title is selectable.
+        x DungeonSectionHeadingBarHeight, square ends), display-md title (decorative font 20,
+        SemiBold), regular text, and a chevron after the title (DungeonIconChevronDown, muted text
+        role; primary text role under the pointer; turned -90deg while collapsed). DungeonSpacingSm
+        between parts. The whole row is the click area (transparent background, hand cursor); the
+        title and bar do not change under the pointer. Bar sits at the left edge - aligned with
+        section content below the heading. Does not accept focus; the title is not selectable (a click
+        on it folds the section).
     -->
     <ControlTheme x:Key="{x:Type controls:SectionHeading}" TargetType="controls:SectionHeading">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
         <Setter Property="Template">
             <ControlTemplate>
-                <StackPanel Orientation="Horizontal" Spacing="{DynamicResource DungeonSpacingSm}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="{DynamicResource DungeonSpacingSm}"
+                            Background="Transparent">
                     <Border Name="PART_Bar"
                             Width="{DynamicResource DungeonSectionHeadingBarWidth}"
                             Height="{DynamicResource DungeonSectionHeadingBarHeight}"
                             VerticalAlignment="Center"
                             Background="{DynamicResource DungeonAccentBrush}" />
-                    <SelectableTextBlock Name="PART_Text"
-                                         Classes="display-md"
-                                         Text="{TemplateBinding Text}"
-                                         Foreground="{TemplateBinding Foreground}"
-                                         VerticalAlignment="Center" />
+                    <TextBlock Name="PART_Text"
+                               Classes="display-md"
+                               Text="{TemplateBinding Text}"
+                               Foreground="{TemplateBinding Foreground}"
+                               VerticalAlignment="Center" />
+                    <controls:ForegroundIcon Name="PART_Chevron"
+                                             Width="14" Height="14"
+                                             VerticalAlignment="Center"
+                                             Source="{DynamicResource DungeonIconChevronDown}" />
                 </StackPanel>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^ /template/ controls|ForegroundIcon#PART_Chevron">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextMutedBrush}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform"
+                                                   Duration="{StaticResource DungeonMotionDuration}"
+                                                   Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^:pointerover /template/ controls|ForegroundIcon#PART_Chevron">
+            <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="^:collapsed /template/ controls|ForegroundIcon#PART_Chevron">
+            <Setter Property="RenderTransform" Value="rotate(-90deg)" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

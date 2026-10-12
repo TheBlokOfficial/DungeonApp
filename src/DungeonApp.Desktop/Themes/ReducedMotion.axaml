@@ -24,6 +24,9 @@
     <Style Selector="controls|ForegroundIcon.world-chevron">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
+    <Style Selector="controls|SectionHeading /template/ controls|ForegroundIcon#PART_Chevron">
+        <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
     <Style Selector="ProgressBar /template/ Border#PART_Indicator">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>

@@ -5,8 +5,8 @@ using Avalonia.Controls;
 namespace DungeonApp.Desktop.Entries.Controls;
 
 /// <summary>
-/// A reusable card control: one titled section of a card's text - a heading, an optional introduction and a list of <see cref="ProseItem"/>s. Static: it neither collapses nor
-/// reacts to the pointer. A card view composes it in XAML and sets its properties directly; like
+/// A reusable card control: one titled section of a card's text - a heading, an optional introduction and a list of <see cref="ProseItem"/>s. A click on the heading
+/// hides the items and introduction until the next click. A card view composes it in XAML and sets its properties directly; like
 /// <see cref="TraitListView"/>, it is its own <see cref="StyledElement.DataContext"/>.
 /// </summary>
 public partial class ProseSectionView : UserControl
