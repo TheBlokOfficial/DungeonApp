@@ -186,6 +186,20 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   czytelniejsze w tabeli. Ściągawka tłumacza: `tools/srd/slownik.md`.
 - **Paczka SRD rośnie na żądanie.** Tłumaczy się stworzenia i przedmioty potrzebne w przygodzie,
   którą MG przygotowuje, nie cały SRD naraz. Spis do wyboru: `tools/srd/stworzenia.md`.
+- **Tooltip tylko tam, gdzie czegoś nie widać.** Ucięty tekst albo kontrolka bez podpisu (przycisk
+  z ikoną); nigdy na wyłączonej kontrolce i nigdy jako powtórzenie widocznej nazwy. Każdy tooltip czeka
+  pełne opóźnienie, także następny po przejściu myszą. Tooltip na każdym wierszu i przycisku był szumem,
+  który zasłaniał sąsiednie wiersze.
+- **Okno pokazuje tyle, ile treść potrafi wypełnić.** Okno z kartą wpisu ma szerokość karty i zmienia
+  tylko wysokość, bez maksymalizacji; maksymalizację dostaje okno, którego treść sensownie wypełnia
+  ekran. Szersza karta to tylko pusty pas. Okno trwałe (inicjatywa, zegar) da się zminimalizować, nie
+  zamknąć — reguła wchodzi z pierwszym takim oknem (E5).
+- **Szkło palety to rozmyte zdjęcie okna.** Avalonia nie rozmywa własnej treści pod kontrolką, ale
+  dopóki paleta jest otwarta, nic pod nią się nie zmienia — zdjęcie zrobione przy otwarciu wygląda jak
+  prawdziwe szkło i nie kosztuje nic w trakcie.
+- **Sekcja zwija się i rozwija płynnie, z animacją wysokości.** Natychmiastowe zniknięcie długiej treści
+  i skok wszystkiego pod nią czytały się jako gwałtowne. Stanu zwinięcia nikt nie pamięta: każda karta
+  startuje rozwinięta.
 
 ## Odrzucone
 

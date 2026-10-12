@@ -38,7 +38,7 @@ punkt kontrolny „Pierwsza walka”. Rozstrzygnięcia, na których stoi plan: `
 
 Specyfikacja: `docs/spec/katalog.md`.
 
-- [x] 2.1 Biurko w miejscu strony kampanii → architecture.md, „Biurko”, „Listek”, „Maksymalizacja okna”.
+- [x] 2.1 Biurko w miejscu strony kampanii → architecture.md, „Biurko”, „Listek”, „Rozmiar okna i maksymalizacja”.
 - [x] 2.2 Katalog na biurku i paleta: drzewo katalogów z entity, paleta dodawania, podgląd z pinezką →
   architecture.md, „Paleta”, „Katalog świata”, „Podgląd i przypięte karty”.
 - [ ] 2.3 Karta entity zmienia się w miejscu: część żywa nad kreską, część stała jak w bibliotece →
@@ -52,7 +52,8 @@ Specyfikacja: `docs/spec/katalog.md`.
     PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
     „Wartości z bazą”, „Edycja w części żywej”.
   - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki;
-    poprawki w drzewie (zmiana nazwy, próg przeciągnięcia, przewinięcie po przeniesieniu) → spec,
+    poprawka w drzewie: przewinięcie po przeniesieniu (zmiana nazwy i próg przeciągnięcia zrobione
+    w szlifowaniu) → spec,
     „Zatwierdzanie zmian”, „Poprawki w drzewie”.
   - [ ] 2.3d Stany: sekcja, dodawanie z palety, usuwanie, stany domyślne wpisu → spec, „Stany”.
   - [ ] 2.3e Efekty: sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy → spec, „Efekty”.
@@ -80,6 +81,8 @@ Specyfikacja: `docs/spec/katalog.md`.
   co zatwierdzanie z 2.3c → decisions.md, „Znaczniki zmian w turze”.
 - [ ] PW tymczasowe, liczniki i tyknięcia stanów → decisions.md, „Stany i efekty — dwie listy”,
   „Liczniki stanów tykają na końcu tury”.
+- [ ] Okno inicjatywy jest trwałe: minimalizacja zamiast zamknięcia → decisions.md, „Okno pokazuje
+  tyle, ile treść potrafi wypełnić”.
 - [ ] „Do walki” z menu albo przeciągnięciem; okno zmaksymalizowane zakrywa katalog, więc
   przeciąganie do kolejki trzeba rozwiązać w tym etapie.
 - [ ] Kalkulator kości jako osobne okno biurka → decisions.md, „Kalkulator kości zamiast rzutu
@@ -185,8 +188,12 @@ Wygląd, który działa, ale mógłby być lepszy. Nie blokuje kamienia milowego
 - [ ] Menu: skrót nie stoi w jednej linii ze strzałką podmenu, podmenu nachodzi na menu.
 - [ ] Ikony kategorii na liście treści (przedmioty: broń, zbroja…; stworzenia: typ), małe i przygaszone
   jak ikony stanów; ta sama zamiast zastępczej w pustym polu obrazka, spoza listy — domyślna.
-- [ ] Przełączanie zakładek bez efektu przenikania (fade) — zmiana ma być natychmiastowa. Usunąć też
-  gradient po prawej stronie biblioteki kampanii.
+- [x] Szlifowanie startu, ramy, katalogu świata, okien, listka, palety i kart → spec
+  `docs/spec/szlifowanie.md`; architecture.md, „Rozmiar okna i maksymalizacja”, „Podgląd i przypięte
+  karty”; decisions.md, „Tooltip tylko tam, gdzie czegoś nie widać”, „Szkło palety…”, „Sekcja zwija
+  się…”.
+- [ ] Szkło palety słabo widać nad ciemnym interfejsem — krycie zabarwienia
+  (`DungeonPaletteGlassTintBrush`) do dobrania na oko.
 - [ ] Widoczny wygląd fokusu klawiatury (kontrolki części żywej dostają go w 2.3a).
 - [ ] Klik w tytuł okna podglądu rozwija katalogi do entity i zaznacza ją w drzewie.
 
