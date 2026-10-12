@@ -25,11 +25,9 @@
                         IsVisible="{Binding Title, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
                 <StackPanel Spacing="{DynamicResource DungeonSpacingMd}">
-                    <SelectableTextBlock x:Name="IntroText"
-                                         Classes="body secondary"
-                                         TextWrapping="Wrap"
-                                         dc:EmphasisMarkup.Text="{Binding Intro}"
-                                         IsVisible="{Binding Intro, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    <dc:ProseText x:Name="IntroText"
+                                  Text="{Binding Intro}"
+                                  IsVisible="{Binding Intro, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
                     <ItemsControl ItemsSource="{Binding Items}">
                         <ItemsControl.ItemsPanel>
@@ -48,9 +46,7 @@
                                              FontWeight="SemiBold"
                                              Foreground="{DynamicResource DungeonTextPrimaryBrush}" />
                                     </SelectableTextBlock>
-                                    <SelectableTextBlock Classes="body secondary"
-                                                         TextWrapping="Wrap"
-                                                         dc:EmphasisMarkup.Text="{Binding Text}" />
+                                    <dc:ProseText Text="{Binding Text}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

@@ -100,16 +100,20 @@
                                 <ItemsControl Grid.Row="1" ItemsSource="{Binding TagRow}" IsVisible="{Binding HasTagRow}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <WrapPanel ItemSpacing="{DynamicResource DungeonSpacingXs}"
-                                                       LineSpacing="{DynamicResource DungeonSpacingXs}" />
+                                            <dc:OneLineTagPanel ItemSpacing="{DynamicResource DungeonSpacingXs}" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
-                                    <!-- A tag is a string drawn as a word tag; the card's tags start is a
+                                    <!-- The tags stand on one line (controls:OneLineTagPanel): the tag
+                                         that does not fit ends in an ellipsis and opens whole under
+                                         the pointer, the ones after it are not shown. A tag is a
+                                         string drawn as a word tag; the card's tags start is a
                                          control and shows as itself. -->
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="x:String">
                                             <dc:WordTag>
-                                                <SelectableTextBlock Text="{Binding}" />
+                                                <dc:RevealingTextBlock Text="{Binding}"
+                                                                       TextWrapping="NoWrap"
+                                                                       TextTrimming="CharacterEllipsis" />
                                             </dc:WordTag>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>

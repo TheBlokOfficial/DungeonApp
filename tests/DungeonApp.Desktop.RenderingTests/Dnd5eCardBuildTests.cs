@@ -378,12 +378,12 @@ public sealed class Dnd5eCardBuildTests
 
         Assert.Equal("Leży na ziemi.", Assert.IsType<SelectableTextBlock>(header.HeaderBlock).Text);
 
-        // The rules are the card's content, not a section: no heading, the introduction opens with an initial.
-        Assert.DoesNotContain(card.GetVisualDescendants().OfType<SectionHeading>(), heading => heading.IsEffectivelyVisible);
-        var intro = card.FindControl<InitialProse>("RulesIntro")!;
-        Assert.Equal("Istota ma **utrudnienie** w rzutach ataku.", intro.Text);
-        Assert.NotNull(intro.Icon);
-        Assert.False(card.FindControl<ProseSectionView>("RulesEntries")!.IsVisible);
+        // The rules are a prose section titled "Opis", like an item's description; no initial.
+        var rules = card.FindControl<ProseSectionView>("Rules")!;
+        Assert.Equal("Opis", rules.Title);
+        Assert.Equal("Istota ma **utrudnienie** w rzutach ataku.", rules.Intro);
+        Assert.Empty(rules.Items);
+        Assert.Empty(card.GetVisualDescendants().OfType<InitialProse>());
 
         window.Close();
     }
@@ -402,10 +402,10 @@ public sealed class Dnd5eCardBuildTests
         var card = ConditionCard(levels, EntryPicture.None);
         var window = Show(card);
 
-        var entries = card.FindControl<ProseSectionView>("RulesEntries")!;
-        Assert.Equal(["Poziom 1", "Poziom 2"], entries.Items.Select(item => item.Name));
-        Assert.True(entries.IsVisible);
-        Assert.Equal("Wyczerpanie ma sześć poziomów.", card.FindControl<InitialProse>("RulesIntro")!.Text);
+        var rules = card.FindControl<ProseSectionView>("Rules")!;
+        Assert.Equal(["Poziom 1", "Poziom 2"], rules.Items.Select(item => item.Name));
+        Assert.True(rules.IsVisible);
+        Assert.Equal("Wyczerpanie ma sześć poziomów.", rules.Intro);
 
         window.Close();
     }

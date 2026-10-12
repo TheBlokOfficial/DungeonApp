@@ -38,7 +38,7 @@ public sealed class GallerySectionsBuildTests
 
         var sections = window.GetVisualDescendants().OfType<ProseSectionView>().ToList();
         Assert.Equal(2, sections.Count);
-        Assert.All(sections, section => Assert.Equal(2, section.Items.Count));
+        Assert.Equal([2, 3], sections.Select(section => section.Items.Count));
 
         var initials = window.GetVisualDescendants().OfType<InitialProse>().ToList();
         Assert.Equal(2, initials.Count);
@@ -64,7 +64,7 @@ public sealed class GallerySectionsBuildTests
         };
         var window = Show(section);
         var heading = section.GetVisualDescendants().OfType<SectionHeading>().Single();
-        var intro = section.FindControl<SelectableTextBlock>("IntroText")!;
+        var intro = section.FindControl<ProseText>("IntroText")!;
         Assert.True(intro.IsEffectivelyVisible);
 
         var point = heading.TranslatePoint(new Avalonia.Point(heading.Bounds.Width / 2, heading.Bounds.Height / 2), window)!.Value;

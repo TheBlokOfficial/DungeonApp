@@ -25,6 +25,7 @@ public partial class CardPartsSection : UserControl
         ProseWithoutIntro.Items =
         [
             new ProseItem("Taktyka gromady", "raz na turę", "Ma ułatwienie w rzucie ataku, jeśli w promieniu 1,5 m od celu stoi sojusznik."),
+            new ProseItem("Okrzyk bojowy", null, "Pierwsza linia tekstu, zakończona twardym końcem wiersza.\nDruga linia zaczyna się trochę niżej niż zwykłe zawinięcie, ale wyraźnie wyżej niż po pustej linii."),
             new ProseItem("Czujny!", null, "Niesparowany znacznik ** zostaje w tekście tak, jak go zapisano."),
         ];
 
