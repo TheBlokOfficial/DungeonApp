@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -21,7 +23,7 @@ namespace DungeonApp.Desktop.Workspace.World;
 public partial class WorldCatalogView : UserControl
 {
     /// <summary>Distance the pointer must travel before a press on a row becomes a drag, not a click.</summary>
-    private const double DragThreshold = 4;
+    private const double DragThreshold = 8;
 
     private enum Gesture
     {
@@ -42,6 +44,18 @@ public partial class WorldCatalogView : UserControl
     private WorldRowViewModel? _dragRow;
     private WorldRowViewModel? _deferredClick;
     private WorldRowViewModel? _dropTarget;
+    private TopLevel? _topLevel;
+
+    // The settle after a move or a resize: the catalog glides to the grid like a window does.
+    private readonly Stopwatch _snapClock = new();
+    private DispatcherTimer? _snapTimer;
+    private double _snapFromX;
+    private double _snapFromY;
+    private double _snapFromWidth;
+    private double _snapToX;
+    private double _snapToY;
+    private double _snapToWidth;
+    private bool _snapIsResize;
 
     public WorldCatalogView()
     {
@@ -55,7 +69,6 @@ public partial class WorldCatalogView : UserControl
         AddHandler(Button.ClickEvent, OnButtonClick);
         AddHandler(KeyDownEvent, OnRenameKeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyDownEvent, OnKeyDown);
-        AddHandler(LostFocusEvent, OnLostFocus);
         AddHandler(ContextRequestedEvent, OnContextRequested, RoutingStrategies.Tunnel);
         ResizeGrip.PointerPressed += OnResizePressed;
     }
@@ -75,9 +88,22 @@ public partial class WorldCatalogView : UserControl
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        // Tunnelling at the window, so a press anywhere is seen before the control it lands on.
+        _topLevel = TopLevel.GetTopLevel(this);
+        _topLevel?.AddHandler(PointerPressedEvent, OnWindowPointerPressed, RoutingStrategies.Tunnel);
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+
+        CompleteSnap();
+        _topLevel?.RemoveHandler(PointerPressedEvent, OnWindowPointerPressed);
+        _topLevel = null;
 
         if (ViewModel is { } viewModel)
         {
@@ -98,15 +124,51 @@ public partial class WorldCatalogView : UserControl
 
     // ---- Pointer ----
 
+    // A press outside the open rename field drops the rename; a left press on the desk, off every window
+    // and off the catalog, deselects. The press goes on to whatever it landed on.
+    private void OnWindowPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (ViewModel is not { } viewModel || e.Source is not Visual source)
+        {
+            return;
+        }
+
+        if (!IsInsideField(source))
+        {
+            viewModel.CancelRenames();
+        }
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed
+            && !source.GetSelfAndVisualAncestors().Any(visual => ReferenceEquals(visual, this) || visual is PanelWindow)
+            && source.FindAncestorOfType<WorkspaceSurface>() is not null)
+        {
+            viewModel.ClearSelection();
+        }
+    }
+
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        CompleteSnap();
+
         if (ViewModel is not { } viewModel || Surface is not { } surface || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             return;
         }
 
-        if (e.Source is not Visual source || IsInsideField(source) || RowOf(source) is not { } row)
+        if (e.Source is not Visual source || IsInsideField(source))
         {
+            return;
+        }
+
+        if (RowOf(source) is not { } row)
+        {
+            // Empty space of the tree (the scroll bar is not empty space).
+            if (!source.GetSelfAndVisualAncestors().OfType<ScrollBar>().Any())
+            {
+                Focus();
+                viewModel.ClearSelection();
+            }
+
             return;
         }
 
@@ -158,6 +220,8 @@ public partial class WorldCatalogView : UserControl
 
     private void OnResizePressed(object? sender, PointerPressedEventArgs e)
     {
+        CompleteSnap();
+
         if (ViewModel is not { } viewModel || Surface is not { } surface || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
         {
             return;
@@ -234,7 +298,7 @@ public partial class WorldCatalogView : UserControl
 
         if (gesture == Gesture.Resize)
         {
-            viewModel.ResizeTo(_startWidth + delta.X, commit: true);
+            StartSnap(viewModel, viewModel.X, viewModel.Y, viewModel.Width, viewModel.X, viewModel.Y, viewModel.SnapTargetOfWidth(_startWidth + delta.X), isResize: true);
         }
         else if (gesture == Gesture.DragRows)
         {
@@ -254,8 +318,103 @@ public partial class WorldCatalogView : UserControl
         }
         else if (started)
         {
-            viewModel.MoveTo(_startX + delta.X, _startY + delta.Y, commit: true);
+            var target = viewModel.SnapTargetOfMove(_startX + delta.X, _startY + delta.Y);
+            StartSnap(viewModel, viewModel.X, viewModel.Y, viewModel.Width, target.X, target.Y, viewModel.Width, isResize: false);
         }
+    }
+
+    private void StartSnap(
+        WorldCatalogViewModel viewModel, double fromX, double fromY, double fromWidth, double toX, double toY, double toWidth, bool isResize)
+    {
+        _snapFromX = fromX;
+        _snapFromY = fromY;
+        _snapFromWidth = fromWidth;
+        _snapToX = toX;
+        _snapToY = toY;
+        _snapToWidth = toWidth;
+        _snapIsResize = isResize;
+
+        var unchanged = fromX == toX && fromY == toY && fromWidth == toWidth;
+
+        if (unchanged || WorkspaceGridSettings.SnapAnimationDurationMilliseconds <= 0)
+        {
+            CommitSnap(viewModel);
+            return;
+        }
+
+        _snapClock.Restart();
+        _snapTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000d / 60d) };
+        _snapTimer.Tick += OnSnapTick;
+        _snapTimer.Start();
+    }
+
+    private void OnSnapTick(object? sender, EventArgs e)
+    {
+        if (ViewModel is not { } viewModel)
+        {
+            StopSnapTimer();
+            return;
+        }
+
+        var progress = Math.Min(1, _snapClock.Elapsed.TotalMilliseconds / WorkspaceGridSettings.SnapAnimationDurationMilliseconds);
+        var eased = 1 - Math.Pow(1 - progress, 3);
+
+        if (progress >= 1)
+        {
+            CompleteSnap();
+            return;
+        }
+
+        if (_snapIsResize)
+        {
+            viewModel.ResizeTo(_snapFromWidth + ((_snapToWidth - _snapFromWidth) * eased), commit: false);
+        }
+        else
+        {
+            viewModel.MoveTo(
+                _snapFromX + ((_snapToX - _snapFromX) * eased), _snapFromY + ((_snapToY - _snapFromY) * eased), commit: false);
+        }
+    }
+
+    /// <summary>Ends a running settle at once, at its target, and saves the place.</summary>
+    private void CompleteSnap()
+    {
+        if (_snapTimer is null)
+        {
+            return;
+        }
+
+        StopSnapTimer();
+
+        if (ViewModel is { } viewModel)
+        {
+            CommitSnap(viewModel);
+        }
+    }
+
+    private void CommitSnap(WorldCatalogViewModel viewModel)
+    {
+        if (_snapIsResize)
+        {
+            viewModel.ResizeTo(_snapToWidth, commit: true);
+        }
+        else
+        {
+            viewModel.MoveTo(_snapToX, _snapToY, commit: true);
+        }
+    }
+
+    private void StopSnapTimer()
+    {
+        if (_snapTimer is null)
+        {
+            return;
+        }
+
+        _snapTimer.Stop();
+        _snapTimer.Tick -= OnSnapTick;
+        _snapTimer = null;
+        _snapClock.Reset();
     }
 
     private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
@@ -481,20 +640,6 @@ public partial class WorldCatalogView : UserControl
             e.Handled = true;
             viewModel.CancelRename(row);
             Focus();
-        }
-    }
-
-    // Leaving the field saves the name; a name the folder refuses is dropped, since the field has no focus to correct it in.
-    private async void OnLostFocus(object? sender, RoutedEventArgs e)
-    {
-        if (ViewModel is not { } viewModel || e.Source is not TextBox { DataContext: WorldRowViewModel { IsEditing: true } row })
-        {
-            return;
-        }
-
-        if (!await viewModel.CommitRenameAsync(row))
-        {
-            viewModel.CancelRename(row);
         }
     }
 

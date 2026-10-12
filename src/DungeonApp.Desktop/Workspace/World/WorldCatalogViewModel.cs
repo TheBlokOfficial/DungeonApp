@@ -206,6 +206,15 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
         }
     }
 
+    /// <summary>Where a move ending at <paramref name="x"/>, <paramref name="y"/> would come to rest on the grid; changes nothing.</summary>
+    public PanelPlacement SnapTargetOfMove(double x, double y) =>
+        PanelGeometry.SnapMove(
+            new PanelPlacement(x, y, Width, HeaderHeight), _surfaceWidth, _surfaceHeight, [], _metrics, WorkspaceGridSettings.DefaultSnapStep);
+
+    /// <summary>The width a resize ending at <paramref name="width"/> would come to rest at on the grid; changes nothing.</summary>
+    public double SnapTargetOfWidth(double width) =>
+        ClampWidth(PanelGeometry.SnapToGrid(width, WorkspaceGridSettings.DefaultSnapStep));
+
     /// <summary>Back to the default place (the desk's top-right corner) and the default width.</summary>
     public void ResetPlacement()
     {
@@ -266,6 +275,18 @@ public sealed partial class WorldCatalogViewModel : ObservableObject, IDisposabl
             LastClickedEntity = entity;
         }
 
+        ApplySelection();
+    }
+
+    /// <summary>
+    /// A click on empty space: nothing is selected any more, and the preview, which follows the
+    /// last clicked entity, empties. Pinned cards keep their entity.
+    /// </summary>
+    public void ClearSelection()
+    {
+        _selection.Clear();
+        _anchor = null;
+        LastClickedEntity = null;
         ApplySelection();
     }
 
