@@ -86,7 +86,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             WorkspacePanelGroup.World,
             new PanelPlacement(64, 72, CardWindowWidth, 640),
             CardConstraints,
-            () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, card => PinPreview(card)))
+            () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, TogglePin))
         {
             ClosesPermanently = true,
             CanMaximize = false,
@@ -103,7 +103,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             AllowsMultipleInstances = true,
             ClosesPermanently = true,
             CanMaximize = false,
-            CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, card => UnpinCard(card)),
+            CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, TogglePin),
             CanRestore = key => ParseEntity(key) is { } id && Catalog.Tree.Entity(id) is not null,
         };
 
@@ -246,8 +246,21 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         Catalog.Tree.Entity(entity) is null ? null : Open(_pinnedDescriptor, entity.Value.ToString());
 
     // The pin on the preview: the same window turns into the pinned card of the entity it shows (same
-    // place, size and stacking), so no second window appears. An entity that already has a pinned
+    // place, size, stacking, body and control on the surface), so no second window appears and nothing
+    // closes or opens. An entity that already has a pinned
     // card gets that one brought up instead and the preview stays.
+    private void TogglePin(EntityCardViewModel card)
+    {
+        if (card.FollowsSelection)
+        {
+            PinPreview(card);
+        }
+        else
+        {
+            UnpinCard(card);
+        }
+    }
+
     private void PinPreview(EntityCardViewModel card)
     {
         if (FindPanelOf(card) is not { } panel || card.Entity is not { } entity || Catalog.Tree.Entity(entity) is null)
@@ -262,8 +275,11 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             return;
         }
 
-        ChangeRole(panel, _pinnedDescriptor, key);
+        panel.ChangeRole(_pinnedDescriptor, key);
+        card.BecomePinned();
         _previewPinnedAway = true;
+        BringToFront(panel);
+        _session.MarkDirty();
     }
 
     // A preview closed by the user stays closed on a plain click; one turned into a pinned card is
@@ -294,34 +310,14 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         }
 
         _previewPinnedAway = false;
-        ChangeRole(panel, _previewDescriptor, PreviewDescriptorId);
+        panel.ChangeRole(_previewDescriptor, PreviewDescriptorId);
+        card.BecomePreview();
+        BringToFront(panel);
+        _session.MarkDirty();
     }
 
     private WorkspacePanelViewModel? FindPanelOf(EntityCardViewModel card) =>
         Panels.FirstOrDefault(panel => ReferenceEquals(panel.Body, card));
-
-    // A window's descriptor and body are fixed for its life, so a role change swaps in a new window
-    // in the old one's slot; the saved layout then holds the new descriptor id and key.
-    private void ChangeRole(WorkspacePanelViewModel panel, WorkspacePanelDescriptor descriptor, string key)
-    {
-        var replacement = new WorkspacePanelViewModel(this, descriptor, key, panel.Desired)
-        {
-            ZOrder = panel.ZOrder,
-            OpensWithMotion = true,
-        };
-
-        panel.IsClosing = true;
-        Panels[Panels.IndexOf(panel)] = replacement;
-
-        if (panel.Body is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-
-        Fit(replacement);
-        BringToFront(replacement);
-        _session.MarkDirty();
-    }
 
     private static EntityId? ParseEntity(string key) =>
         Guid.TryParse(key, out var value) ? new EntityId(value) : null;

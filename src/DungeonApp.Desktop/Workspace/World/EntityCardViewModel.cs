@@ -25,8 +25,10 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
 
     private readonly WorldCatalogViewModel _catalog;
     private readonly EntityCardBuilder _builder;
-    private readonly bool _followsSelection;
+    private bool _followsSelection;
     private readonly RelayCommand? _pin;
+    private readonly PanelHeaderAction[] _pinAction = [];
+    private readonly PanelHeaderAction[] _unpinAction = [];
     private (CampaignEntity Entity, string Label)? _fingerprint;
     private bool _isDisposed;
 
@@ -41,10 +43,9 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
         // The one button flips the window's role: pin on a preview, unpin on a pinned card.
         if (togglePin is not null)
         {
-            _pin = new RelayCommand(() => togglePin(this), () => !followsSelection || Entity is not null);
-            HeaderActions = followsSelection
-                ? [new PanelHeaderAction("DungeonIconPin", "Przypnij kartę", _pin)]
-                : [new PanelHeaderAction("DungeonIconPinned", "Odepnij kartę", _pin)];
+            _pin = new RelayCommand(() => togglePin(this), () => !_followsSelection || Entity is not null);
+            _pinAction = [new PanelHeaderAction("DungeonIconPin", "Przypnij kartę", _pin)];
+            _unpinAction = [new PanelHeaderAction("DungeonIconPinned", "Odepnij kartę", _pin)];
         }
 
         Rebuild();
@@ -56,6 +57,35 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
         }
     }
 
+    /// <summary>True while this is the preview (follows the catalog), false as a pinned card.</summary>
+    public bool FollowsSelection => _followsSelection;
+
+    /// <summary>The preview turns into the pinned card of the entity it shows; the window stays.</summary>
+    public void BecomePinned()
+    {
+        _followsSelection = false;
+        _catalog.PropertyChanged -= OnCatalogPropertyChanged;
+        NotifyRoleChanged();
+    }
+
+    /// <summary>The pinned card turns into the preview and shows what the catalog last clicked.</summary>
+    public void BecomePreview()
+    {
+        _followsSelection = true;
+        _catalog.PropertyChanged -= OnCatalogPropertyChanged;
+        _catalog.PropertyChanged += OnCatalogPropertyChanged;
+        Entity = _catalog.LastClickedEntity;
+        Rebuild();
+        NotifyRoleChanged();
+    }
+
+    private void NotifyRoleChanged()
+    {
+        OnPropertyChanged(nameof(Title));
+        OnPropertyChanged(nameof(HeaderActions));
+        _pin?.NotifyCanExecuteChanged();
+    }
+
     /// <summary>The entity shown; null - the preview is empty.</summary>
     public EntityId? Entity { get; private set; }
 
@@ -64,7 +94,7 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IDisposa
 
     public bool IsEmpty => Detail is null;
 
-    public IReadOnlyList<PanelHeaderAction> HeaderActions { get; } = [];
+    public IReadOnlyList<PanelHeaderAction> HeaderActions => _followsSelection ? _pinAction : _unpinAction;
 
     /// <summary>"Podgląd", or an entity's name and № for its own window.</summary>
     public string? Title
