@@ -147,8 +147,8 @@ i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
    Wywołane z okienka wysuwanego rzucą wyjątkiem.
 9. Lista gubi zaznaczenie, gdy model widoku podmienia obiekty wierszy — zachowaj obiekty albo przywróć
    zaznaczenie po kluczu.
-10. Testy bez ekranu nie dekodują obrazów i nie mierzą okienek wysuwanych jak Windows. To sprawdza
-    tylko aplikacja.
+10. Testy bez ekranu nie dekodują obrazów, nie mierzą okienek wysuwanych jak Windows i działają
+    w skali 1 — skalowanie ekranu Windows (125 %, 150 %) sprawdza tylko aplikacja.
 11. Serializacja jest ścisła w treści (deserializator jest walidatorem wpisu), a pobłażliwa
     w manifeście kampanii (nowe pole nie podnosi wersji formatu). Tak jest celowo.
 12. System ma dwa identyfikatory o tym samym brzmieniu: `SystemId` (tożsamość dla ramy, manifest

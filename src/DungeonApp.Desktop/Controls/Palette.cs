@@ -168,8 +168,11 @@ public sealed class Palette : TemplatedControl
         }
     }
 
-    // The whole window at its pixel density, without the overlay layer: the palette and toasts above the
-    // content are not part of what the glass shows.
+    // The whole window without the overlay layer: the palette and toasts above the content are not part of
+    // what the glass shows. Taken at 96 DPI, one pixel per layout unit, whatever the window's scaling: at
+    // Windows display scaling above 100 % a window rendered at its own pixel density came out with the desk
+    // (but not the sidebar) enlarged by that scaling once more, so the glass showed the wrong place. The blur
+    // hides the lower resolution.
     private static Bitmap? CaptureBehind(WindowOverlay overlay)
     {
         if (TopLevel.GetTopLevel(overlay) is not { } top || top.Bounds.Width <= 0 || top.Bounds.Height <= 0)
@@ -177,11 +180,8 @@ public sealed class Palette : TemplatedControl
             return null;
         }
 
-        var scale = top.RenderScaling;
-        var size = new PixelSize(
-            (int)Math.Ceiling(top.Bounds.Width * scale),
-            (int)Math.Ceiling(top.Bounds.Height * scale));
-        var bitmap = new RenderTargetBitmap(size, new Vector(96 * scale, 96 * scale));
+        var size = new PixelSize((int)Math.Ceiling(top.Bounds.Width), (int)Math.Ceiling(top.Bounds.Height));
+        var bitmap = new RenderTargetBitmap(size, new Vector(96, 96));
         var opacity = overlay.Opacity;
         try
         {
