@@ -76,7 +76,7 @@ public sealed partial class WorldCatalogViewModel
             entries.Add(new WorldMenuEntry(WorldCommand.Open, "Otwórz", OpenGesture));
         }
 
-        if (single is not null)
+        if (single is { IsFolderLike: true })
         {
             entries.Add(new WorldMenuEntry(WorldCommand.Rename, "Zmień nazwę", RenameGesture));
         }
@@ -105,12 +105,15 @@ public sealed partial class WorldCatalogViewModel
 
     // ---- Rename ----
 
-    /// <summary>Starts renaming in place; the root cannot be renamed. The field starts with the name the row shows.</summary>
+    /// <summary>
+    /// Starts renaming a folder in place; the root and entities cannot be renamed (an entity is called by
+    /// its entry's name and number). The field starts with the name the row shows.
+    /// </summary>
     public void BeginRename(WorldRowViewModel row)
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        if (row.IsRoot || row.IsEditing)
+        if (row.IsRoot || row.FolderId is null || row.IsEditing)
         {
             return;
         }
@@ -127,61 +130,38 @@ public sealed partial class WorldCatalogViewModel
     }
 
     /// <summary>
-    /// Saves the typed name. A folder refuses an empty name: the field stays, with the reason on the row.
-    /// An entity with an empty name goes back to its entry's name. Returns false when the name was refused.
+    /// Saves the typed folder name. An empty name is refused: the field stays, with the reason on the row.
+    /// Returns false when the name was refused.
     /// </summary>
     public async Task<bool> CommitRenameAsync(WorldRowViewModel row)
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        if (!row.IsEditing)
+        if (!row.IsEditing || row.FolderId is not { } folder)
         {
+            row.IsEditing = false;
             return true;
         }
 
         var text = row.EditText ?? string.Empty;
 
-        if (row.FolderId is { } folder)
+        if (WorldChanges.FolderNameProblem(text) is { } problem)
         {
-            if (WorldChanges.FolderNameProblem(text) is { } problem)
-            {
-                row.RenameError = problem;
-                return false;
-            }
-
-            var changed = text.Trim() != row.Name;
-
-            // The row shows the new name before the field closes; otherwise the old name flashes until
-            // the saved change rebuilds the tree.
-            row.Name = text.Trim();
-            row.IsEditing = false;
-            row.RenameError = null;
-
-            if (changed)
-            {
-                await _context.ChangeAsync(WorldChanges.RenameFolder(_context.Snapshot, folder, text));
-            }
-
-            return true;
+            row.RenameError = problem;
+            return false;
         }
 
-        var relabel = row.EntityId is { } id && _tree.Entity(id) is { } node
-            && text != row.Name && !(string.IsNullOrWhiteSpace(text) && node.Entity.Label is null)
-            ? node.Entity
-            : null;
+        var changed = text.Trim() != row.Name;
 
-        // As for a folder; an emptied label falls back to the entry's name, which the rebuild brings.
-        if (relabel is not null && !string.IsNullOrWhiteSpace(text))
-        {
-            row.Name = text;
-        }
-
+        // The row shows the new name before the field closes; otherwise the old name flashes until
+        // the saved change rebuilds the tree.
+        row.Name = text.Trim();
         row.IsEditing = false;
         row.RenameError = null;
 
-        if (relabel is not null)
+        if (changed)
         {
-            await _context.ChangeAsync(CampaignEntityChanges.Relabel(relabel, text));
+            await _context.ChangeAsync(WorldChanges.RenameFolder(_context.Snapshot, folder, text));
         }
 
         return true;

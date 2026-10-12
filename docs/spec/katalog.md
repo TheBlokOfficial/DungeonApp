@@ -68,7 +68,8 @@ mechaniki to lore, nie entity. Katalog zastępuje testowe narzędzie „Świat k
 - „+” w wierszu głównym i w wierszu katalogu pod wskaźnikiem otwiera paletę dodawania do tego
   katalogu. Ctrl+N dodaje do zaznaczonego katalogu, do katalogu zaznaczonej entity, a bez zaznaczenia
   — do głównego.
-- Zmiana nazwy w miejscu: pole w tym samym miejscu i rozmiarze co tekst. Enter i kliknięcie obok
+- Zmiana nazwy katalogu w miejscu (entity nosi nazwę wpisu i numer, nazwy nie zmienia): pole w tym
+  samym miejscu i rozmiarze co tekst. Enter i kliknięcie obok
   zatwierdzają, jak w Eksploratorze Windows; Esc porzuca wpis, a nazwa odrzucona (pusta nazwa katalogu)
   przy kliknięciu obok wraca do poprzedniej.
 - Przeciąganie: wiersz główny przesuwa katalog po biurku; każdy inny wiersz przenosi zaznaczenie do

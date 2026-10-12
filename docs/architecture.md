@@ -141,7 +141,7 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   dostają № przy odczycie, w kolejności identyfikatorów (te same przy każdym otwarciu), licznik
   startuje za nimi, a trwale zapisują się przy pierwszym zapisie.
   Obsługa katalogu na biurku działa na całym zaznaczeniu: menu pod prawym przyciskiem (pozycje zależą od
-  rodzaju zaznaczenia, wyłączone „Usuń” podaje powód z `...Problem`), zmiana nazwy w miejscu (F2), usunięcie
+  rodzaju zaznaczenia, wyłączone „Usuń” podaje powód z `...Problem`), zmiana nazwy katalogu w miejscu (F2; entity nazwy nie zmienia), usunięcie
   z potwierdzeniem, przeciąganie wierszy na katalog i „Przenieś do…” przez paletę. Przenoszony katalog
   zabiera zawartość, więc zaznaczone razem z nim elementy nie jadą osobno.
 - Nakładka scala obiekty po kluczu: zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`,

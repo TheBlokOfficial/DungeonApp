@@ -56,7 +56,7 @@ public sealed partial class WorldCatalogViewBuildTests
         Assert.True(catalog.CreateMenu().Last().IsEnabled);
 
         Select(catalog, "Goblin");
-        Assert.Equal([WorldCommand.Open, WorldCommand.Rename, WorldCommand.MoveTo, WorldCommand.Delete], Commands(catalog));
+        Assert.Equal([WorldCommand.Open, WorldCommand.MoveTo, WorldCommand.Delete], Commands(catalog));
 
         Select(catalog, "Pusty", "Goblin");
         Assert.Equal([WorldCommand.MoveTo, WorldCommand.Delete], Commands(catalog));
@@ -96,9 +96,9 @@ public sealed partial class WorldCatalogViewBuildTests
         fixture.CatalogView.RebuildMenu();
 
         var items = fixture.CatalogView.Menu.Items.OfType<MenuItem>().ToList();
-        Assert.Equal(["Otwórz", "Zmień nazwę", "Przenieś do…", "Usuń"], items.Select(item => (string?)item.Header));
-        Assert.Equal(Key.F2, items[1].InputGesture!.Key);
-        Assert.Equal(Key.Delete, items[3].InputGesture!.Key);
+        Assert.Equal(["Otwórz", "Przenieś do…", "Usuń"], items.Select(item => (string?)item.Header));
+        Assert.Equal(Key.Enter, items[0].InputGesture!.Key);
+        Assert.Equal(Key.Delete, items[2].InputGesture!.Key);
     }
 
     // ---- Rename ----
@@ -317,22 +317,17 @@ public sealed partial class WorldCatalogViewBuildTests
     }
 
     [AvaloniaFact]
-    public async Task An_entity_with_an_empty_name_goes_back_to_its_entry_name()
+    public async Task An_entity_cannot_be_renamed()
     {
         using var fixture = new Fixture();
         var catalog = fixture.Catalog;
-        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Krzywy");
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null);
         fixture.Settle();
-        var row = Row(catalog, "Krzywy");
+        var row = Row(catalog, "Goblin");
 
         catalog.BeginRename(row);
-        Assert.Equal("Krzywy", row.EditText);
-        row.EditText = string.Empty;
-        Assert.True(await catalog.CommitRenameAsync(row));
-        fixture.Settle();
 
-        Assert.Equal(["Świat", "Goblin"], catalog.Rows.Select(candidate => candidate.Name));
-        Assert.Null(fixture.Entries.Snapshot.Get(EntitiesModel.Declaration).Values.Single().Label);
+        Assert.False(row.IsEditing);
     }
 
     [AvaloniaFact]
