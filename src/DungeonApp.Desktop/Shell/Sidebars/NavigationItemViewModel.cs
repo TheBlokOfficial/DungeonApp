@@ -20,6 +20,10 @@ public sealed partial class NavigationItemViewModel(string id, string iconResour
     [ObservableProperty]
     public partial string Label { get; set; } = label;
 
+    /// <summary>True while the row's icon is drawn in the accent colour (the campaign position with a campaign open).</summary>
+    [ObservableProperty]
+    public partial bool IsAccented { get; set; }
+
     public ICommand SelectCommand { get; } = selectCommand;
 
     [ObservableProperty]

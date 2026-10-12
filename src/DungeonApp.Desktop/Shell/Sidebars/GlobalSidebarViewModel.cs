@@ -28,8 +28,7 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
 {
     private const string LockedIconResourceKey = "DungeonIconLock";
     private const string ShelfIconResourceKey = "DungeonIconBookOpen";
-    private const string DeskIconResourceKey = "DungeonIconDockBottom";
-    // The campaign position's label while no campaign is open, and while one is.
+    // The campaign position's label while no campaign is open, and (when the caller gives no name) while one is.
     private const string ShelfLabel = "Kampanie";
     private const string DeskLabel = "Biurko";
 
@@ -197,14 +196,15 @@ public sealed partial class GlobalSidebarViewModel : ObservableObject
     public double HeadingHeight => IsCollapsed ? 0 : 44;
 
     /// <summary>
-    /// Called by the shell on every campaign open and close. Swaps the campaign position's label and
-    /// icon between the shelf and the desk, and locks or unlocks every Campaign-category
+    /// Called by the shell on every campaign open and close. Swaps the campaign position's label
+    /// between the shelf and the open campaign's name (its icon stays, in the accent colour while a
+    /// campaign is open), and locks or unlocks every Campaign-category
     /// tab - each one's icon becomes the lock glyph while locked, its own declared icon while not.
     /// </summary>
-    public void SetCampaignOpen(bool isOpen)
+    public void SetCampaignOpen(bool isOpen, string? campaignName = null)
     {
-        CampaignPositionItem.Label = isOpen ? DeskLabel : ShelfLabel;
-        CampaignPositionItem.IconResourceKey = isOpen ? DeskIconResourceKey : ShelfIconResourceKey;
+        CampaignPositionItem.Label = isOpen ? (string.IsNullOrWhiteSpace(campaignName) ? DeskLabel : campaignName) : ShelfLabel;
+        CampaignPositionItem.IsAccented = isOpen;
 
         foreach (var (item, unlockedIconResourceKey) in _campaignTabItems)
         {

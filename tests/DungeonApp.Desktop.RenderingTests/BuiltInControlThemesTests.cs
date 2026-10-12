@@ -25,7 +25,6 @@ public sealed class BuiltInControlThemesTests
         typeof(PopupRoot),
         typeof(OverlayPopupHost),
         typeof(ItemsControl),
-        typeof(TransitioningContentControl),
         typeof(PathIcon),
         // Popups.
         typeof(FlyoutPresenter),

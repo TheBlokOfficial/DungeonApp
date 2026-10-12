@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:DungeonApp.Desktop.Shell.Sidebars"
              xmlns:controls="using:DungeonApp.Desktop.Controls"
+             xmlns:themes="using:DungeonApp.Desktop.Themes"
              xmlns:easings="clr-namespace:Avalonia.Animation.Easings;assembly=Avalonia.Base"
              mc:Ignorable="d"
              d:DesignWidth="216"
@@ -34,9 +35,20 @@
                            Height="{DynamicResource DungeonActionIconSize}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
+                           IsVisible="{Binding !IsAccented}"
                            Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
+                    <!-- Accent glyph: the same icon in the accent colour (a ForegroundIcon takes its
+                         colour from Foreground, an Image keeps the colours it was drawn with). -->
+                    <controls:ForegroundIcon Width="{DynamicResource DungeonActionIconSize}"
+                                             Height="{DynamicResource DungeonActionIconSize}"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Foreground="{DynamicResource DungeonAccentBrush}"
+                                             IsVisible="{Binding IsAccented}"
+                                             Source="{Binding IconResourceKey, Converter={StaticResource IconResourceConverter}}" />
                     <TextBlock Grid.Column="1"
                                Classes="nav-label"
+                               themes:TrimmedLabelToolTip.IsEnabled="True"
                                Classes.locked="{Binding IsLocked}"
                                Margin="4,0,4,0"
                                Opacity="{Binding LabelOpacity}"
@@ -92,11 +104,13 @@
         <Grid RowDefinitions="Auto,*,Auto">
             <!-- The brand belongs with global navigation, so static backstage pages do not spend
                  a second horizontal strip repeating application chrome. -->
-            <Border BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
+            <!-- Height shared with the top bar (DungeonTopBarHeight, Themes/Tokens.axaml), border
+                 included on both sides, so this border's bottom line and the top bar's meet as one
+                 line at the same pixel row. -->
+            <Border Height="{DynamicResource DungeonTopBarHeight}"
+                    BorderBrush="{DynamicResource DungeonBorderStrongBrush}"
                     BorderThickness="0,0,0,1">
-                <!-- Height shared with the top bar (DungeonTopBarHeight, Themes/Tokens.axaml) so this
-                     border's own bottom edge and the top bar's continue as one line. -->
-                <Grid Height="{DynamicResource DungeonTopBarHeight}">
+                <Grid>
                     <Grid Grid.Row="0"
                           ColumnDefinitions="64,*">
                         <Border Width="64"

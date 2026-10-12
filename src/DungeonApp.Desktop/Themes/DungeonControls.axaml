@@ -15,7 +15,6 @@
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/Window.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/PopupHosts.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/ItemsControl.axaml" />
-        <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/TransitioningContentControl.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/PathIcon.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/TextContextFlyouts.axaml" />
         <MergeResourceInclude Source="avares://DungeonApp.Desktop/Themes/Controls/SelectableTextBlock.axaml" />
