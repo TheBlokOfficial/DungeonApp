@@ -58,6 +58,10 @@ public partial class App : Avalonia.Application
     public WorkspaceLayoutStore LayoutStore { get; init; } =
         new(Path.Combine(Path.GetTempPath(), "DungeonAppLayouts"));
 
+    /// <summary>Where the main window's state and size are remembered; same ownership as <see cref="LayoutStore"/>.</summary>
+    public WindowPlacementStore WindowPlacementStore { get; init; } =
+        new(Path.Combine(Path.GetTempPath(), "DungeonAppWindow", "window.json"));
+
     /// <summary>
     /// Exists only so Avalonia's own tooling (the XAML previewer, hot reload) can instantiate this
     /// class - it never runs in the shipped app, which always goes through the constructor above,
@@ -166,7 +170,7 @@ public partial class App : Avalonia.Application
                 LayoutStore,
                 _startupSteps!);
 
-            desktop.MainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow(WindowPlacementStore)
             {
                 DataContext = _shell
             };

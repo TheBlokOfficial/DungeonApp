@@ -468,7 +468,7 @@
         <!-- ProgressBar: thin bar matching slider track thickness, fully rounded at
              both ends (radius half the thickness) - consistent with the slider track. -->
         <x:Double x:Key="DungeonProgressBarThickness">4</x:Double>
-        <CornerRadius x:Key="DungeonProgressBarCornerRadius">2</CornerRadius>
+        <CornerRadius x:Key="DungeonProgressBarCornerRadius">0</CornerRadius>
         <!-- Confirmation dialog: maximum card width (narrower in a small window, with
              DungeonSpacingXxl from window edges). -->
         <x:Double x:Key="DungeonConfirmationDialogMaxWidth">400</x:Double>

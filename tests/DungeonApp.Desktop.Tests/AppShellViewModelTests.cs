@@ -83,6 +83,32 @@ public sealed class AppShellViewModelTests
         Assert.False(shell.Sidebar!.IsCollapsed);
     }
 
+    [Fact]
+    public async Task With_a_single_system_startup_chooses_it_and_skips_the_selection_screen()
+    {
+        var shell = BuildShell([new FakeGameSystem(SystemId.Create("sys-a"), [])]);
+
+        await shell.RunStartupAsync(new StartupUiContext(new Avalonia.Controls.ContentControl()));
+
+        Assert.True(shell.IsReady);
+        Assert.True(shell.IsSystemChosen);
+        Assert.NotNull(shell.Sidebar);
+    }
+
+    [Fact]
+    public async Task With_several_systems_startup_waits_on_the_selection_screen()
+    {
+        var shell = BuildShell([
+            new FakeGameSystem(SystemId.Create("sys-a"), []),
+            new FakeGameSystem(SystemId.Create("sys-b"), [])]);
+
+        await shell.RunStartupAsync(new StartupUiContext(new Avalonia.Controls.ContentControl()));
+
+        Assert.True(shell.IsReady);
+        Assert.False(shell.IsSystemChosen);
+        Assert.Null(shell.Sidebar);
+    }
+
     private static AppShellViewModel BuildShell(IReadOnlyList<IGameSystem> systems)
     {
         // One shared instance behind every system's id: this fixture is about tab and sidebar

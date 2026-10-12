@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Diagnostics;
+using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Systems;
 using DungeonApp.Desktop.Workspace.Layout;
 
@@ -59,7 +60,7 @@ class Program
     // its constructor - the alternative, a static/mutable holder some other code populates before
     // Avalonia touches the app, is exactly the hidden global state this list must not live in.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { LayoutStore = BuildLayoutStore() })
+        => AppBuilder.Configure(() => new DungeonApp.Desktop.App(BuildSystems()) { LayoutStore = BuildLayoutStore(), WindowPlacementStore = BuildWindowPlacementStore() })
             .UsePlatformDetect()
 #if DEBUG
             .WithDeveloperTools()
@@ -94,6 +95,12 @@ class Program
 
         return [new Dnd5eSystem(packsPaths)];
     }
+
+    // The window's remembered state and size: a setting of the application, not of a campaign.
+    private static WindowPlacementStore BuildWindowPlacementStore() => new(Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "DungeonApp",
+        "window.json"));
 
     // The desks' layouts are application data, not a document: they follow the screen, not the
     // campaign folder.
