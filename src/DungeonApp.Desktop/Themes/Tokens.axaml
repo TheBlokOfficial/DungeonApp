@@ -132,6 +132,11 @@
         <!-- EditableFocusBorder: the same value turned into a field - the outline around it while it
              is being edited, and the keyboard focus that reaches it with Tab. -->
         <Color x:Key="DungeonEditableFocusBorderColor">#8A8983</Color>
+        <!-- FocusRing: the ring around a control that has keyboard focus (Tab, arrows) - the same on every
+             control (Themes/Controls/FocusRing.axaml). AccentBright: the one hue in the interface that
+             is not a state or a surface, so the ring is never mistaken for hover, selection or an error.
+             Line only - not a fill or text. -->
+        <Color x:Key="DungeonFocusRingColor">#D28D2D</Color>
         <!-- Uncommitted: the blot behind a value that differs from the entity's last commit -
              decoration, not a state colour; never the digits' colour or a cell's background. -->
         <Color x:Key="DungeonUncommittedColor">#664A7FC1</Color>
@@ -202,6 +207,7 @@
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
         <SolidColorBrush x:Key="DungeonEditableHoverBrush" Color="{DynamicResource DungeonEditableHoverColor}" />
         <SolidColorBrush x:Key="DungeonEditableFocusBorderBrush" Color="{DynamicResource DungeonEditableFocusBorderColor}" />
+        <SolidColorBrush x:Key="DungeonFocusRingBrush" Color="{DynamicResource DungeonFocusRingColor}" />
         <SolidColorBrush x:Key="DungeonUncommittedBrush" Color="{DynamicResource DungeonUncommittedColor}" />
         <SolidColorBrush x:Key="DungeonTrackFillBrush" Color="{DynamicResource DungeonTrackFillColor}" />
         <SolidColorBrush x:Key="DungeonTrackOverBrush" Color="{DynamicResource DungeonTrackOverColor}" />
@@ -400,6 +406,14 @@
         <CornerRadius x:Key="DungeonEditableTextFrameCornerRadius">6</CornerRadius>
         <!-- Compatibility alias for campaign controls not yet split into card/control variants. -->
         <CornerRadius x:Key="DungeonCornerRadius">5</CornerRadius>
+        <!-- Focus ring (Themes/Controls/FocusRing.axaml): 2 px line standing 2 px outside the control's edge, so
+             the outside edge of the ring is 4 px out (the Offset margin). Its outer radius follows the control's
+             radius plus those 4 px: Control 5 + 4, Row 3 + 4. -->
+        <Thickness x:Key="DungeonFocusRingThickness">2</Thickness>
+        <Thickness x:Key="DungeonFocusRingOffset">-4</Thickness>
+        <CornerRadius x:Key="DungeonFocusRingControlCornerRadius">9</CornerRadius>
+        <CornerRadius x:Key="DungeonFocusRingRowCornerRadius">7</CornerRadius>
+        <CornerRadius x:Key="DungeonFocusRingRoundCornerRadius">999</CornerRadius>
 
         <!-- SPACING AND RADII ============================================= -->
         <!--

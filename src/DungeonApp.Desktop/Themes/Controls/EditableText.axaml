@@ -49,6 +49,7 @@
         <Setter Property="AcceptsReturn" Value="True" />
         <Setter Property="AcceptsTab" Value="False" />
         <Setter Property="Cursor" Value="IBeam" />
+        <!-- No ring: the editing outline (EditableFocusBorder) is also what Tab shows. -->
         <Setter Property="FocusAdorner" Value="{x:Null}" />
         <Setter Property="Transitions" Value="{x:Null}" />
         <Setter Property="ContextFlyout" Value="{StaticResource DungeonTextBoxContextFlyout}" />

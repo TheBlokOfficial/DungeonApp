@@ -11,6 +11,8 @@
              Margin="{Binding Margin}"
              Width="{Binding Width}">
 
+    <!-- Keyboard focus has no ring here: the arrow keys move the selection, so the selected row (AccentDim) is
+         the focused one. -->
     <!-- The catalog lies on the desk: the desk's own colour, no frame and no shadow, so the grid lines
          do not cut through the letters. It reaches from its top edge to the desk's bottom; the
          one scrolling layer is the ScrollViewer. -->
