@@ -520,9 +520,10 @@
         <!-- Palette: maximum card width and maximum height of its result list (longer lists scroll). -->
         <x:Double x:Key="DungeonPaletteMaxWidth">520</x:Double>
         <x:Double x:Key="DungeonPaletteListMaxHeight">320</x:Double>
-        <!-- Palette glass: blur radius of the window under the card - wide enough that text and icons
-             under it become colour, not shapes the eye tries to read. -->
-        <x:Double x:Key="DungeonPaletteGlassBlurRadius">32</x:Double>
+        <!-- Palette glass: blur radius of the window under the card - small enough that the shapes under
+             it (tables, pictures, windows) still show through the tint, so the card reads as glass, and
+             wide enough that the text under it cannot be read. -->
+        <x:Double x:Key="DungeonPaletteGlassBlurRadius">12</x:Double>
         <!-- Notification toast: fixed width - longer content wraps rather than expanding the toast. -->
         <x:Double x:Key="DungeonNotificationWidth">340</x:Double>
 
