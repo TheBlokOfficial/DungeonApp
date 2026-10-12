@@ -40,7 +40,7 @@
     <Style Selector="workspace|PanelWindow">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
-    <Style Selector="workspace|WorkspaceSurface /template/ Image.desk-ghost">
+    <Style Selector="Image.desk-ghost">
         <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <!-- Window-overlay appearance (palette, confirmation dialog, notification toast: Controls/OverlayAppearMotion.cs)

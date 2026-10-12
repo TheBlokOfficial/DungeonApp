@@ -5,7 +5,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -59,6 +61,45 @@ public sealed partial class DeskWindowMotionTests
 
         // The timers that fade the ghost and remove it do not tick in a window without a screen;
         // only the application shows that part.
+        window.Close();
+    }
+
+    [AvaloniaTheory]
+    [InlineData(1.0)]
+    [InlineData(1.25)]
+    [InlineData(1.5)]
+    public void The_ghost_covers_the_window_exactly_and_carries_the_fade(double scaling)
+    {
+        var (window, surface, panels) = Build(new StubPanel("A", false), new StubPanel("B", false));
+        window.SetRenderScaling(scaling);
+        Settle();
+        var closing = panels[1];
+        var ghosts = surface.GetVisualDescendants().OfType<Canvas>().Single(canvas => canvas.Name == "PART_Ghosts");
+
+        closing.IsClosing = true;
+        panels.Remove(closing);
+        Settle();
+
+        var ghost = Assert.IsType<Image>(Assert.Single(ghosts.Children));
+        Assert.Equal(new Rect(closing.X, closing.Y, closing.Width, closing.Height),
+            new Rect(Canvas.GetLeft(ghost), Canvas.GetTop(ghost), ghost.Width, ghost.Height));
+
+        // The picture has the screen's pixel density, but is a 96-DPI bitmap: its size in DIPs is its
+        // size in pixels, so the image reads the whole of it and does not enlarge a corner.
+        var picture = Assert.IsAssignableFrom<Bitmap>(ghost.Source);
+        Assert.Equal(new Vector(96, 96), picture.Dpi);
+        Assert.Equal(new PixelSize((int)Math.Ceiling(closing.Width * scaling), (int)Math.Ceiling(closing.Height * scaling)), picture.PixelSize);
+
+        // The ghost theme reaches it (a template style would not: the ghost is made in code).
+        Assert.NotNull(ghost.Transitions);
+        Assert.Equal(RelativePoint.Center, ghost.RenderTransformOrigin);
+        Assert.Equal(1.0, ghost.Opacity);
+
+        // Where the fade goes: the base value, under the running transition.
+        ghost.Classes.Add("leaving");
+        Assert.Equal(0.0, ghost.GetBaseValue(Visual.OpacityProperty).Value);
+        Assert.Equal(Matrix.CreateScale(0.98, 0.98), ghost.GetBaseValue(Visual.RenderTransformProperty).Value!.Value);
+
         window.Close();
     }
 

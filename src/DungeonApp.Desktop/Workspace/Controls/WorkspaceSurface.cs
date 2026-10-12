@@ -130,12 +130,7 @@ public class WorkspaceSurface : ItemsControl
             return;
         }
 
-        var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
-        var size = new PixelSize(
-            (int)Math.Ceiling(panel.Bounds.Width * scaling),
-            (int)Math.Ceiling(panel.Bounds.Height * scaling));
-        var bitmap = new RenderTargetBitmap(size, new Vector(96 * scaling, 96 * scaling));
-        bitmap.Render(panel);
+        var bitmap = Snapshot(panel, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1);
 
         var ghost = new Image
         {
@@ -146,19 +141,55 @@ public class WorkspaceSurface : ItemsControl
             IsHitTestVisible = false,
             ZIndex = panel.ZIndex,
         };
+
+        // A theme, not a template style: the ghost is added in code, so it has no templated parent
+        // and a "/template/" selector in the surface's theme would never reach it.
+        if (this.TryFindResource("DungeonDeskGhostTheme", out var theme) && theme is Avalonia.Styling.ControlTheme ghostTheme)
+        {
+            ghost.Theme = ghostTheme;
+        }
+
         ghost.Classes.Add("desk-ghost");
         Canvas.SetLeft(ghost, panel.Bounds.X);
         Canvas.SetTop(ghost, panel.Bounds.Y);
         ghosts.Children.Add(ghost);
 
         // Start after the ghost has been in the tree for a moment (so the fade is a transition), and
-        // remove it once the fade is over.
-        After(TimeSpan.FromMilliseconds(30), () => ghost.Classes.Add("leaving"));
-        After(TimeSpan.FromMilliseconds(260), () =>
+        // remove it once the fade is over. One timer after the other, not two started together: the
+        // fade must have begun before the removal can come due.
+        After(TimeSpan.FromMilliseconds(30), () =>
         {
-            ghosts.Children.Remove(ghost);
-            bitmap.Dispose();
+            ghost.Classes.Add("leaving");
+            After(TimeSpan.FromMilliseconds(230), () =>
+            {
+                ghosts.Children.Remove(ghost);
+                bitmap.Dispose();
+            });
         });
+    }
+
+    /// <summary>
+    /// The window drawn at the screen's pixel density, returned as a bitmap of 96 DPI whose pixel size
+    /// equals its size. A bitmap of higher DPI cannot be shown directly: the image control asks for
+    /// its source rectangle in DIPs, the renderer reads it in pixels, and the ghost comes out
+    /// enlarged by the scaling and cut to the window's edges.
+    /// </summary>
+    internal static Bitmap Snapshot(Visual visual, double scaling)
+    {
+        var size = new PixelSize(
+            Math.Max(1, (int)Math.Ceiling(visual.Bounds.Width * scaling)),
+            Math.Max(1, (int)Math.Ceiling(visual.Bounds.Height * scaling)));
+        using var rendered = new RenderTargetBitmap(size, new Vector(96 * scaling, 96 * scaling));
+        rendered.Render(visual);
+
+        // Same pixel format as the rendering, so the copy is byte for byte.
+        var picture = new WriteableBitmap(size, new Vector(96, 96), rendered.Format, rendered.AlphaFormat);
+        using (var buffer = picture.Lock())
+        {
+            rendered.CopyPixels(new PixelRect(size), buffer.Address, buffer.RowBytes * size.Height, buffer.RowBytes);
+        }
+
+        return picture;
     }
 
     private static void After(TimeSpan delay, Action action)
