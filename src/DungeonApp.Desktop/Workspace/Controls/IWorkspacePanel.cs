@@ -57,6 +57,15 @@ public interface IWorkspacePanel : INotifyPropertyChanged
 
     bool IsActive { get; }
 
+    /// <summary>True for a window the MG opened just now: the surface fades it in. A window restored from a saved layout is false.</summary>
+    bool OpensWithMotion { get; }
+
+    /// <summary>
+    /// Raised true by the host just before it removes the window for good. The surface then takes a
+    /// snapshot of the window still on the desk and fades that out; the model does not wait for it.
+    /// </summary>
+    bool IsClosing { get; }
+
     PanelDisplayState State { get; set; }
 
     ICommand ActivateCommand { get; }

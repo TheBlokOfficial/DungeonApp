@@ -60,10 +60,28 @@
                         <ContentPresenter Content="{TemplateBinding Underlay}" />
                         <ItemsPresenter Name="PART_ItemsPresenter"
                                         ItemsPanel="{TemplateBinding ItemsPanel}" />
+                        <!-- Pictures of just-closed windows fading out; never take input. -->
+                        <Canvas Name="PART_Ghosts" IsHitTestVisible="False" />
                     </Grid>
                 </Border>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^ /template/ Image.desk-ghost">
+            <Setter Property="Opacity" Value="1" />
+            <Setter Property="RenderTransformOrigin" Value="50%,100%" />
+            <Setter Property="RenderTransform" Value="scale(1) translate(0px, 0px)" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Image.desk-ghost.leaving">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
+        </Style>
     </ControlTheme>
 
     <!-- =================================================================== -->
@@ -83,6 +101,7 @@
             <Transitions>
                 <DoubleTransition Property="Opacity" Duration="0:0:0.16" Easing="CubicEaseOut" />
                 <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" Easing="CubicEaseOut" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.16" Easing="CubicEaseOut" />
             </Transitions>
         </Setter>
 
@@ -263,6 +282,12 @@
             <Setter Property="Opacity" Value="0" />
             <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
             <Setter Property="IsHitTestVisible" Value="False" />
+        </Style>
+
+        <!-- The look a window opens from; the surface releases it a moment after the window is on the desk. -->
+        <Style Selector="^:appearing">
+            <Setter Property="Opacity" Value="0" />
+            <Setter Property="RenderTransform" Value="scale(0.98) translate(0px, 8px)" />
         </Style>
 
         <!-- Fixed width: the sides and corners are not there (no grip, no horizontal cursor); the top
