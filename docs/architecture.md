@@ -195,6 +195,9 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
 - **Zakładka treści** (`Desktop/Entries/ContentTab`): układ lista–szczegół, wspólny dla typów treści.
   System podaje profil typu: kategorię, tagi, odznakę wiersza, filtry wartości i sortowania. Szczegół
   to nagłówek z biblioteki (ścieżka, nazwa, tagi) plus karta systemu o stałej szerokości.
+- **Ikona wiersza:** typ, który nie pokazuje w wierszu obrazka wpisu, może dostać od systemu ikonę
+  rodzaju (`IContentPresentation.RowIcon`) — małą i przygaszoną przed nazwą, wybraną z wartości wpisu.
+  System D&D daje tak typ stworzenia i kategorię przedmiotu; tej samej ikony karta używa w pustej ramce.
 - **Nagłówek karty:** karta może pożyczyć nagłówkowi cztery kontrolki (`IEntryCardHeader`): obraz na
   lewo od nazwy, wartość na końcu pierwszej linii nazwy (nazwa i tagi zawijają się przed nią), słowo
   przed tagami i blok pod tagami. Obraz ma 150 px szerokości, tyle co trzy komórki tabeli cech:
