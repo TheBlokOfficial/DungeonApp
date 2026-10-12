@@ -29,12 +29,22 @@ public sealed class GlobalSidebarViewModelTests
         var sidebar = BuildSidebar();
         var shelfIcon = sidebar.CampaignPositionItem.IconResourceKey;
 
+        sidebar.SetCampaignOpen(true, "Zaginiona kopalnia");
+
+        Assert.Equal("Zaginiona kopalnia", sidebar.CampaignPositionItem.Label);
+        Assert.Equal(shelfIcon, sidebar.CampaignPositionItem.IconResourceKey);
+        Assert.True(sidebar.CampaignPositionItem.IsAccented);
+        Assert.Single(sidebar.CampaignItems);
+    }
+
+    [Fact]
+    public void Opening_a_campaign_without_a_name_falls_back_to_the_desk_label()
+    {
+        var sidebar = BuildSidebar();
+
         sidebar.SetCampaignOpen(true);
 
         Assert.Equal("Biurko", sidebar.CampaignPositionItem.Label);
-        Assert.Equal("DungeonIconDockBottom", sidebar.CampaignPositionItem.IconResourceKey);
-        Assert.NotEqual(shelfIcon, sidebar.CampaignPositionItem.IconResourceKey);
-        Assert.Single(sidebar.CampaignItems);
     }
 
     [Fact]
@@ -42,13 +52,14 @@ public sealed class GlobalSidebarViewModelTests
     {
         var sidebar = BuildSidebar();
         var shelfIcon = sidebar.CampaignPositionItem.IconResourceKey;
-        sidebar.SetCampaignOpen(true);
+        sidebar.SetCampaignOpen(true, "Zaginiona kopalnia");
         sidebar.ActivateCampaignPosition();
 
         sidebar.SetCampaignOpen(false);
         sidebar.ActivateCampaignPosition();
 
         Assert.Equal("Kampanie", sidebar.CampaignPositionItem.Label);
+        Assert.False(sidebar.CampaignPositionItem.IsAccented);
         Assert.Equal(shelfIcon, sidebar.CampaignPositionItem.IconResourceKey);
         Assert.True(sidebar.CampaignPositionItem.IsActive);
     }

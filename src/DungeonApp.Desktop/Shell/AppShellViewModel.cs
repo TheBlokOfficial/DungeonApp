@@ -197,7 +197,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         _session.OpenCampaign(campaign);
         var desk = await _session.GetOrCreateDeskAsync(CloseCampaignAsync);
 
-        Sidebar!.SetCampaignOpen(true);
+        Sidebar!.SetCampaignOpen(true, campaign.Name.Value);
         CurrentWorkspaceContent = desk.Content;
         Sidebar.ActivateCampaignPosition();
         StatusBar.Message = $"Otwarta kampania: {campaign.Name.Value}";
