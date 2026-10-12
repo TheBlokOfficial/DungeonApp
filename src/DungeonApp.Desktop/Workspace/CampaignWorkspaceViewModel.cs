@@ -39,8 +39,12 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     /// <summary>A window with one entity's card, kept open by the GM; its instance key is the entity's id.</summary>
     public const string PinnedDescriptorId = "frame.world-pinned";
 
-    // 560 wide card, its margin and the scrollbar zone.
-    private static readonly PanelConstraints CardConstraints = new(640, 280, double.PositiveInfinity, double.PositiveInfinity);
+    // A window with an entry card has the card's width plus the window's own 1 px frame on both sides,
+    // and nothing wider has anything to show: only its height is the GM's to change.
+    private const double CardWindowWidth = EntityCardView.ContentWidth + 2;
+
+    private static readonly PanelConstraints CardConstraints =
+        new(CardWindowWidth, 280, CardWindowWidth, double.PositiveInfinity);
 
     private readonly PanelCatalog _catalog;
     private readonly WorkspaceLayoutSession _session;
@@ -80,23 +84,25 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             "Podgląd",
             "DungeonIconBookOpen",
             WorkspacePanelGroup.World,
-            new PanelPlacement(64, 72, 660, 640),
+            new PanelPlacement(64, 72, CardWindowWidth, 640),
             CardConstraints,
             () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, card => PinPreview(card)))
         {
             ClosesPermanently = true,
+            CanMaximize = false,
         };
         _pinnedDescriptor = new WorkspacePanelDescriptor(
             PinnedDescriptorId,
             "Karta",
             "DungeonIconBookOpen",
             WorkspacePanelGroup.World,
-            new PanelPlacement(96, 96, 660, 640),
+            new PanelPlacement(96, 96, CardWindowWidth, 640),
             CardConstraints,
             () => throw new InvalidOperationException("A pinned window is built for an entity."))
         {
             AllowsMultipleInstances = true,
             ClosesPermanently = true,
+            CanMaximize = false,
             CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, card => UnpinCard(card)),
             CanRestore = key => ParseEntity(key) is { } id && Catalog.Tree.Entity(id) is not null,
         };

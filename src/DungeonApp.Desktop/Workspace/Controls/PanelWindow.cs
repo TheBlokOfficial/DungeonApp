@@ -23,7 +23,7 @@ namespace DungeonApp.Desktop.Workspace.Controls;
 /// introducing parallel ones, so there is exactly one source of truth per value.
 /// </para>
 /// </summary>
-[PseudoClasses(":active", ":minimized", ":maximized", ":dragging", ":resizing", ":snapping")]
+[PseudoClasses(":active", ":minimized", ":maximized", ":dragging", ":resizing", ":snapping", ":fixed-width")]
 [TemplatePart("PART_TitleBar", typeof(Control))]
 [TemplatePart("PART_MinimizeButton", typeof(Button))]
 [TemplatePart("PART_MaximizeButton", typeof(Button))]
@@ -70,6 +70,10 @@ public class PanelWindow : ContentControl
     /// <summary>Absent, not disabled: a panel with a size cap shows no maximize button at all.</summary>
     public static readonly StyledProperty<bool> CanMaximizeProperty =
         AvaloniaProperty.Register<PanelWindow, bool>(nameof(CanMaximize), defaultValue: true);
+
+    /// <summary>Width is fixed: the side and corner grips are inert and hidden; top and bottom still resize.</summary>
+    public static readonly StyledProperty<bool> HasFixedWidthProperty =
+        AvaloniaProperty.Register<PanelWindow, bool>(nameof(HasFixedWidth));
 
     // Derived from CanMinimize / CanMaximize / PanelState. They are properties rather than styles on
     // :maximized because the template binds them, and a template binding outranks a style setter.
@@ -182,6 +186,12 @@ public class PanelWindow : ContentControl
         set => SetValue(CanMaximizeProperty, value);
     }
 
+    public bool HasFixedWidth
+    {
+        get => GetValue(HasFixedWidthProperty);
+        set => SetValue(HasFixedWidthProperty, value);
+    }
+
     public bool ShowMinimizeButton
     {
         get => GetValue(ShowMinimizeButtonProperty);
@@ -239,6 +249,11 @@ public class PanelWindow : ContentControl
             var maximized = PanelState == PanelDisplayState.Maximized;
             ShowMinimizeButton = CanMinimize && !maximized;
             ShowMaximizeButton = CanMaximize && !maximized;
+        }
+
+        if (change.Property == HasFixedWidthProperty)
+        {
+            PseudoClasses.Set(":fixed-width", HasFixedWidth);
         }
 
         if (change.Property == IsActiveProperty)
@@ -407,6 +422,11 @@ public class PanelWindow : ContentControl
 
         var edge = isTitleBar ? PanelEdge.None : ResizeParts.GetValueOrDefault(part.Name ?? string.Empty);
         if (!isTitleBar && (edge == PanelEdge.None || !CanResize))
+        {
+            return;
+        }
+
+        if (!isTitleBar && HasFixedWidth && (edge.HasFlag(PanelEdge.West) || edge.HasFlag(PanelEdge.East)))
         {
             return;
         }

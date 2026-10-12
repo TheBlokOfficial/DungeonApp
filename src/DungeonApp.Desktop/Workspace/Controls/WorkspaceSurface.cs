@@ -73,6 +73,7 @@ public class WorkspaceSurface : ItemsControl
             panel.Bind(PanelWindow.IconResourceKeyProperty, OneWay(nameof(IWorkspacePanel.IconResourceKey), viewModel)),
             panel.Bind(PanelWindow.HeaderActionsProperty, OneWay(nameof(IWorkspacePanel.HeaderActions), viewModel)),
             panel.Bind(PanelWindow.CanMinimizeProperty, OneWay(nameof(IWorkspacePanel.CanMinimize), viewModel)),
+            panel.Bind(PanelWindow.HasFixedWidthProperty, OneWay(nameof(IWorkspacePanel.HasFixedWidth), viewModel)),
             panel.Bind(PanelWindow.CanMaximizeProperty, OneWay(nameof(IWorkspacePanel.CanMaximize), viewModel)),
             panel.Bind(PanelWindow.IsActiveProperty, OneWay(nameof(IWorkspacePanel.IsActive), viewModel)),
 

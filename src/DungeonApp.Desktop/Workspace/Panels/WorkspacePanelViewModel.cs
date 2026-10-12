@@ -98,8 +98,12 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
 
     public double MaxHeight => Descriptor.Constraints.EffectiveMaxHeight;
 
+    /// <summary>The width cannot be changed by hand: its minimum is its maximum.</summary>
+    public bool HasFixedWidth => MinWidth >= MaxWidth;
+
     public bool CanMaximize =>
-        double.IsPositiveInfinity(Descriptor.Constraints.MaxWidth)
+        Descriptor.CanMaximize
+        && double.IsPositiveInfinity(Descriptor.Constraints.MaxWidth)
         && double.IsPositiveInfinity(Descriptor.Constraints.MaxHeight);
 
     [ObservableProperty]

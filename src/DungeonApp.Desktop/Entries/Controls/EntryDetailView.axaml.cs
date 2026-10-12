@@ -13,6 +13,9 @@ namespace DungeonApp.Desktop.Entries.Controls;
 /// </summary>
 public partial class EntryDetailView : UserControl
 {
+    /// <summary>The block's fixed width; a window that hosts it sizes itself from this.</summary>
+    public const double CardWidth = 560;
+
     public EntryDetailView()
     {
         InitializeComponent();

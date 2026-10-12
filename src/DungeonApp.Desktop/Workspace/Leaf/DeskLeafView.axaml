@@ -5,8 +5,8 @@
              x:DataType="leaf:DeskLeafViewModel"
              HorizontalAlignment="Left"
              VerticalAlignment="Top">
-    <!-- A quarter of a grid cell of margin keeps the strip off the desk's corner. The shadow is drawn
-         outside the border, so the margin is also what lets it show. -->
+    <!-- The margin keeps the strip off the desk's corner. The shadow is drawn outside the border, so
+         the margin is also what lets it show (hence the larger right and bottom). -->
     <UserControl.Resources>
         <!-- Same look as the desk window's header action, but defined here: the view is also shown
              outside the workspace (gallery), where the workspace resources are not merged in. -->
@@ -56,7 +56,7 @@
 
     <!-- Two borders: the outer one carries the shadow, which a clip would cut off; the inner one
          clips the square buttons to the rounded ends. Dividers run the strip's full height. -->
-    <Border Margin="8,8,16,16"
+    <Border Margin="12,12,24,24"
             Background="{DynamicResource DungeonFrameOverlayBackgroundBrush}"
             BorderBrush="{DynamicResource DungeonPanelWindowBorderBrush}"
             BorderThickness="1"
