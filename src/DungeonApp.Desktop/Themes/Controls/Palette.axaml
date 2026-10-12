@@ -71,6 +71,12 @@
                                             <Style Selector="controls|ListRow:selected TextBlock.row-name">
                                                 <Setter Property="FontWeight" Value="SemiBold" />
                                             </Style>
+                                            <!-- On glass the row's opaque hover would cover the glass; a light
+                                                 overlay shows hover and keeps the glass, as the selection's dim
+                                                 accent does. -->
+                                            <Style Selector="controls|ListRow:pointerover:not(:selected)">
+                                                <Setter Property="Background" Value="{DynamicResource DungeonHoverOverlayBrush}" />
+                                            </Style>
                                         </ItemsControl.Styles>
                                         <ItemsControl.DataTemplates>
                                             <DataTemplate DataType="controls:PaletteRowModel">

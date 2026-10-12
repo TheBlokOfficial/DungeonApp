@@ -42,7 +42,10 @@ public sealed class NameTagsPanel : Panel
         tagsChild.Measure(Size.Infinity);
         var (nameWidth, tagsWidth) = Split(
             availableSize.Width, nameChild.DesiredSize.Width, tagsChild.DesiredSize.Width);
-        nameChild.Measure(new Size(nameWidth, availableSize.Height));
+        // The name is measured with all the room it may ever take, not its share of this pass: a text
+        // block re-measured on its own (a bolder weight on a selected row) keeps its last constraint, and
+        // a constraint as narrow as the old text would trim the wider one without telling this panel.
+        nameChild.Measure(new Size(NameRoom(availableSize.Width, tagsChild.DesiredSize.Width), availableSize.Height));
         tagsChild.Measure(new Size(tagsWidth, availableSize.Height));
         var width = nameWidth + tagsWidth + (tagsWidth > 0 ? Spacing : 0);
         return new Size(
@@ -77,9 +80,20 @@ public sealed class NameTagsPanel : Panel
             return (Math.Min(nameNatural, available), 0);
         }
 
-        var tagsMin = Math.Min(tagsNatural, available * MinTagsShare);
-        var name = Math.Max(0, Math.Min(nameNatural, available - Spacing - tagsMin));
+        var name = Math.Min(nameNatural, NameRoom(available, tagsNatural));
         var tags = Math.Max(0, Math.Min(tagsNatural, available - Spacing - name));
         return (name, tags);
+    }
+
+    /// <summary>The most the name may take: all but the room reserved for the tags.</summary>
+    private double NameRoom(double available, double tagsNatural)
+    {
+        if (double.IsInfinity(available) || tagsNatural <= 0)
+        {
+            return available;
+        }
+
+        var tagsMin = Math.Min(tagsNatural, available * MinTagsShare);
+        return Math.Max(0, available - Spacing - tagsMin);
     }
 }
