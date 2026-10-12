@@ -33,6 +33,7 @@ namespace DungeonApp.Desktop.Shell;
 /// </summary>
 public sealed partial class AppShellViewModel : ObservableObject
 {
+    private readonly IReadOnlyList<IGameSystem> _systems;
     private readonly IReadOnlyDictionary<SystemId, ICampaignRepository> _repositoriesBySystem;
     private readonly CampaignLibraryViewModel _campaignLibrary;
     private readonly CampaignPreparationCache _preparations;
@@ -58,6 +59,7 @@ public sealed partial class AppShellViewModel : ObservableObject
         IStartupStep[] startupSteps)
     {
         _layoutStore = layoutStore;
+        _systems = systems;
         _repositoriesBySystem = repositoriesBySystem;
         _campaignLibrary = campaignLibrary;
         _preparations = preparations;
@@ -142,13 +144,13 @@ public sealed partial class AppShellViewModel : ObservableObject
                 await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
             }
 
-            CompleteStartup();
+            await CompleteStartupAsync(null);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!IsReady)
         {
             AppLog.Error($"Krok startowy {currentStep?.GetType().Name} zawiódł; start dokończony bez reszty kroków.", ex);
             ui.WarmupHost.Content = null;
-            CompleteStartupWithWarning(currentStep?.FailureWarning);
+            await CompleteStartupAsync(currentStep?.FailureWarning ?? DefaultStartupWarning);
         }
         finally
         {
@@ -156,23 +158,30 @@ public sealed partial class AppShellViewModel : ObservableObject
         }
     }
 
-    private void CompleteStartup()
-    {
-        StartupMessage = string.Empty;
-        IsReady = true;
-        StatusBar.Message = "Gotowe";
-    }
+    private const string DefaultStartupWarning = "Nie udało się w pełni przygotować startu aplikacji. Zostanie uruchomiona mimo to.";
 
     /// <summary>
-    /// <paramref name="warning"/> comes from whichever step failed (<see cref="IStartupStep.FailureWarning"/>)
-    /// - the frame never knows why a step failed, only that one did, so the step itself is the only
-    /// one that can put that into words.
+    /// Lifts the curtain. With exactly one system installed there is nothing to choose, so the
+    /// selection screen is never shown: the system is chosen here, behind the curtain, and the GM
+    /// lands where a choice would have led. The curtain lifts even if that choice fails (the error
+    /// still reaches the thread's handler), so the selection screen stays as the way in.
     /// </summary>
-    private void CompleteStartupWithWarning(string? warning)
+    private async Task CompleteStartupAsync(string? warning)
     {
         StartupMessage = string.Empty;
-        IsReady = true;
-        StatusBar.Message = warning ?? "Nie udało się w pełni przygotować startu aplikacji. Zostanie uruchomiona mimo to.";
+        StatusBar.Message = warning ?? "Gotowe";
+
+        try
+        {
+            if (_systems.Count == 1)
+            {
+                await ChooseSystemAsync(_systems[0]);
+            }
+        }
+        finally
+        {
+            IsReady = true;
+        }
     }
 
     /// <summary>
