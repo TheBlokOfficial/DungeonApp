@@ -1,7 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="using:DungeonApp.Desktop.Controls"
-        xmlns:themes="using:DungeonApp.Desktop.Themes">
+        xmlns:themes="using:DungeonApp.Desktop.Themes"
+        xmlns:workspace="using:DungeonApp.Desktop.Workspace.Controls">
     <!--
         Disabled system animations disable application animations. SystemMotion includes these styles at
         startup only when Windows animations are off; styles override control themes,
@@ -33,6 +34,14 @@
     <!-- Flyout, dropdown and menu opening without motion (Themes/PopupOpenMotion.cs). -->
     <Style Selector="FlyoutPresenter, MenuFlyoutPresenter, ContextMenu, MenuItem /template/ Border#PART_SubmenuSurface">
         <Setter Property="themes:PopupOpenMotion.IsEnabled" Value="False" />
+    </Style>
+    <!-- Desk windows: minimizing, restoring, opening and the active frame's colour change happen at once.
+         The fade-out of a closed window is a snapshot the surface does not even take when motion is reduced. -->
+    <Style Selector="workspace|PanelWindow">
+        <Setter Property="Transitions" Value="{x:Null}" />
+    </Style>
+    <Style Selector="workspace|WorkspaceSurface /template/ Image.desk-ghost">
+        <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
     <!-- Window-overlay appearance (palette, confirmation dialog, notification toast: Controls/OverlayAppearMotion.cs)
          is an animation started in code, not a theme transition, so no style removes it here; the code itself

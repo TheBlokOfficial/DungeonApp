@@ -127,6 +127,13 @@ public sealed partial class WorkspacePanelViewModel : ObservableObject, IWorkspa
     [ObservableProperty]
     public partial PanelDisplayState State { get; set; }
 
+    /// <inheritdoc />
+    public bool OpensWithMotion { get; set; }
+
+    /// <inheritdoc />
+    [ObservableProperty]
+    public partial bool IsClosing { get; set; }
+
     public ICommand ActivateCommand { get; }
 
     public ICommand MinimizeCommand { get; }

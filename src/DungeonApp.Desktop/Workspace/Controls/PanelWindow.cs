@@ -23,7 +23,7 @@ namespace DungeonApp.Desktop.Workspace.Controls;
 /// introducing parallel ones, so there is exactly one source of truth per value.
 /// </para>
 /// </summary>
-[PseudoClasses(":active", ":minimized", ":maximized", ":dragging", ":resizing", ":snapping", ":fixed-width")]
+[PseudoClasses(":active", ":appearing", ":minimized", ":maximized", ":dragging", ":resizing", ":snapping", ":fixed-width")]
 [TemplatePart("PART_TitleBar", typeof(Control))]
 [TemplatePart("PART_MinimizeButton", typeof(Button))]
 [TemplatePart("PART_MaximizeButton", typeof(Button))]
@@ -221,6 +221,57 @@ public class PanelWindow : ContentControl
         get => GetValue(ToggleMaximizeCommandProperty);
         set => SetValue(ToggleMaximizeCommandProperty, value);
     }
+
+    /// <summary>
+    /// Starts the window in the faded, shrunk look of a minimized one and lets it go once it is on the
+    /// desk, so the theme's transitions play it in. Called by the surface before the window is attached.
+    /// </summary>
+    public void BeginAppear()
+    {
+        _appearing = true;
+        PseudoClasses.Set(":appearing", true);
+
+        if (((Visual)this).IsAttachedToVisualTree())
+        {
+            StartAppearTimer();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        if (_appearing)
+        {
+            StartAppearTimer();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+
+        _appearTimer?.Stop();
+        _appearing = false;
+        PseudoClasses.Set(":appearing", false);
+    }
+
+    // A moment on the initial look, so the change away from it is a transition and not the first value.
+    private void StartAppearTimer()
+    {
+        _appearTimer?.Stop();
+        _appearTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(30) };
+        _appearTimer.Tick += (_, _) =>
+        {
+            _appearTimer?.Stop();
+            _appearing = false;
+            PseudoClasses.Set(":appearing", false);
+        };
+        _appearTimer.Start();
+    }
+
+    private bool _appearing;
+    private DispatcherTimer? _appearTimer;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

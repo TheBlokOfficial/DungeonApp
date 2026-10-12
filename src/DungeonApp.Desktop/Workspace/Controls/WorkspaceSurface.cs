@@ -1,9 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+using DungeonApp.Desktop.Themes;
+using DungeonApp.Desktop.Workspace.Panels;
 
 namespace DungeonApp.Desktop.Workspace.Controls;
 
@@ -29,6 +36,8 @@ public class WorkspaceSurface : ItemsControl
         AvaloniaProperty.Register<WorkspaceSurface, Control?>(nameof(Underlay));
 
     private readonly Dictionary<Control, List<IDisposable>> _containerBindings = [];
+    private readonly Dictionary<Control, (IWorkspacePanel Panel, PropertyChangedEventHandler Handler)> _closeWatchers = [];
+    private Canvas? _ghosts;
 
     public Control? Underlay
     {
@@ -57,6 +66,21 @@ public class WorkspaceSurface : ItemsControl
 
         panel.DataContext = viewModel;
         panel.Content = viewModel.Body;
+
+        if (viewModel.OpensWithMotion && !SystemMotion.IsReduced)
+        {
+            panel.BeginAppear();
+        }
+
+        PropertyChangedEventHandler closing = (_, e) =>
+        {
+            if (e.PropertyName == nameof(IWorkspacePanel.IsClosing) && viewModel.IsClosing)
+            {
+                LeaveWithMotion(panel);
+            }
+        };
+        viewModel.PropertyChanged += closing;
+        _closeWatchers[container] = (viewModel, closing);
 
         _containerBindings[container] =
         [
@@ -87,8 +111,74 @@ public class WorkspaceSurface : ItemsControl
         ];
     }
 
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _ghosts = e.NameScope.Find<Canvas>("PART_Ghosts");
+    }
+
+    /// <summary>
+    /// A picture of the window that was just closed, lying where it was and fading out. It is not the
+    /// window: no input reaches it, and the model has already forgotten the window.
+    /// </summary>
+    private void LeaveWithMotion(PanelWindow panel)
+    {
+        var ghosts = _ghosts;
+        if (ghosts is null || SystemMotion.IsReduced || panel.PanelState == PanelDisplayState.Minimized
+            || panel.Bounds.Width < 1 || panel.Bounds.Height < 1)
+        {
+            return;
+        }
+
+        var scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
+        var size = new PixelSize(
+            (int)Math.Ceiling(panel.Bounds.Width * scaling),
+            (int)Math.Ceiling(panel.Bounds.Height * scaling));
+        var bitmap = new RenderTargetBitmap(size, new Vector(96 * scaling, 96 * scaling));
+        bitmap.Render(panel);
+
+        var ghost = new Image
+        {
+            Source = bitmap,
+            Width = panel.Bounds.Width,
+            Height = panel.Bounds.Height,
+            Stretch = Stretch.Fill,
+            IsHitTestVisible = false,
+            ZIndex = panel.ZIndex,
+        };
+        ghost.Classes.Add("desk-ghost");
+        Canvas.SetLeft(ghost, panel.Bounds.X);
+        Canvas.SetTop(ghost, panel.Bounds.Y);
+        ghosts.Children.Add(ghost);
+
+        // Start after the ghost has been in the tree for a moment (so the fade is a transition), and
+        // remove it once the fade is over.
+        After(TimeSpan.FromMilliseconds(30), () => ghost.Classes.Add("leaving"));
+        After(TimeSpan.FromMilliseconds(260), () =>
+        {
+            ghosts.Children.Remove(ghost);
+            bitmap.Dispose();
+        });
+    }
+
+    private static void After(TimeSpan delay, Action action)
+    {
+        var timer = new DispatcherTimer { Interval = delay };
+        timer.Tick += (_, _) =>
+        {
+            timer.Stop();
+            action();
+        };
+        timer.Start();
+    }
+
     protected override void ClearContainerForItemOverride(Control container)
     {
+        if (_closeWatchers.Remove(container, out var watcher))
+        {
+            watcher.Panel.PropertyChanged -= watcher.Handler;
+        }
+
         // Mandatory: every binding above holds the view model as its Source, so the view model keeps
         // the container — and its whole visual tree — alive. Skipping this leaks each closed panel.
         if (_containerBindings.Remove(container, out var bindings))

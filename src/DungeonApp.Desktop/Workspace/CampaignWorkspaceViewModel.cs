@@ -189,6 +189,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         var panel = new WorkspacePanelViewModel(this, descriptor, instanceKey, NextPlacement(descriptor));
 
         panel.ZOrder = Panels.Count;
+        panel.OpensWithMotion = true;
         Panels.Add(panel);
         Fit(panel);
         Activate(panel);
@@ -207,10 +208,15 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     /// </summary>
     public void Close(WorkspacePanelViewModel panel)
     {
-        if (!Panels.Remove(panel))
+        if (!Panels.Contains(panel))
         {
             return;
         }
+
+        // The view takes its snapshot for the fade-out on this signal, while the window is still on
+        // the desk; the removal below does not wait for the fade.
+        panel.IsClosing = true;
+        Panels.Remove(panel);
 
         MinimizedPanels.Remove(panel);
 
@@ -301,8 +307,10 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         var replacement = new WorkspacePanelViewModel(this, descriptor, key, panel.Desired)
         {
             ZOrder = panel.ZOrder,
+            OpensWithMotion = true,
         };
 
+        panel.IsClosing = true;
         Panels[Panels.IndexOf(panel)] = replacement;
 
         if (panel.Body is IDisposable disposable)
