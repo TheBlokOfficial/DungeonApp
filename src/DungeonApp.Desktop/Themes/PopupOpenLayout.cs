@@ -19,7 +19,7 @@ namespace DungeonApp.Desktop.Themes;
 /// DropDownPicker, .list-host flyout) exists only when content overflows - a popup whose
 /// content fits without scrolling gets <see cref="NoBarZoneClass"/>, and styles
 /// in BuiltInControls.axaml remove the zone from its rows;</item>
-/// <item>list popup width (ComboBox, DropDownPicker) comes from the longest item in the entire
+/// <item>list popup width (ComboBox, DropDownPicker, a list in a .list-host flyout whose width is not set) comes from the longest item in the entire
 /// list, not currently existing rows (virtualisation creates only visible ones): measure
 /// labels in the row font plus what the row and popup add around them. At least as wide as
 /// the opener, no further than the application window's right edge; longer items trim
@@ -74,11 +74,24 @@ internal static class PopupOpenLayout
             owner.Classes.Set(NoBarZoneClass, noZone);
         }
 
-        if (surface is FlyoutPresenter presenter && owner is ComboBox or DropDownPicker)
+        if (surface is FlyoutPresenter presenter)
         {
+            // A list in a .list-host flyout (chip with a choice list) has no owner control: the
+            // flyout's list is the presenter's content and the button is the popup's anchor.
+            var hostedList = presenter.Classes.Contains("list-host") ? presenter.Content as ItemsControl : null;
+            var anchor = owner is ComboBox or DropDownPicker ? owner : popup.PlacementTarget as Control;
+            var names = owner is DropDownPicker picker ? picker.ItemNames()
+                : owner is ComboBox combo ? ItemsControlNames(combo)
+                : hostedList is { Width: double.NaN } ? ItemsControlNames(hostedList)
+                : null;
+            if (names is null || anchor is null)
+            {
+                return;
+            }
+
             if (isOpen)
             {
-                FixListWidth(presenter, owner);
+                FixListWidth(presenter, anchor, names);
             }
             else
             {
@@ -97,7 +110,7 @@ internal static class PopupOpenLayout
             .Any(viewer => viewer.Extent.Height > viewer.Viewport.Height + 0.5);
     }
 
-    private static void FixListWidth(FlyoutPresenter presenter, Control owner)
+    private static void FixListWidth(FlyoutPresenter presenter, Control owner, IEnumerable<string> names)
     {
         presenter.UpdateLayout();
         var row = presenter.GetVisualDescendants().OfType<ListBoxItem>().FirstOrDefault(item => item.IsVisible);
@@ -114,7 +127,6 @@ internal static class PopupOpenLayout
             return layout.WidthIncludingTrailingWhitespace;
         }
 
-        var names = owner is DropDownPicker picker ? picker.ItemNames() : ComboBoxNames((ComboBox)owner);
         var longest = names.Select(Measure).DefaultIfEmpty(0d).Max();
 
         // Around the label: row padding, checkbox, scrollbar zone (from an existing row), popup padding
@@ -131,16 +143,16 @@ internal static class PopupOpenLayout
         presenter.Width = width;
     }
 
-    private static IEnumerable<string> ComboBoxNames(ComboBox combo)
+    private static IEnumerable<string> ItemsControlNames(ItemsControl list)
     {
         TextBlock? evaluator = null;
-        foreach (var item in combo.Items)
+        foreach (var item in list.Items)
         {
             if (item is ContentControl container)
             {
                 yield return container.Content?.ToString() ?? string.Empty;
             }
-            else if (combo.DisplayMemberBinding is { } binding)
+            else if (list.DisplayMemberBinding is { } binding)
             {
                 if (evaluator is null)
                 {
