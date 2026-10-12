@@ -80,7 +80,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
             WorkspacePanelGroup.World,
             new PanelPlacement(64, 72, 660, 640),
             CardConstraints,
-            () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, entity => PinEntity(entity)))
+            () => new EntityCardViewModel(Catalog, cards, null, followsSelection: true, card => PinPreview(card)))
         {
             ClosesPermanently = true,
         };
@@ -95,7 +95,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         {
             AllowsMultipleInstances = true,
             ClosesPermanently = true,
-            CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, pin: null),
+            CreateInstance = key => new EntityCardViewModel(Catalog, cards, ParseEntity(key), followsSelection: false, card => UnpinCard(card)),
             CanRestore = key => ParseEntity(key) is { } id && Catalog.Tree.Entity(id) is not null,
         };
 
@@ -230,6 +230,67 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     public WorkspacePanelViewModel? PinEntity(EntityId entity) =>
         Catalog.Tree.Entity(entity) is null ? null : Open(_pinnedDescriptor, entity.Value.ToString());
 
+    // The pin on the preview: the same window turns into the pinned card of the entity it shows (same
+    // place, size and stacking), so no second window appears. An entity that already has a pinned
+    // card gets that one brought up instead and the preview stays.
+    private void PinPreview(EntityCardViewModel card)
+    {
+        if (FindPanelOf(card) is not { } panel || card.Entity is not { } entity || Catalog.Tree.Entity(entity) is null)
+        {
+            return;
+        }
+
+        var key = entity.Value.ToString();
+        if (Find(_pinnedDescriptor, key) is { } existing)
+        {
+            Activate(existing);
+            return;
+        }
+
+        ChangeRole(panel, _pinnedDescriptor, key);
+    }
+
+    // The pin on a pinned card: the card becomes the preview and follows the selection again; the
+    // preview there was is closed, because the desk has at most one.
+    private void UnpinCard(EntityCardViewModel card)
+    {
+        if (FindPanelOf(card) is not { } panel)
+        {
+            return;
+        }
+
+        if (Find(_previewDescriptor, PreviewDescriptorId) is { } preview)
+        {
+            Close(preview);
+        }
+
+        ChangeRole(panel, _previewDescriptor, PreviewDescriptorId);
+    }
+
+    private WorkspacePanelViewModel? FindPanelOf(EntityCardViewModel card) =>
+        Panels.FirstOrDefault(panel => ReferenceEquals(panel.Body, card));
+
+    // A window's descriptor and body are fixed for its life, so a role change swaps in a new window
+    // in the old one's slot; the saved layout then holds the new descriptor id and key.
+    private void ChangeRole(WorkspacePanelViewModel panel, WorkspacePanelDescriptor descriptor, string key)
+    {
+        var replacement = new WorkspacePanelViewModel(this, descriptor, key, panel.Desired)
+        {
+            ZOrder = panel.ZOrder,
+        };
+
+        Panels[Panels.IndexOf(panel)] = replacement;
+
+        if (panel.Body is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+
+        Fit(replacement);
+        BringToFront(replacement);
+        _session.MarkDirty();
+    }
+
     private static EntityId? ParseEntity(string key) =>
         Guid.TryParse(key, out var value) ? new EntityId(value) : null;
 
@@ -251,6 +312,22 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
     private PanelPlacement NextPlacement(WorkspacePanelDescriptor descriptor)
     {
         var placement = descriptor.DefaultPlacement;
+
+        // The preview takes its own place; when a window (a freshly pinned card) holds it, one grid
+        // step to the right and down for each window in the way. The desk's fitting pulls it back in.
+        if (descriptor.Id == PreviewDescriptorId)
+        {
+            while (Panels.Any(panel => Math.Abs(panel.Desired.X - placement.X) < 1 && Math.Abs(panel.Desired.Y - placement.Y) < 1))
+            {
+                placement = placement with
+                {
+                    X = placement.X + WorkspaceGridSettings.DefaultSnapStep,
+                    Y = placement.Y + WorkspaceGridSettings.DefaultSnapStep,
+                };
+            }
+
+            return placement;
+        }
 
         if (Panels.FirstOrDefault(panel => panel.Descriptor.Id == PreviewDescriptorId) is { } preview
             && descriptor.Id == PinnedDescriptorId)
