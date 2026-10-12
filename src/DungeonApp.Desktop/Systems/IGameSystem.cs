@@ -74,13 +74,6 @@ public interface IGameSystem
     WorldCatalogSource GetWorldCatalogSource();
 
     /// <summary>
-    /// The short text at the right edge of an entity's tree row - for a being with combat values
-    /// the current and maximum health ("7/7"); <see langword="null"/> when this entity has none.
-    /// Only a resolved entity has values to read.
-    /// </summary>
-    string? RowHint(ResolvedEntity entity);
-
-    /// <summary>
     /// Startup work this system wants run behind the loading curtain - loading its own content packs,
     /// warming its own cards, and anything else its own concern. The frame runs every step here
     /// without knowing what any of them does; a step that fails degrades startup the same way one

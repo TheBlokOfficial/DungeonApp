@@ -359,8 +359,6 @@ public sealed class EntityPreviewBuildTests
                     new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
                 ]);
 
-        public string? RowHint(ResolvedEntity entity) => null;
-
         public bool HasSet(ContentId set) => set == Set;
 
         public bool TryGet(ContentTypeReference reference, out ContentTypeDescriptor descriptor)

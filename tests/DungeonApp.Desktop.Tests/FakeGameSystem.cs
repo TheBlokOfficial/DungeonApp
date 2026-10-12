@@ -39,7 +39,5 @@ internal sealed class FakeGameSystem(
     public DungeonApp.Desktop.Systems.WorldCatalogSource GetWorldCatalogSource() =>
         DungeonApp.Desktop.Systems.WorldCatalogSource.Empty;
 
-    public string? RowHint(DungeonApp.Core.Entries.ResolvedEntity entity) => null;
-
     public IReadOnlyList<IStartupStep> StartupSteps { get; } = [];
 }
