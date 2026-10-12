@@ -122,7 +122,7 @@ internal static partial class Program
             RenderGallery(window, shell);
         }
 
-        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_"))
+        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_") || MayMatch("szklo"))
         {
             RenderDesk(window, shell);
         }
@@ -709,6 +709,65 @@ internal static partial class Program
             SaveCrop(window, window, UniqueName("desk_palette"));
             PressKey(window, Avalonia.Input.Key.Escape);
             desk.Panels.Remove(panel);
+            Settle();
+        }
+
+        // Full-size window with the palette over a desk that has windows under it, once per glass tint opacity.
+        // The tint is swapped in the window resources only for the length of each render.
+        (string Stem, byte Alpha)[] glassVariants = [("szklo-55", 0x8C), ("szklo-70", 0xB3), ("szklo-80", 0xCC), ("szklo-90", 0xE6)];
+        if (Wants("szklo") || glassVariants.Any(variant => Wants(variant.Stem)))
+        {
+            SetSize(window, 1920, 1080);
+            var windows = new List<WorkspacePanelViewModel>();
+            for (var index = 0; index < 3; index++)
+            {
+                var descriptor = new WorkspacePanelDescriptor(
+                    $"render-glass-window-{index}",
+                    $"Okno pod paletą {index + 1}",
+                    "DungeonIconSkull",
+                    WorkspacePanelGroup.Session,
+                    new PanelPlacement(catalog.X - 900 + index * 300, 60 + index * 140, 460, 320),
+                    new PanelConstraints(200, 120, 2000, 2000),
+                    () => new TextBlock { Text = "Okno pod paletą: tekst, który ma się rozmyć", TextWrapping = Avalonia.Media.TextWrapping.Wrap });
+                var panel = new WorkspacePanelViewModel(desk, descriptor, descriptor.Id, descriptor.DefaultPlacement);
+                desk.Panels.Add(panel);
+                panel.ActivateCommand.Execute(null);
+                windows.Add(panel);
+            }
+
+            Settle();
+            var catalogView = deskView.GetVisualDescendants().OfType<WorldCatalogView>().First();
+            catalogView.ShowAddPalette(catalog.ResolveAddTarget());
+            Settle();
+            var hadTint = window.Resources.TryGetValue("DungeonPaletteGlassTintBrush", out var originalTint);
+            foreach (var (stem, alpha) in glassVariants)
+            {
+                if (!Wants("szklo") && !Wants(stem))
+                {
+                    continue;
+                }
+
+                window.Resources["DungeonPaletteGlassTintBrush"] = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromArgb(alpha, 0x1F, 0x1D, 0x1A));
+                Settle();
+                SaveCrop(window, window, UniqueName(stem));
+            }
+
+            if (hadTint)
+            {
+                window.Resources["DungeonPaletteGlassTintBrush"] = originalTint;
+            }
+            else
+            {
+                window.Resources.Remove("DungeonPaletteGlassTintBrush");
+            }
+
+            PressKey(window, Avalonia.Input.Key.Escape);
+            foreach (var panel in windows)
+            {
+                desk.Panels.Remove(panel);
+            }
+
+            SetSize(window, WindowWidth, WindowHeight);
             Settle();
         }
 
