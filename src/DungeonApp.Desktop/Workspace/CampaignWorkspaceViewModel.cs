@@ -78,7 +78,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         Catalog = new WorldCatalogViewModel(entries, system, layout.Catalog);
         Catalog.LayoutChanged += _session.MarkDirty;
 
-        var cards = new EntityCardBuilder(system.GetWorldCatalogSource());
+        var cards = new EntityCardBuilder(system.GetWorldCatalogSource(), entries.ChangeAsync);
         _previewDescriptor = new WorkspacePanelDescriptor(
             PreviewDescriptorId,
             "Podgląd",

@@ -84,9 +84,17 @@ public sealed class ValidContentDetailViewModel(
 /// </summary>
 public sealed class BrokenContentDetailViewModel(
     string overline, string name, string reason, string? path,
-    IReadOnlyList<string>? breadcrumbs = null, string? numberLabel = null)
+    IReadOnlyList<string>? breadcrumbs = null, string? numberLabel = null, Control? liveSections = null)
     : ContentDetailViewModel(name)
 {
+    /// <summary>
+    /// An entity's live sections (its note) under the reason: the entity outlives its entry, and so
+    /// does what the GM wrote about it. Null in the library.
+    /// </summary>
+    public Control? LiveSections { get; } = liveSections;
+
+    public bool HasLiveSections => LiveSections is not null;
+
     /// <summary>
     /// The path line over the name (an entity whose entry is gone: its address), with its "№ 5" at
     /// the right edge. When there is one, it stands in place of the overline.

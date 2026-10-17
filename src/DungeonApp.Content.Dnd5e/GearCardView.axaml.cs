@@ -31,7 +31,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// a bare number (<see cref="PolishNumber"/>).
 /// </para>
 /// </summary>
-public partial class GearCardView : UserControl, IEntryCardHeader
+public partial class GearCardView : UserControl, IEntryCardHeader, IEntityLiveCard
 {
     private readonly ImageFrame _picture;
     private readonly WordTag _rarity = new();
@@ -71,6 +71,15 @@ public partial class GearCardView : UserControl, IEntryCardHeader
     /// long name is trimmed and shown whole under the pointer instead of pushing the header taller.
     /// </summary>
     public bool HeaderTitleOnOneLine => true;
+
+    /// <summary>An item entity has no live numbers (<see cref="Dnd5eSystem"/>): only the frame's note, under the header.</summary>
+    public void ShowLive(EntityLiveContext live)
+    {
+        System.ArgumentNullException.ThrowIfNull(live);
+
+        LiveSections.Content = live.CreateSections();
+        LiveSections.IsVisible = true;
+    }
 
     public void SetGear(Gear gear, EntryPicture picture)
     {

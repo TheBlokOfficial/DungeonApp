@@ -175,6 +175,8 @@
                                              Foreground="{DynamicResource DungeonTextMutedBrush}" />
                     </StackPanel>
                 </StackPanel>
+                <!-- An entity's note under the reason; absent in the library. -->
+                <ContentControl Content="{Binding LiveSections}" IsVisible="{Binding HasLiveSections}" />
             </StackPanel>
         </DataTemplate>
     </UserControl.DataTemplates>
