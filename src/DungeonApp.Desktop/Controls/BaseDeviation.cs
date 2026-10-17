@@ -1,3 +1,5 @@
+using DungeonApp.Core.Entries.Entities;
+
 namespace DungeonApp.Desktop.Controls;
 
 /// <summary>
@@ -10,4 +12,15 @@ public enum BaseDeviation
     None,
     Above,
     Below,
+}
+
+/// <summary>Turns the frame's sum of a value with a base into the deviation a view colours.</summary>
+public static class BaseDeviations
+{
+    public static BaseDeviation Of(ShownValue value) => value.Offset switch
+    {
+        > 0 => BaseDeviation.Above,
+        < 0 => BaseDeviation.Below,
+        _ => BaseDeviation.None,
+    };
 }

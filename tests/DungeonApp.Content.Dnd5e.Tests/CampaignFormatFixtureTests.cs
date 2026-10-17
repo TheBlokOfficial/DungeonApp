@@ -16,8 +16,9 @@ namespace DungeonApp.Content.Dnd5e.Tests;
 /// <summary>
 /// Proof that the on-disk campaign format does not move by a single byte. The fixture under
 /// <c>Fixtures/CampaignFormat</c> was generated from a campaign with a declared system, two world
-/// folders and two entities - one in a folder with a GM-given label and a non-empty patch, one plain
-/// in the root - and a counter ahead of the highest number. It is regenerated only when the format
+/// folders and three entities - one in a folder with a GM-given label and a non-empty patch, one plain
+/// in the root, one with a GM's note and changed current hit points - and a counter ahead of the
+/// highest number. An entity without a note or current numbers has neither field in the file. It is regenerated only when the format
 /// changes on purpose (<c>Fixtures/LegacyCampaign</c> keeps the previous shape as a campaign that
 /// must still open), never hand-edited.
 /// <para>
@@ -107,6 +108,8 @@ public sealed class CampaignFormatFixtureTests : IDisposable
             Assert.Equal(1, entities["27a5bad0-d2d5-4a08-9917-3306acd1832a"].Number);
             Assert.Equal(2, entities["f2f659c8-208a-4a0a-b62e-5768fb336401"].Number);
             Assert.All(entities.Values, entity => Assert.Null(entity.FolderId));
+            Assert.All(entities.Values, entity => Assert.Null(entity.Note));
+            Assert.All(entities.Values, entity => Assert.Null(entity.Current));
             Assert.Empty(campaign.Snapshot.Get(WorldModels.Folders));
             Assert.Equal(2, WorldNumbering.LastNumber(campaign.Snapshot));
         }

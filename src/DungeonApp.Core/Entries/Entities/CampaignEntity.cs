@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DungeonApp.Core.State;
 using DungeonApp.Core.World;
 
@@ -48,6 +49,23 @@ public sealed record CampaignEntity : IStateRecord
     public int Number { get; init; }
 
     public required ContentValues Patch { get; init; }
+
+    /// <summary>
+    /// The GM's note on this specimen - the place for whatever change is not a number ("odporny na
+    /// ogień"). <see langword="null"/> when there is none; left out of the file then, so an entity
+    /// without one is saved exactly as before the field existed.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Note { get; init; }
+
+    /// <summary>
+    /// The current numbers the GM changed (<see cref="CurrentValues"/>); a key that is missing takes
+    /// the system's default. <see langword="null"/> when none was changed, and then left out of the
+    /// file. Kept on the entity rather than in <see cref="Patch"/>: the patch overlays the entry's own
+    /// values, and a current number is not one of them.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public CurrentValues? Current { get; init; }
 
     /// <summary>The frame's own view of this record's identity - see <see cref="IStateRecord"/>. Never the public <see cref="Id"/> itself, which callers reach for by its real type instead.</summary>
     string IStateRecord.Id => Id.Value.ToString();

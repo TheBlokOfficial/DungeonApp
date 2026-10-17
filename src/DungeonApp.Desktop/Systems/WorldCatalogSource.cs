@@ -2,22 +2,30 @@ using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Media;
 using DungeonApp.Core.Entries;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Desktop.Entries;
 
 namespace DungeonApp.Desktop.Systems;
 
 /// <summary>
 /// What the world catalog needs from the system's content to show and fill the tree: the loaded
-/// entries, the catalog that validates their types, the badge colours and the library's row
-/// profiles (for tags and badge of a result row). The frame never opens any of it beyond asking
-/// those four questions.
+/// entries, the catalog that validates their types, the badge colours, the library's row
+/// profiles (for tags and badge of a result row) and the live numbers of each type's entities
+/// (<see cref="Values"/>). The frame never opens any of it beyond asking those questions.
 /// </summary>
 public sealed class WorldCatalogSource(
     ContentRegistry registry,
     IContentTypeCatalog types,
     IContentPresentation presentation,
-    IReadOnlyList<IContentTypeProfile> profiles)
+    IReadOnlyList<IContentTypeProfile> profiles,
+    IEntityValueCatalog? values = null)
 {
+    /// <summary>
+    /// Which values of an entity have a base and which are tracked, per type - what
+    /// <see cref="EntityLivePart.Read"/> needs. A system that gives none has entities with a note only.
+    /// </summary>
+    public IEntityValueCatalog Values { get; } = values ?? NoEntityValues.Instance;
+
     public ContentRegistry Registry { get; } = registry;
 
     public IContentTypeCatalog Types { get; } = types;

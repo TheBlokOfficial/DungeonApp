@@ -29,6 +29,21 @@
       "folderId": null,
       "number": 3,
       "patch": {}
+    },
+    {
+      "id": "5c0ffee0-1111-4a5a-8b8b-0123456789ab",
+      "source": {
+        "pack": "bestiary",
+        "entry": "goblin"
+      },
+      "label": "Ranny",
+      "folderId": "22222222-2222-2222-2222-222222222222",
+      "number": 2,
+      "patch": {},
+      "note": "Odporny na ogie\u0144.\nUcieka przy 2 PW.",
+      "current": {
+        "hp": 3
+      }
     }
   ]
 }

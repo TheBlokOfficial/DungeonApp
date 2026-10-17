@@ -36,7 +36,7 @@ namespace DungeonApp.Content.Dnd5e;
 /// pick a different one for either.
 /// </para>
 /// </summary>
-public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation
+public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPresentation, IEntityValueCatalog
 {
     private const string CreatureTypeId = "creature";
     private const string GearTypeId = "gear";
@@ -421,11 +421,17 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
     }
 
     /// <summary>
-    /// What the world catalog reads: the loaded entries, this system as type catalog and badge colours,
-    /// and the profiles of its content tabs, which tell a result row its tags and badge.
+    /// What the world catalog reads: the loaded entries, this system as type catalog, badge colours and
+    /// live numbers, and the profiles of its content tabs, which tell a result row its tags and badge.
     /// </summary>
     public WorldCatalogSource GetWorldCatalogSource() =>
-        new(_loadPacksStep.Registry, this, this, [.. ContentTabDefinitions.SelectMany(tab => tab.ContentTypes)]);
+        new(_loadPacksStep.Registry, this, this, [.. ContentTabDefinitions.SelectMany(tab => tab.ContentTypes)], this);
+
+    /// <summary>
+    /// A creature has live numbers (<see cref="CreatureValues"/>); an item has a note only.
+    /// </summary>
+    public IEntityValueRules? For(ContentTypeReference type) =>
+        type == new ContentTypeReference(ContentSetId, ContentId.Create(CreatureTypeId)) ? CreatureValues.Instance : null;
 
     /// <summary>
     /// A content type this system declares. <see cref="Validate"/> and <see cref="CreateCard"/> both
