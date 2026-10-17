@@ -101,8 +101,10 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 - **Pinezka** w nagłówku podglądu odkłada bieżącą kartę do osobnego okna; podgląd dalej idzie za
   zaznaczeniem. Przypiętych okien może być kilka. Usunięcie entity zamyka jej przypięte okno, a podgląd
   zostaje pusty.
-- **Tytuł okna** niesie nazwę i №: „Podgląd · Goblin 2 · № 2”, okno przypięte „Goblin 2 · № 2”.
-  Ścieżki katalogów w oknie nie ma — miejsce entity pokazuje drzewo, a № wskazuje ją jednoznacznie.
+- **Tytuł okna** jest stały: „Podgląd”, także w oknie przypiętym, o którym mówi pinezka
+  (rozstrzygnięcie „Tytuł okna mówi, czym okno jest”). № stoi w wierszu ścieżki przy prawej
+  krawędzi, przygaszony jak człony kategorii. Ścieżki katalogów w oknie nie ma — miejsce entity
+  pokazuje drzewo, a № wskazuje ją jednoznacznie.
 - **Karta entity zmienia się w miejscu** (rozstrzygnięcie „Karta entity zmienia się w miejscu”). To
   ta sama karta co w bibliotece, przedzielona istniejącą kreską przed parami pól:
   - **część żywa** (nad kreską) — ścieżka kategorii, obraz, nazwa entity, tagi, PW, KP, Szybkość,
@@ -112,9 +114,8 @@ Element ramy wielokrotnego użytku: okienko u góry pośrodku okna aplikacji, na
 - **Ścieżka kategorii jak w bibliotece** („Stworzenia › Nieumarli › Szkielet”). Jej ostatni człon to
   nazwa wpisu, więc widać, czym jest „Goblin 2”. Linii „№ 5 · Goblin” pod nazwą nie ma: wypychała
   kolumnę tytułu ponad dolną krawędź obrazu.
+- Entity bez wpisu ma w miejscu ścieżki adres zaginionego wpisu („dnd5e-srd › goblin”).
 - Nic nie jest przyklejone: karta przewija się w całości, a część żywa stoi na jej górze.
-- *Do zmiany w kodzie (wycinek 2.3b):* `EntityCardBuilder` podmienia ścieżkę kategorii na ścieżkę
-  katalogów i dopisuje linię „№ 5 · Goblin”; tytuł podglądu to samo „Podgląd”.
 
 ## Część żywa
 
@@ -133,8 +134,8 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   jak błąd. W bibliotece paska nie ma — wpis nie ma bieżących PW.
 - **Blok PW:** podpis z ikoną serca „PW”, duża biała bieżąca liczba, obok mniejsze, szare „/ 13” na
   wspólnej linii bazowej; dopisek wpisu („2k8+4”) jak w bibliotece.
-- „Zatwierdź” i „Odrzuć” stoją po prawej, na wysokości ścieżki kategorii (sekcja „Zatwierdzanie
-  zmian”).
+- Po prawej, na wysokości ścieżki kategorii, stoi №. Miejsce na „Zatwierdź” i „Odrzuć” (odłożone,
+  sekcja „Zatwierdzanie zmian”) wybierze nowy projekt znacznika zmiany.
 - Entity bez walki (przedmiot): nagłówek jak w bibliotece, pod nim Stany, Efekty i Notatka.
 - Część żywa to zarazem **zwarty widok istoty** z etapu 5: okno inicjatywy pokazuje ją bez części
   stałej. Jak ją tam przyciąć — etap 5.
@@ -182,6 +183,9 @@ Nazwy „część żywa” i „część stała” wchodzą przy budowie do sło
   paletę.
 
 ## Zatwierdzanie zmian
+
+*Odłożone* (roadmapa, 2.3c; rozstrzygnięcie „Niezatwierdzona zmiana ma kleks”): forma kleksa wraca
+do projektu. Sekcja zostaje jako punkt wyjścia.
 
 - Zmiana w części żywej **działa i zapisuje się od razu**; przycisku „Zapisz” nie ma. Zapomniane
   zatwierdzenie niczego nie gubi, awaria laptopa nie zabiera zmian, a drzewo, inicjatywa i przełomy
@@ -305,6 +309,9 @@ Rozstrzygnąć przed budową wycinka, którego dotyczą.
 3. **Dodawanie efektu** (2.3e): jedną linią w palecie — „KP +2 Tarcza wiary” i Enter (propozycja, przy
    stole szybciej) — czy formularzem?
 4. **„Następna tura”** (etap E5): zatwierdza tylko istotę kończącą turę czy wszystkie?
+5. **Szybkość jako liczba** (2.3e): we wpisie jest tekstem („7,5 m”, „30 stóp”), więc nie ma bazy,
+   do której efekt doda liczbę. Liczbowe pole w paczce to zmiana formatu paczek; bez niego efekt na
+   Szybkość nie ma celu.
 
 ## Poza etapem 2
 

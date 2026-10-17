@@ -73,8 +73,9 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
 - **Pole zmiany liczby.** Każda śledzona wartość przyjmuje `-12`, `+5`, `=30` i samą liczbę `30`,
   która ustawia wartość jak `=`. Pole przyjmuje tylko cyfry i znak na początku, więc błędnego wpisu
   nie ma i nie trzeba go pokazywać. Pod polem stoi „obecna → po Enter” („9 → 4”), więc pomyłkę
-  („12” zamiast „-12”) widać przed zatwierdzeniem. Zmianę oznacza kleks (niżej). Rachunek
-  z podręcznika (PW tymczasowe schodzą pierwsze) należy do systemu, pole — do ramy.
+  („12” zamiast „-12”) widać przed zatwierdzeniem. Enter przyjmuje, Esc i klik obok porzucają, bo
+  zmiana przyjęta przypadkiem nie ma znacznika (niżej). Rachunek z podręcznika (PW tymczasowe
+  schodzą pierwsze) należy do systemu, pole — do ramy.
 - **Wartość do zmiany wygląda jak tekst.** Bieżąca wartość i notatka to jedna kontrolka, różniąca się
   czcionką. W spoczynku jest czystym tekstem karty; pod wskaźnikiem jasne zaokrąglone tło bez
   obramowania, tylko tak szerokie jak tekst (z minimalną szerokością), i kursor tekstowy; po kliknięciu
@@ -94,7 +95,13 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   entity punkt odniesienia z ostatniego „Zatwierdź”, a wartość różna od niego ma za sobą niebieski
   kleks. Kleks nie zmienia tła ani koloru cyfr, które mówią o znaku i o bazie. „Odrzuć” wraca do
   punktu odniesienia. Wartości sprzed zmiany ani rozpisania przy liczbie nie ma. Kleks i „Odrzuć”
-  zastępują zakaz zmiany jednym kliknięciem: pomyłkę widać i da się ją cofnąć.
+  zastępują zakaz zmiany jednym kliknięciem: pomyłkę widać i da się ją cofnąć. **Odłożone:** forma
+  kleksa nie była spójna ani prosta do zrozumienia, więc aplikacja nie ma znacznika zmiany,
+  punktu odniesienia ani „Odrzuć”. Zasada, że zmianę widać, zostaje; nowa forma powstaje przed 2.3c.
+- **Tytuł okna mówi, czym okno jest.** Tytuł nie zmienia się z treścią: okno podglądu i okno
+  przypięte nazywają się „Podgląd”, o przypięciu mówi pinezka. Nazwę entity niesie karta, a № stoi
+  w wierszu ścieżki przy prawej krawędzi, przygaszony jak człony kategorii. Odrzucone: tytuł z nazwą
+  i № („Podgląd · Goblin 2 · № 2”), bo zmieniałby się z zaznaczeniem i zmianą nazwy.
 - **Znaczniki zmian w turze.** „Następna tura” zatwierdza tak jak przycisk, więc w walce kleks znaczy
   zmianę od początku tury — ręczną albo z przełomu; rzecz zdjęta jest wyszarzona do końca tury.
 - **Kalkulator kości zamiast rzutu z karty.** Okno ramy, niezależne od systemu: wyrażenie („k20+4”,

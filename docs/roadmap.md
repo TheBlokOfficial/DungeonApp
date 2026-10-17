@@ -45,16 +45,25 @@ Specyfikacja: `docs/spec/katalog.md`.
   - [x] 2.3a Arkusz rodziny kontrolek w Galerii, sekcja „Część żywa”: pasek PW, bieżące PW z polem
     zmiany, notatka, wiersz stanu i efektu, kleks, kolory względem bazy → spec, „Projekt kontrolek”;
     decisions.md, „Wartość do zmiany wygląda jak tekst”.
-  - [ ] 2.3b Część żywa: ścieżka kategorii zamiast katalogów, bez linii „№” pod nazwą, tytuł okna
-    z nazwą i №; bloki w kolejności PW, KP, Szybkość, nad nimi pasek PW przez całą kolumnę, bieżące
-    PW „9 / 13” z polem zmiany po kliknięciu; model baza + modyfikatory; notatka → spec, „Podgląd i karta”, „Część żywa”,
-    „Wartości z bazą”, „Edycja w części żywej”.
-  - [ ] 2.3c Zatwierdzanie: punkt odniesienia, kleks, Zatwierdź i Odrzuć na wysokości ścieżki → spec,
-    „Zatwierdzanie zmian” (poprawki w drzewie zrobione w szlifowaniu → architecture.md, „Katalog
-    świata”).
+  - [~] 2.3b Część żywa: ścieżka kategorii z № po prawej, stały tytuł „Podgląd”, bloki PW, KP,
+    Szybkość z paskiem PW nad nimi, bieżące PW z polem zmiany, model baza + modyfikatory, notatka →
+    architecture.md, „Kampania i stan”, „Podgląd i przypięte karty”. Na `master`: nagłówek, model
+    i zapis. Pasek, pole PW i notatka na karcie leżą w lokalnej gałęzi `zywa-karta` (worktree
+    `.claude/worktrees/agent-a6e61d80a63c44158`), niescalone:
+    - [ ] uruchomić i poprawić nowe testy z ostatniego commitu gałęzi, potem pełny `check.ps1`;
+    - [ ] opis styku (kontekst części żywej, sekcje ramy w karcie systemu) w architecture.md;
+    - [ ] sprawdzić, czy wyjście z aplikacji zapisuje niezapisaną notatkę;
+    - [ ] przejrzeć rendery `entity_card*`, scalić, pokazać autorowi.
+  - ⏸ 2.3c Zatwierdzanie: punkt odniesienia, znacznik zmiany, Zatwierdź i Odrzuć → spec, „Zatwierdzanie
+    zmian”. Odłożone, bo forma kleksa nie była spójna ani prosta do zrozumienia; zasada pokazywania
+    zmiany zostaje. Wyzwalacz: nowa forma znacznika zmiany uzgodniona z autorem.
+  - [ ] Poprawki w drzewie: Enter i klik obok zatwierdzają nazwę, próg przeciągnięcia ok. 8 px,
+    przewinięcie do przeniesionych wierszy → spec, „Poprawki w drzewie”.
   - [ ] 2.3d Stany: sekcja, dodawanie z palety, usuwanie, stany domyślne wpisu → spec, „Stany”.
   - [ ] 2.3e Efekty: sekcja, dodawanie, usuwanie, sumowanie, kolory względem bazy → spec, „Efekty”.
   - ❓ Przed 2.3e: efekt na PW, rodzaje modyfikatorów, dodawanie efektu → spec, „Otwarte pytania” 1–3.
+  - ❓ Przed 2.3e: Szybkość jest we wpisie tekstem („7,5 m”, „30 stóp”), więc nie ma bazy, do której
+    efekt doda liczbę; liczbowe pole Szybkości to zmiana formatu paczek → spec, „Otwarte pytania” 5.
 
 ### [ ] E3 · Kopie zapasowe kampanii
 
@@ -194,8 +203,8 @@ Każda pozycja: co, potem — po myślniku — wyzwalacz, który ją uruchamia.
   i stany zostają) — pierwsza taka podmiana obchodzona przy stole usunięciem i dodaniem.
 - ⏸ **Skrót z drzewa do edycji PW** — `-`, `+` albo `=` przy zaznaczonej entity otwiera pole zmiany
   bieżących PW w podglądzie — sięganie po mysz między drzewem a podglądem zaczyna spowalniać walkę.
-- ⏸ **Cofnij / Ponów na listku** — pomyłka przy stole (zły cel, „-70” zamiast „-7”) zaczyna boleć
-  mimo „Odrzuć” na karcie → spec katalogu, „Poza etapem 2”.
+- ⏸ **Cofnij / Ponów na listku** — pomyłka przy stole (zły cel, „-70” zamiast „-7”) zaczyna boleć;
+  „Odrzuć” na karcie jest odłożone razem z 2.3c → spec katalogu, „Poza etapem 2”.
 - ⏸ **Hotbar** — zegar świata (E11), pierwsze okno z widżetem → spec katalogu, „Poza etapem 2”.
 - ⏸ **Edycja kilku zaznaczonych entity naraz** — MG zmienia to samo pole po kolei na kilku.
 - ⏸ **Typ „Zdolność”** z kategorią (atut, manewr, inwokacja, metamagia, styl walki) — pierwsza
