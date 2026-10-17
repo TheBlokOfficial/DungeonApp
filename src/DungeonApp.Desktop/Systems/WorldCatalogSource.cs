@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Media;
 using DungeonApp.Core.Entries;
@@ -16,7 +17,7 @@ public sealed class WorldCatalogSource(
     ContentRegistry registry,
     IContentTypeCatalog types,
     IContentPresentation presentation,
-    IReadOnlyList<IContentTypeProfile> profiles)
+    IReadOnlyList<ContentTabDefinition> tabs)
 {
     public ContentRegistry Registry { get; } = registry;
 
@@ -24,7 +25,10 @@ public sealed class WorldCatalogSource(
 
     public IContentPresentation Presentation { get; } = presentation;
 
-    public IReadOnlyList<IContentTypeProfile> Profiles { get; } = profiles;
+    /// <summary>The library's tabs: each tells its entries' tags and categories, and the title that opens their path.</summary>
+    public IReadOnlyList<ContentTabDefinition> Tabs { get; } = tabs;
+
+    public IReadOnlyList<IContentTypeProfile> Profiles { get; } = [.. tabs.SelectMany(tab => tab.ContentTypes)];
 
     /// <summary>A system with no content: nothing to add, and every entity is unresolved.</summary>
     public static WorldCatalogSource Empty { get; } = new(

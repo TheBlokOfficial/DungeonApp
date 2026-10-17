@@ -75,8 +75,8 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader
 
         _vitals.Show(
         [
-            new HeadlineValue("KP", "DungeonIconShield", combat.Ac.ToString(CultureInfo.InvariantCulture), combat.AcSource),
             new HeadlineValue("PW", "DungeonIconHeart", combat.Hp.ToString(CultureInfo.InvariantCulture), combat.HpDice),
+            new HeadlineValue("KP", "DungeonIconShield", combat.Ac.ToString(CultureInfo.InvariantCulture), combat.AcSource),
             new HeadlineValue("Szybkość", "DungeonIconFootprints", creature.Speed),
         ]);
 

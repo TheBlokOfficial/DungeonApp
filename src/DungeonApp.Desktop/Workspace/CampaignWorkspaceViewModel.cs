@@ -93,7 +93,7 @@ public sealed partial class CampaignWorkspaceViewModel : ObservableObject, IDisp
         };
         _pinnedDescriptor = new WorkspacePanelDescriptor(
             PinnedDescriptorId,
-            "Karta",
+            "Podgląd",
             "DungeonIconBookOpen",
             WorkspacePanelGroup.World,
             new PanelPlacement(96, 96, CardWindowWidth, 640),

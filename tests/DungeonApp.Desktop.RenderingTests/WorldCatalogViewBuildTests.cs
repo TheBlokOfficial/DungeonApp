@@ -373,8 +373,12 @@ public sealed partial class WorldCatalogViewBuildTests
                 this,
                 this,
                 [
-                    new ContentTypeProfile<Sample>(Being, tags: sample => [sample.Kind, sample.Size], badge: _ => new ContentBadge("1/4", "tier")),
-                    new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
+                    new ContentTabDefinition(
+                        "Próbki",
+                        [
+                            new ContentTypeProfile<Sample>(Being, tags: sample => [sample.Kind, sample.Size], badge: _ => new ContentBadge("1/4", "tier")),
+                            new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
+                        ]),
                 ]);
 
         public bool HasSet(ContentId set) => set == Set;

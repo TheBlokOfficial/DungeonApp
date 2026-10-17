@@ -139,9 +139,9 @@ public sealed class Dnd5eCardBuildTests
         var window = Show(new StackPanel { Children = { header.HeaderVisual!, header.HeaderBlock! } });
 
         var tiles = header.HeaderBlock!.GetVisualDescendants().OfType<StatTile>().ToList();
-        Assert.Equal(["KP", "PW", "Szybkość"], tiles.Select(tile => tile.Label));
-        Assert.Equal(["13", "11", "12 m"], tiles.Select(tile => tile.Value));
-        Assert.Equal(["pancerz naturalny", "2k8+2", null], tiles.Select(tile => tile.Note));
+        Assert.Equal(["PW", "KP", "Szybkość"], tiles.Select(tile => tile.Label));
+        Assert.Equal(["11", "13", "12 m"], tiles.Select(tile => tile.Value));
+        Assert.Equal(["2k8+2", "pancerz naturalny", null], tiles.Select(tile => tile.Note));
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
 
         // A creature's name wraps: the portrait leaves room for two lines.
