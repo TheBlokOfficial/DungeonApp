@@ -63,9 +63,6 @@ public sealed class TrackedValueTile : TemplatedControl
     public static readonly StyledProperty<string?> NoteProperty =
         AvaloniaProperty.Register<TrackedValueTile, string?>(nameof(Note));
 
-    public static readonly StyledProperty<bool> IsUncommittedProperty =
-        AvaloniaProperty.Register<TrackedValueTile, bool>(nameof(IsUncommitted));
-
     public static readonly StyledProperty<Func<NumberChange, string>?> PreviewProperty =
         AvaloniaProperty.Register<TrackedValueTile, Func<NumberChange, string>?>(nameof(Preview));
 
@@ -123,13 +120,6 @@ public sealed class TrackedValueTile : TemplatedControl
     {
         get => GetValue(NoteProperty);
         set => SetValue(NoteProperty, value);
-    }
-
-    /// <summary>The value differs from the entity's last commit: the blot sits behind the number.</summary>
-    public bool IsUncommitted
-    {
-        get => GetValue(IsUncommittedProperty);
-        set => SetValue(IsUncommittedProperty, value);
     }
 
     /// <summary>

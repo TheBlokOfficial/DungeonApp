@@ -21,24 +21,19 @@ public partial class LivePartSection : UserControl
     }
 
     // Every tracked value in the gallery takes a change, each with its own arithmetic standing in for
-    // a system's (subtract down to 0, add up to the maximum, set anything). The reference point is the
-    // value it starts with, so the blot shows whenever the value differs from it; a sample that starts
-    // with the blot keeps it.
+    // a system's (subtract down to 0, add up to the maximum, set anything).
     private void FillTrackedValueSamples()
     {
         foreach (var tile in this.GetLogicalDescendants().OfType<TrackedValueTile>())
         {
-            var start = ParseOrZero(tile.Value);
             var maximum = ParseOrZero(tile.Maximum);
-            var alwaysUncommitted = tile.IsUncommitted;
-            var current = start;
+            var current = ParseOrZero(tile.Value);
 
             tile.Preview = change => Preview(current, maximum, change);
             tile.ChangeAccepted += (_, e) =>
             {
                 current = Apply(current, maximum, e.Change).Result;
                 tile.Value = current.ToString(CultureInfo.InvariantCulture);
-                tile.IsUncommitted = alwaysUncommitted || current != start;
             };
         }
     }

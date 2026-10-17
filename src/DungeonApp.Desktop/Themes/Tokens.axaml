@@ -132,9 +132,6 @@
         <!-- EditableFocusBorder: the same value turned into a field - the outline around it while it
              is being edited, and the keyboard focus that reaches it with Tab. -->
         <Color x:Key="DungeonEditableFocusBorderColor">#8A8983</Color>
-        <!-- Uncommitted: the blot behind a value that differs from the entity's last commit -
-             decoration, not a state colour; never the digits' colour or a cell's background. -->
-        <Color x:Key="DungeonUncommittedColor">#664A7FC1</Color>
         <!-- Tracked value gauge: TrackFill - what is left of a tracked value (hit points): its own
              red, not Danger, because a wounded foe is the story at the table, not a fault.
              TrackOver - the part above the maximum, a lighter shade of the same red, more of it
@@ -202,7 +199,6 @@
         <SolidColorBrush x:Key="DungeonNeutralDimBrush" Color="{DynamicResource DungeonNeutralDimColor}" />
         <SolidColorBrush x:Key="DungeonEditableHoverBrush" Color="{DynamicResource DungeonEditableHoverColor}" />
         <SolidColorBrush x:Key="DungeonEditableFocusBorderBrush" Color="{DynamicResource DungeonEditableFocusBorderColor}" />
-        <SolidColorBrush x:Key="DungeonUncommittedBrush" Color="{DynamicResource DungeonUncommittedColor}" />
         <SolidColorBrush x:Key="DungeonTrackFillBrush" Color="{DynamicResource DungeonTrackFillColor}" />
         <SolidColorBrush x:Key="DungeonTrackOverBrush" Color="{DynamicResource DungeonTrackOverColor}" />
         <SolidColorBrush x:Key="DungeonTrackRoomBrush" Color="{DynamicResource DungeonTrackRoomColor}" />
