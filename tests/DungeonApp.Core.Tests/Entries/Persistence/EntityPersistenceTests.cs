@@ -142,6 +142,52 @@ public sealed class EntityPersistenceTests : IDisposable
     }
 
     [Fact]
+    public async Task The_note_and_the_current_numbers_round_trip()
+    {
+        var campaign = WithEntity(NewCampaign(), Goblin, "Krzywy", out var created);
+        campaign = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.SetNote(created, "Odporny na ogień.\nUcieka przy 2 PW.")));
+        created = campaign.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()];
+        campaign = campaign.WithSnapshot(campaign.Snapshot.Apply(CampaignEntityChanges.SetCurrent(created, "pool", -3)));
+
+        await _repository.SaveAsync(campaign, Declarations);
+        var reopened = await _repository.GetAsync(campaign.Id, Declarations);
+
+        var found = reopened!.Snapshot.Get(EntitiesModel.Declaration)[created.Id.ToString()];
+        Assert.Equal("Odporny na ogień.\nUcieka przy 2 PW.", found.Note);
+        Assert.Equal(CurrentValues.Empty.With("pool", -3), found.Current);
+        Assert.Equal("Krzywy", found.Label);
+    }
+
+    /// <summary>An entity the GM wrote nothing on is saved without the fields, exactly as before they existed.</summary>
+    [Fact]
+    public async Task An_entity_without_a_note_or_current_numbers_writes_neither_field()
+    {
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
+
+        await _repository.SaveAsync(campaign, Declarations);
+
+        var record = Assert.Single(JsonDocument.Parse(File.ReadAllText(ModelPath(campaign))).RootElement.GetProperty("records").EnumerateArray());
+        Assert.False(record.TryGetProperty("note", out _));
+        Assert.False(record.TryGetProperty("current", out _));
+    }
+
+    [Theory]
+    [InlineData("""{ "pool": "trzy" }""")]
+    [InlineData("""{ "pool": 2.5 }""")]
+    [InlineData("""[ 3 ]""")]
+    public async Task Current_numbers_that_are_not_whole_numbers_throw_Invalid(string current)
+    {
+        var campaign = WithEntity(NewCampaign(), Goblin, null, out _);
+        await _repository.SaveAsync(campaign, Declarations);
+
+        var path = ModelPath(campaign);
+        File.WriteAllText(path, File.ReadAllText(path).Replace("\"patch\": {}", $"\"patch\": {{}}, \"current\": {current}"));
+
+        var exception = await Assert.ThrowsAsync<CampaignStoreException>(() => _repository.GetAsync(campaign.Id, Declarations));
+        Assert.Equal(CampaignStoreFailure.Invalid, exception.Failure);
+    }
+
+    [Fact]
     public async Task An_entity_without_a_label_comes_back_null()
     {
         var campaign = WithEntity(NewCampaign(), Goblin, null, out var created);

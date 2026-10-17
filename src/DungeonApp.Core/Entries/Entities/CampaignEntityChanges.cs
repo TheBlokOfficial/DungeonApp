@@ -6,7 +6,7 @@ namespace DungeonApp.Core.Entries.Entities;
 
 /// <summary>
 /// Builds the <see cref="CampaignChange"/> for each thing a GM does to an entity - adding,
-/// removing, relabelling, replacing its patch. Pure helpers: no state, no event, nothing that
+/// removing, relabelling, replacing its patch, setting its note or a current number. Pure helpers: no state, no event, nothing that
 /// touches a campaign. A caller applies the returned change through the campaign's single change
 /// entry point (<c>CampaignSession.ChangeAsync</c>), which is what actually looks anything up,
 /// mutates anything, or saves anything.
@@ -44,6 +44,28 @@ public static class CampaignEntityChanges
         ArgumentNullException.ThrowIfNull(patch);
 
         return new CampaignChange().Upsert(EntitiesModel.Declaration, current with { Patch = patch });
+    }
+
+    /// <summary>Sets only <paramref name="current"/>'s note; null, empty or whitespace-only text removes it.</summary>
+    public static CampaignChange SetNote(CampaignEntity current, string? note)
+    {
+        ArgumentNullException.ThrowIfNull(current);
+
+        return new CampaignChange().Upsert(
+            EntitiesModel.Declaration, current with { Note = string.IsNullOrWhiteSpace(note) ? null : note });
+    }
+
+    /// <summary>
+    /// Stores <paramref name="value"/> as the current number of the tracked value <paramref name="key"/>.
+    /// The arithmetic that produced it is the system's (<see cref="EntityLivePart.Change"/>).
+    /// </summary>
+    public static CampaignChange SetCurrent(CampaignEntity current, string key, int value)
+    {
+        ArgumentNullException.ThrowIfNull(current);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+
+        var values = (current.Current ?? CurrentValues.Empty).With(key, value);
+        return new CampaignChange().Upsert(EntitiesModel.Declaration, current with { Current = values });
     }
 
     /// <summary>

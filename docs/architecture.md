@@ -37,6 +37,10 @@ Jedna nazwa na pojęcie. Słowa spoza tej tabeli znaczą to, co w zwykłej polsz
 | entity | rzecz świata w kampanii: łącze do wpisu plus nakładka; w kodzie `CampaignEntity` | instancja, egzemplarz, rzecz świata |
 | istota | entity z aspektem walki (stworzenie, postać gracza) | — |
 | nakładka | rzadka łatka entity: same odchylenia od wpisu | łatka, patch |
+| część żywa | górna część karty entity: wartości entity, stany, efekty i notatka MG, zmieniane przy stole | — |
+| część stała | dolna część karty entity: treść wpisu jak w bibliotece, bez zmian w kampanii | — |
+| wartość z bazą | liczba entity z bazą z wpisu (KP, cechy, PW maks.); pokazana = baza + modyfikatory efektów | — |
+| śledzona wartość | liczba zmieniana przy stole polem zmiany (bieżące PW); system podaje jej maksimum i rachunek | — |
 | wiedza | typ bez entity, wskazywany identyfikatorem (zaklęcie, stan, zdolność) | — |
 | katalog świata | drzewo katalogów z entity w stanie kampanii (`docs/spec/katalog.md`) | — |
 | katalog | węzeł katalogu świata z nazwą i zawartością (katalogi, entity); w kodzie `WorldFolder` | folder |
@@ -128,8 +132,20 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
   wzorcowej kampanii.
 - **Entity** (`CampaignEntity`) to łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka łatka
-  z samymi odchyleniami (np. aktualne PW, nazwa własna). Rozwiązuje się ją od nowa przy każdym
-  odczycie, więc poprawka wpisu w paczce dociera do istniejących kampanii.
+  z samymi odchyleniami od wartości wpisu — oraz nazwa własna, notatka MG (`note`) i bieżące numery
+  śledzonych wartości (`current`, po kluczu). Rozwiązuje się ją od nowa przy każdym odczycie, więc
+  poprawka wpisu w paczce dociera do istniejących kampanii. Pola `note` i `current` są opcjonalne:
+  entity bez nich zapisuje się bez tych pól.
+- **Część żywa** (`EntityLivePart`, Core) to rachunek ramy nad rozwiązaną entity. System podaje per
+  typ treści (`IEntityValueCatalog` → `IEntityValueRules`, dostępne przez
+  `WorldCatalogSource.Values`) wartości z bazą (`BaseValue`: klucz, podpis, baza z wpisu) i śledzone
+  wartości (`TrackedValueRule`: klucz, podpis, klucz wartości z bazą będącej maksimum, wartość
+  domyślna, rachunek `-`/`+`/`=`). Rama liczy wartość pokazaną (baza + suma `ValueModifier` o tym
+  kluczu) i jej odchylenie, bieżącą wartość (zapisana albo domyślna wobec pokazanego maksimum — brak
+  klucza w `current` znaczy, że nietknięte PW idą za maksimum) i zapowiedź „8 → 3”, z nadmiarem
+  „3 → 0 · 5”. Zmiana wartości i notatki to `CampaignChange` z `EntityLivePart.Change`/`SetNote`,
+  przez te same drzwi co każda zmiana; widok odświeża się na powiadomienie. Entity bez wpisu ma samą
+  notatkę.
 - **Katalogi i №.** Katalog (`WorldFolder`: nazwa, katalog nadrzędny; katalogu głównego „Świat” nie ma
   jako rekordu) i entity (`FolderId`, `Number`) tworzą drzewo, którego rama nie pyta o typ. Licznik № to
   jeden rekord (`WorldCounter`) z ostatnim nadanym numerem: usunięcie entity go nie cofa. Zmiany
@@ -144,8 +160,8 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   rodzaju zaznaczenia, wyłączone „Usuń” podaje powód z `...Problem`), zmiana nazwy katalogu w miejscu (F2; entity nazwy nie zmienia), usunięcie
   z potwierdzeniem, przeciąganie wierszy na katalog i „Przenieś do…” przez paletę. Przenoszony katalog
   zabiera zawartość, więc zaznaczone razem z nim elementy nie jadą osobno.
-- Nakładka scala obiekty po kluczu: zmiana PW zapisuje tylko `{"combat":{"currentHp":3}}`,
-  a późniejsza poprawka KP we wpisie dociera do entity.
+- Nakładka scala obiekty po kluczu: odchylenie jednego pola aspektu zapisuje tylko to pole, a
+  późniejsza poprawka pozostałych pól we wpisie dociera do entity.
 - Format kampanii inny niż bieżący (zbyt nowy albo zbyt stary) oznacza odmowę odczytu, a wpis paczki
   w innej wersji typu niż bieżąca jest oznaczany. Kiedy wersje rosną i kiedy pojawią się migracje:
   `docs/decisions.md`, „Wersje formatów nie rosną do pierwszej sesji przy stole”.
