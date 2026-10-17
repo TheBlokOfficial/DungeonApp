@@ -8,8 +8,7 @@
           label - DungeonStatTileIconSize icon and caption, muted;
           value line - the current number, an editable text (controls:EditableText, its own look) in
             the stat-value-lg font, at least one digit wide, one line; beside it a smaller muted
-            "/ 13" (stat-value) on the same baseline (the control aligns them); the blot
-            (controls:ChangeBlot) behind the number while it is uncommitted. Switching forms moves
+            "/ 13" (stat-value) on the same baseline (the control aligns them). Switching forms moves
             nothing; while typing, an entry longer than the number widens the field and pushes
             "/ 13" right, so the caret and the selection stay inside the outline;
           note line - muted caption, always reserved; while the field holds a change it shows the
@@ -19,7 +18,7 @@
     -->
     <ControlTheme x:Key="{x:Type controls:TrackedValueTile}" TargetType="controls:TrackedValueTile">
         <Setter Property="Foreground" Value="{DynamicResource DungeonTextPrimaryBrush}" />
-        <!-- The frame, the overflow and the blot are drawn past the tile's edges. -->
+        <!-- The frame and the overflow are drawn past the tile's edges. -->
         <Setter Property="ClipToBounds" Value="False" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -52,19 +51,17 @@
                             <TextBlock Name="PART_Digits" Classes="stat-value-lg" Text="0"
                                        Opacity="0" IsHitTestVisible="False"
                                        HorizontalAlignment="Left" VerticalAlignment="Top" />
-                            <controls:ChangeBlot IsShown="{TemplateBinding IsUncommitted}"
-                                                 HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <controls:EditableText Name="PART_Field"
-                                                       FontFamily="{Binding #PART_Digits.FontFamily}"
-                                                       FontSize="{Binding #PART_Digits.FontSize}"
-                                                       FontWeight="{Binding #PART_Digits.FontWeight}"
-                                                       FontFeatures="{Binding #PART_Digits.FontFeatures}"
-                                                       LineHeight="{Binding #PART_Digits.LineHeight}"
-                                                       Foreground="{TemplateBinding Foreground}"
-                                                       TextWrapping="NoWrap"
-                                                       AcceptsReturn="False"
-                                                       SelectAllOnEntry="True" />
-                            </controls:ChangeBlot>
+                            <controls:EditableText Name="PART_Field"
+                                                   HorizontalAlignment="Left" VerticalAlignment="Top"
+                                                   FontFamily="{Binding #PART_Digits.FontFamily}"
+                                                   FontSize="{Binding #PART_Digits.FontSize}"
+                                                   FontWeight="{Binding #PART_Digits.FontWeight}"
+                                                   FontFeatures="{Binding #PART_Digits.FontFeatures}"
+                                                   LineHeight="{Binding #PART_Digits.LineHeight}"
+                                                   Foreground="{TemplateBinding Foreground}"
+                                                   TextWrapping="NoWrap"
+                                                   AcceptsReturn="False"
+                                                   SelectAllOnEntry="True" />
                         </Panel>
                         <TextBlock Name="PART_Maximum"
                                    Classes="stat-value"

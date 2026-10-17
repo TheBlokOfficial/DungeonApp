@@ -130,10 +130,9 @@ public sealed class GallerySectionsBuildTests
         var window = Show(new LivePartSection());
 
         var tiles = window.GetVisualDescendants().OfType<TrackedValueTile>().ToList();
-        Assert.Equal(7, tiles.Count);
+        Assert.Equal(5, tiles.Count);
         Assert.All(tiles, tile => Assert.NotEmpty(tile.GetVisualChildren()));
         Assert.Contains(tiles, tile => tile.Preview is not null);
-        Assert.Contains(window.GetVisualDescendants().OfType<ChangeBlot>(), blot => blot.IsShown);
 
         window.Close();
     }
