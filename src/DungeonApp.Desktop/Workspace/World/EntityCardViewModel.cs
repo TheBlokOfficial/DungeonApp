@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -81,7 +80,6 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
 
     private void NotifyRoleChanged()
     {
-        OnPropertyChanged(nameof(Title));
         OnPropertyChanged(nameof(HeaderActions));
         _pin?.NotifyCanExecuteChanged();
     }
@@ -96,21 +94,11 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
 
     public IReadOnlyList<PanelHeaderAction> HeaderActions => _followsSelection ? _pinAction : _unpinAction;
 
-    /// <summary>"Podgląd", or an entity's name and № for its own window.</summary>
-    public string? Title
-    {
-        get
-        {
-            if (_followsSelection)
-            {
-                return "Podgląd";
-            }
-
-            return Entity is { } id && _catalog.Tree.Entity(id) is { } node
-                ? $"{node.Name} · № {node.Entity.Number.ToString(CultureInfo.InvariantCulture)}"
-                : null;
-        }
-    }
+    /// <summary>
+    /// Says what the window is and never changes; that it is pinned the pin in the header says, and
+    /// the entity's name stands in the card.
+    /// </summary>
+    public string? Title => "Podgląd";
 
     /// <summary>A click on the window's title shows the entity in the catalog's tree.</summary>
     public void TitleClicked()
@@ -171,7 +159,6 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
 
         OnPropertyChanged(nameof(Detail));
         OnPropertyChanged(nameof(IsEmpty));
-        OnPropertyChanged(nameof(Title));
         _pin?.NotifyCanExecuteChanged();
     }
 }

@@ -422,10 +422,10 @@ public sealed class Dnd5eSystem : IGameSystem, IContentTypeCatalog, IContentPres
 
     /// <summary>
     /// What the world catalog reads: the loaded entries, this system as type catalog and badge colours,
-    /// and the profiles of its content tabs, which tell a result row its tags and badge.
+    /// and its content tabs, whose profiles tell a result row its tags and badge.
     /// </summary>
     public WorldCatalogSource GetWorldCatalogSource() =>
-        new(_loadPacksStep.Registry, this, this, [.. ContentTabDefinitions.SelectMany(tab => tab.ContentTypes)]);
+        new(_loadPacksStep.Registry, this, this, ContentTabDefinitions);
 
     /// <summary>
     /// A content type this system declares. <see cref="Validate"/> and <see cref="CreateCard"/> both

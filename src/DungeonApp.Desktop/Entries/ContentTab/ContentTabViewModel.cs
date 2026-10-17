@@ -338,7 +338,7 @@ public sealed partial class ContentTabViewModel : ObservableObject
     private ContentDetailViewModel? BuildDetail(ContentSelectionDetail? selection) => selection switch
     {
         ValidEntrySelection valid => new ValidContentDetailViewModel(
-            valid.Category is { } category ? [Title, category, valid.Name] : [Title, valid.Name],
+            EntryPath.Of(Title, valid.Category, valid.Name),
             valid.Name,
             valid.Tags,
             _presentation.CreateCard(valid.Entry.Entry, EntryPicture.Load(_registry, valid.Entry))),

@@ -11,6 +11,7 @@ using Avalonia.VisualTree;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Campaigns;
 using DungeonApp.Core.Entries;
+using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Core.World;
@@ -63,9 +64,9 @@ public sealed class EntityPreviewBuildTests
         var card = Assert.IsType<EntityCardViewModel>(preview.Body);
         Assert.Equal("Podgląd", preview.Title);
         var detail = Assert.IsType<ValidContentDetailViewModel>(card.Detail);
-        Assert.Equal(["Świat", "Szef"], detail.Breadcrumbs);
+        Assert.Equal(["Próbki", "rodzaj", "Goblin"], detail.Breadcrumbs);
         Assert.Equal("Szef", detail.Name);
-        Assert.Equal("№ 1 · Goblin", detail.Caption);
+        Assert.Equal("№ 1", detail.NumberLabel);
         Assert.IsType<CreatureCardView>(detail.Card);
         Assert.NotNull(FindView(fixture, preview));
 
@@ -73,7 +74,8 @@ public sealed class EntityPreviewBuildTests
         catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
         var item = Assert.IsType<ValidContentDetailViewModel>(card.Detail);
         Assert.Equal("Lina", item.Name);
-        Assert.Equal("№ 2 · Lina", item.Caption);
+        Assert.Equal("№ 2", item.NumberLabel);
+        Assert.Equal(["Próbki", "Lina"], item.Breadcrumbs);
         Assert.IsType<GearCardView>(item.Card);
 
         catalog.Activate(Row(catalog, "Lina"));
@@ -122,7 +124,7 @@ public sealed class EntityPreviewBuildTests
         Assert.Empty(Ghosts(fixture).Children);
         Assert.Equal(CampaignWorkspaceViewModel.PinnedDescriptorId, pinned.Descriptor.Id);
         Assert.Equal(placement, pinned.Desired);
-        Assert.Equal("Szef · № 1", pinned.Title);
+        Assert.Equal("Podgląd", pinned.Title);
         Assert.Equal(Row(catalog, "Szef").EntityId!.Value.Value.ToString(), pinned.InstanceKey);
         var unpin = pinned.HeaderActions.Single(action => action.IconResourceKey == "DungeonIconPinned");
         Assert.Equal("Odepnij kartę", unpin.ToolTip);
@@ -176,7 +178,7 @@ public sealed class EntityPreviewBuildTests
         var ids = restored.Panels.Select(panel => panel.Descriptor.Id).Order().ToList();
         Assert.Equal([CampaignWorkspaceViewModel.PinnedDescriptorId, CampaignWorkspaceViewModel.PreviewDescriptorId], ids);
         var pinned = restored.Panels.Single(panel => panel.Descriptor.Id == CampaignWorkspaceViewModel.PinnedDescriptorId);
-        Assert.Equal("Szef · № 1", pinned.Title);
+        Assert.Equal("Podgląd", pinned.Title);
         Assert.Single(pinned.HeaderActions, action => action.IconResourceKey == "DungeonIconPinned");
     }
 
@@ -202,7 +204,7 @@ public sealed class EntityPreviewBuildTests
     }
 
     [AvaloniaFact]
-    public async Task Renaming_a_folder_refreshes_the_path_on_the_card_and_the_pinned_title_follows_the_name()
+    public async Task The_path_names_the_entry_not_the_folders_and_the_titles_stay_when_the_entity_is_renamed()
     {
         using var fixture = new Fixture();
         var catalog = fixture.Desk.Catalog;
@@ -212,13 +214,21 @@ public sealed class EntityPreviewBuildTests
         fixture.Settle();
         var id = Row(catalog, "Szef").EntityId!.Value;
         var pinned = fixture.Desk.PinEntity(id)!;
+        var preview = fixture.Desk.OpenPreview();
         var card = (EntityCardViewModel)pinned.Body;
-        Assert.Equal(["Świat", "Kopalnia", "Szef"], Assert.IsType<ValidContentDetailViewModel>(card.Detail).Breadcrumbs);
+        Assert.Equal(["Próbki", "rodzaj", "Goblin"], Assert.IsType<ValidContentDetailViewModel>(card.Detail).Breadcrumbs);
+        Assert.Equal("Podgląd", pinned.Title);
+        Assert.Equal("Podgląd", preview.Title);
 
         await fixture.Entries.ChangeAsync(WorldChanges.RenameFolder(fixture.Entries.Snapshot, folder, "Jaskinia"));
+        await fixture.Entries.ChangeAsync(CampaignEntityChanges.Relabel(catalog.Tree.Entity(id)!.Entity, "Wódz"));
         fixture.Settle();
 
-        Assert.Equal(["Świat", "Jaskinia", "Szef"], Assert.IsType<ValidContentDetailViewModel>(card.Detail).Breadcrumbs);
+        var detail = Assert.IsType<ValidContentDetailViewModel>(card.Detail);
+        Assert.Equal(["Próbki", "rodzaj", "Goblin"], detail.Breadcrumbs);
+        Assert.Equal("Wódz", detail.Name);
+        Assert.Equal("Podgląd", pinned.Title);
+        Assert.Equal("Podgląd", preview.Title);
     }
 
     [AvaloniaFact]
@@ -270,7 +280,9 @@ public sealed class EntityPreviewBuildTests
         fixture.Settle();
 
         var broken = Assert.IsType<BrokenContentDetailViewModel>(((EntityCardViewModel)preview.Body).Detail);
-        Assert.Equal("№ 1 · bez wpisu", broken.Overline);
+        Assert.Equal(["pack", "gone"], broken.Breadcrumbs);
+        Assert.Equal("№ 1", broken.NumberLabel);
+        Assert.False(broken.HasOverline);
         Assert.Equal("Duch", broken.Name);
         Assert.Contains("nie zawiera już wpisu", broken.Reason);
         Assert.NotNull(FindView(fixture, preview));
@@ -408,8 +420,13 @@ public sealed class EntityPreviewBuildTests
                 this,
                 this,
                 [
-                    new ContentTypeProfile<Sample>(Being, tags: sample => [sample.Kind]),
-                    new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
+                    new ContentTabDefinition(
+                        "Próbki",
+                        [
+                            new ContentTypeProfile<Sample>(
+                                Being, new ContentCategorySpec<Sample>("Rodzaj", sample => sample.Kind), tags: sample => [sample.Kind]),
+                            new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
+                        ]),
                 ]);
 
         public bool HasSet(ContentId set) => set == Set;

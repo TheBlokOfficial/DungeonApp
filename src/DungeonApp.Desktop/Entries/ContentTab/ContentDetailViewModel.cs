@@ -26,19 +26,19 @@ public abstract class ContentDetailViewModel
 /// card underneath - all drawn by the library's detail block except the card itself and the pieces
 /// the card lends the header (<see cref="IEntryCardHeader"/>).
 /// <para>
-/// The host supplies path, name, tags and an optional <paramref name="caption"/> line under the name
-/// (the world preview's "№ 5 · Goblin"); a card never computes them, so the same card stands for an
+/// The host supplies path, name, tags and an optional <paramref name="numberLabel"/> at the path's
+/// right edge (the world preview's "№ 5"); a card never computes them, so the same card stands for an
 /// entry in the library and for an entity on the desk.
 /// </para>
 /// </summary>
 public sealed class ValidContentDetailViewModel(
-    IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card, string? caption = null)
+    IReadOnlyList<string> breadcrumbs, string name, IReadOnlyList<string> tags, Control card, string? numberLabel = null)
     : ContentDetailViewModel(name)
 {
-    /// <summary>The line under the name; null - none, and it takes no room.</summary>
-    public string? Caption { get; } = caption;
+    /// <summary>The "№ 5" at the path line's right edge; null - none, and nothing moves.</summary>
+    public string? NumberLabel { get; } = numberLabel;
 
-    public bool HasCaption => Caption is not null;
+    public bool HasNumberLabel => NumberLabel is not null;
 
     /// <summary>The path's segments, the last one being the entry itself.</summary>
     public IReadOnlyList<string> Breadcrumbs { get; } = breadcrumbs;
@@ -82,9 +82,25 @@ public sealed class ValidContentDetailViewModel(
 /// its own name (or file/pack location, whichever the list shows), the full, selectable reason -
 /// never truncated, never reworded - and the file or directory path when there is one.
 /// </summary>
-public sealed class BrokenContentDetailViewModel(string overline, string name, string reason, string? path)
+public sealed class BrokenContentDetailViewModel(
+    string overline, string name, string reason, string? path,
+    IReadOnlyList<string>? breadcrumbs = null, string? numberLabel = null)
     : ContentDetailViewModel(name)
 {
+    /// <summary>
+    /// The path line over the name (an entity whose entry is gone: its address), with its "№ 5" at
+    /// the right edge. When there is one, it stands in place of the overline.
+    /// </summary>
+    public IReadOnlyList<string>? Breadcrumbs { get; } = breadcrumbs;
+
+    public bool HasBreadcrumbs => Breadcrumbs is not null;
+
+    public bool HasOverline => !HasBreadcrumbs;
+
+    public string? NumberLabel { get; } = numberLabel;
+
+    public bool HasNumberLabel => NumberLabel is not null;
+
     /// <summary>The small line over the name, as written - the view draws it in capitals.</summary>
     public string Overline { get; } = overline;
 

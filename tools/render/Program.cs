@@ -122,7 +122,7 @@ internal static partial class Program
             RenderGallery(window, shell);
         }
 
-        if (MayMatch("desk_") || MayMatch("sidebar_") || MayMatch("window_") || MayMatch("szklo"))
+        if (MayMatch("desk_") || MayMatch("entity_card_") || MayMatch("sidebar_") || MayMatch("window_") || MayMatch("szklo"))
         {
             RenderDesk(window, shell);
         }
@@ -722,8 +722,15 @@ internal static partial class Program
             Settle();
         }
 
-        if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty"))
+        if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty")
+            || Wants("entity_card_creature") || Wants("entity_card_item") || Wants("entity_card_broken"))
         {
+            // The window alone, at twice its size, to judge the header's details.
+            void SaveWindow(WorkspacePanelViewModel panel, string name) =>
+                SaveScaled(
+                    deskView.GetVisualDescendants().OfType<PanelWindow>().First(candidate => ReferenceEquals(candidate.DataContext, panel)),
+                    UniqueName(name));
+
             // Wide enough for the preview and a pinned card side by side, left of the catalog.
             SetSize(window, 1900, WindowHeight);
             Settle();
@@ -735,6 +742,11 @@ internal static partial class Program
                 SaveCrop(window, deskView, UniqueName("desk_preview_broken"));
             }
 
+            if (Wants("entity_card_broken"))
+            {
+                SaveWindow(preview, "entity_card_broken");
+            }
+
             var potion = Row("Mikstura leczenia");
             var pinned = desk.PinEntity(potion.EntityId!.Value)!;
             catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
@@ -744,6 +756,16 @@ internal static partial class Program
             if (Wants("desk_preview"))
             {
                 SaveCrop(window, deskView, UniqueName("desk_preview"));
+            }
+
+            if (Wants("entity_card_creature"))
+            {
+                SaveWindow(preview, "entity_card_creature");
+            }
+
+            if (Wants("entity_card_item"))
+            {
+                SaveWindow(pinned, "entity_card_item");
             }
 
             desk.Close(pinned);
