@@ -28,6 +28,7 @@ public sealed class CampaignSession(
 {
     private bool _changing;
     private bool _notifying;
+    private Task _running = Task.CompletedTask;
 
     /// <summary>
     /// Raised after a change has been committed - or after an attempt to commit it failed, see
@@ -47,6 +48,27 @@ public sealed class CampaignSession(
     public Campaign Campaign { get; private set; } = campaign;
 
     /// <summary>
+    /// Completes when the change still running (its save included) has finished; completed when none
+    /// runs. Exit waits for it: the last edit, saved as the desk lets go of its windows, would
+    /// otherwise be cut off mid-save when the process ends.
+    /// </summary>
+    public Task WhenIdle => _running;
+
+    /// <inheritdoc cref="ChangeCoreAsync"/>
+    public Task<CampaignChangeResult> ChangeAsync(CampaignChange change)
+    {
+        var task = ChangeCoreAsync(change);
+
+        // A refusal completes at once and must not hide the change still running.
+        if (!task.IsCompleted)
+        {
+            _running = task;
+        }
+
+        return task;
+    }
+
+    /// <summary>
     /// Applies <paramref name="change"/>, saves the whole campaign in one commit, and raises
     /// <see cref="Changed"/> - in that order, always. Refuses instead of queueing when another
     /// change is still running (including its own save) or when called from inside the notification
@@ -58,7 +80,7 @@ public sealed class CampaignSession(
     /// for.
     /// </para>
     /// </summary>
-    public async Task<CampaignChangeResult> ChangeAsync(CampaignChange change)
+    private async Task<CampaignChangeResult> ChangeCoreAsync(CampaignChange change)
     {
         ArgumentNullException.ThrowIfNull(change);
 

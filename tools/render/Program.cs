@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using DungeonApp.Content.Dnd5e;
 using DungeonApp.Core.Entries;
+using DungeonApp.Core.State;
 using DungeonApp.Core.Systems;
 using DungeonApp.Desktop.Workspace.Controls;
 using DungeonApp.Desktop.Workspace.Panels;
@@ -723,7 +724,8 @@ internal static partial class Program
         }
 
         if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty")
-            || Wants("entity_card_creature") || Wants("entity_card_item") || Wants("entity_card_broken"))
+            || Wants("entity_card_creature") || Wants("entity_card_creature_edit") || Wants("entity_card_creature_over")
+            || Wants("entity_card_item") || Wants("entity_card_broken"))
         {
             // The window alone, at twice its size, to judge the header's details.
             void SaveWindow(WorkspacePanelViewModel panel, string name) =>
@@ -752,6 +754,11 @@ internal static partial class Program
             catalog.Click(Row("Goblin 2"), ctrl: false, shift: false);
             pinned.X = preview.X + preview.Width + 16;
             pinned.Y = preview.Y;
+
+            // Goblin 2 (a skeleton, 13 PW) wounded to 9, with a note in two lines; the potion's note stays empty.
+            var live = ((EntityCardViewModel)preview.Body).Live!;
+            Await(live.ChangeAsync(CreatureValues.HitPointsKey,new NumberChange(NumberChangeKind.Set, 9)), "goblin's hit points");
+            Await(live.SetNoteAsync("Ukradł klucz do skarbca — trzyma go w lewej sakwie.\nUcieknie, gdy zostanie sam."), "goblin's note");
             Settle();
             if (Wants("desk_preview"))
             {
@@ -761,6 +768,28 @@ internal static partial class Program
             if (Wants("entity_card_creature"))
             {
                 SaveWindow(preview, "entity_card_creature");
+            }
+
+            if (Wants("entity_card_creature_edit"))
+            {
+                // The change field open on the current number with "-5" typed: the preview line says "9 → 4".
+                var previewView = deskView.GetVisualDescendants().OfType<EntityCardView>().First(view => ReferenceEquals(view.DataContext, preview.Body));
+                var number = previewView.GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.TrackedValueTile>().First()
+                    .GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.EditableText>().First();
+                ClickOn(window, number);
+                TypeText(window, "-5");
+                SaveWindow(preview, "entity_card_creature_edit");
+                PressKey(window, Avalonia.Input.Key.Escape);
+                Rest(window);
+            }
+
+            if (Wants("entity_card_creature_over"))
+            {
+                Await(live.ChangeAsync(CreatureValues.HitPointsKey,new NumberChange(NumberChangeKind.Set, 20)), "goblin's hit points over the maximum");
+                Settle();
+                SaveWindow(preview, "entity_card_creature_over");
+                Await(live.ChangeAsync(CreatureValues.HitPointsKey,new NumberChange(NumberChangeKind.Set, 9)), "goblin's hit points back");
+                Settle();
             }
 
             if (Wants("entity_card_item"))

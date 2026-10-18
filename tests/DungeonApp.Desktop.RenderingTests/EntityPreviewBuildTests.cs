@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -18,6 +21,7 @@ using DungeonApp.Core.World;
 using DungeonApp.Desktop.Controls;
 using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Entries.ContentTab;
+using DungeonApp.Desktop.Entries.Controls;
 using DungeonApp.Desktop.Shell;
 using DungeonApp.Desktop.Startup;
 using DungeonApp.Desktop.Systems;
@@ -286,6 +290,204 @@ public sealed class EntityPreviewBuildTests
         Assert.Equal("Duch", broken.Name);
         Assert.Contains("nie zawiera już wpisu", broken.Reason);
         Assert.NotNull(FindView(fixture, preview));
+
+        // The entity outlives its entry, and so does its note.
+        Assert.True(broken.HasLiveSections);
+        Assert.True(NoteField(fixture, preview).IsEffectivelyVisible);
+    }
+
+    [AvaloniaFact]
+    public async Task A_creature_shows_its_live_part_an_item_its_note_and_the_library_neither()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        await catalog.AddEntitiesAsync(Address("lina"), 1, null);
+        fixture.Settle();
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+
+        var tile = HitPoints(fixture, preview);
+        Assert.Equal("7", tile.Value);
+        Assert.Equal("7", tile.Maximum);
+        Assert.Equal("2k6", tile.Note);
+        var gauge = FindView(fixture, preview)!.GetVisualDescendants().OfType<TrackGauge>().Single();
+        Assert.True(gauge.IsEffectivelyVisible);
+        Assert.Equal(7, gauge.Value);
+        Assert.Equal(7, gauge.Maximum);
+        Assert.True(NoteField(fixture, preview).IsEffectivelyVisible);
+        Assert.Equal(EntityLiveSectionsView.NotePlaceholder, NoteField(fixture, preview).PlaceholderText);
+
+        catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
+        fixture.Settle();
+        Assert.True(NoteField(fixture, preview).IsEffectivelyVisible);
+        Assert.Empty(FindView(fixture, preview)!.GetVisualDescendants().OfType<TrackedValueTile>());
+
+        // The library's card of the same creature: the entry's numbers, no gauge, no note.
+        var card = new CreatureCardView();
+        card.SetCreature(new Creature
+        {
+            Size = "Mały",
+            Type = "humanoid",
+            Alignment = "neutralny zły",
+            Combat = new CombatAspect { Ac = 15, Hp = 7, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
+            Speed = "9 m",
+            Senses = "pasywna Percepcja 9",
+            Challenge = "1/4",
+            Actions = new StatblockSection { Entries = [new StatblockEntry { Name = "Maczuga", Text = "+4 do trafienia." }] },
+        }, EntryPicture.None);
+        var library = new Window
+        {
+            Width = 700,
+            Height = 900,
+            Content = new EntryDetailView { DataContext = new ValidContentDetailViewModel(["Próbki", "Goblin"], "Goblin", [], card) },
+        };
+        library.Show();
+        fixture.Settle();
+        Assert.Empty(library.GetVisualDescendants().OfType<TrackedValueTile>());
+        Assert.Empty(library.GetVisualDescendants().OfType<EntityLiveSectionsView>());
+        Assert.False(library.GetVisualDescendants().OfType<TrackGauge>().Single().IsVisible);
+        library.Close();
+    }
+
+    [AvaloniaFact]
+    public async Task An_accepted_change_of_the_tracked_value_is_saved_and_shown_in_both_windows_without_a_rebuild()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        fixture.Settle();
+        var id = Row(catalog, "Szef").EntityId!.Value;
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        var pinned = fixture.Desk.PinEntity(id)!;
+        fixture.Settle();
+        var card = (EntityCardViewModel)preview.Body;
+        var detail = card.Detail;
+        var tile = HitPoints(fixture, preview);
+
+        NumberField(tile).Focus();
+        fixture.Window.KeyTextInput("-3");
+        fixture.Settle();
+        Assert.Equal("7 → 4", tile.Message);
+        Press(fixture.Window, Key.Enter);
+        fixture.Settle();
+
+        Assert.True(catalog.Tree.Entity(id)!.Entity.Current!.TryGetValue(CreatureValues.HitPointsKey, out var stored));
+        Assert.Equal(4, stored);
+        Assert.Same(detail, card.Detail);
+        Assert.Same(tile, HitPoints(fixture, preview));
+        Assert.Equal("4", tile.Value);
+        Assert.Equal(4, FindView(fixture, preview)!.GetVisualDescendants().OfType<TrackGauge>().Single().Value);
+        Assert.Equal("4", HitPoints(fixture, pinned).Value);
+    }
+
+    [AvaloniaFact]
+    public async Task A_click_beside_the_open_field_drops_the_entry()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        fixture.Settle();
+        var id = Row(catalog, "Szef").EntityId!.Value;
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+        var tile = HitPoints(fixture, preview);
+
+        NumberField(tile).Focus();
+        fixture.Window.KeyTextInput("-3");
+        fixture.Settle();
+        Click(fixture.Window, NoteField(fixture, preview));
+
+        Assert.Null(catalog.Tree.Entity(id)!.Entity.Current);
+        Assert.Equal("7", tile.Value);
+        Assert.Equal("7", NumberField(tile).Text);
+        Assert.Null(tile.Message);
+    }
+
+    [AvaloniaFact]
+    public async Task Tab_leads_from_the_tracked_value_to_the_note_which_is_saved_when_the_field_is_left()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        fixture.Settle();
+        var id = Row(catalog, "Szef").EntityId!.Value;
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+        var note = NoteField(fixture, preview);
+        var detail = ((EntityCardViewModel)preview.Body).Detail;
+
+        NumberField(HitPoints(fixture, preview)).Focus();
+        Press(fixture.Window, Key.Tab);
+        Assert.True(note.IsFocused);
+
+        fixture.Window.KeyTextInput("Boi się psów.");
+        fixture.Settle();
+        Assert.Null(catalog.Tree.Entity(id)!.Entity.Note);
+
+        TopLevel.GetTopLevel(note)!.FocusManager!.Focus(null);
+        fixture.Settle();
+        Assert.Equal("Boi się psów.", catalog.Tree.Entity(id)!.Entity.Note);
+        Assert.Same(detail, ((EntityCardViewModel)preview.Body).Detail);
+    }
+
+    [AvaloniaFact]
+    public async Task A_note_being_written_is_saved_when_the_preview_moves_on_or_the_window_closes()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        await catalog.AddEntitiesAsync(Address("lina"), 1, null);
+        fixture.Settle();
+        var chief = Row(catalog, "Szef").EntityId!.Value;
+        var rope = Row(catalog, "Lina").EntityId!.Value;
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+
+        NoteField(fixture, preview).Focus();
+        fixture.Window.KeyTextInput("Ucieknie.");
+        catalog.Click(Row(catalog, "Lina"), ctrl: false, shift: false);
+        fixture.Settle();
+        Assert.Equal("Ucieknie.", catalog.Tree.Entity(chief)!.Entity.Note);
+
+        var pinned = fixture.Desk.PinEntity(rope)!;
+        fixture.Settle();
+        NoteField(fixture, pinned).Focus();
+        fixture.Window.KeyTextInput("Przecięta.");
+        fixture.Desk.Close(pinned);
+        fixture.Settle();
+        Assert.Equal("Przecięta.", catalog.Tree.Entity(rope)!.Entity.Note);
+    }
+
+    private static TrackedValueTile HitPoints(Fixture fixture, WorkspacePanelViewModel panel) =>
+        FindView(fixture, panel)!.GetVisualDescendants().OfType<TrackedValueTile>().Single();
+
+    private static EditableText NumberField(TrackedValueTile tile) =>
+        tile.GetVisualDescendants().OfType<EditableText>().Single();
+
+    private static EditableText NoteField(Fixture fixture, WorkspacePanelViewModel panel) =>
+        FindView(fixture, panel)!.GetVisualDescendants().OfType<EntityLiveSectionsView>().Single()
+            .GetVisualDescendants().OfType<EditableText>().Single();
+
+    private static void Click(Window window, Control control)
+    {
+        var point = control.TranslatePoint(new Point(control.Bounds.Width / 2, control.Bounds.Height / 2), window)!.Value;
+        window.MouseMove(point);
+        window.MouseDown(point, MouseButton.Left);
+        window.MouseUp(point, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void Press(Window window, Key key)
+    {
+        window.KeyPress(key, RawInputModifiers.None, PhysicalKey.None, null);
+        window.KeyRelease(key, RawInputModifiers.None, PhysicalKey.None, null);
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static WorldRowViewModel Row(WorldCatalogViewModel catalog, string name) =>
@@ -364,7 +566,7 @@ public sealed class EntityPreviewBuildTests
             Size = "Mały",
             Type = "humanoid",
             Alignment = "neutralny zły",
-            Combat = new CombatAspect { Ac = 15, Hp = 7, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
+            Combat = new CombatAspect { Ac = 15, Hp = 7, HpDice = "2k6", Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
             Speed = "9 m",
             Senses = "pasywna Percepcja 9",
             Challenge = "1/4",
@@ -427,7 +629,22 @@ public sealed class EntityPreviewBuildTests
                                 Being, new ContentCategorySpec<Sample>("Rodzaj", sample => sample.Kind), tags: sample => [sample.Kind]),
                             new ContentTypeProfile<Sample>(Thing, tags: sample => [sample.Kind]),
                         ]),
-                ]);
+                ],
+                new BeingValues());
+
+        /// <summary>The creature's live numbers, read from the card's creature rather than the sample values.</summary>
+        private sealed class BeingValues : IEntityValueCatalog, IEntityValueRules
+        {
+            public IEntityValueRules? For(ContentTypeReference type) => type == Being ? this : null;
+
+            public IReadOnlyList<BaseValue> BaseValues(ContentValues values) =>
+            [
+                new BaseValue(CreatureValues.ArmorClassKey, "KP", Creature.Combat.Ac),
+                new BaseValue(CreatureValues.MaxHitPointsKey, "PW maks.", Creature.Combat.Hp),
+            ];
+
+            public IReadOnlyList<TrackedValueRule> TrackedValues => CreatureValues.Instance.TrackedValues;
+        }
 
         public bool HasSet(ContentId set) => set == Set;
 

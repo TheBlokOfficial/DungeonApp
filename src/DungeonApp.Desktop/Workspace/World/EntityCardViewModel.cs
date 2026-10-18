@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using DungeonApp.Core.Entries;
 using DungeonApp.Core.Entries.Entities;
 using DungeonApp.Core.World;
+using DungeonApp.Desktop.Entries;
 using DungeonApp.Desktop.Entries.ContentTab;
 using DungeonApp.Desktop.Workspace.Panels;
 
@@ -14,8 +15,9 @@ namespace DungeonApp.Desktop.Workspace.World;
 
 /// <summary>
 /// The body of a window that shows an entity's card: the preview (follows the catalog's last clicked
-/// entity, has a pin) or a pinned window (one entity for good). Read-only. Rebuilds the card when
-/// the entity's name, path or values change and empties when the entity is gone.
+/// entity, has a pin) or a pinned window (one entity for good). Rebuilds the card when the entity's
+/// name, path or values change and empties when the entity is gone; the live part (current numbers,
+/// note) it only reads again (<see cref="EntityLiveContext"/>), so a change there keeps the card.
 /// </summary>
 public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTitleTarget, IDisposable
 {
@@ -29,6 +31,7 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
     private readonly PanelHeaderAction[] _pinAction = [];
     private readonly PanelHeaderAction[] _unpinAction = [];
     private (CampaignEntity Entity, string Label)? _fingerprint;
+    private EntityLiveContext? _live;
     private bool _isDisposed;
 
     public EntityCardViewModel(
@@ -92,6 +95,9 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
 
     public bool IsEmpty => Detail is null;
 
+    /// <summary>The live part the card shows and changes; null while empty.</summary>
+    public EntityLiveContext? Live => _live;
+
     public IReadOnlyList<PanelHeaderAction> HeaderActions => _followsSelection ? _pinAction : _unpinAction;
 
     /// <summary>
@@ -117,6 +123,7 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
         }
 
         _isDisposed = true;
+        _live?.CommitPending();
         _catalog.TreeChanged -= OnTreeChanged;
         _catalog.PropertyChanged -= OnCatalogPropertyChanged;
     }
@@ -142,20 +149,33 @@ public sealed class EntityCardViewModel : ObservableObject, IPanelBody, IPanelTi
         if (Fingerprint() != _fingerprint)
         {
             Rebuild();
+            return;
+        }
+
+        // The live part changes in place, so the card keeps its scroll position and focus.
+        if (Entity is { } id && _catalog.Tree.Entity(id) is { } node)
+        {
+            _live?.Refresh(node.Resolved);
         }
     }
 
-    // What the card is made of: the entity (its patch included), its name and its path. A change in
-    // another entity of the tree leaves the card as it is.
+    // What the card is made of: the entity (its patch included), its name and its path. The live
+    // part (note, current numbers) is left out - the card follows it without being rebuilt - and a
+    // change in another entity of the tree leaves the card as it is.
     private (CampaignEntity Entity, string Label)? Fingerprint() =>
         Entity is { } id && _catalog.Tree.Entity(id) is { } node
-            ? (node.Entity, string.Join('/', [node.Name, .. _catalog.Tree.EntityPath(id)]))
+            ? (node.Entity with { Note = null, Current = null }, string.Join('/', [node.Name, .. _catalog.Tree.EntityPath(id)]))
             : null;
 
     private void Rebuild()
     {
+        // The card about to go may hold an edit whose field never loses the focus.
+        _live?.CommitPending();
+
         _fingerprint = Fingerprint();
-        Detail = Entity is { } id ? _builder.Build(_catalog.Tree, id) : null;
+        var card = Entity is { } id ? _builder.Build(_catalog.Tree, id) : null;
+        _live = card?.Live;
+        Detail = card?.Detail;
 
         OnPropertyChanged(nameof(Detail));
         OnPropertyChanged(nameof(IsEmpty));

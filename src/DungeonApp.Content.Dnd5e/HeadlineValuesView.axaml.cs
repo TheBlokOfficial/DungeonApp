@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -30,14 +31,16 @@ public partial class HeadlineValuesView : UserControl
     }
 
     /// <summary>
-    /// Places the values left to right, one per column; at most <see cref="ColumnCount"/>.
+    /// Places the values left to right, one per column; at most <see cref="ColumnCount"/>. Returns
+    /// the tiles in the same order, for a card that shows an entity's numbers in them.
     /// </summary>
-    public void Show(IReadOnlyList<HeadlineValue> values)
+    public IReadOnlyList<StatTile> Show(IReadOnlyList<HeadlineValue> values)
     {
         ArgumentNullException.ThrowIfNull(values);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(values.Count, ColumnCount);
 
         Columns.Children.Clear();
+        var tiles = new StatTile[values.Count];
         for (var column = 0; column < values.Count; column++)
         {
             var value = values[column];
@@ -48,9 +51,29 @@ public partial class HeadlineValuesView : UserControl
                 Value = value.Value,
                 Note = value.Note,
             };
-            Grid.SetColumn(tile, column);
-            Columns.Children.Add(tile);
+            Place(column, tile);
+            tiles[column] = tile;
         }
+
+        return tiles;
+    }
+
+    /// <summary>
+    /// Puts <paramref name="tile"/> into <paramref name="column"/> in place of what stood there - an
+    /// entity's tracked value instead of the entry's number.
+    /// </summary>
+    public void Place(int column, Control tile)
+    {
+        ArgumentNullException.ThrowIfNull(tile);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(column, ColumnCount);
+
+        foreach (var old in Columns.Children.Where(child => Grid.GetColumn(child) == column).ToList())
+        {
+            Columns.Children.Remove(old);
+        }
+
+        Grid.SetColumn(tile, column);
+        Columns.Children.Add(tile);
     }
 
     /// <summary>

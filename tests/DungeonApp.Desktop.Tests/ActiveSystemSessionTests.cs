@@ -207,6 +207,29 @@ public sealed class ActiveSystemSessionTests
         Assert.False(raised);
     }
 
+    /// <summary>
+    /// Exit releases the desk, whose windows save what they still held; the program must be able to
+    /// wait for that save after the campaign is already closed.
+    /// </summary>
+    [Fact]
+    public async Task A_save_started_while_the_campaign_closes_is_still_awaited_after_it_closed()
+    {
+        var repository = new GatedSaveRepository();
+        var session = new ActiveSystemSession(new FakeGameSystem(FakeSystemId), repository, NewLayoutStore());
+        session.OpenCampaign(NewCampaign());
+        Assert.True(session.WhenSaved.IsCompleted);
+
+        var saving = session.ChangeAsync(new CampaignChange());
+        session.ReleaseAll();
+        var saved = session.WhenSaved;
+        Assert.False(saved.IsCompleted);
+
+        repository.Gate.SetResult();
+        await saved;
+        Assert.True(saving.IsCompleted);
+        Assert.True(session.WhenSaved.IsCompleted);
+    }
+
     private static ActiveSystemSession BuildSession(
         System.Collections.Generic.IReadOnlyList<SystemTabDeclaration>? systemTabs = null,
         System.Collections.Generic.IReadOnlyList<CampaignTabDeclaration>? campaignTabs = null)
@@ -225,6 +248,30 @@ public sealed class ActiveSystemSessionTests
             System.Collections.Generic.IReadOnlyList<DungeonApp.Core.State.StateModelDeclaration> declarations,
             System.Threading.CancellationToken cancellationToken = default) =>
             throw new System.IO.IOException("Simulated disk failure.");
+
+        public Task<Campaign?> GetAsync(
+            CampaignId id,
+            System.Collections.Generic.IReadOnlyList<DungeonApp.Core.State.StateModelDeclaration> declarations,
+            System.Threading.CancellationToken cancellationToken = default) => Task.FromResult<Campaign?>(null);
+
+        public Task DeleteAsync(CampaignId id, System.Threading.CancellationToken cancellationToken = default) =>
+            Task.CompletedTask;
+
+        public Task<System.Collections.Generic.IReadOnlyList<CampaignSummary>> ListAsync(
+            System.Threading.CancellationToken cancellationToken = default) =>
+            Task.FromResult<System.Collections.Generic.IReadOnlyList<CampaignSummary>>([]);
+    }
+
+    /// <summary>A repository whose save does not finish until the test releases <see cref="Gate"/>.</summary>
+    private sealed class GatedSaveRepository : ICampaignRepository
+    {
+        public TaskCompletionSource Gate { get; } = new();
+
+        public async Task SaveAsync(
+            Campaign campaign,
+            System.Collections.Generic.IReadOnlyList<DungeonApp.Core.State.StateModelDeclaration> declarations,
+            System.Threading.CancellationToken cancellationToken = default) =>
+            await Gate.Task;
 
         public Task<Campaign?> GetAsync(
             CampaignId id,

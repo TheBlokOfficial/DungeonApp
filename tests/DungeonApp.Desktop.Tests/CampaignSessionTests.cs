@@ -84,6 +84,22 @@ public sealed class CampaignSessionTests
     }
 
     [Fact]
+    public async Task The_session_is_idle_only_when_the_running_change_has_saved_and_a_refusal_does_not_hide_it()
+    {
+        var repository = new GatedRepository();
+        var session = new CampaignSession(NewCampaign(), repository, [Model]);
+        Assert.True(session.WhenIdle.IsCompleted);
+
+        var first = session.ChangeAsync(AddChange("a"));
+        await session.ChangeAsync(AddChange("b"));
+        Assert.False(session.WhenIdle.IsCompleted);
+
+        repository.Gate.SetResult(true);
+        await session.WhenIdle;
+        Assert.True(first.IsCompleted);
+    }
+
+    [Fact]
     public async Task A_failed_save_leaves_the_change_in_the_snapshot_sets_a_warning_and_still_notifies()
     {
         var repository = new RecordingRepository { ThrowOnSave = true };

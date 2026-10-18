@@ -17,6 +17,10 @@
          gap to the card above the first line, as it does above the creature's ability tables.
          Spacing between controls is set here, on the host, never carried by a control itself. -->
     <StackPanel Spacing="{DynamicResource DungeonSpacingLg}">
+        <!-- ===== for an entity: the frame's live sections (the note), under the header and above the
+             first line; hidden in the library, where they take no room ===== -->
+        <ContentControl x:Name="LiveSections" IsVisible="False" />
+
         <!-- ===== pairs ===== -->
         <StackPanel x:Name="TraitsBlock" Spacing="{DynamicResource DungeonSpacingLg}">
             <Separator />

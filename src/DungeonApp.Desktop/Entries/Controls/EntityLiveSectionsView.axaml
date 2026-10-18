@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:content="using:DungeonApp.Desktop.Entries.Controls"
+             xmlns:dc="using:DungeonApp.Desktop.Controls"
+             x:Class="DungeonApp.Desktop.Entries.Controls.EntityLiveSectionsView"
+             x:DataType="content:EntityLiveSectionsView">
+
+    <!-- The frame's sections of an entity's live part, placed by the system's card above its line.
+         The note: a section like the card's prose sections (heading, folding on a click, the same
+         gap under it), holding the GM's note as editable text - Enter breaks the line, the text grows
+         down, the caret lands where the click was. The frame of the field reaches out of the text's
+         bounds (EditableText), so nothing here clips. No Margin on this root - the card spaces it. -->
+    <StackPanel>
+        <dc:SectionHeading x:Name="NoteHeading" Text="Notatka" />
+
+        <dc:SectionReveal IsOpen="{Binding #NoteHeading.IsExpanded}">
+            <StackPanel>
+                <Border Height="{DynamicResource DungeonSpacingSm}" />
+                <dc:EditableText x:Name="NoteField"
+                                 MinWidth="120"
+                                 PlaceholderText="{x:Static content:EntityLiveSectionsView.NotePlaceholder}" />
+            </StackPanel>
+        </dc:SectionReveal>
+    </StackPanel>
+</UserControl>
