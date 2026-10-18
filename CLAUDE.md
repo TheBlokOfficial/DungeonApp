@@ -45,37 +45,48 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 - **Specyfikacja wielu drobnych poprawek** (szlif) to lista zadań ze stanem `[ ]`/`[x]` w pliku
   specyfikacji, odhaczana przy scaleniu. Gdy kontekst architekta przekracza ok. 150k, architekt
   zapisuje stan w liście, wypycha i kończy; następna sesja wznawia od pierwszej nieodhaczonej pozycji.
-- **Architekt** (główna sesja) rozmawia z autorem, czyta kod potrzebny do decyzji i zlecenia, przegląda
+- **Architekt** (główna sesja) rozmawia z autorem, czyta kod potrzebny do decyzji i zlecenia, sprawdza
   wyniki i scala. Drobne, lokalne zmiany robi sam; fakt z kodu, którego nie zmienia, zbiera agentem
-  Explore. Autorowi pokazuje wynik, który sam by przyjął.
-- **Wykonawca** (agent `wykonawca` z `.claude/agents/`: Sonnet, w tle, worktree z HEAD architekta)
+  Explore. Odpowiada za jakość tego, co pokazuje autorowi: szuka w wyniku błędów jak recenzent, zanim
+  znajdzie je autor.
+- **Wykonawca** (agent `wykonawca` z `.claude/agents/`: Opus, w tle, worktree z HEAD architekta)
   dostaje zamkniętą część pracy — jedną kontrolkę albo jedno zachowanie, nie cały ekran (większe
   zlecenie dochodzi do limitu kroków). Zlecenie z adresami: cel, nazwa gałęzi, pliki i miejsca w nich, znane
   fakty (wzór, tokeny, pułapki), kryteria z nazwami renderów, czego nie robić, punkt zatrzymania;
-  przed zleceniem commit. Opus (`model: "opus"`) tylko do zadania bez gotowego projektu albo szukania
-  nieznanej przyczyny; pracę mechaniczną według reguły bierze agent `porzadki` (Opus). Niezależne
+  przed zleceniem commit. Sonnet (`model: "sonnet"`) tylko do logiki i danych bez wyglądu, których
+  poprawności dowodzą testy; pracę mechaniczną według reguły bierze agent `porzadki`. Niezależne
   obszary — równolegle.
-- **Kolejna runda:** pracę wykonawcy przyjętą na renderach scalasz; drobne poprawki robisz sam
+- **Sprawdzenie przed scaleniem.** Raport wykonawcy to nie dowód. Zmiana, którą widać: render każdego
+  zmienionego stanu (spoczynek, najechanie, edycja, długi tekst, pasek przewijania) i wycinek zmienionej
+  kontrolki w powiększeniu 3–4× (`zoom.ps1`), na którym przechodzisz listę z „Rzemiosła interfejsu”
+  (Konwencje). Zmiana we wspólnym kodzie (zapis kampanii, motyw, rama): diff. Czego render nie pokaże
+  (ruch, opóźnienie, skala ekranu), dowodzi test z czasem albo — nazwane w raporcie — autor w aplikacji.
+- **Kolejna runda:** pracę, która przeszła sprawdzenie, scalasz; drobne poprawki robisz sam
   w worktree wykonawcy (ścieżki bezwzględne i `git -C`, bez `cd` — sesja przeniosłaby się do worktree),
   dłuższą listę dostaje nowy wykonawca ze ścieżkami i hashami. Wykonawcy z dużym kontekstem nie
   wznawiaj — każdy jego krok wysyła cały dotychczasowy kontekst. Nowy wykonawca dostaje własny
   worktree z HEAD architekta i nie pisze w cudzym: niedokończoną pracę poprzednika (commit w jego
   worktree) architekt najpierw scala do `master` albo do HEAD, z którego wystartuje następca.
-- **Uwagi autora** po obejrzeniu poprawiasz od razu, gdy to błąd; szlif (działa, ale mogłoby wyglądać
-  lepiej) idzie jednym zdaniem do „Szlif” w `docs/roadmap.md`.
+- **Uwagi autora** po obejrzeniu poprawiasz od razu, gdy to błąd — u przyczyny: sprawdzasz, gdzie
+  jeszcze działa, a test obejmuje cały ten rodzaj błędu, nie jeden przypadek. Szlif (działa, ale
+  mogłoby wyglądać lepiej) idzie jednym zdaniem do „Szlif” w `docs/roadmap.md`.
 - **Dokumenty przy pracy:** roadmapę i rozstrzygnięcia aktualizujesz raz na wycinek, przy scaleniu,
   jednym commitem; `docs/architecture.md` — w gałęzi, która zmienia kod.
 - **Git:** każdy commit przechodzi `tools/check.ps1`; gałąź → scalenie do `master` („Scalenie: …”) →
-  `git push` (CI musi być zielone) → usunięcie worktree i gałęzi. Główny katalog stoi zawsze na
-  `master`; każdy agent pracuje we własnej gałęzi i worktree. Commity po polsku, małe i logiczne.
+  `git push` → usunięcie worktree i gałęzi. Na CI nie czekasz w sesji (`check.ps1` sprawdza to samo);
+  czerwone CI z poprzedniego pushu naprawiasz przed nową pracą. Worktree, którego nie da się usunąć
+  (pliki trzyma jeszcze build), usuwasz przy następnym sprzątaniu — `git worktree list` pokazuje żywe.
+  Główny katalog stoi zawsze na `master`; każdy agent pracuje we własnej gałęzi i worktree. Commity po
+  polsku, małe i logiczne.
 - **Rozmowa, nie raport:** odpowiedź mówi to, co nowe — bez powtarzania wcześniejszych wiadomości
   i bez formy raportu tam, gdzie wystarczy zwykła odpowiedź. Jeśli warto coś dodać, opisać, ocenić
   albo zapytać, pisz bez wahania. Pełna forma tam, gdzie jest potrzebna: plan wycinka, decyzje do
   podjęcia, raport na koniec. Przy kilku wykonawcach naraz powrót jednego nie jest powodem do
-  wiadomości: architekt przegląda i scala po cichu, a autorowi pisze raz, gdy skończą wszyscy
-  (wyjątek: błąd albo decyzja, która nie może czekać).
-- **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego, plus 2–4 rzeczy do
-  sprawdzenia w aplikacji (gdzie kliknąć, na co patrzeć). Bez nazw klas, chyba że autor zapyta.
+  wiadomości: architekt sprawdza i scala bez pisania do autora, a autorowi pisze raz, gdy skończą
+  wszyscy (wyjątek: błąd albo decyzja, która nie może czekać).
+- **Raport na koniec:** 3–6 zdań prostym językiem, co się zmieniło i dlaczego; co sprawdziłeś i jak
+  (render, powiększenie, test); czego nie dało się sprawdzić bez aplikacji — tylko to autor sprawdza,
+  z miejscem kliknięcia. Bez nazw klas, chyba że autor zapyta.
 
 ## Budowanie i testy
 
@@ -83,8 +94,8 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 (`-Tests Core`, `-Filter <nazwa>`, `-NoTest`). Blokadę `bin/` aplikacji (`MSB3021`/`MSB3027`: podgląd
 XAML w Riderze albo uruchomiona aplikacja autora) skrypt obchodzi sam — nie zabijaj procesów. Aplikacja:
 `dotnet run --project src/DungeonApp.App`. Render bez ekranu: `powershell -File tools/render/render.ps1
--Only '<wzorzec>'` → `tools/render/out/` (bez `-Only` wszystkie karty i galeria, kilka minut; `zoom.ps1`
-powiększa wycinek). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write — PowerShell psuje polskie znaki.
+-Only '<wzorzec>'` → `tools/render/out/` (bez `-Only` wszystkie karty i galeria, kilka minut; każdy
+przebieg czyści `out/`, więc render oglądaj od razu; `zoom.ps1` powiększa wycinek). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write — PowerShell psuje polskie znaki.
 
 ## Struktura
 
@@ -119,12 +130,18 @@ i galerii kontrolek). Wiedza o D&D mieszka wyłącznie w `Content.Dnd5e`.
   motywu powstaje dopiero wtedy, gdy potrzebuje jej ekran. Znaczenie ma token, nie barwa: każdy token
   koloru ma jedno znaczenie zapisane przy nim, a dwa tokeny o podobnej barwie mogą znaczyć co innego
   (czerwień błędu i czerwień paska PW). Widok sięga po token ze względu na znaczenie, nie barwę.
+- **Rzemiosło interfejsu** jest obowiązkiem każdego, kto zmienia widok, także gdy zlecenie o nim
+  milczy: każdy stan kontrolki (spoczynek, najechanie, wciśnięcie, edycja, wyłączenie) wygląda
+  świadomie; ramka i tło są całe ze wszystkich stron; tekst, kursor i zaznaczenie mieszczą się w polu
+  z odstępem; krawędzie stoją na liniach sąsiadów; długi tekst się ucina albo zawija, nie wchodzi na
+  sąsiada; pasek przewijania nie zjada marginesu. Błąd rzemiosła w kontrolce, którą i tak zmieniasz,
+  poprawiasz i wymieniasz w raporcie.
 - Kontrolka w dwóch formach (tekst do czytania i pole edycji) zajmuje w obu dokładnie to samo
   miejsce: przełączenie formy nie przesuwa żadnej kontrolki, sekcji ani okna. Każda taka kontrolka ma
-  test bez ekranu, który mierzy obie formy.
+  test bez ekranu, który mierzy obie formy i sprawdza, że nic nad nią nie przycina jej ramki.
 - Testy: zmiana zachowania logiki → test; nowy lub przepisany widok → test budujący go w oknie bez
   ekranu (`RenderingTests`, wzór `ContentTabViewBuildTests`); zapis kampanii i format paczek — zawsze.
-  Wyglądu nie dowodzi się testami — sprawdza go autor.
+  Wyglądu nie dowodzi się asercjami o pikselach — sprawdza go architekt przed scaleniem.
 - Nie kasuj danych, których nie rozumiesz (nieznane pliki w katalogu kampanii czy paczki zostają).
 
 ## Pułapki, których nie widać w kodzie

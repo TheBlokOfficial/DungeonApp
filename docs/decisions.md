@@ -25,13 +25,27 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   zaczyna od świeżego kontekstu i dostaje zlecenie z adresami (pliki i miejsca w nich). Opis procesu:
   `CLAUDE.md`; pomiar: `tools/usage.py`. Zlecenie to jedna kontrolka albo jedno zachowanie: wycinek
   z kilkoma takimi zleceniami kosztuje mniej niż jeden wykonawca z rosnącym kontekstem, który
-  dochodzi do limitu kroków. *Wyzwalacz:* wykonawcy mimo małych zleceń regularnie dochodzą do limitu
-  kroków.
-- **Model wykonawców: Sonnet do zleceń z adresami, Opus do porządków i zadań otwartych.** Odczyt
+  dochodzi do limitu kroków. Nowy wykonawca startuje z ok. 20 tys. tokenów, więc runda poprawek
+  u nowego wykonawcy jest tańsza niż wznawianie starego. *Wyzwalacz:* wykonawcy mimo małych zleceń
+  regularnie dochodzą do limitu kroków.
+- **Architekt sprawdza przed scaleniem, autor ocenia gust.** Scalanie na podstawie raportu
+  przepuszczało błędy widoczne na pierwszym renderze (ucięta ramka pola), a szukanie ich spadało na
+  autora; w sesjach szlifu blisko połowa kosztu wykonawców szła na drugie podejścia do rzeczy
+  zgłoszonych jako zrobione. Sprawdzenie kosztuje kilkanaście centów na scalenie, runda poprawek —
+  ok. dolara i czas autora. Model widzi błąd na renderze, gdy wie, czego szukać, stąd stała lista
+  („Rzemiosło interfejsu”) i wycinek w powiększeniu. Autor sprawdza tylko to, czego render nie pokaże
+  (ruch, skala ekranu). Odrzucone: wygląd sprawdzany wyłącznie przez autora. Mechanizm: `CLAUDE.md`.
+- **Model wykonawców: Opus do wszystkiego, co widać; Sonnet do logiki, której dowodzą testy.** Odczyt
   kontekstu (połowa kosztu) kosztuje w obu tyle samo, więc model zmienia koszt kroku o ok. 30 %,
-  a liczba kroków i poprawek zmienia go kilkukrotnie. Na porządkach Opus potrzebuje mniej kroków
-  i poprawek niż Sonnet; zlecenia z adresami Sonnet wykonuje bez poprawek. Agent `porzadki` ma więc
-  Opusa, `wykonawca` — Sonneta. *Wyzwalacz:* wykonawca na Sonnecie wymaga poprawek dwa razy z rzędu.
+  a liczba kroków i rund poprawek zmienia go kilkukrotnie. Zlecenia z wyglądem i zachowaniem
+  interfejsu na Sonnecie regularnie wracały do drugiej rundy (fokus klawiatury, tooltipy, pinezka,
+  animacje okien); błąd w logice z testami łapie build, nie autor. Agenty `wykonawca` i `porzadki`
+  mają więc Opusa, Sonnet idzie przez `model: "sonnet"` w zleceniu. *Wyzwalacz:* koszt wykonawców
+  zaczyna ograniczać pracę.
+- **Sposób pracy zmienia się po pomiarze.** Zasadę pracy zmienia się, gdy pomiar pokaże problem —
+  błędy znalezione przez autora po scaleniu, rundy poprawek, koszt z `tools/usage.py` — i jednym
+  commitem, nie po każdej sesji. Zasady poprawiane na bieżąco przesuwały uwagę na koszt i formę
+  rozmowy, a wymóg jakości wypadł z instrukcji niezauważony.
 - **Zapis po każdej zmianie**, bez ręcznego „Zapisz”. *Wyzwalacz:* MG chce wrócić do wcześniejszego
   stanu → najpierw rotujące kopie zapasowe.
 - **Błąd nie zamyka programu.** Przy stole zamknięcie kosztuje więcej niż błąd, a kampania jest
@@ -254,8 +268,7 @@ do odrzuconego kierunku. Terminy: słownik w `docs/architecture.md`.
   pierwszej sesji przy stole (patrz wersje formatów wyżej).
 - **Śledzenie tur jako element karty** — tury, rundy i liczniki efektów trzyma narzędzie walki;
   karta pokazuje wpis albo entity.
-- **Architekt bez czytania kodu, każda runda poprawek u nowego wykonawcy** — zlecenie bez adresów
-  zmusza wykonawcę do szukania, a każdy nowy wykonawca to ok. 150 tys. tokenów na sam start.
+- **Architekt bez czytania kodu** — zlecenie bez adresów zmusza wykonawcę do szukania.
 - **Cała praca w głównej sesji** — kontekst rośnie bez końca, a autor traci rozmowę w trakcie pracy.
 - **Raporty z każdej fazy pracy, lista zadań w repozytorium, dokumenty prowadzone jak dziennik** —
   tokeny bez czytelnika; stan niesie git.
