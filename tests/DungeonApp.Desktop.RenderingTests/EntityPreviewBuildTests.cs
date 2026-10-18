@@ -335,6 +335,7 @@ public sealed class EntityPreviewBuildTests
             Speed = "9 m",
             Senses = "pasywna Percepcja 9",
             Challenge = "1/4",
+            Actions = new StatblockSection { Entries = [new StatblockEntry { Name = "Maczuga", Text = "+4 do trafienia." }] },
         }, EntryPicture.None);
         var library = new Window
         {
@@ -565,7 +566,7 @@ public sealed class EntityPreviewBuildTests
             Size = "Mały",
             Type = "humanoid",
             Alignment = "neutralny zły",
-            Combat = new CombatAspect { Ac = 15, Hp = 7, Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
+            Combat = new CombatAspect { Ac = 15, Hp = 7, HpDice = "2k6", Str = 8, Dex = 14, Con = 10, Int = 10, Wis = 8, Cha = 8 },
             Speed = "9 m",
             Senses = "pasywna Percepcja 9",
             Challenge = "1/4",
