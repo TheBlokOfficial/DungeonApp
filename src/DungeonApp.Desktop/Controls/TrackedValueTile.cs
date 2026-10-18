@@ -32,7 +32,8 @@ public sealed class NumberChangeEventArgs(RoutedEvent routedEvent, NumberChange 
 /// <remarks>
 /// The number's room is the wider of the number and one digit, so switching forms moves nothing; an
 /// entry longer than the number widens the field and pushes "/ 13" right while the GM types, so the
-/// caret and the selection never leave the outline. The look belongs to the control theme
+/// caret and the selection never leave the outline. When the row "number / maximum" is wider than the
+/// tile, both shrink together to fit (the row keeps its height). The look belongs to the control theme
 /// (Themes/Controls/TrackedValueTile.axaml).
 /// </remarks>
 [TemplatePart(DigitsPart, typeof(TextBlock))]
@@ -47,6 +48,8 @@ public sealed class TrackedValueTile : TemplatedControl
     private const string DigitsPart = "PART_Digits";
     private const string MaximumPart = "PART_Maximum";
     private const string FieldPart = "PART_Field";
+    private const string RowPart = "PART_ValueRow";
+    private const string RulerPart = "PART_Ruler";
 
     public static readonly StyledProperty<DrawingImage?> IconProperty =
         AvaloniaProperty.Register<TrackedValueTile, DrawingImage?>(nameof(Icon));
@@ -63,6 +66,9 @@ public sealed class TrackedValueTile : TemplatedControl
     public static readonly StyledProperty<string?> NoteProperty =
         AvaloniaProperty.Register<TrackedValueTile, string?>(nameof(Note));
 
+    public static readonly StyledProperty<int> MaxDigitsProperty =
+        AvaloniaProperty.Register<TrackedValueTile, int>(nameof(MaxDigits));
+
     public static readonly StyledProperty<Func<NumberChange, string>?> PreviewProperty =
         AvaloniaProperty.Register<TrackedValueTile, Func<NumberChange, string>?>(nameof(Preview));
 
@@ -78,6 +84,14 @@ public sealed class TrackedValueTile : TemplatedControl
     private TextBlock? _digits;
     private TextBlock? _maximum;
     private EditableText? _field;
+    private StackPanel? _row;
+    private TextBlock? _ruler;
+    private double _scale = 1;
+    private double _naturalDigitsSize;
+    private double _naturalMaximumSize;
+    private double _naturalDigitsLine;
+    private double _naturalMaximumLine;
+    private double _naturalRowHeight;
     private string? _message;
     private string _textOnEntry = "";
     private bool _editing;
@@ -123,6 +137,16 @@ public sealed class TrackedValueTile : TemplatedControl
     }
 
     /// <summary>
+    /// The most digits the change field takes (the sign does not count); zero or less means no limit.
+    /// The excess key or paste is dropped silently.
+    /// </summary>
+    public int MaxDigits
+    {
+        get => GetValue(MaxDigitsProperty);
+        set => SetValue(MaxDigitsProperty, value);
+    }
+
+    /// <summary>
     /// The system's text for what a change will do ("9 → 4"), shown in the note line before Enter.
     /// Without it the note line keeps the note: repeating the typed change would only echo the field.
     /// </summary>
@@ -156,12 +180,23 @@ public sealed class TrackedValueTile : TemplatedControl
     /// What the field lets the GM type: digits after at most one leading sign ("+", "-", "=", or the
     /// typographic minus the preview shows). Anything else could only end in an entry Enter refuses.
     /// </summary>
-    public static bool IsChangeText(string text)
+    public static bool IsChangeText(string text) => IsChangeText(text, 0);
+
+    /// <summary>
+    /// <see cref="IsChangeText(string)"/> that also refuses more than <paramref name="maxDigits"/> digits
+    /// (zero or less: no limit); the sign does not count.
+    /// </summary>
+    public static bool IsChangeText(string text, int maxDigits)
     {
         var digits = text.AsSpan();
         if (digits.Length > 0 && digits[0] is '+' or '-' or '=' or '−')
         {
             digits = digits[1..];
+        }
+
+        if (maxDigits > 0 && digits.Length > maxDigits)
+        {
+            return false;
         }
 
         foreach (var digit in digits)
@@ -190,11 +225,14 @@ public sealed class TrackedValueTile : TemplatedControl
         _digits = e.NameScope.Find<TextBlock>(DigitsPart);
         _maximum = e.NameScope.Find<TextBlock>(MaximumPart);
         _field = e.NameScope.Find<EditableText>(FieldPart);
+        _row = e.NameScope.Find<StackPanel>(RowPart);
+        _ruler = e.NameScope.Find<TextBlock>(RulerPart);
+        _scale = 1;
 
         if (_field is not null)
         {
             _field.Text = Value;
-            _field.TextFilter = IsChangeText;
+            _field.TextFilter = text => IsChangeText(text, MaxDigits);
             _field.GotFocus += OnFieldGotFocus;
             _field.LostFocus += OnFieldLostFocus;
             _field.TextChanged += OnFieldTextChanged;
@@ -221,15 +259,98 @@ public sealed class TrackedValueTile : TemplatedControl
     {
         AlignMaximumToValueBaseline();
         var size = base.MeasureOverride(availableSize);
+        SyncMinimumWidth();
 
-        // One digit in the number's own font, known once the hidden sample is measured; setting the
-        // minimum asks for one more measure pass.
-        if (_digits is not null && _field is not null && !_digits.DesiredSize.Width.Equals(_field.MinWidth))
+        if (_row is null || _digits is null || _maximum is null || double.IsInfinity(availableSize.Width))
         {
-            _field.MinWidth = _digits.DesiredSize.Width;
+            return size;
+        }
+
+        // A number and its "/ 13" wider than the tile shrink together until the row fits; the row keeps
+        // its full-size height, so nothing below it moves. The width is computed from the text, not
+        // read from the field: a text box reports its new width only after this pass.
+        if (_scale >= 1)
+        {
+            _naturalDigitsSize = _digits.FontSize;
+            _naturalMaximumSize = _maximum.FontSize;
+            _naturalDigitsLine = _digits.LineHeight;
+            _naturalMaximumLine = _maximum.LineHeight;
+            _naturalRowHeight = _row.DesiredSize.Height;
+        }
+
+        var maximumText = _maximum.IsVisible ? _maximum.Text : null;
+        var fixedWidth = string.IsNullOrEmpty(maximumText) ? 0 : _row.Spacing;
+        var natural = Math.Max(EntryWidth(), _digits.DesiredSize.Width / _scale)
+            + fixedWidth + (string.IsNullOrEmpty(maximumText) ? 0 : _maximum.DesiredSize.Width / _scale);
+        var wanted = natural > availableSize.Width
+            ? Math.Clamp((availableSize.Width - 1 - fixedWidth) / (natural - fixedWidth), 0.3, 1)
+            : 1;
+        if (Math.Abs(wanted - _scale) >= 0.005)
+        {
+            ApplyScale(wanted);
+            size = base.MeasureOverride(availableSize);
+            SyncMinimumWidth();
         }
 
         return size;
+    }
+
+    // The width the entry would have in the full-size font, with room for the caret.
+    private double EntryWidth()
+    {
+        if (_ruler is null || string.IsNullOrEmpty(_field?.Text))
+        {
+            return 0;
+        }
+
+        _ruler.Text = _field.Text;
+        _ruler.Measure(Size.Infinity);
+        return _ruler.DesiredSize.Width + 1;
+    }
+
+    // One digit in the number's own font, known once the hidden sample is measured; setting the
+    // minimum asks for one more measure pass.
+    private void SyncMinimumWidth()
+    {
+        if (_digits is null || _field is null)
+        {
+            return;
+        }
+
+        // A shrunk number gets its width from the text itself: the text box reports a changed font's
+        // width only after the pass that fitted the row, which would leave the row too wide.
+        var width = _scale < 1
+            ? Math.Max(_digits.DesiredSize.Width, EntryWidth() * _scale)
+            : _digits.DesiredSize.Width;
+        if (!width.Equals(_field.MinWidth))
+        {
+            _field.MinWidth = width;
+        }
+    }
+
+    private void ApplyScale(double scale)
+    {
+        _scale = scale;
+        if (_row is null || _digits is null || _maximum is null)
+        {
+            return;
+        }
+
+        if (scale >= 1)
+        {
+            _digits.ClearValue(TextBlock.FontSizeProperty);
+            _digits.ClearValue(TextBlock.LineHeightProperty);
+            _maximum.ClearValue(TextBlock.FontSizeProperty);
+            _maximum.ClearValue(TextBlock.LineHeightProperty);
+            _row.ClearValue(MinHeightProperty);
+            return;
+        }
+
+        _digits.FontSize = _naturalDigitsSize * scale;
+        _digits.LineHeight = _naturalDigitsLine * scale;
+        _maximum.FontSize = _naturalMaximumSize * scale;
+        _maximum.LineHeight = _naturalMaximumLine * scale;
+        _row.MinHeight = _naturalRowHeight;
     }
 
     // The two numbers differ in size, so top or bottom alignment would leave their baselines apart;

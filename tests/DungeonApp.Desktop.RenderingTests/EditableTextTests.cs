@@ -265,6 +265,64 @@ public sealed class EditableTextTests
         sample.Window.Close();
     }
 
+    [Theory]
+    [InlineData("123", true)]
+    [InlineData("-123", true)]
+    [InlineData("+", true)]
+    [InlineData("", true)]
+    [InlineData("1234", false)]
+    [InlineData("=1234", false)]
+    [InlineData("12-3", false)]
+    [InlineData("1+23", false)]
+    public void The_digit_limit_counts_digits_not_the_sign(string text, bool allowed) =>
+        Assert.Equal(allowed, TrackedValueTile.IsChangeText(text, 3));
+
+    [AvaloniaFact]
+    public void The_digit_limit_drops_the_extra_key_and_the_extra_paste()
+    {
+        var sample = ShowTile();
+        sample.Tile.MaxDigits = 3;
+
+        Click(sample.Window, sample.Field);
+        sample.Window.KeyTextInput("-");
+        sample.Window.KeyTextInput("1");
+        sample.Window.KeyTextInput("2");
+        sample.Window.KeyTextInput("3");
+        sample.Window.KeyTextInput("4");
+        Run();
+        Assert.Equal("-123", sample.Field.Text);
+
+        sample.Field.Text = "-123456";
+        Run();
+        Assert.Equal("-123", sample.Field.Text);
+
+        sample.Window.Close();
+    }
+
+    [AvaloniaFact]
+    public void A_number_wider_than_the_tile_shrinks_and_both_forms_keep_the_same_room()
+    {
+        var sample = ShowTile();
+        var atRest = TileLayout(sample);
+        var fontAtRest = sample.Field.FontSize;
+
+        sample.Tile.Value = "1997";
+        sample.Tile.Maximum = "13";
+        sample.Tile.Width = 80;
+        Run();
+        var longRest = TileLayout(sample);
+
+        Assert.True(sample.Field.FontSize < fontAtRest, $"{sample.Field.FontSize} vs {fontAtRest}");
+        Assert.True(longRest[3].Right <= longRest[0].Right + 1, $"{longRest[3]} vs {longRest[0]} field {longRest[1]} font {sample.Field.FontSize} min {sample.Field.MinWidth}");
+        Assert.Equal(atRest[0].Height, longRest[0].Height, 1);
+
+        Click(sample.Window, sample.Field);
+        Assert.True(sample.Field.IsFocused);
+        Assert.Equal(longRest, TileLayout(sample));
+
+        sample.Window.Close();
+    }
+
     [AvaloniaFact]
     public void A_bare_number_and_Enter_set_the_value()
     {

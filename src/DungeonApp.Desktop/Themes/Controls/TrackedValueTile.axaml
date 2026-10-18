@@ -51,6 +51,12 @@
                             <TextBlock Name="PART_Digits" Classes="stat-value-lg" Text="0"
                                        Opacity="0" IsHitTestVisible="False"
                                        HorizontalAlignment="Left" VerticalAlignment="Top" />
+                            <!-- PART_Ruler measures the entry in the number's full-size font (never
+                                 scaled), to fit the row when it is too wide; the zero-size canvas keeps
+                                 it out of the layout. -->
+                            <Canvas Width="0" Height="0" IsHitTestVisible="False">
+                                <TextBlock Name="PART_Ruler" Classes="stat-value-lg" Opacity="0" />
+                            </Canvas>
                             <controls:EditableText Name="PART_Field"
                                                    HorizontalAlignment="Left" VerticalAlignment="Top"
                                                    FontFamily="{Binding #PART_Digits.FontFamily}"

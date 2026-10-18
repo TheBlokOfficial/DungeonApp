@@ -160,6 +160,7 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader, IEntityLi
         _hitPoints = new TrackedValueTile
         {
             Label = "PW",
+            MaxDigits = 3,
             Icon = ThemeResource.Get<DrawingImage>("DungeonIconHeart"),
             Note = _creature?.Combat.HpDice,
             Preview = change => live.Part.FindTracked(CreatureValues.HitPointsKey)?.Preview(change) ?? string.Empty,

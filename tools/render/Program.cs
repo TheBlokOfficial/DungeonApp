@@ -726,6 +726,7 @@ internal static partial class Program
         if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty")
             || Wants("entity_card_creature") || Wants("entity_card_creature_edit") || Wants("entity_card_creature_over")
             || Wants("entity_card_creature_note_edit")
+            || Wants("entity_card_creature_long") || Wants("entity_card_creature_long_edit")
             || Wants("entity_card_item") || Wants("entity_card_broken"))
         {
             // The window alone, at twice its size, to judge the header's details.
@@ -804,6 +805,27 @@ internal static partial class Program
                 Settle();
                 SaveWindow(preview, "entity_card_creature_over");
                 Await(live.ChangeAsync(CreatureValues.HitPointsKey,new NumberChange(NumberChangeKind.Set, 9)), "goblin's hit points back");
+                Settle();
+            }
+
+            if (Wants("entity_card_creature_long") || Wants("entity_card_creature_long_edit"))
+            {
+                // 1997 hit points (a wide stored value): the number and "/ 13" shrink to the column.
+                Await(live.ChangeAsync(CreatureValues.HitPointsKey, new NumberChange(NumberChangeKind.Set, 1997)), "goblin's hit points far over the maximum");
+                Settle();
+                SaveWindow(preview, "entity_card_creature_long");
+                if (Wants("entity_card_creature_long_edit"))
+                {
+                    var previewView = deskView.GetVisualDescendants().OfType<EntityCardView>().First(view => ReferenceEquals(view.DataContext, preview.Body));
+                    var number = previewView.GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.TrackedValueTile>().First()
+                        .GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.EditableText>().First();
+                    ClickOn(window, number);
+                    SaveWindow(preview, "entity_card_creature_long_edit");
+                    PressKey(window, Avalonia.Input.Key.Escape);
+                    Rest(window);
+                }
+
+                Await(live.ChangeAsync(CreatureValues.HitPointsKey, new NumberChange(NumberChangeKind.Set, 9)), "goblin's hit points back");
                 Settle();
             }
 
