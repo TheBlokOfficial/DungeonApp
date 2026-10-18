@@ -36,10 +36,17 @@ public sealed class ActiveSystemSession(
     private CampaignSession? _openCampaign;
     private CampaignTabContext? _campaignTabContext;
     private ITabContent? _desk;
+    private Task _closedCampaignSaving = Task.CompletedTask;
 
     public IGameSystem System { get; } = system;
 
     public bool IsCampaignOpen => _openCampaign is not null;
+
+    /// <summary>
+    /// Completes when no change of a campaign is still saving: the open one's, and the one a closed
+    /// desk handed over as it let go of its windows (<see cref="CampaignSession.WhenIdle"/>).
+    /// </summary>
+    public Task WhenSaved => Task.WhenAll(_closedCampaignSaving, _openCampaign?.WhenIdle ?? Task.CompletedTask);
 
     /// <summary>
     /// Raised when a change of the open campaign could not be saved, whichever tool made it - see
@@ -79,6 +86,8 @@ public sealed class ActiveSystemSession(
 
         if (_openCampaign is not null)
         {
+            // The desk's windows save what they still held as they go, so the save may outlive the campaign.
+            _closedCampaignSaving = Task.WhenAll(_closedCampaignSaving, _openCampaign.WhenIdle);
             _openCampaign.SaveFailed -= OnSaveFailed;
         }
 

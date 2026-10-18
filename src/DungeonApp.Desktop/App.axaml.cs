@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -180,15 +181,62 @@ public partial class App : Avalonia.Application
 
             // The last reliable moment to release whatever the active system's tabs are still
             // holding. Exit does not run on a hard kill, so this is where the desk's pending
-            // layout write is flushed.
-            desktop.ShutdownRequested += (_, _) => _shell?.FlushPendingState();
-            desktop.MainWindow.Closing += (_, _) => _shell?.FlushPendingState();
+            // layout write is flushed. Releasing the desk may start a campaign save (a note still
+            // being written), which the process would cut off, so the close waits for it first.
+            var mainWindow = desktop.MainWindow;
+            desktop.ShutdownRequested += async (_, e) =>
+            {
+                if (await FlushAndWaitAsync(() => e.Cancel = true))
+                {
+                    desktop.Shutdown();
+                }
+            };
+            mainWindow.Closing += async (_, e) =>
+            {
+                if (await FlushAndWaitAsync(() => e.Cancel = true))
+                {
+                    mainWindow.Close();
+                }
+            };
 
             // AppShellView starts preparation from its Loaded event. That ordering guarantees a
             // lightweight first frame before data preloading and visual warmup begin.
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>
+    /// Releases the shell and, when that left a campaign save running, calls <paramref name="cancel"/>
+    /// (before the first await, while the closing event can still be cancelled) and waits for the save.
+    /// True means the close was put off and has to be asked for again.
+    /// </summary>
+    private async Task<bool> FlushAndWaitAsync(Action cancel)
+    {
+        if (_shell is null)
+        {
+            return false;
+        }
+
+        _shell.FlushPendingState();
+        var saved = _shell.WhenSaved;
+        if (saved.IsCompleted)
+        {
+            return false;
+        }
+
+        cancel();
+        try
+        {
+            await saved;
+        }
+        catch (Exception ex)
+        {
+            // Nobody is left to show it to: the program is closing.
+            AppLog.Error("Zapis kampanii przy zamykaniu programu nie powiódł się.", ex);
+        }
+
+        return true;
     }
 
     /// <summary>

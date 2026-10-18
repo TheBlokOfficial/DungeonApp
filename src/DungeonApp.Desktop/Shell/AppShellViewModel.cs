@@ -244,6 +244,12 @@ public sealed partial class AppShellViewModel : ObservableObject
     /// </summary>
     public void FlushPendingState() => _session?.ReleaseAll();
 
+    /// <summary>
+    /// Completes when no campaign change is still saving (<see cref="ActiveSystemSession.WhenSaved"/>);
+    /// exit waits for it after <see cref="FlushPendingState"/>, whose release may have started one.
+    /// </summary>
+    public Task WhenSaved => _session?.WhenSaved ?? Task.CompletedTask;
+
     // Internal, not private: the composition root (App.Initialize) closes the campaign-library
     // callback over this method before this shell instance is created.
     internal async Task OpenCampaignAsync(CampaignSummary summary)
