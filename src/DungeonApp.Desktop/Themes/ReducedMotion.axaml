@@ -47,5 +47,7 @@
          check SystemMotion.IsReduced themselves - content shows and hides at once. -->
     <!-- A determinate progress bar's fill (Controls/ProgressFill.cs) glides in code and stands on its
          value at once when SystemMotion.IsReduced. -->
+    <!-- A tracked value gauge (Controls/TrackGauge.cs) glides in code and stands on its value at once
+         when SystemMotion.IsReduced. -->
 
 </Styles>
