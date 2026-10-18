@@ -6,9 +6,11 @@
              x:DataType="world:EntityCardViewModel">
 
     <!-- The body of the preview and of a pinned window: the library's detail block (path, name,
-         tags, the system's card) around an entity, read-only. One scrolling layer; the block ends
-         before the scrollbar (DungeonScrollBarZone). An empty preview says what to do, dimmed, in
-         the middle. -->
+         tags, the system's card) around an entity. One scrolling layer. The card stands 32 from
+         both sides of the window, so it reads centred whether the scrollbar shows or not; the bar
+         (an overlay, DungeonScrollBarSize at the window's edge) lies inside the right margin with a
+         clear gap before the card, and its coming and going moves nothing (EntityCardView.axaml.cs
+         sizes the window). An empty preview says what to do, dimmed, in the middle. -->
     <Panel>
         <TextBlock Classes="body muted"
                    Text="{x:Static world:EntityCardViewModel.EmptyText}"
@@ -18,8 +20,7 @@
                    TextWrapping="Wrap" />
 
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" IsVisible="{Binding !IsEmpty}">
-            <Border Margin="24,24,0,24"
-                    Padding="{DynamicResource DungeonScrollBarZone}"
+            <Border Margin="32,24,32,24"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top">
                 <ctl:EntryDetailView DataContext="{Binding Detail}" />
