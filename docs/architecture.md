@@ -130,7 +130,8 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   przechodząca przez jedne drzwi: `CampaignSession.ChangeAsync` → zapis → powiadomienie widoków.
 - Zapis jest natychmiastowy i atomowy (`AtomicWrite`): pliki modeli najpierw, manifest zatwierdza
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
-  wzorcowej kampanii.
+  wzorcowej kampanii. Zamknięcie programu zwalnia biurko (okna zapisują, co jeszcze trzymały) i czeka
+  na zapis, który jeszcze biegnie (`CampaignSession.WhenIdle`), zanim proces się skończy.
 - **Entity** (`CampaignEntity`) to łącze do wpisu (`paczka:id`) plus **nakładka** — rzadka łatka
   z samymi odchyleniami od wartości wpisu — oraz nazwa własna, notatka MG (`note`) i bieżące numery
   śledzonych wartości (`current`, po kluczu). Rozwiązuje się ją od nowa przy każdym odczycie, więc
@@ -239,7 +240,8 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   cech stworzenia) pary bez ikon (Dostrojenie, Właściwości, Siła, Skradanie się, Odnawianie) i sekcja
   „Opis” jak sekcje prozy stworzenia. Skala rzadkości i jej kolory: `docs/decisions.md`.
 - **Zaznaczanie tekstu:** proza karty jest tekstem do zaznaczenia; przeciągnięcie zaczęte obok tekstu
-  zaznacza najbliższy blok (`TextSelectionArea`). Zaznaczenie przez kilka bloków naraz to osobna,
+  zaznacza najbliższy blok (`TextSelectionArea`). Tekst do czytania nie jest przystankiem Tab — Tab
+  prowadzi od pola do pola. Zaznaczenie przez kilka bloków naraz to osobna,
   większa funkcja i go nie ma.
 
 ### Zasady wyglądu kart
@@ -313,6 +315,15 @@ Obowiązują każdą kartę. Wygląd sprawdza się renderem (`tools/render`) prz
   elementy nagłówka (`IEntryCardHeader`). Ta sama karta stoi więc w bibliotece (dane wpisu) i na biurku
   (`EntityCardBuilder`: wpis z wartościami entity po nałożeniu łatki; linia „№ 5 · Goblin”;
   entity bez wpisu — `BrokenContentDetailViewModel` z powodem).
+- **Kontrakt części żywej:** na biurku rama daje karcie kontekst entity (`EntityLiveContext`: część
+  żywa, zmiana wartości i notatki przez drzwi kampanii, zdarzenie `Changed`). Karta, która umie stać
+  za entity (`IEntityLiveCard.ShowLive`, wołane raz, przed odczytem elementów nagłówka), sama kładzie
+  liczby entity w miejsca liczb wpisu i wstawia **sekcje ramy** (`CreateSections`: notatka MG)
+  w miejsce, które wybiera jej układ, nad kreską części stałej. W bibliotece kontekstu nie ma i karta
+  wygląda jak zawsze. Entity bez wpisu ma sekcje ramy pod powodem. Zmiana części żywej nie przebudowuje
+  karty: okno czyta entity od nowa (`Refresh`), karta zmienia tylko swoje kontrolki, więc przewinięcie
+  i fokus zostają. Notatka zapisuje się przy wyjściu z pola i gdy okno puszcza kartę (inna entity,
+  zamknięcie okna — `CommitPending`), nigdy na klawisz ani po czasie.
 - **Listek** (`Workspace/Leaf`): pasek poleceń w lewym górnym rogu biurka, nad wszystkimi oknami
   (okna mogą wjechać pod niego): zamknięcie kampanii oraz zaślepki Cofnij, Ponów i Polecenia. Tło ma
   to samo co rama i okna; mocniejszy cień i większe zaokrąglenie niż u okna to tokeny elementu ramy nad
