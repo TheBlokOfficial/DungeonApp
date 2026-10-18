@@ -29,9 +29,9 @@ Praca:
   (`-Tests Core`, `-Filter <nazwa>`), przed ostatnim commitem pełny przebieg.
 - Błąd naprawiasz u przyczyny: ustal, dlaczego powstaje, i sprawdź, gdzie jeszcze ta przyczyna działa.
   Test obejmuje ten rodzaj błędu, nie tylko zgłoszony przypadek.
-- Wygląd sprawdzasz sam, zanim oddasz: `powershell -File tools/render/render.ps1 -Only '<wzorzec>'`
-  dla każdego zmienionego stanu (każdy przebieg czyści `tools/render/out/`, więc oglądaj od razu),
-  potem wycinek zmienionej kontrolki w powiększeniu 3–4× (`tools/render/zoom.ps1`). Na wycinku
+- Wygląd sprawdzasz sam, zanim oddasz: jeden przebieg
+  `powershell -File tools/render/render.ps1 -Only 'stan1,stan2' -Control <x:Name>` renderuje każdy
+  zmieniony stan i obok zapisuje `<nazwa>.zoom.png` — zmienioną kontrolkę powiększoną 4×. Na wycinku
   przechodzisz listę „Rzemiosła interfejsu” i porównujesz ze zleceniem; co nie gra, poprawiasz.
   Ruchu i opóźnienia (animacja, tooltip) render nie pokaże — tu dowodem jest test z czasem.
 - Commit po każdym zamkniętym kroku, po polsku, jednym poleceniem (`git add -A; git commit -m "…"`);

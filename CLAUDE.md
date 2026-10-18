@@ -58,7 +58,7 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
   obszary — równolegle.
 - **Sprawdzenie przed scaleniem.** Raport wykonawcy to nie dowód. Zmiana, którą widać: render każdego
   zmienionego stanu (spoczynek, najechanie, edycja, długi tekst, pasek przewijania) i wycinek zmienionej
-  kontrolki w powiększeniu 3–4× (`zoom.ps1`), na którym przechodzisz listę z „Rzemiosła interfejsu”
+  kontrolki w powiększeniu 3–4× (`render.ps1 -Control`), na którym przechodzisz listę z „Rzemiosła interfejsu”
   (Konwencje). Zmiana we wspólnym kodzie (zapis kampanii, motyw, rama): diff. Czego render nie pokaże
   (ruch, opóźnienie, skala ekranu), dowodzi test z czasem albo — nazwane w raporcie — autor w aplikacji.
 - **Kolejna runda:** pracę, która przeszła sprawdzenie, scalasz; drobne poprawki robisz sam
@@ -94,8 +94,12 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 (`-Tests Core`, `-Filter <nazwa>`, `-NoTest`). Blokadę `bin/` aplikacji (`MSB3021`/`MSB3027`: podgląd
 XAML w Riderze albo uruchomiona aplikacja autora) skrypt obchodzi sam — nie zabijaj procesów. Aplikacja:
 `dotnet run --project src/DungeonApp.App`. Render bez ekranu: `powershell -File tools/render/render.ps1
--Only '<wzorzec>'` → `tools/render/out/` (bez `-Only` wszystkie karty i galeria, kilka minut; każdy
-przebieg czyści `out/`, więc render oglądaj od razu; `zoom.ps1` powiększa wycinek). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write — PowerShell psuje polskie znaki.
+-Only 'nazwa,wzorzec_*'` → `tools/render/out/` (kilka nazw i wzorców po przecinku w jednym przebiegu;
+bez `-Only` wszystkie karty i galeria, kilka minut). Przebieg nadpisuje tylko swoje pliki — wcześniejsze
+rendery zostają (`-Clean` czyści). `-Control <x:Name>` (np. `PART_Field`) zapisuje obok `<nazwa>.zoom.png`:
+kontrolkę z tym, co rysuje poza granicami, powiększoną 4× bez wygładzania (`-Zoom <skala>`, `-Area
+x,y,w,h`; sam `-Zoom` bierze kontrolkę z fokusem). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write
+— PowerShell psuje polskie znaki.
 
 ## Struktura
 
