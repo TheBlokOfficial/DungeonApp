@@ -45,15 +45,9 @@ Specyfikacja: `docs/spec/katalog.md`.
   - [x] 2.3a Arkusz rodziny kontrolek w Galerii, sekcja „Część żywa”: pasek PW, bieżące PW z polem
     zmiany, notatka, wiersz stanu i efektu, kleks, kolory względem bazy → spec, „Projekt kontrolek”;
     decisions.md, „Wartość do zmiany wygląda jak tekst”.
-  - [~] 2.3b Część żywa: ścieżka kategorii z № po prawej, stały tytuł „Podgląd”, bloki PW, KP,
+  - [x] 2.3b Część żywa: ścieżka kategorii z № po prawej, stały tytuł „Podgląd”, bloki PW, KP,
     Szybkość z paskiem PW nad nimi, bieżące PW z polem zmiany, model baza + modyfikatory, notatka →
-    architecture.md, „Kampania i stan”, „Podgląd i przypięte karty”. Na `master`: nagłówek, model
-    i zapis. Pasek, pole PW i notatka na karcie leżą w lokalnej gałęzi `zywa-karta` (worktree
-    `.claude/worktrees/agent-a6e61d80a63c44158`), niescalone:
-    - [ ] uruchomić i poprawić nowe testy z ostatniego commitu gałęzi, potem pełny `check.ps1`;
-    - [ ] opis styku (kontekst części żywej, sekcje ramy w karcie systemu) w architecture.md;
-    - [ ] sprawdzić, czy wyjście z aplikacji zapisuje niezapisaną notatkę;
-    - [ ] przejrzeć rendery `entity_card*`, scalić, pokazać autorowi.
+    architecture.md, „Kampania i stan”, „Kontrakt części żywej”.
   - ⏸ 2.3c Zatwierdzanie: punkt odniesienia, znacznik zmiany, Zatwierdź i Odrzuć → spec, „Zatwierdzanie
     zmian”. Odłożone, bo forma kleksa nie była spójna ani prosta do zrozumienia; zasada pokazywania
     zmiany zostaje. Wyzwalacz: nowa forma znacznika zmiany uzgodniona z autorem.
