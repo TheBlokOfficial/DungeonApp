@@ -3,9 +3,11 @@
 
     <!--
         Selectable text: context menu with copy when enabled. Cursor and selection colour
-        come from the style in Typography.axaml.
+        come from the style in Typography.axaml. Text to read is no Tab stop: Tab leads from one
+        field to the next, not through every label on a card; a click still focuses it to select.
     -->
     <ControlTheme x:Key="{x:Type SelectableTextBlock}" TargetType="SelectableTextBlock">
+        <Setter Property="IsTabStop" Value="False" />
         <Style Selector="^[IsEnabled=True]">
             <Setter Property="ContextFlyout" Value="{StaticResource DungeonSelectableTextContextFlyout}" />
         </Style>
