@@ -51,7 +51,7 @@ public sealed class CampaignEntriesContext
     /// <summary>The one door any change a tool makes goes through - delegates to <see cref="CampaignTabContext.ChangeAsync"/> so a tool never reaches the repository directly and never forgets to save what it changed.</summary>
     public Task<CampaignChangeResult> ChangeAsync(CampaignChange change) => _context.ChangeAsync(change);
 
-    /// <summary>Raised after a change commits (or fails to save) - see <see cref="DungeonApp.Desktop.Shell.CampaignSession.Changed"/>.</summary>
+    /// <summary>Raised as soon as a change stands in memory, before its save - see <see cref="DungeonApp.Desktop.Shell.CampaignSession.Changed"/>.</summary>
     public event Action<CampaignStateSnapshot>? Changed
     {
         add => _context.Changed += value;

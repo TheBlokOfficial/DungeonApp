@@ -384,6 +384,35 @@ public sealed class EntityPreviewBuildTests
     }
 
     [AvaloniaFact]
+    public async Task The_new_value_stands_in_the_field_right_after_enter_while_the_save_still_runs()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        fixture.Settle();
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+        var tile = HitPoints(fixture, preview);
+
+        NumberField(tile).Focus();
+        fixture.Window.KeyTextInput("-3");
+        fixture.Settle();
+        fixture.Repository.SaveGate = new TaskCompletionSource();
+        Press(fixture.Window, Key.Enter);
+
+        // The save has not finished, so whatever the field shows now is what the GM sees in the
+        // frame after Enter - the old number there would flash before the new one.
+        Assert.Equal("4", tile.Value);
+        Assert.Equal("4", NumberField(tile).Text);
+
+        fixture.Repository.SaveGate.SetResult();
+        await fixture.Session.WhenIdle;
+        fixture.Settle();
+        Assert.Equal("4", NumberField(tile).Text);
+    }
+
+    [AvaloniaFact]
     public async Task A_click_beside_the_open_field_drops_the_entry()
     {
         using var fixture = new Fixture();
@@ -545,12 +574,13 @@ public sealed class EntityPreviewBuildTests
             var system = new PreviewTestSystem();
             GameSystem = system;
             WorkspaceId = Guid.NewGuid().ToString();
-            var session = new CampaignSession(
+            Repository = new InMemoryCampaignRepository();
+            Session = new CampaignSession(
                 Campaign.Create(CampaignName.Create("Testowa"), TimeProvider.System),
-                new InMemoryCampaignRepository(),
+                Repository,
                 WorldModels.Combine([]));
             var source = system.GetWorldCatalogSource();
-            Entries = new CampaignEntriesContext(new CampaignTabContext(session), source.Registry, source.Types);
+            Entries = new CampaignEntriesContext(new CampaignTabContext(Session), source.Registry, source.Types);
             Store = new WorkspaceLayoutStore(Path.Combine(Path.GetTempPath(), $"DungeonApp-preview-tests-{Guid.NewGuid():N}"));
             Desk = new CampaignWorkspaceViewModel(
                 Store, WorkspaceId, WorkspaceLayout.Empty, [], () => Task.CompletedTask, Entries, system);
@@ -560,6 +590,10 @@ public sealed class EntityPreviewBuildTests
             Window.Show();
             Settle();
         }
+
+        public InMemoryCampaignRepository Repository { get; }
+
+        public CampaignSession Session { get; }
 
         public CampaignEntriesContext Entries { get; }
 

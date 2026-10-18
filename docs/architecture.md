@@ -127,7 +127,9 @@ Słowa pracy (wycinek, etap, kamień milowy, szlif, wykonawca) definiuje `CLAUDE
   (`StateModelDeclaration`). Modele **ramy** — entity, katalogi (`world.folders`) i licznik № —
   deklaruje `WorldModels`; modele **systemu** dochodzą z `IGameSystem.StateModels`. Listę kampanii
   składa jedno miejsce, `WorldModels.Combine`, i z niego korzystają otwieranie, tworzenie i sesja. Zmiana to `CampaignChange` (upsert/delete rekordów),
-  przechodząca przez jedne drzwi: `CampaignSession.ChangeAsync` → zapis → powiadomienie widoków.
+  przechodząca przez jedne drzwi: `CampaignSession.ChangeAsync` → powiadomienie widoków → zapis.
+  Powiadomienie idzie synchronicznie w akcji MG, przed pierwszym `await` zapisu, więc następna klatka
+  pokazuje już nowy stan; nieudany zapis zgłasza potem `SaveFailed`.
 - Zapis jest natychmiastowy i atomowy (`AtomicWrite`): pliki modeli najpierw, manifest zatwierdza
   generację jako ostatni, więc rozdarty zapis jest wykrywalny. Format pilnuje test bajt w bajt na
   wzorcowej kampanii. Zamknięcie programu zwalnia biurko (okna zapisują, co jeszcze trzymały) i czeka

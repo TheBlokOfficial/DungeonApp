@@ -23,13 +23,19 @@ public sealed class InMemoryCampaignRepository : ICampaignRepository
 
     public int SaveCount { get; private set; }
 
+    /// <summary>
+    /// While set, a save stores the campaign but does not finish until the test completes the gate -
+    /// a disk slower than the GM's next look at the screen.
+    /// </summary>
+    public TaskCompletionSource? SaveGate { get; set; }
+
     public Task SaveAsync(
         Campaign campaign, IReadOnlyList<StateModelDeclaration> declarations, CancellationToken cancellationToken = default)
     {
         _campaigns[campaign.Id] = campaign;
         SaveCount++;
 
-        return Task.CompletedTask;
+        return SaveGate?.Task ?? Task.CompletedTask;
     }
 
     public Task<Campaign?> GetAsync(
