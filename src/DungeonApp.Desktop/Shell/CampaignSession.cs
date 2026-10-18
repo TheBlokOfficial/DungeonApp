@@ -15,10 +15,10 @@ namespace DungeonApp.Desktop.Shell;
 /// <para>
 /// The Core deliberately has no notion of a current campaign, so this is where that lives.
 /// <see cref="ChangeAsync"/> is the single door every module panel's write goes through: it applies
-/// exactly the <see cref="CampaignChange"/> it was handed to the campaign's state, saves the whole
-/// result in one commit, and only then raises <see cref="Changed"/> - carrying nothing but a
-/// read-only snapshot, so a subscriber has no way to turn around and mutate anything from inside
-/// the notification.
+/// exactly the <see cref="CampaignChange"/> it was handed to the campaign's state, raises
+/// <see cref="Changed"/> at once - carrying nothing but a read-only snapshot, so a subscriber has no
+/// way to turn around and mutate anything from inside the notification - and then saves the whole
+/// result in one commit.
 /// </para>
 /// </summary>
 public sealed class CampaignSession(
@@ -31,8 +31,9 @@ public sealed class CampaignSession(
     private Task _running = Task.CompletedTask;
 
     /// <summary>
-    /// Raised after a change has been committed - or after an attempt to commit it failed, see
-    /// <see cref="CampaignChangeResult.SaveWarning"/>. Carries the new snapshot; nothing here can be
+    /// Raised as soon as a change stands in memory, before its save - synchronously inside the GM's
+    /// action, so the views show the new state in the very next frame; a save that then fails is
+    /// told through <see cref="SaveFailed"/>. Carries the new snapshot; nothing here can be
     /// used to write, and calling <see cref="ChangeAsync"/> from inside a handler is refused (see
     /// <see cref="CampaignChangeDenial.DuringNotification"/>) rather than merely discouraged.
     /// </summary>
@@ -69,8 +70,8 @@ public sealed class CampaignSession(
     }
 
     /// <summary>
-    /// Applies <paramref name="change"/>, saves the whole campaign in one commit, and raises
-    /// <see cref="Changed"/> - in that order, always. Refuses instead of queueing when another
+    /// Applies <paramref name="change"/>, raises <see cref="Changed"/>, and saves the whole campaign
+    /// in one commit - in that order, always. Refuses instead of queueing when another
     /// change is still running (including its own save) or when called from inside the notification
     /// a previous change's commit is still raising: both leave the campaign exactly as it was.
     /// <para>
@@ -96,14 +97,21 @@ public sealed class CampaignSession(
 
         _changing = true;
         CampaignChangeResult result;
+        List<Exception>? failures;
 
         try
         {
-            var updated = Campaign.WithSnapshot(Campaign.Snapshot.Apply(change));
+            // Applied (Core's arithmetic included) - a change the snapshot refuses throws here and
+            // leaves the campaign as it was.
+            Campaign = Campaign.WithSnapshot(Campaign.Snapshot.Apply(change));
+
+            // The views hear of the change before the save's first await: anything after it resumes
+            // in a later dispatcher job, and the frame drawn in between would show the old numbers.
+            failures = Notify();
 
             try
             {
-                await repository.SaveAsync(updated, declarations);
+                await repository.SaveAsync(Campaign, declarations);
                 result = CampaignChangeResult.Applied;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -114,22 +122,39 @@ public sealed class CampaignSession(
                 result = CampaignChangeResult.SaveFailed(
                     "Zmiana nie została zapisana na dysku. Sprawdź dostęp do katalogu kampanii.");
             }
-
-            Campaign = updated;
         }
         finally
         {
             _changing = false;
         }
 
+        if (result.SaveWarning is { } warning)
+        {
+            SaveFailed?.Invoke(warning);
+        }
+
+        if (failures is [var only])
+        {
+            ExceptionDispatchInfo.Capture(only).Throw();
+        }
+        else if (failures is { Count: > 1 })
+        {
+            throw new AggregateException(failures);
+        }
+
+        return result;
+    }
+
+    // Each subscriber is invoked on its own, never through the multicast delegate's own Invoke: one
+    // throwing must not stop the rest from seeing the snapshot, and the change stands regardless of
+    // what a view does with the notification. The failures surface once the save has run.
+    private List<Exception>? Notify()
+    {
         _notifying = true;
         List<Exception>? failures = null;
 
         try
         {
-            // Each subscriber is invoked on its own, never through the multicast delegate's own
-            // Invoke: one throwing must not stop the rest from seeing the snapshot, and the change is
-            // already committed regardless of what a view does with the notification.
             foreach (var subscriber in Changed?.GetInvocationList() ?? [])
             {
                 try
@@ -148,20 +173,6 @@ public sealed class CampaignSession(
             _notifying = false;
         }
 
-        if (result.SaveWarning is { } warning)
-        {
-            SaveFailed?.Invoke(warning);
-        }
-
-        if (failures is [var only])
-        {
-            ExceptionDispatchInfo.Capture(only).Throw();
-        }
-        else if (failures is { Count: > 1 })
-        {
-            throw new AggregateException(failures);
-        }
-
-        return result;
+        return failures;
     }
 }

@@ -40,7 +40,7 @@ public sealed class CampaignTabContext
     /// <summary>The one door any change a tab makes goes through - see <see cref="CampaignSession.ChangeAsync"/>.</summary>
     public Task<CampaignChangeResult> ChangeAsync(CampaignChange change) => _session.ChangeAsync(change);
 
-    /// <summary>Raised after a change commits (or fails to save) - see <see cref="CampaignSession.Changed"/>.</summary>
+    /// <summary>Raised as soon as a change stands in memory, before its save - see <see cref="CampaignSession.Changed"/>.</summary>
     public event Action<CampaignStateSnapshot>? Changed
     {
         add => _session.Changed += value;

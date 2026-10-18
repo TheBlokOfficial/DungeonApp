@@ -11,8 +11,8 @@ using DungeonApp.Desktop.Shell;
 namespace DungeonApp.Desktop.Tests;
 
 /// <summary>
-/// The single door any change goes through. Exercises its ordering and refusal guarantees: save
-/// before notify, a refusal changes and notifies nothing, a failed save still notifies with a
+/// The single door any change goes through. Exercises its ordering and refusal guarantees: notify
+/// before save, a refusal changes and notifies nothing, a failed save still notifies with a
 /// warning, and the fifth ban is structural rather than counted - a change called from inside the
 /// notification a previous one is still raising is refused, not merely discouraged.
 /// </summary>
@@ -25,7 +25,7 @@ public sealed class CampaignSessionTests
     private static CampaignChange AddChange(string id) => new CampaignChange().Upsert(Model, new FakeRecord(id));
 
     [Fact]
-    public async Task Save_happens_before_the_change_notification_and_the_notification_sees_the_saved_state()
+    public async Task The_change_notification_comes_before_the_save_and_sees_the_new_state()
     {
         var repository = new RecordingRepository();
         var session = new CampaignSession(NewCampaign(), repository, [Model]);
@@ -42,8 +42,26 @@ public sealed class CampaignSessionTests
 
         await session.ChangeAsync(AddChange("a"));
 
-        Assert.Equal(["save-start", "save-end", "notified"], order);
+        Assert.Equal(["notified", "save-start", "save-end"], order);
         Assert.Equal(["a"], seenIds!);
+    }
+
+    [Fact]
+    public async Task The_views_are_notified_before_a_slow_save_finishes_and_the_session_stays_busy_until_it_does()
+    {
+        var repository = new GatedRepository();
+        var session = new CampaignSession(NewCampaign(), repository, [Model]);
+        var notified = false;
+        session.Changed += _ => notified = true;
+
+        var first = session.ChangeAsync(AddChange("a"));
+
+        Assert.True(notified);
+        Assert.Contains("a", session.Campaign.Snapshot.Get(Model).Keys);
+        Assert.False(first.IsCompleted);
+
+        repository.Gate.SetResult(true);
+        Assert.False((await first).WasDenied);
     }
 
     [Fact]
@@ -131,8 +149,8 @@ public sealed class CampaignSessionTests
     }
 
     /// <summary>
-    /// A subscriber throwing must not stop the rest from seeing the snapshot - the change is already
-    /// committed by the time notification starts, regardless of what a view does with it. The
+    /// A subscriber throwing must not stop the rest from seeing the snapshot - the change already
+    /// stands by the time notification starts and is still saved, regardless of what a view does with it. The
     /// exception still has to reach the caller (nothing here may swallow it), and the notification
     /// flag has to come back down so the next change is not permanently refused.
     /// </summary>
