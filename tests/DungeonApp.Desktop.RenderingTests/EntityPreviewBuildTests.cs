@@ -464,6 +464,42 @@ public sealed class EntityPreviewBuildTests
         Assert.Equal("Przecięta.", catalog.Tree.Entity(rope)!.Entity.Note);
     }
 
+    [AvaloniaFact]
+    public async Task Nothing_in_the_card_clips_the_frames_of_its_fields()
+    {
+        using var fixture = new Fixture();
+        var catalog = fixture.Desk.Catalog;
+        await catalog.AddEntitiesAsync(Address("goblin"), 1, null, "Szef");
+        fixture.Settle();
+        catalog.Click(Row(catalog, "Szef"), ctrl: false, shift: false);
+        var preview = fixture.Desk.OpenPreview();
+        fixture.Settle();
+
+        // The frame reaches out of the field's bounds; a clipping ancestor inside the card (a content
+        // control or a user control clips by default) would cut the part that sticks out.
+        foreach (var field in new[] { NumberField(HitPoints(fixture, preview)), NoteField(fixture, preview) })
+        {
+            var frame = field.GetVisualDescendants().OfType<Border>().Single(border => border.Name == "PART_Frame");
+            Assert.True(frame.Bounds.X < 0);
+            for (var ancestor = field.GetVisualParent(); ancestor is not null; ancestor = ancestor.GetVisualParent())
+            {
+                if (ancestor.ClipToBounds)
+                {
+                    var corner = frame.TranslatePoint(default, ancestor)!.Value;
+                    var area = new Rect(corner, frame.Bounds.Size);
+                    Assert.True(
+                        new Rect(ancestor.Bounds.Size).Contains(area),
+                        $"{ancestor.GetType().Name} clips the frame of {field.Name}: {area} outside {ancestor.Bounds.Size}");
+                }
+
+                if (ancestor is EntityCardView)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     private static TrackedValueTile HitPoints(Fixture fixture, WorkspacePanelViewModel panel) =>
         FindView(fixture, panel)!.GetVisualDescendants().OfType<TrackedValueTile>().Single();
 

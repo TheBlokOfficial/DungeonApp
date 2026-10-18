@@ -19,6 +19,16 @@
     </UserControl.Resources>
 
     <UserControl.Styles>
+        <!-- Avalonia's templated controls clip to their bounds by default, and the block is built of
+             content controls and user controls (this view, the system's card and its parts, the
+             live sections). A field's frame (EditableText) reaches out of the field's bounds, so a
+             field standing at such a container's left edge - the tracked value in the first headline
+             column, the note at the card's edge - would lose the frame's left side. Nothing in the
+             block relies on that clipping; controls that do clip (an image frame, a tag line) set it
+             in their own themes. -->
+        <Style Selector=":is(UserControl), ContentControl">
+            <Setter Property="ClipToBounds" Value="False" />
+        </Style>
         <!-- The gap opens only when a card lends the header a visual: without one, the title column
              starts at the left edge, as for every card that lends nothing. -->
         <Style Selector="Grid.with-visual">

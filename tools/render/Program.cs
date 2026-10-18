@@ -725,6 +725,7 @@ internal static partial class Program
 
         if (Wants("desk_preview") || Wants("desk_preview_broken") || Wants("desk_preview_empty")
             || Wants("entity_card_creature") || Wants("entity_card_creature_edit") || Wants("entity_card_creature_over")
+            || Wants("entity_card_creature_note_edit")
             || Wants("entity_card_item") || Wants("entity_card_broken"))
         {
             // The window alone, at twice its size, to judge the header's details.
@@ -779,6 +780,20 @@ internal static partial class Program
                 ClickOn(window, number);
                 TypeText(window, "-5");
                 SaveWindow(preview, "entity_card_creature_edit");
+                PressKey(window, Avalonia.Input.Key.Escape);
+                Rest(window);
+            }
+
+            if (Wants("entity_card_creature_note_edit"))
+            {
+                // The note open for writing: its outline whole, also on the side at the card's edge.
+                var previewView = deskView.GetVisualDescendants().OfType<EntityCardView>().First(view => ReferenceEquals(view.DataContext, preview.Body));
+                var note = previewView.GetVisualDescendants().OfType<DungeonApp.Desktop.Entries.Controls.EntityLiveSectionsView>().First()
+                    .GetVisualDescendants().OfType<DungeonApp.Desktop.Controls.EditableText>().First();
+                note.BringIntoView();
+                Settle();
+                ClickOn(window, note);
+                SaveWindow(preview, "entity_card_creature_note_edit");
                 PressKey(window, Avalonia.Input.Key.Escape);
                 Rest(window);
             }
