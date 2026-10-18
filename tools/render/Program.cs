@@ -52,30 +52,55 @@ internal static partial class Program
     private static readonly HashSet<string> _written = new(StringComparer.Ordinal);
 
     /// <summary>
-    /// The file-name pattern from <c>--only=</c>, or null to render everything. Selecting a row and
-    /// letting it settle is what a run spends its time on, so a row whose file would not match is
-    /// never selected.
+    /// The file-name patterns from <c>--only=</c>; none renders everything. Selecting a row and
+    /// letting it settle is what a run spends its time on, so a row whose file would match no pattern
+    /// is never selected.
     /// </summary>
-    private static Regex? _only;
+    private static readonly List<OnlyPattern> _only = [];
 
-    private static string _onlyHead = "";
+    /// <summary>Pixels of the saved picture per pixel of the zoomed crop; 0 saves no crop.</summary>
+    private static int _zoom;
+
+    /// <summary>
+    /// Names (<c>x:Name</c>, template part names included) or type names of the controls cropped from
+    /// every saved picture. With neither these nor an area, the control that has the focus is cropped.
+    /// </summary>
+    private static readonly List<string> _zoomControls = [];
+
+    /// <summary>A rectangle in the saved picture's pixels, cropped from every saved picture.</summary>
+    private static SKRectI? _zoomArea;
+
+    /// <summary>
+    /// Room around a cropped control, in its own units: enough for a focus ring or a frame drawn just
+    /// outside everything the control and its parts occupy.
+    /// </summary>
+    private const double ZoomMargin = 8;
 
     /// <summary>
     /// Arguments: the output directory, then any number of extra pack directories, and optionally
-    /// <c>--only=&lt;pattern&gt;</c> - a wildcard over file names without the extension.
+    /// <c>--only=&lt;patterns&gt;</c> (repeatable; wildcards over file names without the extension,
+    /// separated by commas), <c>--zoom=&lt;scale&gt;</c>, <c>--zoom-control=&lt;names&gt;</c>
+    /// (repeatable, comma-separated) and <c>--zoom-area=&lt;x,y,width,height&gt;</c>.
     /// </summary>
     [STAThread]
     private static int Main(string[] args)
     {
-        var only = args.FirstOrDefault(arg => arg.StartsWith("--only=", StringComparison.Ordinal))?["--only=".Length..];
-        if (!string.IsNullOrEmpty(only))
+        static IEnumerable<string> Values(string[] args, string option) => args
+            .Where(arg => arg.StartsWith(option, StringComparison.Ordinal))
+            .SelectMany(arg => arg[option.Length..].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+
+        _only.AddRange(Values(args, "--only=").Select(OnlyPattern.Parse));
+        _zoomControls.AddRange(Values(args, "--zoom-control="));
+        var area = Values(args, "--zoom-area=").Select(value => int.Parse(value, CultureInfo.InvariantCulture)).ToArray();
+        if (area.Length is not (0 or 4))
         {
-            _only = new Regex("^" + Regex.Escape(only).Replace(@"\*", ".*", StringComparison.Ordinal).Replace(@"\?", ".", StringComparison.Ordinal) + "$",
-                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-            _onlyHead = only[..(only.IndexOfAny(['*', '?']) is var wildcard and >= 0 ? wildcard : only.Length)];
+            throw new ArgumentException("--zoom-area takes x,y,width,height.");
         }
 
-        args = [.. args.Where(arg => !arg.StartsWith("--only=", StringComparison.Ordinal))];
+        _zoomArea = area.Length == 4 ? SKRectI.Create(area[0], area[1], area[2], area[3]) : null;
+        _zoom = Values(args, "--zoom=").Select(value => int.Parse(value, CultureInfo.InvariantCulture)).LastOrDefault();
+
+        args = [.. args.Where(arg => !arg.StartsWith("--", StringComparison.Ordinal))];
         _outDir = Path.GetFullPath(args.Length > 0 ? args[0] : "out");
         _extraPacks = [.. args.Skip(1).Select(Path.GetFullPath), WriteToolPack()];
         Directory.CreateDirectory(_outDir);
@@ -128,20 +153,38 @@ internal static partial class Program
             RenderDesk(window, shell);
         }
 
-        Console.WriteLine(_written.Count == 0 ? "Nothing matched the pattern." : $"Done: {_written.Count} file(s).");
+        Console.WriteLine($"Done: {_written.Count} file(s).");
+        // A misspelt name is otherwise silent: its scenario is simply skipped.
+        foreach (var pattern in _only.Where(pattern => !pattern.Hit))
+        {
+            Console.WriteLine($"Nothing matched '{pattern.Text}'.");
+        }
+
         return 0;
     }
 
-    private static bool Wants(string stem) => _only?.IsMatch(stem) ?? true;
+    private static bool Wants(string stem) => _only.Count == 0 || _only.Any(pattern => pattern.Regex.IsMatch(stem));
 
     /// <summary>
-    /// Whether any file starting with <paramref name="prefix"/> could match the pattern, judged by its
+    /// Whether any file starting with <paramref name="prefix"/> could match a pattern, judged by its
     /// literal head: a whole tab or the gallery is skipped without being opened.
     /// </summary>
     private static bool MayMatch(string prefix) =>
-        _only is null
-        || _onlyHead.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-        || prefix.StartsWith(_onlyHead, StringComparison.OrdinalIgnoreCase);
+        _only.Count == 0
+        || _only.Any(pattern => pattern.Head.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                                || prefix.StartsWith(pattern.Head, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>One <c>--only=</c> wildcard: its regex, its literal head before the first wildcard, and whether a saved file matched it.</summary>
+    private sealed record OnlyPattern(string Text, Regex Regex, string Head)
+    {
+        public bool Hit { get; set; }
+
+        public static OnlyPattern Parse(string text) => new(
+            text,
+            new Regex("^" + Regex.Escape(text).Replace(@"\*", ".*", StringComparison.Ordinal).Replace(@"\?", ".", StringComparison.Ordinal) + "$",
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant),
+            text[..(text.IndexOfAny(['*', '?']) is var wildcard and >= 0 ? wildcard : text.Length)]);
+    }
 
     /// <summary>
     /// A packs directory with one pack the tool builds itself, in a throwaway location, for the cards neither the bundled pack
@@ -917,16 +960,7 @@ internal static partial class Program
         var bottom = Math.Min(bitmap.Height, (int)Math.Ceiling(origin.Y + size.Height));
         using var subset = new SKBitmap();
         bitmap.ExtractSubset(subset, new SKRectI(left, top, right, bottom));
-        using var image = SKImage.FromBitmap(subset);
-        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-        var target = Path.Combine(_outDir, name);
-        using (var file = File.Create(target))
-        {
-            data.SaveTo(file);
-        }
-
-        Console.WriteLine($"Saved {name} ({right - left}x{bottom - top})");
+        Write(name, subset, control, window, new Point(left, top), 1);
     }
 
     /// <summary>
@@ -954,13 +988,140 @@ internal static partial class Program
         surface.Canvas.Clear(backstage);
         surface.Canvas.DrawBitmap(foreground, 0, 0);
         using var image = surface.Snapshot();
-        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-        using (var file = File.Create(Path.Combine(_outDir, name)))
+        using var bitmap = SKBitmap.FromImage(image);
+        Write(name, bitmap, control, control, default, 2);
+    }
+
+    /// <summary>
+    /// Saves <paramref name="bitmap"/> as <paramref name="name"/> in the output directory, then the
+    /// zoomed crops asked for. A picture's crops from an earlier run are removed first, so every crop
+    /// on disk belongs to the picture beside it.
+    /// </summary>
+    /// <param name="name">The file name.</param>
+    /// <param name="bitmap">The picture.</param>
+    /// <param name="root">The control the picture shows; cropped controls are looked for under it.</param>
+    /// <param name="space">The visual whose coordinates <paramref name="origin"/> is in.</param>
+    /// <param name="origin">The point of <paramref name="space"/> at the picture's top-left pixel.</param>
+    /// <param name="scale">Picture pixels per unit of <paramref name="space"/>.</param>
+    private static void Write(string name, SKBitmap bitmap, Visual root, Visual space, Point origin, double scale)
+    {
+        var stem = Path.GetFileNameWithoutExtension(name);
+        foreach (var stale in Directory.GetFiles(_outDir, $"{stem}.zoom*.png"))
         {
-            data.SaveTo(file);
+            File.Delete(stale);
         }
 
-        Console.WriteLine($"Saved {name} ({foreground.Width}x{foreground.Height})");
+        SavePng(bitmap, name);
+        Console.WriteLine($"Saved {name} ({bitmap.Width}x{bitmap.Height})");
+        var unique = Regex.Replace(stem, @"-\d+$", "");
+        foreach (var pattern in _only.Where(pattern => pattern.Regex.IsMatch(stem) || pattern.Regex.IsMatch(unique)))
+        {
+            pattern.Hit = true;
+        }
+
+        if (_zoom > 0)
+        {
+            SaveZooms(stem, bitmap, root, space, origin, scale);
+        }
+    }
+
+    /// <summary>
+    /// Enlarges parts of a saved picture without smoothing, so single-pixel lines can be judged: the
+    /// asked area, then each asked control (or the focused one) with everything its parts draw -
+    /// a frame pushed outside the control by a negative margin included - and a margin around it.
+    /// </summary>
+    private static void SaveZooms(string stem, SKBitmap bitmap, Visual root, Visual space, Point origin, double scale)
+    {
+        var crops = new List<(string What, SKRectI Area)>();
+        if (_zoomArea is { } area)
+        {
+            crops.Add(("area", area));
+        }
+
+        IEnumerable<Control> targets;
+        if (_zoomControls.Count > 0)
+        {
+            targets = root.GetSelfAndVisualDescendants().OfType<Control>()
+                .Where(control => control.IsEffectivelyVisible
+                                  && _zoomControls.Any(wanted => control.Name == wanted || control.GetType().Name == wanted));
+        }
+        else if (_zoomArea is not null)
+        {
+            targets = [];
+        }
+        else
+        {
+            var focused = TopLevel.GetTopLevel(root)?.FocusManager?.GetFocusedElement() as Control;
+            targets = focused is not null && (focused == root || root.IsVisualAncestorOf(focused)) ? [focused] : [];
+        }
+
+        foreach (var target in targets)
+        {
+            if (Extent(target, space) is not { } extent)
+            {
+                continue;
+            }
+
+            var box = extent.Inflate(ZoomMargin);
+            crops.Add((target.Name ?? target.GetType().Name, new SKRectI(
+                (int)Math.Floor((box.Left - origin.X) * scale),
+                (int)Math.Floor((box.Top - origin.Y) * scale),
+                (int)Math.Ceiling((box.Right - origin.X) * scale),
+                (int)Math.Ceiling((box.Bottom - origin.Y) * scale))));
+        }
+
+        var index = 0;
+        foreach (var (what, wanted) in crops)
+        {
+            var crop = SKRectI.Intersect(wanted, new SKRectI(0, 0, bitmap.Width, bitmap.Height));
+            if (crop.IsEmpty)
+            {
+                Console.WriteLine($"  {stem}: {what} lies outside the picture.");
+                continue;
+            }
+
+            using var zoomed = new SKBitmap(crop.Width * _zoom, crop.Height * _zoom);
+            using (var canvas = new SKCanvas(zoomed))
+            using (var source = SKImage.FromBitmap(bitmap))
+            {
+                canvas.DrawImage(source, SKRect.Create(crop.Left, crop.Top, crop.Width, crop.Height),
+                    SKRect.Create(0, 0, zoomed.Width, zoomed.Height), new SKSamplingOptions(SKFilterMode.Nearest, SKMipmapMode.None));
+            }
+
+            var name = ++index == 1 ? $"{stem}.zoom.png" : $"{stem}.zoom-{index}.png";
+            SavePng(zoomed, name);
+            Console.WriteLine($"  zoomed {what} at ({crop.Left},{crop.Top} {crop.Width}x{crop.Height}) x{_zoom} -> {name}");
+        }
+    }
+
+    /// <summary>
+    /// The box, in <paramref name="space"/>'s coordinates, around <paramref name="target"/> and every
+    /// visible part of it - a part may stand outside the control's own bounds.
+    /// </summary>
+    private static Rect? Extent(Visual target, Visual space)
+    {
+        Rect? union = null;
+        foreach (var visual in target.GetSelfAndVisualDescendants())
+        {
+            if (!visual.IsEffectivelyVisible || visual.Bounds.Width <= 0 || visual.Bounds.Height <= 0
+                || visual.TransformToVisual(space) is not { } transform)
+            {
+                continue;
+            }
+
+            var box = new Rect(visual.Bounds.Size).TransformToAABB(transform);
+            union = union is { } sum ? sum.Union(box) : box;
+        }
+
+        return union;
+    }
+
+    private static void SavePng(SKBitmap bitmap, string name)
+    {
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var file = File.Create(Path.Combine(_outDir, name));
+        data.SaveTo(file);
     }
 
     /// <summary>Runs the dispatcher and render ticks for a while, so asynchronous work and transitions finish.</summary>

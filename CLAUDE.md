@@ -83,8 +83,12 @@ w zmienianiu świata. Czytaj według intencji; gdy litera i intencja się rozje�
 (`-Tests Core`, `-Filter <nazwa>`, `-NoTest`). Blokadę `bin/` aplikacji (`MSB3021`/`MSB3027`: podgląd
 XAML w Riderze albo uruchomiona aplikacja autora) skrypt obchodzi sam — nie zabijaj procesów. Aplikacja:
 `dotnet run --project src/DungeonApp.App`. Render bez ekranu: `powershell -File tools/render/render.ps1
--Only '<wzorzec>'` → `tools/render/out/` (bez `-Only` wszystkie karty i galeria, kilka minut; `zoom.ps1`
-powiększa wycinek). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write — PowerShell psuje polskie znaki.
+-Only 'nazwa,wzorzec_*'` → `tools/render/out/` (kilka nazw i wzorców po przecinku w jednym przebiegu;
+bez `-Only` wszystkie karty i galeria, kilka minut). Przebieg nadpisuje tylko swoje pliki — wcześniejsze
+rendery zostają (`-Clean` czyści). `-Control <x:Name>` (np. `PART_Field`) zapisuje obok `<nazwa>.zoom.png`:
+kontrolkę z tym, co rysuje poza granicami, powiększoną 4× bez wygładzania (`-Zoom <skala>`, `-Area
+x,y,w,h`; sam `-Zoom` bierze kontrolkę z fokusem). Pliki czytaj i zmieniaj narzędziami Read/Edit/Write
+— PowerShell psuje polskie znaki.
 
 ## Struktura
 

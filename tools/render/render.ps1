@@ -16,12 +16,31 @@
 # Usage (from anywhere):
 #   powershell -File tools\render\render.ps1                       # everything
 #   powershell -File tools\render\render.ps1 -Only 'condition_*'   # only files matching the wildcard
-#   powershell -File tools\render\render.ps1 -Only 'creature_szkielet'
-# A full run selects every row and takes minutes; -Only renders just the view that changed.
-# out\ is emptied first either way, so it never holds a picture from an earlier run.
+#   powershell -File tools\render\render.ps1 -Only 'entity_card_creature,entity_card_creature_edit,gallery_*'
+#   powershell -File tools\render\render.ps1 -Only 'entity_card_creature_edit' -Zoom 4 -Control PART_Field
+# A full run selects every row and takes minutes; -Only renders just the views that changed, all of
+# them after one build. It takes names and wildcards, separated by commas (or as a PowerShell array),
+# and names every pattern that matched nothing - a misspelt scenario is otherwise skipped silently.
+# -Zoom <scale> saves next to each picture <name>.zoom.png (then .zoom-2.png...): a crop enlarged
+# without smoothing, so single-pixel lines and frames can be judged. What is cropped:
+#   -Control <names> - each visible control with that x:Name (template parts like PART_Field count)
+#                      or type name, with everything its parts draw (a frame pushed out by a negative
+#                      margin too) and 8 units around it
+#   -Area x,y,w,h    - a rectangle in the picture's pixels
+#   neither          - the control that has the focus, if the picture holds it
+# -Control or -Area alone zooms 4 times. The scale multiplies the picture's pixels, and a scaled
+# picture (entity_card_*, gallery_live-part*) is already twice the size.
+# out\ keeps pictures from earlier runs and the run overwrites only what it renders, so a picture
+# stays until it is looked at; -Clean empties out\ first.
 # Build output goes to tools\render\artifacts\ (UseArtifactsOutput, for the referenced projects too),
 # so the author's bin\ folders, which a running app or the XAML preview may lock, stay untouched.
-param([string]$Only)
+param(
+    [string[]]$Only,
+    [int]$Zoom,
+    [string[]]$Control,
+    [string[]]$Area,
+    [switch]$Clean
+)
 
 $ErrorActionPreference = 'Stop'
 $here = $PSScriptRoot
@@ -46,9 +65,14 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 New-Item -ItemType Directory -Force $out | Out-Null
-Remove-Item (Join-Path $out '*.png') -ErrorAction SilentlyContinue
+if ($Clean) { Remove-Item (Join-Path $out '*.png') -ErrorAction SilentlyContinue }
 $fixturePacks = Join-Path $here '..\..\tests\Fixtures\Packs'
 $renderArgs = @($out, $fixturePacks)
-if ($Only) { $renderArgs += "--only=$Only" }
+# powershell -File hands 'a,b' over as one string, a call from PowerShell as an array: both end as a list.
+foreach ($pattern in $Only) { $renderArgs += "--only=$pattern" }
+foreach ($name in $Control) { $renderArgs += "--zoom-control=$name" }
+if ($Area) { $renderArgs += "--zoom-area=$($Area -join ',')" }
+if (-not $Zoom -and ($Control -or $Area)) { $Zoom = 4 }
+if ($Zoom) { $renderArgs += "--zoom=$Zoom" }
 & $dotnet (Join-Path $artifacts 'bin\Render\debug\Render.dll') @renderArgs
 if ($LASTEXITCODE -ne 0) { throw 'render failed' }
