@@ -174,6 +174,9 @@ public partial class CreatureCardView : UserControl, IEntryCardHeader, IEntityLi
 
         live.Changed += ShowLiveValues;
         ShowLiveValues();
+
+        // Another entity on the same card shows its numbers at once; only a change of this one glides.
+        _hitPointsGauge.StandOnTarget();
     }
 
     // async void: the change is the end of a GM action, so its failure goes to the UI thread's handler.
